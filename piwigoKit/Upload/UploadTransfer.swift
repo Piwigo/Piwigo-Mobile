@@ -671,24 +671,28 @@ extension UploadManager {
             }
             
             // Upload completed?
-            if let _ = uploadJSON.chunks, let _ = uploadJSON.chunks.message {
+            if let chunks = uploadJSON.chunks, let message = chunks.message {
                 // Upload not completed
-//                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
-//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
+                let chunkList = message.dropFirst(18).components(separatedBy: ",")
+                debugPrint("\(debugFormatter.string(from: Date())) > \(md5sum) | \(chunkList.count) chunks downloaded")
+                // Cancel tasks of chunks already uploaded
+//                UploadSessions.shared.cancelTasksOfUpload(witID: objectURIstr,
+//                                                          alreadyUploadedChunks: chunkList,
+//                                                          exceptedTaskID: task.taskIdentifier)
                 return
             }
             
             // Upload completed
             // Cancel other tasks related with this request if any
             UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
-                                                      exceptedTaskIdentifier: task.taskIdentifier)
+                                                      exceptedTaskID: task.taskIdentifier)
 
             // Clear byte counter of progress bars
             UploadSessions.shared.removeCounter(withID: identifier)
 
-            // Add image to cache when uploaded by admin users
+            // Collect image data
             if let getInfos = uploadJSON.data, let imageId = getInfos.imageId,
-               imageId != NSNotFound, NetworkVars.hasAdminRights {
+               imageId != NSNotFound {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
@@ -698,66 +702,78 @@ extension UploadManager {
                 }
 
                 // Prepare image for cache
-                var userInfo = [String : Any](minimumCapacity: 1)
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
-                // Get Upload properties
-                userInfo["categoryId"]      = uploadProperties.category
-                userInfo["isVideo"]         = uploadProperties.isVideo
-
                 // Get data returned by the server
-                userInfo["imageId"]         = getInfos.imageId!
-                userInfo["imageTitle"]      = NetworkUtilities.utf8mb4String(from: getInfos.imageTitle ?? "")
-                userInfo["author"]          = NetworkUtilities.utf8mb4String(from: getInfos.author)
-                if let privacyLevel = getInfos.privacyLevel {
-                    userInfo["privacyLevel"] = Int32(privacyLevel) ?? kPiwigoPrivacy.unknown.rawValue
+                uploadProperties.imageId    = imageId
+                uploadProperties.imageTitle = NetworkUtilities.utf8mb4String(from: getInfos.imageTitle ?? "")
+                uploadProperties.author     = NetworkUtilities.utf8mb4String(from: getInfos.author)
+                if let privacyLevelStr = getInfos.privacyLevel {
+                    let privacyLevelRaw = Int16(privacyLevelStr) ?? kPiwigoPrivacy.unknown.rawValue
+                    uploadProperties.privacyLevel = kPiwigoPrivacy(rawValue: privacyLevelRaw) ?? kPiwigoPrivacy.unknown
                 }
-                userInfo["comment"]         = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
-                userInfo["visits"]          = getInfos.visits ?? 0
-                userInfo["ratingScore"]     = getInfos.ratingScore  ?? 0.0
-                userInfo["tags"]            = getInfos.tags
+                uploadProperties.comment    = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
+                if let tags = getInfos.tags {
+                    uploadProperties.tagIds = String(tags.compactMap({$0.id}).map({"\($0),"})
+                                                        .reduce("", +).dropLast())
+                }
                 
-                userInfo["fileName"]        = getInfos.fileName ?? uploadProperties.fileName
-                userInfo["fileSize"]        = getInfos.fileSize ?? NSNotFound // Will trigger pwg.images.getInfo
-                userInfo["datePosted"]      = dateFormatter.date(from: getInfos.datePosted ?? "") ?? Date()
-                userInfo["dateCreated"]     = dateFormatter.date(from: getInfos.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
-                userInfo["md5checksum"]     = getInfos.md5checksum ?? uploadProperties.md5Sum
-
-                userInfo["fullResPath"]     = NetworkUtilities.encodedImageURL(getInfos.fullResPath)
-                userInfo["fullResWidth"]    = getInfos.fullResWidth ?? 1
-                userInfo["fullResHeight"]   = getInfos.fullResHeight ?? 1
-                userInfo["squarePath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.squareImage?.url)
-                userInfo["squareWidth"]     = uploadJSON.derivatives?.squareImage?.width ?? 1
-                userInfo["squareHeight"]    = uploadJSON.derivatives?.squareImage?.height ?? 1
-                userInfo["thumbPath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.thumbImage?.url)
-                userInfo["thumbWidth"]      = uploadJSON.derivatives?.thumbImage?.width ?? 1
-                userInfo["thumbHeight"]     = uploadJSON.derivatives?.thumbImage?.height ?? 1
-                userInfo["mediumPath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.mediumImage?.url)
-                userInfo["mediumWidth"]     = uploadJSON.derivatives?.mediumImage?.width ?? 1
-                userInfo["mediumHeight"]    = uploadJSON.derivatives?.mediumImage?.height ?? 1
-                userInfo["xxSmallPath"]     = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xxSmallImage?.url)
-                userInfo["xxSmallWidth"]    = uploadJSON.derivatives?.xxSmallImage?.width ?? 1
-                userInfo["xxSmallHeight"]   = uploadJSON.derivatives?.xxSmallImage?.height ?? 1
-                userInfo["xSmallPath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xSmallImage?.url)
-                userInfo["xSmallWidth"]     = uploadJSON.derivatives?.xSmallImage?.width ?? 1
-                userInfo["xSmallHeight"]    = uploadJSON.derivatives?.xSmallImage?.height ?? 1
-                userInfo["smallPath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.smallImage?.url)
-                userInfo["smallWidth"]      = uploadJSON.derivatives?.smallImage?.width ?? 1
-                userInfo["smallHeight"]     = uploadJSON.derivatives?.smallImage?.height ?? 1
-                userInfo["largePath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.largeImage?.url)
-                userInfo["largeWidth"]      = uploadJSON.derivatives?.largeImage?.width ?? 1
-                userInfo["largeHeight"]     = uploadJSON.derivatives?.largeImage?.height ?? 1
-                userInfo["xLargePath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xLargeImage?.url)
-                userInfo["xLargeWidth"]     = uploadJSON.derivatives?.xLargeImage?.width ?? 1
-                userInfo["xLargeHeight"]    = uploadJSON.derivatives?.xLargeImage?.height ?? 1
-                userInfo["xxLargePath"]     = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xxLargeImage?.url)
-                userInfo["xxLargeWidth"]    = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
-                userInfo["xxLargeHeight"]   = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
-
                 // Add uploaded image to cache and update UI if needed
-                NotificationCenter.default.post(name: PwgNotifications.addUploadedImageToCache,
-                                                object: nil, userInfo: userInfo)
+                if NetworkVars.hasAdminRights {
+                    var userInfo = [String : Any](minimumCapacity: 1)
+                    userInfo["isVideo"]         = uploadProperties.isVideo
+                    userInfo["categoryId"]      = uploadProperties.category
+
+                    userInfo["imageId"]         = imageId
+                    userInfo["imageTitle"]      = uploadProperties.imageTitle
+                    userInfo["author"]          = uploadProperties.author
+                    userInfo["privacyLevel"]    = Int32(uploadProperties.privacyLevel.rawValue)
+                    userInfo["comment"]         = uploadProperties.comment
+                    userInfo["visits"]          = getInfos.visits ?? 0
+                    userInfo["ratingScore"]     = getInfos.ratingScore  ?? 0.0
+                    userInfo["tags"]            = getInfos.tags
+
+                    userInfo["fileName"]        = getInfos.fileName ?? uploadProperties.fileName
+                    userInfo["fileSize"]        = getInfos.fileSize ?? NSNotFound // Will trigger pwg.images.getInfo
+                    userInfo["datePosted"]      = dateFormatter.date(from: getInfos.datePosted ?? "") ?? Date()
+                    userInfo["dateCreated"]     = dateFormatter.date(from: getInfos.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
+                    userInfo["md5checksum"]     = getInfos.md5checksum ?? uploadProperties.md5Sum
+
+                    userInfo["fullResPath"]     = NetworkUtilities.encodedImageURL(getInfos.fullResPath)
+                    userInfo["fullResWidth"]    = getInfos.fullResWidth ?? 1
+                    userInfo["fullResHeight"]   = getInfos.fullResHeight ?? 1
+                    userInfo["squarePath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.squareImage?.url)
+                    userInfo["squareWidth"]     = uploadJSON.derivatives?.squareImage?.width ?? 1
+                    userInfo["squareHeight"]    = uploadJSON.derivatives?.squareImage?.height ?? 1
+                    userInfo["thumbPath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.thumbImage?.url)
+                    userInfo["thumbWidth"]      = uploadJSON.derivatives?.thumbImage?.width ?? 1
+                    userInfo["thumbHeight"]     = uploadJSON.derivatives?.thumbImage?.height ?? 1
+                    userInfo["mediumPath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.mediumImage?.url)
+                    userInfo["mediumWidth"]     = uploadJSON.derivatives?.mediumImage?.width ?? 1
+                    userInfo["mediumHeight"]    = uploadJSON.derivatives?.mediumImage?.height ?? 1
+                    userInfo["xxSmallPath"]     = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xxSmallImage?.url)
+                    userInfo["xxSmallWidth"]    = uploadJSON.derivatives?.xxSmallImage?.width ?? 1
+                    userInfo["xxSmallHeight"]   = uploadJSON.derivatives?.xxSmallImage?.height ?? 1
+                    userInfo["xSmallPath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xSmallImage?.url)
+                    userInfo["xSmallWidth"]     = uploadJSON.derivatives?.xSmallImage?.width ?? 1
+                    userInfo["xSmallHeight"]    = uploadJSON.derivatives?.xSmallImage?.height ?? 1
+                    userInfo["smallPath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.smallImage?.url)
+                    userInfo["smallWidth"]      = uploadJSON.derivatives?.smallImage?.width ?? 1
+                    userInfo["smallHeight"]     = uploadJSON.derivatives?.smallImage?.height ?? 1
+                    userInfo["largePath"]       = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.largeImage?.url)
+                    userInfo["largeWidth"]      = uploadJSON.derivatives?.largeImage?.width ?? 1
+                    userInfo["largeHeight"]     = uploadJSON.derivatives?.largeImage?.height ?? 1
+                    userInfo["xLargePath"]      = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xLargeImage?.url)
+                    userInfo["xLargeWidth"]     = uploadJSON.derivatives?.xLargeImage?.width ?? 1
+                    userInfo["xLargeHeight"]    = uploadJSON.derivatives?.xLargeImage?.height ?? 1
+                    userInfo["xxLargePath"]     = NetworkUtilities.encodedImageURL(uploadJSON.derivatives?.xxLargeImage?.url)
+                    userInfo["xxLargeWidth"]    = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
+                    userInfo["xxLargeHeight"]   = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
+
+                    NotificationCenter.default.post(name: PwgNotifications.addUploadedImageToCache,
+                                                    object: nil, userInfo: userInfo)
+                }
             }
 
             // Delete uploaded file
@@ -765,9 +781,15 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Update state of upload
+            /// Since version 12, one must empty the lounge.
             var newUploadProperties = uploadProperties
-            newUploadProperties.imageId = uploadJSON.data.imageId!
-            newUploadProperties.requestState = .finished
+            if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                // Uploading with pwg.images.uploadAsync since version 12
+                newUploadProperties.requestState = .uploaded
+            } else {
+                // Uploading with pwg.images.uploadAsync before version 12
+                newUploadProperties.requestState = .finished
+            }
             newUploadProperties.requestError = ""
             self.didEndTransfer(for: uploadID, with: newUploadProperties)
             return
@@ -794,7 +816,7 @@ extension UploadManager {
             if taskID != Int.max {
                 let objectURIstr = uploadID.uriRepresentation().absoluteString
                 UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
-                                                          exceptedTaskIdentifier: taskID
+                                                          exceptedTaskID: taskID
                 )
             }
 

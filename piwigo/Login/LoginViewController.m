@@ -709,7 +709,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
-                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedDescending)
+                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
                 {
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
@@ -785,7 +785,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if (isFirstLogin) {
         // Load favorites in the background before loading image data if needed
         if (!NetworkVarsObjc.hasGuestRights &&
-            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
         {
             // Update HUD during login
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -801,11 +801,15 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
                 forProgress:^(NSInteger onPage, NSInteger outOf){
                     // Post to the app that favorites data are loaded
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
                 }
                 onCompletion:^(BOOL completed) {
                     // Post to the app that favorites data are loaded
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
                 }
                 onFailure:nil];
             });

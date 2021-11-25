@@ -173,7 +173,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
                 let menu = UIMenu(title: "", children: [getMenuForSorting(),
                                                         getMenuForSelectingPhotos()].compactMap({$0}))
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "square.grid.2x2"), menu: menu)
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
 
                 // The deletion of photos already uploaded to a Piwigo server is requested with this trash button.
                 trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
@@ -1549,7 +1549,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
-                     .uploadingError, .uploadingFail, .finishingError:
+                        .uploadingError, .uploadingFail, .finishingError, .finishingFail:
                     cell.cellFailed = true
                 }
             } else {
@@ -1566,7 +1566,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
-                     .uploadingError, .uploadingFail, .finishingError:
+                        .uploadingError, .uploadingFail, .finishingError, .finishingFail:
                     cell.cellFailed = true
                 case .none:
                     cell.cellSelected = false
@@ -1949,7 +1949,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     case .finished, .moderated:
                         cell.cellUploaded = true
                     case .preparingFail, .preparingError, .formatError,
-                         .uploadingError, .uploadingFail, .finishingError:
+                            .uploadingError, .uploadingFail, .finishingError, .finishingFail:
                         cell.cellFailed = true
                     }
                     cell.reloadInputViews()

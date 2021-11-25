@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.1_text" = "Version 2.8.1\n\n• Correction de bugs";
+"v2.8.2_text" = "Version 2.8.2\n\n• Permet aux utilisateurs Community de télécharger en arrière-plan et de télécharger automatiquement des photos et des vidéos\n• Corrige un problème de compatibilité avec Piwigo 12\n• Corrections de bugs mineurs et améliorations de l'interface";
+
+"v2.8.1_text" = "Version 2.8.1\n9 Novembre 2021\n\n• Correction de bugs";
 
 "v2.8.0_text" = "Version 2.8\n23 Octobre 2021\n\n• Ajouter et supprimer des photos et des vidéos de vos favoris\n• Corrections de bugs mineurs et améliorations de l'interface";
 

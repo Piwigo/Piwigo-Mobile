@@ -36,8 +36,16 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
     }
 
+    private let offset: CGFloat = 1.0
+    private let playScale: CGFloat = 0.20
+
     @IBOutlet weak var cellImage: UIImageView!
-    @IBOutlet weak var playImage: UIImageView!
+
+    var playImg = UIImageView()
+    @IBOutlet weak var playBckg: UIImageView!
+    @IBOutlet weak var playBckgWidth: NSLayoutConstraint!
+    @IBOutlet weak var playBckgHeight: NSLayoutConstraint!
+    
     @IBOutlet weak var uploadInfoLabel: UILabel!
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var imageInfoLabel: UILabel!
@@ -95,7 +103,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
-        case .preparingFail, .formatError, .uploadingFail, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finishingFail,.finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
@@ -144,7 +152,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     
     override func prepareForReuse() {
         cellImage.image = imagePlaceholder
-        playImage.isHidden = true
+        playBckg.isHidden = true
+        playImg.isHidden = true
         uploadInfoLabel.text = ""
         uploadingProgress?.setProgress(0, animated: false)
         imageInfoLabel.text = ""
@@ -162,7 +171,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         var image: UIImage!
         if fileURL.lastPathComponent.contains("img") {
             // Case of a photo
-            playImage.isHidden = true
+            playBckg.isHidden = true
+            playImg.isHidden = true
 
             // Retrieve image data from file stored in the Uploads directory
             var fullResImageData: Data = Data()
@@ -192,6 +202,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             } catch {
                 image = imagePlaceholder
             }
+            
+            // Add movie icon
+            addMovieIcon()
         }
         else {
             // Unknown type
@@ -223,7 +236,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             cellImage.image = imagePlaceholder
             imageInfoLabel.text = errorDescription(for: upload)
             uploadingProgress?.setProgress(0.0, animated: false)
-            playImage.isHidden = true
+            playBckg.isHidden = true
+            playImg.isHidden = true
             return
         }
         
@@ -266,8 +280,13 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             })
         })
         
-        // Video icon
-        playImage.isHidden = imageAsset.mediaType == .video ? false : true
+        // Video icon?
+        if imageAsset.mediaType == .video {
+            addMovieIcon()
+        } else {
+            playBckg.isHidden = true
+            playImg.isHidden = true
+        }
     }
     
     private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {
@@ -371,5 +390,20 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         } else {
             return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
         }
+    }
+    
+    private func addMovieIcon() {
+        // Match size to cell size
+        let scale: CGFloat = fmax(1.0, self.traitCollection.displayScale);
+        let width = cellImage.frame.size.width * playScale + (scale - 1)
+        playBckg.setMovieImage(inBackground: true)
+        playBckgWidth.constant = width + 2*offset
+        playBckgHeight.constant = playBckgWidth.constant * playRatio
+        playImg.setMovieImage(inBackground: false)
+        playBckg.addSubview(playImg)
+        playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
+        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: CGSize(width: width, height: width * playRatio))!)
+        playBckg.isHidden = false
+        playImg.isHidden = false
     }
 }

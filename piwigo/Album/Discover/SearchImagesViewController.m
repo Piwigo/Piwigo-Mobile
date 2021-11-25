@@ -278,62 +278,42 @@
 
 -(void)removeImageFromCategory:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
 
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != kPiwigoSearchCategoryId) return;
-        
-        // Image Id?
-//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
-        
-        // Store current image list
-        NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoSearchCategoryId, (long)oldImageList.count);
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != kPiwigoSearchCategoryId) return;
+    
+    // Get ID of removed image
+    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+    NSLog(@"=> removeImage %ld from Category %ld", (long)imageId, (long)catId);
 
-        // Load new image (appended to cache) and sort images before updating UI
-        [self.albumData loadMoreImagesOnCompletion:^{
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    // Get index of deleted image
+    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+     return obj.imageId == imageId;
+    }];
+    if (indexOfExistingItem != NSNotFound) {
+        // Delete image from data source and corresponding cell
+        NSMutableArray<PiwigoImageData *> *imageList = [self.albumData.images mutableCopy];
+        [imageList removeObjectAtIndex:indexOfExistingItem];
+        self.albumData.images = imageList;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
+        if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+            [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+        }
+    }
 
-                // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoSearchCategoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    return;
-                }
-
-                // Delete cells of deleted images, and remove them from selection
-                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
-                for (NSInteger index = 0; index < oldImageList.count; index++) {
-                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return obj.imageId == imageData.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                        [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                    }
-                }
-                if (itemsToDelete.count > 0) {
-                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
-                }
-
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+    // Update footer
+    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages;
+    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer.noImagesLabel.text = totalImageCount > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
 }
 
@@ -470,7 +450,7 @@
         [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
     
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
         }
     }
@@ -524,11 +504,13 @@
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Scroll view to center image
-    if (indexOfImage != NSNotFound) {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        self.imageOfInterest = indexPath;
+        [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 
@@ -539,11 +521,12 @@
     
     // Update data source
     NSInteger indexOfImage = [self.albumData updateImage:imageData];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Refresh image banner
-    if (indexOfImage != NSNotFound) {
-        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
     }
 }
 

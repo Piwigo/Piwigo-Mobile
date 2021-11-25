@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.1_text" = "Versión 2.8.1\n\n• Corrección de errores";
+"v2.8.2_text" = "Versión 2.8.2\n\n• Permite a los usuarios de la comunidad subir en segundo plano y subir fotos y vídeos automáticamente\n• Corrige un problema de compatibilidad con Piwigo 12\n• Correcciones de errores menores y mejoras de la interfaz";
+
+"v2.8.1_text" = "Versión 2.8.1\n9 de noviembre de 2021\n\n• Corrección de errores";
 
 "v2.8.0_text" = "Versión 2.8\n23 de octubre de 2021\n\n• Añadir y eliminar fotos y vídeos de los favoritos\n• Correcciones menores de errores y mejoras de la interfaz";
 

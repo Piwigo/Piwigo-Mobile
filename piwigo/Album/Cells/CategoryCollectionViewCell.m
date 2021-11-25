@@ -305,7 +305,10 @@
                                         self.albumData.comment = albumComment;
                                         
                                         // Notify album/image view of modification
-                                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                                        NSDictionary *userInfo = @{@"albumId" : @(self.albumData.parentAlbumId)};
+                                        [[NSNotificationCenter defaultCenter]
+                                            postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                          object:nil userInfo:userInfo];
 
                                         // Hide swipe buttons
                                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -326,87 +329,6 @@
                         }];
                     }];
 }
-
-
-#pragma mark - Refresh Representative
-
-//-(void)resfreshRepresentative
-//{
-//    // Determine the present view controller
-//    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-//    while (topViewController.presentedViewController) {
-//        topViewController = topViewController.presentedViewController;
-//    }
-//
-//    // Display HUD during the update
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self showHUDwithLabel:NSLocalizedString(@"refreshCategoryHUD_label", @"Refreshing Representative…") inView:topViewController.view];
-//    });
-//
-//    // Refresh album representative
-//    [AlbumService refreshCategoryRepresentativeForCategory:self.albumData.albumId
-//          OnCompletion:^(NSURLSessionTask *task, BOOL refreshedSuccessfully) {
-//              if (refreshedSuccessfully)
-//              {
-//                  [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-//                      dispatch_async(dispatch_get_main_queue(), ^{
-//                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-//
-//                          // Hide swipe buttons
-//                          AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathWithIndex:0]];
-//                          [cell hideSwipeAnimated:YES];
-//                      });
-//                  }];
-//              }
-//              else
-//              {
-//                  [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-//                      [self showRefreshErrorWithMessage:nil andViewController:topViewController];
-//                  }];
-//              }
-//          } onFailure:^(NSURLSessionTask *task, NSError *error) {
-//              [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-//                  [self showRefreshErrorWithMessage:[error localizedDescription] andViewController:topViewController];
-//              }];
-//          }
-//    ];
-//}
-
-//-(void)showRefreshErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
-//{
-//    NSString *errorMessage = NSLocalizedString(@"refreshCategoyError_message", @"Failed to refresh your album representative");
-//    if(message)
-//    {
-//        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-//    }
-//    UIAlertController* alert = [UIAlertController
-//                                alertControllerWithTitle:NSLocalizedString(@"refreshCategoyError_title", @"Refresh Fail")
-//                                message:errorMessage
-//                                preferredStyle:UIAlertControllerStyleActionSheet];
-//
-//    UIAlertAction* defaultAction = [UIAlertAction
-//                                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-//                                    style:UIAlertActionStyleCancel
-//                                    handler:^(UIAlertAction * action) {}];
-//
-//    // Add actions
-//    [alert addAction:defaultAction];
-//
-//    // Present list of actions
-//    alert.view.tintColor = UIColor.piwigoColorOrange;
-//    if (@available(iOS 13.0, *)) {
-//        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-//    } else {
-//        // Fallback on earlier versions
-//    }
-//    alert.popoverPresentationController.sourceView = self.contentView;
-//    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
-//    alert.popoverPresentationController.sourceRect = self.contentView.frame;
-//    [topViewController presentViewController:alert animated:YES completion:^{
-//        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-//        alert.view.tintColor = UIColor.piwigoColorOrange;
-//    }];
-//}
 
 
 #pragma mark - Delete Category

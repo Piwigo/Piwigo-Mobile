@@ -168,10 +168,10 @@
                           }
                           NetworkVarsObjc.pwgVersion = [versionStr copy];
 
-                          // Community users cannot upload with uploadAsync with Piwigo 11.0.0 and above
-                          if (NetworkVarsObjc.usesCommunityPluginV29 &&
-                              !NetworkVarsObjc.hasAdminRights &&
-                              [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
+                          // Community users cannot upload with uploadAsync with Piwigo 11.x
+                          if (NetworkVarsObjc.usesCommunityPluginV29 && NetworkVarsObjc.hasNormalRights &&
+                              ([@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) &&
+                              ([@"12.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedAscending)) {
                               NetworkVarsObjc.usesUploadAsync = NO;
                           }
                           NSLog(@"   version: %@, usesUploadAsync: %@", NetworkVarsObjc.pwgVersion,

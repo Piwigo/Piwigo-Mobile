@@ -89,8 +89,15 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Update cache
     self.allCategories = newCategories;
 
-    // Post to the app that category data have changed
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    // Post to the app that a new category was added
+    for (NSString *upperCategoryId in upperCategories)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSDictionary *userInfo = @{@"albumId" : upperCategoryId};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                object:nil userInfo:userInfo];
+        });
+    }
 }
 
 
@@ -106,14 +113,14 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     PiwigoAlbumData *catagoryToDelete = [self.allCategories objectAtIndex:index];
 
     // Get list of parent categories
-    NSMutableArray *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
+    NSMutableArray<NSString *> *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
     NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)catagoryToDelete.albumId];
     if ([upperCategories containsObject:categoryIdStr]) {
         [upperCategories removeObject:categoryIdStr];
     }
 
     // Create new list of categories
-    NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+    NSMutableArray<PiwigoAlbumData*> *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 
     // Remove deleted category
     [newCategories removeObjectAtIndex:index];
@@ -148,7 +155,17 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.allCategories = newCategories;
 
     // Post to the app that category data have changed
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    if (![upperCategories containsObject:@"0"]) {
+        [upperCategories addObject:@"0"];
+    }
+    for (NSString *upperCategoryId in upperCategories)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSDictionary *userInfo = @{@"albumId" : upperCategoryId};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                object:nil userInfo:userInfo];
+        });
+    }
 }
 
 
@@ -161,7 +178,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // Did we load favorites at start or did user request a refresh?
     if (!NetworkVarsObjc.hasGuestRights &&
-        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
     {
         // Keep cached favorites
         NSInteger indexOfFavorites = [self indexOfCategoryWithId:kPiwigoFavoritesCategoryId
@@ -200,8 +217,13 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	self.allCategories = newCategories;
 	
     // Post to the app that the category data has been updated (if necessary)
-    if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    if (self.allCategories.count > 0) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSDictionary *userInfo = @{@"albumId" : @(NSIntegerMax)};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
+        });
+    }
 }
 
 -(void)updateCategories:(NSArray<PiwigoAlbumData *>*)categories andUpdateUI:(BOOL)updateUI
@@ -252,7 +274,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Post to the app that the category data has been updated (if necessary)
     if (updateUI && (self.allCategories.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+            NSDictionary *userInfo = @{@"albumId" : @(NSIntegerMax)};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
         });
     }
 }
@@ -308,7 +332,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.communityCategoriesForUploadOnly = existingComCategories;
 
     // Post to the app that the category data has been updated
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        NSDictionary *userInfo = @{@"albumId" : @(NSIntegerMax)};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                    object:nil userInfo:userInfo];
+    });
 }
 
 
@@ -501,14 +529,16 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     dispatch_async(dispatch_get_main_queue(), ^{
         // ...an image has been deleted to refresh the collection view
         NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemovedImage object:nil userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemovedImage
+                                                            object:nil userInfo:userInfo];
 
         // ...the number of images has changed and that the thumbnail may have to be changed
         for (NSString *catStr in imageCategory.upperCategories) {
             userInfo = @{@"albumId" : catStr,
                          @"thumbnailId" : @"0",
                          @"thumbnailUrl" : @""};
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData
+                                                                object:nil userInfo:userInfo];
         }
     });
 }

@@ -11,34 +11,32 @@ import Photos
 
 extension UploadManager {
     
-    // MARK: - Set Image Info
-    func setImageParameters(for uploadID: NSManagedObjectID) {
+    // MARK: - Finish Uploading Image
+    func setImageParameters(for uploadID: NSManagedObjectID,
+                            with uploadProperties: UploadProperties) {
         print("\(debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
-        // Retrieve upload request parameters
-        let taskContext = DataController.privateManagedObjectContext
-        let upload = taskContext.object(with: uploadID) as! Upload
-        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
-
+        
         // Prepare creation date
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
+        let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
         let creationDate = dateFormat.string(from: date)
 
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
-        let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
-        let author = NetworkUtilities.utf8mb3String(from: upload.author)
-        let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
-        let paramsDict: [String : Any] = ["image_id"            : "\(NSNumber(value: upload.imageId))",
-                                          "file"                : upload.fileName,
-                                          "name"                : imageTitle,
-                                          "author"              : author == "NSNotFound" ? "" : author,
-                                          "date_creation"       : creationDate,
-                                          "level"               : "\(NSNumber(value: upload.privacyLevel))",
-                                          "comment"             : comment,
-                                          "tag_ids"             : upload.tagIds,
-                                          "single_value_mode"   : "replace",
-                                          "multiple_value_mode" : "replace"]
+        let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
+        let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
+        let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
+        let paramsDict: [String : Any] = [
+            "image_id"            : "\(NSNumber(value: uploadProperties.imageId))",
+            "file"                : uploadProperties.fileName,
+            "name"                : imageTitle,
+            "author"              : author == "NSNotFound" ? "" : author,
+            "date_creation"       : creationDate,
+            "level"               : "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
+            "comment"             : comment,
+            "tag_ids"             : uploadProperties.tagIds,
+            "single_value_mode"   : "replace",
+            "multiple_value_mode" : "replace"]
         
         // Launch request
         let JSONsession = PwgSession.shared
@@ -50,7 +48,7 @@ extension UploadManager {
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
             if let error = error {
-                self.didSetParameters(for: uploadID, error: error)
+                self.didFinishTransfer(for: uploadID, error: error)
                 return
             }
             
@@ -64,31 +62,99 @@ extension UploadManager {
                 if (uploadJSON.errorCode != 0) {
                     let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
                                     userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    self.didSetParameters(for: uploadID, error: error)
+                    self.didFinishTransfer(for: uploadID, error: error)
                     return
                 }
 
                 // Successful?
                 if uploadJSON.success {
                     // Image successfully uploaded and set
-                    self.didSetParameters(for: uploadID, error: nil)
+                    self.didFinishTransfer(for: uploadID, error: nil)
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    self.didSetParameters(for: uploadID, error: error)
+                    self.didFinishTransfer(for: uploadID, error: error)
                     return
                 }
             } catch {
                 // Data cannot be digested, upload still ready for finish
                 let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-                self.didSetParameters(for: uploadID, error: error)
+                self.didFinishTransfer(for: uploadID, error: error)
                 return
             }
         }
     }
 
-    private func didSetParameters(for uploadID: NSManagedObjectID, error: Error?) {
+    /**
+     Since Piwigo server 12.0, uploaded images are gathered in a lounge
+     and one must trigger manually their addition to the database.
+     If not, they will be added after some delay (12 minutes).
+     */
+    func emptyLounge(for uploadID: NSManagedObjectID,
+                     with uploadProperties: UploadProperties) {
+        debugPrint("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
+        
+        processImages(withIds: "\(uploadProperties.imageId)",
+                      inCategory: uploadProperties.category) { error in
+            self.didFinishTransfer(for: uploadID, error: error)
+        }
+    }
+
+    func processImages(withIds imageIds: String,
+                       inCategory categoryId: Int,
+                       completionHandler: @escaping (NSError?) -> Void) -> (Void) {
+        
+        print("\(debugFormatter.string(from: Date())) > processImages() in", queueName())
+
+        // Launch request
+        let JSONsession = PwgSession.shared
+        let paramDict: [String : Any] = ["image_id": imageIds,
+                                         "pwg_token": NetworkVars.pwgToken,
+                                         "category_id": "\(NSNumber(value: categoryId))"]
+        JSONsession.postRequest(withMethod: kPiwigoImagesUploadCompleted, paramDict: paramDict,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+            print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            if let error = error as NSError? {
+                completionHandler(error)
+                return
+            }
+            
+            // Decode the JSON.
+            do {
+                // Decode the JSON into codable type CommunityUploadCompletedJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(ImagesUploadCompletedJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if (uploadJSON.errorCode != 0) {
+                    // Will retry later
+                    debugPrint("••>> processUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    completionHandler(error)
+                    return
+                }
+
+                if uploadJSON.success {
+                    completionHandler(nil)
+                } else {
+                    completionHandler(UploadError.wrongJSONobject as NSError)
+                }
+            }
+            catch {
+                // Will retry later
+                completionHandler(UploadError.wrongJSONobject as NSError)
+                return
+            }
+        }
+    }
+
+    private func didFinishTransfer(for uploadID: NSManagedObjectID, error: Error?) {
 
         // Initialisation
         var newState: kPiwigoUploadState = .finished
@@ -104,7 +170,7 @@ extension UploadManager {
         print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
             // Consider next image
-            self.didSetParameters()
+            self.didFinishTransfer()
         }
     }
 
@@ -116,15 +182,15 @@ extension UploadManager {
      */
     func moderateImages(withIds imageIds: String,
                         inCategory categoryId: Int,
-                        completionHandler: @escaping (Bool) -> Void) -> (Void) {
+                        completionHandler: @escaping (Bool, [String]) -> Void) -> (Void) {
         
         print("\(debugFormatter.string(from: Date())) > moderateImages() in", queueName())
         // Check that we have a token
         guard !NetworkVars.pwgToken.isEmpty else {
-            // // We shall retry later —> Continue in background queue!
+            // We shall retry later —> Continue in background queue!
             self.backgroundQueue.async {
                 // Will retry later
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
             return
@@ -143,7 +209,7 @@ extension UploadManager {
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
             if let _ = error {
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
             
@@ -156,99 +222,25 @@ extension UploadManager {
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
                     // Will retry later
-                    print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-                    completionHandler(false)
+                    debugPrint("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    completionHandler(false, [])
                     return
                 }
 
-                // Successful?
-                if uploadJSON.success {
-                    // Images successfully moderated, delete them if wanted by users
-                    completionHandler(true)
+                // Return pending images
+                var pendingIds = [String]()
+                uploadJSON.data.forEach { (pendingData) in
+                    if let imageId = pendingData.id {
+                        pendingIds.append(imageId)
+                    }
                 }
-                else {
-                    // Will retry later
-                    completionHandler(false)
-                    return
-                }
-            } catch {
+                completionHandler(true, pendingIds)
+            }
+            catch {
                 // Will retry later
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
         }
     }
-        
-
-//        getUploadedImageStatus(byId: imageIds, inCategory: categoryId,
-//            onCompletion: { (task, jsonData) in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    // Check returned data
-//                    guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                        // Will retry later
-//                        return
-//                    }
-//                    // Decode the JSON.
-//                    do {
-//                        // Decode the JSON into codable type CommunityUploadCompletedJSON.
-//                        let decoder = JSONDecoder()
-//                        let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data)
-//
-//                        // Piwigo error?
-//                        if (uploadJSON.errorCode != 0) {
-//                            // Will retry later
-//                            print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-//                            completionHandler(false)
-//                            return
-//                        }
-//
-//                        // Successful?
-//                        if uploadJSON.success {
-//                            // Images successfully moderated, delete them if wanted by users
-//                            completionHandler(true)
-//                        } else {
-//                            // Will retry later
-//                            completionHandler(false)
-//                            return
-//                        }
-//                    } catch {
-//                        // Will retry later
-//                        completionHandler(false)
-//                        return
-//                    }
-//                }
-//        }, onFailure: { (task, error) in
-//            // Continue in background queue!
-//            self.backgroundQueue.async {
-//                // Will retry later
-//                completionHandler(false)
-//                return
-//            }
-//        })
-//    }
-
-//    private func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
-//            onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
-//            onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
-//        
-//        // Check that we have a token
-//        guard !NetworkVars.pwgToken.isEmpty else {
-//            fail(nil, JsonError.networkUnavailable)
-//            return
-//        }
-//        
-//        // Post request
-//        NetworkHandler.post(kCommunityImagesUploadCompleted,
-//                urlParameters: nil,
-//                parameters: [
-//                    "pwg_token": NetworkVars.pwgToken,
-//                    "image_id": imageId ?? "",
-//                    "category_id": NSNumber(value: categoryId)
-//                    ],
-//                sessionManager: sessionManager,
-//                progress: nil,
-//                success: completion,
-//                failure: fail)
-//    }
 }

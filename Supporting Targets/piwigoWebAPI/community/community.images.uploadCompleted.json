@@ -1,4 +1,31 @@
 {
     "stat":"ok",
-    "result": { "pending" = ( ) }
- }
+    "result": {
+        "pending": [
+            {"id": "51768",
+             "level": "16",
+             "added_by": "4",
+             "state": "moderation_pending",
+             "notified_on": ""
+            },
+            {"id": "51767",
+             "level": "16",
+             "added_by": "4",
+             "state": "moderation_pending",
+             "notified_on": ""
+            },
+            {"id": "51766",
+             "level": "16",
+             "added_by": "4",
+             "state": "moderation_pending",
+             "notified_on": ""
+            },
+            {"id": "51769",
+             "level": "16",
+             "added_by": "4",
+             "state": "moderation_pending",
+             "notified_on": ""
+            }
+        ]
+    }
+}

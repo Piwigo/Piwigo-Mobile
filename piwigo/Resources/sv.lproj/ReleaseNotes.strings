@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.1_text" = "Version 2.8.1\n\n• Buggfixar";
+"v2.8.2_text" = "Version 2.8.2\n\n• Gör det möjligt för gemenskapsanvändare att ladda upp foton och videor automatiskt\n• Fixar ett kompatibilitetsproblem med Piwigo 12\n• Mindre buggfixar och förbättringar av gränssnittet";
+
+"v2.8.1_text" = "Version 2.8.1\n9 november 2021\n\n• Buggfixar";
 
 "v2.8.0_text" = "Version 2.8\n23 oktober 2021\n\n• Lägg till och ta bort foton och videor från dina favoriter\n• Mindre buggfixar och förbättringar av gränssnittet";
 

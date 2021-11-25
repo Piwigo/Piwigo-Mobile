@@ -324,7 +324,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 
     // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated:) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
 }
@@ -470,7 +470,7 @@
                 self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
                 NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, self.spaceBetweenButtons, self.deleteBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [toolBarItems insertObjects:@[self.favoriteBarButton, self.spaceBetweenButtons] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(2, 2)]];
                 }
@@ -484,7 +484,7 @@
                 // Right side of navigation bar
                 NSMutableArray<UIBarButtonItem *> *rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:self.actionBarButton, self.shareBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) {
+                if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
@@ -495,7 +495,7 @@
             }
         }
         else if (!NetworkVarsObjc.hasGuestRights &&
-                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton = [self getFavoriteBarButton];
 
             if (UIInterfaceOrientationIsPortrait(orientation) &&
@@ -561,7 +561,7 @@
                 self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
                 NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [toolBarItems insertObjects:@[self.favoriteBarButton, self.spaceBetweenButtons] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(4, 2)]];
                 }
@@ -575,7 +575,7 @@
                 // Right side of navigation bar
                 NSMutableArray<UIBarButtonItem *> *rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:self.actionBarButton, self.shareBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
@@ -586,7 +586,7 @@
             }
         }
         else if (!NetworkVarsObjc.hasGuestRights &&
-                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton = [self getFavoriteBarButton];
 
             if (UIInterfaceOrientationIsPortrait(orientation) &&
@@ -642,7 +642,7 @@
         self.shareBarButton.enabled = hasImagesSelected;
         self.deleteBarButton.enabled = hasImagesSelected;
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton.enabled = hasImagesSelected;
             BOOL areFavorites = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:self.selectedImageIds];
             [self.favoriteBarButton setFavoriteImageFor:areFavorites];
@@ -663,7 +663,7 @@
         /// — guests can share photo of high-resolution or not
         /// — non-guest users can set favorites in addition
         self.shareBarButton.enabled = hasImagesSelected;
-        if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton.enabled = hasImagesSelected;
             BOOL areFavorites = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:self.selectedImageIds];
             [self.favoriteBarButton setFavoriteImageFor:areFavorites];
@@ -682,7 +682,7 @@
     self.moveBarButton.enabled = state;
     self.shareBarButton.enabled = state;
     // pwg.users.favorites… methods available from Piwigo version 2.10
-    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
         self.favoriteBarButton.enabled = state;
     }
 }
@@ -690,8 +690,15 @@
 
 #pragma mark - Category Data
 
--(void)categoryUpdated
+-(void)categoryUpdated:(NSNotification *)notification
 {
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
+
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != self.categoryId) return;
+
     // Load, sort images and reload collection
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Set navigation bar buttons
@@ -708,149 +715,96 @@
 
 -(void)addImageToCategory:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
 
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != self.categoryId) return;
-        
-        // Image Id?
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
-        
-        // Store current image list
-        NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != self.categoryId) return;
+    
+    // Get ID of added image
+    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+    NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
 
-        // Load new image (appended to cache) and sort images before updating UI
-        [self.albumData loadMoreImagesOnCompletion:^{
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    // Retrieve images from cache
+    NSArray <PiwigoImageData *> *newImages = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+    
+    // Get index of added image
+    NSInteger indexOfNewItem = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+     return obj.imageId == imageId;
+    }];
+    if ((indexOfNewItem != NSNotFound) && (newImages.count > self.albumData.images.count)) {
+        // Add image to data source and corresponding cell
+        self.albumData.images = newImages;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfNewItem inSection:1];
+        [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
+    }
 
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    // Update footer
+    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer.noImagesLabel.text = totalImageCount > 1 ?
+        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    }
 
-                // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    return;
-                }
-
-                // Insert cells of added images
-                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
-                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
-                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return oldObj.imageId == image.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                    }
-                }
-                if (itemsToInsert.count > 0) {
-                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
-                }
-
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
-
-                // Update navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+    // Display Select button if there was no image in the album
+    if (newImages.count ==  1) {
+        // Display Select button
+        if (self.isSelect == NO) {
+            [self updateButtonsInPreviewMode];
+        }
     }
 }
 
 -(void)removeImageFromCategory:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
 
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != self.categoryId) return;
-        
-        // Image Id?
-//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
-        
-        // Store current image list
-        NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != self.categoryId) return;
+    
+    // Get ID of removed image
+    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+    NSLog(@"=> removeImage %ld from Category %ld", (long)imageId, (long)catId);
 
-        // Load new image (appended to cache) and sort images before updating UI
-        [self.albumData loadMoreImagesOnCompletion:^{
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    // Remove image from the selection if needed
+    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
+    if ([self.selectedImageIds containsObject:imageIdObject]) {
+        [self.selectedImageIds removeObject:imageIdObject];
+    }
 
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    // Get index of deleted image
+    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+     return obj.imageId == imageId;
+    }];
+    if (indexOfExistingItem != NSNotFound) {
+        // Delete image from data source and corresponding cell
+        NSMutableArray<PiwigoImageData *> *imageList = [self.albumData.images mutableCopy];
+        [imageList removeObjectAtIndex:indexOfExistingItem];
+        self.albumData.images = imageList;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
+        if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+            [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+        }
+    }
 
-                // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    return;
-                }
-
-                // Delete cells of deleted images, and remove them from selection
-                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
-                for (NSInteger index = 0; index < oldImageList.count; index++) {
-                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return obj.imageId == imageData.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                        [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                        NSNumber *imageIdObject = [NSNumber numberWithInteger:imageData.imageId];
-                        if ([self.selectedImageIds containsObject:imageIdObject]) {
-                            [self.selectedImageIds removeObject:imageIdObject];
-                        }
-                    }
-                }
-                if (itemsToDelete.count > 0) {
-                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
-                }
-
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
-
-                // Update navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+    // Update footer
+    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer.noImagesLabel.text = totalImageCount > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
 }
 
@@ -1723,7 +1677,7 @@
         cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
         }
         
@@ -1805,11 +1759,13 @@
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Scroll view to center image
-    if (indexOfImage != NSNotFound) {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        self.imageOfInterest = indexPath;
+        [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 
@@ -1820,11 +1776,12 @@
     
     // Update data source
     NSInteger indexOfImage = [self.albumData updateImage:imageData];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Refresh image banner
-    if (indexOfImage != NSNotFound) {
-        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
     }
 }
 
@@ -1870,7 +1827,9 @@
     
     // Refresh image cell
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:0];
-    [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters
@@ -1900,12 +1859,11 @@
     NSInteger indexOfUpdatedImage = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageData.imageId;
     }];
+    if (indexOfUpdatedImage == NSNotFound) { return; }
 
     // Update image data
-    if (indexOfUpdatedImage != NSNotFound) {
-        [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
-        self.albumData.images = newImages;
-    }
+    [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
+    self.albumData.images = newImages;
 }
 
 

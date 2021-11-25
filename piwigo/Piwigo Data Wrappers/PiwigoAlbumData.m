@@ -188,7 +188,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	[self loadCategoryImageDataChunkWithSort:sort
 								 forProgress:progress
                                 onCompletion:^(BOOL completed) {
-        NSLog(@"loopLoadImagesForSort: %ld, %ld, %ld", (long)self.lastImageBulkCount, (long)self.imageList.count, (long)self.numberOfImages);
+        NSLog(@"loop Cat:%ld page:%4ld | last:%04ld, images:%04lu -> nberImages:%04ld [%@]", (long)self.albumId, (long)self.onPage, (long)self.lastImageBulkCount, (unsigned long)self.imageList.count, (long)self.numberOfImages, completed ? @"Ok" : @"-!-");
         if (completed && self.lastImageBulkCount && self.imageList.count < self.numberOfImages)
 		{
 			[self loopLoadImagesForSort:sort
@@ -219,7 +219,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
-    NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld cat:%ld", (long)self.lastImageBulkCount, (long)self.onPage, (long)self.albumId);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
@@ -232,8 +231,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
             progress(self.onPage, numOfImgs);
         }
 
-        // Adds number of loaded image data
-        self.lastImageBulkCount += count;
+        // Remember number of loaded image data in this chunk
+        self.lastImageBulkCount = count;
 
         // Calculate the number of thumbnails displayed per page
         NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];

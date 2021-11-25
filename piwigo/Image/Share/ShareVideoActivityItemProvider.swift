@@ -55,7 +55,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // We use the thumbnail cached in memory
         let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
-            imageFileURL = URL(string: "")!
+            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -68,7 +68,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
-            imageFileURL = URL(string: "")!
+            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 

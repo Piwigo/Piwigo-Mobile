@@ -269,6 +269,7 @@ public enum kPiwigoUploadState : Int16 {
     
     case deleted
     case uploadingFail
+    case finishingFail
 }
 
 extension kPiwigoUploadState {
@@ -297,7 +298,7 @@ extension kPiwigoUploadState {
 
         case .finishing:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
-        case .finishingError:
+        case .finishingError, .finishingFail:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .finished, .moderated:
@@ -312,7 +313,8 @@ extension kPiwigoUploadState {
         switch self {
         case .preparingFail,
              .formatError,
-             .uploadingFail:
+             .uploadingFail,
+             .finishingFail:
             return SectionKeys.Section1.rawValue
             
         case .preparingError,
