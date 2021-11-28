@@ -383,12 +383,30 @@ class EditImageParamsViewController: UIViewController
                 // Next image
                 if imagesToUpdate.count != 0 { updateImageProperties() }
             }, retry: { [unowned self] in
-                updateImageProperties()
+                // Try relogin if unauthorized
+                if error.code == 401 {
+                    // Try relogin
+                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                        self.updateImageProperties()
+                    })
+                } else {
+                    updateImageProperties()
+                }
             })
         } else {
             dismissRetryPiwigoError(withTitle: NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update"), message: NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?"), errorMessage: error.localizedDescription, dismiss: {
             }, retry: { [unowned self] in
-                updateImageProperties()
+                // Try relogin if unauthorized
+                if error.code == 401 {
+                    // Try relogin
+                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                        self.updateImageProperties()
+                    })
+                } else {
+                    updateImageProperties()
+                }
             })
         }
     }
