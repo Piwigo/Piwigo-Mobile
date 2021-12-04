@@ -160,6 +160,8 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             startingImage.imagePreviewDelegate = self
             startingImage.imageIndex = index
             startingImage.imageData = imageData
+            startingImage.imageLoaded = false
+            startingImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
@@ -495,7 +497,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         else {
             // Fallback on earlier versions
             // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation;
+            let orientation = UIApplication.shared.statusBarOrientation
             
             // User with admin rights can do everything
             if NetworkVars.hasAdminRights {
@@ -602,47 +604,49 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         let shouldUpdateImage = (imageData.getURLFromImageSizeType(imageSize) == nil)
 
         // Retrieve image/video infos
-        ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
-            self.imageData = retrievedData
-            // Disable HUD if needed
-            self.hidePiwigoHUD {
-                if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
-                    self.images[index] = self.imageData
-                    
-                    // Set favorite button
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+        DispatchQueue.global(qos: .userInteractive).async {
+            ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
+                self.imageData = retrievedData
+                // Disable HUD if needed
+                self.hidePiwigoHUD {
+                    if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
+                        self.images[index] = self.imageData
+                        
+                        // Set favorite button
+                        let isFavorite = CategoriesData.sharedInstance()
+                            .category(withId: kPiwigoFavoritesCategoryId,
+                                      containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                        self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 
-                    // Refresh image if needed
-                    if shouldUpdateImage {
-                        for childVC in self.children {
-                            if let previewVC = childVC as? ImagePreviewViewController,
-                               previewVC.imageIndex == index {
-                                previewVC.imageData = self.imageData
+                        // Refresh image if needed
+                        if shouldUpdateImage {
+                            for childVC in self.children {
+                                if let previewVC = childVC as? ImagePreviewViewController,
+                                   previewVC.imageIndex == index {
+                                    previewVC.imageData = self.imageData
+                                }
                             }
                         }
                     }
-                }
 
-                // Enable actions
-                self.setEnableStateOfButtons(true)
-            }
-        } failure: { error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
-            }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
-                        self.retrieveCompleteImageDataOfImage(self.imageData)
-                    })
-                } else {
-                    self.retrieveCompleteImageDataOfImage(self.imageData)
+                    // Enable actions
+                    self.setEnableStateOfButtons(true)
                 }
-            })
+            } failure: { error in
+                self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+                }, retry: { [unowned self] in
+                    // Try relogin if unauthorized
+                    if error.code == 401 {
+                        // Try relogin
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                            self.retrieveCompleteImageDataOfImage(self.imageData)
+                        })
+                    } else {
+                        self.retrieveCompleteImageDataOfImage(self.imageData)
+                    }
+                })
+            }
         }
     }
 
@@ -674,6 +678,12 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             // Display/hide the toolbar on iPhone if required
             if isToolbarRequired {
                 navigationController?.setToolbarHidden(!isNavigationBarHidden, animated: true)
+            }
+            
+            // Display/hide the description if any
+            if let pVC = pageViewController,
+               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+                imagePVC.didTapViewWillHideMetadata(!isNavigationBarHidden)
             }
 
             // Set background color according to navigation bar visibility
@@ -1166,6 +1176,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     }
 }
 
+
 // MARK: - UIPageViewControllerDelegate
 extension ImageDetailViewController: UIPageViewControllerDelegate
 {
@@ -1250,6 +1261,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         nextImage.imageIndex = currentIndex + 1
         nextImage.imageData = imageData
         nextImage.imageLoaded = false
+        nextImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
         return nextImage
     }
 
@@ -1275,6 +1287,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         prevImage.imageIndex = currentIndex - 1
         prevImage.imageData = imageData
         prevImage.imageLoaded = false
+        prevImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
         return prevImage
     }
 
@@ -1320,6 +1333,12 @@ extension ImageDetailViewController: EditImageParamsDelegate
         // Update title view
         setTitleViewFromImageData()
         
+        // Update image metadata
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.updateImageMetadata(with: imageData)
+        }
+
         // Update cached image data
         /// Note: the current category might be a smart album.
         let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
