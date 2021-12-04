@@ -67,9 +67,6 @@ class ImagePreviewViewController: UIViewController
         imageViewWidthConstraint.constant = imageThumbnail.size.width
         imageViewHeightConstraint.constant = imageThumbnail.size.height
 
-        // Description of the image
-        configDescription()
-
         // Previewed image
         let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
         var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
@@ -105,9 +102,6 @@ class ImagePreviewViewController: UIViewController
                     weakSelf?.imageViewHeightConstraint.constant = image.size.height
                     weakSelf?.view.layoutIfNeeded()
                     
-                    // Configure description view
-                    weakSelf?.configDescription()
-
                     // Hide progress bar
                     weakSelf?.imageLoaded = true
                     if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
@@ -146,6 +140,16 @@ class ImagePreviewViewController: UIViewController
         descTextView.textColor = .piwigoColorWhiteCream()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Update description view if necessary
+        configDescription()
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -160,7 +164,6 @@ class ImagePreviewViewController: UIViewController
         super.viewWillLayoutSubviews()
         if didTapView {
             didTapView = false
-//            centerImageView()
         } else {
             updateMinZoomScaleForSize(view.bounds.size)
         }
@@ -185,6 +188,7 @@ class ImagePreviewViewController: UIViewController
         }
         scrollView.zoomScale = minScale
         debugPrint("=> From (\(size.width),\(size.height)) and (\(image.size.width),\(image.size.height)), minScale: \(minScale)")
+        centerImageView()
     }
     
     deinit {
@@ -197,7 +201,6 @@ class ImagePreviewViewController: UIViewController
     func didTapViewWillHideMetadata(_ hide:Bool) {
         didTapView = true
         hideMetadata = hide
-        configDescription()
     }
     
     func updateImageMetadata(with data:PiwigoImageData) {
@@ -455,11 +458,11 @@ extension ImagePreviewViewController: UIScrollViewDelegate
                 spaceBelow += root.view.safeAreaInsets.bottom
             }
         }
-        let spaceAvailable = scrollView.bounds.height - spaceAbove - spaceBelow - imageView.frame.height
-        debugPrint("   space above: \(spaceAbove), below: \(spaceBelow), available: \(spaceAvailable)")
+        guard let image = imageView.image else { return }
+        let imageHeight = image.size.height * scrollView.zoomScale
+        let spaceAvailable = view.bounds.height - spaceAbove - spaceBelow - imageHeight
         
         // Update constraints
-        debugPrint("   constraint top: \(max(0, spaceAbove + spaceAvailable/2)), bottom: \(max(0, spaceBelow + spaceAvailable/2))")
         imageViewTopConstraint.constant = max(0, spaceAbove + spaceAvailable/2)
         imageViewBottomConstraint.constant = max(0, spaceBelow + spaceAvailable/2)
     }
