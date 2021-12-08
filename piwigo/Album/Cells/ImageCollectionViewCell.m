@@ -402,7 +402,9 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             CGFloat deltaY = fmax(bannerHeight + margin, weakSelf.deltaY);
             weakSelf.favBottom.constant = - deltaY;
         }
-    } failure:nil];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
+        NSLog(@"%@", error.localizedDescription);
+    }];
 }
 
 -(void)prepareForReuse
