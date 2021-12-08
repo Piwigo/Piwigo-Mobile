@@ -1008,16 +1008,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     // Reinitialise flag
     NetworkVarsObjc.userCancelledCommunication = NO;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        // Hide and remove the HUD
-        [self hideLoading];
-        
-        // Execute block
-        if (completion) {
-            completion();
-        }
-    });
+    // Hide and remove the HUD
+    [self hideLoading];
+    
+    // Execute block
+    if (completion) {
+        completion();
+    }
 }
 
 
