@@ -13,10 +13,11 @@ public class NetworkUtilities: NSObject {
     // MARK: - UTF-8 encoding on 3 and 4 bytes
     public class
     func utf8mb4String(from string: String?) -> String {
-        // Return empty string is nothing provided
+        // Return empty string if nothing provided
         guard let strToConvert = string else {
             return ""
         }
+        
         // Convert string to UTF-8 encoding
         let serverEncoding = String.Encoding(rawValue: NetworkVars.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
