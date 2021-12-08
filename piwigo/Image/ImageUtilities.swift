@@ -95,35 +95,35 @@ class ImageUtilities: NSObject {
 
                     imageData.fullResWidth = data.fullResWidth ?? 1
                     imageData.fullResHeight = data.fullResHeight ?? 1
-                    imageData.fullResPath = data.fullResPath ?? ""
+                    imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? "")
                 }
 
                 if let derivatives = imageJSON.derivatives {
-                    imageData.squarePath = derivatives.squareImage?.url ?? ""
+                    imageData.squarePath = NetworkUtilities.encodedImageURL(derivatives.squareImage?.url ?? "")
                     imageData.squareWidth = derivatives.squareImage?.width ?? 1
                     imageData.squareHeight = derivatives.squareImage?.height ?? 1
-                    imageData.thumbPath = derivatives.thumbImage?.url ?? ""
+                    imageData.thumbPath = NetworkUtilities.encodedImageURL(derivatives.thumbImage?.url ?? "")
                     imageData.thumbWidth = derivatives.thumbImage?.width ?? 1
                     imageData.thumbHeight = derivatives.thumbImage?.height ?? 1
-                    imageData.mediumPath = derivatives.mediumImage?.url ?? ""
+                    imageData.mediumPath = NetworkUtilities.encodedImageURL(derivatives.mediumImage?.url ?? "")
                     imageData.mediumWidth = derivatives.mediumImage?.width ?? 1
                     imageData.mediumHeight = derivatives.mediumImage?.height ?? 1
-                    imageData.xxSmallPath = derivatives.xxSmallImage?.url ?? ""
+                    imageData.xxSmallPath = NetworkUtilities.encodedImageURL(derivatives.xxSmallImage?.url ?? "")
                     imageData.xxSmallWidth = derivatives.xxSmallImage?.width ?? 1
                     imageData.xxSmallHeight = derivatives.xxSmallImage?.height ?? 1
-                    imageData.xSmallPath = derivatives.xSmallImage?.url ?? ""
+                    imageData.xSmallPath = NetworkUtilities.encodedImageURL(derivatives.xSmallImage?.url ?? "")
                     imageData.xSmallWidth = derivatives.xSmallImage?.width ?? 1
                     imageData.xSmallHeight = derivatives.xSmallImage?.height ?? 1
-                    imageData.smallPath = derivatives.smallImage?.url ?? ""
+                    imageData.smallPath = NetworkUtilities.encodedImageURL(derivatives.smallImage?.url ?? "")
                     imageData.smallWidth = derivatives.smallImage?.width ?? 1
                     imageData.smallHeight = derivatives.smallImage?.height ?? 1
-                    imageData.largePath = derivatives.largeImage?.url ?? ""
+                    imageData.largePath = NetworkUtilities.encodedImageURL(derivatives.largeImage?.url ?? "")
                     imageData.largeWidth = derivatives.largeImage?.width ?? 1
                     imageData.largeHeight = derivatives.largeImage?.height ?? 1
-                    imageData.xLargePath = derivatives.xLargeImage?.url ?? ""
+                    imageData.xLargePath = NetworkUtilities.encodedImageURL(derivatives.xLargeImage?.url ?? "")
                     imageData.xLargeWidth = derivatives.xLargeImage?.width ?? 1
                     imageData.xLargeHeight = derivatives.xLargeImage?.height ?? 1
-                    imageData.xxLargePath = derivatives.xxLargeImage?.url ?? ""
+                    imageData.xxLargePath = NetworkUtilities.encodedImageURL(derivatives.xxLargeImage?.url ?? "")
                     imageData.xxLargeWidth = derivatives.xxLargeImage?.width ?? 1
                     imageData.xxLargeHeight = derivatives.xxLargeImage?.height ?? 1
                 }
