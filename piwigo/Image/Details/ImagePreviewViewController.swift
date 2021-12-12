@@ -23,26 +23,43 @@ class ImagePreviewViewController: UIViewController
     var imageIndex = 0
     var imageLoaded = false
     var imageData: PiwigoImageData!
-    var hideMetadata = false
+
+    private var _isToolbarRequired = false
+    var isToolbarRequired: Bool {
+        get {
+            return _isToolbarRequired
+        }
+        set(isRequired) {
+            if isRequired != _isToolbarRequired {
+                // Update flag
+                _isToolbarRequired = isRequired
+                // Device rotated -> reset scroll view
+                self.configScrollView()
+            }
+        }
+    }
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var imageViewTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var videoView: UIView!
     
     @IBOutlet weak var descContainer: UIVisualEffectView!
     @IBOutlet weak var descContainerOffset: NSLayoutConstraint!
+    @IBOutlet weak var descContainerWidth: NSLayoutConstraint!
+    @IBOutlet weak var descContainerHeight: NSLayoutConstraint!
     @IBOutlet weak var descTextView: UITextView!
-    @IBOutlet weak var descTextViewWidth: NSLayoutConstraint!
-    @IBOutlet weak var descTextViewHeight: NSLayoutConstraint!
-    
+
     private var downloadTask: URLSessionDataTask?
     private var previousScale: CGFloat = 0          // To remember the previous image scale
-    private var didTapView: Bool = false            // True if the user did tap the view
+    private var userDidTapView: Bool = false        // True if the user did tap the view
+    private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
 
     // MARK: - View Lifecycle
@@ -63,9 +80,12 @@ class ImagePreviewViewController: UIViewController
         guard let imageThumbnail = thumb.image ?? UIImage(named: "placeholderImage") else {
             fatalError("!!! No placeholder image available !!!")
         }
-        imageView.image = imageThumbnail
-        imageViewWidthConstraint.constant = imageThumbnail.size.width
-        imageViewHeightConstraint.constant = imageThumbnail.size.height
+        
+        // Configure the description view before the scrollview
+        // which will then call the centerImage() method
+        configDescription {
+            self.configScrollView(with: imageThumbnail)
+        }
 
         // Previewed image
         let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
@@ -97,9 +117,7 @@ class ImagePreviewViewController: UIViewController
             success: { task, image in
                 if let image = image as? UIImage {
                     // Set image view content
-                    weakSelf?.imageView.image = image
-                    weakSelf?.imageViewWidthConstraint.constant = image.size.width
-                    weakSelf?.imageViewHeightConstraint.constant = image.size.height
+                    weakSelf?.configScrollView(with: image)
                     weakSelf?.view.layoutIfNeeded()
                     
                     // Hide progress bar
@@ -133,6 +151,14 @@ class ImagePreviewViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
+        
+        // Store status bar height (is null when not displayed)
+        if #available(iOS 11.0, *) {
+            statusBarHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? UIApplication.shared.statusBarFrame.size.height
+        } else {
+            // Fallback on earlier versions
+            statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+        }
     }
     
     @objc func applyColorPalette() {
@@ -142,65 +168,217 @@ class ImagePreviewViewController: UIViewController
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Update description view if necessary
-        configDescription()
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-
-        // Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { [self] context in
-            // Update description view if necessary
-            configDescription()
-        })
+        // Show/hide the description
+        if imageData.comment.isEmpty {
+            descContainer.isHidden = true
+        } else {
+            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+        }
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if didTapView {
-            didTapView = false
-        } else {
-            updateMinZoomScaleForSize(view.bounds.size)
+        if userDidTapView {
+            userDidTapView = false
         }
     }
 
-    /*
-     This method calculates the zoom scale for the scroll view.
-     A zoom scale of 1 indicates that the content displays at its normal size.
-     A zoom scale of less than 1 shows a zoomed-out version of the content,
-     and a zoom scale greater than 1 shows the content zoomed in.
-     */
-    func updateMinZoomScaleForSize(_ size: CGSize) {
-        guard let image = imageView.image else { return }
-        let widthScale = size.width / image.size.width
-        let heightScale = size.height / image.size.height
-        let minScale = min(widthScale, heightScale)
-        scrollView.minimumZoomScale = minScale
-        if minScale > 1 {
-            scrollView.maximumZoomScale = 1.5*minScale
-        } else {
-            scrollView.maximumZoomScale = 4*minScale
-        }
-        scrollView.zoomScale = minScale
-        debugPrint("=> From (\(size.width),\(size.height)) and (\(image.size.width),\(image.size.height)), minScale: \(minScale)")
-        centerImageView()
-    }
-    
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
     
     
+    // MARK: - Scroll View
+
+    private func configScrollView(with image: UIImage) {
+        imageView.image = image
+        imageView.frame = CGRect(origin: .zero, size: image.size)
+        imageViewWidthConstraint.constant = image.size.width
+        imageViewHeightConstraint.constant = image.size.height
+        configScrollView()
+    }
+    
+    /*
+     This method calculates the zoom scale for the scroll view.
+     A zoom scale of 1 indicates that the content displays at its normal size.
+     A zoom scale of less than 1 shows a zoomed-out version of the content,
+     and a zoom scale greater than 1 shows the content zoomed in.
+     */
+    private func configScrollView() {
+        guard let image = imageView?.image else { return }
+        scrollView.isPagingEnabled = false
+        scrollView.bounds = view.bounds
+        scrollView.contentSize = image.size
+        scrollView.contentInset = UIEdgeInsets.zero
+        let widthScale = view.bounds.size.width / image.size.width
+        let heightScale = view.bounds.size.height / image.size.height
+        let minScale = min(widthScale, heightScale)
+        scrollView.minimumZoomScale = minScale
+        if minScale > 1 {
+            scrollView.maximumZoomScale = 2*minScale
+        } else {
+            scrollView.maximumZoomScale = 4*minScale
+        }
+        scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
+        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
+    }
+    
+    private func updateImageViewConstraints() {
+        guard let image = imageView?.image else { return }
+
+        // Determine the orientation of the device
+        let orientation: UIInterfaceOrientation
+        if #available(iOS 14, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        
+        // Determine the available spaces around the image
+        var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
+        var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
+        if let nav = navigationController {
+            // Remove the heights of the navigation bar and toolbar
+            spaceTop += nav.navigationBar.bounds.height
+            spaceBottom += isToolbarRequired ? nav.toolbar.bounds.height : 0
+        }
+        if #available(iOS 11.0, *) {
+            // Takes into account the safe area insets
+            if let root = UIApplication.shared.keyWindow?.rootViewController {
+                spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
+                spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
+                spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
+                spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
+            }
+        }
+        
+        // Horizontal constraints
+        let imageWidth = image.size.width * scrollView.zoomScale
+        let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + imageWidth + spaceTrailing)
+        spaceLeading += horizontalSpaceAvailable/2
+        spaceTrailing += horizontalSpaceAvailable/2
+        
+        // Vertical constraints
+        let imageHeight = image.size.height * scrollView.zoomScale
+        var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
+        let descHeight = imageData.comment.isEmpty ? 0 : descContainerHeight.constant + 8
+        if isToolbarRequired {
+            if verticalSpaceAvailable >= descHeight {
+                // Centre image between navigation bar and description/toolbar
+                verticalSpaceAvailable -= descHeight
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += descHeight + verticalSpaceAvailable/2
+            } else if verticalSpaceAvailable >= 0 {
+                // Keep image glued to navigation bar
+                spaceBottom += verticalSpaceAvailable
+            } else {
+                // Centre image between navigation bar and toolbar
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += verticalSpaceAvailable/2
+            }
+        } else {
+            if verticalSpaceAvailable >= descHeight {
+                // Centre image between navigation bar and bottom
+                verticalSpaceAvailable -= descHeight
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += descHeight + verticalSpaceAvailable/2
+            } else if verticalSpaceAvailable >= 0 {
+                // Keep image glued to navigation bar
+                spaceBottom += verticalSpaceAvailable
+            } else if -verticalSpaceAvailable < spaceTop {
+                // Keep image glued to bottom
+                spaceTop += verticalSpaceAvailable
+            } else {
+                // Centre image between top and bottom
+                verticalSpaceAvailable += spaceTop
+                spaceTop = verticalSpaceAvailable/2
+                spaceBottom = verticalSpaceAvailable/2
+            }
+        }
+        
+        // Update image view position
+//        var frameToCenter = imageView.frame
+//        frameToCenter.origin.x = max(0, spaceLeading)
+//        frameToCenter.origin.y = max(0, spaceTop)
+//        imageView.frame = frameToCenter
+        
+        // Update constraints
+        imageViewLeadingConstraint.constant = max(0, spaceLeading)
+        imageViewTrailingConstraint.constant = max(0, spaceTrailing)
+        imageViewTopConstraint.constant = max(0, spaceTop)
+        imageViewBottomConstraint.constant = max(0, spaceBottom)
+        debugPrint("=> updateImageViewConstraints —> leading: \(round(imageViewLeadingConstraint.constant)), trailing: \(round(imageViewTrailingConstraint.constant)) (\(round(horizontalSpaceAvailable))), top: \(round(imageViewTopConstraint.constant)), bot: \(round(imageViewBottomConstraint.constant)) (\(round(verticalSpaceAvailable)))")
+
+        // Center image if necessary
+        self.centerImageView()
+    }
+    
+    private func centerImageView() {
+        // Should we center the image horizontally?
+        var offset = scrollView.contentOffset
+//        if imageViewLeadingConstraint.constant > 0,
+//           imageViewTrailingConstraint.constant > 0,
+//           offset.x != 0 {
+//            // Image height smaller than screen height
+//            offset.x = 0
+//            debugPrint("=> centerImageView: offset.x -> 0")
+//            scrollView.setContentOffset(offset, animated: false)
+//        }
+
+        // Should we center the image vertically?
+        if imageViewTopConstraint.constant > 0,
+           imageViewBottomConstraint.constant > 0,
+           offset.y != 0 {
+            // Image width smaller than screen width
+            offset.y = 0
+            debugPrint("=> centerImageView: offset.y -> 0")
+            scrollView.setContentOffset(offset, animated: false)
+        }
+    }
+
+    
     // MARK: - Image Metadata
-    func didTapViewWillHideMetadata(_ hide:Bool) {
-        didTapView = true
-        hideMetadata = hide
+    func didTapView() {
+        // Remember that user did tap the view
+        userDidTapView = true
+        
+        // Show/hide the description
+        if imageData.comment.isEmpty {
+            descContainer.isHidden = true
+        } else {
+            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+        }
+        
+        // Keep image in place when its size is greater than the screen size
+        guard let nav = navigationController else { return }
+        var offset = scrollView.contentOffset
+        if imageViewTopConstraint.constant == 0,
+           imageViewBottomConstraint.constant == 0,
+           scrollView.zoomScale > scrollView.minimumZoomScale {
+            // Add/subtract navigation bar height
+            offset.y -= nav.navigationBar.bounds.height * (nav.isNavigationBarHidden ? 1 : -1)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
+            } else {
+                if #available(iOS 14, *) {
+//                    offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
+                }
+                else if #available(iOS 13, *) {
+                    let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+                    if orientation.isPortrait {
+                        offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
+                    }
+                } else {
+                    offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
+                }
+            }
+            scrollView.setContentOffset(offset, animated: false)
+        }
     }
     
     func updateImageMetadata(with data:PiwigoImageData) {
@@ -209,22 +387,23 @@ class ImagePreviewViewController: UIViewController
 
         // Should we update the image description?
         if descTextView.text != data.comment {
-            configDescription()
+            configDescription {
+                self.centerImageView()
+            }
         }
     }
 
-    private func configDescription() {
+    private func configDescription(completion: @escaping () -> Void) {
         // Should we present a description?
-        if imageData.comment.isEmpty || hideMetadata {
+        if imageData.comment.isEmpty {
             // Hide the description view
+            descTextView.text = ""
             descContainer.isHidden = true
-            // Center image in available space
-            centerImageView()
-            return
+            completion()
         }
         
         // Configure the description view
-        descContainer.isHidden = false
+        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
         descTextView.text = imageData.comment
 
         // Calculate the available width
@@ -253,9 +432,9 @@ class ImagePreviewViewController: UIViewController
             // Calculate the optimum size
             let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                         height: requiredHeight))
-            descContainerOffset.constant = -8                   // Shift description view up by 8 pixels
-            descTextViewWidth.constant = size.width   // Add space taken by corners
-            descTextViewHeight.constant = size.height
+            descContainerOffset.constant = -8         // Shift description view up by 8 pixels
+            descContainerWidth.constant = size.width   // Add space taken by corners
+            descContainerHeight.constant = size.height
             descContainer.layer.cornerRadius = cornerRadius
             descContainer.layer.masksToBounds = true
         }
@@ -264,7 +443,7 @@ class ImagePreviewViewController: UIViewController
             descContainerOffset.constant = 0                // Glue the description to the toolbar
             descContainer.layer.cornerRadius = 0            // Disable rounded corner in case user added text
             descContainer.layer.masksToBounds = false
-            descTextViewWidth.constant = safeAreaWidth
+            descContainerWidth.constant = safeAreaWidth
             let height = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                           height: CGFloat.greatestFiniteMagnitude)).height
 
@@ -277,15 +456,13 @@ class ImagePreviewViewController: UIViewController
                     orientation = UIApplication.shared.statusBarOrientation
                 }
                 let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
-                descTextViewHeight.constant = min(maxHeight, height)
+                descContainerHeight.constant = min(maxHeight, height)
             }
             else {
-                descTextViewHeight.constant = height
+                descContainerHeight.constant = height
             }
         }
-        
-        // Center image in available space
-        centerImageView()
+        completion()
     }
         
     
@@ -410,60 +587,38 @@ extension ImagePreviewViewController: AVAssetResourceLoaderDelegate
 
 
 // MARK: - UIScrollViewDelegate Methods
+/// https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/UIScrollView_pg/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008179-CH1-SW1
 extension ImagePreviewViewController: UIScrollViewDelegate
 {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        debugPrint("=> didScroll: \(round(scrollView.contentOffset.x)), \(round(scrollView.contentOffset.y))")
+        centerImageView()
+    }
+    
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        centerImageView()
+        updateImageViewConstraints()
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        guard let view = view else { return }
-        guard let image = imageView.image else { return }
-        debugPrint("=> zoomScale = \(scale), image: \(round(image.size.width)) x \(round(image.size.height)), imageView: \(round(imageView.frame.width)) x \(round(imageView.frame.height))")
-        debugPrint("   view bounds: \(round(view.bounds.origin.x)), \(round(view.bounds.origin.y)), \(round(view.bounds.size.width)), \(round(view.bounds.size.height)), view frame: \(round(view.frame.origin.x)), \(round(view.frame.origin.y)), \(round(view.frame.size.width)), \(round(view.frame.size.height))")
-        debugPrint("   offset: \(round(scrollView.contentOffset.x)), \(round(scrollView.contentOffset.y))")
-        debugPrint("   scrollView bounds: \(round(scrollView.bounds.size.width)) x \(round(scrollView.bounds.size.height)), frame: \(round(scrollView.frame.size.width)) x \(round(scrollView.frame.size.height))")
-        
-        // Image should be displayed at a minimum scale
+        // Limit the zoom scale
         if scale < scrollView.minimumZoomScale {
             scrollView.zoomScale = scrollView.minimumZoomScale
+        } else if scale > scrollView.maximumZoomScale {
+            scrollView.zoomScale = scrollView.maximumZoomScale
         }
-                
-//        if (scale == 1.0) && (previousScale == 1.0) {
-//            // The user scaled down twice the image => back to collection of images
-//            let name = NSNotification.Name(rawValue: kPiwigoNotificationPinchedImage)
-//            NotificationCenter.default.post(name: name, object: nil)
-//        } else {
-//            previousScale = scale
-//        }
-    }
-
-    private func centerImageView() {
-        // Determine the available spaces above and below the image
-        var spaceAbove:CGFloat = 0
-        var spaceBelow:CGFloat = imageData.comment.isEmpty ? 0 : descTextViewHeight.constant + 8
-        if let nav = navigationController {
-            // Remove the heights of the navigation bar and of the toolbar
-            spaceAbove += nav.navigationBar.bounds.height
-            spaceBelow += nav.toolbar.bounds.height
-        }
-        if #available(iOS 11.0, *) {
-            // Takes into account the safe area insets
-            if let root = UIApplication.shared.keyWindow?.rootViewController {
-                spaceAbove += root.view.safeAreaInsets.top
-                spaceBelow += root.view.safeAreaInsets.bottom
-            }
-        }
-        guard let image = imageView.image else { return }
-        let imageHeight = image.size.height * scrollView.zoomScale
-        let spaceAvailable = view.bounds.height - spaceAbove - spaceBelow - imageHeight
         
-        // Update constraints
-        imageViewTopConstraint.constant = max(0, spaceAbove + spaceAvailable/2)
-        imageViewBottomConstraint.constant = max(0, spaceBelow + spaceAvailable/2)
+        // Should we quit the preview mode?
+        if (scale == scrollView.minimumZoomScale) &&
+            (previousScale == scrollView.minimumZoomScale) {
+            // The user scaled down twice the image => back to collection of images
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationPinchedImage)
+            NotificationCenter.default.post(name: name, object: nil)
+        } else {
+            previousScale = scale
+        }
     }
 }

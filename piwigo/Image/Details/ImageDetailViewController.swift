@@ -155,18 +155,21 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
 
+        // Initialise flags
+        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
+        isToolbarRequired = getIfToolbarRequired()
+
         // Load initial image preview view controller
         if let startingImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController {
             startingImage.imagePreviewDelegate = self
             startingImage.imageIndex = index
             startingImage.imageData = imageData
             startingImage.imageLoaded = false
-            startingImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
+            startingImage.isToolbarRequired = isToolbarRequired
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
         // Did we already load the list of favorite images?
-        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            !NetworkVars.hasGuestRights,
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
@@ -408,6 +411,45 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         }
     }
     
+    private func getIfToolbarRequired() -> Bool {
+        if #available(iOS 14, *) {
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            
+            // User with admin or upload rights can do everything
+            if NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && userHasUploadRights) {
+                if orientation.isPortrait, view.bounds.size.width < 768 {
+                    return true
+                }
+            }
+            else if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
+                    return true
+                }
+            }
+        }
+        else {
+            // Fallback on earlier versions
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.statusBarOrientation
+            
+            // User with admin rights can do everything
+            if NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && userHasUploadRights) {
+                return true
+            }
+            else if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                if orientation.isPortrait {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
     private func updateNavBar() {
         // Button displayed in all circumstances
         shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageDetailViewController.shareImage))
@@ -582,6 +624,12 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 navigationController?.setToolbarHidden(true, animated: false)
             }
         }
+        
+        // Set isToolbarRequired boolean of current pageViewController
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.isToolbarRequired = isToolbarRequired
+        }
     }
     
     // Buttons are disabled (greyed) when retrieving image data
@@ -683,7 +731,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             // Display/hide the description if any
             if let pVC = pageViewController,
                let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-                imagePVC.didTapViewWillHideMetadata(!isNavigationBarHidden)
+                imagePVC.didTapView()
             }
 
             // Set background color according to navigation bar visibility
@@ -1261,7 +1309,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         nextImage.imageIndex = currentIndex + 1
         nextImage.imageData = imageData
         nextImage.imageLoaded = false
-        nextImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
+        nextImage.isToolbarRequired = isToolbarRequired
         return nextImage
     }
 
@@ -1287,7 +1335,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         prevImage.imageIndex = currentIndex - 1
         prevImage.imageData = imageData
         prevImage.imageLoaded = false
-        prevImage.hideMetadata = navigationController?.isNavigationBarHidden ?? false
+        prevImage.isToolbarRequired = isToolbarRequired
         return prevImage
     }
 
@@ -1425,6 +1473,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             nextImage.imageIndex = indexOfRemovedImage
             nextImage.imageData = imageData
             nextImage.imageLoaded = false
+            nextImage.isToolbarRequired = isToolbarRequired
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
@@ -1456,6 +1505,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             prevImage.imageIndex = indexOfRemovedImage - 1
             prevImage.imageData = imageData
             prevImage.imageLoaded = false
+            prevImage.isToolbarRequired = isToolbarRequired
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
