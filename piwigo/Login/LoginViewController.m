@@ -197,6 +197,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 {
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+    
+    // Release memory
+    self.hudViewController = nil;
 }
 
 
@@ -999,7 +1002,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.hudViewController resignFirstResponder];
     if (hud) {
         [hud hideAnimated:YES];
-        self.hudViewController = nil;
     }
 }
 
