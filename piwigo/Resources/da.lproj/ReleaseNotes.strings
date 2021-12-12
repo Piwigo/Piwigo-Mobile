@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.2_text" = "Version 2.8.2\n\n• Gør det muligt for brugere i Fællesskabet at uploade i baggrunden og automatisk uploade fotos og videoer\n• Løser et kompatibilitetsproblem med Piwigo 12\n• Mindre fejlrettelser og forbedringer af brugerflade";
+"v2.9.0_text" = "Version 2.9\n\n• Displays photo/video descriptions in preview mode\n• Minor bug fixes and improvements of the interface";
+
+"v2.8.2_text" = "Version 2.8.2\n26 november 2021\n\n• Gør det muligt for brugere i Fællesskabet at uploade i baggrunden og automatisk uploade fotos og videoer\n• Løser et kompatibilitetsproblem med Piwigo 12\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
 "v2.8.1_text" = "Version 2.8.1\n9 november 2021\n\n• Fejlrettelser";
 
