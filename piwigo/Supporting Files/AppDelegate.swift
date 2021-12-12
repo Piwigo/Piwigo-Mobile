@@ -577,7 +577,7 @@ import piwigoKit
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
-        UploadManager.shared.resumeAll()
+        resumeAll()
     }
 
 
