@@ -461,6 +461,9 @@ class ImagePreviewViewController: UIViewController
             else {
                 descContainerHeight.constant = height
             }
+            
+            // Scroll text to the top
+            descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
         }
         completion()
     }
