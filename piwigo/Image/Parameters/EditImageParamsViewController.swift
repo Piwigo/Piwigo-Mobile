@@ -348,8 +348,19 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Update image info on server
+        guard let image = imagesToUpdate.last else {
+            // Done, hide HUD and dismiss controller
+            self.updatePiwigoHUDwithSuccess { [unowned self] in
+                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                    // Return to image preview or album view
+                    self.dismiss(animated: true)
+                }
+            }
+            return
+        }
+
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: imagesToUpdate.last!) { [unowned self] in
+        setProperties(ofImage: image) { [unowned self] in
             // Next image?
             self.imagesToUpdate.removeLast()
             if !self.imagesToUpdate.isEmpty {
