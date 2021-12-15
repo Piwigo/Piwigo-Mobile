@@ -214,7 +214,16 @@ class ImagePreviewViewController: UIViewController
         scrollView.isPagingEnabled = false
         scrollView.bounds = view.bounds
         scrollView.contentSize = image.size
-        scrollView.contentInset = UIEdgeInsets.zero
+        
+        // Don't adjust the insets when showing or hiding the navigation bar/toolbar
+        scrollView.contentInset = .zero
+        if #available(iOS 11.0, *) {
+            scrollView.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        // Define the zoom scale range
         let widthScale = view.bounds.size.width / image.size.width
         let heightScale = view.bounds.size.height / image.size.height
         let minScale = min(widthScale, heightScale)
@@ -355,29 +364,19 @@ class ImagePreviewViewController: UIViewController
         }
         
         // Keep image in place when its size is greater than the screen size
-        guard let nav = navigationController else { return }
-        var offset = scrollView.contentOffset
-        if imageViewTopConstraint.constant == 0,
-           imageViewBottomConstraint.constant == 0,
-           scrollView.zoomScale > scrollView.minimumZoomScale {
-            // Add/subtract navigation bar height
-            offset.y -= nav.navigationBar.bounds.height * (nav.isNavigationBarHidden ? 1 : -1)
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
-            } else {
-                if #available(iOS 14, *) {
-//                    offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
-                }
-                else if #available(iOS 13, *) {
-                    let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-                    if orientation.isPortrait {
-                        offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
-                    }
-                } else {
-                    offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
-                }
-            }
-            scrollView.setContentOffset(offset, animated: false)
+        if #available(iOS 11, *) {
+            // Nothing to do…
+        } else {
+//            guard let nav = navigationController else { return }
+//            var offset = scrollView.contentOffset
+//            if imageViewTopConstraint.constant == 0,
+//               imageViewBottomConstraint.constant == 0,
+//               scrollView.zoomScale > scrollView.minimumZoomScale {
+                // Add/subtract navigation bar height
+//                offset.y -= nav.navigationBar.bounds.height * (nav.isNavigationBarHidden ? 1 : -1)
+//                offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
+//                scrollView.setContentOffset(offset, animated: false)
+//            }
         }
     }
     
@@ -421,7 +420,7 @@ class ImagePreviewViewController: UIViewController
         context.minimumScaleFactor = 1.0
         let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
-        let rect = descTextView.text.boundingRect(with: CGSize(width: safeAreaWidth - cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let rect = descTextView.text.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
         let textHeight = rect.height
         let nberOfLines = textHeight / lineHeight
         
@@ -432,8 +431,8 @@ class ImagePreviewViewController: UIViewController
             // Calculate the optimum size
             let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                         height: requiredHeight))
-            descContainerOffset.constant = -8         // Shift description view up by 8 pixels
-            descContainerWidth.constant = size.width   // Add space taken by corners
+            descContainerOffset.constant = -8          // Shift description view up by 8 pixels
+            descContainerWidth.constant = size.width + cornerRadius/2   // Add space taken by corners
             descContainerHeight.constant = size.height
             descContainer.layer.cornerRadius = cornerRadius
             descContainer.layer.masksToBounds = true
