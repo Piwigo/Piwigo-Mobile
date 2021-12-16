@@ -331,14 +331,11 @@ class EditImageParamsViewController: UIViewController
             updatedImages.append(imageData)
         }
         images = updatedImages
-        imagesToUpdate = images
+        imagesToUpdate = updatedImages.compactMap({$0})
 
         // Start updating Piwigo database
         if imagesToUpdate.isEmpty { return }
-        updateImageProperties()
-    }
 
-    func updateImageProperties() {
         // Display HUD during the update
         if imagesToUpdate.count > 1 {
             nberOfSelectedImages = imagesToUpdate.count
@@ -346,9 +343,12 @@ class EditImageParamsViewController: UIViewController
         } else {
             showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
+        updateImageProperties()
+    }
 
-        // Update image info on server
-        guard let image = imagesToUpdate.last else {
+    func updateImageProperties() {
+        // Any further image to update?
+        if imagesToUpdate.count == 0 {
             // Done, hide HUD and dismiss controller
             self.updatePiwigoHUDwithSuccess { [unowned self] in
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
@@ -359,24 +359,24 @@ class EditImageParamsViewController: UIViewController
             return
         }
 
+        // Retrieve image to update
+        guard let image = imagesToUpdate.last else {
+            // Next image?
+            self.imagesToUpdate.removeLast()
+            self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
+            self.updateImageProperties()
+            return
+        }
+
+        // Update image info on server
         /// The cache will be updated by the parent view controller.
         setProperties(ofImage: image) { [unowned self] in
             // Next image?
             self.imagesToUpdate.removeLast()
-            if !self.imagesToUpdate.isEmpty {
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
-                self.updateImageProperties()
-            }
-            else {
-                // Done, hide HUD and dismiss controller
-                self.updatePiwigoHUDwithSuccess { [unowned self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
-                        // Return to image preview or album view
-                        self.dismiss(animated: true)
-                    }
-                }
-            }
-        } failure: { [unowned self] error in
+            self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
+            self.updateImageProperties()
+        }
+        failure: { [unowned self] error in
             // Display error
             self.hidePiwigoHUD {
                 self.showUpdatePropertiesError(error)
