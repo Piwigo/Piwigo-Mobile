@@ -163,8 +163,9 @@ public class PwgSession: NSObject {
         let dataStr = String(decoding: data, as: UTF8.self)
         var filteredData = data
         // Let's first assume we got JSON data
-        if let jsonPos = dataStr.range(of: "{\"stat\":")?.lowerBound {
-            filteredData  = dataStr[jsonPos...].data(using: String.Encoding.utf8)!
+        if let jsonPos = dataStr.range(of: "{\"stat\":")?.lowerBound,
+           let endPos = dataStr.lastIndex(of: "}") {
+            filteredData  = dataStr[jsonPos...endPos].data(using: String.Encoding.utf8)!
             return filteredData
         }
         
