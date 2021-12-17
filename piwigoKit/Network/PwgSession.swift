@@ -162,10 +162,12 @@ public class PwgSession: NSObject {
         // Filter returned data (PHP may send a warning before the JSON object)
         let dataStr = String(decoding: data, as: UTF8.self)
         var filteredData = data
-        // Let's first assume we got JSON data
-        if let jsonPos = dataStr.range(of: "{\"stat\":")?.lowerBound,
-           let endPos = dataStr.lastIndex(of: "}") {
-            filteredData  = dataStr[jsonPos...endPos].data(using: String.Encoding.utf8)!
+
+        // Let's first assume we got JSON data anf HTML before/after the JSON object
+        if let firstJsonChar = dataStr.firstIndex(of: "{"),
+           let lastJsonChar = dataStr.lastIndex(of: "}") {
+            filteredData  = dataStr[firstJsonChar...lastJsonChar]
+                .data(using: String.Encoding.utf8)!
             return filteredData
         }
         
