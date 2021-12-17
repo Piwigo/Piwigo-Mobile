@@ -224,7 +224,7 @@ import piwigoKit
                rootVC.children.first is AlbumImagesViewController {
                 // Determine for how long the session is opened
                 let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-                if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
+                if timeSinceLastLogin < TimeInterval(-300) { // i.e. 5 minutes (Piwigo 11 session duration defaults to an hour)
                     /// - Perform relogin
                     /// - Resume upload operations in background queue
                     ///   and update badge, upload button of album navigator
