@@ -321,7 +321,7 @@ class ImagePreviewViewController: UIViewController
         imageViewTrailingConstraint.constant = max(0, spaceTrailing)
         imageViewTopConstraint.constant = max(0, spaceTop)
         imageViewBottomConstraint.constant = max(0, spaceBottom)
-        debugPrint("=> updateImageViewConstraints —> leading: \(round(imageViewLeadingConstraint.constant)), trailing: \(round(imageViewTrailingConstraint.constant)) (\(round(horizontalSpaceAvailable))), top: \(round(imageViewTopConstraint.constant)), bot: \(round(imageViewBottomConstraint.constant)) (\(round(verticalSpaceAvailable)))")
+//        debugPrint("=> updateImageViewConstraints —> leading: \(round(imageViewLeadingConstraint.constant)), trailing: \(round(imageViewTrailingConstraint.constant)) (\(round(horizontalSpaceAvailable))), top: \(round(imageViewTopConstraint.constant)), bot: \(round(imageViewBottomConstraint.constant)) (\(round(verticalSpaceAvailable)))")
 
         // Center image if necessary
         self.centerImageView()
@@ -345,7 +345,7 @@ class ImagePreviewViewController: UIViewController
            offset.y != 0 {
             // Image width smaller than screen width
             offset.y = 0
-            debugPrint("=> centerImageView: offset.y -> 0")
+//            debugPrint("=> centerImageView: offset.y -> 0")
             scrollView.setContentOffset(offset, animated: false)
         }
     }
