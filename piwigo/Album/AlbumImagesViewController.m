@@ -1905,16 +1905,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
     }
 
-    // Update footer
-    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        footer.noImagesLabel.text = totalImageCount > 1 ?
-        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    // Update footer if visible
+    if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
     }
 
     // Display Select button if there was no image in the album
@@ -1960,16 +1953,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
     }
 
-    // Update footer
-    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        footer.noImagesLabel.text = totalImageCount > 1 ?
-        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    // Update footer if visible
+    if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
     }
 }
 
@@ -3184,9 +3170,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             if(kind == UICollectionElementKindSectionFooter)
             {
-                NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
-                footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
-
                 // Get number of images
                 NSInteger totalImageCount = NSNotFound;
                 if (self.categoryId == 0) {
@@ -3200,22 +3183,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
                 }
 
-                if (totalImageCount == NSNotFound) {
-                    // Is loading…
-                    footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
-                }
-                else if (totalImageCount == 0) {
-                    // Not loading and no images
-                    footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                }
-                else {
-                    // Display number of images…
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
+                NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
+                footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+                footer.noImagesLabel.text = [AlbumUtilities footerLegendFor:totalImageCount];
                 return footer;
             }
             break;
@@ -3279,23 +3249,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
             }
 
-            if (totalImageCount == NSNotFound) {
-                // Is loading…
-                footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
-            }
-            else if (totalImageCount == 0) {
-                // Not loading and no images
-                footer = NSLocalizedString(@"noImages", @"No Images");
-            }
-            else {
-                // Display number of images…
-                NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                footer = totalImageCount > 1 ?
-                [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-            }
- 
+            footer = [AlbumUtilities footerLegendFor:totalImageCount];
             if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
