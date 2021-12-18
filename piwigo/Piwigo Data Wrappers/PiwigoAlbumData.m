@@ -188,7 +188,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	[self loadCategoryImageDataChunkWithSort:sort
 								 forProgress:progress
                                 onCompletion:^(BOOL completed) {
-        NSLog(@"loop Cat:%ld page:%4ld | last:%04ld, images:%04lu -> nberImages:%04ld [%@]", (long)self.albumId, (long)self.onPage, (long)self.lastImageBulkCount, (unsigned long)self.imageList.count, (long)self.numberOfImages, completed ? @"Ok" : @"-!-");
+//        NSLog(@"loop Cat:%ld page:%4ld | last:%04ld, images:%04ld -> nberImages:%04ld [%@]", (long)self.albumId, (long)self.onPage, (long)self.lastImageBulkCount, (long)self.imageList.count, (long)self.numberOfImages, completed ? @"Ok" : @"-!-");
         if (completed && self.lastImageBulkCount && self.imageList.count < self.numberOfImages)
 		{
 			[self loopLoadImagesForSort:sort
