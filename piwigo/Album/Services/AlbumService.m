@@ -206,11 +206,31 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         } else {
             albumData.comment = @"";
         }
-		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
-		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
-		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
-		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
-		
+        if (([category objectForKey:@"global_rank"] != nil) &&
+            ([category objectForKey:@"global_rank"] != [NSNull null])) {
+            albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
+        } else {
+            albumData.globalRank = 0.0;
+        }
+        if (([category objectForKey:@"nb_images"] != nil) &&
+            ([category objectForKey:@"nb_images"] != [NSNull null])) {
+            albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
+        } else {
+            albumData.numberOfImages = 0;
+        }
+        if (([category objectForKey:@"total_nb_images"] != nil) &&
+            ([category objectForKey:@"total_nb_images"] != [NSNull null])) {
+            albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
+        } else {
+            albumData.totalNumberOfImages = 0;
+        }
+        if (([category objectForKey:@"nb_categories"] != nil) &&
+            ([category objectForKey:@"nb_categories"] != [NSNull null])) {
+            albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
+        } else {
+            albumData.numberOfSubCategories = 0;
+        }
+
         // When "representative_picture_id" is null or not supplied: no album image
         if (([category objectForKey:@"representative_picture_id"] != nil) &&
             ([category objectForKey:@"representative_picture_id"] != [NSNull null]))

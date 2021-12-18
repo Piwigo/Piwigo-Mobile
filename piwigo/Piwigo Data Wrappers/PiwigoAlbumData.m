@@ -442,8 +442,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 -(void)deincrementImageSizeByOne
 {
 	// Decrement number of images in category
-    self.numberOfImages--;
-    self.totalNumberOfImages--;
+    self.numberOfImages = MAX(self.numberOfImages - 1, 0);
+    self.totalNumberOfImages = MAX(self.totalNumberOfImages - 1, 0);
 	for(NSString *category in self.upperCategories)
 	{
         if (category.integerValue != self.albumId) {
