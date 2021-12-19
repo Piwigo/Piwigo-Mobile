@@ -354,8 +354,12 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
     [self.cellImage setImageWithURLRequest:request
                           placeholderImage:[UIImage imageNamed:@"placeholderImage"]
                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-        // Downsample image (or scale it up)
-        UIImage *displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+        // Downsample image is necessary
+        UIImage *displayedImage = image;
+        CGFloat maxDimensionInPixels = MAX(size.width, size.height) * scale;
+        if (MAX(image.size.width, image.size.height) > maxDimensionInPixels) {
+            displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+        }
         weakSelf.cellImage.image = displayedImage;
         [weakSelf.cellImage layoutIfNeeded];
         
