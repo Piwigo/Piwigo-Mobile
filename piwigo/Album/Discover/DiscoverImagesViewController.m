@@ -692,7 +692,7 @@
 
     // Update footer if visible
     if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
     }
 
     // Display Select button if there was no image in the album
@@ -740,7 +740,7 @@
 
     // Update footer if visible
     if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
     }
 }
 

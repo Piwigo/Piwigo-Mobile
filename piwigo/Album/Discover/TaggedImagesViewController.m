@@ -694,7 +694,7 @@
 
     // Update footer if visible
     if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
     }
 }
 

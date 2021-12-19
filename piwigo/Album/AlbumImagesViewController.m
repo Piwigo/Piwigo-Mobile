@@ -1768,16 +1768,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     }
                 }
 
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+                // Update footer if visible
+                if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
+                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
                 }
 
                 // Set navigation bar buttons
