@@ -251,70 +251,20 @@
 {
     [super viewDidAppear:animated];
     
-    // Should we scroll to image of interest?
-//    NSLog(@"••• Discover|Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:0]);
+    // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
-        
-        // Thumbnail of interest is not the first one
-        // => Scroll and highlight cell of interest
-//        NSLog(@"=> Discover|Try to scroll to item=%ld", (long)self.imageOfInterest.item);
-        
-        // Thumbnail of interest already visible?
+        // Highlight the cell of interest
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
-            // Thumbnail is already visible and highlighted
+            // Thumbnail is visible
             UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell highlightOnCompletion:^{
-                    // Apply effect when returning from image preview mode
                     self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
                 }];
             } else {
-               self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-            }
-        }
-        else {
-            // First visible thumbnail
-            NSIndexPath *indexPathOfFirstVisibleThumbnail = [indexPathsForVisibleItems firstObject];
-            
-            // Thumbnail of interest above visible items?
-            if (self.imageOfInterest.item < indexPathOfFirstVisibleThumbnail.item) {
-                // Scroll up collection and highlight cell
-//                NSLog(@"=> Discover|Scroll up to item #%ld", (long)self.imageOfInterest.item);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-            }
-            
-            // Thumbnail is below visible items
-            // Get number of already loaded items
-            NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
-            if (self.imageOfInterest.item < nberOfItems) {
-                // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-                
-                // Already loaded => scroll to image if necessary
-//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
-                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
-                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                }
-
-                // Load more images if seems to be a good idea
-                if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages])) {
-//                    NSLog(@"=> Discover|Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    } onFailure:nil];
-                }
-            } else {
-                // No yet loaded => load more images
-                // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]) {
-//                    NSLog(@"=> Discover|Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    } onFailure:nil];
-                }
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
             }
         }
     }
@@ -332,7 +282,6 @@
     // When returning from imageDetailView, highlight image (which should now be visible)
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
         // Visible cells
-//        NSLog(@"=> Discover|Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:0]);
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
             // Get cell
@@ -1643,8 +1592,11 @@
     }
 
     // Action depends on mode
-    if(!self.isSelect)
+    if (!self.isSelect)
     {
+        // Remember that user did tap this image
+        self.imageOfInterest = indexPath;
+        
         // Selection mode not active => display full screen image
         UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
         self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
@@ -1685,8 +1637,8 @@
     if (indexOfImage == NSNotFound) { return; }
 
     // Scroll view to center image
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+    if ([self.imagesCollection numberOfItemsInSection:0] > indexOfImage) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
         self.imageOfInterest = indexPath;
         [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }

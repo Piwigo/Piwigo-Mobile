@@ -629,15 +629,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.imagesCollection.alwaysBounceVertical = YES;
     }
 
-    // Should we scroll to image of interest?
-//        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
+    // Should we highlight the image of interest?
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
-        
-        // Not the root album, album contains images and thumbnail of interest is not the first one
-        // => Scroll and highlight cell of interest
-//        NSLog(@"=> Try to scroll to item=%ld in section=%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
-
-        // Thumbnail of interest already visible?
+        // Highlight the cell of interest
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
             // Thumbnail is already visible and is highlighted
@@ -645,60 +639,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell highlightOnCompletion:^{
-                    // Apply effect when returning from image preview mode
                     self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
                 }];
             } else {
                 self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
-            }
-        }
-        else {
-            // Search for the first visible thumbnail
-            NSIndexPath *indexPathOfFirstVisibleThumbnail = nil;
-            for (NSInteger index = 0; index < [indexPathsForVisibleItems count]; index++) {
-                if ([indexPathsForVisibleItems objectAtIndex:index].section == 1) {
-                    indexPathOfFirstVisibleThumbnail = [indexPathsForVisibleItems objectAtIndex:index];
-                    break;
-                }
-            }
-            
-            // Thumbnail of interest above visible items?
-            if (self.imageOfInterest.item < indexPathOfFirstVisibleThumbnail.item) {
-                // Scroll up collection and highlight cell
-//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-            }
-            
-            // Thumbnail is below visible items
-            // Get number of already loaded items
-            NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
-            if (self.imageOfInterest.item < nberOfItems) {
-                // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-
-                // Already loaded => scroll to image if necessary
-//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
-                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
-                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                }
-
-                // Load more images if seems to be a good idea
-                if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])) {
-//                    NSLog(@"=> Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                    } onFailure:nil];
-                }
-            } else {
-                // No yet loaded => load more images
-                // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]) {
-//                    NSLog(@"=> Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                    } onFailure:nil];
-                }
             }
         }
     }
@@ -773,24 +717,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
-}
-
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-
-    // Highlight image which is now visible
-    if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
-//        NSLog(@"=> Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
-        UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
-        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-            [imageCell highlightOnCompletion:^{
-                // Apply effect when returning from image preview mode
-                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
-            }];
-        } else {
-           self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
-        }
-    }
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -3464,6 +3390,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Action depends on mode
             if(!self.isSelect)
             {
+                // Remember that user did tap this image
+                self.imageOfInterest = indexPath;
+                
                 // Add category to list of recent albums
                 NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:self.categoryId]};
                 [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc addRecentAlbum] object:nil userInfo:userInfo];
@@ -3556,8 +3485,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (indexOfImage == NSNotFound) { return; }
 
     // Scroll view to center image
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
-    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+    if ([self.imagesCollection numberOfItemsInSection:1] > indexOfImage) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
         self.imageOfInterest = indexPath;
         [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
