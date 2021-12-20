@@ -24,28 +24,11 @@ class ImagePreviewViewController: UIViewController
     var imageLoaded = false
     var imageData: PiwigoImageData!
 
-    private var _isToolbarRequired = false
-    var isToolbarRequired: Bool {
-        get {
-            return _isToolbarRequired
-        }
-        set(isRequired) {
-            if isRequired != _isToolbarRequired {
-                // Update flag
-                _isToolbarRequired = isRequired
-                // Device rotated -> reset scroll view
-                self.configScrollView()
-            }
-        }
-    }
-
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var imageViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var videoView: UIView!
@@ -59,6 +42,7 @@ class ImagePreviewViewController: UIViewController
     private var downloadTask: URLSessionDataTask?
     private var previousScale: CGFloat = 0          // To remember the previous image scale
     private var userDidTapView: Bool = false        // True if the user did tap the view
+    private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
     private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
 
@@ -81,8 +65,7 @@ class ImagePreviewViewController: UIViewController
             fatalError("!!! No placeholder image available !!!")
         }
         
-        // Configure the description view before the scrollview
-        // which will then call the centerImage() method
+        // Configure the description view before layouting subviews
         configDescription {
             self.configScrollView(with: imageThumbnail)
         }
@@ -118,6 +101,7 @@ class ImagePreviewViewController: UIViewController
                 if let image = image as? UIImage {
                     // Set image view content
                     weakSelf?.configScrollView(with: image)
+                    // Layout subviews
                     weakSelf?.view.layoutIfNeeded()
                     
                     // Hide progress bar
@@ -184,7 +168,16 @@ class ImagePreviewViewController: UIViewController
         super.viewWillLayoutSubviews()
         if userDidTapView {
             userDidTapView = false
+            return
         }
+        
+        // Configure scrollview after:
+        /// - configuring the description view
+        /// - loading the thumbnail image
+        /// - loading the high-resolution image
+        /// - rotating the device
+        configScrollView()
+        updateImageViewConstraints()
     }
 
     deinit {
@@ -200,7 +193,6 @@ class ImagePreviewViewController: UIViewController
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
-        configScrollView()
     }
     
     /*
@@ -228,13 +220,9 @@ class ImagePreviewViewController: UIViewController
         let heightScale = view.bounds.size.height / image.size.height
         let minScale = min(widthScale, heightScale)
         scrollView.minimumZoomScale = minScale
-        if minScale > 1 {
-            scrollView.maximumZoomScale = 2*minScale
-        } else {
-            scrollView.maximumZoomScale = 4*minScale
-        }
+        scrollView.maximumZoomScale = max(2.0, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
-        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
+//        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
     private func updateImageViewConstraints() {
@@ -248,6 +236,12 @@ class ImagePreviewViewController: UIViewController
             orientation = UIApplication.shared.statusBarOrientation
         }
         
+        // Determine if the toolbar is presented
+        var isToolbarRequired = false
+        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageDetailViewController.self)}), let vc = viewControllers.first as? ImageDetailViewController {
+            isToolbarRequired = vc.isToolbarRequired
+        }
+
         // Determine the available spaces around the image
         var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
         var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
@@ -310,46 +304,15 @@ class ImagePreviewViewController: UIViewController
             }
         }
         
-        // Update image view position
-//        var frameToCenter = imageView.frame
-//        frameToCenter.origin.x = max(0, spaceLeading)
-//        frameToCenter.origin.y = max(0, spaceTop)
-//        imageView.frame = frameToCenter
+        // Center image horizontally in scrollview
+        scrollView.contentInset.left = max(0, spaceLeading)
+        scrollView.contentInset.right = max(0, spaceTrailing)
         
-        // Update constraints
-        imageViewLeadingConstraint.constant = max(0, spaceLeading)
-        imageViewTrailingConstraint.constant = max(0, spaceTrailing)
+        // Update vertical constraints
         imageViewTopConstraint.constant = max(0, spaceTop)
         imageViewBottomConstraint.constant = max(0, spaceBottom)
-//        debugPrint("=> updateImageViewConstraints —> leading: \(round(imageViewLeadingConstraint.constant)), trailing: \(round(imageViewTrailingConstraint.constant)) (\(round(horizontalSpaceAvailable))), top: \(round(imageViewTopConstraint.constant)), bot: \(round(imageViewBottomConstraint.constant)) (\(round(verticalSpaceAvailable)))")
-
-        // Center image if necessary
-        self.centerImageView()
     }
-    
-    private func centerImageView() {
-        // Should we center the image horizontally?
-        var offset = scrollView.contentOffset
-//        if imageViewLeadingConstraint.constant > 0,
-//           imageViewTrailingConstraint.constant > 0,
-//           offset.x != 0 {
-//            // Image height smaller than screen height
-//            offset.x = 0
-//            debugPrint("=> centerImageView: offset.x -> 0")
-//            scrollView.setContentOffset(offset, animated: false)
-//        }
-
-        // Should we center the image vertically?
-        if imageViewTopConstraint.constant > 0,
-           imageViewBottomConstraint.constant > 0,
-           offset.y != 0 {
-            // Image width smaller than screen width
-            offset.y = 0
-//            debugPrint("=> centerImageView: offset.y -> 0")
-            scrollView.setContentOffset(offset, animated: false)
-        }
-    }
-
+        
     
     // MARK: - Image Metadata
     func didTapView() {
@@ -362,21 +325,19 @@ class ImagePreviewViewController: UIViewController
         } else {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
         }
+    }
+    
+    func didRotateDevice() {
+        // Remember that user did tap the view
+        userDidRotateDevice = true
         
-        // Keep image in place when its size is greater than the screen size
-        if #available(iOS 11, *) {
-            // Nothing to do…
+        // Update the description
+        if imageData.comment.isEmpty {
+            self.view.layoutIfNeeded()
         } else {
-//            guard let nav = navigationController else { return }
-//            var offset = scrollView.contentOffset
-//            if imageViewTopConstraint.constant == 0,
-//               imageViewBottomConstraint.constant == 0,
-//               scrollView.zoomScale > scrollView.minimumZoomScale {
-                // Add/subtract navigation bar height
-//                offset.y -= nav.navigationBar.bounds.height * (nav.isNavigationBarHidden ? 1 : -1)
-//                offset.y -= statusBarHeight * (nav.isNavigationBarHidden ? 1 : -1)
-//                scrollView.setContentOffset(offset, animated: false)
-//            }
+            configDescription {
+                self.view.layoutIfNeeded()
+            }
         }
     }
     
@@ -387,7 +348,7 @@ class ImagePreviewViewController: UIViewController
         // Should we update the image description?
         if descTextView.text != data.comment {
             configDescription {
-                self.centerImageView()
+                self.view.layoutIfNeeded()
             }
         }
     }
@@ -592,11 +553,6 @@ extension ImagePreviewViewController: AVAssetResourceLoaderDelegate
 /// https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/UIScrollView_pg/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008179-CH1-SW1
 extension ImagePreviewViewController: UIScrollViewDelegate
 {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        debugPrint("=> didScroll: \(round(scrollView.contentOffset.x)), \(round(scrollView.contentOffset.y))")
-        centerImageView()
-    }
-    
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
@@ -609,10 +565,12 @@ extension ImagePreviewViewController: UIScrollViewDelegate
         // Limit the zoom scale
         if scale < scrollView.minimumZoomScale {
             scrollView.zoomScale = scrollView.minimumZoomScale
+            updateImageViewConstraints()
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
+            updateImageViewConstraints()
         }
-        
+
         // Should we quit the preview mode?
         if (scale == scrollView.minimumZoomScale) &&
             (previousScale == scrollView.minimumZoomScale) {

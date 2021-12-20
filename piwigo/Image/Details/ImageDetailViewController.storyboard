@@ -46,7 +46,7 @@
         <!--Page View Controller-->
         <scene sceneID="B4r-aa-kSQ">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="QTe-RH-Ag2" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="PageViewController" autoresizesArchivedViewToFullSize="NO" extendedLayoutIncludesOpaqueBars="YES" modalTransitionStyle="flipHorizontal" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" pageSpacing="10" navigationOrientation="horizontal" spineLocation="none" id="QTe-RH-Ag2" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hT0-jb-M7M" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="883" y="72"/>
@@ -54,7 +54,7 @@
         <!--Image Preview View Controller-->
         <scene sceneID="dZW-fS-5pO">
             <objects>
-                <viewController storyboardIdentifier="ImagePreviewViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImagePreviewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagePreviewViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImagePreviewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CkJ-ky-Kbn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -63,19 +63,19 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
-                                        <rect key="frame" x="0.0" y="200" width="414" height="414"/>
+                                        <rect key="frame" x="0.0" y="200" width="414" height="496"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="414" id="Gbn-Bd-fwo"/>
-                                            <constraint firstAttribute="width" constant="414" id="fWI-0O-yrn"/>
+                                            <constraint firstAttribute="width" constant="414" id="h5m-A0-Ysg"/>
+                                            <constraint firstAttribute="height" constant="496" id="yK6-53-GS0"/>
                                         </constraints>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="7gX-s9-oHd" secondAttribute="bottom" constant="241" id="EUU-Tp-MKO"/>
-                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="leading" secondItem="cGF-ek-t3W" secondAttribute="leading" id="I1M-PH-wgq"/>
-                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" constant="200" id="cD4-fb-fV4"/>
-                                    <constraint firstAttribute="trailing" secondItem="7gX-s9-oHd" secondAttribute="trailing" id="t5W-Bh-1xF"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="trailing" secondItem="cGF-ek-t3W" secondAttribute="trailing" id="jBw-hw-WPG"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" constant="200" id="szd-gM-XkS"/>
+                                    <constraint firstAttribute="bottom" secondItem="7gX-s9-oHd" secondAttribute="bottom" constant="200" id="tts-BT-zQi"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="leading" secondItem="cGF-ek-t3W" secondAttribute="leading" id="wHB-bO-rYg"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="delegate" destination="c1N-Y3-FVS" id="41P-c1-voo"/>
@@ -148,12 +148,10 @@
                         <outlet property="descContainerWidth" destination="75C-3O-otD" id="i5v-Yd-flQ"/>
                         <outlet property="descTextView" destination="ZCz-IB-MpK" id="jqb-xH-OeZ"/>
                         <outlet property="imageView" destination="7gX-s9-oHd" id="D1r-Fu-F7H"/>
-                        <outlet property="imageViewBottomConstraint" destination="EUU-Tp-MKO" id="oxu-is-tpI"/>
-                        <outlet property="imageViewHeightConstraint" destination="Gbn-Bd-fwo" id="4Ng-pH-Rgw"/>
-                        <outlet property="imageViewLeadingConstraint" destination="I1M-PH-wgq" id="bjR-im-Aqp"/>
-                        <outlet property="imageViewTopConstraint" destination="cD4-fb-fV4" id="Vk1-KX-LgG"/>
-                        <outlet property="imageViewTrailingConstraint" destination="t5W-Bh-1xF" id="KmC-OK-fB6"/>
-                        <outlet property="imageViewWidthConstraint" destination="fWI-0O-yrn" id="b0n-TH-PRg"/>
+                        <outlet property="imageViewBottomConstraint" destination="tts-BT-zQi" id="4DJ-en-dzr"/>
+                        <outlet property="imageViewHeightConstraint" destination="yK6-53-GS0" id="An0-dM-Vno"/>
+                        <outlet property="imageViewTopConstraint" destination="szd-gM-XkS" id="oAY-ZD-7RW"/>
+                        <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
                         <outlet property="playImage" destination="NAw-1Y-mdv" id="NIe-8s-wTm"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>
                         <outlet property="videoView" destination="rui-kE-FAb" id="M2S-Gt-pch"/>

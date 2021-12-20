@@ -28,7 +28,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     
     private var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
-    private var isToolbarRequired = false
+    var isToolbarRequired = false
     private var pageViewController: UIPageViewController?
     private lazy var userHasUploadRights = false
     
@@ -157,15 +157,10 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
 
         // Initialise flags
         userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
-        isToolbarRequired = getIfToolbarRequired()
 
         // Load initial image preview view controller
-        if let startingImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController {
+        if let startingImage = imagePageViewController(atIndex: index) {
             startingImage.imagePreviewDelegate = self
-            startingImage.imageIndex = index
-            startingImage.imageData = imageData
-            startingImage.imageLoaded = false
-            startingImage.isToolbarRequired = isToolbarRequired
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
@@ -305,11 +300,15 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
-        // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
+            // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
+            // Update image preview view
+            if let pVC = pageViewController,
+               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+                imagePVC.didRotateDevice()
+            }
         })
     }
 
@@ -409,45 +408,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
                     options: [], metrics: nil, views: views))
         }
-    }
-    
-    private func getIfToolbarRequired() -> Bool {
-        if #available(iOS 14, *) {
-            // Interface depends on device and orientation
-            let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-            
-            // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && userHasUploadRights) {
-                if orientation.isPortrait, view.bounds.size.width < 768 {
-                    return true
-                }
-            }
-            else if !NetworkVars.hasGuestRights,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
-                    return true
-                }
-            }
-        }
-        else {
-            // Fallback on earlier versions
-            // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation
-            
-            // User with admin rights can do everything
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && userHasUploadRights) {
-                return true
-            }
-            else if !NetworkVars.hasGuestRights,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                if orientation.isPortrait {
-                    return true
-                }
-            }
-        }
-        return false
     }
     
     private func updateNavBar() {
@@ -623,12 +583,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
             }
-        }
-        
-        // Set isToolbarRequired boolean of current pageViewController
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.isToolbarRequired = isToolbarRequired
         }
     }
     
@@ -1260,10 +1214,11 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
         currentIndex = max(0, currentIndex)
         // To prevent crash reported by AppleStore in November 2017
         currentIndex = min(currentIndex, images.count - 1)
+        // Remember index of presented page
+        imageIndex = currentIndex
 
         pvc.imagePreviewDelegate = self
         progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
-        imageData = images[currentIndex]
         setTitleViewFromImageData()
         updateNavBar()
 
@@ -1278,74 +1233,49 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
 // MARK: - UIPageViewControllerDataSource
 extension ImageDetailViewController: UIPageViewControllerDataSource
 {
+    // Create view controller for presenting the image at the provided index
+    private func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
+        guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        imagePage.imageIndex = index
+        imagePage.imageData = images[index]
+        imagePage.imageLoaded = false
+        return imagePage
+    }
+    
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
-        }
-        let currentIndex = pvc.imageIndex
-        if (currentIndex >= images.count - 1) {
+        debugPrint("-> in  pageViewController after…")
+        if (imageIndex >= images.count - 1) {
             // Reached the end of the category
             return nil
         }
 
         // Should we load more images?
-        let imagesPerPage = Float(ImagesCollection.numberOfImagesPerPage(for: view, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait))
-        if (currentIndex > (images.count - Int(roundf(imagesPerPage / 3.0)))) &&
-            (images.count != CategoriesData.sharedInstance().getCategoryById(categoryId).numberOfImages) {
-            if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
+        let downloadedImageCount = CategoriesData.sharedInstance()
+            .getCategoryById(categoryId).imageList.count
+        let totalImageCount = CategoriesData.sharedInstance()
+            .getCategoryById(categoryId).numberOfImages
+        if downloadedImageCount < totalImageCount,
+           imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
                 imgDetailDelegate?.needToLoadMoreImages()
-            }
         }
 
-        // Retrieve data of next image (may be incomplete)
-        let imageData = images[currentIndex + 1]
-
         // Create view controller for presenting next image
-//        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
-        guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
-        nextImage.imagePreviewDelegate = self
-        nextImage.imageIndex = currentIndex + 1
-        nextImage.imageData = imageData
-        nextImage.imageLoaded = false
-        nextImage.isToolbarRequired = isToolbarRequired
-        return nextImage
+        return imagePageViewController(atIndex: imageIndex + 1)
     }
 
     // Returns the view controller before the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
-        }
-        let currentIndex = pvc.imageIndex
-        if currentIndex - 1 < 0 {
+        debugPrint("-> in  pageViewController before…")
+        if imageIndex - 1 < 0 {
             // Reached the beginning the category
             return nil
         }
 
-        // Retrieve data of previous image (may be incomplete)
-        let imageData = images[currentIndex - 1]
-
         // Create view controller
-//        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
-        guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
-        prevImage.imagePreviewDelegate = self
-        prevImage.imageIndex = currentIndex - 1
-        prevImage.imageData = imageData
-        prevImage.imageLoaded = false
-        prevImage.isToolbarRequired = isToolbarRequired
-        return prevImage
-    }
-
-    // Returns the index of the selected item to be reflected in the page indicator
-    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        if let imageViewCtrl = pageViewController.viewControllers?[0] as? ImagePreviewViewController {
-            // Return if exists
-            return imageViewCtrl.imageIndex
-        }
-        return NSNotFound
+        return imagePageViewController(atIndex: imageIndex - 1)
     }
 }
 
@@ -1468,12 +1398,8 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage]
 
             // Create view controller for presenting next image
-            guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
             nextImage.imagePreviewDelegate = self
-            nextImage.imageIndex = indexOfRemovedImage
-            nextImage.imageData = imageData
-            nextImage.imageLoaded = false
-            nextImage.isToolbarRequired = isToolbarRequired
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
@@ -1500,18 +1426,12 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage - 1]
 
             // Create view controller for presenting next image
-            guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
             prevImage.imagePreviewDelegate = self
-            prevImage.imageIndex = indexOfRemovedImage - 1
-            prevImage.imageData = imageData
-            prevImage.imageLoaded = false
-            prevImage.isToolbarRequired = isToolbarRequired
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = self.images[indexOfRemovedImage - 1]
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
