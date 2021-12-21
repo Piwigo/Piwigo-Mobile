@@ -215,7 +215,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Bypass if it is already loading image data
-    if (self.isLoadingMoreImages) { return; }
+    if (self.isLoadingMoreImages) {
+        if (completion) { completion(NO); }
+        return;
+    }
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
@@ -236,7 +239,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
         // Calculate the number of thumbnails displayed per page
         NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-        if (count >= imagesPerPage * 2) { self.onPage++; }
+        if (count >= imagesPerPage) { self.onPage++; }
         self.isLoadingMoreImages = NO;
 
         // Perform completion block

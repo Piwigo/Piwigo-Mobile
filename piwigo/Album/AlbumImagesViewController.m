@@ -1617,6 +1617,23 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (albums == nil) {
             // Album data already in cache
             self.userHasUploadRights = [[CategoriesData.sharedInstance getCategoryById:self.categoryId] hasUploadRights];
+
+            // Load, sort images and reload collection
+            self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+
+                // Reset navigation bar buttons after image load
+                [self updateButtonsInPreviewMode];
+                [self.imagesCollection reloadData];
+
+                // For iOS 11 and later: place search bar in navigation bar of root album only
+                if (@available(iOS 11.0, *)) {
+                    // Remove search bar
+                    self.navigationItem.searchController = nil;
+                }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+            }];
         }
         else if (self.categoryId == 0) {
             // Album data freshly loaded in recursive mode
@@ -1649,24 +1666,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             
             // Hide HUD if needed
             [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
-        }
-        else {
-            // Load, sort images and reload collection (should never reach this line)
-            self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
-
-                // Reset navigation bar buttons after image load
-                [self updateButtonsInPreviewMode];
-                [self.imagesCollection reloadData];
-
-                // For iOS 11 and later: place search bar in navigation bar of root album only
-                if (@available(iOS 11.0, *)) {
-                    // Remove search bar
-                    self.navigationItem.searchController = nil;
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
         }
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -3342,20 +3341,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 cell.userInteractionEnabled = YES;
             }
             
-            // Calculate the number of thumbnails displayed per page
-            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-            
-            // Load image data in advance if possible (page after page…)
-            if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
-                (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
-            {
-                // Continue loading album image data
-                [self.albumData loadMoreImagesOnCompletion:^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                    });
-                } onFailure:nil];
+            // Load more image data if possible (page after page…)
+            PiwigoAlbumData *cachedAlbum = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+            if (cachedAlbum.imageList.count < cachedAlbum.numberOfImages) {
+                [self needToLoadMoreImages];
             }
+            
             return cell;
         }
     }
@@ -3510,13 +3501,23 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)needToLoadMoreImages
 {
-    [self.albumData loadMoreImagesOnCompletion:^{
-        if(self.imageDetailView != nil)
-        {
-            self.imageDetailView.images = [self.albumData.images mutableCopy];
-        }
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-    } onFailure:nil];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            if (!hasNewImages) { return; }
+            NSMutableArray *indexPaths = [NSMutableArray new];
+            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.imageDetailView != nil) {
+                    self.imageDetailView.images = [self.albumData.images mutableCopy];
+                }
+                [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+            });
+        } onFailure:nil];
+    });
 }
 
 

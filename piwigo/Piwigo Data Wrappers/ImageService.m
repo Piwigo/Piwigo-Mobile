@@ -44,7 +44,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"cat_id"   : @(albumId),
-                                 @"per_page" : @(imagesPerPage * 2),
+                                 @"per_page" : @(imagesPerPage),
                                  @"page"     : @(page),
                                  @"order"    : order     // Percent-encoded should not be used here!
                                  };
@@ -115,7 +115,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"query"    : query,
-                                 @"per_page" : @(imagesPerPage * 2),
+                                 @"per_page" : @(imagesPerPage),
                                  @"page"     : @(page),
                                  @"order"    : order     // Percent-encoded should not be used here!
                                  };
@@ -205,7 +205,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     if (categoryId == kPiwigoVisitsCategoryId) {
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage * 2),
+                       @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_hit"             : @"1"
@@ -213,7 +213,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     } else if (categoryId == kPiwigoBestCategoryId) {
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage * 2),
+                       @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_rate"            : @"1"
@@ -225,7 +225,7 @@ NSString * const kGetImageOrderDescending = @"desc";
         NSString *dateAvailableString = [dateFormatter stringFromDate:threeMonthsAgo];
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage * 2),
+                       @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_date_available"  : dateAvailableString
@@ -325,7 +325,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Compile parameters
     NSDictionary *parameters = @{@"tag_id"         : @(tagId),
-                                 @"per_page"       : @(imagesPerPage * 2),
+                                 @"per_page"       : @(imagesPerPage),
                                  @"page"           : @(page),
                                  @"order"          : @"rank asc, id desc"
                                   };
@@ -417,7 +417,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
-    NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage * 2),
+    NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage),
                                  @"page"           : @(page),
                                  @"order"          : order
                                  };
@@ -490,7 +490,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
-//    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
+    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images for catId: %ld", (long)downloadedImageDataCount, (long)totalImageCount, (long)categoryId);
     if (downloadedImageDataCount >= totalImageCount)
     {    // Done. Don't need anymore
         if (completion) {
@@ -509,7 +509,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       if (albumImages) {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
-//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+#if defined(DEBUG)
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images to catId: %ld", (long)count, (long)categoryId);
+#endif
                                           if (completion) {
                                               completion(task, count);
                                           }
@@ -539,7 +541,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       if (albumImages) {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
-//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+#if defined(DEBUG)
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images to catId: %ld", (long)count, (long)categoryId);
+#endif
                                           if (completion) {
                                               completion(task, count);
                                           }
@@ -568,7 +572,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       if (albumImages) {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
-//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+#if defined(DEBUG)
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images to catId: %ld", (long)count, (long)categoryId);
+#endif
                                           if (completion) {
                                               completion(task, count);
                                           }
@@ -594,7 +600,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                         if (albumImages) {
                                             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                             NSInteger count = [albumData addImages:albumImages];
-//                                            NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+#if defined(DEBUG)
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images to catId: %ld", (long)count, (long)categoryId);
+#endif
                                             if (completion) {
                                                 completion(task, count);
                                             }
@@ -623,7 +631,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           if (albumImages) {
                                               PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                               NSInteger count = [albumData addImages:albumImages];
-//                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+#if defined(DEBUG)
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images to catId: %ld", (long)count, (long)categoryId);
+#endif
                                               if (completion) {
                                                   completion(task, count);
                                               }

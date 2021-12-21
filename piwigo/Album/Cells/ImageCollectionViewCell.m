@@ -181,30 +181,30 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
 		
         // Without data to show
-		self.noDataLabel = [UILabel new];
-		self.noDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.noDataLabel.font = [UIFont piwigoFontNormal];
-		self.noDataLabel.textColor = [UIColor redColor];
-		self.noDataLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.noDataLabel.layer.cornerRadius = 3.0;
-		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
-		self.noDataLabel.hidden = YES;
-		[self.contentView addSubview:self.noDataLabel];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-																	 attribute:NSLayoutAttributeLeft
-																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
-																		toItem:self.contentView
-																	 attribute:NSLayoutAttributeLeft
-																	multiplier:1.0
-																	  constant:0]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-																	 attribute:NSLayoutAttributeRight
-																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:self.contentView
-																	 attribute:NSLayoutAttributeRight
-																	multiplier:1.0
-																	  constant:0]];
+//		self.noDataLabel = [UILabel new];
+//		self.noDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//		self.noDataLabel.font = [UIFont piwigoFontNormal];
+//		self.noDataLabel.textColor = [UIColor redColor];
+//		self.noDataLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+//		self.noDataLabel.layer.cornerRadius = 3.0;
+//		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
+//		self.noDataLabel.hidden = YES;
+//		[self.contentView addSubview:self.noDataLabel];
+//		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
+//		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
+//																	 attribute:NSLayoutAttributeLeft
+//																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
+//																		toItem:self.contentView
+//																	 attribute:NSLayoutAttributeLeft
+//																	multiplier:1.0
+//																	  constant:0]];
+//		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
+//																	 attribute:NSLayoutAttributeRight
+//																	 relatedBy:NSLayoutRelationLessThanOrEqual
+//																		toItem:self.contentView
+//																	 attribute:NSLayoutAttributeRight
+//																	multiplier:1.0
+//																	  constant:0]];
 	}
 	return self;
 }
@@ -216,7 +216,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 
     // Do we have any info on that image ?
 	if (!self.imageData) {
-		self.noDataLabel.hidden = NO;
+//		self.noDataLabel.hidden = NO;
 		return;
 	}
 	

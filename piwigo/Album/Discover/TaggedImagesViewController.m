@@ -74,7 +74,7 @@
         self.tagName = tagName;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        // Initialise album cache
+        // Initialise album in cache
         NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
         PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
         [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:NO];
@@ -1563,16 +1563,10 @@
         cell.userInteractionEnabled = YES;
     }
     
-    // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-    
-    // Load image data in advance if possible (page after page…)
-    if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]))
-    {
-        [self.albumData loadMoreImagesOnCompletion:^{
-            [self.imagesCollection reloadData];
-        } onFailure:nil];
+    // Load more image data if possible (page after page…)
+    PiwigoAlbumData *cachedAlbum = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId];
+    if (cachedAlbum.imageList.count < cachedAlbum.numberOfImages) {
+        [self needToLoadMoreImages];
     }
     
     return cell;
@@ -1669,13 +1663,23 @@
 
 -(void)needToLoadMoreImages
 {
-    [self.albumData loadMoreImagesOnCompletion:^{
-        if(self.imageDetailView != nil)
-        {
-            self.imageDetailView.images = [self.albumData.images mutableCopy];
-        }
-        [self.imagesCollection reloadData];
-    } onFailure:nil];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            if (!hasNewImages) { return; }
+            NSMutableArray *indexPaths = [NSMutableArray new];
+            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.imageDetailView != nil) {
+                    self.imageDetailView.images = [self.albumData.images mutableCopy];
+                }
+                [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+            });
+        } onFailure:nil];
+    });
 }
 
 

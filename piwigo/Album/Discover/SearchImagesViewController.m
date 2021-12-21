@@ -159,6 +159,27 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
 }
 
+-(void)scrollToHighlightedCell
+{
+    // Should we highlight the image of interest?
+    if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
+        // Highlight the cell of interest
+        NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
+        if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
+            // Thumbnail is already visible and is highlighted
+            UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
+            if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+                ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+                [imageCell highlightOnCompletion:^{
+                    self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+                }];
+            } else {
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
+            }
+        }
+    }
+}
+
 -(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
 {
     [super traitCollectionDidChange:previousTraitCollection];
@@ -336,17 +357,10 @@
         }
     }
     
-    // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-    
-    // Load image data in advance if possible (page after page…)
-    if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0),
-                               [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId] totalNumberOfImages]))
-    {
-        [self.albumData loadMoreImagesOnCompletion:^{
-            [self.imagesCollection reloadData];
-        } onFailure:nil];
+    // Load more image data if possible (page after page…)
+    PiwigoAlbumData *cachedAlbum = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId];
+    if (cachedAlbum.imageList.count < cachedAlbum.numberOfImages) {
+        [self needToLoadMoreImages];
     }
     
     return cell;
@@ -423,13 +437,23 @@
 
 -(void)needToLoadMoreImages
 {
-    [self.albumData loadMoreImagesOnCompletion:^{
-        if(self.imageDetailView != nil)
-        {
-            self.imageDetailView.images = [self.albumData.images mutableCopy];
-        }
-        [self.imagesCollection reloadData];
-    } onFailure:nil];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            if (!hasNewImages) { return; }
+            NSMutableArray *indexPaths = [NSMutableArray new];
+            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.imageDetailView != nil) {
+                    self.imageDetailView.images = [self.albumData.images mutableCopy];
+                }
+                [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+            });
+        } onFailure:nil];
+    });
 }
 
 @end
