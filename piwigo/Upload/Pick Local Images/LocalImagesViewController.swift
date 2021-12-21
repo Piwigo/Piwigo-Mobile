@@ -1240,7 +1240,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if (gestureRecognizer is UIPanGestureRecognizer) {
             let gPR = gestureRecognizer as? UIPanGestureRecognizer
             let translation = gPR?.translation(in: localImagesCollection)
-            if abs(Float(translation?.x ?? 0.0)) > abs(Float(translation?.y ?? 0.0)) {
+            if abs(translation?.x ?? 0.0) > abs(translation?.y ?? 0.0) {
                 return true
             }
         }
