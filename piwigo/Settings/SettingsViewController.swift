@@ -31,8 +31,8 @@ enum kImageUploadSetting : Int {
     case prefix
 }
 
-let kHelpUsTitle = "Help Us!"
-let kHelpUsTranslatePiwigo = "Piwigo is only partially translated in your language. Could you please help us complete the translation?"
+let kHelpUsTitle: String = "Help Us!"
+let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete the translation?"
 
 @objc protocol ChangedSettingsDelegate: NSObjectProtocol {
     func didChangeDefaultAlbum()
@@ -158,14 +158,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidAppear(animated)
 
         if #available(iOS 10, *) {
-            let langCode: String? = NSLocale.current.languageCode
+            let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
 //            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.dateOfLastTranslationRequest, k2WeeksInDays))
             let now: Double = Date().timeIntervalSinceReferenceDate
             let dueDate: Double = AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth
             if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
                 // Store date of last translation request
-                AppVars.dateOfLastTranslationRequest = Date().timeIntervalSinceReferenceDate
+                AppVars.dateOfLastTranslationRequest = now
 
                 // Request a translation
                 let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
