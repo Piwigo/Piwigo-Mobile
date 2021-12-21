@@ -1245,7 +1245,6 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        debugPrint("-> in  pageViewController after…")
         if (imageIndex >= images.count - 1) {
             // Reached the end of the category
             return nil
@@ -1268,7 +1267,6 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
     // Returns the view controller before the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        debugPrint("-> in  pageViewController before…")
         if imageIndex - 1 < 0 {
             // Reached the beginning the category
             return nil
