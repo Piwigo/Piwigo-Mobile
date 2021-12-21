@@ -307,9 +307,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                name: PwgNotifications.uploadProgress, object: nil)
         
         // Prevent device from sleeping if uploads are in progress
-        let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.state == .waiting) || ($0.state == .preparing) || ($0.state == .prepared) ||
-            ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
+        let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
+                                                    .uploading, .uploaded, .finishing]
+        let uploadsToPerform = uploadsProvider.fetchedResultsController
+            .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
         }
