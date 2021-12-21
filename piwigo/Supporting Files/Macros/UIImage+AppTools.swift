@@ -23,7 +23,7 @@ extension UIImage {
         guard let cgImage = self.cgImage else { return nil }
         
         // Create request handler
-        let start = CFAbsoluteTimeGetCurrent()
+        let start:Double = CFAbsoluteTimeGetCurrent()
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         
         // Create attention based saliency request
@@ -62,8 +62,8 @@ extension UIImage {
                                                            cgImage.width, cgImage.height)
             // Crop image
             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
-            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("   processed attention based saliency in \(round(diff*10)/10) ms")
+            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
+            print("   processed attention based saliency in \(round(diff*10.0)/10.0) ms")
             return UIImage(cgImage:croppedImage)
         }
 
@@ -76,8 +76,8 @@ extension UIImage {
                                                             cgImage.width, cgImage.height)
              // Crop image
              guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
-             let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-             print("   processed objectness based saliency in \(round(diff*10)/10) ms")
+            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
+            print("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
              return UIImage(cgImage:croppedImage)
         }
         return nil
