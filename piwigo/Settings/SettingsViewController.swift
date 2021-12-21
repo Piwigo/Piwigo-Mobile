@@ -161,7 +161,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             let langCode = NSLocale.current.languageCode
 //            print("=> langCode: ", String(describing: langCode))
 //            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.dateOfLastTranslationRequest, k2WeeksInDays))
-            if (Date().timeIntervalSinceReferenceDate > AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth) && ((langCode == "ar") || (langCode == "fa") || (langCode == "pl") || (langCode == "pt-BR") || (langCode == "sk")) {
+            let now: Double = Date().timeIntervalSinceReferenceDate
+            let dueDate: Double = AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth
+            if (now > dueDate) && ((langCode == "ar") || (langCode == "fa") || (langCode == "pl") || (langCode == "pt-BR") || (langCode == "sk")) {
                 // Store date of last translation request
                 AppVars.dateOfLastTranslationRequest = Date().timeIntervalSinceReferenceDate
 
