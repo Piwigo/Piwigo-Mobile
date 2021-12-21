@@ -200,12 +200,15 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
-        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
+        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
+        let failedUploads = uploadsProvider.fetchedResultsController
+            .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
             if failedUploads > 0 {
 			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
 			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
 				// Collect list of failed uploads
-				if let uploadIds = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }).map({$0.objectID}) {
+				if let uploadIds = self.uploadsProvider.fetchedResultsController
+                    .fetchedObjects?.filter({resumable.contains($0.state)}).map({$0.objectID}) {
 					// Resume failed uploads
 					UploadManager.shared.backgroundQueue.async {
 						UploadManager.shared.resume(failedUploads: uploadIds, completionHandler: { (error) in
@@ -236,8 +239,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             alert.addAction(resumeAction)
 		}
 
-        // Clear impossible upload requests in section 1 (preparingFail, formatError)
-        let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ (($0.state == .preparingFail) || ($0.state == .formatError)) ? 1 : 0}).reduce(0, +) ?? 0
+        // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
+        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossibleUploads = uploadsProvider.fetchedResultsController
+            .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
     	if impossibleUploads > 0 {
 	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
 			let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
@@ -246,7 +251,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 					return
 				}
 				// Get uploads to delete
-				let uploadIds = allUploads.filter({ (($0.state == .preparingFail) || ($0.state == .formatError))}).map({$0.objectID})
+				let uploadIds = allUploads.filter({impossible.contains($0.state)}).map({$0.objectID})
 				// Delete failed uploads in the main thread
                 self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
                     // Error encountered?
