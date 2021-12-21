@@ -234,18 +234,6 @@ NSString * const kGetImageOrderDescending = @"desc";
         completion(nil, @[]);
     }
     
-    // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
-    for (NSURLSessionTask *task in searchTasks) {
-        [task cancel];
-    }
-    
-    // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-    for (NSURLSessionTask *task in downloadTasks) {
-        [task cancel];
-    }
-    
     // Send request
     return [self post:kPiwigoCategoriesGetImages
         URLParameters:nil
@@ -329,18 +317,6 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  @"page"           : @(page),
                                  @"order"          : @"rank asc, id desc"
                                   };
-    
-    // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
-    for (NSURLSessionTask *task in searchTasks) {
-        [task cancel];
-    }
-    
-    // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-    for (NSURLSessionTask *task in downloadTasks) {
-        [task cancel];
-    }
     
     // Send request
     return [self post:kPiwigoTagsGetImages
