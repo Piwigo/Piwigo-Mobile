@@ -361,32 +361,31 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
         }
         weakSelf.cellImage.image = displayedImage;
-        [weakSelf.cellImage layoutIfNeeded];
         
         // Favorite image position depends on device
         weakSelf.deltaX = margin; weakSelf.deltaY = margin;
+        CGFloat imageScale = MIN(size.width/displayedImage.size.width,
+                                 size.height/displayedImage.size.height);
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
             // Image width…
-            CGFloat imageWidth = displayedImage.size.width / scale;
+            CGFloat imageWidth = displayedImage.size.width * imageScale;
             weakSelf.darkImgWidth.constant = imageWidth;
 
             // Horizontal correction?
-            CGFloat cellWidth = size.width;
-            if (imageWidth < cellWidth) {
+            if (imageWidth < size.width) {
                 // The image does not fill the cell horizontally
-                weakSelf.deltaX += (cellWidth - imageWidth) / 2.0;
+                weakSelf.deltaX += (size.width - imageWidth) / 2.0;
             }
 
             // Image height…
-            CGFloat imageHeight = displayedImage.size.height / scale;
+            CGFloat imageHeight = displayedImage.size.height * imageScale;
             weakSelf.darkImgHeight.constant = imageHeight;
 
             // Vertical correction?
-            CGFloat cellHeight = size.height;
-            if (imageHeight < cellHeight) {
+            if (imageHeight < size.height) {
                 // The image does not fill the cell vertically
-                weakSelf.deltaY += (cellHeight - imageHeight) / 2.0;
+                weakSelf.deltaY += (size.height - imageHeight) / 2.0;
             }
         }
         
