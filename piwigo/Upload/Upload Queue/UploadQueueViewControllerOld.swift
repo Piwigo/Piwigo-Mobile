@@ -182,8 +182,12 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
-        let impossibleUploads = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.map({ ($0.state == .preparingFail) ? 1 : 0}).reduce(0, +) ?? 0
-        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
+        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossibleUploads = uploadsProvider.fetchedNonCompletedResultsController
+            .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
+        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
+        let failedUploads = uploadsProvider.fetchedResultsController
+            .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
 
         if impossibleUploads + failedUploads > 0 {
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
