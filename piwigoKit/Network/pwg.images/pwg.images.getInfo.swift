@@ -62,6 +62,27 @@ public struct ImagesGetInfoJSON: Decodable {
             // Image parameters
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
+            // Adopt default values when data are not provided
+            if data.imageTitle == nil { data.imageTitle = "" }
+            if data.comment == nil { data.comment = "" }
+            if data.visits == nil { data.visits = 0 }
+            if data.fileName == nil { data.fileName = "" }
+            if data.datePosted == nil {
+                // Adopts now
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+                data.datePosted = dateFormatter.string(from: Date())
+            }
+            if data.dateCreated == nil {
+                // Adopts the posted date when the creation date is unknown.
+                data.dateCreated = data.datePosted
+            }
+            if data.privacyLevel == nil { data.privacyLevel = "0" }
+            if data.tags == nil { data.tags = [TagProperties]() }
+            if data.ratingScore == nil { data.ratingScore = "0.0" }
+            if data.fileSize == nil { data.fileSize = NSNotFound }
+            if data.md5checksum == nil { data.md5checksum = "" }
+            
             // Result container keyed by ResultCodingKeys
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
 //                dump(resultContainer)
@@ -213,23 +234,23 @@ public struct ImagesGetInfoJSON: Decodable {
 public struct ImagesGetInfo: Decodable
 {
     public let imageId: Int?                    // 1042
-    public let imageTitle: String?              // "Title"
-    public let comment: String?                 // "No description"
-    public let visits: Int?                     // 0
-    public let fileName: String?                // Image.jpg
-    public let datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
-    public let dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
+    public var imageTitle: String?              // "Title"
+    public var comment: String?                 // "No description"
+    public var visits: Int?                     // 0
+    public var fileName: String?                // "Image.jpg"
+    public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
+    public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048
     public let fullResPath: String?             // "https://…image.jpg"
      
-    public let author: String?                  // "Eddy"
-    public let privacyLevel: String?            // "0"
-    public let tags: [TagProperties]?           // See TagProperties
-    public let ratingScore: String?             // "1.0"
-    public let fileSize: Int?                   // 3025
-    public let md5checksum: String?             // 2141e377254a429be151900e4bedb520
+    public var author: String?                  // "Eddy"
+    public var privacyLevel: String?            // "0"
+    public var tags: [TagProperties]?           // See TagProperties
+    public var ratingScore: String?             // "1.0"
+    public var fileSize: Int?                   // 3025
+    public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
     public let categoryIds: [Album]?            // See Album below
 
     public enum CodingKeys: String, CodingKey {
