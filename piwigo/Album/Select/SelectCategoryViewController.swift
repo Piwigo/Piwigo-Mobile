@@ -426,6 +426,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let titleString: String
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
 
         switch wantedAction {
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
@@ -435,7 +437,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Title
                 titleString = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
                 let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-                let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+                let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
 
                 // Text
                 if inputImageData.categoryIds.count > 1 {
@@ -444,14 +446,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     textString = NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
                 }
                 let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-                let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+                let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
                 return CGFloat(ceil(titleRect.size.height + textRect.size.height))
             }
             
             // Text
             textString = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
             let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-            let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+            let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
             return CGFloat(ceil(textRect.size.height))
         default:
             // 1st section —> Recent albums
@@ -470,7 +472,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
 
             let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-            let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+            let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
             return CGFloat(ceil(titleRect.size.height))
         }
     }

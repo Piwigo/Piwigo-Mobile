@@ -309,7 +309,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Prevent device from sleeping if uploads are in progress
         let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
                                                     .uploading, .uploaded, .finishing]
-        let uploadsToPerform = uploadsProvider.fetchedResultsController
+        let uploadsToPerform:Int = uploadsProvider.fetchedResultsController
             .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true

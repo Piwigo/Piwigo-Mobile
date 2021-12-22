@@ -180,18 +180,18 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
         let numberWidth: CGFloat = 26.0
         let numberSepWidth: CGFloat = 8.0
 
-        var width = 0
+        var width: CGFloat = 0.0
         switch PickerComponents(rawValue: component) {
         case .year, .month,  .day, .hour,   .minute, .second:
-            width = Int(numberWidth)
+            width = numberWidth
         case .sepYM, .sepMD, .sepHM, .sepMS:
-            width = Int(numberSepWidth)
+            width = numberSepWidth
         case .sepDH:
-            width = Int(sepDayTime)
+            width = sepDayTime
         default:
             break
         }
-        return CGFloat(width)
+        return width
     }
 
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int,

@@ -395,7 +395,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
                 if let pickerRefDate = pickerRefDate {
                     dateOfDay = Date(timeInterval: TimeInterval(row * kPiwigoPicker1Day), since: pickerRefDate)
                 }
-                if datePicker.bounds.size.width > CGFloat(kPiwigoComponentWidthLimit) {
+                if datePicker.bounds.size.width > kPiwigoComponentWidthLimit {
                     if let dateOfDay = dateOfDay {
                         label?.text = formatterLong.string(from: dateOfDay)
                     }

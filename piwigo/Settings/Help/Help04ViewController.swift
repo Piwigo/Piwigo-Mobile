@@ -23,7 +23,7 @@ class Help04ViewController: UIViewController {
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = "\(NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"))\n"
+        let titleString = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontBold() : UIFont.piwigoFontSemiBold(), range: NSRange(location: 0, length: titleString.count))
         legendAttributedString.append(titleAttributedString)

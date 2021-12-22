@@ -183,10 +183,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Action menu
         let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads = uploadsProvider.fetchedNonCompletedResultsController
+        let impossibleUploads:Int = uploadsProvider.fetchedNonCompletedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads = uploadsProvider.fetchedResultsController
+        let failedUploads:Int = uploadsProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
 
         if impossibleUploads + failedUploads > 0 {
@@ -205,7 +205,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads = uploadsProvider.fetchedResultsController
+        let failedUploads:Int = uploadsProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
             if failedUploads > 0 {
 			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
@@ -245,7 +245,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
         let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads = uploadsProvider.fetchedResultsController
+        let impossibleUploads:Int = uploadsProvider.fetchedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
     	if impossibleUploads > 0 {
 	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
@@ -317,9 +317,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             else {
                 // Prevent device from sleeping if uploads are in progress
                 self.queueTableView.tableHeaderView = nil
-                let uploadsToPerform = self.uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-                    ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
-                    ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
+                let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
+                                                            .uploading, .uploaded, .finishing]
+                let uploadsToPerform:Int = self.uploadsProvider.fetchedResultsController
+                    .fetchedObjects?.map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
                 if uploadsToPerform > 0 {
                     UIApplication.shared.isIdleTimerDisabled = true
                 }

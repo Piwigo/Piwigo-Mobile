@@ -362,8 +362,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
             (imageData.dateCreated == imageData.datePosted) {
-            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
-                                          Float(view.bounds.size.width * 0.4)))
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
             navigationItem.titleView = oneLineTitleView
@@ -373,7 +372,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
         }
         else {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
             subTitleLabel.textColor = .piwigoColorWhiteCream()
             subTitleLabel.textAlignment = .center
@@ -389,9 +388,8 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             }
             subTitleLabel.sizeToFit()
 
-            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
-                                  CGFloat(titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
+            var titleWidth:CGFloat  = fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width)
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                 height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
             navigationItem.titleView = twoLineTitleView

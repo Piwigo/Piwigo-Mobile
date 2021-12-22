@@ -173,6 +173,10 @@ extension TagsViewController {
 
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
         // Header height?
         var header: String?
         if section == 0 {
@@ -183,9 +187,7 @@ extension TagsViewController {
         let attributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let headerRect = header?.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let headerRect = header?.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: attributes, context: context)
         return CGFloat(fmax(44.0, ceil(headerRect?.size.height ?? 0.0)))
     }
 
