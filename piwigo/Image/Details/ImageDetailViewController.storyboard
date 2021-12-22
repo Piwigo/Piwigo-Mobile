@@ -93,7 +93,7 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx">
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="87" y="774" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
@@ -119,7 +119,13 @@
                                     <constraint firstAttribute="height" constant="88" id="5VJ-vg-mGz"/>
                                     <constraint firstAttribute="width" constant="240" id="75C-3O-otD"/>
                                 </constraints>
-                                <blurEffect style="regular"/>
+                                <blurEffect style="prominent"/>
+                                <connections>
+                                    <outlet property="descHeight" destination="5VJ-vg-mGz" id="OxL-v0-VXT"/>
+                                    <outlet property="descOffset" destination="5W9-hW-wav" id="5NZ-t9-8k7"/>
+                                    <outlet property="descTextView" destination="ZCz-IB-MpK" id="tbK-aY-m1w"/>
+                                    <outlet property="descWidth" destination="75C-3O-otD" id="nDS-S0-qUJ"/>
+                                </connections>
                             </visualEffectView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="cl6-aa-PKH"/>
@@ -142,11 +148,7 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
-                        <outlet property="descContainer" destination="Ydg-dw-Gdx" id="tMo-rh-ojV"/>
-                        <outlet property="descContainerHeight" destination="5VJ-vg-mGz" id="nI6-Go-Rl8"/>
-                        <outlet property="descContainerOffset" destination="5W9-hW-wav" id="QIM-d0-VxH"/>
-                        <outlet property="descContainerWidth" destination="75C-3O-otD" id="i5v-Yd-flQ"/>
-                        <outlet property="descTextView" destination="ZCz-IB-MpK" id="jqb-xH-OeZ"/>
+                        <outlet property="descContainer" destination="Ydg-dw-Gdx" id="uoE-Ka-7eP"/>
                         <outlet property="imageView" destination="7gX-s9-oHd" id="D1r-Fu-F7H"/>
                         <outlet property="imageViewBottomConstraint" destination="tts-BT-zQi" id="4DJ-en-dzr"/>
                         <outlet property="imageViewHeightConstraint" destination="yK6-53-GS0" id="An0-dM-Vno"/>

@@ -32,13 +32,8 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var videoView: UIView!
+    @IBOutlet weak var descContainer: ImageDescriptionView!
     
-    @IBOutlet weak var descContainer: UIVisualEffectView!
-    @IBOutlet weak var descContainerOffset: NSLayoutConstraint!
-    @IBOutlet weak var descContainerWidth: NSLayoutConstraint!
-    @IBOutlet weak var descContainerHeight: NSLayoutConstraint!
-    @IBOutlet weak var descTextView: UITextView!
-
     private var downloadTask: URLSessionDataTask?
     private var previousScale: CGFloat = 0          // To remember the previous image scale
     private var userDidTapView: Bool = false        // True if the user did tap the view
@@ -66,7 +61,7 @@ class ImagePreviewViewController: UIViewController
         }
         
         // Configure the description view before layouting subviews
-        configDescription {
+        descContainer.configDescription(with: imageData.comment) {
             self.configScrollView(with: imageThumbnail)
         }
 
@@ -147,7 +142,7 @@ class ImagePreviewViewController: UIViewController
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descTextView.textColor = .piwigoColorWhiteCream()
+        descContainer.descTextView.textColor = .piwigoColorWhiteCream()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -269,7 +264,7 @@ class ImagePreviewViewController: UIViewController
         // Vertical constraints
         let imageHeight = image.size.height * scrollView.zoomScale
         var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
-        let descHeight = imageData.comment.isEmpty ? 0 : descContainerHeight.constant + 8
+        let descHeight = imageData.comment.isEmpty ? 0 : descContainer.descHeight.constant + 8
         if isToolbarRequired {
             if verticalSpaceAvailable >= descHeight {
                 // Centre image between navigation bar and description/toolbar
@@ -331,11 +326,11 @@ class ImagePreviewViewController: UIViewController
         // Remember that user did tap the view
         userDidRotateDevice = true
         
-        // Update the description
-        if imageData.comment.isEmpty {
+        // Should we update the description?
+        if descContainer.descTextView.text.isEmpty {
             self.view.layoutIfNeeded()
         } else {
-            configDescription {
+            descContainer.configDescription(with: imageData.comment) {
                 self.view.layoutIfNeeded()
             }
         }
@@ -346,87 +341,11 @@ class ImagePreviewViewController: UIViewController
         imageData = data
 
         // Should we update the image description?
-        if descTextView.text != data.comment {
-            configDescription {
+        if descContainer.descTextView.text != data.comment {
+            descContainer.configDescription(with: data.comment) {
                 self.view.layoutIfNeeded()
             }
         }
-    }
-
-    private func configDescription(completion: @escaping () -> Void) {
-        // Should we present a description?
-        guard let comment = imageData.comment, !comment.isEmpty else {
-            // Hide the description view
-            descTextView.text = ""
-            descContainer.isHidden = true
-            completion()
-            return
-        }
-        
-        // Configure the description view
-        descTextView.text = comment
-        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
-
-        // Calculate the available width
-        guard let root = UIApplication.shared.keyWindow?.rootViewController else { return }
-        var safeAreaWidth: CGFloat = view.frame.size.width
-        if #available(iOS 11.0, *) {
-            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-        }
-        
-        // Calculate the required number of lines, corners' width deducted
-        let attributes = [
-            NSAttributedString.Key.font: descTextView.font ?? UIFont.piwigoFontSmall()
-        ] as [NSAttributedString.Key : Any]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
-        let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
-        let rect = comment.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
-        let textHeight = rect.height
-        let nberOfLines = textHeight / lineHeight
-        
-        // Can we display the description on one or two lines?
-        if nberOfLines < 3 {
-            // Calculate the height (the width should be < safeAreaWidth)
-            let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
-            // Calculate the optimum size
-            let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
-                                                        height: requiredHeight))
-            descContainerOffset.constant = -8          // Shift description view up by 8 pixels
-            descContainerWidth.constant = size.width + cornerRadius/2   // Add space taken by corners
-            descContainerHeight.constant = size.height
-            descContainer.layer.cornerRadius = cornerRadius
-            descContainer.layer.masksToBounds = true
-        }
-        else {
-            // Several lines are required -> full width for minimising height
-            descContainerOffset.constant = 0                // Glue the description to the toolbar
-            descContainer.layer.cornerRadius = 0            // Disable rounded corner in case user added text
-            descContainer.layer.masksToBounds = false
-            descContainerWidth.constant = safeAreaWidth
-            let height = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
-                                                          height: CGFloat.greatestFiniteMagnitude)).height
-
-            // The maximum height is limited on iPhone
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                let orientation: UIInterfaceOrientation
-                if #available(iOS 14, *) {
-                    orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-                } else {
-                    orientation = UIApplication.shared.statusBarOrientation
-                }
-                let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
-                descContainerHeight.constant = min(maxHeight, height)
-            }
-            else {
-                descContainerHeight.constant = height
-            }
-            
-            // Scroll text to the top
-            descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
-        }
-        completion()
     }
         
     
