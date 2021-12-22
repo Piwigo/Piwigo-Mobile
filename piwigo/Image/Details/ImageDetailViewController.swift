@@ -172,7 +172,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
             
             // Unknown list -> initialise album and download list
-            let nberImagesPerPage = ImagesCollection.numberOfImagesPerPage(for: nil, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait)
+            let nberImagesPerPage = ImagesCollection.numberOfImagesToDownloadPerPage()
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
             CategoriesData.sharedInstance()
                 .updateCategories([favoritesAlbum], andUpdateUI: false)
@@ -180,7 +180,8 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 .getCategoryById(kPiwigoFavoritesCategoryId)
                 .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
                                           forProgress: { [unowned self] onPage, outOf in
-                    self.updatePiwigoHUD(withProgress: Float(onPage * nberImagesPerPage) / Float(outOf))
+                    let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
+                    self.updatePiwigoHUD(withProgress: fraction)
                 }) { [unowned self] _ in
                     // Retrieve complete image data if needed (buttons are greyed until job done)
                     if self.imageData.fileSize == NSNotFound {

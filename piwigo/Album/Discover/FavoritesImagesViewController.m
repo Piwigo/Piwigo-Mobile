@@ -1629,7 +1629,7 @@
 
 -(void)needToLoadMoreImages
 {
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {

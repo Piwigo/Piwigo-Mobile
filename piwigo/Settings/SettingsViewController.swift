@@ -690,7 +690,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 // Min/max number of thumbnails per row depends on selected file
                 let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize))
-                let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth)
+                let minNberOfImages = Float(ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
                 if Float(AlbumVars.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {

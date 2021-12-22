@@ -238,7 +238,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         self.lastImageBulkCount = count;
 
         // Calculate the number of thumbnails displayed per page
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
         if (count >= imagesPerPage) { self.onPage++; }
         self.isLoadingMoreImages = NO;
 
