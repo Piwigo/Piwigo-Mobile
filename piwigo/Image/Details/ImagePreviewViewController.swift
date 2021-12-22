@@ -355,7 +355,7 @@ class ImagePreviewViewController: UIViewController
 
     private func configDescription(completion: @escaping () -> Void) {
         // Should we present a description?
-        guard let comment = imageData.comment, comment.isEmpty else {
+        guard let comment = imageData.comment, !comment.isEmpty else {
             // Hide the description view
             descTextView.text = ""
             descContainer.isHidden = true
