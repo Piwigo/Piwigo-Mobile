@@ -355,16 +355,17 @@ class ImagePreviewViewController: UIViewController
 
     private func configDescription(completion: @escaping () -> Void) {
         // Should we present a description?
-        if imageData.comment.isEmpty {
+        guard let comment = imageData.comment, comment.isEmpty else {
             // Hide the description view
             descTextView.text = ""
             descContainer.isHidden = true
             completion()
+            return
         }
         
         // Configure the description view
+        descTextView.text = comment
         descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
-        descTextView.text = imageData.comment
 
         // Calculate the available width
         guard let root = UIApplication.shared.keyWindow?.rootViewController else { return }
@@ -381,7 +382,7 @@ class ImagePreviewViewController: UIViewController
         context.minimumScaleFactor = 1.0
         let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
-        let rect = descTextView.text.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let rect = comment.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
         let textHeight = rect.height
         let nberOfLines = textHeight / lineHeight
         
