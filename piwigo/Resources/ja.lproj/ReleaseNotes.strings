@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.0_text" = "Version 2.9\n\n• Displays photo/video descriptions in preview mode\n• Minor bug fixes and improvements of the interface";
+"v2.9.0_text" = "バージョン 2.9\n\n• プレビューモードで写真/ビデオの説明を表示する\n• マイナーなバグ修正とインターフェイスの改善";
 
 "v2.8.2_text" = "バージョン2.8.2\n2021年11月26日\n\n• コミュニティユーザーがバックグラウンドでアップロードし、写真やビデオを自動アップロードできるようにする\n• Piwigo 12との互換性の問題を修正する\n• 軽微なバグの修正とインタフェースの改善";
 

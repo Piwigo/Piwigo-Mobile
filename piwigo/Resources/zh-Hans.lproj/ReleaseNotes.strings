@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.0_text" = "Version 2.9\n\n• Displays photo/video descriptions in preview mode\n• Minor bug fixes and improvements of the interface";
+"v2.9.0_text" = "版本 2.9\n\n• 在预览模式下显示照片/视频说明\n• 小错误修复和界面改进";
 
 "v2.8.2_text" = "版本2.8.2\n2021年11月26日\n\n• 允许社区用户在后台上传并自动上传照片和视频\n• 修复与 Piwigo 12的兼容性问题\n• 小错误修复和界面改进";
 
