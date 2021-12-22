@@ -236,9 +236,15 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
             ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
 		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
-            albumData.albumThumbnailUrl = [NetworkHandler encodedImageURL:[category objectForKey:@"tn_url"]];
 		}
-		
+        if (([category objectForKey:@"tn_url"] != nil) &&
+            ([category objectForKey:@"tn_url"] != [NSNull null]))
+        {
+            albumData.albumThumbnailUrl = [NetworkHandler encodedImageURL:[category objectForKey:@"tn_url"]];
+        } else {
+            albumData.albumThumbnailUrl = @"";
+        }
+
         // When "date_last" is null or not supplied: no date
 		if(([category objectForKey:@"date_last"] != nil) &&
            ([category objectForKey:@"date_last"] != [NSNull null]))
