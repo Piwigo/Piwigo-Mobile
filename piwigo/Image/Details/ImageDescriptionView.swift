@@ -10,7 +10,6 @@ import UIKit
 
 class ImageDescriptionView: UIVisualEffectView {
     
-    @IBOutlet weak var descOffset: NSLayoutConstraint!
     @IBOutlet weak var descWidth: NSLayoutConstraint!
     @IBOutlet weak var descHeight: NSLayoutConstraint!
     @IBOutlet weak var descTextView: UITextView!
@@ -62,22 +61,44 @@ class ImageDescriptionView: UIVisualEffectView {
         let textHeight = rect.height
         let nberOfLines = textHeight / lineHeight
         
-        // Can we display the description on one or two lines?
-        if nberOfLines < 3 {
+        // Can the description be presented on 3 lines maximum?
+        if nberOfLines < 4 {
             // Calculate the height (the width should be < safeAreaWidth)
             let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
             // Calculate the optimum size
             let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                         height: requiredHeight))
-            descOffset.constant = -8          // Shift description view up by 8 pixels
-            descWidth.constant = size.width + cornerRadius/2   // Add space taken by corners
+            descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
             self.layer.cornerRadius = cornerRadius
             self.layer.masksToBounds = true
         }
+        else if rect.width < safeAreaWidth - 4*cornerRadius {
+            // Several short lines but width much smaller than screen width
+            descWidth.constant = rect.width + cornerRadius   // Add space taken by corners
+            self.layer.cornerRadius = cornerRadius
+            self.layer.masksToBounds = true
+
+            // The maximum height is limited on iPhone
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                let orientation: UIInterfaceOrientation
+                if #available(iOS 14, *) {
+                    orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+                } else {
+                    orientation = UIApplication.shared.statusBarOrientation
+                }
+                let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
+                descHeight.constant = min(maxHeight, rect.height)
+            }
+            else {
+                descHeight.constant = rect.height
+            }
+            
+            // Scroll text to the top
+            descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
+        }
         else {
-            // Several lines are required -> full width for minimising height
-            descOffset.constant = 0                // Glue the description to the toolbar
+            // Several long lines spread over full width for minimising height
             self.layer.cornerRadius = 0            // Disable rounded corner in case user added text
             self.layer.masksToBounds = false
             descWidth.constant = safeAreaWidth

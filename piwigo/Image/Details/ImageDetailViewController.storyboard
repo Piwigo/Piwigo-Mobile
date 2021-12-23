@@ -122,7 +122,6 @@
                                 <blurEffect style="prominent"/>
                                 <connections>
                                     <outlet property="descHeight" destination="5VJ-vg-mGz" id="OxL-v0-VXT"/>
-                                    <outlet property="descOffset" destination="5W9-hW-wav" id="5NZ-t9-8k7"/>
                                     <outlet property="descTextView" destination="ZCz-IB-MpK" id="tbK-aY-m1w"/>
                                     <outlet property="descWidth" destination="75C-3O-otD" id="nDS-S0-qUJ"/>
                                 </connections>
