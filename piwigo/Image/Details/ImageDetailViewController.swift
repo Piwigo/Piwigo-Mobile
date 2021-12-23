@@ -1215,6 +1215,7 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
         currentIndex = min(currentIndex, images.count - 1)
         // Remember index of presented page
         imageIndex = currentIndex
+        imageData = images[currentIndex]
 
         pvc.imagePreviewDelegate = self
         progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
