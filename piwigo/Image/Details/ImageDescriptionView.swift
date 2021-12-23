@@ -23,12 +23,20 @@ class ImageDescriptionView: UIVisualEffectView {
     func configDescription(with imageComment:String?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
-        guard let comment = imageComment, !comment.isEmpty else {
+        guard var comment = imageComment, !comment.isEmpty else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
             completion()
             return
+        }
+        
+        // Remove any white space or newline located at the beginning or end of the description
+        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
+            comment.removeFirst()
+        }
+        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
+            comment.removeLast()
         }
         
         // Configure the description view
@@ -42,7 +50,7 @@ class ImageDescriptionView: UIVisualEffectView {
             safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
         }
         
-        // Calculate the required number of lines, corners' width deducted
+        // Calculate the required number of lines, corners'width deducted
         let attributes = [
             NSAttributedString.Key.font: descTextView.font ?? UIFont.piwigoFontSmall()
         ] as [NSAttributedString.Key : Any]
