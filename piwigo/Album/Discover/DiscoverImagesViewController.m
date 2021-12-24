@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
@@ -69,6 +70,12 @@
         self.categoryId = categoryId;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
+        // Initialise discover album in cache if needed
+        if ([[CategoriesData sharedInstance] getCategoryById:self.categoryId] == nil) {
+            PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
+            [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:false];
+        }
+
         self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
         self.displayImageTitles = AlbumVars.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
@@ -221,7 +228,16 @@
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.imagesCollection reloadData];
+    NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
+    if (headers.count > 0) {
+        CategoryHeaderReusableView *header = headers.firstObject;
+        header.commentLabel.textColor = [UIColor piwigoColorHeader];
+    }
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -234,16 +250,15 @@
     // Set colors, fonts, etc.
     [self applyColorPalette];
     
-    // Initialise discover album in cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:false];
-
     // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
-        [self.imagesCollection reloadData];
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Load, sort images and reload collection
+        [self reloadImagesCollectionFrom:oldImageList];
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
@@ -650,6 +665,7 @@
     if (catId != self.categoryId) return;
 
     // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Set navigation bar buttons
         if (self.isSelect == YES) {
@@ -657,10 +673,33 @@
         } else {
             [self updateButtonsInPreviewMode];
         }
-        [self.imagesCollection reloadData];
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Reload collection
+        [self reloadImagesCollectionFrom:oldImageList];
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
+}
+
+-(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
+{
+    if (oldImages.count == 0) {
+        [self.imagesCollection reloadData];
+    }
+    else {
+        for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
+            // Retrieve old image Id
+            if (indexPath.item >= oldImages.count) { continue; }
+            NSInteger oldImageId = oldImages[indexPath.item].imageId;
+            
+            // Did we replace a dummy image with a real image?
+            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
+            if (newImageId == oldImageId) { continue; }
+            
+            // We should update this cell
+            [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+        }
+    }
 }
 
 -(void)addImageToCategory:(NSNotification *)notification
@@ -1571,9 +1610,12 @@
 {
     ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
     
-    if (self.albumData.images.count > indexPath.row) {
+    if (self.albumData.images.count > indexPath.item) {
+        // Remember that user did scroll down to this item
+        self.didScrollToImageIndex = indexPath.item;
+        
         // Create cell from Piwigo data
-        PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
+        PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.item];
         [cell setupWithImageData:imageData inCategoryId:self.categoryId];
         cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         
@@ -1694,17 +1736,26 @@
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            // Did we collect more images?
             if (!hasNewImages) { return; }
+            // Prepare indexPaths of cells to reload (those corresponding to freshly loaded data)
+            NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
-            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
-                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
+            // Reload cells
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
             });
+            // Should we continue loading images?
+            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", self.didScrollToImageIndex);
+            if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
+                [self needToLoadMoreImages];
+            }
         } onFailure:nil];
     });
 }

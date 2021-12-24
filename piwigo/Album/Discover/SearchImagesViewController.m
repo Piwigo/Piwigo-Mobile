@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
@@ -346,7 +347,10 @@
 {
     ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
     
-    if (self.albumData.images.count > indexPath.row) {
+    if (self.albumData.images.count > indexPath.item) {
+        // Remember that user did scroll down to this item
+        self.didScrollToImageIndex = indexPath.item;
+        
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
@@ -439,17 +443,26 @@
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            // Did we collect more images?
             if (!hasNewImages) { return; }
+            // Prepare indexPaths of cells to reload (those corresponding to freshly loaded data)
+            NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
-            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
-                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
+            // Reload cells
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
             });
+            // Should we continue loading images?
+            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", self.didScrollToImageIndex);
+            if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
+                [self needToLoadMoreImages];
+            }
         } onFailure:nil];
     });
 }

@@ -22,9 +22,9 @@
 #import "NetworkHandler.h"
 #import "SearchImagesViewController.h"
 
-//#ifndef DEBUG_LIFECYCLE
-//#define DEBUG_LIFECYCLE
-//#endif
+#ifndef DEBUG_LIFECYCLE
+#define DEBUG_LIFECYCLE
+#endif
 
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
@@ -40,6 +40,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, assign) kPiwigoSortObjc currentSort;
@@ -110,7 +111,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.isCachedAtInit = isCached;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
-		self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
 		
         // Initialise selection mode
@@ -374,9 +376,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Reload category data
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
+    NSLog(@"===============================");
+    NSLog(@"viewDidLoad     => ID:%ld", (long)self.categoryId);
 #endif
-    [self getCategoryData:nil];
+    if (self.categoryId == 0) {
+        [self getCategoryData:nil];
+    }
 
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
@@ -520,7 +525,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor clearColor];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.imagesCollection reloadData];
+    NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
+    if (headers.count > 0) {
+        CategoryHeaderReusableView *header = headers.firstObject;
+        header.commentLabel.textColor = [UIColor piwigoColorHeader];
+    }
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -562,21 +576,26 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Load, sort images and reload collection
     if (self.categoryId != 0) {
 #if defined(DEBUG_LIFECYCLE)
-        NSLog(@"viewWillAppear  => load images");
-#endif
+        NSLog(@"viewWillAppear  => start loading images...");
+#endif        
+        // Load, sort images and reload collection
+        NSArray *oldImageList = self.albumData.images;
         [self.albumData updateImageSort:self.currentSort onCompletion:^{
             // Reset navigation bar buttons after image load
             [self updateButtonsInPreviewMode];
-            [self.imagesCollection reloadData];
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            // Reload collection
+            [self reloadImagesCollectionFrom:oldImageList];
+        }
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
             [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
         }];
     }
     else {
 #if defined(DEBUG_LIFECYCLE)
-        NSLog(@"viewWillAppear  => reload albums table");
+        NSLog(@"viewWillAppear  => reload root album");
 #endif
         if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+            // Reload root album
             [self.imagesCollection reloadData];
         }
     }
@@ -1618,12 +1637,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             self.userHasUploadRights = [[CategoriesData.sharedInstance getCategoryById:self.categoryId] hasUploadRights];
 
             // Load, sort images and reload collection
+            NSArray *oldImageList = self.albumData.images;
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
             [self.albumData updateImageSort:self.currentSort onCompletion:^{
-
-                // Reset navigation bar buttons after image load
+                // Reset navigation bar buttons and reload collection
                 [self updateButtonsInPreviewMode];
-                [self.imagesCollection reloadData];
+                [self reloadImagesCollectionFrom:oldImageList];
 
                 // For iOS 11 and later: place search bar in navigation bar of root album only
                 if (@available(iOS 11.0, *)) {
@@ -1637,10 +1656,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         else if (self.categoryId == 0) {
             // Album data freshly loaded in recursive mode
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+            // Reload collection
+            [self.imagesCollection reloadData];
+
             if ([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
                 // There exists album in cache ;-)
-                [self.imagesCollection reloadData];
-                
                 // For iOS 11 and later: place search bar in navigation bar of root album
                 if (@available(iOS 11.0, *)) {
                     // Initialise search controller when displaying root album
@@ -1701,86 +1721,43 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Right category Id?
     NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-    if ((catId != self.categoryId) && (catId != NSIntegerMax)) return;
+    if (catId == NSIntegerMax) {    // Did perform a refresh
+        // Check that this collection view belongs to the top view controller
+        UIViewController *topViewController = self.navigationController.topViewController;
+        if ([topViewController isKindOfClass:[AlbumImagesViewController class]]) {
+            AlbumImagesViewController *topVC = (AlbumImagesViewController*)topViewController;
+            if (topVC.categoryId != self.categoryId) { return; }
+        }
+    } else if (catId != self.categoryId) return;
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"=> categoriesUpdated… %ld", (long)self.categoryId);
+    NSLog(@"categoriesUpdated => catID:%ld (called with ID:%ld)", (long)self.categoryId, (long)catId);
 #endif
     
     // Images ?
     if (self.categoryId != 0) {
-        // Store current image list
+        // Album data already in cache
+        self.userHasUploadRights = [[CategoriesData.sharedInstance getCategoryById:self.categoryId] hasUploadRights];
+
+        // Load, sort images and reload collection
         NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+        [self.albumData updateImageSort:self.currentSort onCompletion:^{
+            // Set navigation bar buttons
+            if (self.isSelect == YES) {
+                [self initButtonsInSelectionMode];
+            } else {
+                [self updateButtonsInPreviewMode];
+            }
+            // Refresh images in collection
+            [self reloadImagesCollectionFrom:oldImageList];
 
-        // Collect images belonging to the current album
-        [self.albumData loadAllImagesOnCompletion:^{
-
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
-//                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    [self.imagesCollection reloadData];     // Total number of images may have changed
-
-                    // Set navigation bar buttons
-                    if (self.isSelect == YES) {
-                        [self initButtonsInSelectionMode];
-                    } else {
-                        [self updateButtonsInPreviewMode];
-                    }
-                    return;
-                }
-
-                // Insert cells of added images
-                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
-                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
-                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return oldObj.imageId == image.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
-                    }
-                }
-                if (itemsToInsert.count > 0) {
-                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
-                }
-
-                // Delete cells of deleted images, and remove them from selection
-                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
-                for (NSInteger index = 0; index < oldImageList.count; index++) {
-                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return obj.imageId == imageData.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                     [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:1]];
-                        NSNumber *imageIdObject = [NSNumber numberWithInteger:imageData.imageId];
-                        if ([self.selectedImageIds containsObject:imageIdObject]) {
-                            [self.selectedImageIds removeObject:imageIdObject];
-                        }
-                    }
-                }
-                for (NSIndexPath *indexPath in itemsToDelete) {
-                    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
-                        [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
-                    }
-                }
-
-                // Update footer if visible
-                if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
-                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                }
-
-                // Set navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self initButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+            // For iOS 11 and later: place search bar in navigation bar of root album only
+            if (@available(iOS 11.0, *)) {
+                // Remove search bar
+                self.navigationItem.searchController = nil;
+            }
+        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+        }];
     }
     else {
         // The album title is not shown in backButtonItem to provide enough space
@@ -1792,6 +1769,27 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
         // Reload collection view
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    }
+}
+
+-(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
+{
+    if (oldImages.count == 0) {
+        [self.imagesCollection reloadData];
+    }
+    else {
+        for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
+            // Retrieve old image Id
+            if (indexPath.item >= oldImages.count) { continue; }
+            NSInteger oldImageId = oldImages[indexPath.item].imageId;
+            
+            // Did we replace a dummy image with a real image?
+            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
+            if (newImageId == oldImageId) { continue; }
+            
+            // We should update this cell
+            [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+        }
     }
 }
 
@@ -3318,10 +3316,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
             
-            if (self.albumData.images.count > indexPath.row) {
+            if (self.albumData.images.count > indexPath.item) {
+                // Remember that user did scroll down to this item
+                self.didScrollToImageIndex = indexPath.item;
+                
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-//                NSLog(@"Index:%ld => image ID:%ld - %@", indexPath.row, (long)imageData.imageId, imageData.fileName);
                 [cell setupWithImageData:imageData inCategoryId:self.categoryId];
                 cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
 
@@ -3502,17 +3502,26 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            // Did we collect more images?
             if (!hasNewImages) { return; }
+            // Prepare indexPaths of cells to reload (those corresponding to freshly loaded data)
+            NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
-            for (NSInteger i = downloadedImageCount; i < downloadedImageCount+imagesPerPage; i++) {
-                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
+            for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
+            // Reload cells
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
             });
+            // Should we continue loading images?
+            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", self.didScrollToImageIndex);
+            if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
+                [self needToLoadMoreImages];
+            }
         } onFailure:nil];
     });
 }
@@ -3599,18 +3608,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.isCachedAtInit = FALSE;
     [self getCategoryData:nil];
 }
-
-
-#pragma mark - CategorySortObjcDelegate Methods
-
-//-(void)didSelectCategorySortType:(kPiwigoSortObjc)sortType
-//{
-//	self.currentSort = sortType;
-//    [self.albumData updateImageSort:sortType OnCompletion:^{
-////        NSLog(@"didSelectCategorySortType:Sorting images…");
-//        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-//    }];
-//}
 
 
 #pragma mark - Push Views (incl. CategoryCollectionViewCellDelegate Method)
