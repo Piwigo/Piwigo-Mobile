@@ -15,6 +15,8 @@ class NberImagesFooterCollectionReusableView: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = UIColor.clear
+        
         noImagesLabel = UILabel()
         noImagesLabel?.backgroundColor = UIColor.clear
         noImagesLabel?.translatesAutoresizingMaskIntoConstraints = false
