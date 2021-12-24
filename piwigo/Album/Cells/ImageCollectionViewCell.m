@@ -139,6 +139,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.7;
         self.nameLabel.numberOfLines = 1;
+        self.nameLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
 		[self.bottomLayer addSubview:self.nameLabel];
 		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
 		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
@@ -179,47 +180,20 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImg amount: 0.0];
         self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImg amount: 2*margin];
         [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
-		
-        // Without data to show
-//		self.noDataLabel = [UILabel new];
-//		self.noDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
-//		self.noDataLabel.font = [UIFont piwigoFontNormal];
-//		self.noDataLabel.textColor = [UIColor redColor];
-//		self.noDataLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-//		self.noDataLabel.layer.cornerRadius = 3.0;
-//		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
-//		self.noDataLabel.hidden = YES;
-//		[self.contentView addSubview:self.noDataLabel];
-//		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
-//		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-//																	 attribute:NSLayoutAttributeLeft
-//																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
-//																		toItem:self.contentView
-//																	 attribute:NSLayoutAttributeLeft
-//																	multiplier:1.0
-//																	  constant:0]];
-//		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-//																	 attribute:NSLayoutAttributeRight
-//																	 relatedBy:NSLayoutRelationLessThanOrEqual
-//																		toItem:self.contentView
-//																	 attribute:NSLayoutAttributeRight
-//																	multiplier:1.0
-//																	  constant:0]];
 	}
 	return self;
 }
 
 -(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId
 {
-	self.imageData = imageData;
+    // Do we have any info on that image ?
+	if (imageData == nil) { return; }
+    if (imageData.imageId == 0) { return; }
+    
+    // Store image data
+    self.imageData = imageData;
     self.isAccessibilityElement = YES;
 
-    // Do we have any info on that image ?
-	if (!self.imageData) {
-//		self.noDataLabel.hidden = NO;
-		return;
-	}
-	
     // Play button
     self.playImg.hidden = !imageData.isVideo;
     self.playBckg.hidden = !imageData.isVideo;
