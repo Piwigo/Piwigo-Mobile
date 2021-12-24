@@ -2109,6 +2109,11 @@ extension SettingsViewController: CategorySortDelegate {
         // Refresh settings
         let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Clear image data in cache
+        for category in CategoriesData.sharedInstance().allCategories {
+            category.resetData()
+        }
     }
 }
 
