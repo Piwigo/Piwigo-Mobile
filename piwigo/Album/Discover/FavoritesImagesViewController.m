@@ -211,7 +211,16 @@
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
-    [self.imagesCollection reloadData];
+    NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
+    if (headers.count > 0) {
+        CategoryHeaderReusableView *header = headers.firstObject;
+        header.commentLabel.textColor = [UIColor piwigoColorHeader];
+    }
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -231,11 +240,13 @@
     }
 
     // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
-        [self.imagesCollection reloadData];
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self reloadImagesCollectionFrom:oldImageList];
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
@@ -615,6 +626,7 @@
     if (catId != kPiwigoFavoritesCategoryId) return;
     
     // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Set navigation bar buttons
         if (self.isSelect == YES) {
@@ -622,10 +634,32 @@
         } else {
             [self updateButtonsInPreviewMode];
         }
-        [self.imagesCollection reloadData];
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self reloadImagesCollectionFrom:oldImageList];
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
+}
+
+-(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
+{
+    if (oldImages.count == 0) {
+        [self.imagesCollection reloadData];
+    }
+    else {
+        for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
+            // Retrieve old image Id
+            if (indexPath.item >= oldImages.count) { continue; }
+            NSInteger oldImageId = oldImages[indexPath.item].imageId;
+            
+            // Did we replace a dummy image with a real image?
+            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
+            if (newImageId == oldImageId) { continue; }
+            
+            // We should update this cell
+            [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+        }
+    }
 }
 
 -(void)removeImageFromCategory:(NSNotification *)notification

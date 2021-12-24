@@ -1580,10 +1580,8 @@
     ImageCollectionViewCell *selectedCell = (ImageCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 
     // Avoid rare crashes…
-    if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
-        // forget this call!
-        return;
-    }
+    if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) { return; }
+    if (self.albumData.images[indexPath.item].imageId == 0) { return; }
 
     // Action depends on mode
     if (!self.isSelect)
