@@ -491,7 +491,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
                                           NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
-                                          NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %lu)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, albumData.imageList.count % imagesPerPage);
+                                          NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                           if (completion) {
                                               completion(task, count);

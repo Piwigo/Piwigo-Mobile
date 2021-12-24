@@ -129,11 +129,11 @@ public class PwgSession: NSObject {
             /// - This value can then be used to provide the expected count of returned bytes.
             /// - The last 2 lines display the content of the returned data for debugging.
             #if DEBUG
-            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
-                jsonData.count * MemoryLayout<Data>.stride
-            print("countsOfBytesReceived: \(countsOfByte) bytes")
-            let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr.debugDescription)")
+//            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
+//                jsonData.count * MemoryLayout<Data>.stride
+//            print("countsOfBytesReceived: \(countsOfByte) bytes")
+//            let dataStr = String(decoding: jsonData, as: UTF8.self)
+//            print(" > JSON: \(dataStr.debugDescription)")
             #endif
             
             let filteredData = self.filterPiwigo(data: jsonData)
