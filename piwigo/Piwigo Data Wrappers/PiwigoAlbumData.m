@@ -227,20 +227,20 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 										   onPage:self.onPage
 										  forSort:sort
 								 ListOnCompletion:^(NSURLSessionTask *task, NSInteger count) {
-        // Report progress if needed
-        if (progress) {
-            PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
-            NSInteger numOfImgs = downloadingCategory.numberOfImages;
-            progress(self.onPage, numOfImgs);
-        }
 
         // Remember number of loaded image data in this chunk
         self.lastImageBulkCount = count;
 
-        // Calculate the number of thumbnails displayed per page
+        // Should we increment onPage?
+        NSInteger numOfImgs = [[CategoriesData sharedInstance] getCategoryById:self.albumId].numberOfImages;
         NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
         if (count >= imagesPerPage) { self.onPage++; }
         self.isLoadingMoreImages = NO;
+
+        // Report progress if needed
+        if (progress) {
+            progress(self.onPage, numOfImgs);
+        }
 
         // Perform completion block
         if(completion) {
