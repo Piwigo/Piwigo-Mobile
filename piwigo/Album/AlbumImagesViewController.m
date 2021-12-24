@@ -3518,7 +3518,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
             });
             // Should we continue loading images?
-            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", self.didScrollToImageIndex);
+            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
             if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
                 [self needToLoadMoreImages];
             }
