@@ -29,11 +29,16 @@ class NberImagesFooterCollectionReusableView: UICollectionReusableView {
 
         if let noImagesLabel = noImagesLabel {
             addSubview(noImagesLabel)
+            addConstraints(NSLayoutConstraint.constraintCenter(noImagesLabel)!)
         }
-        addConstraints(NSLayoutConstraint.constraintCenter(noImagesLabel)!)
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        noImagesLabel?.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
     }
 }
