@@ -67,7 +67,7 @@ class ImageDescriptionView: UIVisualEffectView {
             // Calculate the height (the width should be < safeAreaWidth)
             let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
             // Calculate the optimum size
-            let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
+            let size = descTextView.sizeThatFits(CGSize(width: safeAreaWidth - cornerRadius,
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
