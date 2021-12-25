@@ -184,6 +184,12 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 	return self;
 }
 
+-(void)applyColorPalette
+{
+    self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
+    self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
+}
+
 -(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId
 {
     // Do we have any info on that image ?
@@ -204,9 +210,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)) {
         self.bottomLayer.hidden = NO;
-        self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
         self.nameLabel.hidden = NO;
-        self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
         } else if (categoryId == kPiwigoBestCategoryId) {
@@ -314,6 +318,8 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             }
             break;
     }
+    
+    [self applyColorPalette];
 }
 
 -(void)setImageFromPath:(NSString *)imagePath

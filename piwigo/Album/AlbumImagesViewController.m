@@ -529,12 +529,20 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (headers.count > 0) {
         CategoryHeaderReusableView *header = headers.firstObject;
         header.commentLabel.textColor = [UIColor piwigoColorHeader];
-        header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];    }
+        header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
+    }
+    for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell*)cell;
+            [imageCell applyColorPalette];
+        }
+    }
     NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
     if (footers.count > 0) {
         NberImagesFooterCollectionReusableView *footer = footers.firstObject;
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
-        footer.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];    }
+        footer.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
