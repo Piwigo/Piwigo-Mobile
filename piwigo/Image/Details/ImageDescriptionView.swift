@@ -12,6 +12,7 @@ class ImageDescriptionView: UIVisualEffectView {
     
     @IBOutlet weak var descWidth: NSLayoutConstraint!
     @IBOutlet weak var descHeight: NSLayoutConstraint!
+    @IBOutlet weak var descOffset: NSLayoutConstraint!
     @IBOutlet weak var descTextView: UITextView!
 
     override func awakeFromNib() {
@@ -70,6 +71,7 @@ class ImageDescriptionView: UIVisualEffectView {
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
+            descOffset.constant = 10 - 2 * nberOfLines
             self.layer.cornerRadius = cornerRadius
             self.layer.masksToBounds = true
         }
@@ -89,9 +91,11 @@ class ImageDescriptionView: UIVisualEffectView {
                 }
                 let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
                 descHeight.constant = min(maxHeight, rect.height)
+                descOffset.constant = 2
             }
             else {
                 descHeight.constant = rect.height
+                descOffset.constant = 0
             }
             
             // Scroll text to the top
@@ -102,6 +106,7 @@ class ImageDescriptionView: UIVisualEffectView {
             self.layer.cornerRadius = 0            // Disable rounded corner in case user added text
             self.layer.masksToBounds = false
             descWidth.constant = safeAreaWidth
+            descOffset.constant = 0
             let height = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                           height: CGFloat.greatestFiniteMagnitude)).height
 

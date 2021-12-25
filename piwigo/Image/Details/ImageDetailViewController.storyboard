@@ -122,6 +122,7 @@
                                 <blurEffect style="prominent"/>
                                 <connections>
                                     <outlet property="descHeight" destination="5VJ-vg-mGz" id="OxL-v0-VXT"/>
+                                    <outlet property="descOffset" destination="5W9-hW-wav" id="vAb-2D-flR"/>
                                     <outlet property="descTextView" destination="ZCz-IB-MpK" id="tbK-aY-m1w"/>
                                     <outlet property="descWidth" destination="75C-3O-otD" id="nDS-S0-qUJ"/>
                                 </connections>
@@ -132,7 +133,7 @@
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="rui-kE-FAb" firstAttribute="leading" secondItem="cl6-aa-PKH" secondAttribute="leading" id="100-dT-Xsl"/>
-                            <constraint firstItem="Ydg-dw-Gdx" firstAttribute="bottom" secondItem="cl6-aa-PKH" secondAttribute="bottom" id="5W9-hW-wav"/>
+                            <constraint firstItem="cl6-aa-PKH" firstAttribute="bottom" secondItem="Ydg-dw-Gdx" secondAttribute="bottom" id="5W9-hW-wav"/>
                             <constraint firstItem="Ydg-dw-Gdx" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="6ET-fg-111"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="trailing" secondItem="CkJ-ky-Kbn" secondAttribute="trailing" id="7m2-DR-v9c"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="9R7-ma-jIc"/>
