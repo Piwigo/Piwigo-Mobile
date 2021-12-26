@@ -1887,7 +1887,11 @@
         viewController.modalPresentationStyle = UIModalPresentationPopover;
         viewController.popoverPresentationController.sourceView = self.imagesCollection;
         if ([viewController isKindOfClass:[SelectCategoryViewController class]]) {
-            viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+            if (@available(iOS 14.0, *)) {
+                viewController.popoverPresentationController.barButtonItem = self.actionBarButton;
+            } else {
+                viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+            }
             viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
