@@ -652,6 +652,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
     }
     
+    // Resume uploading
+    if (self.categoryId == 0) {
+        // Resume upload operations
+        // and update badge, upload button of album navigator
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate resumeAll];
+    }
+
     if (@available(iOS 10.0, *)) {
     } else {
         // Fallback on earlier versions

@@ -834,11 +834,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         }
     }
 
-    // Resume upload operations
-    // and update badge, upload button of album navigator
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate resumeAll];
-    
     // Was it a relogin after encountering an arror?
     if (reloginCompletion) { reloginCompletion(); }
 }
