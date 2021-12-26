@@ -1381,7 +1381,6 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
         images.remove(at: indexOfRemovedImage)
 
         // Return to the album view if the album is empty
-        // or if we could not find the index of the removed image
         if images.isEmpty {
             // Return to the Album/Images collection view
             navigationController?.popViewController(animated: true)
