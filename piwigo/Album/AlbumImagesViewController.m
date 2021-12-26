@@ -836,6 +836,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationGetCategoryData object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+}
+
+-(void)dealloc
+{
+    // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
@@ -850,10 +855,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Unregister upload progress
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc uploadProgress] object:nil];
-}
 
--(void)dealloc
-{
+    // Clear memory
     self.imagesCollection = nil;
     self.albumData = nil;
 }
