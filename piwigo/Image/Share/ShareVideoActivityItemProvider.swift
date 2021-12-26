@@ -100,7 +100,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Determine the URL request
         /// - The movie URL is necessarily the one of the full resolution Piwigo image
-        guard let urlRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: Int.max) else {
+        guard let urlRequest: URLRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: Int.max) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled

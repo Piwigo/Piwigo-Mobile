@@ -104,7 +104,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let maxSize = activityType?.imageMaxSize() ?? Int.max
 
         // Determine the URL request of the image stored on the piwigo server
-        guard let urlRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: maxSize) else {
+        guard let urlRequest: URLRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: maxSize) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
