@@ -501,9 +501,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
     }
 
-    // Notify the Upload database that the image was deleted (background thread)
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate didDeletePiwigoImageWithID: image.imageId];
+    // Notify the Upload database that the image was deleted
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate didDeletePiwigoImageWithID: image.imageId];
+    });
 }
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
