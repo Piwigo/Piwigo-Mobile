@@ -854,11 +854,9 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         } failure: { [unowned self] error in
             self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [unowned self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                        // Display preceding/next image or return to album view
-                        self.didRemoveImage(withId: imageData.imageId)
-                    }
+                self.hidePiwigoHUD { [unowned self] in
+                    // Re-enable buttons
+                    self.setEnableStateOfButtons(true)
                 }
             }, retry: { [unowned self] in
                 // Try relogin if unauthorized
