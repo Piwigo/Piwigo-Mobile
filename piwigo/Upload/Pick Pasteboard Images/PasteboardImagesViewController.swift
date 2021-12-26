@@ -835,8 +835,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 switch state {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -853,8 +855,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 switch upload?.1 {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -1131,8 +1135,10 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                     switch upload.state {
                     case .waiting, .preparing, .prepared, .deleted:
                         cell.cellWaiting = true
-                    case .uploading, .uploaded, .finishing:
+                    case .uploading:
                         cell.cellUploading = true
+                    case .uploaded, .finishing:
+                        cell.cellUploading = false
                     case .finished, .moderated:
                         cell.cellUploaded = true
                     case .preparingFail, .preparingError, .formatError,

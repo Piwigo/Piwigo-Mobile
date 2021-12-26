@@ -1545,8 +1545,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 switch state {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -1562,8 +1564,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 switch upload?.1 {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -1945,9 +1949,11 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     switch upload.state {
                     case .waiting, .preparing, .prepared, .deleted:
                         cell.cellWaiting = true
-                    case .uploading, .uploaded, .finishing:
+                    case .uploading:
                         cell.cellUploading = true
-                    case .finished, .moderated:
+                    case .uploaded, .finishing:
+                        cell.cellUploading = false
+                   case .finished, .moderated:
                         cell.cellUploaded = true
                     case .preparingFail, .preparingError, .formatError,
                             .uploadingError, .uploadingFail, .finishingError, .finishingFail:
