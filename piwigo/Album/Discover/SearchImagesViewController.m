@@ -439,28 +439,45 @@
 
 -(void)needToLoadMoreImages
 {
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
             // Did we collect more images?
             if (!hasNewImages) { return; }
-            // Prepare indexPaths of cells to reload (those corresponding to freshly loaded data)
+            // Prepare selection of indexPaths of cells to reload:
+            /// - those corresponding to freshly loaded data
+            /// - and those corresponding to visible cells
             NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
             for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
                 [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
-            // Reload cells
             dispatch_async(dispatch_get_main_queue(), ^{
+                // Reload cells
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+                // Display HUD if it will take more than a second to load image data
+                CFAbsoluteTime diff = (CFAbsoluteTimeGetCurrent() - start)*1000.0;
+                CFAbsoluteTime perImage = diff / (double)(newDownloadedImageCount - downloadedImageCount);
+                CFAbsoluteTime left = perImage * (double)(self.didScrollToImageIndex - newDownloadedImageCount);
+                NSLog(@"expected time: %.2f ms", left);
+                if (left > 1000.0) {
+                    if ([self.navigationController.view viewWithTag:loadingViewTag] == nil) {
+                        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
+                    } else {
+                        float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
+                        [self.navigationController updatePiwigoHUDWithProgress:fraction];
+                    }
+                } else {
+                    [self.navigationController hidePiwigoHUDWithCompletion:^{}];
+                }
             });
             // Should we continue loading images?
             NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
-            if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
+            if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                 [self needToLoadMoreImages];
             }
         } onFailure:nil];

@@ -824,10 +824,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Make sure buttons are back to initial state
     [self didCancelTapAddButton];
-}
 
--(void)dealloc
-{
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationGetCategoryData object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
@@ -845,6 +842,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Unregister upload progress
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc uploadProgress] object:nil];
+}
+
+-(void)dealloc
+{
+    self.imagesCollection = nil;
+    self.albumData = nil;
 }
 
 
@@ -1666,11 +1669,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }];
         }
         else if (self.categoryId == 0) {
-            // Album data freshly loaded in recursive mode
+            // Retrieve album data freshly loaded in recursive mode
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-            // Reload collection
-            [self.imagesCollection reloadData];
 
+            // Show search bar if necessary
             if ([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
                 // There exists album in cache ;-)
                 // For iOS 11 and later: place search bar in navigation bar of root album
@@ -1695,6 +1697,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 }
             }
             
+            // Reload collection
+            [self.imagesCollection reloadData];
+
             // Hide HUD if needed
             [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
         }
@@ -1792,7 +1797,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     else {
         for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
             // Retrieve old image Id
-            if (indexPath.item >= oldImages.count) { continue; }
+            if ((indexPath.section == 0) || (indexPath.item >= oldImages.count)) { continue; }
             NSInteger oldImageId = oldImages[indexPath.item].imageId;
             
             // Did we replace a dummy image with a real image?
@@ -3510,28 +3515,45 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)needToLoadMoreImages
 {
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
     NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
             // Did we collect more images?
             if (!hasNewImages) { return; }
-            // Prepare indexPaths of cells to reload (those corresponding to freshly loaded data)
+            // Prepare selection of indexPaths of cells to reload:
+            /// - those corresponding to freshly loaded data
+            /// - and those corresponding to visible cells
             NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
             for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
-                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:1]];
             }
-            // Reload cells
             dispatch_async(dispatch_get_main_queue(), ^{
+                // Reload cells
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+                // Display HUD if it will take more than a second to load image data
+                CFAbsoluteTime diff = (CFAbsoluteTimeGetCurrent() - start)*1000.0;
+                CFAbsoluteTime perImage = diff / (double)(newDownloadedImageCount - downloadedImageCount);
+                CFAbsoluteTime left = perImage * (double)(self.didScrollToImageIndex - newDownloadedImageCount);
+                NSLog(@"expected time: %.2f ms", left);
+                if (left > 1000.0) {
+                    if ([self.navigationController.view viewWithTag:loadingViewTag] == nil) {
+                        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
+                    } else {
+                        float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
+                        [self.navigationController updatePiwigoHUDWithProgress:fraction];
+                    }
+                } else {
+                    [self.navigationController hidePiwigoHUDWithCompletion:^{}];
+                }
             });
             // Should we continue loading images?
             NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
-            if (self.didScrollToImageIndex >= downloadedImageCount+imagesPerPage) {
+            if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                 [self needToLoadMoreImages];
             }
         } onFailure:nil];
