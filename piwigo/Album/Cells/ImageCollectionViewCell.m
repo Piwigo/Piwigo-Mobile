@@ -393,6 +393,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 -(void)prepareForReuse
 {
     [super prepareForReuse];
+    self.imageData = nil;
     self.cellImage.image = nil;
     self.deltaX = margin; self.deltaY = margin;
 	self.isSelected = NO;
