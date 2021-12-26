@@ -248,7 +248,7 @@
         [self reloadImagesCollectionFrom:oldImageList];
     }
     onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+        [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -641,7 +641,7 @@
         [self reloadImagesCollectionFrom:oldImageList];
     }
     onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+        [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -1313,9 +1313,9 @@
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
     if (self.totalNumberOfImages > 1) {
-        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     } else {
-        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
 
     // Retrieve image data
@@ -1326,8 +1326,8 @@
 {
     if (self.selectedImageIds.count <= 0) {
         // Close HUD with success
-        [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                 // Update button
                 [self.favoriteBarButton setFavoriteImageFor:YES];
                 self.favoriteBarButton.action = @selector(removeFromFavorites);
@@ -1351,7 +1351,7 @@
     // Add image to favorites
     [ImageUtilities addToFavorites:imageData completion:^{
         // Update HUD
-        [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
+        [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
         // Image info retrieved
         [self.selectedImageIds removeLastObject];
@@ -1362,7 +1362,7 @@
     } failure:^(NSError * _Nonnull error) {
         // Failed — Ask user if he/she wishes to retry
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageFavorites_title", @"Favorites") message:NSLocalizedString(@"imageFavoritesAddError_message", @"Failed to add this photo to your favorites.") errorMessage:error.localizedDescription dismiss:^{
-            [self.navigationController hidePiwigoHUDWithCompletion:^{
+            [self hidePiwigoHUDWithCompletion:^{
                 [self updateButtonsInSelectionMode];
             }];
         } retry:^{
@@ -1390,9 +1390,9 @@
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
     if (self.totalNumberOfImages > 1) {
-        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     } else {
-        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
 
     // Retrieve image data
@@ -1403,8 +1403,8 @@
 {
     if (self.selectedImageIds.count <= 0) {
         // Close HUD with success
-        [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                 // Update button
                 [self.favoriteBarButton setFavoriteImageFor:NO];
                 self.favoriteBarButton.action = @selector(addToFavorites);
@@ -1429,7 +1429,7 @@
     // Remove image from favorites
     [ImageUtilities removeFromFavorites:imageData completion:^{
         // Update HUD
-        [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
+        [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
         // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
@@ -1440,7 +1440,7 @@
     } failure:^(NSError * _Nonnull error) {
         // Failed — Ask user if he/she wishes to retry
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageFavorites_title", @"Favorites") message:NSLocalizedString(@"imageFavoritesRemoveError_message", @"Failed to remove this photo from your favorites.") errorMessage:error.localizedDescription dismiss:^{
-            [self.navigationController hidePiwigoHUDWithCompletion:^{
+            [self hidePiwigoHUDWithCompletion:^{
                 [self updateButtonsInSelectionMode];
             }];
         } retry:^{
@@ -1694,14 +1694,14 @@
                 CFAbsoluteTime left = perImage * (double)(self.didScrollToImageIndex - newDownloadedImageCount);
                 NSLog(@"expected time: %.2f ms", left);
                 if (left > 1000.0) {
-                    if ([self.navigationController.view viewWithTag:loadingViewTag] == nil) {
-                        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
+                    if ([self.view viewWithTag:loadingViewTag] == nil) {
+                        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
                     } else {
                         float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
-                        [self.navigationController updatePiwigoHUDWithProgress:fraction];
+                        [self updatePiwigoHUDWithProgress:fraction];
                     }
                 } else {
-                    [self.navigationController hidePiwigoHUDWithCompletion:^{}];
+                    [self hidePiwigoHUDWithCompletion:^{}];
                 }
             });
             // Should we continue loading images?

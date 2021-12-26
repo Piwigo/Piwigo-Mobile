@@ -217,7 +217,7 @@
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         [self.imagesCollection reloadData];
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+        [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -465,14 +465,14 @@
                 CFAbsoluteTime left = perImage * (double)(self.didScrollToImageIndex - newDownloadedImageCount);
                 NSLog(@"expected time: %.2f ms", left);
                 if (left > 1000.0) {
-                    if ([self.navigationController.view viewWithTag:loadingViewTag] == nil) {
-                        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
+                    if ([self.view viewWithTag:loadingViewTag] == nil) {
+                        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
                     } else {
                         float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
-                        [self.navigationController updatePiwigoHUDWithProgress:fraction];
+                        [self updatePiwigoHUDWithProgress:fraction];
                     }
                 } else {
-                    [self.navigationController hidePiwigoHUDWithCompletion:^{}];
+                    [self hidePiwigoHUDWithCompletion:^{}];
                 }
             });
             // Should we continue loading images?
