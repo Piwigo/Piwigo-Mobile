@@ -532,6 +532,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
+            CategoryCollectionViewCell *albumCell = (CategoryCollectionViewCell*)cell;
+            [albumCell applyColorPalette];
+        }
         if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell*)cell;
             [imageCell applyColorPalette];

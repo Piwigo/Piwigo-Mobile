@@ -21,5 +21,6 @@
 @property (nonatomic, weak) id<CategoryCollectionViewCellDelegate> categoryDelegate;
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
+-(void)applyColorPalette;
 
 @end

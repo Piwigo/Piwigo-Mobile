@@ -46,6 +46,11 @@
 	return self;
 }
 
+-(void)applyColorPalette
+{
+    [self.tableView reloadData];
+}
+
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {
 	self.albumData = albumData;
