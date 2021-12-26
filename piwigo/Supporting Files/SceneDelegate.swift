@@ -131,7 +131,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
         // Save cached data
-        DataController.saveContext()
+        DispatchQueue.main.async {
+            DataController.saveContext()
+        }
     }
 
     @available(iOS 13.0, *)
