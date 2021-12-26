@@ -315,11 +315,15 @@
 {
     [super viewWillDisappear:animated];
     
-    // Do not show album title in backButtonItem of child view to provide enough space for image title
-    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-    if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
-        self.title = @"";
-    }    
+    if (@available(iOS 15, *)) {
+        // Keep title
+    } else {
+        // Do not show album title in backButtonItem of child view to provide enough space for image title
+        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+        if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
+            self.title = @"";
+        }
+    }
 
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
