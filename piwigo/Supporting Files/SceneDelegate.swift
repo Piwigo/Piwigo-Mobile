@@ -99,11 +99,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Should we reopen the session and restart uploads?
-        if let rootVC = self.window?.rootViewController,
-           let _ = rootVC.children.first as? AlbumImagesViewController {
+        if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
+           !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
             // Determine for how long the session is opened
             let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-3600) { // Piwigo 11 session duration defaults to an hour
+            if timeSinceLastLogin < TimeInterval(-300) { // Piwigo 11 session duration defaults to an hour
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator

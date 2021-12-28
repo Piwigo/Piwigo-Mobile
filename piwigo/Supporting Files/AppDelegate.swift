@@ -220,8 +220,8 @@ import piwigoKit
             }
 
             // Should we resume uploads?
-            if let rootVC = self.window?.rootViewController,
-               rootVC.children.first is AlbumImagesViewController {
+            if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
+               !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
                 // Determine for how long the session is opened
                 let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
                 if timeSinceLastLogin < TimeInterval(-300) { // i.e. 5 minutes (Piwigo 11 session duration defaults to an hour)
