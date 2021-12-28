@@ -1382,7 +1382,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
-            AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true,
+            AlbumService.getAlbumList(forCategory: 0, usingCache: false,
                     onCompletion: { task, albums in
                         // Hide loading HUD
                         self.hidePiwigoHUD {
@@ -1599,26 +1599,6 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         } else if subcategories.count > 0 {
             // Sub-categories are already known
             addSubCaterories(toCategoryID: categoryTapped)
-        } else {
-            // Sub-categories are not known — should never happen
-            // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-            AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
-                                      usingCache: true,
-                                      inRecursiveMode: false,
-                                      onCompletion: { task, albums in
-                                        // Hide loading HUD
-                                        self.hidePiwigoHUD {
-                                            // Add sub-categories
-                                            self.addSubCaterories(toCategoryID: categoryTapped)
-                                        }
-                                    },
-                                      onFailure: { task, error in
-                                        // Hide loading HUD
-                                        self.hidePiwigoHUD {
-                                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                                        }
-                                    })
         }
     }
 }

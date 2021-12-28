@@ -229,11 +229,9 @@ import piwigoKit
                     /// - Resume upload operations in background queue
                     ///   and update badge, upload button of album navigator
                     reloginAndRetry {
-                        // Refresh Album/Images view
-                        let uploadInfo: [String : Any] = ["fromCache" : "NO",
-                                                          "albumId" : String(0)]
+                        // Reload category data from server
                         let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                        NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
                     }
                 } else {
                     /// - Resume upload operations in background queue

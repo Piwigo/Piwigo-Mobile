@@ -21,7 +21,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 +(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
                                  usingCache:(BOOL)cached
-                            inRecursiveMode:(BOOL)recursive
                                OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
@@ -38,9 +37,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
             return nil;
         }
     }
-
-    // Recursive option ?
-    NSString *recursiveString = recursive ? @"true" : @"false";
 
     // Community extension active ?
     NSString *fakedString = NetworkVarsObjc.usesCommunityPluginV29 ? @"false" : @"true";
@@ -100,7 +96,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"cat_id" : @(categoryId),
-                                 @"recursive" : recursiveString,
+                                 @"recursive" : @"true",
                                  @"faked_by_community" : fakedString,
                                  @"thumbnail_size" : thumbnailSize
                                  };
@@ -133,7 +129,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       // Update albums if Community extension installed (not needed for admins)
                       if (!NetworkVarsObjc.hasAdminRights &&
                           NetworkVarsObjc.usesCommunityPluginV29) {
-                          [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
+                          [AlbumService setUploadRightsForCategory:categoryId];
                       }
 
                       if(completion)
@@ -264,10 +260,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 	return albums;
 }
 
-+(void)setUploadRightsForCategory:(NSInteger)categoryId inRecursiveMode:(NSString *)recursive
++(void)setUploadRightsForCategory:(NSInteger)categoryId
 {
     [self getCommunityAlbumListForCategory:categoryId
-                           inRecursiveMode:recursive
+                           inRecursiveMode:@"true"
                               OnCompletion:^(NSURLSessionTask *task, id responseObject) {
                                   if (responseObject) {
                                       // Extract albums data from JSON message
