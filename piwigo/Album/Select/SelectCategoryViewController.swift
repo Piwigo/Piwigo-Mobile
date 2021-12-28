@@ -1382,7 +1382,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
-            //        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
             AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true,
                     onCompletion: { task, albums in
                         // Hide loading HUD
@@ -1601,12 +1600,9 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             // Sub-categories are already known
             addSubCaterories(toCategoryID: categoryTapped)
         } else {
-            // Sub-categories are not known
-            // NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
+            // Sub-categories are not known — should never happen
             // Show loading HD
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
                                       usingCache: true,
                                       inRecursiveMode: false,
