@@ -795,7 +795,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
             
             // Load favorites data in the background with dedicated URL session
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
                 [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
                 forProgress:^(NSInteger onPage, NSInteger outOf){
                     // Post to the app that favorites data are loaded

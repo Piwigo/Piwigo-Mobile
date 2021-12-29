@@ -151,7 +151,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         [self.backgroundImage setImageWithURLRequest:request
                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^(void){
                 // Process saliency
                 UIImage *croppedImage;
                 if (@available(iOS 13.0, *)) {
