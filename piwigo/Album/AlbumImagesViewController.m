@@ -112,7 +112,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
 		
         // Initialise selection mode
@@ -1702,7 +1701,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
 
     // Reload images and refresh collection
-    [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
         // Set navigation bar buttons
         if (self.isSelect == YES) {
             [self initButtonsInSelectionMode];
