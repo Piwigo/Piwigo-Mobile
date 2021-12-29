@@ -113,7 +113,7 @@ extension UploadManager {
                                          "pwg_token": NetworkVars.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kPiwigoImagesUploadCompleted, paramDict: paramDict,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 2500) { jsonData, error in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
             // Any error?
             /// - Network communication errors
