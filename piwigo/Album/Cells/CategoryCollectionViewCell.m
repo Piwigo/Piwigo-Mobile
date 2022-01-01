@@ -306,17 +306,13 @@
                             [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
                                 [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                        // Update album data
                                         self.albumData.name = albumName;
                                         self.albumData.comment = albumComment;
                                         
-                                        // Notify album/image view of modification
-                                        NSDictionary *userInfo = @{@"albumId" : @(self.albumData.parentAlbumId)};
-                                        [[NSNotificationCenter defaultCenter]
-                                            postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                          object:nil userInfo:userInfo];
-
-                                        // Hide swipe buttons
+                                        // Update cell and hide swipe buttons
                                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+                                        [cell setupWithAlbumData:self.albumData];
                                         [cell hideSwipeAnimated:YES];
                                     });
                                 }];
