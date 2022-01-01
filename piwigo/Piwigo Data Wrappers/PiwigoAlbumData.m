@@ -36,8 +36,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	self = [super init];
 	if(self)
 	{
-		self.imageIds = [NSMutableDictionary new];
-		
         self.isLoadingMoreImages = NO;
         self.lastImageBulkCount = 0;
 		self.onPage = 0;
@@ -277,7 +275,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         if (indexOfExistingItem == NSNotFound) {
             count++;
             [newImageList addObject:imageData];
-            [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
         } else {
             [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
         }
@@ -305,7 +302,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }];
     if (indexOfExistingItem == NSNotFound) {
 		[newImageList addObject:imageData];
-		[self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
     } else {
         [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
     }
@@ -403,7 +399,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         }];
         if (indexOfItem == NSNotFound) { continue; }
         [newImageList removeObjectAtIndex:indexOfItem];
-        [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", (long)image.imageId]];
     }
     
     self.imageList = newImageList;
@@ -421,7 +416,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(void)resetData
 {
-	self.imageIds = [NSMutableDictionary new];
 	self.isLoadingMoreImages = NO;
     self.lastImageBulkCount = 0;
 	self.onPage = 0;
