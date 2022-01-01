@@ -229,12 +229,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
         // When "representative_picture_id" is null or not supplied: no album image
         if (([category objectForKey:@"representative_picture_id"] != nil) &&
-            ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
+            ([category objectForKey:@"representative_picture_id"] != [NSNull null]) &&
+            (albumData.numberOfImages > 0))
 		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
 		}
         if (([category objectForKey:@"tn_url"] != nil) &&
-            ([category objectForKey:@"tn_url"] != [NSNull null]))
+            ([category objectForKey:@"tn_url"] != [NSNull null]) &&
+            (albumData.numberOfImages > 0))
         {
             albumData.albumThumbnailUrl = [NetworkHandler encodedImageURL:[category objectForKey:@"tn_url"]];
         } else {
