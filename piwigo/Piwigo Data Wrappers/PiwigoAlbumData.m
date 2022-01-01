@@ -252,6 +252,14 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }];
 }
 
+-(BOOL)hasAllImagesInCache
+{
+    if (self.imageList.count < self.numberOfImages) {
+        return NO;
+    }
+    return YES;
+}
+
 -(NSInteger)addImages:(NSArray<PiwigoImageData*> *)images
 {
     // Create new image list
