@@ -254,9 +254,17 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(BOOL)hasAllImagesInCache
 {
+    // Check that the number of images is the expected one
     if (self.imageList.count < self.numberOfImages) {
         return NO;
     }
+
+    // Check if there are still non-loaded image data
+    NSInteger indexOfNonCachedImage = [self.imageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return obj.imageId == NSNotFound;
+    }];
+    if (indexOfNonCachedImage != NSNotFound) { return NO; }
+
     return YES;
 }
 
