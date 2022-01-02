@@ -825,10 +825,15 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     }
     else {
         // Hide HUD if needed
-        [self.hudViewController hidePiwigoHUDWithCompletion:^{
+        if (self.hudViewController) {
+            [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                // Was it a relogin after encountering an arror?
+                if (reloginCompletion) { reloginCompletion(); }
+            }];
+        } else {
             // Was it a relogin after encountering an arror?
             if (reloginCompletion) { reloginCompletion(); }
-        }];
+        }
     }
 }
 
