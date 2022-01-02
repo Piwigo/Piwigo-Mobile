@@ -350,7 +350,7 @@ class ImageUtilities: NSObject {
                     DispatchQueue.global(qos: .userInteractive).async {
                         // Remove image from cache
                         CategoriesData.sharedInstance()
-                            .removeImage(imageData, fromCategory: "\(kPiwigoFavoritesCategoryId)")
+                            .removeImage(imageData, fromCategory: String(kPiwigoFavoritesCategoryId))
                     }
                     completion()
                 }
