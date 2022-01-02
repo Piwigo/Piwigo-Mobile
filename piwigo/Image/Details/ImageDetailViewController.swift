@@ -1395,6 +1395,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             // Create view controller for presenting next image
             guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
             nextImage.imagePreviewDelegate = self
+            imageIndex = indexOfRemovedImage
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
@@ -1423,6 +1424,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             // Create view controller for presenting next image
             guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
             prevImage.imagePreviewDelegate = self
+            imageIndex = indexOfRemovedImage - 1
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
