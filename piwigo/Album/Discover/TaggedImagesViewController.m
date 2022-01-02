@@ -1610,8 +1610,7 @@
     }
     
     // Load more image data if possible (page after page…)
-    PiwigoAlbumData *cachedAlbum = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId];
-    if (cachedAlbum.imageList.count < cachedAlbum.numberOfImages) {
+    if (![[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] hasAllImagesInCache]) {
         [self needToLoadMoreImages];
     }
     
