@@ -33,13 +33,18 @@
         // Is image data already in cache?
         NSMutableArray<PiwigoImageData *> *imageList = [NSMutableArray<PiwigoImageData *> new];
         PiwigoAlbumData *album = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-        if ((album != nil) && (album.imageList != nil)) {
-            // Retrieve images in cache
-            [imageList addObjectsFromArray:album.imageList];
+        if ((categoryId > 0) && (album != nil)) {
+            // Do we have images in cache?
+            if (album.imageList != nil) {
+                // Retrieve images in cache
+                [imageList addObjectsFromArray:album.imageList];
+            }
             
             // Complete image list if necessary
             for (NSInteger i = album.imageList.count; i < album.numberOfImages; i++) {
-                [imageList addObject:[PiwigoImageData new]];
+                PiwigoImageData *imageData = [PiwigoImageData new];
+                imageData.imageId = NSNotFound;
+                [imageList addObject:imageData];
             }
         }
         self.images = [NSArray<PiwigoImageData *> arrayWithArray:imageList];
