@@ -100,8 +100,7 @@
     if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
 	{
         NSLog(@"loadMoreImagesOnCompletion: we have all image data");
-        // We have all the image data, just manually sort it (uploaded images are appended to cache)
-//        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSortObjc)AlbumVars.defaultSort];
+        // We have all the image data in cache)
         self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if (completion) { completion(NO); }
 		return;
@@ -121,7 +120,6 @@
         }
         
         // We have new image data, append them to cache and complete list with unknowns
-//        NSMutableArray<PiwigoImageData *> *images = [[CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType] mutableCopy];
         NSMutableArray<PiwigoImageData *> *images = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList mutableCopy];
         NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
         NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
@@ -169,8 +167,7 @@
 	
     NSLog(@"updateImageSort   => catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
-	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
-//        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
+	{	// We have all the image data in cache)
         self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if (completion)
 		{
