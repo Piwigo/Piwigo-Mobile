@@ -92,7 +92,12 @@
 
 -(void)autoUploadUpdated:(NSNotification *)notification
 {
-    [self.tableView reloadData];
+    // Is this cell concerned?
+    if (self.albumData.albumId != UploadVarsObjc.autoUploadCategoryId) { return; }
+    
+    // Disallow user to delete the active auto-upload destination album
+    AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [cell refreshButtons:YES];
 }
 
 
