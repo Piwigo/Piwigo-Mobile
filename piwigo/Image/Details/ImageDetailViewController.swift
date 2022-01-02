@@ -798,7 +798,7 @@ import piwigoKit
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
                     // Remove image from cache and update UI in main thread
                     CategoriesData.sharedInstance()
-                        .removeImage(self.imageData, fromCategory: "\(self.categoryId)")
+                        .removeImage(self.imageData, fromCategory: String(self.categoryId))
                     // Display preceding/next image or return to album view
                     self.didRemoveImage(withId: self.imageData.imageId)
                 }
