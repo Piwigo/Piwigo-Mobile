@@ -1312,7 +1312,7 @@ extension ImageDetailViewController: EditImageParamsDelegate
         if categoryId == kPiwigoTagsCategoryId,
            let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
            let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
-            // Delete this image from the category and the parent colelction
+            // Delete this image from the category and the parent collection
             CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
             // … and delete it from this data source
             didRemoveImage(withId: params.imageId)
