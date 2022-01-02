@@ -358,7 +358,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
               // Add new category to list of recent albums
               NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:newCatId]};
-              [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc addRecentAlbum] object:nil userInfo:userInfo];
+              [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.addRecentAlbum
+                                                                  object:nil userInfo:userInfo];
               
               // Task completed successfully
               if(completion)
