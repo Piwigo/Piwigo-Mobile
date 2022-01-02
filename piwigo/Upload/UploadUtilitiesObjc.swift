@@ -85,4 +85,10 @@ class UploadUtilitiesObjc: NSObject {
             CategoriesData.sharedInstance()?.addImage(imageData)
         }
     }
+    
+    @objc class func disableAutoUpload() {
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.disableAutoUpload()
+        }
+    }
 }
