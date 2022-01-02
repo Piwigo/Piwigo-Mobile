@@ -35,7 +35,6 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
     private var downloadTask: URLSessionDataTask?
-    private var previousScale: CGFloat = 0          // To remember the previous image scale
     private var userDidTapView: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
     private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
@@ -489,16 +488,6 @@ extension ImagePreviewViewController: UIScrollViewDelegate
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
             updateImageViewConstraints()
-        }
-
-        // Should we quit the preview mode?
-        if (scale == scrollView.minimumZoomScale) &&
-            (previousScale == scrollView.minimumZoomScale) {
-            // The user scaled down twice the image => back to collection of images
-            let name = NSNotification.Name(rawValue: kPiwigoNotificationPinchedImage)
-            NotificationCenter.default.post(name: name, object: nil)
-        } else {
-            previousScale = scale
         }
     }
 }

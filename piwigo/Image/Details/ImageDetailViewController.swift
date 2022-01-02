@@ -10,8 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
-
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
     func didUpdateImage(withData imageData: PiwigoImageData)
@@ -212,9 +210,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         // Manage single taps
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapView)))
 
-        // Register image pinches
-        NotificationCenter.default.addObserver(self, selector: #selector(didPinchView), name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
-
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
@@ -330,9 +325,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     }
 
     deinit {
-        // Unregister image pinches
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
-
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
@@ -704,11 +696,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     // Display/hide home indicator
     override var prefersHomeIndicatorAutoHidden: Bool {
         return navigationController?.isNavigationBarHidden ?? false
-    }
-
-    @objc func didPinchView() {
-        // Return to image collection
-        navigationController?.popViewController(animated: true)
     }
 
 
