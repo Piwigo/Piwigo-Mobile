@@ -160,9 +160,6 @@
     }];
 }
 
-
-#pragma mark - Image sorting
-
 -(void)updateImageSort:(kPiwigoSortObjc)imageSort
           onCompletion:(void (^)(void))completion
              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail

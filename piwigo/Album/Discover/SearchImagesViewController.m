@@ -22,8 +22,6 @@
 @property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-
-@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -35,10 +33,8 @@
     self = [super init];
     if(self)
     {
+        // Initialisation
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-        
-        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
-        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
         // Collection of images
@@ -118,12 +114,28 @@
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell*)cell;
+            [imageCell applyColorPalette];
+        }
+    }
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewWillAppear    => ID:%ld", (long)kPiwigoSearchCategoryId);
+#endif
+    // Initialise data source
+    self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
+
     // Set colors, fonts, etc.
     [self applyColorPalette];
 
@@ -154,10 +166,7 @@
     }
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
-
-    // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 -(void)scrollToHighlightedCell
@@ -200,11 +209,8 @@
 
 -(void)dealloc
 {
-    // Unregister category data updates
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
-
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 
@@ -214,35 +220,25 @@
 {
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
         [self.imagesCollection reloadData];
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
--(void)removeImageFromCategory:(NSNotification *)notification
+-(void)removeImageWithId:(NSInteger)imageId
 {
-    if (notification == nil) { return; }
-    NSDictionary *userInfo = notification.userInfo;
-
-    // Right category Id?
-    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-    if (catId != kPiwigoSearchCategoryId) return;
-    
-    // Get ID of removed image
-    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-    NSLog(@"=> removeImage %ld from Category %ld", (long)imageId, (long)catId);
-
     // Get index of deleted image
     NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
      return obj.imageId == imageId;
     }];
     if (indexOfExistingItem != NSNotFound) {
-        // Delete image from data source and corresponding cell
+        // Remove image from data source
         NSMutableArray<PiwigoImageData *> *imageList = [self.albumData.images mutableCopy];
         [imageList removeObjectAtIndex:indexOfExistingItem];
         self.albumData.images = imageList;
+        // Delete corresponding cell
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
         if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
             [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
@@ -465,7 +461,7 @@
                 NSLog(@"expected time: %.2f ms", left);
                 if (left > 1000.0) {
                     if ([self.view viewWithTag:loadingViewTag] == nil) {
-                        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeDeterminate];
+                        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
                     } else {
                         float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
                         [self updatePiwigoHUDWithProgress:fraction];

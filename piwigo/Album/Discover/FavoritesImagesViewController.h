@@ -11,5 +11,6 @@
 @interface FavoritesImagesViewController : UIViewController
 
 -(instancetype)init;
+-(void)removeImageWithId:(NSInteger)imageId;
 
 @end

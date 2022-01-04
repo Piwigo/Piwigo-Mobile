@@ -152,7 +152,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.isAlreadyTryingToLogin = NO;
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 -(void)applyColorPalette
@@ -197,7 +197,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
     
     // Release memory
     self.hudViewController = nil;
@@ -779,60 +779,68 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Load navigation if needed
     if (isFirstLogin) {
-        // Load favorites in the background before loading image data if needed
-        if (!NetworkVarsObjc.hasGuestRights &&
-            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
-        {
-            // Update HUD during login
-            [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
-                      detail:NSLocalizedString(@"imageFavorites_title", @"Favorites")
-                 buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
-                buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
-                      inMode:MBProgressHUDModeIndeterminate];
+        // Update HUD during login
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")
+                  detail:NSLocalizedString(@"tabBar_albums", @"Albums")
+             buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+            buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+                  inMode:MBProgressHUDModeIndeterminate];
 
-            // Initialise favorites album
-            PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-            [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
-            
-            // Load favorites data in the background with dedicated URL session
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-                [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
-                forProgress:^(NSInteger onPage, NSInteger outOf){
-                    // Post to the app that favorites data are loaded
-                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                                        object:nil userInfo:userInfo];
+        // Load category data in recursive mode
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
+            [AlbumService getAlbumDataAndUpdate:NO onCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                // Reinitialise flag
+                NetworkVarsObjc.userCancelledCommunication = NO;
+                
+                // Hide HUD and present root album
+                if (self.hudViewController) {
+                    [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                        // Present Album/Images view and resume uploads
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    }];
+                } else {
+                    [self hidePiwigoHUDWithCompletion:^{
+                        // Present Album/Images view and resume uploads
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    }];
                 }
-                onCompletion:^(BOOL completed) {
-                    // Post to the app that favorites data are loaded
-                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                                        object:nil userInfo:userInfo];
+                
+                // Load favorites in the background if necessary
+                if (!NetworkVarsObjc.hasGuestRights &&
+                    ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
+                {
+                    // Initialise favorites album
+                    PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+                    [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+                    
+                    // Load favorites data in the background with dedicated URL session
+                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
+                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                        forProgress:nil onCompletion:nil onFailure:nil];
+                    });
                 }
-                onFailure:nil];
-            });
-        }
-
-        // Reinitialise flag
-        NetworkVarsObjc.userCancelledCommunication = NO;
-        
-        // Hide HUD
-        [self.hudViewController hidePiwigoHUDWithCompletion:^{
-            // Present Album/Images view and resume uploads
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadNavigation];
-        }];
+            }
+            onFailure:^(NSURLSessionTask *task, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    // Inform user that we could not load album data
+                    NetworkVarsObjc.hadOpenedSession = NO;
+                    [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                });
+            }];
+        });
     }
     else {
         // Hide HUD if needed
         if (self.hudViewController) {
             [self.hudViewController hidePiwigoHUDWithCompletion:^{
-                // Was it a relogin after encountering an arror?
                 if (reloginCompletion) { reloginCompletion(); }
             }];
         } else {
-            // Was it a relogin after encountering an arror?
-            if (reloginCompletion) { reloginCompletion(); }
+            [self hidePiwigoHUDWithCompletion:^{
+                if (reloginCompletion) { reloginCompletion(); }
+            }];
         }
     }
 }
@@ -860,33 +868,83 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
-                                if(result)
-                                {
-                                    // Session now re-opened
-                                    NetworkVarsObjc.hadOpenedSession = YES;
-                                    
-                                    // First determine user rights if Community extension installed
-                                    [self getCommunityStatusAtFirstLogin:NO
-                                                   withReloginCompletion:reloginCompletion];
-                                }
-                                else
-                                {
-                                    // Session could not be re-opened, inform user
-                                    NetworkVarsObjc.hadOpenedSession = NO;
-                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-                                    [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                                    self.isAlreadyTryingToLogin = NO;
-                                }
+        if(result) {
+            // Session now re-opened
+            NetworkVarsObjc.hadOpenedSession = YES;
+            
+            // First determine user rights if Community extension installed
+            [self getCommunityStatusAtFirstLogin:NO
+                           withReloginCompletion:reloginCompletion];
+        }
+        else {
+            // Session could not be re-opened, inform user
+            NetworkVarsObjc.hadOpenedSession = NO;
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            self.isAlreadyTryingToLogin = NO;
+        }
 
-                            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                // Could not re-establish the session, login/pwd changed, something else ?
-                                self.isAlreadyTryingToLogin = NO;
-                                NetworkVarsObjc.hadOpenedSession = NO;
-                                
-                                // Display error message
-                                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                            }];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Could not re-establish the session, login/pwd changed, something else ?
+        self.isAlreadyTryingToLogin = NO;
+        NetworkVarsObjc.hadOpenedSession = NO;
+        
+        // Display error message
+        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+    }];
 }
+
+-(void)reloadCatagoryDataInBckgMode
+{
+    // Display HUD
+    self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")
+              detail:NSLocalizedString(@"tabBar_albums", @"Albums")
+         buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+        buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+              inMode:MBProgressHUDModeIndeterminate];
+
+    // Load category data in recursive mode
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
+        [AlbumService getAlbumDataAndUpdate:YES onCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+            UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
+            if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+                // Check data source and reload collection if needed
+                AlbumImagesViewController *vc = (AlbumImagesViewController *)viewController;
+                [vc checkIfCategoryStillExists];
+            }
+
+            // Hide HUD and resume upload operations
+            [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                // Resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate resumeAll];
+            }];
+            
+            // Load favorites in the background if necessary
+//            if (!NetworkVarsObjc.hasGuestRights &&
+//                ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
+//            {
+//                // Initialise favorites album
+//                PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+//                [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+//
+//                // Load favorites data in the background with dedicated URL session
+//                dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
+//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+//                    forProgress:nil onCompletion:nil onFailure:nil];
+//                });
+//            }
+        }
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Inform user that we could not load album data
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            });
+        }];
+    });
+}
+
 
 #pragma mark - HUD methods
 

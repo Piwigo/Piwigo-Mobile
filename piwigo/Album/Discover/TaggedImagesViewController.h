@@ -11,5 +11,6 @@
 @interface TaggedImagesViewController : UIViewController
 
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
+-(void)removeImageWithId:(NSInteger)imageId;
 
 @end

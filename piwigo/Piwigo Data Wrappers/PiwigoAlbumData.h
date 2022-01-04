@@ -65,6 +65,7 @@ typedef enum {
 -(void)addUploadedImage:(PiwigoImageData*)imageData;
 -(void)updateImages:(NSArray<PiwigoImageData*> *)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
+-(void)removeAllImages;
 -(void)removeImages:(NSArray<PiwigoImageData*> *)images;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;

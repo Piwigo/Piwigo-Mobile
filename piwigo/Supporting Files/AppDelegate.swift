@@ -223,15 +223,15 @@ import piwigoKit
             if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
                !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
                 // Determine for how long the session is opened
+                /// Piwigo 11 session duration defaults to an hour.
                 let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-                if timeSinceLastLogin < TimeInterval(-300) { // i.e. 5 minutes (Piwigo 11 session duration defaults to an hour)
+                if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
                     /// - Perform relogin
                     /// - Resume upload operations in background queue
                     ///   and update badge, upload button of album navigator
                     reloginAndRetry {
-                        // Reload category data from server
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+                        // Reload category data from server in background mode
+                        self.loginVC.reloadCatagoryDataInBckgMode()
                     }
                 } else {
                     /// - Resume upload operations in background queue
@@ -540,8 +540,7 @@ import piwigoKit
 
     @objc func loadNavigation() {
         // Display default album
-        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.defaultCategory,
-                                                           inCache: false) else { return }
+        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.defaultCategory) else { return }
         if #available(iOS 13.0, *) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
@@ -845,8 +844,6 @@ import piwigoKit
         imageData.xxLargeHeight = notification.userInfo?["xxLargeHeight"] as? Int ?? 1
 
         // Add uploaded image to cache and update UI if needed
-        DispatchQueue.main.async {
-            CategoriesData.sharedInstance()?.addImage(imageData)
-        }
+        CategoriesData.sharedInstance()?.addImage(imageData)
     }
 }

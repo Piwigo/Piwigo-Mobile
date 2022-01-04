@@ -172,8 +172,7 @@ import piwigoKit
             // Unknown list -> initialise album and download list
             let nberImagesPerPage = ImagesCollection.numberOfImagesToDownloadPerPage()
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
-            CategoriesData.sharedInstance()
-                .updateCategories([favoritesAlbum], andUpdateUI: false)
+            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
                 .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),

@@ -13,12 +13,14 @@
 @protocol CategoryCollectionViewCellDelegate <NSObject>
 
 -(void)pushCategoryView:(UIViewController*)viewController;
+-(void)removeCategory:(UICollectionViewCell *)albumCell;
 
 @end
 
 @interface CategoryCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<CategoryCollectionViewCellDelegate> categoryDelegate;
+@property (nonatomic, strong) PiwigoAlbumData *albumData;
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 -(void)applyColorPalette;

@@ -28,5 +28,6 @@
 
 -(void)launchLogin;
 -(void)performReloginWithCompletion:(void (^)(void))reloginCompletion;
+-(void)reloadCatagoryDataInBckgMode;
 
 @end

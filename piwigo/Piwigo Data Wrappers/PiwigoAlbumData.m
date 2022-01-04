@@ -21,7 +21,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 @interface PiwigoAlbumData()
 
 @property (nonatomic, strong) NSArray<PiwigoImageData*> *imageList;
-@property (nonatomic, strong) NSMutableDictionary *imageIds;
 
 @property (nonatomic, assign) BOOL isLoadingMoreImages;
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
@@ -39,6 +38,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         self.isLoadingMoreImages = NO;
         self.lastImageBulkCount = 0;
 		self.onPage = 0;
+        self.imageList = [NSArray<PiwigoImageData *> new];
 	}
 	return self;
 }
@@ -80,8 +80,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
     albumData.albumId = kPiwigoSearchCategoryId;
-    if (query == nil) query = @"";
-    albumData.query = [NSString stringWithString:query];
+    if (query == nil) {
+        albumData.query = @"";
+    } else {
+        albumData.query = [NSString stringWithString:query];
+    }
     
     // No parent album
     albumData.parentAlbumId = kPiwigoSearchCategoryId;
@@ -402,6 +405,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     self.imageList = newImageList;
 }
 
+-(void)removeAllImages
+{
+    self.imageList = [NSArray<PiwigoImageData *> new];
+}
+
 -(void)removeImages:(NSArray*)images
 {
     NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
@@ -435,7 +443,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	self.isLoadingMoreImages = NO;
     self.lastImageBulkCount = 0;
 	self.onPage = 0;
-	self.imageList = [NSArray new];
+    self.imageList = [NSArray<PiwigoImageData *> new];
 }
 
 -(void)incrementImageSizeByOne

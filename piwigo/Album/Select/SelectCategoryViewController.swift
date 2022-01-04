@@ -24,6 +24,11 @@ protocol SelectCategoryDelegate: NSObjectProtocol {
 }
 
 @objc
+protocol SelectCategoryAlbumMovedDelegate {
+    func didMoveCategory()
+}
+
+@objc
 protocol SelectCategoryImageCopiedDelegate: NSObjectProtocol {
     func didCopyImage(withData imageData: PiwigoImageData)
 }
@@ -37,6 +42,7 @@ protocol SelectCategoryImageRemovedDelegate {
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var delegate: SelectCategoryDelegate?
+    @objc weak var albumMovedDelegate: SelectCategoryAlbumMovedDelegate?
     @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
@@ -277,8 +283,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewWillDisappear(animated)
         
         // Re-enable toolbar items in image preview mode
-        if [kPiwigoCategorySelectActionMoveAlbum,
-            kPiwigoCategorySelectActionSetAlbumThumbnail,
+        if [kPiwigoCategorySelectActionSetAlbumThumbnail,
             kPiwigoCategorySelectActionCopyImage,
             kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImage,
@@ -1060,11 +1065,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     self.inputCategoryData.parentAlbumId = parentCatData.albumId
                     catToUpdate.append(self.inputCategoryData)
 
-                    // Update cache (will refresh album/images view)
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate, andUpdateUI: true)
+                    // Update categories in cache
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                    
+                    // Hide HUD, swipe and view then remove category from the album/images collection view
                     self.updatePiwigoHUDwithSuccess() {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true)
+                            self.dismiss(animated: true) {
+                                self.albumMovedDelegate?.didMoveCategory()
+                            }
                         }
                     }
                 } else {
@@ -1382,22 +1391,20 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
-            AlbumService.getAlbumList(forCategory: 0, usingCache: false,
-                    onCompletion: { task, albums in
-                        // Hide loading HUD
-                        self.hidePiwigoHUD {
-                            // Build category array
-                            self.buildCategoryArray()
-                            completion(true)
-                        }
-                    },
-                    onFailure: { task, error in
-                        // Hide loading HUD
-                        self.hidePiwigoHUD {
-                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                            fail(task, error!)
-                        }
-                    })
+            AlbumService.getAlbumDataAndUpdate(true) { _, _ in
+                // Hide loading HUD
+                self.hidePiwigoHUD {
+                    // Build category array
+                    self.buildCategoryArray()
+                    completion(true)
+                }
+            } onFailure: { task, error in
+                // Hide loading HUD
+                self.hidePiwigoHUD {
+                    debugPrint(String(format: "getAlbumData: %@", error?.localizedDescription ?? ""))
+                    fail(task, error!)
+                }
+            }
         } else {
             // Build category array from cache
             buildCategoryArray()

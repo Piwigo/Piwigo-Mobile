@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "PiwigoAlbumData.h"
 
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationGetCategoryData;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationCategoryDataUpdated;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 
 @interface CategoriesData : NSObject
@@ -24,7 +22,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 -(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
 -(void)deleteCategoryWithId:(NSInteger)categoryId;
 -(void)replaceAllCategories:(NSArray*)categories;
--(void)updateCategories:(NSArray*)categories andUpdateUI:(BOOL)updateUI;
+-(void)updateCategories:(NSArray*)categories;
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;

@@ -14,21 +14,20 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
 
 @interface AlbumService : NetworkHandler
 
-+(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
-                                 usingCache:(BOOL)cached
-                               OnCompletion:(void (^)(NSURLSessionTask *task, NSArray
-                                                      *albums))completion
-                                  onFailure:(void (^)(NSURLSessionTask *task, NSError
-                                                      *error))fail;
++(NSURLSessionTask*)getAlbumDataAndUpdate:(BOOL)updateOnly
+                             onCompletion:(void (^)(NSURLSessionTask *task,
+                                                    NSArray *albums))completion
+                                onFailure:(void (^)(NSURLSessionTask *task,
+                                                    NSError *error))fail;
 
 +(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
                                 withStatus:(NSString*)categoryStatus
                                 andComment:(NSString*)categoryComment
                                   inParent:(NSInteger)categoryId
-                              OnCompletion:(void (^)(NSURLSessionTask *task, BOOL
-                                                     createdSuccessfully))completion
-                                 onFailure:(void (^)(NSURLSessionTask *task, NSError
-                                                     *error))fail;
+                              OnCompletion:(void (^)(NSURLSessionTask *task,
+                                                     NSInteger newCatId))completion
+                                 onFailure:(void (^)(NSURLSessionTask *task,
+                                                     NSError *error))fail;
 
 +(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
                            forName:(NSString *)categoryName

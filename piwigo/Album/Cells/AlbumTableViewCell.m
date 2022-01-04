@@ -122,16 +122,21 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }
     
     // Display album image
+    UIImage *placeHolder = [UIImage imageNamed:@"placeholder"];
     self.backgroundImage.layer.cornerRadius = 10;
-    if (albumData.albumThumbnailUrl.length == 0)
-    {
+    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+
+    if (albumData.albumThumbnailUrl.length == 0) {
         // No album thumbnail
         albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
         self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
-        return;
     }
-    else
-    {
+    else if (albumData.categoryImage && imageSize > 0 &&
+             ![albumData.categoryImage isEqual:placeHolder]) {
+         // Album thumbnail in memory
+         self.backgroundImage.image = albumData.categoryImage;
+    }
+     else {
         // Load album thumbnail
         __weak typeof(self) weakSelf = self;
         CGSize size = self.backgroundImage.bounds.size;

@@ -53,6 +53,7 @@
       debugXPCServices = "NO"
       migratedStopOnEveryIssue = "YES"
       debugServiceExtension = "internal"
+      enableGPUValidationMode = "1"
       allowLocationSimulation = "NO"
       viewDebuggingEnabled = "No"
       GPUProfilerEnabled = "No">
@@ -69,7 +70,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-com.apple.CoreData.concurrencyDebug 1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <LocationScenarioReference
