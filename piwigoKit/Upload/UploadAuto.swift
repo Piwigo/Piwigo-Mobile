@@ -129,7 +129,8 @@ extension UploadManager {
             DispatchQueue.main.async {
                 let userInfo: [String : Any] = ["title"   : title,
                                                 "message" : message];
-                NotificationCenter.default.post(name: PwgNotifications.autoUploadDisabled, object: nil, userInfo: userInfo)
+                NotificationCenter.default.post(name: PwgNotifications.autoUploadDisabled,
+                                                object: nil, userInfo: userInfo)
             }
         }
 
