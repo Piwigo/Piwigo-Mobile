@@ -524,7 +524,7 @@
                             if ([deletionMode isEqualToString:kCategoryDeletionModeOrphaned] &&
                                 image.categoryIds.count > 1) {
                                 // Update categories the images belongs to
-                                [[CategoriesData sharedInstance] removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", self.albumData.albumId]];
+                                [[CategoriesData sharedInstance] removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)self.albumData.albumId]];
                                 continue;
                             }
                             

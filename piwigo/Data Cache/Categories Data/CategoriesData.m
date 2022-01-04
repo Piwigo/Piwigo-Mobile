@@ -483,7 +483,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
                 // Add image to category into which then image was uploaded
                 [vc addImageWithId:image.imageId];
             } else if ((imageCategory.parentAlbumId == 0) ||
-                ([imageCategory.upperCategories containsObject:[NSString stringWithFormat:@"%ld", vc.categoryId]])) {
+                       ([imageCategory.upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)vc.categoryId]])) {
                 // Increment number of images in parent album cell
                 [vc updateSubCategoryWithId:imageCategory.albumId];
             }
