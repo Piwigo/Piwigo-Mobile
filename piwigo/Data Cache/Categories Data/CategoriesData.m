@@ -410,6 +410,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [imageCategory addUploadedImage:image];
     [imageCategory incrementImageSizeByOne];
     
+    // Keep 'date_last' set as expected by the server
+    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+    NSInteger seconds = -[tz secondsFromGMTForDate: [NSDate date]];
+    imageCategory.dateLast = MAX([NSDate dateWithTimeInterval: seconds sinceDate: [NSDate date]], imageCategory.dateLast);
+    
     // Set album thumbnail if necessary
     if ((imageCategory.albumThumbnailId == 0) || (imageCategory.albumThumbnailUrl == nil) ||
         (imageCategory.albumThumbnailUrl.length == 0)) {
