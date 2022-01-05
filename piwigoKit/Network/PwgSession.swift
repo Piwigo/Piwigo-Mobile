@@ -163,7 +163,7 @@ public class PwgSession: NSObject {
         let dataStr = String(decoding: data, as: UTF8.self)
         var filteredData = data
 
-        // Let's first assume we got JSON data anf HTML before/after the JSON object
+        // Let's first assume we got JSON data and HTML before/after the JSON object
         if let firstJsonChar = dataStr.firstIndex(of: "{"),
            let lastJsonChar = dataStr.lastIndex(of: "}") {
             filteredData  = dataStr[firstJsonChar...lastJsonChar]

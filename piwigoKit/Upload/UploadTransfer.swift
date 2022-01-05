@@ -267,7 +267,7 @@ extension UploadManager {
             return
         }
 
-        // Filter returned data (PHP may send a warning before the JSON object)
+        // Filter returned data (PHP may send a warning before/after the JSON object)
         let filteredData = PwgSession().filterPiwigo(data: data)
         
         // Check returned data
