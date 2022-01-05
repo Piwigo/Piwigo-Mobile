@@ -872,6 +872,19 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // We did not find a parent album — should never happen…
         return;
     }
+    
+    // Root album -> reload collection
+    if (self.categoryId == 0) {
+        [self.imagesCollection reloadData];
+        return;
+    }
+    
+    // Other album —> If the number of images in cache is null, reload collection
+    if (albumData.imageList.count == 0) {
+        // Something did change… reset album data
+        self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+        [self.imagesCollection reloadData];
+    }
 }
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
