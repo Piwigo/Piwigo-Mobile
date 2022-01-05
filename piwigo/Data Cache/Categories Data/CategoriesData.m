@@ -543,6 +543,15 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [imageCategory deincrementImageSizeByOne];
     [imageCategory removeImages:@[image]];
 
+    // Keep 'date_last' set as expected by the server
+    NSDate *dateLast = [[NSDate alloc] initWithTimeIntervalSince1970:0];
+    for (PiwigoImageData *keptImage in imageCategory.imageList) {
+        if ([dateLast compare:keptImage.datePosted] == NSOrderedAscending) {
+            dateLast = keptImage.datePosted;
+        }
+    }
+    imageCategory.dateLast = dateLast;
+
     // Reset album thumbnail if the album is now empty
     if (imageCategory.totalNumberOfImages == 0) {
         imageCategory.albumThumbnailId = 0;
