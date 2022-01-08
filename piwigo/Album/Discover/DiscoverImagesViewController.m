@@ -681,47 +681,6 @@
     }
 }
 
-//-(void)addImageToCategory:(NSNotification *)notification
-//{
-//    if (notification == nil) { return; }
-//    NSDictionary *userInfo = notification.userInfo;
-//
-//    // Right category Id?
-//    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-//    if (catId != self.categoryId) return;
-//    
-//    // Get ID of added image
-//    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//    NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
-//
-//    // Retrieve images from cache
-//    NSArray <PiwigoImageData *> *newImages = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-//    
-//    // Get index of added image
-//    NSInteger indexOfNewItem = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-//     return obj.imageId == imageId;
-//    }];
-//    if ((indexOfNewItem != NSNotFound) && (newImages.count > self.albumData.images.count)) {
-//        // Add image to data source and corresponding cell
-//        self.albumData.images = newImages;
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfNewItem inSection:1];
-//        [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
-//    }
-//
-//    // Update footer if visible
-//    if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
-//        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-//    }
-//
-//    // Display Select button if there was no image in the album
-//    if (newImages.count ==  1) {
-//        // Display Select button
-//        if (self.isSelect == NO) {
-//            [self updateButtonsInPreviewMode];
-//        }
-//    }
-//}
-
 -(void)removeImageWithId:(NSInteger)imageId
 {
     // Remove image from the selection if needed
