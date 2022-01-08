@@ -3751,6 +3751,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         
         if (![resultsController.searchQuery isEqualToString:searchString] || !searchString.length) {
             
+            // Cancel active image downloads if any
+            NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
+            for (NSURLSessionTask *task in downloadTasks) {
+                [task cancel];
+            }
+            
             // Initialise search cache
             PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
             [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];

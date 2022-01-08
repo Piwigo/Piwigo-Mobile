@@ -130,12 +130,6 @@ NSString * const kGetImageOrderDescending = @"desc";
         [task cancel];
     }
     
-    // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-    for (NSURLSessionTask *task in downloadTasks) {
-        [task cancel];
-    }
-
     // Send request
     return [self post:kPiwigoImageSearch
         URLParameters:nil
