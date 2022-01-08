@@ -879,6 +879,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         return;
     }
     
+    // Other album -> Reload albums
+    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    
     // Other album —> If the number of images in cache is null, reload collection
     if (albumData.imageList.count == 0) {
         // Something did change… reset album data
