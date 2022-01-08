@@ -230,6 +230,7 @@
     [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
         [self.imagesCollection reloadData];
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if ((error.domain == NSURLErrorDomain) && (error.code == NSURLErrorCancelled)) { return; }
         [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
