@@ -896,15 +896,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(void)reloadCatagoryDataInBckgMode
 {
-    // Display HUD
-    self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")
-              detail:NSLocalizedString(@"tabBar_albums", @"Albums")
-         buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
-        buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
-              inMode:MBProgressHUDModeIndeterminate];
-
-    // Load category data in recursive mode
+    // Load category data in recursive mode in the background
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
         [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
@@ -914,12 +906,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [vc checkIfCategoryStillExists];
             }
 
-            // Hide HUD and resume upload operations
-            [self.hudViewController hidePiwigoHUDWithCompletion:^{
-                // Resume uploads
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate resumeAll];
-            }];
+            // Resume uploads
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate resumeAll];
             
             // Load favorites in the background if necessary
 //            if (!NetworkVarsObjc.hasGuestRights &&
