@@ -1673,25 +1673,41 @@
         [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
             // Did we collect more images?
             if (!hasNewImages) { return; }
-            // Prepare selection of indexPaths of cells to reload:
-            /// - those corresponding to freshly loaded data
-            /// - and those corresponding to visible cells
+            
+            // Prepare indexPaths of cells to reload
             NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count;
             NSMutableArray *indexPaths = [NSMutableArray new];
             for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
                 [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
             }
+            
+            // Back to main thread…
             dispatch_async(dispatch_get_main_queue(), ^{
-                // Reload cells
+                // Update detail view if needed
                 if (self.imageDetailView != nil) {
                     self.imageDetailView.images = [self.albumData.images mutableCopy];
                 }
+                
+                // Add indexPaths of cell presented with placeholder
+                UIImage *placeHolderImage = [UIImage imageNamed:@"placeholderImage"];
+                for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
+                    if ([indexPaths containsObject:indexPath]) { continue; }
+                    UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:indexPath];
+                    if (![cell isKindOfClass:[ImageCollectionViewCell class]]) { continue; }
+                    ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+                    if ([imageCell.cellImage.image isEqual:placeHolderImage]) {
+                        [indexPaths addObject:indexPath];
+                    }
+                }
+                
+                // Reload cells
                 [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+                
                 // Display HUD if it will take more than a second to load image data
                 CFAbsoluteTime diff = (CFAbsoluteTimeGetCurrent() - start)*1000.0;
-                CFAbsoluteTime perImage = diff / (double)(newDownloadedImageCount - downloadedImageCount);
-                CFAbsoluteTime left = perImage * (double)(self.didScrollToImageIndex - newDownloadedImageCount);
-                NSLog(@"expected time: %.2f ms", left);
+                CFAbsoluteTime perImage = fabs(diff / (double)(newDownloadedImageCount - downloadedImageCount));
+                CFAbsoluteTime left = perImage * (double)MAX(0, (self.didScrollToImageIndex - newDownloadedImageCount));
+                NSLog(@"expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage);
                 if (left > 1000.0) {
                     if ([self.view viewWithTag:loadingViewTag] == nil) {
                         [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
@@ -1702,12 +1718,13 @@
                 } else {
                     [self hidePiwigoHUDWithCompletion:^{}];
                 }
+                
+                // Should we continue loading images?
+                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                if (self.didScrollToImageIndex >= newDownloadedImageCount) {
+                    [self needToLoadMoreImages];
+                }
             });
-            // Should we continue loading images?
-            NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
-            if (self.didScrollToImageIndex >= newDownloadedImageCount) {
-                [self needToLoadMoreImages];
-            }
         } onFailure:nil];
     });
 }
