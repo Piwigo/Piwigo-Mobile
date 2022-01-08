@@ -218,6 +218,13 @@
 
 -(void)searchAndLoadImages
 {
+    // Display "Loading..."
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.text = [AlbumUtilities footerLegendFor:NSNotFound];
+    }
+
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
     [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
