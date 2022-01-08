@@ -104,7 +104,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Determine for how long the session is opened
             /// Piwigo 11 session duration defaults to an hour.
             let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+            if timeSinceLastLogin < TimeInterval(-3) {    // i.e. 5 minutes
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator

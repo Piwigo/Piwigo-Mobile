@@ -1391,7 +1391,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
-            AlbumService.getAlbumDataAndUpdate(true) { _, _ in
+            AlbumService.getAlbumData { _, _ in
                 // Hide loading HUD
                 self.hidePiwigoHUD {
                     // Build category array

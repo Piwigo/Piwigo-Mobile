@@ -788,7 +788,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         // Load category data in recursive mode
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
-            [AlbumService getAlbumDataAndUpdate:NO onCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+            [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                 // Reinitialise flag
                 NetworkVarsObjc.userCancelledCommunication = NO;
                 
@@ -906,7 +906,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Load category data in recursive mode
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
-        [AlbumService getAlbumDataAndUpdate:YES onCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+        [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
             if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
                 // Check data source and reload collection if needed

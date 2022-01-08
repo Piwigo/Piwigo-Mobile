@@ -817,7 +817,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               inMode:MBProgressHUDModeIndeterminate];
     
     // Load category data in recursive mode
-    [AlbumService getAlbumDataAndUpdate:NO onCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
             [self checkIfCategoryStillExists];

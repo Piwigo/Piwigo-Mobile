@@ -19,9 +19,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 @implementation AlbumService
 
-+(NSURLSessionTask*)getAlbumDataAndUpdate:(BOOL)updateOnly
-                             onCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
-                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(NSURLSessionTask*)getAlbumDataOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Community extension active ?
     NSString *fakedString = NetworkVarsObjc.usesCommunityPluginV29 ? @"false" : @"true";
