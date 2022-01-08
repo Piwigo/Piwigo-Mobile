@@ -324,6 +324,15 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 
 -(void)setImageFromPath:(NSString *)imagePath
 {
+    // Do we have a correct URL?
+    UIImage *placeHolderImage = [UIImage imageNamed:@"placeholderImage"];
+    if (imagePath.length == 0) {
+        // No image thumbnail
+        self.cellImage.image = placeHolderImage;
+        return;;
+    }
+    
+    // Retrieve the image file
     __weak typeof(self) weakSelf = self;
     [self.cellImage layoutIfNeeded];
     CGSize size = self.cellImage.bounds.size;
@@ -332,7 +341,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     [self.cellImage setImageWithURLRequest:request
-                          placeholderImage:[UIImage imageNamed:@"placeholderImage"]
+                          placeholderImage:placeHolderImage
                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
         // Downsample image is necessary
         UIImage *displayedImage = image;
@@ -386,7 +395,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             weakSelf.favBottom.constant = - deltaY;
         }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
-        NSLog(@"%@", error.localizedDescription);
+        NSLog(@"==> cell image: %@", error.localizedDescription);
     }];
 }
 
