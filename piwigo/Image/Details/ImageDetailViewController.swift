@@ -10,8 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
-
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
     func didUpdateImage(withData imageData: PiwigoImageData)
@@ -28,7 +26,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     
     private var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
-    private var isToolbarRequired = false
+    var isToolbarRequired = false
     private var pageViewController: UIPageViewController?
     private lazy var userHasUploadRights = false
     
@@ -155,16 +153,16 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
 
+        // Initialise flags
+        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
+
         // Load initial image preview view controller
-        if let startingImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController {
+        if let startingImage = imagePageViewController(atIndex: index) {
             startingImage.imagePreviewDelegate = self
-            startingImage.imageIndex = index
-            startingImage.imageData = imageData
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
         // Did we already load the list of favorite images?
-        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            !NetworkVars.hasGuestRights,
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
@@ -172,15 +170,15 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
             
             // Unknown list -> initialise album and download list
-            let nberImagesPerPage = ImagesCollection.numberOfImagesPerPage(for: nil, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait)
+            let nberImagesPerPage = ImagesCollection.numberOfImagesToDownloadPerPage()
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
-            CategoriesData.sharedInstance()
-                .updateCategories([favoritesAlbum], andUpdateUI: false)
+            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
                 .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
                                           forProgress: { [unowned self] onPage, outOf in
-                    self.updatePiwigoHUD(withProgress: Float(onPage * nberImagesPerPage) / Float(outOf))
+                    let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
+                    self.updatePiwigoHUD(withProgress: fraction)
                 }) { [unowned self] _ in
                     // Retrieve complete image data if needed (buttons are greyed until job done)
                     if self.imageData.fileSize == NSNotFound {
@@ -210,9 +208,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
 
         // Manage single taps
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapView)))
-
-        // Register image pinches
-        NotificationCenter.default.addObserver(self, selector: #selector(didPinchView), name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -300,11 +295,15 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
-        // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
+            // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
+            // Update image preview view
+            if let pVC = pageViewController,
+               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+                imagePVC.didRotateDevice()
+            }
         })
     }
 
@@ -325,9 +324,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     }
 
     deinit {
-        // Unregister image pinches
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
-
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
@@ -358,8 +354,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
             (imageData.dateCreated == imageData.datePosted) {
-            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
-                                          Float(view.bounds.size.width * 0.4)))
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
             navigationItem.titleView = oneLineTitleView
@@ -369,7 +364,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
         }
         else {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
             subTitleLabel.textColor = .piwigoColorWhiteCream()
             subTitleLabel.textAlignment = .center
@@ -385,9 +380,8 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             }
             subTitleLabel.sizeToFit()
 
-            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
-                                  CGFloat(titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
+            var titleWidth:CGFloat  = fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width)
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                 height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
             navigationItem.titleView = twoLineTitleView
@@ -495,7 +489,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         else {
             // Fallback on earlier versions
             // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation;
+            let orientation = UIApplication.shared.statusBarOrientation
             
             // User with admin rights can do everything
             if NetworkVars.hasAdminRights {
@@ -602,47 +596,49 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         let shouldUpdateImage = (imageData.getURLFromImageSizeType(imageSize) == nil)
 
         // Retrieve image/video infos
-        ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
-            self.imageData = retrievedData
-            // Disable HUD if needed
-            self.hidePiwigoHUD {
-                if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
-                    self.images[index] = self.imageData
-                    
-                    // Set favorite button
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+        DispatchQueue.global(qos: .userInteractive).async {
+            ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
+                self.imageData = retrievedData
+                // Disable HUD if needed
+                self.hidePiwigoHUD {
+                    if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
+                        self.images[index] = self.imageData
+                        
+                        // Set favorite button
+                        let isFavorite = CategoriesData.sharedInstance()
+                            .category(withId: kPiwigoFavoritesCategoryId,
+                                      containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                        self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 
-                    // Refresh image if needed
-                    if shouldUpdateImage {
-                        for childVC in self.children {
-                            if let previewVC = childVC as? ImagePreviewViewController,
-                               previewVC.imageIndex == index {
-                                previewVC.imageData = self.imageData
+                        // Refresh image if needed
+                        if shouldUpdateImage {
+                            for childVC in self.children {
+                                if let previewVC = childVC as? ImagePreviewViewController,
+                                   previewVC.imageIndex == index {
+                                    previewVC.imageData = self.imageData
+                                }
                             }
                         }
                     }
-                }
 
-                // Enable actions
-                self.setEnableStateOfButtons(true)
-            }
-        } failure: { error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
-            }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
-                        self.retrieveCompleteImageDataOfImage(self.imageData)
-                    })
-                } else {
-                    self.retrieveCompleteImageDataOfImage(self.imageData)
+                    // Enable actions
+                    self.setEnableStateOfButtons(true)
                 }
-            })
+            } failure: { error in
+                self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+                }, retry: { [unowned self] in
+                    // Try relogin if unauthorized
+                    if error.code == 401 {
+                        // Try relogin
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                            self.retrieveCompleteImageDataOfImage(self.imageData)
+                        })
+                    } else {
+                        self.retrieveCompleteImageDataOfImage(self.imageData)
+                    }
+                })
+            }
         }
     }
 
@@ -675,6 +671,12 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             if isToolbarRequired {
                 navigationController?.setToolbarHidden(!isNavigationBarHidden, animated: true)
             }
+            
+            // Display/hide the description if any
+            if let pVC = pageViewController,
+               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+                imagePVC.didTapView()
+            }
 
             // Set background color according to navigation bar visibility
             if navigationController?.isNavigationBarHidden ?? false {
@@ -693,11 +695,6 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     // Display/hide home indicator
     override var prefersHomeIndicatorAutoHidden: Bool {
         return navigationController?.isNavigationBarHidden ?? false
-    }
-
-    @objc func didPinchView() {
-        // Return to image collection
-        navigationController?.popViewController(animated: true)
     }
 
 
@@ -800,7 +797,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
                     // Remove image from cache and update UI in main thread
                     CategoriesData.sharedInstance()
-                        .removeImage(self.imageData, fromCategory: "\(self.categoryId)")
+                        .removeImage(self.imageData, fromCategory: String(self.categoryId))
                     // Display preceding/next image or return to album view
                     self.didRemoveImage(withId: self.imageData.imageId)
                 }
@@ -843,11 +840,9 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         } failure: { [unowned self] error in
             self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [unowned self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                        // Display preceding/next image or return to album view
-                        self.didRemoveImage(withId: imageData.imageId)
-                    }
+                self.hidePiwigoHUD { [unowned self] in
+                    // Re-enable buttons
+                    self.setEnableStateOfButtons(true)
                 }
             }, retry: { [unowned self] in
                 // Try relogin if unauthorized
@@ -1166,6 +1161,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
     }
 }
 
+
 // MARK: - UIPageViewControllerDelegate
 extension ImageDetailViewController: UIPageViewControllerDelegate
 {
@@ -1201,10 +1197,12 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
         currentIndex = max(0, currentIndex)
         // To prevent crash reported by AppleStore in November 2017
         currentIndex = min(currentIndex, images.count - 1)
+        // Remember index of presented page
+        imageIndex = currentIndex
+        imageData = images[currentIndex]
 
         pvc.imagePreviewDelegate = self
         progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
-        imageData = images[currentIndex]
         setTitleViewFromImageData()
         updateNavBar()
 
@@ -1219,72 +1217,47 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
 // MARK: - UIPageViewControllerDataSource
 extension ImageDetailViewController: UIPageViewControllerDataSource
 {
+    // Create view controller for presenting the image at the provided index
+    private func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
+        guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        imagePage.imageIndex = index
+        imagePage.imageData = images[index]
+        imagePage.imageLoaded = false
+        return imagePage
+    }
+    
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
-        }
-        let currentIndex = pvc.imageIndex
-        if (currentIndex >= images.count - 1) {
+        if (imageIndex >= images.count - 1) {
             // Reached the end of the category
             return nil
         }
 
         // Should we load more images?
-        let imagesPerPage = Float(ImagesCollection.numberOfImagesPerPage(for: view, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait))
-        if (currentIndex > (images.count - Int(roundf(imagesPerPage / 3.0)))) &&
-            (images.count != CategoriesData.sharedInstance().getCategoryById(categoryId).numberOfImages) {
-            if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
+        let downloadedImageCount = CategoriesData.sharedInstance()
+            .getCategoryById(categoryId).imageList.count
+        let totalImageCount = CategoriesData.sharedInstance()
+            .getCategoryById(categoryId).numberOfImages
+        if downloadedImageCount < totalImageCount,
+           imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
                 imgDetailDelegate?.needToLoadMoreImages()
-            }
         }
 
-        // Retrieve data of next image (may be incomplete)
-        let imageData = images[currentIndex + 1]
-
         // Create view controller for presenting next image
-//        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
-        guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
-        nextImage.imagePreviewDelegate = self
-        nextImage.imageIndex = currentIndex + 1
-        nextImage.imageData = imageData
-        nextImage.imageLoaded = false
-        return nextImage
+        return imagePageViewController(atIndex: imageIndex + 1)
     }
 
     // Returns the view controller before the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
-        }
-        let currentIndex = pvc.imageIndex
-        if currentIndex - 1 < 0 {
+        if imageIndex - 1 < 0 {
             // Reached the beginning the category
             return nil
         }
 
-        // Retrieve data of previous image (may be incomplete)
-        let imageData = images[currentIndex - 1]
-
         // Create view controller
-//        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
-        guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
-        prevImage.imagePreviewDelegate = self
-        prevImage.imageIndex = currentIndex - 1
-        prevImage.imageData = imageData
-        prevImage.imageLoaded = false
-        return prevImage
-    }
-
-    // Returns the index of the selected item to be reflected in the page indicator
-    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        if let imageViewCtrl = pageViewController.viewControllers?[0] as? ImagePreviewViewController {
-            // Return if exists
-            return imageViewCtrl.imageIndex
-        }
-        return NSNotFound
+        return imagePageViewController(atIndex: imageIndex - 1)
     }
 }
 
@@ -1320,6 +1293,12 @@ extension ImageDetailViewController: EditImageParamsDelegate
         // Update title view
         setTitleViewFromImageData()
         
+        // Update image metadata
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.updateImageMetadata(with: imageData)
+        }
+
         // Update cached image data
         /// Note: the current category might be a smart album.
         let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
@@ -1332,7 +1311,7 @@ extension ImageDetailViewController: EditImageParamsDelegate
         if categoryId == kPiwigoTagsCategoryId,
            let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
            let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
-            // Delete this image from the category and the parent colelction
+            // Delete this image from the category and the parent collection
             CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
             // … and delete it from this data source
             didRemoveImage(withId: params.imageId)
@@ -1388,7 +1367,6 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
         images.remove(at: indexOfRemovedImage)
 
         // Return to the album view if the album is empty
-        // or if we could not find the index of the removed image
         if images.isEmpty {
             // Return to the Album/Images collection view
             navigationController?.popViewController(animated: true)
@@ -1401,11 +1379,9 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage]
 
             // Create view controller for presenting next image
-            guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
             nextImage.imagePreviewDelegate = self
-            nextImage.imageIndex = indexOfRemovedImage
-            nextImage.imageData = imageData
-            nextImage.imageLoaded = false
+            imageIndex = indexOfRemovedImage
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
@@ -1432,17 +1408,13 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage - 1]
 
             // Create view controller for presenting next image
-            guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
             prevImage.imagePreviewDelegate = self
-            prevImage.imageIndex = indexOfRemovedImage - 1
-            prevImage.imageData = imageData
-            prevImage.imageLoaded = false
+            imageIndex = indexOfRemovedImage - 1
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = self.images[indexOfRemovedImage - 1]
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button

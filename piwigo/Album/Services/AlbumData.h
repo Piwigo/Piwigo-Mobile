@@ -19,7 +19,7 @@
 
 -(void)reloadAlbumOnCompletion:(void (^)(void))completion
                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
--(void)loadMoreImagesOnCompletion:(void (^)(void))completion
+-(void)loadMoreImagesOnCompletion:(void (^)(BOOL hasNewImages))completion
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

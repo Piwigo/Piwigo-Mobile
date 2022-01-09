@@ -10,6 +10,9 @@
 
 @interface DiscoverImagesViewController : UIViewController
 
+@property (nonatomic, assign) NSInteger categoryId;
+
 -(instancetype)initWithCategoryId:(NSInteger)categoryId;
+-(void)removeImageWithId:(NSInteger)imageId;
 
 @end

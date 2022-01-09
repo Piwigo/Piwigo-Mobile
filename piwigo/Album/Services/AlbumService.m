@@ -19,29 +19,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 @implementation AlbumService
 
-+(NSURLSessionTask*)getAlbumListForCategory:(NSInteger)categoryId
-                                 usingCache:(BOOL)cached
-                            inRecursiveMode:(BOOL)recursive
-                               OnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
-                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(NSURLSessionTask*)getAlbumDataOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
+                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    // Use cache with care!
-    NSArray *parentCategories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:categoryId];
-    if (cached && (parentCategories != nil)) {
-#if defined(DEBUG_ALBUM)
-        NSLog(@"                => use cache");
-#endif
-        if(completion) {
-            completion(nil, nil);
-            return nil;
-        } else {
-            return nil;
-        }
-    }
-
-    // Recursive option ?
-    NSString *recursiveString = recursive ? @"true" : @"false";
-
     // Community extension active ?
     NSString *fakedString = NetworkVarsObjc.usesCommunityPluginV29 ? @"false" : @"true";
     
@@ -99,8 +79,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     
     // Compile parameters
     NSDictionary *parameters = @{
-                                 @"cat_id" : @(categoryId),
-                                 @"recursive" : recursiveString,
+                                 @"cat_id" : @"0",
+                                 @"recursive" : @"true",
                                  @"faked_by_community" : fakedString,
                                  @"thumbnail_size" : thumbnailSize
                                  };
@@ -116,29 +96,61 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                   {
                       // Extract albums data from JSON message
-                      NSArray *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
+                      NSArray<PiwigoAlbumData *> *albums = [AlbumService parseAlbumJSON:[[responseObject objectForKey:@"result"] objectForKey:@"categories"]];
 
 #if defined(DEBUG_ALBUM)
                       NSLog(@"                => %ld albums returned", (long)[albums count]);
 #endif
                       // Update Categories Data cache
-                      if (categoryId == 0)
-                      {
-                          [[CategoriesData sharedInstance] replaceAllCategories:albums];
-                      }
-                      else {
-                          [[CategoriesData sharedInstance] updateCategories:albums andUpdateUI:YES];
+                      [[CategoriesData sharedInstance] replaceAllCategories:albums];
+                      
+                      // Check whether the auto-upload category still exists
+                      NSInteger autoUploadCatId = UploadVarsObjc.autoUploadCategoryId;
+                      NSInteger indexOfAutoUpload = [albums indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                          PiwigoAlbumData *category = (PiwigoAlbumData *)obj;
+                          if(category.albumId == autoUploadCatId) {
+                              return YES;
+                          } else {
+                              return NO;
+                          }
+                      }];
+                      if (indexOfAutoUpload != NSNotFound) {
+                          [UploadUtilitiesObjc disableAutoUpload];
                       }
                       
                       // Update albums if Community extension installed (not needed for admins)
                       if (!NetworkVarsObjc.hasAdminRights &&
-                          NetworkVarsObjc.usesCommunityPluginV29) {
-                          [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
-                      }
-
-                      if(completion)
+                          NetworkVarsObjc.usesCommunityPluginV29)
                       {
-                          completion(task, albums);
+                          [self getCommunityAlbumListForCategory:0
+                                                 inRecursiveMode:@"true"
+                                                    OnCompletion:^(NSURLSessionTask *task, id responseObject) {
+                                if (responseObject) {
+                                    // Extract albums data from JSON message
+                                    NSArray *albums = [AlbumService parseAlbumJSON:responseObject];
+
+                                    // Loop over Community albums
+                                    for(PiwigoAlbumData *category in albums) {
+                                        [[CategoriesData sharedInstance] addCommunityCategoryWithUploadRights:category];
+                                    }
+                                    
+                                    // Job done
+                                    if(completion) {
+                                        completion(task, albums);
+                                    }
+                                } else {
+                                    // Continue without Community albums
+                                    if(completion) {
+                                        completion(task, albums);
+                                    }
+                                }
+                            } onFailure:nil // i.e. continue without Community albums
+                          ];
+                      } else {
+                          // Job done
+                          if(completion) {
+                              completion(task, albums);
+                          }
                       }
                   }
                   else
@@ -156,7 +168,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG_ALBUM)
-                  NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
+                  NSLog(@"getAlbumData — Fail: %@", [error description]);
 #endif
                   if(fail) {
                       fail(task, error);
@@ -206,20 +218,47 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         } else {
             albumData.comment = @"";
         }
-		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
-		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
-		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
-		albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
-		
+        if (([category objectForKey:@"global_rank"] != nil) &&
+            ([category objectForKey:@"global_rank"] != [NSNull null])) {
+            albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
+        } else {
+            albumData.globalRank = 0.0;
+        }
+        if (([category objectForKey:@"nb_images"] != nil) &&
+            ([category objectForKey:@"nb_images"] != [NSNull null])) {
+            albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
+        } else {
+            albumData.numberOfImages = 0;
+        }
+        if (([category objectForKey:@"total_nb_images"] != nil) &&
+            ([category objectForKey:@"total_nb_images"] != [NSNull null])) {
+            albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];
+        } else {
+            albumData.totalNumberOfImages = 0;
+        }
+        if (([category objectForKey:@"nb_categories"] != nil) &&
+            ([category objectForKey:@"nb_categories"] != [NSNull null])) {
+            albumData.numberOfSubCategories = [[category objectForKey:@"nb_categories"] integerValue];
+        } else {
+            albumData.numberOfSubCategories = 0;
+        }
+
         // When "representative_picture_id" is null or not supplied: no album image
         if (([category objectForKey:@"representative_picture_id"] != nil) &&
             ([category objectForKey:@"representative_picture_id"] != [NSNull null]))
 		{
 			albumData.albumThumbnailId = [[category objectForKey:@"representative_picture_id"] integerValue];
-            albumData.albumThumbnailUrl = [NetworkHandler encodedImageURL:[category objectForKey:@"tn_url"]];
 		}
-		
+        if (([category objectForKey:@"tn_url"] != nil) &&
+            ([category objectForKey:@"tn_url"] != [NSNull null]))
+        {
+            albumData.albumThumbnailUrl = [NetworkHandler encodedImageURL:[category objectForKey:@"tn_url"]];
+        } else {
+            albumData.albumThumbnailUrl = @"";
+        }
+
         // When "date_last" is null or not supplied: no date
+        /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
 		if(([category objectForKey:@"date_last"] != nil) &&
            ([category objectForKey:@"date_last"] != [NSNull null]))
 		{
@@ -236,26 +275,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 	}
 	
 	return albums;
-}
-
-+(void)setUploadRightsForCategory:(NSInteger)categoryId inRecursiveMode:(NSString *)recursive
-{
-    [self getCommunityAlbumListForCategory:categoryId
-                           inRecursiveMode:recursive
-                              OnCompletion:^(NSURLSessionTask *task, id responseObject) {
-                                  if (responseObject) {
-                                      // Extract albums data from JSON message
-                                      NSArray *albums = [AlbumService parseAlbumJSON:responseObject];
-                                      
-                                      // Loop over Community albums
-                                      for(PiwigoAlbumData *category in albums)
-                                      {
-                                          [[CategoriesData sharedInstance] addCommunityCategoryWithUploadRights:category];
-                                     }
-                                   }
-                              }
-                                 onFailure:nil
-     ];
 }
 
 +(NSURLSessionTask*)getCommunityAlbumListForCategory:(NSInteger)categoryId
@@ -311,7 +330,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                 withStatus:(NSString*)categoryStatus
                                 andComment:(NSString*)categoryComment
                                   inParent:(NSInteger)categoryId
-                              OnCompletion:(void (^)(NSURLSessionTask *task, BOOL createdSuccessfully))completion
+                              OnCompletion:(void (^)(NSURLSessionTask *task, NSInteger newCatId))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSDictionary *parameters = @{@"name" : categoryName,
@@ -334,12 +353,13 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
               // Add new category to list of recent albums
               NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:newCatId]};
-              [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc addRecentAlbum] object:nil userInfo:userInfo];
+              [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.addRecentAlbum
+                                                                  object:nil userInfo:userInfo];
               
               // Task completed successfully
               if(completion)
               {
-                  completion(task, YES);
+                  completion(task, newCatId);
               }
           }
           else {
@@ -348,7 +368,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                     path:kPiwigoCategoriesAdd andURLparams:nil];
               if(completion) {
                   [NetworkHandler showPiwigoError:error withCompletion:^{
-                      completion(task, NO);
+                      completion(task, NSNotFound);
                   }];
               } else {
                   [NetworkHandler showPiwigoError:error withCompletion:nil];
@@ -414,7 +434,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             // Remove category from list of recent albums
             NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:categoryId]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc removeRecentAlbum] object:nil userInfo:userInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.removeRecentAlbum
+                                                                object:nil userInfo:userInfo];
               if(completion)
               {
                   completion(task, YES);

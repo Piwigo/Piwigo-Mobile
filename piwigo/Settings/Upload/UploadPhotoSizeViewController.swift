@@ -103,23 +103,26 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
+
         // Title
-        let titleString = "\(NSLocalizedString("UploadPhotoSize_title", comment: "Max Photo Size"))\n"
+        let titleString = NSLocalizedString("UploadPhotoSize_title", comment: "Max Photo Size") + "\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
+        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin,
+                                                 attributes: titleAttributes, context: context)
         // Text
         let textString = NSLocalizedString("UploadPhotoSize_header", comment: "Please select the maximum size of the photos which will be uploaded.")
         let textAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontSmall()
         ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin,
+                                               attributes: textAttributes, context: context)
+        return fmax(CGFloat(44.0), CGFloat(ceil(titleRect.size.height + textRect.size.height)))
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

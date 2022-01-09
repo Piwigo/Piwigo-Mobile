@@ -12,9 +12,8 @@
 #import "CategoryCollectionViewCell.h"
 #import "ImagesCollection.h"
 
-@interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryDelegate, UITextFieldDelegate>
+@interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryAlbumMovedDelegate, UITextFieldDelegate>
 
-@property (nonatomic, strong) PiwigoAlbumData *albumData;
 @property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) UIAlertAction *categoryAction;
@@ -39,11 +38,15 @@
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
     
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationChangedAlbumData object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadEnabled object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadDisabled object:nil];
 	}
 	return self;
+}
+
+-(void)applyColorPalette
+{
+    [self.tableView reloadData];
 }
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
@@ -59,35 +62,14 @@
 	self.albumData = nil;
 }
 
--(void)categoriesUpdated:(NSNotification *)notification
-{
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
-
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != self.albumData.albumId) return;
-
-        // Add or remove thumbnail image?
-        NSString *thumbnailUrl = [userInfo objectForKey:@"thumbnailUrl"];
-        if (self.albumData.numberOfImages == 0) {
-            self.albumData.categoryImage = nil;
-            self.albumData.albumThumbnailId = 0;
-            self.albumData.albumThumbnailUrl = nil;
-        } else if (self.albumData.numberOfImages == 1) {
-            NSInteger thumbnailId = [[userInfo objectForKey:@"thumbnailId"] intValue];
-            self.albumData.albumThumbnailId = thumbnailId;
-            self.albumData.albumThumbnailUrl = thumbnailUrl;
-        }
-        
-        // Update number of images and thumbnail if needed
-        [self.tableView reloadData];
-    }
-}
-
 -(void)autoUploadUpdated:(NSNotification *)notification
 {
-    [self.tableView reloadData];
+    // Is this cell concerned?
+    if (self.albumData.albumId != UploadVarsObjc.autoUploadCategoryId) { return; }
+    
+    // Disallow user to delete the active auto-upload destination album
+    AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [cell refreshButtons:YES];
 }
 
 
@@ -125,7 +107,7 @@
     // Push new album view
     if([self.categoryDelegate respondsToSelector:@selector(pushCategoryView:)])
 	{
-		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId inCache:YES];
+		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId];
 		[self.categoryDelegate pushCategoryView:albumView];
 	}
 }
@@ -205,9 +187,8 @@
     UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     [moveVC setInputWithParameter:self.albumData for:kPiwigoCategorySelectActionMoveAlbum];
-    moveVC.delegate = self;
-    if([self.categoryDelegate respondsToSelector:@selector(pushCategoryView:)])
-    {
+    moveVC.albumMovedDelegate = self;
+    if ([self.categoryDelegate respondsToSelector:@selector(pushCategoryView:)]) {
         [self.categoryDelegate pushCategoryView:moveVC];
     }
 }
@@ -301,17 +282,13 @@
                             [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
                                 [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                        // Update album data
                                         self.albumData.name = albumName;
                                         self.albumData.comment = albumComment;
                                         
-                                        // Notify album/image view of modification
-                                        NSDictionary *userInfo = @{@"albumId" : @(self.albumData.parentAlbumId)};
-                                        [[NSNotificationCenter defaultCenter]
-                                            postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                          object:nil userInfo:userInfo];
-
-                                        // Hide swipe buttons
+                                        // Update cell and hide swipe buttons
                                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+                                        [cell setupWithAlbumData:self.albumData];
                                         [cell hideSwipeAnimated:YES];
                                     });
                                 }];
@@ -363,7 +340,7 @@
     }];
     
     UIAlertAction* keepImagesAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"deleteCategory_noImages", @"Keep Images")
+        actionWithTitle:NSLocalizedString(@"deleteCategory_noImages", @"Keep Photos")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
             [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
@@ -482,8 +459,8 @@
         return;
     }
     
-    // Images belonging to the album to be deleted must be retrieved before deletion
-    if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+    // Images belonging to the album to be deleted must be in cache before deletion
+    if (![[[CategoriesData sharedInstance] getCategoryById:self.albumData.albumId] hasAllImagesInCache]) {
         // Load missing images
         [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
     } else {
@@ -501,7 +478,8 @@
         // Did the load succeed?
         if (completed) {
             // Do we have all images?
-            if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+            // Images belonging to the album to be deleted must be in cache before deletion
+            if (![[[CategoriesData sharedInstance] getCategoryById:self.albumData.albumId] hasAllImagesInCache]) {
                 // No => Continue loading image data
                 [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
                 return;
@@ -544,7 +522,11 @@
                         for (PiwigoImageData *image in images) {
                             // Delete orphans only?
                             if ([deletionMode isEqualToString:kCategoryDeletionModeOrphaned] &&
-                                image.categoryIds.count > 1) { continue; }
+                                image.categoryIds.count > 1) {
+                                // Update categories the images belongs to
+                                [[CategoriesData sharedInstance] removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)self.albumData.albumId]];
+                                continue;
+                            }
                             
                             // Delete image
                             [[CategoriesData sharedInstance] deleteImage:image];
@@ -556,6 +538,11 @@
                         // Hide swipe buttons
                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                         [cell hideSwipeAnimated:YES];
+
+                        // Remove category from the album/images collection
+                        if ([self.categoryDelegate respondsToSelector:@selector(removeCategory:)]) {
+                            [self.categoryDelegate removeCategory:self];
+                        }
                     }];
                 }];
             }  onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -604,12 +591,18 @@
 }
 
 
-#pragma mark - SelectCategoryDelegate Methods
+#pragma mark - SelectCategoryAlbumRemovedDelegate Methods
 
--(void)didSelectCategoryWithId:(NSInteger)category
+-(void)didMoveCategory
 {
+    // Hide swipe commands
     AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     [cell hideSwipeAnimated:YES];
+
+    // Remove category from the album/images collection
+    if ([self.categoryDelegate respondsToSelector:@selector(removeCategory:)]) {
+        [self.categoryDelegate removeCategory:self];
+    }
 }
 
 @end

@@ -70,11 +70,16 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         }
         set(uploading) {
             _cellUploading = uploading
-            darkenView?.isHidden = !uploading
-            uploadingProgress?.isHidden = !uploading
-            uploadedImage?.isHidden = uploading
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = false
+            if uploading {
+                uploadingProgress?.setProgress(_progress, animated: false)
+            } else {
+                uploadingProgress?.setProgress(1.0, animated: false)
+            }
+            uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
-            waitingActivity?.isHidden = uploading
         }
     }
 

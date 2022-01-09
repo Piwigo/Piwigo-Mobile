@@ -26,10 +26,28 @@
 	self = [super init];
 	if(self)
 	{
-		self.images = [NSArray new];
         self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
 		self.sortType = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        
+        // Is image data already in cache?
+        NSMutableArray<PiwigoImageData *> *imageList = [NSMutableArray<PiwigoImageData *> new];
+        PiwigoAlbumData *album = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+        if ((categoryId > 0) && (album != nil)) {
+            // Do we have images in cache?
+            if (album.imageList != nil) {
+                // Retrieve images in cache
+                [imageList addObjectsFromArray:album.imageList];
+            }
+            
+            // Complete image list if necessary
+            for (NSInteger i = album.imageList.count; i < album.numberOfImages; i++) {
+                PiwigoImageData *imageData = [PiwigoImageData new];
+                imageData.imageId = NSNotFound;
+                [imageList addObject:imageData];
+            }
+        }
+        self.images = [NSArray<PiwigoImageData *> arrayWithArray:imageList];
 	}
 	return self;
 }
@@ -62,7 +80,7 @@
         return;
     }
     
-    [self loadMoreImagesOnCompletion:^{
+    [self loadMoreImagesOnCompletion:^(BOOL hasNewImages){
         [self loadImagePageUntil:page onPage:onPage + 1
                     onCompletion:completion
                        onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -77,7 +95,7 @@
     }];
 }
 
--(void)loadMoreImagesOnCompletion:(void (^)(void))completion
+-(void)loadMoreImagesOnCompletion:(void (^)(BOOL hasNewImages))completion
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
@@ -86,13 +104,10 @@
     // Return if job done
     if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
 	{
-//        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
-        // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSortObjc)AlbumVars.defaultSort];
-		if(completion)
-		{
-			completion();
-		}
+        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
+        // We have all the image data in cache)
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+		if (completion) { completion(NO); }
 		return;
 	}
     
@@ -104,14 +119,22 @@
                    loadCategoryImageDataChunkWithSort:sortDesc forProgress:nil
                                          onCompletion:^(BOOL completed)
     {
-		if (!completed) { return; }
-        
-        // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
-		if (completion) {
-            completion();
+		if (!completed) {
+            if (completion) { completion(NO); }
+            return;
         }
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        
+        // We have new image data, append them to cache and complete list with unknowns
+        NSMutableArray<PiwigoImageData *> *images = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList mutableCopy];
+        NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
+        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+        for (NSInteger i = downloadedImageDataCount; i < totalImageCount; i++) {
+            [images addObject:[PiwigoImageData new]];
+        }
+        self.images = [NSArray arrayWithArray:images];
+		if (completion) { completion(YES); }
+    }
+     onFailure:^(NSURLSessionTask *task, NSError *error) {
         if (fail) {
             fail(task, error);
         }
@@ -137,9 +160,6 @@
     }];
 }
 
-
-#pragma mark - Image sorting
-
 -(void)updateImageSort:(kPiwigoSortObjc)imageSort
           onCompletion:(void (^)(void))completion
              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -147,21 +167,24 @@
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
-//    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
+    NSLog(@"updateImageSort   => catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
-	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
-		if(completion)
+	{	// We have all the image data in cache)
+        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+		if (completion)
 		{
-//            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);
+            NSLog(@"updateImageSort   => We have all image data i.e. %ld", (long)self.images.count);
             completion();
 		}
 		return;
 	}
 	
     self.sortType = imageSort;
-	[self loadMoreImagesOnCompletion:completion
-                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+    [self loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+        if (completion) {
+            completion();
+        }
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
         if (fail) {
             fail(task, error);
         }

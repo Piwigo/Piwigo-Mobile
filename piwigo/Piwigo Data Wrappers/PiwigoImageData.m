@@ -300,13 +300,13 @@
 	return url;
 }
 
-+(float)widthForImageSizeType:(kPiwigoImageSize)imageSize
++(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize
 {
     // Get device scale factor
-    float scale = [[UIScreen mainScreen] scale];
+    CGFloat scale = [[UIScreen mainScreen] scale];
     
     // Default width
-    float width = 120;
+    CGFloat width = 120;
     
     switch(imageSize) {
         case kPiwigoImageSizeSquare:

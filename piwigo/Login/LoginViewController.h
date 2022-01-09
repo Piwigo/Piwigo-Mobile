@@ -24,12 +24,10 @@
 @property (nonatomic, strong) UILabel *byLabel2;
 @property (nonatomic, strong) UILabel *versionLabel;
 
-@property (nonatomic, strong) UIViewController *hudViewController;
-
-@property (nonatomic, assign) BOOL usesCommunityPluginV29;
 @property (nonatomic, assign) BOOL isAlreadyTryingToLogin;
 
 -(void)launchLogin;
 -(void)performReloginWithCompletion:(void (^)(void))reloginCompletion;
+-(void)reloadCatagoryDataInBckgMode;
 
 @end

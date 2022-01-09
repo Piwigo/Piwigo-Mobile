@@ -21,7 +21,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 @interface PiwigoAlbumData()
 
 @property (nonatomic, strong) NSArray<PiwigoImageData*> *imageList;
-@property (nonatomic, strong) NSMutableDictionary *imageIds;
 
 @property (nonatomic, assign) BOOL isLoadingMoreImages;
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
@@ -36,11 +35,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	self = [super init];
 	if(self)
 	{
-		self.imageIds = [NSMutableDictionary new];
-		
         self.isLoadingMoreImages = NO;
         self.lastImageBulkCount = 0;
 		self.onPage = 0;
+        self.imageList = [NSArray<PiwigoImageData *> new];
 	}
 	return self;
 }
@@ -82,8 +80,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
     albumData.albumId = kPiwigoSearchCategoryId;
-    if (query == nil) query = @"";
-    albumData.query = [NSString stringWithString:query];
+    if (query == nil) {
+        albumData.query = @"";
+    } else {
+        albumData.query = [NSString stringWithString:query];
+    }
     
     // No parent album
     albumData.parentAlbumId = kPiwigoSearchCategoryId;
@@ -188,7 +189,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	[self loadCategoryImageDataChunkWithSort:sort
 								 forProgress:progress
                                 onCompletion:^(BOOL completed) {
-        NSLog(@"loop Cat:%ld page:%4ld | last:%04ld, images:%04lu -> nberImages:%04ld [%@]", (long)self.albumId, (long)self.onPage, (long)self.lastImageBulkCount, (unsigned long)self.imageList.count, (long)self.numberOfImages, completed ? @"Ok" : @"-!-");
+//        NSLog(@"loop Cat:%ld page:%4ld | last:%04ld, images:%04ld -> nberImages:%04ld [%@]", (long)self.albumId, (long)self.onPage, (long)self.lastImageBulkCount, (long)self.imageList.count, (long)self.numberOfImages, completed ? @"Ok" : @"-!-");
         if (completed && self.lastImageBulkCount && self.imageList.count < self.numberOfImages)
 		{
 			[self loopLoadImagesForSort:sort
@@ -215,7 +216,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Bypass if it is already loading image data
-    if (self.isLoadingMoreImages) { return; }
+    if (self.isLoadingMoreImages) {
+        if (completion) { completion(NO); }
+        return;
+    }
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
@@ -224,20 +228,20 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 										   onPage:self.onPage
 										  forSort:sort
 								 ListOnCompletion:^(NSURLSessionTask *task, NSInteger count) {
-        // Report progress if needed
-        if (progress) {
-            PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
-            NSInteger numOfImgs = downloadingCategory.numberOfImages;
-            progress(self.onPage, numOfImgs);
-        }
 
         // Remember number of loaded image data in this chunk
         self.lastImageBulkCount = count;
 
-        // Calculate the number of thumbnails displayed per page
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-        if (count >= imagesPerPage * 2) { self.onPage++; }
+        // Should we increment onPage?
+        NSInteger numOfImgs = [[CategoriesData sharedInstance] getCategoryById:self.albumId].numberOfImages;
+        NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+        if (count >= imagesPerPage) { self.onPage++; }
         self.isLoadingMoreImages = NO;
+
+        // Report progress if needed
+        if (progress) {
+            progress(self.onPage, numOfImgs);
+        }
 
         // Perform completion block
         if(completion) {
@@ -249,6 +253,22 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
              fail(task, error);
          }
     }];
+}
+
+-(BOOL)hasAllImagesInCache
+{
+    // Check that the number of images is the expected one
+    if (self.imageList.count < self.numberOfImages) {
+        return NO;
+    }
+
+    // Check if there are still non-loaded image data
+    NSInteger indexOfNonCachedImage = [self.imageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return obj.imageId == NSNotFound;
+    }];
+    if (indexOfNonCachedImage != NSNotFound) { return NO; }
+
+    return YES;
 }
 
 -(NSInteger)addImages:(NSArray<PiwigoImageData*> *)images
@@ -274,7 +294,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         if (indexOfExistingItem == NSNotFound) {
             count++;
             [newImageList addObject:imageData];
-            [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
         } else {
             [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
         }
@@ -302,7 +321,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }];
     if (indexOfExistingItem == NSNotFound) {
 		[newImageList addObject:imageData];
-		[self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
     } else {
         [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
     }
@@ -387,6 +405,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     self.imageList = newImageList;
 }
 
+-(void)removeAllImages
+{
+    self.imageList = [NSArray<PiwigoImageData *> new];
+}
+
 -(void)removeImages:(NSArray*)images
 {
     NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
@@ -400,7 +423,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         }];
         if (indexOfItem == NSNotFound) { continue; }
         [newImageList removeObjectAtIndex:indexOfItem];
-        [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", (long)image.imageId]];
     }
     
     self.imageList = newImageList;
@@ -418,11 +440,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(void)resetData
 {
-	self.imageIds = [NSMutableDictionary new];
 	self.isLoadingMoreImages = NO;
     self.lastImageBulkCount = 0;
 	self.onPage = 0;
-	self.imageList = [NSArray new];
+    self.imageList = [NSArray<PiwigoImageData *> new];
 }
 
 -(void)incrementImageSizeByOne
@@ -442,8 +463,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 -(void)deincrementImageSizeByOne
 {
 	// Decrement number of images in category
-    self.numberOfImages--;
-    self.totalNumberOfImages--;
+    self.numberOfImages = MAX(self.numberOfImages - 1, 0);
+    self.totalNumberOfImages = MAX(self.totalNumberOfImages - 1, 0);
 	for(NSString *category in self.upperCategories)
 	{
         if (category.integerValue != self.albumId) {

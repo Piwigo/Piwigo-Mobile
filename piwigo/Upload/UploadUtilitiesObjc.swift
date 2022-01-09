@@ -13,14 +13,6 @@ class UploadUtilitiesObjc: NSObject {
     // This class is temporary and used to add freshly uploaded images to memory.
     /// It will be removed with CategoriesData when all data will be stored in a CoreData database.
         
-    @objc class func resumeAll() {
-        UploadManager.shared.resumeAll()
-    }
-    
-    @objc class func didDeletePiwigoImage(withID imageId: Int) {
-        UploadManager.shared.didDeletePiwigoImage(withID: imageId)
-    }
-    
     // Add image uploaded to the Piwigo server
     @objc class func addImage(_ notification: Notification) {
         // Prepare image for cache
@@ -91,6 +83,12 @@ class UploadUtilitiesObjc: NSObject {
         // Add uploaded image to cache and update UI if needed
         DispatchQueue.main.async {
             CategoriesData.sharedInstance()?.addImage(imageData)
+        }
+    }
+    
+    @objc class func disableAutoUpload() {
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.disableAutoUpload()
         }
     }
 }

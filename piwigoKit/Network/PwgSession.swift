@@ -129,11 +129,11 @@ public class PwgSession: NSObject {
             /// - This value can then be used to provide the expected count of returned bytes.
             /// - The last 2 lines display the content of the returned data for debugging.
             #if DEBUG
-            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
-                jsonData.count * MemoryLayout<Data>.stride
-            print("countsOfBytesReceived: \(countsOfByte) bytes")
-            let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr.debugDescription)")
+//            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
+//                jsonData.count * MemoryLayout<Data>.stride
+//            print("countsOfBytesReceived: \(countsOfByte) bytes")
+//            let dataStr = String(decoding: jsonData, as: UTF8.self)
+//            print(" > JSON: \(dataStr.debugDescription)")
             #endif
             
             let filteredData = self.filterPiwigo(data: jsonData)
@@ -162,9 +162,12 @@ public class PwgSession: NSObject {
         // Filter returned data (PHP may send a warning before the JSON object)
         let dataStr = String(decoding: data, as: UTF8.self)
         var filteredData = data
-        // Let's first assume we got JSON data
-        if let jsonPos = dataStr.range(of: "{\"stat\":")?.lowerBound {
-            filteredData  = dataStr[jsonPos...].data(using: String.Encoding.utf8)!
+
+        // Let's first assume we got JSON data and HTML before/after the JSON object
+        if let firstJsonChar = dataStr.firstIndex(of: "{"),
+           let lastJsonChar = dataStr.lastIndex(of: "}") {
+            filteredData  = dataStr[firstJsonChar...lastJsonChar]
+                .data(using: String.Encoding.utf8)!
             return filteredData
         }
         

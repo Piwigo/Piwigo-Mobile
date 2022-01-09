@@ -139,6 +139,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.7;
         self.nameLabel.numberOfLines = 1;
+        self.nameLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
 		[self.bottomLayer addSubview:self.nameLabel];
 		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
 		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
@@ -179,47 +180,26 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImg amount: 0.0];
         self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImg amount: 2*margin];
         [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
-		
-        // Without data to show
-		self.noDataLabel = [UILabel new];
-		self.noDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
-		self.noDataLabel.font = [UIFont piwigoFontNormal];
-		self.noDataLabel.textColor = [UIColor redColor];
-		self.noDataLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
-		self.noDataLabel.layer.cornerRadius = 3.0;
-		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
-		self.noDataLabel.hidden = YES;
-		[self.contentView addSubview:self.noDataLabel];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-																	 attribute:NSLayoutAttributeLeft
-																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
-																		toItem:self.contentView
-																	 attribute:NSLayoutAttributeLeft
-																	multiplier:1.0
-																	  constant:0]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
-																	 attribute:NSLayoutAttributeRight
-																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:self.contentView
-																	 attribute:NSLayoutAttributeRight
-																	multiplier:1.0
-																	  constant:0]];
 	}
 	return self;
 }
 
+-(void)applyColorPalette
+{
+    self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
+    self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
+}
+
 -(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId
 {
-	self.imageData = imageData;
+    // Do we have any info on that image ?
+	if (imageData == nil) { return; }
+    if (imageData.imageId == 0) { return; }
+    
+    // Store image data
+    self.imageData = imageData;
     self.isAccessibilityElement = YES;
 
-    // Do we have any info on that image ?
-	if (!self.imageData) {
-		self.noDataLabel.hidden = NO;
-		return;
-	}
-	
     // Play button
     self.playImg.hidden = !imageData.isVideo;
     self.playBckg.hidden = !imageData.isVideo;
@@ -230,9 +210,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)) {
         self.bottomLayer.hidden = NO;
-        self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
         self.nameLabel.hidden = NO;
-        self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
         } else if (categoryId == kPiwigoBestCategoryId) {
@@ -340,10 +318,21 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             }
             break;
     }
+    
+    [self applyColorPalette];
 }
 
 -(void)setImageFromPath:(NSString *)imagePath
 {
+    // Do we have a correct URL?
+    UIImage *placeHolderImage = [UIImage imageNamed:@"placeholderImage"];
+    if (imagePath.length == 0) {
+        // No image thumbnail
+        self.cellImage.image = placeHolderImage;
+        return;;
+    }
+    
+    // Retrieve the image file
     __weak typeof(self) weakSelf = self;
     [self.cellImage layoutIfNeeded];
     CGSize size = self.cellImage.bounds.size;
@@ -352,37 +341,40 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
     [self.cellImage setImageWithURLRequest:request
-                          placeholderImage:[UIImage imageNamed:@"placeholderImage"]
+                          placeholderImage:placeHolderImage
                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-        // Downsample image (or scale it up)
-        UIImage *displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+        // Downsample image is necessary
+        UIImage *displayedImage = image;
+        CGFloat maxDimensionInPixels = MAX(size.width, size.height) * scale;
+        if (MAX(image.size.width, image.size.height) > maxDimensionInPixels) {
+            displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+        }
         weakSelf.cellImage.image = displayedImage;
-        [weakSelf.cellImage layoutIfNeeded];
         
         // Favorite image position depends on device
         weakSelf.deltaX = margin; weakSelf.deltaY = margin;
+        CGFloat imageScale = MIN(size.width/displayedImage.size.width,
+                                 size.height/displayedImage.size.height);
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
             // Image width…
-            CGFloat imageWidth = displayedImage.size.width / scale;
+            CGFloat imageWidth = displayedImage.size.width * imageScale;
             weakSelf.darkImgWidth.constant = imageWidth;
 
             // Horizontal correction?
-            CGFloat cellWidth = size.width;
-            if (imageWidth < cellWidth) {
+            if (imageWidth < size.width) {
                 // The image does not fill the cell horizontally
-                weakSelf.deltaX += (cellWidth - imageWidth) / 2.0;
+                weakSelf.deltaX += (size.width - imageWidth) / 2.0;
             }
 
             // Image height…
-            CGFloat imageHeight = displayedImage.size.height / scale;
+            CGFloat imageHeight = displayedImage.size.height * imageScale;
             weakSelf.darkImgHeight.constant = imageHeight;
 
             // Vertical correction?
-            CGFloat cellHeight = size.height;
-            if (imageHeight < cellHeight) {
+            if (imageHeight < size.height) {
                 // The image does not fill the cell vertically
-                weakSelf.deltaY += (cellHeight - imageHeight) / 2.0;
+                weakSelf.deltaY += (size.height - imageHeight) / 2.0;
             }
         }
         
@@ -402,12 +394,15 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             CGFloat deltaY = fmax(bannerHeight + margin, weakSelf.deltaY);
             weakSelf.favBottom.constant = - deltaY;
         }
-    } failure:nil];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
+        NSLog(@"==> cell image: %@", error.localizedDescription);
+    }];
 }
 
 -(void)prepareForReuse
 {
     [super prepareForReuse];
+    self.imageData = nil;
     self.cellImage.image = nil;
     self.deltaX = margin; self.deltaY = margin;
 	self.isSelected = NO;

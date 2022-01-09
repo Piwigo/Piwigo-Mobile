@@ -13,10 +13,11 @@ public class NetworkUtilities: NSObject {
     // MARK: - UTF-8 encoding on 3 and 4 bytes
     public class
     func utf8mb4String(from string: String?) -> String {
-        // Return empty string is nothing provided
-        guard let strToConvert = string else {
+        // Return empty string if nothing provided
+        guard let strToConvert = string, !strToConvert.isEmpty else {
             return ""
         }
+        
         // Convert string to UTF-8 encoding
         let serverEncoding = String.Encoding(rawValue: NetworkVars.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
@@ -30,7 +31,7 @@ public class NetworkUtilities: NSObject {
     public class
     func utf8mb3String(from string: String?) -> String {
         // Return empty string is nothing provided
-        guard let strToFilter = string else {
+        guard let strToFilter = string, !strToFilter.isEmpty else {
             return ""
         }
 
@@ -55,7 +56,7 @@ public class NetworkUtilities: NSObject {
         // Return nil if originalURL is nil and a placeholder will be used
         guard let okURL = originalURL else { return nil }
         
-        // Servers may return incorrect URLs (would lead to a crash)
+        // Servers may return incorrect URLs
         // See https://tools.ietf.org/html/rfc3986#section-2
         var serverURL = NSURL(string: okURL)
         if serverURL == nil {
@@ -71,8 +72,8 @@ public class NetworkUtilities: NSObject {
                 // No path, incomplete URL —> return image.jpg but should never happen
                 return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
             }
-            let authority = String(leftURL.prefix(upTo: range1.upperBound)) + "/"
-            leftURL.removeFirst(authority.count)
+            let authority = String(leftURL.prefix(upTo: range1.upperBound))
+            leftURL.removeFirst(authority.count - 1)
 
             // The Piwigo server may not be in the root e.g. example.com/piwigo/…
             // So we remove the path to avoid a duplicate if necessary

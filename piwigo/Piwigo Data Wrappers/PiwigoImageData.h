@@ -82,7 +82,7 @@
 @property (nonatomic, assign) BOOL isVideo;
 
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
-+(float)widthForImageSizeType:(kPiwigoImageSize)imageSize;
++(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize;
 
 +(kPiwigoImageSize)optimumAlbumThumbnailSizeForDevice;
 +(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;

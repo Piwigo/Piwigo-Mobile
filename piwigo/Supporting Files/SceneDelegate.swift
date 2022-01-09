@@ -99,26 +99,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Should we reopen the session and restart uploads?
-        if let rootVC = self.window?.rootViewController,
-           let _ = rootVC.children.first as? AlbumImagesViewController {
+        if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
+           !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
             // Determine for how long the session is opened
+            /// Piwigo 11 session duration defaults to an hour.
             let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-3600) { // Piwigo 11 session duration defaults to an hour
+            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.reloginAndRetry {
-                    // Refresh Album/Images view
-                    let uploadInfo: [String : Any] = ["fromCache" : "NO",
-                                                      "albumId" : String(0)]
-                    let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                    // Reload category data from server in background mode
+                    self.loginVC.reloadCatagoryDataInBckgMode()
                 }
             } else {
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
-                UploadManager.shared.resumeAll()
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAll()
+                }
             }
         }
     }
@@ -128,8 +128,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
-        // Save cached data
-        DataController.saveContext()
+        // Save cached data (crashes eported by TestFlight and App Store…)
+//        DispatchQueue.main.async {
+//            DataController.saveContext()
+//        }
     }
 
     @available(iOS 13.0, *)

@@ -26,6 +26,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 @property (nonatomic, strong) UIAlertController *httpAlertController;
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
+@property (nonatomic, strong) UIViewController *hudViewController;
 
 @end
 
@@ -151,7 +152,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.isAlreadyTryingToLogin = NO;
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 -(void)applyColorPalette
@@ -196,7 +197,10 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    
+    // Release memory
+    self.hudViewController = nil;
 }
 
 
@@ -209,7 +213,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Default settings
     self.isAlreadyTryingToLogin = YES;
-    self.usesCommunityPluginV29 = NO;
     NetworkVarsObjc.hasAdminRights = NO;
     NetworkVarsObjc.hasNormalRights = NO;
     NetworkVarsObjc.usesCommunityPluginV29 = NO;
@@ -251,9 +254,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     }
 
     // Display HUD during login
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
-    });
+//    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+//    self.hudViewController = rootViewController.childViewControllers.firstObject;
+    self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
+              detail:NSLocalizedString(@"login_connecting", @"Connecting")
+         buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+        buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+              inMode:MBProgressHUDModeIndeterminate];
     
     // Save credentials in Keychain (needed before login when using HTTP Authentication)
     if(self.userTextField.text.length > 0)
@@ -284,7 +292,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 
                 // Check if the Community extension is installed and active (> 2.9a)
                 if([method isEqualToString:@"community.session.getStatus"]) {
-                    self.usesCommunityPluginV29 = YES;
+                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
                 }
             }
             // Known methods, pursue logging in…
@@ -562,7 +570,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 
                 // Check if the Community extension is installed and active (> 2.9a)
                 if([method isEqualToString:@"community.session.getStatus"]) {
-                    self.usesCommunityPluginV29 = YES;
+                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
                 }
             }
             // Known methods, pursue logging in…
@@ -594,9 +602,11 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 	if((self.userTextField.text.length > 0) && (!NetworkVarsObjc.userCancelledCommunication))
 	{
         // Update HUD during login
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showLoadingWithSubtitle:NSLocalizedString(@"login_newSession", @"Opening Session")];
-        });
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
+                  detail:NSLocalizedString(@"login_newSession", @"Opening Session")
+             buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+            buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+                  inMode:MBProgressHUDModeIndeterminate];
         
         // Perform login
         [SessionService performLoginWithUser:self.userTextField.text
@@ -649,12 +659,15 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
           (NetworkVarsObjc.hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
-    if((self.usesCommunityPluginV29) && (!NetworkVarsObjc.userCancelledCommunication)) {
-
+    if ((NetworkVarsObjc.usesCommunityPluginV29) &&
+        (!NetworkVarsObjc.userCancelledCommunication))
+    {
         // Update HUD during login
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showLoadingWithSubtitle:NSLocalizedString(@"login_communityParameters", @"Community Parameters")];
-        });
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
+                  detail:NSLocalizedString(@"login_communityParameters", @"Community Parameters")
+             buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+            buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+                  inMode:MBProgressHUDModeIndeterminate];
         
         // Community extension installed
         [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
@@ -692,7 +705,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
          withReloginCompletion:(void (^)(void))reloginCompletion
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
+    NSLog(@"   hudViewController=%@, hasAdminRights=%@, hasNormalRights=%@",
           (NetworkVarsObjc.usesCommunityPluginV29 ? @"YES" : @"NO"),
           (NetworkVarsObjc.hasAdminRights ? @"YES" : @"NO"),
           (NetworkVarsObjc.hasNormalRights ? @"YES" : @"NO"));
@@ -701,54 +714,37 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 #endif
     if (!NetworkVarsObjc.userCancelledCommunication) {
         // Update HUD during login
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showLoadingWithSubtitle:NSLocalizedString(@"login_serverParameters", @"Piwigo Parameters")];
-        });
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
+                  detail:NSLocalizedString(@"login_serverParameters", @"Piwigo Parameters")
+             buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+            buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+                  inMode:MBProgressHUDModeIndeterminate];
         
         [SessionService getPiwigoStatusAtLogin:isLoggingIn
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
                 if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
-                {
-                    // They need to update, ask user what to do
+                {   // They need to update, ask user what to do
+                    // Reinitialise flag
+                    NetworkVarsObjc.userCancelledCommunication = NO;
                     // Close loading or re-login view and ask what to do
-                    [self hideLoadingWithCompletion:^{
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            UIAlertController* alert = [UIAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible")
-                                    message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVarsObjc.version]
-                                    preferredStyle:UIAlertControllerStyleAlert];
-                            
-                            UIAlertAction* defaultAction = [UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                    style:UIAlertActionStyleCancel
-                                    handler:^(UIAlertAction * action) {
-                                        self.isAlreadyTryingToLogin = NO;
-                                    }];
-                            
-                            UIAlertAction* continueAction = [UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                    style:UIAlertActionStyleDestructive
-                                    handler:^(UIAlertAction * action) {
-                                        // Proceed at their own risk
-                                    [self launchAppAtFirstLogin:isFirstLogin
-                                          withReloginCompletion:reloginCompletion];
-                                    }];
-                            
-                            [alert addAction:defaultAction];
-                            [alert addAction:continueAction];
-                            alert.view.tintColor = UIColor.piwigoColorOrange;
-                            if (@available(iOS 13.0, *)) {
-                                alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-                            } else {
-                                // Fallback on earlier versions
-                            }
-                            [self presentViewController:alert animated:YES completion:^{
-                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                                alert.view.tintColor = UIColor.piwigoColorOrange;
-                            }];
-                        });
+                    [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                        UIAlertAction* defaultAction = [UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+                                style:UIAlertActionStyleCancel
+                                handler:^(UIAlertAction * action) {
+                                    self.isAlreadyTryingToLogin = NO;
+                                }];
+                        UIAlertAction* continueAction = [UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
+                                style:UIAlertActionStyleDestructive
+                                handler:^(UIAlertAction * action) {
+                                    // Proceed at their own risk
+                                [self launchAppAtFirstLogin:isFirstLogin
+                                      withReloginCompletion:reloginCompletion];
+                                }];
+                        [self presentPiwigoAlertWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible") message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVarsObjc.version] actions:@[defaultAction, continueAction]];
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
@@ -783,61 +779,70 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Load navigation if needed
     if (isFirstLogin) {
-        // Load favorites in the background before loading image data if needed
-        if (!NetworkVarsObjc.hasGuestRights &&
-            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
-        {
-            // Update HUD during login
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self showLoadingWithSubtitle:NSLocalizedString(@"imageFavorites_title", @"Favorites")];
-            });
+        // Update HUD during login
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")
+                  detail:NSLocalizedString(@"tabBar_albums", @"Albums")
+             buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+            buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+                  inMode:MBProgressHUDModeIndeterminate];
 
-            // Initialise favorites album
-            PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-            [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
-            
-            // Load favorites data in the background with dedicated URL session
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
-                [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
-                forProgress:^(NSInteger onPage, NSInteger outOf){
-                    // Post to the app that favorites data are loaded
-                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                                        object:nil userInfo:userInfo];
+        // Load category data in recursive mode
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
+            [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+                // Reinitialise flag
+                NetworkVarsObjc.userCancelledCommunication = NO;
+                
+                // Hide HUD and present root album
+                if (self.hudViewController) {
+                    [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                        // Present Album/Images view and resume uploads
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    }];
+                } else {
+                    [self hidePiwigoHUDWithCompletion:^{
+                        // Present Album/Images view and resume uploads
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    }];
                 }
-                onCompletion:^(BOOL completed) {
-                    // Post to the app that favorites data are loaded
-                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
-                                                                        object:nil userInfo:userInfo];
+                
+                // Load favorites in the background if necessary
+                if (!NetworkVarsObjc.hasGuestRights &&
+                    ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
+                {
+                    // Initialise favorites album
+                    PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+                    [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+                    
+                    // Load favorites data in the background with dedicated URL session
+                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
+                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                        forProgress:nil onCompletion:nil onFailure:nil];
+                    });
                 }
-                onFailure:nil];
-            });
-
-            [self hideLoadingWithCompletion:^{
-                // Present Album/Images view and resume uploads
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate loadNavigation];
-                return;
+            }
+            onFailure:^(NSURLSessionTask *task, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    // Inform user that we could not load album data
+                    NetworkVarsObjc.hadOpenedSession = NO;
+                    [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                });
             }];
-            return;
+        });
+    }
+    else {
+        // Hide HUD if needed
+        if (self.hudViewController) {
+            [self.hudViewController hidePiwigoHUDWithCompletion:^{
+                if (reloginCompletion) { reloginCompletion(); }
+            }];
         } else {
-            [self hideLoadingWithCompletion:^{
-                // Present Album/Images view and resume uploads
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate loadNavigation];
-                return;
+            [self hidePiwigoHUDWithCompletion:^{
+                if (reloginCompletion) { reloginCompletion(); }
             }];
         }
     }
-
-    // Resume upload operations
-    // and update badge, upload button of album navigator
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate resumeAll];
-    
-    // Was it a relogin after encountering an arror?
-    if (reloginCompletion) { reloginCompletion(); }
 }
 
 -(void)performReloginWithCompletion:(void (^)(void))reloginCompletion
@@ -853,10 +858,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     // Don't try to relogin in if already being trying
     if (self.isAlreadyTryingToLogin) return;
     
-    // Update HUD during re-login
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connecting", @"Connecting")];
-    });
+    // Do not present HUD during re-login
+    self.hudViewController = nil;
 
     // Perform re-login
     NSString *user = NetworkVarsObjc.username;
@@ -865,79 +868,74 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
-                                if(result)
-                                {
-                                    // Session now re-opened
-                                    NetworkVarsObjc.hadOpenedSession = YES;
-                                    
-                                    // First determine user rights if Community extension installed
-                                    [self getCommunityStatusAtFirstLogin:NO
-                                                   withReloginCompletion:reloginCompletion];
-                                }
-                                else
-                                {
-                                    // Session could not be re-opened, inform user
-                                    NetworkVarsObjc.hadOpenedSession = NO;
-                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-                                    [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                                    self.isAlreadyTryingToLogin = NO;
-                                }
+        if(result) {
+            // Session now re-opened
+            NetworkVarsObjc.hadOpenedSession = YES;
+            
+            // First determine user rights if Community extension installed
+            [self getCommunityStatusAtFirstLogin:NO
+                           withReloginCompletion:reloginCompletion];
+        }
+        else {
+            // Session could not be re-opened, inform user
+            NetworkVarsObjc.hadOpenedSession = NO;
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            self.isAlreadyTryingToLogin = NO;
+        }
 
-                            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                // Could not re-establish the session, login/pwd changed, something else ?
-                                self.isAlreadyTryingToLogin = NO;
-                                NetworkVarsObjc.hadOpenedSession = NO;
-                                
-                                // Display error message
-                                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                            }];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Could not re-establish the session, login/pwd changed, something else ?
+        self.isAlreadyTryingToLogin = NO;
+        NetworkVarsObjc.hadOpenedSession = NO;
+        
+        // Display error message
+        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+    }];
 }
+
+-(void)reloadCatagoryDataInBckgMode
+{
+    // Load category data in recursive mode in the background
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
+        [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+            UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
+            if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+                // Check data source and reload collection if needed
+                AlbumImagesViewController *vc = (AlbumImagesViewController *)viewController;
+                [vc checkIfCategoryStillExists];
+            }
+
+            // Resume uploads
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate resumeAll];
+            
+            // Load favorites in the background if necessary
+//            if (!NetworkVarsObjc.hasGuestRights &&
+//                ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
+//            {
+//                // Initialise favorites album
+//                PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+//                [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+//
+//                // Load favorites data in the background with dedicated URL session
+//                dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
+//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+//                    forProgress:nil onCompletion:nil onFailure:nil];
+//                });
+//            }
+        }
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Inform user that we could not load album data
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            });
+        }];
+    });
+}
+
 
 #pragma mark - HUD methods
-
--(void)showLoadingWithSubtitle:(NSString *)subtitle
-{
-    // Determine the present view controller if needed (not necessarily self.view)
-    if (!self.hudViewController) {
-        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (self.hudViewController.presentedViewController) {
-            self.hudViewController = self.hudViewController.presentedViewController;
-        }
-    }
-    
-    // Create the login HUD if needed
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (!hud) {        
-        // Create the HUD
-        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
-        [hud setTag:loadingViewTag];
-
-        // Change the background view shape, style and color.
-        hud.square = NO;
-        hud.animationType = MBProgressHUDAnimationFade;
-        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor whiteColor];
-        hud.bezelView.color = [UIColor piwigoColorText];
-        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.bezelView.backgroundColor = [UIColor piwigoColorBrown];
-        
-        // Set title
-        hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
-        hud.label.font = [UIFont piwigoFontNormal];
-    
-        // Will look best, if we set a minimum size.
-        hud.minSize = CGSizeMake(200.f, 100.f);
-
-        // Configure the button.
-        [hud.button setTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection") forState:UIControlStateNormal];
-        [hud.button addTarget:self action:@selector(cancelLoggingIn) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    // Update the subtitle
-    hud.detailsLabel.text = subtitle;
-    hud.detailsLabel.font = [UIFont piwigoFontSmall];
-}
 
 - (void)cancelLoggingIn
 {
@@ -948,45 +946,35 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         [task cancel];
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Update login HUD
-        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-        if (hud) {
-            // Update text
-            hud.detailsLabel.text = NSLocalizedString(@"internetCancellingConnection_button", @"Cancelling Connection…");;
-        }
-    });
+    // Update login HUD
+    [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"login_loggingIn", @"Logging In...")
+              detail:NSLocalizedString(@"internetCancellingConnection_button", @"Cancelling Connection…")
+         buttonTitle:NSLocalizedString(@"internetCancelledConnection_button", @"Cancel Connection")
+        buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
+              inMode:MBProgressHUDModeIndeterminate];
 }
 
 - (void)loggingInConnectionError:(NSError *)error
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Update login HUD
-        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-        if (hud) {
-            // Do not present error message when executing background task
-            if (UploadVarsObjc.isExecutingBackgroundUploadTask) {
-                [self hideLoading];
-                return;
-            }
-            
-            // Show only text
-            hud.mode = MBProgressHUDModeText;
-            
-            // Reconfigure the button
-            [hud.button setTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss") forState:UIControlStateNormal];
-            [hud.button addTarget:self action:@selector(hideLoading) forControlEvents:UIControlEventTouchUpInside];
+    // Do not present error message when executing background task
+    if (UploadVarsObjc.isExecutingBackgroundUploadTask) {
+        [self hideLoading];
+        return;
+    }
 
-            // Update text
-            if (error == nil) {
-                hud.label.text = NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled");
-                hud.detailsLabel.text = @" ";
-            } else {
-                hud.label.text = NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error");
-                hud.detailsLabel.text = [NSString stringWithFormat:@"%@", [error localizedDescription]];
-            }
-        }
-    });
+    if (error == nil) {
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled")
+                  detail:@" "
+             buttonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            buttonTarget:self buttonSelector:@selector(hideLoading)
+                  inMode:MBProgressHUDModeText];
+    } else {
+        [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
+                  detail:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+             buttonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            buttonTarget:self buttonSelector:@selector(hideLoading)
+                  inMode:MBProgressHUDModeText];
+    }
 }
 
 -(void)hideLoading
@@ -995,29 +983,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     NetworkVarsObjc.userCancelledCommunication = NO;
 
     // Hide and remove login HUD
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    [self.hudViewController resignFirstResponder];
-    if (hud) {
-        [hud hideAnimated:YES];
-        self.hudViewController = nil;
-    }
-}
-
--(void)hideLoadingWithCompletion:(void (^ __nullable)(void))completion
-{
-    // Reinitialise flag
-    NetworkVarsObjc.userCancelledCommunication = NO;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        // Hide and remove the HUD
-        [self hideLoading];
-        
-        // Execute block
-        if (completion) {
-            completion();
-        }
-    });
+    [self.hudViewController hidePiwigoHUDWithCompletion:^{ }];
 }
 
 

@@ -19,5 +19,6 @@
 
 -(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId;
 -(void)highlightOnCompletion:(void (^)(void))completion;
+-(void)applyColorPalette;
 
 @end

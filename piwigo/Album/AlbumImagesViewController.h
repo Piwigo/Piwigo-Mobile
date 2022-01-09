@@ -10,10 +10,6 @@
 #import "ImageCollectionViewCell.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemovedImage;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedAlbumData;
-
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShare;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 
@@ -26,6 +22,10 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 //@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
 
--(instancetype)initWithAlbumId:(NSInteger)albumId inCache:(BOOL)isCached;
+-(instancetype)initWithAlbumId:(NSInteger)albumId;
+-(void)checkIfCategoryStillExists;
+-(void)updateSubCategoryWithId:(NSInteger)albumId;
+-(void)addImageWithId:(NSInteger)imageId;
+-(void)removeImageWithId:(NSInteger)imageId;
 
 @end

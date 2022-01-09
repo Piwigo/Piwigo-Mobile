@@ -52,7 +52,7 @@ class AppVars: NSObject {
     @objc static var didWatchHelpViews: UInt16
     
     /// - Request help for translating Piwigo once a month max
-    static let kPiwigoOneMonth = (TimeInterval)(31 * 24 * 60 * 60)     // i.e. 31 days
+    static let kPiwigoOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
     @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
     @objc static var dateOfLastTranslationRequest: TimeInterval
     

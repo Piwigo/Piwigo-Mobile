@@ -139,21 +139,23 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
         // Title
         let titleString = "\(NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images"))\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
 
         // Text
         let textString = NSLocalizedString("imageSortMessage", comment: "Please select how you wish to sort images")
         let textAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontSmall()
         ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+        let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
         return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
     }
 

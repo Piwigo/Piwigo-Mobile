@@ -363,7 +363,7 @@ extension UploadSessions: URLSessionDataDelegate {
         
         #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        print(" > JSON: \(dataStr.debugDescription)")
+        debugPrint(" > JSON: \(dataStr.debugDescription)")
         #endif
         
         switch dataTask.taskDescription {

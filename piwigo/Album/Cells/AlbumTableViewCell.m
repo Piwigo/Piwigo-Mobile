@@ -122,68 +122,68 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }
     
     // Display album image
-    UIImage *placeHolder = [UIImage imageNamed:@"placeholder"];
     self.backgroundImage.layer.cornerRadius = 10;
-    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
-    
-    if (albumData.categoryImage && imageSize > 0 &&
-        ![albumData.categoryImage isEqual:placeHolder])
-    {
-        // Album thumbnail in memory
-        self.backgroundImage.image = albumData.categoryImage;
-    }
-    else if (albumData.albumThumbnailUrl.length <= 0)
-    {
+    UIImage *placeHolder = [UIImage imageNamed:@"placeholder"];
+
+    // Do we have a correct URL?
+    if (albumData.albumThumbnailUrl.length == 0) {
         // No album thumbnail
-        albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-        self.backgroundImage.image = [UIImage imageNamed:@"placeholder"];
+        albumData.categoryImage = placeHolder;
+        self.backgroundImage.image = placeHolder;
         return;
     }
-    else
-    {
-        // Load album thumbnail
-        __weak typeof(self) weakSelf = self;
-        CGSize size = self.backgroundImage.bounds.size;
-        CGFloat scale = fmax(1.0, self.backgroundImage.traitCollection.displayScale);
-        NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-        [self.backgroundImage setImageWithURLRequest:request
-                                    placeholderImage:[UIImage imageNamed:@"placeholder"]
-                                             success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-                // Process saliency
-                UIImage *croppedImage;
-                if (@available(iOS 13.0, *)) {
-                    croppedImage = [image processSaliency];
-                    if (croppedImage == nil) { croppedImage = image; }
-                } else {
-                    // Fallback on earlier versions
-                    croppedImage = image;
-                }
-
-                // Reduce size?
-                CGSize imageSize = croppedImage.size;
-                if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
-                    UIImage *albumImage = [ImageUtilities downsampleWithImage:croppedImage to:size scale:scale];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        albumData.categoryImage = albumImage;
-                        weakSelf.backgroundImage.image = albumImage;
-                    });
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        albumData.categoryImage = croppedImage;
-                        weakSelf.backgroundImage.image = croppedImage;
-                    });
-                }
-            });
-         }
-         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-#if defined(DEBUG)
-             NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", albumData.albumThumbnailUrl);
-#endif
-         }];
+    
+    // Do we have the thumbnail in cache?
+    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+    if ((albumData.categoryImage != nil) && (imageSize > 0) &&
+        ![albumData.categoryImage isEqual:placeHolder]) {
+        // Album thumbnail in memory
+        self.backgroundImage.image = albumData.categoryImage;
+        return;
     }
+    
+    // Retrieve the image file
+    __weak typeof(self) weakSelf = self;
+    CGSize size = self.backgroundImage.bounds.size;
+    CGFloat scale = fmax(1.0, self.backgroundImage.traitCollection.displayScale);
+    NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    [self.backgroundImage setImageWithURLRequest:request
+                                placeholderImage:placeHolder
+                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^(void){
+            // Process saliency
+            UIImage *croppedImage;
+            if (@available(iOS 13.0, *)) {
+                croppedImage = [image processSaliency];
+                if (croppedImage == nil) { croppedImage = image; }
+            } else {
+                // Fallback on earlier versions
+                croppedImage = image;
+            }
+
+            // Reduce size?
+            CGSize imageSize = croppedImage.size;
+            if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
+                UIImage *albumImage = [ImageUtilities downsampleWithImage:croppedImage to:size scale:scale];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    albumData.categoryImage = albumImage;
+                    weakSelf.backgroundImage.image = albumImage;
+                });
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    albumData.categoryImage = croppedImage;
+                    weakSelf.backgroundImage.image = croppedImage;
+                });
+            }
+        });
+     }
+     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+#if defined(DEBUG)
+         NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", albumData.albumThumbnailUrl);
+#endif
+     }];
 }
 
 

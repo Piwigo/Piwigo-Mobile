@@ -17,12 +17,11 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
-
-@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -34,10 +33,8 @@
     self = [super init];
     if(self)
     {
+        // Initialisation
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-        
-        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
-        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
         // Collection of images
@@ -117,12 +114,28 @@
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
+        if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
+            ImageCollectionViewCell *imageCell = (ImageCollectionViewCell*)cell;
+            [imageCell applyColorPalette];
+        }
+    }
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+#if defined(DEBUG_LIFECYCLE)
+    NSLog(@"viewWillAppear    => ID:%ld", (long)kPiwigoSearchCategoryId);
+#endif
+    // Initialise data source
+    self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
+
     // Set colors, fonts, etc.
     [self applyColorPalette];
 
@@ -134,103 +147,44 @@
 {
     [super viewDidAppear:animated];
     
-    // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
-
-    // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
-}
-
--(void)scrollToHighlightedCell
-{    
-    // Should we scroll to image of interest?
-//    NSLog(@"••• Discover|Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:0]);
+    // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
-        
-        // Thumbnail of interest is not the first one
-        // => Scroll and highlight cell of interest
-//        NSLog(@"=> Discover|Try to scroll to item=%ld", (long)self.imageOfInterest.item);
-        
-        // Thumbnail of interest already visible?
+        // Highlight the cell of interest
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
-            // Thumbnail is already visible and highlighted
+            // Thumbnail is visible
             UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell highlightOnCompletion:^{
-                    // Apply effect when returning from image preview mode
                     self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
                 }];
             } else {
-               self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-            }
-        }
-        else {
-            // First visible thumbnail
-            NSIndexPath *indexPathOfFirstVisibleThumbnail = [indexPathsForVisibleItems firstObject];
-            
-            // Thumbnail of interest above visible items?
-            if (self.imageOfInterest.item < indexPathOfFirstVisibleThumbnail.item) {
-                // Scroll up collection and highlight cell
-//                NSLog(@"=> Discover|Scroll up to item #%ld", (long)self.imageOfInterest.item);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-            }
-            
-            // Thumbnail is below visible items
-            // Get number of already loaded items
-            NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
-            if (self.imageOfInterest.item < nberOfItems) {
-                // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-                
-                // Already loaded => scroll to image if necessary
-//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
-                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
-                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                }
-
-                // Load more images if seems to be a good idea
-                if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId] numberOfImages])) {
-//                    NSLog(@"=> Discover|Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    } onFailure:nil];
-                }
-            } else {
-                // No yet loaded => load more images
-                // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId] numberOfImages]) {
-//                    NSLog(@"=> Discover|Load more images…");
-                    [self.albumData loadMoreImagesOnCompletion:^{
-                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    } onFailure:nil];
-                }
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
             }
         }
     }
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    
-    // When returning from imageDetailView, highlight image (which should now be visible)
+-(void)scrollToHighlightedCell
+{
+    // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
-        // Get visible cells
-//        NSLog(@"=> Discover|Did end scrolling with %ld images", (long)[self.imagesCollection numberOfItemsInSection:0]);
+        // Highlight the cell of interest
         NSArray<NSIndexPath *> *indexPathsForVisibleItems = [self.imagesCollection indexPathsForVisibleItems];
         if ([indexPathsForVisibleItems containsObject:self.imageOfInterest]) {
-            // Get cell
+            // Thumbnail is already visible and is highlighted
             UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:self.imageOfInterest];
             if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-                // Highlight cell
                 ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
                 [imageCell highlightOnCompletion:^{
-                    // Apply effect when returning from image preview mode
-                    self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
+                    self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
                 }];
             } else {
-               self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
+                self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
             }
         }
     }
@@ -255,11 +209,8 @@
 
 -(void)dealloc
 {
-    // Unregister category data updates
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
-
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 
@@ -267,53 +218,44 @@
 
 -(void)searchAndLoadImages
 {
+    // Display "Loading..."
+    NSArray *footers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter];
+    if (footers.count > 0) {
+        NberImagesFooterCollectionReusableView *footer = footers.firstObject;
+        footer.noImagesLabel.text = [AlbumUtilities footerLegendFor:NSNotFound];
+    }
+
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
         [self.imagesCollection reloadData];
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+        if ((error.domain == NSURLErrorDomain) && (error.code == NSURLErrorCancelled)) { return; }
+        [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
--(void)removeImageFromCategory:(NSNotification *)notification
+-(void)removeImageWithId:(NSInteger)imageId
 {
-    if (notification == nil) { return; }
-    NSDictionary *userInfo = notification.userInfo;
-
-    // Right category Id?
-    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-    if (catId != kPiwigoSearchCategoryId) return;
-    
-    // Get ID of removed image
-    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-    NSLog(@"=> removeImage %ld from Category %ld", (long)imageId, (long)catId);
-
     // Get index of deleted image
     NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
      return obj.imageId == imageId;
     }];
     if (indexOfExistingItem != NSNotFound) {
-        // Delete image from data source and corresponding cell
+        // Remove image from data source
         NSMutableArray<PiwigoImageData *> *imageList = [self.albumData.images mutableCopy];
         [imageList removeObjectAtIndex:indexOfExistingItem];
         self.albumData.images = imageList;
+        // Delete corresponding cell
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
         if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
             [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
         }
     }
 
-    // Update footer
-    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages;
-    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        footer.noImagesLabel.text = totalImageCount > 1 ?
-            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    // Update footer if visible
+    if ([self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter].count > 0) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
     }
 }
 
@@ -328,24 +270,7 @@
         NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages;
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
-        
-        if (totalImageCount == NSNotFound) {
-            // Is loading…
-            footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
-        }
-        else if (totalImageCount == 0) {
-            // Display "No images"
-            footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-            }
-        else {
-            // Display number of images…
-            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-            [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-            footer.noImagesLabel.text = totalImageCount > 1 ?
-                [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-        }
-        
+        footer.noImagesLabel.text = [AlbumUtilities footerLegendFor:totalImageCount];
         return footer;
     }
     
@@ -366,25 +291,7 @@
 {
     // Display number of images
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages;
-    NSString *footer = @"";
-
-    if (totalImageCount == NSNotFound) {
-        // Is loading…
-        footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
-    }
-    else if (totalImageCount == 0) {
-        // Display "No images"
-        footer = NSLocalizedString(@"noImages", @"No Images");
-    }
-    else {
-        // Display number of images…
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        footer = totalImageCount > 1 ?
-            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-    }
-
+    NSString *footer = [AlbumUtilities footerLegendFor:totalImageCount];
     if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
         NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
         NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
@@ -444,7 +351,10 @@
 {
     ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCollectionViewCell" forIndexPath:indexPath];
     
-    if (self.albumData.images.count > indexPath.row) {
+    if (self.albumData.images.count > indexPath.item) {
+        // Remember that user did scroll down to this item
+        self.didScrollToImageIndex = indexPath.item;
+        
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
@@ -455,17 +365,9 @@
         }
     }
     
-    // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-    
-    // Load image data in advance if possible (page after page…)
-    if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0),
-                               [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId] totalNumberOfImages]))
-    {
-        [self.albumData loadMoreImagesOnCompletion:^{
-            [self.imagesCollection reloadData];
-        } onFailure:nil];
+    // Load more image data if possible (page after page…)
+    if (![[[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId] hasAllImagesInCache]) {
+        [self needToLoadMoreImages];
     }
     
     return cell;
@@ -477,11 +379,12 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Avoid rare crashes…
-    if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) {
-        // forget this call!
-        return;
-    }
+    if ((indexPath.row < 0) || (indexPath.row >= [self.albumData.images count])) { return; }
+    if (self.albumData.images[indexPath.item].imageId == 0) { return; }
 
+    // Remember that user did tap this image
+    self.imageOfInterest = indexPath;
+    
     // Display full screen image
     if (@available(iOS 11.0, *)) {
         UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
@@ -507,8 +410,8 @@
     if (indexOfImage == NSNotFound) { return; }
 
     // Scroll view to center image
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
-    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+    if ([self.imagesCollection numberOfItemsInSection:0] > indexOfImage) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
         self.imageOfInterest = indexPath;
         [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
@@ -539,13 +442,67 @@
 
 -(void)needToLoadMoreImages
 {
-    [self.albumData loadMoreImagesOnCompletion:^{
-        if(self.imageDetailView != nil)
-        {
-            self.imageDetailView.images = [self.albumData.images mutableCopy];
-        }
-        [self.imagesCollection reloadData];
-    } onFailure:nil];
+    NSInteger downloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+        [self.albumData loadMoreImagesOnCompletion:^(BOOL hasNewImages) {
+            // Did we collect more images?
+            if (!hasNewImages) { return; }
+
+            // Prepare indexPaths of cells to reload
+            NSInteger newDownloadedImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].imageList.count;
+            NSMutableArray *indexPaths = [NSMutableArray new];
+            for (NSInteger i = downloadedImageCount; i < newDownloadedImageCount; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+            }
+
+            // Back to main thread…
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Update detail view if needed
+                if (self.imageDetailView != nil) {
+                    self.imageDetailView.images = [self.albumData.images mutableCopy];
+                }
+
+                // Add indexPaths of cell presented with placeholder
+                UIImage *placeHolderImage = [UIImage imageNamed:@"placeholderImage"];
+                for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
+                    if (indexPath.section == 0) { continue; }
+                    if ([indexPaths containsObject:indexPath]) { continue; }
+                    UICollectionViewCell *cell = [self.imagesCollection cellForItemAtIndexPath:indexPath];
+                    if (![cell isKindOfClass:[ImageCollectionViewCell class]]) { continue; }
+                    ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
+                    if ([imageCell.cellImage.image isEqual:placeHolderImage]) {
+                        [indexPaths addObject:indexPath];
+                    }
+                }
+                
+                // Reload cells
+                [self.imagesCollection reloadItemsAtIndexPaths:indexPaths];
+                
+                // Display HUD if it will take more than a second to load image data
+                CFAbsoluteTime diff = (CFAbsoluteTimeGetCurrent() - start)*1000.0;
+                CFAbsoluteTime perImage = fabs(diff / (double)(newDownloadedImageCount - downloadedImageCount));
+                CFAbsoluteTime left = perImage * (double)MAX(0, (self.didScrollToImageIndex - newDownloadedImageCount));
+                NSLog(@"expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage);
+                if (left > 1000.0) {
+                    if ([self.view viewWithTag:loadingViewTag] == nil) {
+                        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+                    } else {
+                        float fraction = (float)newDownloadedImageCount / (float)(self.didScrollToImageIndex);
+                        [self updatePiwigoHUDWithProgress:fraction];
+                    }
+                } else {
+                    [self hidePiwigoHUDWithCompletion:^{}];
+                }
+                
+                // Should we continue loading images?
+                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                if (self.didScrollToImageIndex >= newDownloadedImageCount) {
+                    [self needToLoadMoreImages];
+                }
+            });
+        } onFailure:nil];
+    });
 }
 
 @end

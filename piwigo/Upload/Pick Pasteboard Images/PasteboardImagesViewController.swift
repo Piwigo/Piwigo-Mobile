@@ -240,9 +240,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Prevent device from sleeping if uploads are in progress
-        let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.state == .waiting) || ($0.state == .preparing) || ($0.state == .prepared) ||
-            ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
+        let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
+                                                    .uploading, .uploaded, .finishing]
+        let uploadsToPerform:Int = uploadsProvider.fetchedResultsController
+            .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
         }
@@ -587,7 +588,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if (gestureRecognizer is UIPanGestureRecognizer) {
             let gPR = gestureRecognizer as? UIPanGestureRecognizer
             let translation = gPR?.translation(in: localImagesCollection)
-            if abs(Float(translation?.x ?? 0.0)) > abs(Float(translation?.y ?? 0.0)) {
+            if abs(translation?.x ?? 0.0) > abs(translation?.y ?? 0.0) {
                 return true
             }
         }
@@ -834,8 +835,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 switch state {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -852,8 +855,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 switch upload?.1 {
                 case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading:
                     cell.cellUploading = true
+                case .uploaded, .finishing:
+                    cell.cellUploading = false
                 case .finished, .moderated:
                     cell.cellUploaded = true
                 case .preparingFail, .preparingError, .formatError,
@@ -1130,8 +1135,10 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                     switch upload.state {
                     case .waiting, .preparing, .prepared, .deleted:
                         cell.cellWaiting = true
-                    case .uploading, .uploaded, .finishing:
+                    case .uploading:
                         cell.cellUploading = true
+                    case .uploaded, .finishing:
+                        cell.cellUploading = false
                     case .finished, .moderated:
                         cell.cellUploaded = true
                     case .preparingFail, .preparingError, .formatError,

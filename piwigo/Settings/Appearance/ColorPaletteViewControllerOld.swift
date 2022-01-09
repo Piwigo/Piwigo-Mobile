@@ -65,14 +65,16 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
     // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
         // Title
         let titleString = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
         return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
     }
 

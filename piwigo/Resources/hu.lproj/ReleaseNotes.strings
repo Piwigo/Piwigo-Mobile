@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.2_text" = "Version 2.8.2\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface";
+"v2.9.0_text" = "2.9-es verzió\n\n• Megjeleníti a fényképek/videók leírását előnézeti módban\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.8.2_text" = "2.8.2-es verzió\n2021. november 26\n\n• Lehetővé teszi a közösségi felhasználók számára, hogy a háttérben töltsenek fel fényképeket és videókat, és automatikusan feltöltsék őket\n• Kijavít egy kompatibilitási problémát a Piwigo 12-vel\n• Kisebb hibajavítások és fejlesztések a felületen";
 
 "v2.8.1_text" = "2.8.1-es verzió\n2021 November 9\n\n• Hibajavítások";
 

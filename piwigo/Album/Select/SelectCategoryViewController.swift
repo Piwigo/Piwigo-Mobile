@@ -24,6 +24,11 @@ protocol SelectCategoryDelegate: NSObjectProtocol {
 }
 
 @objc
+protocol SelectCategoryAlbumMovedDelegate {
+    func didMoveCategory()
+}
+
+@objc
 protocol SelectCategoryImageCopiedDelegate: NSObjectProtocol {
     func didCopyImage(withData imageData: PiwigoImageData)
 }
@@ -37,6 +42,7 @@ protocol SelectCategoryImageRemovedDelegate {
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var delegate: SelectCategoryDelegate?
+    @objc weak var albumMovedDelegate: SelectCategoryAlbumMovedDelegate?
     @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
@@ -277,8 +283,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewWillDisappear(animated)
         
         // Re-enable toolbar items in image preview mode
-        if [kPiwigoCategorySelectActionMoveAlbum,
-            kPiwigoCategorySelectActionSetAlbumThumbnail,
+        if [kPiwigoCategorySelectActionSetAlbumThumbnail,
             kPiwigoCategorySelectActionCopyImage,
             kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImage,
@@ -426,6 +431,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let titleString: String
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
+        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
+                              height: CGFloat.greatestFiniteMagnitude)
 
         switch wantedAction {
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
@@ -435,7 +442,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Title
                 titleString = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
                 let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-                let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+                let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
 
                 // Text
                 if inputImageData.categoryIds.count > 1 {
@@ -444,14 +451,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     textString = NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
                 }
                 let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-                let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+                let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
                 return CGFloat(ceil(titleRect.size.height + textRect.size.height))
             }
             
             // Text
             textString = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
             let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-            let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+            let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
             return CGFloat(ceil(textRect.size.height))
         default:
             // 1st section —> Recent albums
@@ -470,7 +477,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
 
             let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-            let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+            let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
             return CGFloat(ceil(titleRect.size.height))
         }
     }
@@ -1058,11 +1065,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     self.inputCategoryData.parentAlbumId = parentCatData.albumId
                     catToUpdate.append(self.inputCategoryData)
 
-                    // Update cache (will refresh album/images view)
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate, andUpdateUI: true)
+                    // Update categories in cache
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                    
+                    // Hide HUD, swipe and view then remove category from the album/images collection view
                     self.updatePiwigoHUDwithSuccess() {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true)
+                            self.dismiss(animated: true) {
+                                self.albumMovedDelegate?.didMoveCategory()
+                            }
                         }
                     }
                 } else {
@@ -1380,23 +1391,20 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
-            //        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
-            AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true,
-                    onCompletion: { task, albums in
-                        // Hide loading HUD
-                        self.hidePiwigoHUD {
-                            // Build category array
-                            self.buildCategoryArray()
-                            completion(true)
-                        }
-                    },
-                    onFailure: { task, error in
-                        // Hide loading HUD
-                        self.hidePiwigoHUD {
-                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                            fail(task, error!)
-                        }
-                    })
+            AlbumService.getAlbumData { _, _ in
+                // Hide loading HUD
+                self.hidePiwigoHUD {
+                    // Build category array
+                    self.buildCategoryArray()
+                    completion(true)
+                }
+            } onFailure: { task, error in
+                // Hide loading HUD
+                self.hidePiwigoHUD {
+                    debugPrint(String(format: "getAlbumData: %@", error?.localizedDescription ?? ""))
+                    fail(task, error!)
+                }
+            }
         } else {
             // Build category array from cache
             buildCategoryArray()
@@ -1598,29 +1606,6 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         } else if subcategories.count > 0 {
             // Sub-categories are already known
             addSubCaterories(toCategoryID: categoryTapped)
-        } else {
-            // Sub-categories are not known
-            // NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
-            // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-
-            AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
-                                      usingCache: true,
-                                      inRecursiveMode: false,
-                                      onCompletion: { task, albums in
-                                        // Hide loading HUD
-                                        self.hidePiwigoHUD {
-                                            // Add sub-categories
-                                            self.addSubCaterories(toCategoryID: categoryTapped)
-                                        }
-                                    },
-                                      onFailure: { task, error in
-                                        // Hide loading HUD
-                                        self.hidePiwigoHUD {
-                                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                                        }
-                                    })
         }
     }
 }

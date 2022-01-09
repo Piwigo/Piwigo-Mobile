@@ -14,5 +14,6 @@
 
 -(void)searchAndLoadImages;
 -(void)scrollToHighlightedCell;
+-(void)removeImageWithId:(NSInteger)imageId;
 
 @end

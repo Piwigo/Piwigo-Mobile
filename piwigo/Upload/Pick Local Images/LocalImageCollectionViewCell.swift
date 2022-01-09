@@ -48,12 +48,12 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
         set(waiting) {
             _cellUploading = waiting
-            darkenView?.isHidden = !waiting
-            uploadingProgress?.isHidden = !waiting
-            uploadedImage?.isHidden = waiting
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = false
+            uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(0, animated: false)
+            uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
-            waitingActivity?.isHidden = !waiting
         }
     }
 
@@ -64,12 +64,16 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
         set(uploading) {
             _cellUploading = uploading
-            darkenView?.isHidden = !uploading
-            uploadingProgress?.isHidden = !uploading
-            uploadedImage?.isHidden = uploading
-            uploadingProgress?.setProgress(_progress, animated: false)
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = false
+            if uploading {
+                uploadingProgress?.setProgress(_progress, animated: false)
+            } else {
+                uploadingProgress?.setProgress(1.0, animated: false)
+            }
+            uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
-            waitingActivity?.isHidden = uploading
         }
     }
 

@@ -69,8 +69,7 @@ extension UIFont {
         var unadjustedSize: CGSize? = nil
         if let font = label?.font {
             unadjustedSize = label?.text?.size(withAttributes: [
-            NSAttributedString.Key.font: font
-        ])
+                NSAttributedString.Key.font: font])
         }
         var scaleFactor:CGFloat = (label?.frame.size.width ?? 0.0) / ((unadjustedSize?.width ?? 1.0) / CGFloat(nberLines))
 

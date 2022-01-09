@@ -35,33 +35,34 @@
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE (1st generation)",						# 4-inch
-  "iPhone 8",										# 4.7-inch
-  "iPhone 8 Plus",									# 5.5-inch
-  "iPhone 11 Pro",									# 5.8-inch
-  "iPhone 11 Pro Max",								# 6.5-inch
-  "iPad Pro (9.7-inch)",							# 9.7-inch
-  "iPad Pro (10.5-inch)",							# 10.5-inch
-  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
-  "iPad Pro (11-inch) (3rd generation)",			# 11-inch
-  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
+#  "iPhone SE (1st generation)",						# 4-inch
+#  "iPhone 8",										# 4.7-inch
+#  "iPhone 8 Plus",									# 5.5-inch
+#  "iPhone 11 Pro",									# 5.8-inch
+  "iPhone 13 Pro",									# Wiki
+#  "iPhone 11 Pro Max",								# 6.5-inch
+#  "iPad Pro (9.7-inch)",							# 9.7-inch
+#  "iPad Pro (10.5-inch)",							# 10.5-inch
+#  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
+#  "iPad Pro (11-inch) (3rd generation)",			# 11-inch
+#  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-   "da",
-   "de-DE",
+#   "da",
+#   "de-DE",
    "en-US",
-   "es-ES",
-   "fr-FR",
-   "hu",
-   "it",
-   "ja",
-   "nl-NL",
-   "pl",
-   "ru",
-   "sv",
-   "zh-Hans"
+#   "es-ES",
+#   "fr-FR",
+#   "hu",
+#   "it",
+#   "ja",
+#   "nl-NL",
+#   "pl",
+#   "ru",
+#   "sv",
+#   "zh-Hans"
 ])
 
 # The name of the scheme which contains the UI Tests

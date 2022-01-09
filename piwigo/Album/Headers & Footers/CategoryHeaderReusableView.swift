@@ -15,6 +15,8 @@ class CategoryHeaderReusableView: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = UIColor.clear
+        
         commentLabel = UILabel()
         commentLabel?.backgroundColor = UIColor.clear
         commentLabel?.translatesAutoresizingMaskIntoConstraints = false
@@ -27,16 +29,12 @@ class CategoryHeaderReusableView: UICollectionReusableView {
 
         if let commentLabel = commentLabel {
             addSubview(commentLabel)
-        }
-        addConstraint(NSLayoutConstraint.constraintView(fromTop: commentLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            if let commentLabel = commentLabel {
+            addConstraint(NSLayoutConstraint.constraintView(fromTop: commentLabel, amount: 4)!)
+            if #available(iOS 11, *) {
                 addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
                 "header": commentLabel
                 ]))
-            }
-        } else {
-            if let commentLabel = commentLabel {
+            } else {
                 addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
                 "header": commentLabel
                 ]))
@@ -46,5 +44,10 @@ class CategoryHeaderReusableView: UICollectionReusableView {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        commentLabel?.text = ""
     }
 }
