@@ -118,6 +118,20 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           [UploadUtilitiesObjc disableAutoUpload];
                       }
                       
+                      // Check whether the default album still exists
+                      NSInteger defaultCatId = AlbumVars.defaultCategory;
+                      NSInteger indexOfDefault = [albums indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                          PiwigoAlbumData *category = (PiwigoAlbumData *)obj;
+                          if(category.albumId == defaultCatId) {
+                              return YES;
+                          } else {
+                              return NO;
+                          }
+                      }];
+                      if (indexOfDefault != NSNotFound) {
+                          AlbumVars.defaultCategory = 0;    // Back to root album
+                      }
+                      
                       // Update albums if Community extension installed (not needed for admins)
                       if (!NetworkVarsObjc.hasAdminRights &&
                           NetworkVarsObjc.usesCommunityPluginV29)
