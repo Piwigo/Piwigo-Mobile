@@ -458,9 +458,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.logout.rawValue:
             nberOfRows = 1
         case SettingsSection.albums.rawValue:
-            nberOfRows = 4
+            nberOfRows = 3
         case SettingsSection.images.rawValue:
-            nberOfRows = 5
+            nberOfRows = 6
         case SettingsSection.imageUpload.rawValue:
             nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -556,26 +556,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return LabelTableViewCell()
                 }
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
-                var detail: String
-                if AlbumVars.defaultCategory == 0 {
-                    if view.bounds.size.width > 375 {
-                        detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
-                    } else {
-                        detail = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
-                    }
-                } else {
-                    if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
-                        detail = albumName
-                    } else {
-                        if view.bounds.size.width > 375 {
-                            detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
-                        } else {
-                            detail = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
-                        }
-                        AlbumVars.defaultCategory = 0
-                    }
-                }
-                cell.configure(with: title, detail: detail)
+                cell.configure(with: title, detail: defaultAlbumName())
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultAlbum"
                 tableViewCell = cell
@@ -586,7 +567,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return LabelTableViewCell()
                 }
                 let albumImageSize = kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize)
-                let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -598,35 +579,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
                 }
-                cell.configure(with: title, detail: defaultAlbum)
+                cell.configure(with: title, detail: defaultSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
 
-            case 2 /* Default Sort */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.defaultSort)
-                let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                var title: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 Plus screen width
-                    title = NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("defaultImageSort>320px", comment: "Default Sort")
-                } else {
-                    title = NSLocalizedString("defaultImageSort", comment: "Sort")
-                }
-                cell.configure(with: title, detail: defaultSort)
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "defaultSort"
-                tableViewCell = cell
- 
-            case 3 /* Number of recent albums */:
+            case 2 /* Number of recent albums */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -661,7 +619,30 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Images
         case SettingsSection.images.rawValue /* Images */:
             switch indexPath.row {
-            case 0 /* Thumbnail file */:
+            case 0 /* Default Sort */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let defSort = kPiwigoSort(rawValue: AlbumVars.defaultSort)
+                let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
+                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                var title: String
+                if view.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6,7 Plus screen width
+                    title = NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images")
+                } else if view.bounds.size.width > 320 {
+                    // i.e. larger than iPhone 5 screen width
+                    title = NSLocalizedString("defaultImageSort>320px", comment: "Default Sort")
+                } else {
+                    title = NSLocalizedString("defaultImageSort", comment: "Sort")
+                }
+                cell.configure(with: title, detail: defaultSort)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultSort"
+                tableViewCell = cell
+ 
+            case 1 /* Thumbnail file */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -683,7 +664,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "defaultImageThumbnailFile"
                 tableViewCell = cell
 
-            case 1 /* Number of thumbnails */:
+            case 2 /* Number of thumbnails */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -721,7 +702,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
                 
-            case 2 /* Display titles on thumbnails */:
+            case 3 /* Display titles on thumbnails */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -742,7 +723,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "displayImageTitles"
                 tableViewCell = cell
                 
-            case 3 /* Default Size of Previewed Images */:
+            case 4 /* Default Size of Previewed Images */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -764,7 +745,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "defaultImagePreviewSize"
                 tableViewCell = cell
                 
-            case 4 /* Share Image Metadata Options */:
+            case 5 /* Share Image Metadata Options */:
                 if #available(iOS 10, *) {
                     guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                         print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
@@ -1334,7 +1315,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Albums
         case SettingsSection.albums.rawValue /* Albums */:
             switch indexPath.row {
-            case 0 /* Default album */, 1 /* Default Thumbnail File */, 2 /* Default Sort */:
+            case 0 /* Default album */, 1 /* Default Thumbnail File */:
                 result = true
             default:
                 result = false
@@ -1343,9 +1324,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Images
         case SettingsSection.images.rawValue /* Images */:
             switch indexPath.row {
-            case 0 /* Default Thumbnail File */,
-                 3 /* Default Size of Previewed Images */,
-                 4 /* Share Image Metadata Options */:
+            case 0 /* Default Sort */,
+                 1 /* Default Thumbnail File */,
+                 4 /* Default Size of Previewed Images */,
+                 5 /* Share Image Metadata Options */:
                 result = true
             default:
                 result = false
@@ -1638,11 +1620,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-            case 2 /* Sort method selection */:
-                let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
-                categoryVC.sortDelegate = self
-                navigationController?.pushViewController(categoryVC, animated: true)
             default:
                 break
             }
@@ -1650,17 +1627,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Images
         case SettingsSection.images.rawValue /* Images */:
             switch indexPath.row {
-            case 0 /* Thumbnail file selection */:
+            case 0 /* Sort method selection */:
+                let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
+                categoryVC.sortDelegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
+            case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultImageThumbnailSizeViewController", bundle: nil)
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController else { return }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-            case 3 /* Image file selection */:
+            case 4 /* Image file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
-            case 4 /* Share image metadata options */:
+            case 5 /* Share image metadata options */:
                 let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
                 guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
                 navigationController?.pushViewController(metadataOptionsVC, animated: true)
@@ -2072,12 +2054,37 @@ extension SettingsViewController: SelectCategoryDelegate {
         // Save new choice
         AlbumVars.defaultCategory = categoryId
 
-        // Refresh settings row
+        // Change album name in row
         let indexPath = IndexPath(row: 0, section: SettingsSection.albums.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = defaultAlbumName()
+        }
 
         // Switch to new default album
         settingsDelegate?.didChangeDefaultAlbum()
+    }
+    
+    private func defaultAlbumName() -> String {
+        var rootName: String
+        if view.bounds.size.width > 375 {
+            rootName = NSLocalizedString("categorySelection_root", comment: "Root Album")
+        } else {
+            rootName = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
+        }
+
+        // Root album?
+        if AlbumVars.defaultCategory == 0 {
+            return rootName
+        }
+        
+        // Default album…
+        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
+            return albumName
+        } else {
+            AlbumVars.defaultCategory = 0
+            return rootName
+        }
     }
 }
 
@@ -2093,7 +2100,10 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 
         // Refresh settings row
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
+        }
     }
 }
 
@@ -2108,8 +2118,11 @@ extension SettingsViewController: CategorySortDelegate {
         AlbumVars.defaultSort = sortType.rawValue
 
         // Refresh settings
-        let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = CategorySortViewController.getNameForCategorySortType(sortType)
+        }
         
         // Clear image data in cache
         for category in CategoriesData.sharedInstance().allCategories {
@@ -2129,8 +2142,11 @@ extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
         AlbumVars.defaultThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
-        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
+        }
     }
 }
 
@@ -2144,8 +2160,11 @@ extension SettingsViewController: DefaultImageSizeDelegate {
         ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
 
         // Refresh settings
-        let indexPath = IndexPath(row: 3, section: SettingsSection.images.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        let indexPath = IndexPath(row: 4, section: SettingsSection.images.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: imageSize, withInfo: false)!
+        }
     }
 }
 
@@ -2160,7 +2179,10 @@ extension SettingsViewController: SelectPrivacyDelegate {
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
+        }
     }
 }
 
@@ -2175,7 +2197,10 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             // Refresh corresponding row
             let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
-            settingsTableView.reloadRows(at: [photoAtIndexPath], with: .automatic)
+            if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(photoAtIndexPath),
+               let cell = settingsTableView.cellForRow(at: photoAtIndexPath) as? LabelTableViewCell {
+                cell.detailLabel.text = pwgPhotoMaxSizes(rawValue: UploadVars.photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name
+            }
         }
         
         // Hide rows if needed
@@ -2208,6 +2233,10 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             // Refresh corresponding row
             let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
+            if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(videoAtIndexPath),
+               let cell = settingsTableView.cellForRow(at: videoAtIndexPath) as? LabelTableViewCell {
+                cell.detailLabel.text = pwgVideoMaxSizes(rawValue: UploadVars.videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name
+            }
             settingsTableView.reloadRows(at: [videoAtIndexPath], with: .automatic)
         }
         
