@@ -3541,6 +3541,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     } else {
         [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
     }
+    
+    // Initialise data source
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+    
+    // Reload album
+    [self.imagesCollection reloadData];
 }
 
 
