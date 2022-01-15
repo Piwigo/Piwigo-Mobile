@@ -114,7 +114,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                               return NO;
                           }
                       }];
-                      if (indexOfAutoUpload != NSNotFound) {
+                      if (indexOfAutoUpload == NSNotFound) {
                           [UploadUtilitiesObjc disableAutoUpload];
                       }
                       
