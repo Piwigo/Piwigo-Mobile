@@ -21,7 +21,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 -(void)clearCache;
 -(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
 -(void)deleteCategoryWithId:(NSInteger)categoryId;
--(void)replaceAllCategories:(NSArray*)categories;
+-(BOOL)replaceAllCategories:(NSArray*)categories;
 -(void)updateCategories:(NSArray*)categories;
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
 

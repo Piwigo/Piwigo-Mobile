@@ -17,6 +17,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 @interface CategoriesData()
 
+@property (nonatomic, strong) NSIndexSet *categoryIds;
 @property (nonatomic, strong) NSArray<PiwigoAlbumData *> *allCategories;
 @property (nonatomic, strong) NSArray<PiwigoAlbumData *> *communityCategoriesForUploadOnly;
 
@@ -31,6 +32,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
+        instance.categoryIds = [NSIndexSet new];
 		instance.allCategories = [NSArray new];
         instance.communityCategoriesForUploadOnly = [NSArray new];
 		
@@ -43,7 +45,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)clearCache
 {
-	self.allCategories = [NSArray new];
+    self.categoryIds = [NSIndexSet new];
+    self.allCategories = [NSArray new];
     self.communityCategoriesForUploadOnly = [NSArray new];
 }
 
@@ -112,9 +115,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     }
 
     // Create new list of categories
+    NSMutableIndexSet *newCategoryIds = [[NSMutableIndexSet alloc] initWithIndexSet:self.categoryIds];
     NSMutableArray<PiwigoAlbumData*> *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 
     // Remove deleted category
+    [newCategoryIds removeIndex:catagoryToDelete.albumId];
     [newCategories removeObjectAtIndex:index];
 
     // Look for parent categories and update them
@@ -144,13 +149,14 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     }
     
     // Update cache
+    self.categoryIds = newCategoryIds;
     self.allCategories = newCategories;
 }
 
 
 # pragma mark - Update cache
 
--(void)replaceAllCategories:(NSArray<PiwigoAlbumData *>*)categories
+-(BOOL)replaceAllCategories:(NSArray<PiwigoAlbumData *>*)categories
 {
     // Create new list of categories
     NSMutableArray *newCategories = [[NSMutableArray alloc] init];
@@ -167,13 +173,16 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         }
     }
 
+    // Initialise new list of category IDs
+    // NB: does not take smart albums into account, only those downloaded.
+    NSMutableIndexSet *newCategoryIds = [NSMutableIndexSet new];
+
     // Loop on freshly retrieved categories
     for(PiwigoAlbumData *categoryData in categories)
     {
         // Is this a known category?
         NSInteger index = [self indexOfCategoryWithId:categoryData.albumId
                                               inArray:self.allCategories];
-        
         // Reuse some data if possible
         if (index != NSNotFound)
         {
@@ -196,11 +205,19 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         }
 
         // Append category to new list
+        if (categoryData.albumId > 0) {
+            [newCategoryIds addIndex:categoryData.albumId];
+        }
         [newCategories addObject:categoryData];
     }
-    
+        
+    // Did the category list changed?
+    BOOL didChange = ![self.categoryIds isEqualToIndexSet:newCategoryIds];
+
     // Update list of displayed categories
-	self.allCategories = newCategories;
+    self.categoryIds = newCategoryIds;
+    self.allCategories = newCategories;
+    return didChange;
 }
 
 -(void)updateCategories:(NSArray<PiwigoAlbumData *>*)categories
@@ -210,6 +227,15 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // New categories will be added to the top of the list
     NSMutableArray *newCategories = [categories mutableCopy];
+
+    // Initialise new list of category IDs
+    // NB: does not take smart albums into account, only those downloaded.
+    NSMutableIndexSet *newCategoryIds = [NSMutableIndexSet new];
+    for (PiwigoAlbumData *albumData in categories) {
+        if (albumData.albumId > 0) {
+            [newCategoryIds addIndex:albumData.albumId];
+        }
+    }
 
     // Loop over all known categories
     for (PiwigoAlbumData *category in self.allCategories)
@@ -237,6 +263,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         }
         else
         {
+            if (category.albumId > 0) {
+                [newCategoryIds addIndex:category.albumId];
+            }
             [updatedCategories addObject:category];
         }
     }
@@ -245,6 +274,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [newCategories addObjectsFromArray:updatedCategories];
     
     // Update list of displayed categories
+    self.categoryIds = newCategoryIds;
     self.allCategories = newCategories;
 }
 
@@ -253,49 +283,36 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 {
     NSMutableArray *existingCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
     NSMutableArray *existingComCategories = [[NSMutableArray alloc] initWithArray:self.communityCategoriesForUploadOnly];
-    NSInteger index = -1;
-    NSInteger curr = 0;
-    for(PiwigoAlbumData *existingCategory in existingCategories)
-    {
-        if(existingCategory.albumId == category.albumId)
-        {
-            index = curr;
-            break;
-        }
-        curr++;
-    }
     
-    if(index != -1)
+    // Is this a category to update?
+    NSInteger index = [self indexOfCategoryWithId:category.albumId inArray:existingCategories];
+    if (index != NSNotFound)
     {
+        // Update existing category
         PiwigoAlbumData *categoryData = [existingCategories objectAtIndex:index];
         categoryData.hasUploadRights = YES;
         [existingCategories setObject:categoryData atIndexedSubscript:index];
-    } else {
+    }
+    else
+    {
         // This album was not returned by pwg.categories.getList
         category.hasUploadRights = YES;
 
-        NSInteger indexCom = -1;
-        NSInteger currCom = 0;
-        for(PiwigoAlbumData *existingComCategory in existingComCategories)
+        // Is this a category to update?
+        NSInteger indexCom = [self indexOfCategoryWithId:category.albumId inArray:existingComCategories];
+        if (indexCom != NSNotFound)
         {
-            if(existingComCategory.albumId == category.albumId)
-            {
-                indexCom = currCom;
-                break;
-            }
-            currCom++;
-        }
-
-        if(indexCom != -1)
-        {
+            // Update existing Community category
             PiwigoAlbumData *categoryComData = [existingComCategories objectAtIndex:indexCom];
             categoryComData.hasUploadRights = YES;
             [existingComCategories setObject:categoryComData atIndexedSubscript:indexCom];
-        } else {
+        }
+        else
+        {
             [existingComCategories addObject:category];
         }
     }
-    
+        
     self.allCategories = existingCategories;
     self.communityCategoriesForUploadOnly = existingComCategories;
 }

@@ -817,10 +817,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               inMode:MBProgressHUDModeIndeterminate];
     
     // Load category data in recursive mode
-    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
-            [self checkIfCategoryStillExists];
+            [self checkDataSourceWithChangedCategories:didChange];
             
             // End refreshing
             if (@available(iOS 10.0, *)) {
@@ -847,10 +847,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }];
 }
 
--(void)checkIfCategoryStillExists
+-(void)checkDataSourceWithChangedCategories:(BOOL)didChange
 {
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"checkDataSource...=> ID:%ld", (long)self.categoryId);
+    NSLog(@"checkDataSource...=> ID:%ld - Categories did change:%@", (long)self.categoryId, didChange ? @"YES" : @"NO");
 #endif
     // Does this album still exist?
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
@@ -875,12 +875,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Root album -> reload collection
     if (self.categoryId == 0) {
-        [self.imagesCollection reloadData];
+        if (didChange) {
+            [self.imagesCollection reloadData];
+        }
         return;
     }
     
     // Other album -> Reload albums
-    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    if (didChange) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    }
     
     // Other album —> If the number of images in cache is null, reload collection
     if (albumData.imageList.count == 0) {

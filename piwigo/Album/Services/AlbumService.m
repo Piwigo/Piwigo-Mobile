@@ -19,7 +19,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 @implementation AlbumService
 
-+(NSURLSessionTask*)getAlbumDataOnCompletion:(void (^)(NSURLSessionTask *task, NSArray *albums))completion
++(NSURLSessionTask*)getAlbumDataOnCompletion:(void (^)(NSURLSessionTask *task, BOOL didChange))completion
                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Community extension active ?
@@ -102,7 +102,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       NSLog(@"                => %ld albums returned", (long)[albums count]);
 #endif
                       // Update Categories Data cache
-                      [[CategoriesData sharedInstance] replaceAllCategories:albums];
+                      BOOL didChange = [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       
                       // Check whether the auto-upload category still exists
                       NSInteger autoUploadCatId = UploadVarsObjc.autoUploadCategoryId;
@@ -136,12 +136,12 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                     
                                     // Job done
                                     if(completion) {
-                                        completion(task, albums);
+                                        completion(task, didChange);
                                     }
                                 } else {
                                     // Continue without Community albums
                                     if(completion) {
-                                        completion(task, albums);
+                                        completion(task, didChange);
                                     }
                                 }
                             } onFailure:nil // i.e. continue without Community albums
@@ -149,7 +149,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       } else {
                           // Job done
                           if(completion) {
-                              completion(task, albums);
+                              completion(task, didChange);
                           }
                       }
                   }
@@ -160,7 +160,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                                             path:kPiwigoCategoriesGetList andURLparams:nil];
                       if(completion) {
                           [NetworkHandler showPiwigoError:error withCompletion:^{
-                              completion(task, nil);
+                              completion(task, NO);
                           }];
                       } else {
                           [NetworkHandler showPiwigoError:error withCompletion:nil];
