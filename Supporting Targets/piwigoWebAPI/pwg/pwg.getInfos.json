@@ -1,3 +1,10 @@
+<pre><br />
+<b>Warning</b>:  [mysql error 1064] You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+    AND {level > 0}
+    AND {level <= 8
+  GROUP BY category_id' at line 5
+
+SELECT
 {
     "stat":"ok",
     "result":{
@@ -16,3 +23,10 @@
         ]
     }
 }
+<pre><br />
+<b>Warning</b>:  [mysql error 1064] You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+    AND {level > 0
+    AND {level <= 8}
+  GROUP BY category_id' at line 5
+
+SELECT

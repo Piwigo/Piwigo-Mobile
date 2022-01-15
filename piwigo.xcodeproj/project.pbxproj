@@ -231,7 +231,7 @@
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */; };
 		ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */; };
-		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
+		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		ADF26FBB24C1FE830036E778 /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
 		ADF26FBC24C1FE860036E778 /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
@@ -293,6 +293,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = AD084E452659A27100159FE1;
 			remoteInfo = piwigoKit;
+		};
+		AD28F187278E1F7700A16B79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
+			remoteInfo = piwigo;
 		};
 		AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1712,6 +1719,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				AD28F188278E1F7700A16B79 /* PBXTargetDependency */,
 			);
 			name = piwigoWebAPI;
 			productName = piwigoWebAPI;
@@ -2305,6 +2313,11 @@
 			isa = PBXTargetDependency;
 			target = AD084E452659A27100159FE1 /* piwigoKit */;
 			targetProxy = AD084E4B2659A27100159FE1 /* PBXContainerItemProxy */;
+		};
+		AD28F188278E1F7700A16B79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D82B8CBA1A67820A000E47CA /* piwigo */;
+			targetProxy = AD28F187278E1F7700A16B79 /* PBXContainerItemProxy */;
 		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2960,7 +2973,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9;
+				MARKETING_VERSION = 2.9.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -3022,7 +3035,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9;
+				MARKETING_VERSION = 2.9.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

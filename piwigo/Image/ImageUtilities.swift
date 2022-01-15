@@ -26,6 +26,7 @@ class ImageUtilities: NSObject {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesGetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 50000) { jsonData, error in
             // Any error?
             /// - Network communication errors
@@ -149,6 +150,7 @@ class ImageUtilities: NSObject {
                         failure: @escaping (NSError) -> Void) {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors
@@ -204,6 +206,7 @@ class ImageUtilities: NSObject {
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesDelete, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors
@@ -264,6 +267,7 @@ class ImageUtilities: NSObject {
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesAdd, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors
@@ -320,6 +324,7 @@ class ImageUtilities: NSObject {
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesRemove, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors

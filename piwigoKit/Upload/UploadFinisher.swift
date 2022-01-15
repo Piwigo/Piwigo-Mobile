@@ -41,6 +41,7 @@ extension UploadManager {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
             // Any error?
@@ -113,6 +114,7 @@ extension UploadManager {
                                          "pwg_token": NetworkVars.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kPiwigoImagesUploadCompleted, paramDict: paramDict,
+                                jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { jsonData, error in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
             // Any error?
@@ -202,6 +204,7 @@ extension UploadManager {
                                          "pwg_token": NetworkVars.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
+                                jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
             // Any error?

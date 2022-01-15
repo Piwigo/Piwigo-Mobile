@@ -1501,6 +1501,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Collect stats from server
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
+                                jsonObjectClientExpectsToReceive: GetInfosJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors
