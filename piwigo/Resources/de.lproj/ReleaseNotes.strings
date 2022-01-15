@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.0_text" = "Version 2.9\n\n• Zeigt Foto- und Videobeschreibungen im Vorschaumodus an \n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
+"v2.9.1_text" = "Version 2.9.1\n\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle";
+
+"v2.9.0_text" = "Version 2.9\n9. Januar 2022\n\n• Zeigt Foto- und Videobeschreibungen im Vorschaumodus an \n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
 
 "v2.8.2_text" = "Version 2.8.2\n26. November 2021\n\n• Ermöglicht Community-Nutzern das Hochladen im Hintergrund und das automatische Hochladen von Fotos und Videos\n• Behebt ein Kompatibilitätsproblem mit Piwigo 12\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 

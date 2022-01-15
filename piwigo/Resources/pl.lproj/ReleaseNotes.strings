@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.0_text" = "Wersja 2.9\n\n• Możliwość wyświetlania opisów zdjęć/filmów w trybie podglądu\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+"v2.9.1_text" = "Wersja 2.9.1\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.9.0_text" = "Wersja 2.9\n9 stycznia 2022\n\n• Możliwość wyświetlania opisów zdjęć/filmów w trybie podglądu\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.8.2_text" = "Wersja 2.8.2\n26 listopada 2021\n\n• Umożliwia użytkownikom Community przesyłanie w tle i automatyczne przesyłanie zdjęć i filmów\n• Naprawia problem z kompatybilnością z Piwigo 12\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 

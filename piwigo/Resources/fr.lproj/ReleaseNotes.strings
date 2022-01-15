@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.0_text" = "Version 2.9\n\n• Affiche les descriptions des photos et vidéos en mode aperçu\n• Corrections de bugs mineurs et améliorations de l'interface";
+"v2.9.1_text" = "Version 2.9.1\n\n• Corrections de bugs mineurs et amélioration de l'interface";
+
+"v2.9.0_text" = "Version 2.9\n9 janvier 2022\n\n• Affiche les descriptions des photos et vidéos en mode aperçu\n• Corrections de bugs mineurs et améliorations de l'interface";
 
 "v2.8.2_text" = "Version 2.8.2\n26 Novembre 2021\n\n• Permet aux utilisateurs Community de télécharger en arrière-plan et de télécharger automatiquement des photos et des vidéos\n• Corrige un problème de compatibilité avec Piwigo 12\n• Corrections de bugs mineurs et améliorations de l'interface";
 
