@@ -17,7 +17,7 @@ let playRatio: CGFloat = 0.9 // was 58/75
 extension UIImageView {
     
     // MARK: - Movie Icon
-    func setMovieImage(inBackground: Bool) {
+    func setMovieIconImage() {
         var play = UIImage()
         if #available(iOS 13.0, *) {
             play = UIImage(systemName: "play.rectangle.fill")!
@@ -28,16 +28,11 @@ extension UIImageView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.contentMode = .scaleAspectFit
         self.isHidden = true
-        if inBackground {
-            self.tintColor = .init(white: 0, alpha: 0.3)
-        } else {
-            self.tintColor = .white
-        }
     }
 
 
     // MARK: - Favorite Icon
-    func setFavoriteImage(inBackground: Bool) {
+    func setFavoriteIconImage() {
         var play = UIImage()
         if #available(iOS 13.0, *) {
             play = UIImage(systemName: "heart.fill")!
@@ -48,10 +43,5 @@ extension UIImageView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.contentMode = .scaleAspectFit
         self.isHidden = true
-        if inBackground {
-            self.tintColor = .init(white: 0, alpha: 0.3)
-        } else {
-            self.tintColor = .white
-        }
     }
 }

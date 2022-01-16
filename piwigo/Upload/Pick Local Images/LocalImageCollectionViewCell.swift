@@ -162,10 +162,12 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 
         // Video icon: match size to cell size
         let width = frame.size.width * playScale + (scale - 1)
-        playBckg.setMovieImage(inBackground: true)
+        playBckg.setMovieIconImage()
+        playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)
         playBckgWidth.constant = width + 2*offset
         playBckgHeight.constant = playBckgWidth.constant * playRatio
-        playImg.setMovieImage(inBackground: false)
+        playImg.setMovieIconImage()
+        playImg.tintColor = UIColor.white
         playBckg.addSubview(playImg)
         playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
         playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: CGSize(width: width, height: width * playRatio))!)

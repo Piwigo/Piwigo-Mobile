@@ -72,7 +72,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 		
         // Movie type
         self.playBckg = [UIImageView new];
-        [self.playBckg setMovieImageInBackground:YES];
+        [self.playBckg setMovieIconImage];
         CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
         CGFloat width = frame.size.width * playScale + (scale - 1);
         [self.cellImage addSubview:self.playBckg];
@@ -85,7 +85,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         [self.cellImage addConstraints:@[iconWidth, iconHeight, self.playLeft, self.playTop]];
         
         self.playImg = [UIImageView new];
-        [self.playImg setMovieImageInBackground:NO];
+        [self.playImg setMovieIconImage];
         [self.playBckg addSubview:self.playImg];
         [self.playBckg addConstraints:[NSLayoutConstraint constraintCenter:self.playImg]];
         [self.playBckg addConstraint:[NSLayoutConstraint constraintView:self.playImg toWidth:width]];
@@ -93,7 +93,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         
         // Favorite image
         self.favBckg = [UIImageView new];
-        [self.favBckg setFavoriteImageInBackground:YES];
+        [self.favBckg setFavoriteIconImage];
         width = frame.size.width * favScale + (scale - 1);
         [self.cellImage addSubview:self.favBckg];
         iconWidth = [NSLayoutConstraint constraintView:self.favBckg
@@ -105,7 +105,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
         [self.cellImage addConstraints:@[iconWidth, iconHeight, self.favLeft, self.favBottom]];
 
         self.favImg = [UIImageView new];
-        [self.favImg setFavoriteImageInBackground:NO];
+        [self.favImg setFavoriteIconImage];
         [self.favBckg addSubview:self.favImg];
         [self.favBckg addConstraints:[NSLayoutConstraint constraintCenter:self.favImg]];
         [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toWidth:width]];
@@ -189,6 +189,8 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 {
     self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
     self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
+    self.favBckg.tintColor = [UIColor colorWithWhite:0 alpha:0.3];
+    self.favImg.tintColor = [UIColor whiteColor];
 }
 
 -(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId forSize:(CGSize)size

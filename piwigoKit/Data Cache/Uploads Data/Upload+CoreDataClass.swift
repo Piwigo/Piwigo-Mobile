@@ -238,7 +238,7 @@ extension SectionKeys {
         case .Section2:
             return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
         case .Section3:
-            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
+            return NSLocalizedString("uploadSection_queue", comment: "Upload Queue")
         case .Section4:
             fallthrough
         default:
