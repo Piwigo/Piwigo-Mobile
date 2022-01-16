@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -177,6 +178,19 @@
 
 #pragma mark - View Lifecycle
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Calculates size of image cells
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    self.imageCellSize = CGSizeMake(size, size);
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
+                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+}
+
 -(void)applyColorPalette
 {
     // Background color of the view
@@ -295,9 +309,6 @@
             }
         }
     }
-    
-    // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -329,7 +340,14 @@
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        // Calculates new size of image cells
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        self.imageCellSize = CGSizeMake(size, size);
+
+        // Reload colelction
         [self.imagesCollection reloadData];
+        
+        // Update buttons if necessary
         if (self.isSelect) {
             [self initButtonsInSelectionMode];
         }
@@ -1529,9 +1547,7 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-    return CGSizeMake(size, size);
+    return self.imageCellSize;
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -1544,7 +1560,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.item];
-        [cell setupWithImageData:imageData inCategoryId:self.categoryId];
+        [cell setupWithImageData:imageData inCategoryId:self.categoryId forSize:self.imageCellSize];
         cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         
         // pwg.users.favorites… methods available from Piwigo version 2.10

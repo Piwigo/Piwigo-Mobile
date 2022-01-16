@@ -23,6 +23,7 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 @interface ImageCollectionViewCell()
 
 // On iPad, thumbnails are presented with native aspect ratio
+@property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGFloat deltaX, deltaY;
 
 // Image title
@@ -190,13 +191,14 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
     self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
 }
 
--(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId
+-(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId forSize:(CGSize)size
 {
     // Do we have any info on that image ?
 	if (imageData == nil) { return; }
     if (imageData.imageId == 0) { return; }
     
     // Store image data
+    self.size = size;
     self.imageData = imageData;
     self.isAccessibilityElement = YES;
 
@@ -334,8 +336,6 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
     
     // Retrieve the image file
     __weak typeof(self) weakSelf = self;
-    [self.cellImage layoutIfNeeded];
-    CGSize size = self.cellImage.bounds.size;
     CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
     NSURL *URL = [NSURL URLWithString:imagePath];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
@@ -345,16 +345,16 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
         // Downsample image is necessary
         UIImage *displayedImage = image;
-        CGFloat maxDimensionInPixels = MAX(size.width, size.height) * scale;
+        CGFloat maxDimensionInPixels = MAX(weakSelf.size.width, weakSelf.size.height) * scale;
         if (MAX(image.size.width, image.size.height) > maxDimensionInPixels) {
-            displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+            displayedImage = [ImageUtilities downsampleWithImage:image to:self.size scale:scale];
         }
         weakSelf.cellImage.image = displayedImage;
         
         // Favorite image position depends on device
         weakSelf.deltaX = margin; weakSelf.deltaY = margin;
-        CGFloat imageScale = MIN(size.width/displayedImage.size.width,
-                                 size.height/displayedImage.size.height);
+        CGFloat imageScale = MIN(weakSelf.size.width/displayedImage.size.width,
+                                 weakSelf.size.height/displayedImage.size.height);
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
             // Image width…
@@ -362,9 +362,9 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             weakSelf.darkImgWidth.constant = imageWidth;
 
             // Horizontal correction?
-            if (imageWidth < size.width) {
+            if (imageWidth < weakSelf.size.width) {
                 // The image does not fill the cell horizontally
-                weakSelf.deltaX += (size.width - imageWidth) / 2.0;
+                weakSelf.deltaX += (weakSelf.size.width - imageWidth) / 2.0;
             }
 
             // Image height…
@@ -372,9 +372,9 @@ CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
             weakSelf.darkImgHeight.constant = imageHeight;
 
             // Vertical correction?
-            if (imageHeight < size.height) {
+            if (imageHeight < weakSelf.size.height) {
                 // The image does not fill the cell vertically
-                weakSelf.deltaY += (size.height - imageHeight) / 2.0;
+                weakSelf.deltaY += (weakSelf.size.height - imageHeight) / 2.0;
             }
         }
         
