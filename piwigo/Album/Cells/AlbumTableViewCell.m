@@ -21,11 +21,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
 @implementation AlbumTableViewCell
 
--(void)imageUpdated
-{
-    self.backgroundImage.image = self.albumData.categoryImage;
-}
-
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData
 {
     if(!albumData) return;
@@ -99,26 +94,11 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages nberLines:1]];
 
     // Add renaming, moving and deleting capabilities when user has admin rights
-    if(NetworkVarsObjc.hasAdminRights)
-    {
+    if(NetworkVarsObjc.hasAdminRights) {
         // Handle
         self.handleButton.layer.cornerRadius = 7;
         self.handleButton.backgroundColor = [UIColor piwigoColorOrange];
         self.handleButton.hidden = NO;
-  
-        // Left => Right swipe (only if there are images in the album)
-        // Disabled because it does not work reliably on the server side
-//        if (self.albumData.numberOfImages > 0) {
-//
-//            self.leftSwipeSettings.transition = MGSwipeTransitionBorder;
-//            self.leftButtons = @[[MGSwipeButton buttonWithTitle:@""
-//                                                           icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-//                                                backgroundColor:[UIColor blueColor]
-//                                                       callback:^BOOL(MGSwipeTableCell *sender) {
-//                                                           [self resfreshRepresentative];
-//                                                           return YES;
-//                                                       }]];
-//        }
     }
     
     // Display album image

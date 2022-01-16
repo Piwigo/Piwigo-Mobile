@@ -163,19 +163,6 @@
             return @[trash, move, rename];
         }
     }
-    else {
-        // Disabled because it does not work reliably on the server side
-//        if (self.albumData.numberOfImages > 0) {
-//            MGSwipeButton *refresh = [MGSwipeButton buttonWithTitle:@""
-//                                                               icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-//                                                        backgroundColor:[UIColor blueColor]
-//                                                           callback:^BOOL(MGSwipeTableCell *sender) {
-//                [self resfreshRepresentative];
-//                return YES;
-//            }];
-//            return @[refresh];
-//        }
-    }
     return nil;
 }
 
