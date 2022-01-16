@@ -583,6 +583,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44.0;
+    }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
