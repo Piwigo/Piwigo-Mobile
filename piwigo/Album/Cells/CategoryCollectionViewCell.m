@@ -7,10 +7,11 @@
 //
 
 #import "AlbumImagesViewController.h"
-#import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "ImagesCollection.h"
+
+NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
 @interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryAlbumMovedDelegate, UITextFieldDelegate>
 
@@ -82,7 +83,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 156.5;                    // see XIB file
+    return 148.5;                    // see XIB file
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -94,7 +95,7 @@
     }
 
     cell.delegate = self;
-	[cell setupWithAlbumData:self.albumData];
+    [cell configWith:self.albumData];
 	
     cell.isAccessibilityElement = YES;
 	return cell;
@@ -275,7 +276,7 @@
                                         
                                         // Update cell and hide swipe buttons
                                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                                        [cell setupWithAlbumData:self.albumData];
+                                        [cell configWith:self.albumData];
                                         [cell hideSwipeAnimated:YES];
                                     });
                                 }];

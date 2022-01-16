@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -14,7 +14,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AlbumTableViewCell"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AlbumTableViewCell" rowHeight="159" id="ClD-fz-kW7" customClass="AlbumTableViewCell">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="AlbumTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AlbumTableViewCell" rowHeight="159" id="ClD-fz-kW7" customClass="AlbumTableViewCell" customModule="piwigo" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="375" height="156.5"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ClD-fz-kW7" id="AYo-NF-5du">
@@ -55,7 +55,7 @@
                         <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8FE-y2-D2g" userLabel="Comment">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8FE-y2-D2g" userLabel="albumComment">
                         <rect key="frame" x="170.5" y="108.5" width="184.5" height="18"/>
                         <accessibility key="accessibilityConfiguration" label="comment"/>
                         <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
@@ -69,7 +69,7 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button hidden="YES" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsh-Kx-Qjp">
+                    <button hidden="YES" clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsh-Kx-Qjp" userLabel="handleButton">
                         <rect key="frame" x="368" y="48.5" width="14" height="60"/>
                         <color key="backgroundColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -105,13 +105,13 @@
                 <bool key="isElement" value="YES"/>
             </accessibility>
             <connections>
-                <outlet property="albumComment" destination="8FE-y2-D2g" id="BJu-IX-igi"/>
-                <outlet property="albumName" destination="VUH-5s-TNg" id="2Ss-eO-bVx"/>
-                <outlet property="backgroundImage" destination="V5H-h5-LzC" id="zNh-d3-ztl"/>
-                <outlet property="bottomCut" destination="1O2-wR-Lbe" id="0AV-Sd-n2J"/>
-                <outlet property="handleButton" destination="gsh-Kx-Qjp" id="jOz-bc-Bnn"/>
-                <outlet property="numberOfImages" destination="BOH-3d-ghk" id="W3H-Pg-0Ge"/>
-                <outlet property="topCut" destination="q1L-X3-UGq" id="8DG-Rq-6oX"/>
+                <outlet property="albumComment" destination="8FE-y2-D2g" id="jbm-GN-fwf"/>
+                <outlet property="albumName" destination="VUH-5s-TNg" id="vKb-i2-1R8"/>
+                <outlet property="backgroundImage" destination="V5H-h5-LzC" id="jzZ-uF-sof"/>
+                <outlet property="bottomCut" destination="1O2-wR-Lbe" id="FS5-kk-sWH"/>
+                <outlet property="handleButton" destination="gsh-Kx-Qjp" id="0tE-yW-hFW"/>
+                <outlet property="numberOfImages" destination="BOH-3d-ghk" id="2QR-AL-h1w"/>
+                <outlet property="topCut" destination="q1L-X3-UGq" id="am3-5R-NeO"/>
             </connections>
             <point key="canvasLocation" x="14.5" y="-101.5"/>
         </tableViewCell>

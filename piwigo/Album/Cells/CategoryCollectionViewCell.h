@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
+
 @class PiwigoAlbumData;
 
 @protocol CategoryCollectionViewCellDelegate <NSObject>
