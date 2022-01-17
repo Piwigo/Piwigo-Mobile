@@ -15,8 +15,6 @@ import UIKit
 @objc
 class AlbumTableViewCell: MGSwipeTableCell {
     
-//    var albumData: PiwigoAlbumData!
-    
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var topCut: UIButton!
     @IBOutlet weak var bottomCut: UIButton!
@@ -24,14 +22,11 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var albumComment: UILabel!
     @IBOutlet weak var numberOfImages: UILabel!
     @IBOutlet weak var handleButton: UIButton!
+    @IBOutlet weak var recentBckg: UIImageView!
+    @IBOutlet weak var recentImage: UIImageView!
 
     @objc
     func config(with albumData: PiwigoAlbumData) {
-        // Check provided album data
-//        if data == nil { return }
-        // Store album data for future use
-//        self.albumData = data
-
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.layer.cornerRadius = 14
@@ -105,6 +100,21 @@ class AlbumTableViewCell: MGSwipeTableCell {
             handleButton.isHidden = false
         }
 
+        // Display recent icon when images have been uploaded recently
+        DispatchQueue.global(qos: .userInteractive).async {
+            guard let dateLast = CategoriesData.sharedInstance()
+                    .getDateLastOfCategories(inCategory: albumData.albumId) else { return }
+            let timeSinceLastUpload = dateLast.timeIntervalSinceNow
+            if timeSinceLastUpload > TimeInterval(-90*24*3600) {    // i.e. 90 days
+                DispatchQueue.main.async {
+                    self.recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
+                    self.recentImage.tintColor = UIColor.white
+                    self.recentBckg.isHidden = false
+                    self.recentImage.isHidden = false
+                }
+            }
+        }
+        
         // Display album image
         backgroundImage.layer.cornerRadius = 10
         let placeHolder = UIImage(named: "placeholder")
@@ -170,8 +180,9 @@ class AlbumTableViewCell: MGSwipeTableCell {
         
         backgroundImage.cancelImageDownloadTask()
         backgroundImage.image = UIImage(named: "placeholder")
-        
         albumName.text = ""
         numberOfImages.text = ""
+        recentBckg.isHidden = true
+        recentImage.isHidden = true
     }
 }

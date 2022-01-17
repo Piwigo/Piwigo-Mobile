@@ -348,6 +348,22 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     return categories;
 }
 
+-(NSDate *)getDateLastOfCategoriesInCategory:(NSInteger)parentCategory
+{
+    NSDate *dateLast = [NSDate distantPast];
+    NSString *catId = [NSString stringWithFormat:@"%ld", (long)parentCategory];
+    for(PiwigoAlbumData *category in self.allCategories)
+    {
+        if ([category.upperCategories containsObject:catId] &&
+            category.dateLast != nil)
+        {
+            dateLast = [category.dateLast laterDate:dateLast];
+        }
+    }
+
+    return dateLast;
+}
+
 
 # pragma mark - Get and remove images from cache
 
