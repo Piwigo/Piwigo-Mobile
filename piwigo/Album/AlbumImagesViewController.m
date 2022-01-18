@@ -3565,6 +3565,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self.imagesCollection reloadData];
 }
 
+-(void)didChangeRecentPeriod
+{
+    // Reload album
+    [self.imagesCollection reloadData];
+}
+
 
 #pragma mark - CategoryCollectionViewCellDelegate Method (+ PushView:)
 

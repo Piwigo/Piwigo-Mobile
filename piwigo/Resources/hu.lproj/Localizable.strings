@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Újdonságok";
 "maxNberOfRecentAlbums>320px" = "Új albumok";
 "maxNberOfRecentAlbums>414px" = "Legújabb albumok száma";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Négyzet";
 "thumbnailSizeThumbnail" = "Bélyegkép";

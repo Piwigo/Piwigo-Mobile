@@ -36,6 +36,7 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
 
 @objc protocol ChangedSettingsDelegate: NSObjectProtocol {
     func didChangeDefaultAlbum()
+    func didChangeRecentPeriod()
 }
 
 @objc
@@ -458,7 +459,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.logout.rawValue:
             nberOfRows = 1
         case SettingsSection.albums.rawValue:
-            nberOfRows = 3
+            nberOfRows = 4
         case SettingsSection.images.rawValue:
             nberOfRows = 6
         case SettingsSection.imageUpload.rawValue:
@@ -610,6 +611,34 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     AlbumVars.maxNberRecentCategories = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
+                tableViewCell = cell
+
+            case 3 /* Recent period */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
+                    return SliderTableViewCell()
+                }
+                // Slider value is the index of kRecentPeriods
+                var value:Float = Float(AlbumVars.recentPeriodIndex)
+                value = min(value, Float(AlbumVars.recentPeriodList.count - 1))
+                value = max(0.0, value)
+
+                // Slider configuration
+                let title = NSLocalizedString("recentPeriod_title", comment: "Recent Period")
+                cell.configure(with: title, value: value, increment: Float(AlbumVars.recentPeriodKey),
+                               minValue: 0.0, maxValue: Float(AlbumVars.recentPeriodList.count - 1),
+                               prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
+                cell.cellSliderBlock = { newValue in
+                    // Update settings
+                    let index = Int(newValue)
+                    if index >= 0, index < AlbumVars.recentPeriodList.count {
+                        AlbumVars.recentPeriodIndex = index
+                    }
+                    
+                    // Reload root/default album
+                    self.settingsDelegate?.didChangeRecentPeriod()
+                }
+                cell.accessibilityIdentifier = "recentPeriod"
                 tableViewCell = cell
 
             default:

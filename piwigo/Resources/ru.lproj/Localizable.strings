@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Недавние";
 "maxNberOfRecentAlbums>320px" = "Последние альбомы";
 "maxNberOfRecentAlbums>414px" = "Количество последних альбомов";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Квадрат";
 "thumbnailSizeThumbnail" = "Миниатюра";

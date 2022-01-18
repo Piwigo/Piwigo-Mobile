@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Recent";
 "maxNberOfRecentAlbums>320px" = "Recent Albums";
 "maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Persegi";
 "thumbnailSizeThumbnail" = "Tampilan Besar";

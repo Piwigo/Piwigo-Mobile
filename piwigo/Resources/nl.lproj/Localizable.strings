@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Recentelijk";
 "maxNberOfRecentAlbums>320px" = "Recente albums";
 "maxNberOfRecentAlbums>414px" = "Aantal recente albums";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Vierkant";
 "thumbnailSizeThumbnail" = "Miniatuurafbeelding";

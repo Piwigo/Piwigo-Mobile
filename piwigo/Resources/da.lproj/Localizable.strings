@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Seneste";
 "maxNberOfRecentAlbums>320px" = "Seneste album";
 "maxNberOfRecentAlbums>414px" = "Antal seneste album";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";
