@@ -730,7 +730,7 @@ import piwigoKit
         } else {
             AlbumVars.recentCategories = newList.joined(separator: ",")
         }
-//        print("•••> Recent albums: \(AlbumVars.recentCategories) (max: \(AlbumVars.maxNberRecentCategories)")
+//        debugPrint("•••> Recent albums: \(AlbumVars.recentCategories) (max: \(AlbumVars.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {

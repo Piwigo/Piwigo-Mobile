@@ -1434,7 +1434,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func buildRecentCategoryArray() -> Void {
         // Current recent categories
         let recentCatIds = AlbumVars.recentCategories.components(separatedBy: ",")
-        if !recentCatIds.isEmpty { return }
+        if recentCatIds.isEmpty { return }
 
         // Build list of recent categories
         for catIdStr in recentCatIds {
