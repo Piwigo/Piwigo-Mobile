@@ -21,6 +21,7 @@ class SliderTableViewCell: UITableViewCell {
     private var valuePrefix: String?
     private var valueSuffix: String?
     private var incrementSliderBy:Float = 0.0
+    private var oldNberOfDays:Float = 0.0
 
     var cellSliderBlock: CellSliderBlock?
 
@@ -28,7 +29,8 @@ class SliderTableViewCell: UITableViewCell {
         return slider?.value ?? 0
     }
 
-    func configure(with title:String, value:Float, increment:Float, minValue:Float, maxValue:Float, prefix:String, suffix:String) {
+    func configure(with title:String, value:Float, increment:Float,
+                   minValue:Float, maxValue:Float, prefix:String, suffix:String) {
 
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
@@ -60,11 +62,22 @@ class SliderTableViewCell: UITableViewCell {
     }
 
     func updateDisplayedValue(_ value: Float) {
-        let quotient = (value / incrementSliderBy).rounded(.towardZero) * incrementSliderBy
-        let remainder = value.truncatingRemainder(dividingBy: incrementSliderBy)
-        let normalisedReminder = (remainder / incrementSliderBy).rounded(.toNearestOrAwayFromZero)
-        slider.value = quotient + normalisedReminder * incrementSliderBy
-        sliderValue.text = "\(valuePrefix ?? "")\(NSNumber(value: slider.value))\(valueSuffix ?? "")"
+        if Int(incrementSliderBy) == AlbumVars.recentPeriodKey {
+            // Special case of recent period, value = index of kRecentPeriods
+            // 1, 2, 3, … 19, 20, 25, 30, 40, 50, 60, 80, 99 days (same as Piwigo server)
+            var indexOfPeriod:Int = Int(value.rounded(.toNearestOrAwayFromZero))
+            indexOfPeriod = min(indexOfPeriod, AlbumVars.recentPeriodList.count - 1)
+            indexOfPeriod = max(0, indexOfPeriod)
+            slider.value = Float(indexOfPeriod)
+            sliderValue.text = String(format: (valueSuffix ?? ""), String(AlbumVars.recentPeriodList[indexOfPeriod]))
+        }
+        else {
+            let quotient = (value / incrementSliderBy).rounded(.towardZero) * incrementSliderBy
+            let remainder = value.truncatingRemainder(dividingBy: incrementSliderBy)
+            let normalisedReminder = (remainder / incrementSliderBy).rounded(.toNearestOrAwayFromZero)
+            slider.value = quotient + normalisedReminder * incrementSliderBy
+            sliderValue.text = "\(valuePrefix ?? "")\(NSNumber(value: slider.value))\(valueSuffix ?? "")"
+        }
     }
 
     override func prepareForReuse() {

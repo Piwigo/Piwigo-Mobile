@@ -12,12 +12,12 @@ import piwigoKit
 class AlbumVars: NSObject {
         
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
+    override init() {
+        // Deprecated data?
+        if let _ = UserDefaults.dataSuite.object(forKey: "recentPeriod") {
+            UserDefaults.dataSuite.removeObject(forKey: "recentPeriod")
+        }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Album variables stored in UserDefaults / Standard
@@ -53,7 +53,13 @@ class AlbumVars: NSObject {
     @UserDefault("thumbnailsPerRowInPortrait", defaultValue: UIDevice.current.userInterfaceIdiom == .phone ? 4 : 6)
     @objc static var thumbnailsPerRowInPortrait: Int
 
+    /// - Recent period in number of days
+    static let recentPeriodKey = 594 // i.e. key used to detect the behaviour of the slider (sum of all periods)
+    static let recentPeriodList:[Int] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,40,50,60,80,99]
+    @UserDefault("recentPeriodIndex", defaultValue: 6)      // i.e index of the period of 7 days
+    static var recentPeriodIndex: Int
     
+
     // MARK: - Vars in UserDefaults / App Group
     // Album variables stored in UserDefaults / App Group
     /// - None

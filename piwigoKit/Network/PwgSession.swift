@@ -53,7 +53,8 @@ public class PwgSession: NSObject {
     
 
     // MARK: - Session Methods
-    public func postRequest(withMethod method: String, paramDict: [String: Any],
+    public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
+                     jsonObjectClientExpectsToReceive: T.Type,
                      countOfBytesClientExpectsToReceive:Int64,
                      completionHandler: @escaping (Data, Error?) -> Void) {
         // Create POST request
@@ -98,13 +99,12 @@ public class PwgSession: NSObject {
                 guard let error = error else {
                     // No communication error returned,
                     // so Piwigo returned an error to be handled by the caller.
-                    if let jsonData = data, !jsonData.isEmpty {
+                    if var jsonData = data, jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) {
                         #if DEBUG
                         let dataStr = String(decoding: jsonData, as: UTF8.self)
                         print(" > JSON: \(dataStr.debugDescription)")
                         #endif
-                        let filteredData = self.filterPiwigo(data: jsonData)
-                        completionHandler(filteredData, nil)
+                        completionHandler(jsonData, nil)
                     } else {
                         let error = NSError(domain: "Piwigo", code: JsonError.emptyJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.emptyJSONobject.localizedDescription])
                         completionHandler(Data(), error)
@@ -118,7 +118,7 @@ public class PwgSession: NSObject {
             }
             
             // Return Piwigo error if no error and no data returned.
-            guard let jsonData = data, !jsonData.isEmpty else {
+            guard var jsonData = data, jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
                 let error = NSError(domain: "Piwigo", code: JsonError.emptyJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.emptyJSONobject.localizedDescription])
                 completionHandler(Data(), error)
                 return
@@ -129,23 +129,15 @@ public class PwgSession: NSObject {
             /// - This value can then be used to provide the expected count of returned bytes.
             /// - The last 2 lines display the content of the returned data for debugging.
             #if DEBUG
-//            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
-//                jsonData.count * MemoryLayout<Data>.stride
-//            print("countsOfBytesReceived: \(countsOfByte) bytes")
-//            let dataStr = String(decoding: jsonData, as: UTF8.self)
-//            print(" > JSON: \(dataStr.debugDescription)")
+            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
+                jsonData.count * MemoryLayout<Data>.stride
+            print("countsOfBytesReceived: \(countsOfByte) bytes")
+            let dataStr = String(decoding: jsonData, as: UTF8.self)
+            print(" > JSON: \(dataStr.debugDescription)")
             #endif
             
-            let filteredData = self.filterPiwigo(data: jsonData)
-            guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
-                // Update upload request status
-                let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
-                completionHandler(Data(), error)
-                return
-            }
-
             // The caller will decode the returned data
-            completionHandler(filteredData, nil)
+            completionHandler(jsonData, nil)
         }
         
         // Inform iOS so that it can optimize the scheduling of the task
@@ -156,36 +148,6 @@ public class PwgSession: NSObject {
             task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
         }
         task.resume()
-    }
-    
-    func filterPiwigo(data:Data) -> Data {
-        // Filter returned data (PHP may send a warning before the JSON object)
-        let dataStr = String(decoding: data, as: UTF8.self)
-        var filteredData = data
-
-        // Let's first assume we got JSON data and HTML before/after the JSON object
-        if let firstJsonChar = dataStr.firstIndex(of: "{"),
-           let lastJsonChar = dataStr.lastIndex(of: "}") {
-            filteredData  = dataStr[firstJsonChar...lastJsonChar]
-                .data(using: String.Encoding.utf8)!
-            return filteredData
-        }
-        
-        // Did we receive XML data ("format=json" forgotten in call)
-        /// for example:
-        /// <?xml version=\"1.0\"?>
-        ///     <rsp stat=\"fail\">
-        ///         <err code=\"501\" msg=\"Missing &quot;method&quot; name\" />
-        ///         </rsp>"
-        let parser = ParseXMLData(xml: dataStr)
-        let jsonStr = parser.parseXML()
-        // Remove rsp container
-        if let jsonPos = jsonStr.range(of: "{\"stat\":")?.lowerBound {
-            filteredData  = jsonStr[jsonPos...].dropLast()
-                .data(using: String.Encoding.utf8)!
-            return filteredData
-        }
-        return data
     }
 }
 

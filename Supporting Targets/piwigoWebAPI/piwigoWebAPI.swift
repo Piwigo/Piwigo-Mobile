@@ -19,17 +19,24 @@ class piwigoWebAPI: XCTestCase {
         // Case of a successful request
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.getInfos", withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+            var data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
         
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: GetInfosJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(GetInfosJSON.self, from: data) else {
             XCTFail()
             return
         }
-        
+
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.errorCode, 0)
         XCTAssertEqual(result.errorMessage, "")

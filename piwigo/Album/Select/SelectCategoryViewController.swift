@@ -218,12 +218,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         setTableViewMainHeader()
         categoriesTableView.separatorColor = .piwigoColorSeparator()
         categoriesTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
-        buildCategoryArray(usingCache: true, untilCompletion: { result in
-            // Build complete list
+        buildCategoryArray {
             self.categoriesTableView.reloadData()
-        }, orFailure: { task, error in
-            // Invite users to refresh?
-        })
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -585,6 +582,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 return categories.count
             }
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44.0;
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -1382,37 +1383,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - Category List Builder
     
-    private func buildCategoryArray(usingCache useCache: Bool,
-                                    untilCompletion completion: @escaping (_ result: Bool) -> Void,
-                                    orFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
-        // Show loading HUD when not using cache option,
-        if !(useCache && (AlbumVars.defaultCategory == 0)) {
-            // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-
-            // Reload category data and set current category
-            AlbumService.getAlbumData { _, _ in
-                // Hide loading HUD
-                self.hidePiwigoHUD {
-                    // Build category array
-                    self.buildCategoryArray()
-                    completion(true)
-                }
-            } onFailure: { task, error in
-                // Hide loading HUD
-                self.hidePiwigoHUD {
-                    debugPrint(String(format: "getAlbumData: %@", error?.localizedDescription ?? ""))
-                    fail(task, error!)
-                }
-            }
-        } else {
-            // Build category array from cache
-            buildCategoryArray()
-            completion(true)
-        }
-    }
-
-    private func buildCategoryArray() {
+    private func buildCategoryArray(completion: @escaping () -> Void) {
         categories = []
 
         // Build list of categories from complete known lists
@@ -1463,7 +1434,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func buildRecentCategoryArray() -> Void {
         // Current recent categories
         let recentCatIds = AlbumVars.recentCategories.components(separatedBy: ",")
-        if !recentCatIds.isEmpty { return }
+        if recentCatIds.isEmpty { return }
 
         // Build list of recent categories
         for catIdStr in recentCatIds {

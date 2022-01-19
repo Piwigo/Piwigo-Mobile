@@ -154,7 +154,7 @@ import piwigoKit
         pageViewController!.dataSource = self
 
         // Initialise flags
-        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
+        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false
 
         // Load initial image preview view controller
         if let startingImage = imagePageViewController(atIndex: index) {

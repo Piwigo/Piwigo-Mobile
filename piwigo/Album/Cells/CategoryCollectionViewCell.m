@@ -7,10 +7,11 @@
 //
 
 #import "AlbumImagesViewController.h"
-#import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "ImagesCollection.h"
+
+NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
 @interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryAlbumMovedDelegate, UITextFieldDelegate>
 
@@ -82,7 +83,7 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 156.5;                    // see XIB file
+    return 148.5;                    // see XIB file
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -94,7 +95,7 @@
     }
 
     cell.delegate = self;
-	[cell setupWithAlbumData:self.albumData];
+    [cell configWith:self.albumData];
 	
     cell.isAccessibilityElement = YES;
 	return cell;
@@ -162,19 +163,6 @@
             expansionSettings.buttonIndex = 0;
             return @[trash, move, rename];
         }
-    }
-    else {
-        // Disabled because it does not work reliably on the server side
-//        if (self.albumData.numberOfImages > 0) {
-//            MGSwipeButton *refresh = [MGSwipeButton buttonWithTitle:@""
-//                                                               icon:[UIImage imageNamed:@"SwipeRefresh.png"]
-//                                                        backgroundColor:[UIColor blueColor]
-//                                                           callback:^BOOL(MGSwipeTableCell *sender) {
-//                [self resfreshRepresentative];
-//                return YES;
-//            }];
-//            return @[refresh];
-//        }
     }
     return nil;
 }
@@ -288,7 +276,7 @@
                                         
                                         // Update cell and hide swipe buttons
                                         AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                                        [cell setupWithAlbumData:self.albumData];
+                                        [cell configWith:self.albumData];
                                         [cell hideSwipeAnimated:YES];
                                     });
                                 }];

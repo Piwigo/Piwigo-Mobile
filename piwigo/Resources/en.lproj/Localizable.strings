@@ -502,7 +502,7 @@
 "uploadLowPowerMode" = "Low Power Mode enabled";
 "uploadSection_impossible" = "Impossible Uploads";
 "uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadSection_queue" = "Upload Queue";
 
 "imageUploadError_title" = "Photo Upload Error";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Recent";
 "maxNberOfRecentAlbums>320px" = "Recent Albums";
 "maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"recentPeriod_title" = "Recent Period";
+"recentPeriod_days" = "%@ days";
 
 "thumbnailSizeSquare" = "Square";
 "thumbnailSizeThumbnail" = "Thumbnail";

@@ -21,12 +21,13 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 -(void)clearCache;
 -(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
 -(void)deleteCategoryWithId:(NSInteger)categoryId;
--(void)replaceAllCategories:(NSArray*)categories;
+-(BOOL)replaceAllCategories:(NSArray*)categories;
 -(void)updateCategories:(NSArray*)categories;
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId;
 -(NSArray<PiwigoAlbumData *>*)getCategoriesForParentCategory:(NSInteger)parentCategory;
+-(NSDate *)getDateLastOfCategoriesInCategory:(NSInteger)parentCategory;
 
 -(BOOL)categoryWithId:(NSInteger)category containsImagesWithId:(NSArray<NSNumber*>*)imageIds;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;

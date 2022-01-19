@@ -267,11 +267,19 @@ extension UploadManager {
             return
         }
 
-        // Filter returned data (PHP may send a warning before/after the JSON object)
-        let filteredData = PwgSession().filterPiwigo(data: data)
-        
         // Check returned data
-        guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
+        if data.isEmpty {
+            // Update upload request status
+            #if DEBUG
+            print("\(debugFormatter.string(from: Date())) > Empty JSON object!")
+            #endif
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = JsonError.emptyJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            return
+        }
+        var jsonData = data
+        guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self) else {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)
@@ -286,7 +294,7 @@ extension UploadManager {
         // Decode the JSON.
         do {
             // Decode the JSON into codable type ImagesUploadJSON.
-            let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
+            let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: jsonData)
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
@@ -636,11 +644,19 @@ extension UploadManager {
             return
         }
 
-        // Filter returned data (PHP may send a warning before the JSON object)
-        let filteredData = PwgSession().filterPiwigo(data: data)
-
         // Check returned data
-        guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
+        if data.isEmpty {
+            // Update upload request status
+            #if DEBUG
+            print("\(debugFormatter.string(from: Date())) > Empty JSON object!")
+            #endif
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = JsonError.emptyJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            return
+        }
+        var jsonData = data
+        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self) else {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)
@@ -655,7 +671,7 @@ extension UploadManager {
         // Decode the JSON.
         do {
             // Decode the JSON into codable type ImagesUploadJSON.
-            let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: filteredData)
+            let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: jsonData)
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {

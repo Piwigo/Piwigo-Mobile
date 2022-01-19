@@ -23,7 +23,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
 
 -(instancetype)initWithAlbumId:(NSInteger)albumId;
--(void)checkIfCategoryStillExists;
+-(void)checkDataSourceWithChangedCategories:(BOOL)didChange;
 -(void)updateSubCategoryWithId:(NSInteger)albumId;
 -(void)addImageWithId:(NSInteger)imageId;
 -(void)removeImageWithId:(NSInteger)imageId;

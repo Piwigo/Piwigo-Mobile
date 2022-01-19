@@ -16,6 +16,8 @@ import CryptoKit        // Requires iOS 13
 #endif
 
 extension Data {
+    
+    // MARK: - MD5 Checksum
     // Return the MD5 checksum of data
     public func MD5checksum() -> String {
         var md5Checksum = ""
@@ -57,10 +59,8 @@ extension Data {
         }
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
-}
 
-// MARK: - MIME type and file extension sniffing
-extension Data {
+    // MARK: - MIME type and file extension sniffing
     // Return contentType of image data
     func contentType() -> String? {
         var bytes: [UInt8] = Array(repeating: UInt8(0), count: 12)
@@ -222,5 +222,96 @@ extension Data {
     }
     private func win_curSignature() -> [UInt8] {
         return [0x00, 0x00, 0x02, 0x00]
+    }
+    
+    // MARK: Piwgo Response Checker
+    // Clean and check the response returned by the server
+    public mutating func isPiwigoResponseValid<T: Decodable>(for type: T.Type) -> Bool {
+        // Is this an empty object?
+        if self.isEmpty { return false }
+
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        if let _ = try? decoder.decode(type, from: self) {
+            return true
+        }
+        
+        // Remove HTML data located
+        /// - before the first opening curly brace
+        /// - after the last closing curly brace
+        let dataStr = String(decoding: self, as: UTF8.self)
+        var filteredDataStr = ""
+        var filteredData = Data()
+        if let openingCBindex = dataStr.firstIndex(of: "{"),
+           let closingCBIndex = dataStr.lastIndex(of: "}") {
+            filteredDataStr = String(dataStr[openingCBindex...closingCBIndex])
+        } else {
+            // Did not find an opening curly brace
+            return false
+        }
+
+        // Is this now a valid JSON object?
+        filteredData = filteredDataStr.data(using: String.Encoding.utf8)!
+        if let _ = try? decoder.decode(type, from: filteredData) {
+            self = filteredData
+            return true
+        }
+
+        // Loop over the possible blocks between curly braces
+        repeat {
+            // Look for the first closing curly brace at the same level
+            // and extract the block of data in between the curly braces.
+            var blockStr = ""
+            var level:Int = 0
+            for (index, char) in filteredDataStr.enumerated() {
+                if char == "{" { level += 1 }
+                if char == "}" { level -= 1 }
+                if level == 0 {
+                    // Found "}" of same level -> extract object
+                    let strIndex = dataStr.index(filteredDataStr.startIndex, offsetBy: index)
+                    blockStr = String(filteredDataStr[...strIndex])
+                    break
+                }
+            }
+            
+            // Did we identified a block of data?
+            if (level != 0) || blockStr.isEmpty {
+                // No -> Remove the current opening curly brace
+                let newDataStr = String(filteredDataStr.dropFirst())
+                
+                // Look for the next opening curly brace
+                if let openingCBindex = newDataStr.firstIndex(of: "{"),
+                   let closingCBIndex = newDataStr.lastIndex(of: "}") {
+                    // Look for the next block of data
+                    filteredDataStr = String(newDataStr[openingCBindex...closingCBIndex])
+                } else {
+                    // Did not find an opening curly brace
+                    filteredDataStr = ""
+                }
+                continue
+            }
+            
+            // Is this block a valid JSON object?
+            let blockData = blockStr.data(using: String.Encoding.utf8)!
+            if let _ = try? decoder.decode(type, from: blockData) {
+                self = blockData
+                return true
+            }
+
+            // No -> Remove the current opening curly brace
+            let newDataStr = String(filteredDataStr.dropFirst())
+            if let openingCBindex = newDataStr.firstIndex(of: "{"),
+               let closingCBIndex = newDataStr.lastIndex(of: "}") {
+                // Look for the next block of data
+                filteredDataStr = String(newDataStr[openingCBindex...closingCBIndex])
+            } else {
+                // Did not find an opening curly brace
+                filteredDataStr = ""
+                continue
+            }
+        } while !filteredDataStr.isEmpty
+        
+        self = Data()
+        return false
     }
 }

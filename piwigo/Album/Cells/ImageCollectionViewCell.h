@@ -17,7 +17,7 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) BOOL isFavorite;
 
--(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId;
+-(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId forSize:(CGSize)size;
 -(void)highlightOnCompletion:(void (^)(void))completion;
 -(void)applyColorPalette;
 

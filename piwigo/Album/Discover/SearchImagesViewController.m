@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -62,6 +63,19 @@
 
 
 #pragma mark - View Lifecycle
+
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Calculates size of image cells
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    self.imageCellSize = CGSizeMake(size, size);
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
+                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+}
 
 -(void)applyColorPalette
 {
@@ -164,9 +178,6 @@
             }
         }
     }
-
-    // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:PwgNotificationsObjc.paletteChanged object:nil];
 }
 
 -(void)scrollToHighlightedCell
@@ -188,6 +199,20 @@
             }
         }
     }
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    // Update the navigation bar on orientation change, to match the new width of the table.
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        // Calculates new size of image cells
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        self.imageCellSize = CGSizeMake(size, size);
+
+        // Reload colelction
+        [self.imagesCollection reloadData];
+    } completion:nil];
 }
 
 -(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
@@ -342,9 +367,7 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-    return CGSizeMake(size, size);
+    return self.imageCellSize;
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -357,7 +380,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
+        [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId forSize:self.imageCellSize];
     
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {

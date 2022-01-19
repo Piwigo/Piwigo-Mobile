@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "Ostatnio użyte";
 "maxNberOfRecentAlbums>320px" = "Ostatnio użyte albumy";
 "maxNberOfRecentAlbums>414px" = "Liczba ostatnio użytych albumów";
+"recentPeriod_title" = "Ostatni okres";
+"recentPeriod_days" = "%@ dni";
 
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";

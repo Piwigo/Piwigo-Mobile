@@ -11,7 +11,6 @@
 
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"

@@ -36,6 +36,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
+@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -114,27 +115,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // For iOS 11 and later: place search bar in navigation bar for root album
         if (@available(iOS 11.0, *)) {
             // Initialise search controller when displaying root album
-            if (albumId == 0) {
-                SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-                UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-                searchController.delegate = self;
-                searchController.hidesNavigationBarDuringPresentation = YES;
-                searchController.searchResultsUpdater = self;
-                
-                searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-                searchController.searchBar.translucent = NO;
-                searchController.searchBar.showsCancelButton = NO;
-                searchController.searchBar.showsSearchResultsButton = NO;
-                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-                searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-                self.definesPresentationContext = YES;
-                
-                // Place the search bar in the navigation bar.
-                self.navigationItem.searchController = searchController;
-
-                // Hide the search bar when scrolling
-                self.navigationItem.hidesSearchBarWhenScrolling = YES;
-            }
+            if (albumId == 0) { [self initSearchBar]; }
         }
 
         // Navigation bar and toolbar buttons
@@ -359,6 +340,29 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 	return self;
 }
 
+-(void)initSearchBar    API_AVAILABLE(ios(11.0));
+{
+    SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+    searchController.delegate = self;
+    searchController.hidesNavigationBarDuringPresentation = YES;
+    searchController.searchResultsUpdater = self;
+    
+    searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    searchController.searchBar.translucent = NO;
+    searchController.searchBar.showsCancelButton = NO;
+    searchController.searchBar.showsSearchResultsButton = NO;
+    searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+    searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+    self.definesPresentationContext = YES;
+    
+    // Place the search bar in the navigation bar.
+    self.navigationItem.searchController = searchController;
+
+    // Hide the search bar when scrolling
+    self.navigationItem.hidesSearchBarWhenScrolling = YES;
+}
+
 #pragma mark - View Lifecycle
 
 -(void)viewDidLoad
@@ -368,6 +372,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"===============================");
     NSLog(@"viewDidLoad       => ID:%ld", (long)self.categoryId);
 #endif
+
+    // Calculates size of image cells
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
@@ -574,12 +582,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
     
-    // The album title is not shown in backButtonItem to provide enough space
-    // for image title on devices of screen width <= 414 ==> Restore album title
-    if (self.categoryId == 0) {
-        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-    }
-    
     // Display the album/images collection
     // Images will be loaded if needed after displaying cells
     [self.imagesCollection reloadData];
@@ -711,7 +713,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        // Calculates new size of image cells
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        self.imageCellSize = CGSizeMake(size, size);
+
+        // Reload colelction
         [self.imagesCollection reloadData];
+        
+        // Update buttons
         if (self.isSelect) {
             [self initButtonsInSelectionMode];
         } else {
@@ -817,10 +826,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               inMode:MBProgressHUDModeIndeterminate];
     
     // Load category data in recursive mode
-    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
-            [self checkIfCategoryStillExists];
+            [self checkDataSourceWithChangedCategories:didChange];
             
             // End refreshing
             if (@available(iOS 10.0, *)) {
@@ -847,10 +856,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }];
 }
 
--(void)checkIfCategoryStillExists
+-(void)checkDataSourceWithChangedCategories:(BOOL)didChange
 {
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"checkDataSource...=> ID:%ld", (long)self.categoryId);
+    NSLog(@"checkDataSource...=> ID:%ld - Categories did change:%@", (long)self.categoryId, didChange ? @"YES" : @"NO");
 #endif
     // Does this album still exist?
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
@@ -875,12 +884,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Root album -> reload collection
     if (self.categoryId == 0) {
-        [self.imagesCollection reloadData];
+        if (didChange) {
+            [self.imagesCollection reloadData];
+        }
         return;
     }
     
     // Other album -> Reload albums
-    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    if (didChange) {
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    }
     
     // Other album —> If the number of images in cache is null, reload collection
     if (albumData.imageList.count == 0) {
@@ -1173,10 +1186,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Root album => Discover menu button
         [self.navigationItem setRightBarButtonItems:@[self.discoverBarButton] animated:YES];
     }
-    else if (self.albumData.images.count > 0) {
+    else if ([[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages > 0) {
         // Button for activating the selection mode
         [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
-    } else {
+        [self.selectBarButton setEnabled:(self.albumData.images.count > 0)];
+    }
+    else {
         // No button
         [self.navigationItem setRightBarButtonItems:@[] animated:YES];
         
@@ -3183,9 +3198,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             
         default:            // Images
         {
-            // Calculate the optimum image size
-            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-            return CGSizeMake(size, size);
+            return self.imageCellSize;
         }
     }
 }
@@ -3223,7 +3236,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                [cell setupWithImageData:imageData inCategoryId:self.categoryId];
+                [cell setupWithImageData:imageData inCategoryId:self.categoryId forSize:self.imageCellSize];
                 cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -3531,12 +3544,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Change default album
     self.categoryId = AlbumVars.defaultCategory;
 
-    // Reset Add button icon
-    if (self.categoryId == 0) {
-        [self.addButton setImage:[UIImage imageNamed:@"createLarge"] forState:UIControlStateNormal];
-    } else {
-        [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    // Add/remove search bar
+    if (@available(iOS 11.0, *)) {
+        if (self.categoryId == 0) {
+            // Initialise search bar
+            [self initSearchBar];
+        } else {
+            // Remove search bar from the navigation bar
+            self.navigationItem.searchController = nil;
+        }
     }
+    
+    // Initialise data source
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+    
+    // Reset buttons and menus
+    [self updateButtonsInPreviewMode];
+
+    // Reload album
+    [self.imagesCollection reloadData];
+}
+
+-(void)didChangeRecentPeriod
+{
+    // Reload album
+    [self.imagesCollection reloadData];
 }
 
 

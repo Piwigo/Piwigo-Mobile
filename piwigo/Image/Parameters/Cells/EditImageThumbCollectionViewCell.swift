@@ -269,6 +269,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors

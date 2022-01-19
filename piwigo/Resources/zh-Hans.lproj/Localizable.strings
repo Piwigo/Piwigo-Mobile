@@ -607,6 +607,8 @@
 "maxNberOfRecentAlbums" = "最近的";
 "maxNberOfRecentAlbums>320px" = "最近的相册";
 "maxNberOfRecentAlbums>414px" = "最近相册的数量";
+"recentPeriod_title" = "最近期间";
+"recentPeriod_days" = "%@ 天";
 
 "thumbnailSizeSquare" = "矩形";
 "thumbnailSizeThumbnail" = "缩略图";

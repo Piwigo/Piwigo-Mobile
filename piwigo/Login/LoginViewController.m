@@ -788,7 +788,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         // Load category data in recursive mode
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
-            [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+            [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
                 // Reinitialise flag
                 NetworkVarsObjc.userCancelledCommunication = NO;
                 
@@ -898,12 +898,12 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 {
     // Load category data in recursive mode in the background
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0),^{
-        [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+        [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
             UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
             if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
                 // Check data source and reload collection if needed
                 AlbumImagesViewController *vc = (AlbumImagesViewController *)viewController;
-                [vc checkIfCategoryStillExists];
+                [vc checkDataSourceWithChangedCategories:didChange];
             }
 
             // Resume uploads

@@ -42,6 +42,7 @@ public class TagsProvider {
         // Launch the HTTP(S) request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
+                                jsonObjectClientExpectsToReceive: TagJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData, error in
             // Any error?
             /// - Network communication errors
@@ -299,6 +300,7 @@ public class TagsProvider {
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
+                                jsonObjectClientExpectsToReceive: TagAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
             // Any error?
             /// - Network communication errors
