@@ -607,8 +607,8 @@
 "maxNberOfRecentAlbums" = "最近";
 "maxNberOfRecentAlbums>320px" = "最近のアルバム";
 "maxNberOfRecentAlbums>414px" = "最近のアルバムの数";
-"recentPeriod_title" = "Recent Period";
-"recentPeriod_days" = "%@ days";
+"recentPeriod_title" = "最近の期間";
+"recentPeriod_days" = "%@ 日";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";

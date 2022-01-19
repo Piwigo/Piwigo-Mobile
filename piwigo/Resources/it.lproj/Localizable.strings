@@ -607,8 +607,8 @@
 "maxNberOfRecentAlbums" = "Recente";
 "maxNberOfRecentAlbums>320px" = "Album recenti";
 "maxNberOfRecentAlbums>414px" = "Numero di album recenti";
-"recentPeriod_title" = "Recent Period";
-"recentPeriod_days" = "%@ days";
+"recentPeriod_title" = "Periodo Recente";
+"recentPeriod_days" = "%@ giorni";
 
 "thumbnailSizeSquare" = "Quadrato";
 "thumbnailSizeThumbnail" = "Anteprima";
