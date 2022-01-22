@@ -105,7 +105,7 @@
 "serverConnectionError_message" = "En sikker HTTPS-forbindelsen kunne ikke oprettes. Kontroller venligst adressen eller prøv en ukrypteret http forbindelse";
 
 "serverVersionNotCompatible_title" = "Server Inkompatibel";
-"serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo Mobile kræver mindst version 2.7. Opdater venligst din server hvis du vil bruge Piwigo Mobile. Ønsker du at fortsætte?";
+"serverVersionNotCompatible_message" = "Din Piwigo serverversion er %@. Piwigo Mobile kræver mindst version 2.8. Opdater venligst din server hvis du vil bruge Piwigo Mobile. Ønsker du at fortsætte?";
 
 "sessionStatusError_title" = "Godkendelse Mislykkedes";
 "sessionStatusError_message" = "Log ind ikke godkendt af serveren. Prøv at logge ind igen.";

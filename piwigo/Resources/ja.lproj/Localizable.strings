@@ -105,7 +105,7 @@
 "serverConnectionError_message" = "セキュリティで保護された HTTPS 接続を確立できませんでした。アドレスを確認するか、暗号化されていない HTTP モードでやり直してください。";
 
 "serverVersionNotCompatible_title" = "サーバが非互換です";
-"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは2.7以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。それでも継続しますか？";
+"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは2.8以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。それでも継続しますか？";
 
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";

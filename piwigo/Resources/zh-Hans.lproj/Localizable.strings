@@ -105,7 +105,7 @@
 "serverConnectionError_message" = "无法建立一个安全的 HTTPS 连接。请检查地址或者尝试未加密的 HTTP 模式？";
 
 "serverVersionNotCompatible_title" = "服务器不兼容";
-"serverVersionNotCompatible_message" = "您的Piwigo服务器版本为 %@. Piwigo Mobile仅支持高于2.7的版本。请更新您的服务器使用Piwigo Mobile。您仍然要继续吗？";
+"serverVersionNotCompatible_message" = "您的Piwigo服务器版本为 %@. Piwigo Mobile仅支持高于2.8的版本。请更新您的服务器使用Piwigo Mobile。您仍然要继续吗？";
 
 "sessionStatusError_title" = "验证失败";
 "sessionStatusError_message" = "无法与服务器验证。请尝试再次登录。";
