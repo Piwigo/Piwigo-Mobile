@@ -68,22 +68,26 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // Initialisation
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let maxSize = CGSize(width: tableView.frame.size.width - CGFloat(30),
+                             height: CGFloat.greatestFiniteMagnitude)
         // Title
-        let titleString = "\(NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings"))\n"
+        let titleString = NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings") + "\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
+        let titleRect = titleString.boundingRect(with: maxSize, options: .usesLineFragmentOrigin,
+                                                 attributes: titleAttributes, context: context)
         // Text
         let textString = NSLocalizedString("imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
         let textAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontSmall()
         ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        let textRect = textString.boundingRect(with: maxSize, options: .usesLineFragmentOrigin,
+                                               attributes: textAttributes, context: context)
+        return CGFloat(max(44.0, ceil(titleRect.size.height + textRect.size.height)))
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
