@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.9.2_text" = "Versie 2.9.2\n\n• Foutjes verbeterd\n• Codemodernisering";
+
 "v2.9.1_text" = "Versie 2.9.1\n20 januari 2022\n\n• Accentueringen die onlangs zijn bijgewerkt\n• Kleine foutjes hersteld en verbetering van de interface";
 
 "v2.9.0_text" = "Versie 2.9\n9 januari 2022\n\n• Geeft foto-/videobeschrijvingen weer in de voorbeeldmodus\n• Kleine foutjes verbeterd en verbetering van de interface";
