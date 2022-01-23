@@ -19,9 +19,11 @@ class TableViewUtilities: NSObject {
         context.minimumScaleFactor = 1.0
 
         // Initialise variables and width constraint
+        /// The minimum width of a screen is of 320 pixels.
+        /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height = CGFloat.zero
-        let margin =  CGFloat(15); let minHeight = CGFloat(44)
-        let maxWidth = CGFloat(fmax(width - 2*margin, CGFloat(200)))
+        let margin =  CGFloat(15), minWidth = CGFloat(320.0 - 2*margin), minHeight = CGFloat(44)
+        let maxWidth = CGFloat(fmax(width - 2*margin, minWidth))
         let widthConstraint = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
