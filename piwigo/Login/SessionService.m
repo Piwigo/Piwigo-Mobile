@@ -174,8 +174,6 @@
                               ([@"12.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedAscending)) {
                               NetworkVarsObjc.usesUploadAsync = NO;
                           }
-                          NSLog(@"   version: %@, usesUploadAsync: %@", NetworkVarsObjc.pwgVersion,
-                                NetworkVarsObjc.usesUploadAsync ? @"YES" : @"NO");
 
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
@@ -222,7 +220,9 @@
                               // UTF-8 string encoding by default
                               NetworkVarsObjc.stringEncoding = NSUTF8StringEncoding;
                           }
-                          
+                          NSLog(@"   version: %@, usesUploadAsync: %@, charset: %@", NetworkVarsObjc.pwgVersion,
+                                NetworkVarsObjc.usesUploadAsync ? @"YES" : @"NO", charset);
+
                           // Upload chunk size is null if not provided by server
                           NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                           if (uploadChunkSize != 0) {
