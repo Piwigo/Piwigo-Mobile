@@ -91,23 +91,10 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
     // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
-        // Title
-        let titleString = "\(NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))\n"
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-        // Text
-        let textString = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
+        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

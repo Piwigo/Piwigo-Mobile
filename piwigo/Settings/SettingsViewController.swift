@@ -292,59 +292,39 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Header strings
-        var titleString = ""
-        var textString = ""
+        var title = "", text = ""
         switch activeSection {
         case SettingsSection.server.rawValue:
             if (NetworkVars.serverProtocol == "https://") {
-                titleString = String(format: "%@ %@",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
+                title = String(format: "%@ %@",
+                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
+                               NetworkVars.pwgVersion)
             } else {
-                titleString = String(format: "%@ %@\n",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
-                textString = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+                title = String(format: "%@ %@\n",
+                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
+                               NetworkVars.pwgVersion)
+                text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
         case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
             return 1
         case SettingsSection.albums.rawValue:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case SettingsSection.images.rawValue:
-            titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
+            title = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
-            titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
+            title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
         case SettingsSection.appearance.rawValue:
-            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+            title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
-            titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
+            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
-            titleString = NSLocalizedString("settingsHeader_about", comment: "Information")
+            title = NSLocalizedString("settingsHeader_about", comment: "Information")
         default:
             break
         }
 
-        // Header height
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-        // Header height
-        var headerHeight: Int
-        if textString.count > 0 {
-            let textAttributes = [
-                NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-            ]
-            let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-            headerHeight = Int(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
-        } else {
-            headerHeight = Int(fmax(44.0, ceil(titleRect.size.height)))
-        }
-
-        return CGFloat(headerHeight)
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

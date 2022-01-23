@@ -68,26 +68,10 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Initialisation
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - CGFloat(30),
-                              height: CGFloat.greatestFiniteMagnitude)
-        // Title
-        let titleString = NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings") + "\n"
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin,
-                                                 attributes: titleAttributes, context: context)
-        // Text
-        let textString = NSLocalizedString("imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin,
-                                               attributes: textAttributes, context: context)
-        return CGFloat(max(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        let title = String(format: "%@\n", NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings"))
+        let text = NSLocalizedString("imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

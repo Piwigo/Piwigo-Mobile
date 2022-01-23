@@ -132,25 +132,18 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title
-        let titleString: String
+        let title: String
         switch section {
         case 0:
-            titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
+            title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
         case 1:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case 2:
-            titleString = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+            title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:
-            titleString = ""
+            title = ""
         }
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, titleRect.size.height))
+        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

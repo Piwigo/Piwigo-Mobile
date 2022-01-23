@@ -292,14 +292,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        if title.isEmpty { return 0.0 }
-        
-        // Header height?
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-        let titleRect = title.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(ceil(titleRect.size.height))
+        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

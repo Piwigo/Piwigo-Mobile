@@ -125,41 +125,18 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        var heightForHeader: CGFloat = 0.0
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
-                              height: CGFloat.greatestFiniteMagnitude)
-
+        var title = "", text = ""
         switch section {
-            case 0:
-                // Title
-                let titleString = NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata") + "\n"
-                let titleAttributes = [
-                    NSAttributedString.Key.font: UIFont.piwigoFontBold()
-                ]
-                let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-                // Text
-                let textString = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
-                let textAttributes = [
-                    NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-                ]
-                let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-
-                heightForHeader = CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
-            case 1:
-                // Text
-                let textString = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
-                let textAttributes = [
-                    NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-                ]
-                let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-                heightForHeader = CGFloat(fmax(44.0, ceil(textRect.size.height)))
-            default:
-                break
+        case 0:
+            title = String(format: "%@\n", NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata"))
+            text = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
+        case 1:
+            text = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
+        default:
+            break
         }
-        return heightForHeader
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
