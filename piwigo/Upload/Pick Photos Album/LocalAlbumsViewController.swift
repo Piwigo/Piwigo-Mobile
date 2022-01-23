@@ -299,37 +299,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForHeaderInSectionOf(albumType: albumType)
-        if title.isEmpty { return nil }
-
-        // Title attributed string
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: title.count))
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = titleAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

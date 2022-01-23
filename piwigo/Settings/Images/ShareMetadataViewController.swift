@@ -123,8 +123,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
     
 // MARK: - UITableView - Header
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    private func getContentOfHeader(inSection section: Int) -> (String, String) {
         var title = "", text = ""
         switch section {
         case 0:
@@ -135,60 +134,18 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         default:
             break
         }
+        return (title, text)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader(inSection: section)
         return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
                                                  width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        switch section {
-            case 0:
-                // Title
-                let titleString = NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata") + "\n"
-                let titleAttributedString = NSMutableAttributedString(string: titleString)
-                titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-                headerAttributedString.append(titleAttributedString)
-
-                // Text
-                let textString = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
-                let textAttributedString = NSMutableAttributedString(string: textString)
-                textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-                headerAttributedString.append(textAttributedString)
-            case 1:
-                // Text
-                let textString = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
-                let textAttributedString = NSMutableAttributedString(string: textString)
-                textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-                headerAttributedString.append(textAttributedString)
-            default:
-                break
-        }
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = UIColor.clear
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-        return header
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
 
     
