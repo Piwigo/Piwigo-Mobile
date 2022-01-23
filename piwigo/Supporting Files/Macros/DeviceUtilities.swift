@@ -20,7 +20,7 @@ class DeviceUtilities: NSObject {
             return "Unknown device"
         }
         
-        // MARK: - iPhone
+        // MARK: iPhone
         switch deviceCode {
         case "iPhone1,1":
             return "iPhone"
@@ -104,7 +104,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad
+        // MARK: iPad
         switch deviceCode {
         case "iPad1,1":
             return "iPad"
@@ -148,7 +148,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Air
+        // MARK: iPad Air
         switch deviceCode {
         case "iPad4,1":
             return "iPad Air (Wi-Fi)"
@@ -170,7 +170,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Pro
+        // MARK: iPad Pro
         switch deviceCode {
         case "iPad6,3":
             return "iPad Pro 9.7-inch (Wi-Fi)"
@@ -220,7 +220,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad mini
+        // MARK: iPad mini
         switch deviceCode {
         case "iPad2,5":
             return "iPad Mini (Wi-Fi)"
@@ -252,7 +252,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPod
+        // MARK: iPod
         switch deviceCode {
         case "iPod1,1":
             return "iPod touch"
@@ -272,7 +272,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - Simulator
+        // MARK: Simulator
         switch deviceCode {
         case "i386", "x86_64":
             return "Simulator"
@@ -290,7 +290,7 @@ class DeviceUtilities: NSObject {
             return ""
         }
         
-        // MARK: - iPhone
+        // MARK: iPhone
         switch deviceCode {
         case "iPhone1,1", "iPhone1,2":
             return "2 Mpx"
@@ -314,7 +314,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad
+        // MARK: iPad
         switch deviceCode {
         case "iPad1,1":
             return ""
@@ -332,7 +332,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Air
+        // MARK: iPad Air
         switch deviceCode {
         case "iPad4,1", "iPad4,2":
             return "5 Mpx"
@@ -345,7 +345,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Pro
+        // MARK: iPad Pro
         switch deviceCode {
         case "iPad6,7", "iPad6,8":
             return "8 Mpx"
@@ -359,7 +359,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad mini
+        // MARK: iPad mini
         switch deviceCode {
         case "iPad2,5", "iPad2,6", "iPad2,7",
              "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
@@ -372,7 +372,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPod
+        // MARK: iPod
         switch deviceCode {
         case "iPod1,1", "iPod2,1", "iPod3,1":
             return ""
@@ -386,7 +386,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - Simulator
+        // MARK: Simulator
         switch deviceCode {
         case "i386", "x86_64":
             return "? Mpx"
@@ -404,7 +404,7 @@ class DeviceUtilities: NSObject {
             return ""
         }
         
-        // MARK: - iPhone
+        // MARK: iPhone
         switch deviceCode {
         case "iPhone1,1", "iPhone1,2", "iPhone2,1":
             return "VGA, 30 fps"
@@ -430,7 +430,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad
+        // MARK: iPad
         switch deviceCode {
         case "iPad1,1":
             return ""
@@ -448,7 +448,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Air
+        // MARK: iPad Air
         switch deviceCode {
         case "iPad4,1", "iPad4,2":
             return "HD, 30 fps"
@@ -461,7 +461,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad Pro
+        // MARK: iPad Pro
         switch deviceCode {
         case "iPad6,3", "iPad6,4":
             return "HD, 30 fps"
@@ -479,7 +479,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPad mini
+        // MARK: iPad mini
         switch deviceCode {
         case "iPad2,5", "iPad2,6", "iPad2,7",
              "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
@@ -493,7 +493,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - iPod
+        // MARK: iPod
         switch deviceCode {
         case "iPod1,1", "iPod2,1", "iPod3,1":
             return ""
@@ -505,7 +505,7 @@ class DeviceUtilities: NSObject {
             break
         }
 
-        // MARK: - Simulator
+        // MARK: Simulator
         switch deviceCode {
         case "i386", "x86_64":
             return "? Mpx"
