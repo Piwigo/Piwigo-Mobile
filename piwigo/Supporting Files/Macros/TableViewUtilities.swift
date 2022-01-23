@@ -12,7 +12,7 @@ import UIKit
 class TableViewUtilities: NSObject {
     
     // Returns the height of a header containing a title and/or a subtitle
-    class func heightOfHeader(withTitle title:String, text:String = "",
+    class func heightOfHeader(withTitle title: String, text: String = "",
                                width: CGFloat = 0.0) -> CGFloat {
         // Initialise drawing context
         let context = NSStringDrawingContext()
@@ -41,5 +41,55 @@ class TableViewUtilities: NSObject {
         }
 
         return fmax(minHeight, CGFloat(ceil(height)))
+    }
+    
+    class func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
+        // Check header content
+        if title.isEmpty, text.isEmpty { return nil }
+
+        // Initialisation
+        let headerAttributedString = NSMutableAttributedString(string: "")
+
+        // Add title attributed string
+        if !title.isEmpty {
+            let titleAttributedString = NSMutableAttributedString(string: title)
+            titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(),
+                                               range: NSRange(location: 0, length: title.count))
+            headerAttributedString.append(titleAttributedString)
+        }
+        
+        // Add text attributed string
+        if !text.isEmpty {
+            let textAttributedString = NSMutableAttributedString(string: text)
+            textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(),
+                                              range: NSRange(location: 0, length: text.count))
+            headerAttributedString.append(textAttributedString)
+        }
+                
+        // Create header label
+        let headerLabel = UILabel()
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerLabel.textColor = .piwigoColorHeader()
+        headerLabel.numberOfLines = 0
+        headerLabel.adjustsFontSizeToFitWidth = false
+        headerLabel.lineBreakMode = .byWordWrapping
+        headerLabel.attributedText = headerAttributedString
+
+        // Create header view
+        let header = UIView()
+        header.addSubview(headerLabel)
+        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
+        if #available(iOS 11, *) {
+            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|",
+                                                                 options: [], metrics: nil, views: [
+                                                                    "header": headerLabel
+                                                                 ]))
+        } else {
+            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|",
+                                                                 options: [], metrics: nil, views: [
+                                                                    "header": headerLabel
+                                                                 ]))
+        }
+        return header
     }
 }
