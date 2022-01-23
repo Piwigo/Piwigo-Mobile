@@ -13,7 +13,6 @@
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
-#import "AlbumCollectionViewCell.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
@@ -3212,7 +3211,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             cell.categoryDelegate = self;
             
             PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
-            [cell setupWithAlbumData:albumData];
+            [cell configWithAlbumData:albumData];
             
             // Disable category cells in Image selection mode
             if (self.isSelect) {
