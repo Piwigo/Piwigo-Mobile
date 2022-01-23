@@ -1,5 +1,5 @@
 //
-//  CategoryCollectionViewCell.m
+//  AlbumCollectionViewCell.m
 //  piwigo
 //
 //  Created by Spencer Baker on 3/9/15.
@@ -8,12 +8,12 @@
 
 #import "AlbumImagesViewController.h"
 #import "CategoriesData.h"
-#import "CategoryCollectionViewCell.h"
+#import "AlbumCollectionViewCell.h"
 #import "ImagesCollection.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
-@interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryAlbumMovedDelegate, UITextFieldDelegate>
+@interface AlbumCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, MGSwipeTableCellDelegate, SelectCategoryAlbumMovedDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -22,7 +22,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
 @end
 
-@implementation CategoryCollectionViewCell
+@implementation AlbumCollectionViewCell
 
 -(instancetype)initWithFrame:(CGRect)frame
 {

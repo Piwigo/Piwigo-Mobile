@@ -13,7 +13,7 @@
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
-#import "CategoryCollectionViewCell.h"
+#import "AlbumCollectionViewCell.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
@@ -32,7 +32,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -226,7 +226,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
 
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
+        [self.imagesCollection registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:@"AlbumCollectionViewCell"];
         [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.view addSubview:self.imagesCollection];
@@ -530,8 +530,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
-        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            CategoryCollectionViewCell *albumCell = (CategoryCollectionViewCell*)cell;
+        if ([cell isKindOfClass:[AlbumCollectionViewCell class]]) {
+            AlbumCollectionViewCell *albumCell = (AlbumCollectionViewCell*)cell;
             [albumCell applyColorPalette];
         }
         if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
@@ -2022,8 +2022,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
 
         // Disable user interaction with category cell
-        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+        if ([cell isKindOfClass:[AlbumCollectionViewCell class]]) {
+            AlbumCollectionViewCell *categoryCell = (AlbumCollectionViewCell *)cell;
             [categoryCell.contentView setAlpha:0.5];
             [categoryCell setUserInteractionEnabled:NO];
         }
@@ -2054,8 +2054,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
         
         // Enable user interaction with category cell
-        if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
-            CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
+        if ([cell isKindOfClass:[AlbumCollectionViewCell class]]) {
+            AlbumCollectionViewCell *categoryCell = (AlbumCollectionViewCell *)cell;
             [categoryCell.contentView setAlpha:1.0];
             [categoryCell setUserInteractionEnabled:YES];
         }
@@ -3208,7 +3208,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     switch (indexPath.section) {
         case 0:             // Albums (see XIB file)
         {
-            CategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CategoryCollectionViewCell" forIndexPath:indexPath];
+            AlbumCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"AlbumCollectionViewCell" forIndexPath:indexPath];
             cell.categoryDelegate = self;
             
             PiwigoAlbumData *albumData = [[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId] objectAtIndex:indexPath.row];
@@ -3572,9 +3572,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 }
 
 
-#pragma mark - CategoryCollectionViewCellDelegate Method (+ PushView:)
+#pragma mark - AlbumCollectionViewCellDelegate Method (+ PushView:)
 
--(void)removeCategory:(CategoryCollectionViewCell *)albumCell
+-(void)removeCategory:(AlbumCollectionViewCell *)albumCell
 {
     // Update data source
     self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
@@ -3586,7 +3586,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // If necessary, update the cell of the category into which the album was moved
     for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
         if (indexPath.section == 1) { return; }
-        CategoryCollectionViewCell *cell = (CategoryCollectionViewCell*)[self.imagesCollection cellForItemAtIndexPath:indexPath];
+        AlbumCollectionViewCell *cell = (AlbumCollectionViewCell*)[self.imagesCollection cellForItemAtIndexPath:indexPath];
         if (cell.albumData.albumId == albumCell.albumData.parentAlbumId) {
             [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
         }

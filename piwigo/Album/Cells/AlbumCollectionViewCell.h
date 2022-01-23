@@ -1,5 +1,5 @@
 //
-//  CategoryCollectionViewCell.h
+//  AlbumCollectionViewCell.h
 //  piwigo
 //
 //  Created by Spencer Baker on 3/9/15.
@@ -12,16 +12,16 @@ FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
 
 @class PiwigoAlbumData;
 
-@protocol CategoryCollectionViewCellDelegate <NSObject>
+@protocol AlbumCollectionViewCellDelegate <NSObject>
 
 -(void)pushCategoryView:(UIViewController*)viewController;
 -(void)removeCategory:(UICollectionViewCell *)albumCell;
 
 @end
 
-@interface CategoryCollectionViewCell : UICollectionViewCell
+@interface AlbumCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, weak) id<CategoryCollectionViewCellDelegate> categoryDelegate;
+@property (nonatomic, weak) id<AlbumCollectionViewCellDelegate> categoryDelegate;
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
 
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
