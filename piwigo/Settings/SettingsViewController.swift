@@ -278,76 +278,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     
     // MARK: - UITableView - Header
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
-        // Header strings
-        var titleString = ""
-        var textString = ""
-        switch activeSection {
-        case SettingsSection.server.rawValue:
-            if (NetworkVars.serverProtocol == "https://") {
-                titleString = String(format: "%@ %@",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
-            } else {
-                titleString = String(format: "%@ %@\n",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
-                textString = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
-            }
-        case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
-            return 1
-        case SettingsSection.albums.rawValue:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
-        case SettingsSection.images.rawValue:
-            titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
-        case SettingsSection.imageUpload.rawValue:
-            titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.appearance.rawValue:
-            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
-        case SettingsSection.cache.rawValue:
-            titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
-        case SettingsSection.about.rawValue:
-            titleString = NSLocalizedString("settingsHeader_about", comment: "Information")
-        default:
-            break
-        }
-
-        // Header height
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-        // Header height
-        var headerHeight: Int
-        if textString.count > 0 {
-            let textAttributes = [
-                NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-            ]
-            let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-            headerHeight = Int(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
-        } else {
-            headerHeight = Int(fmax(44.0, ceil(titleRect.size.height)))
-        }
-
-        return CGFloat(headerHeight)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    private func getContentOfHeader(inSection section: Int) -> (String, String) {
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
@@ -360,78 +291,55 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Header strings
-        var titleString = ""
-        var textString = ""
+        var title = "", text = ""
         switch activeSection {
         case SettingsSection.server.rawValue:
             if (NetworkVars.serverProtocol == "https://") {
-                titleString = String(format: "%@ %@",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
+                title = String(format: "%@ %@",
+                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
+                               NetworkVars.pwgVersion)
             } else {
-                titleString = String(format: "%@ %@\n",
-                                     NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.pwgVersion)
-                textString = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+                title = String(format: "%@ %@\n",
+                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
+                               NetworkVars.pwgVersion)
+                text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-        case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
-            return nil
         case SettingsSection.albums.rawValue:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case SettingsSection.images.rawValue:
-            titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
+            title = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
-            titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
+            title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
         case SettingsSection.appearance.rawValue:
-            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+            title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
-            titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
+            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
-            titleString = NSLocalizedString("settingsHeader_about", comment: "Information")
+            title = NSLocalizedString("settingsHeader_about", comment: "Information")
+        case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
+            fallthrough
         default:
             break
         }
-
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        // Title
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Text
-        if textString.count > 0 {
-            let textAttributedString = NSMutableAttributedString(string: textString)
-            textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-            headerAttributedString.append(textAttributedString)
-        }
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = UIColor.clear
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-        return header
+        return (title, text)
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader(inSection: section)
+        if title.isEmpty, text.isEmpty {
+            return CGFloat(1)
+        } else {
+            return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                     width: tableView.frame.size.width)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+    }
+
+    
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
         let hasUploadSection = NetworkVars.hasAdminRights ||

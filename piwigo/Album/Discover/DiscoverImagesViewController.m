@@ -95,7 +95,7 @@
         self.selectedImageIds = [NSMutableArray new];
 
         // Collection of images
-        self.imagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
         self.imagesCollection.backgroundColor = [UIColor clearColor];
         self.imagesCollection.alwaysBounceVertical = YES;

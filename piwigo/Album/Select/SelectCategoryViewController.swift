@@ -424,135 +424,46 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         categoriesTableView.tableHeaderView = headerView
     }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let titleString: String
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
-                              height: CGFloat.greatestFiniteMagnitude)
-
+    private func getContentOfHeader(inSection section: Int) -> (String, String) {
+        var title = "", text = ""
         switch wantedAction {
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             // 1st section —> Albums containing image
-            let textString: String
             if section == 0 {
                 // Title
-                titleString = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
-                let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-                let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
+                title = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
+                text = inputImageData.categoryIds.count > 1 ?
+                    NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image") :
+                    NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
+            } else {
                 // Text
-                if inputImageData.categoryIds.count > 1 {
-                    textString = NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image")
-                } else {
-                    textString = NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
-                }
-                let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-                let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-                return CGFloat(ceil(titleRect.size.height + textRect.size.height))
+                text = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
             }
-            
-            // Text
-            textString = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
-            let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-            let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-            return CGFloat(ceil(textRect.size.height))
+
         default:
             // 1st section —> Recent albums
             if section == 0 {
                 // Do we have recent albums to show?
-                if recentCategories.count > 0 {
-                    // Present recent albums
-                    titleString = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
-                } else {
-                    // Present all albums
-                    titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
-                }
+                title = recentCategories.count > 0 ?
+                    NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums") :
+                    NSLocalizedString("tabBar_albums", comment: "Albums")
             } else {
                 // 2nd section
-                titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
+                title = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
             }
-
-            let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-            let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-            return CGFloat(ceil(titleRect.size.height))
         }
+        return (title, text)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let titleString: String
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
-            // 1st section —> Albums containing image
-            var textString: String
-            if section == 0 {
-                // Title
-                titleString = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
-                let titleAttributedString = NSMutableAttributedString(string: titleString)
-                titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-                headerAttributedString.append(titleAttributedString)
-
-                // Text
-                if inputImageData.categoryIds.count > 1 {
-                    textString = NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image")
-                } else {
-                    textString = NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
-                }
-            } else {
-                // Text
-                textString = NSLocalizedString("categorySelection_other", comment:"or select another album for this image")
-            }
-
-            let textAttributedString = NSMutableAttributedString(string: textString)
-            textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-            headerAttributedString.append(textAttributedString)
-
-        default:
-            // 1st section
-            if section == 0 {
-                // Do we have recent albums to show?
-                if recentCategories.count > 0 {
-                    // Present recent albums
-                    titleString = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
-                } else {
-                    // Present all albums
-                    titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
-                }
-            } else {
-                // 2nd section
-                titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
-            }
-            let titleAttributedString = NSMutableAttributedString(string: titleString)
-            titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-            headerAttributedString.append(titleAttributedString)
-        }
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
 
     

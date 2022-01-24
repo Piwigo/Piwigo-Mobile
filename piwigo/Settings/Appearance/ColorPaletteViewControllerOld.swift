@@ -64,51 +64,19 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
 
     // MARK: - UITableView - Header
+    private func getContentOfHeader() -> String {
+        let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
+        return title
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
-                              height: CGFloat.greatestFiniteMagnitude)
-        // Title
-        let titleString = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
+        let title = getContentOfHeader()
+        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        // Title
-        let titleString = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = titleAttributedString
-
-        // Header view
-        let header = UIView()
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let title = getContentOfHeader()
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
 
     

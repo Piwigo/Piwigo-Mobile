@@ -335,11 +335,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = sectionName.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
+        return TableViewUtilities.heightOfHeader(withTitle: sectionName, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -130,70 +130,29 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     
     // MARK: - UITableView - Header
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title
-        let titleString: String
+    private func getContentOfHeader(inSection section: Int) -> String {
+        var title = ""
         switch section {
         case 0:
-            titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
+            title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
         case 1:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case 2:
-            titleString = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+            title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:
-            titleString = ""
+            title = ""
         }
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, titleRect.size.height))
+        return title
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // Title
-        let titleString: String
-        switch section {
-        case 0:
-            titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
-        case 1:
-            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
-        case 2:
-            titleString = NSLocalizedString("imageDetailsView_title", comment: "Properties")
-        default:
-            titleString = ""
-        }
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = titleAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = UIColor.clear
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
 
 

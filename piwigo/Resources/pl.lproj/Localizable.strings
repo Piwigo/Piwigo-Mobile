@@ -105,7 +105,7 @@
 "serverConnectionError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
 
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
-"serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2,7. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
+"serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej 2.8. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile. Czy nadal chcesz kontynuować?";
 
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
 "sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie.";

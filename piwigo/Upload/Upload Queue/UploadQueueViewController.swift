@@ -349,13 +349,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
-        let sectionName = sectionKey.name
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = sectionName.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
+        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot()
+                                        .sectionIdentifiers[section]) ?? SectionKeys.Section4
+        return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

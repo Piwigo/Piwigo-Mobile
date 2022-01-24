@@ -102,69 +102,21 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - UITableView - Header
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
-                              height: CGFloat.greatestFiniteMagnitude)
-        // Title
-        let titleString = "\(NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))\n"
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))
+        let text = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
+        return (title, text)
+    }
 
-        // Text
-        let textString = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        // Title
-        let titleString = "\(NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))\n"
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Text
-        let textString = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
-        let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-        headerAttributedString.append(textAttributedString)
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = UIColor.clear
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
 
     

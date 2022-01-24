@@ -172,61 +172,22 @@ extension TagsViewController {
 
 
     // MARK: - UITableView - Header
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let maxWidth = CGSize(width: tableView.frame.size.width - 30.0,
-                              height: CGFloat.greatestFiniteMagnitude)
-        // Header height?
-        var header: String?
+    private func getContentOfHeader(inSection section: Int) -> String {
         if section == 0 {
-            header = NSLocalizedString("tagsHeader_selected", comment: "Selected")
+            return NSLocalizedString("tagsHeader_selected", comment: "Selected")
         } else {
-            header = NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
+            return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
         }
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let headerRect = header?.boundingRect(with: maxWidth, options: .usesLineFragmentOrigin, attributes: attributes, context: context)
-        return CGFloat(fmax(44.0, ceil(headerRect?.size.height ?? 0.0)))
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.font = .piwigoFontBold()
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-
-        // Header text
-        let titleString: String
-        if section == 0 {
-            titleString = NSLocalizedString("tagsHeader_selected", comment: "Selected")
-        } else {
-            titleString = NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
-        }
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerLabel.attributedText = titleAttributedString
-
-        // Header view
-        let header = UIView()
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.viewOfHeader(withTitle: title)
     }
 
 

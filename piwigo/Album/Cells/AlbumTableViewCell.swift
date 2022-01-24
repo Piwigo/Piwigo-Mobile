@@ -10,8 +10,6 @@
 
 import UIKit
 
-//let kAlbumTableCell_ID = "AlbumTableViewCell"
-
 @objc
 class AlbumTableViewCell: MGSwipeTableCell {
     

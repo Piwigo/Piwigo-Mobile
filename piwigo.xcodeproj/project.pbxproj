@@ -38,7 +38,6 @@
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
-		AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -175,6 +174,9 @@
 		ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBDD9362441AB3800F19DFC /* LabelTableViewCell.swift */; };
 		ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBDD9382441AFCF00F19DFC /* ButtonTableViewCell.swift */; };
 		ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE45262449969C00AE0001 /* PhotosFetch.swift */; };
+		ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950D279D632800397426 /* TableViewUtilities.swift */; };
+		ADBE9510279DB4E100397426 /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */; };
+		ADBE9515279DC61700397426 /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */; };
 		ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBF55702736E1990014E74A /* UIImage+AppTools.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
@@ -277,7 +279,6 @@
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
 		D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */ = {isa = PBXBuildFile; fileRef = D87C5A991A6F4FB0001763BC /* SessionService.m */; };
 		D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */; };
-		D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */; };
 		D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */; };
 		D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
@@ -619,6 +620,8 @@
 		ADBE45262449969C00AE0001 /* PhotosFetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosFetch.swift; sourceTree = "<group>"; };
 		ADBE452A244A1AF400AE0001 /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsProvider.swift; sourceTree = "<group>"; };
+		ADBE950D279D632800397426 /* TableViewUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewUtilities.swift; sourceTree = "<group>"; };
+		ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageParamsViewController.swift; sourceTree = "<group>"; };
 		ADBF55702736E1990014E74A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
@@ -745,8 +748,6 @@
 		D89045B81A946A5B00A306FE /* TagsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsService.m; sourceTree = "<group>"; };
 		D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumData.h; sourceTree = "<group>"; };
 		D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumData.m; sourceTree = "<group>"; };
-		D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewCell.h; sourceTree = "<group>"; };
-		D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumImagesViewController.h; sourceTree = "<group>"; };
 		D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumImagesViewController.m; sourceTree = "<group>"; };
 		D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1412,8 +1413,7 @@
 			children = (
 				AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */,
 				AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */,
-				D8A94EB01AAE3C5600E4B287 /* CategoryCollectionViewCell.h */,
-				D8A94EB11AAE3C5600E4B287 /* CategoryCollectionViewCell.m */,
+				ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */,
 				D8D3F7221A785E1B00AEA7F1 /* ImageCollectionViewCell.h */,
 				D8D3F7231A785E1B00AEA7F1 /* ImageCollectionViewCell.m */,
 			);
@@ -1524,6 +1524,7 @@
 				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 				ADF3EC0B2516515500379E53 /* DeviceUtilities.swift */,
+				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
@@ -1915,7 +1916,6 @@
 			files = (
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
 				AD563B44260945DC00B6EF93 /* LocalAlbumsViewControllerGrouped.storyboard in Resources */,
-				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
 				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
@@ -1945,6 +1945,7 @@
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
+				ADBE9515279DC61700397426 /* AlbumTableViewCell.xib in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
 				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
@@ -2195,7 +2196,6 @@
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
-				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 				AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
@@ -2278,6 +2278,8 @@
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
+				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
+				ADBE9510279DB4E100397426 /* AlbumCollectionViewCell.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,
@@ -2971,7 +2973,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.1;
+				MARKETING_VERSION = 2.9.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -3033,7 +3035,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.1;
+				MARKETING_VERSION = 2.9.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

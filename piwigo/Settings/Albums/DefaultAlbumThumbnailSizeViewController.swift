@@ -90,66 +90,21 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     
     
     // MARK: - UITableView - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))
+        let text = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
+        return (title, text)
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title
-        let titleString = "\(NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))\n"
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-        // Text
-        let textString = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
+                                                 width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        // Title
-        let titleString = "\(NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))\n"
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Text
-        let textString = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
-        let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-        headerAttributedString.append(textAttributedString)
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.backgroundColor = UIColor.clear
-        header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
     }
 
     

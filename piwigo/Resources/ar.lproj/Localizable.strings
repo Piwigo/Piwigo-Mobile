@@ -105,7 +105,7 @@
 "serverConnectionError_message" = "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟";
 
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";
-"serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.7. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
+"serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.8. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
 
 "sessionStatusError_title" = "فشل أثناء المصادقة";
 "sessionStatusError_message" = "فشل أثناء المصادقة مع الخادم. حاول تسجيل الدخول مرة أخرى.";
