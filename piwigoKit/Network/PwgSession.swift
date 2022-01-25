@@ -102,7 +102,7 @@ public class PwgSession: NSObject {
                     if var jsonData = data, jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) {
                         #if DEBUG
                         let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        print(" > JSON: \(dataStr.debugDescription)")
+                        print(" > JSON: \(dataStr)")
                         #endif
                         completionHandler(jsonData, nil)
                     } else {
@@ -133,7 +133,7 @@ public class PwgSession: NSObject {
                 jsonData.count * MemoryLayout<Data>.stride
             print("countsOfBytesReceived: \(countsOfByte) bytes")
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr.debugDescription)")
+            print(" > JSON: \(dataStr)")
             #endif
             
             // The caller will decode the returned data
