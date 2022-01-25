@@ -90,7 +90,7 @@ public struct ImagesUpload: Decodable
 public struct Category: Decodable {
     public let catId: Int?
     public let catName: String?
-    public let nbPhotos: String?
+    public let nbPhotos: Int?
 
     public enum CodingKeys: String, CodingKey {
         case catId = "id"
