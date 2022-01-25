@@ -670,7 +670,7 @@ extension UploadManager {
 
         // Decode the JSON.
         do {
-            // Decode the JSON into codable type ImagesUploadJSON.
+            // Decode the JSON into codable type ImagesUploadAsyncJSON.
             let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: jsonData)
 
             // Piwigo error?
