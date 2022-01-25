@@ -94,7 +94,7 @@ extension UploadManager {
      */
     func emptyLounge(for uploadID: NSManagedObjectID,
                      with uploadProperties: UploadProperties) {
-        debugPrint("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
+        print("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
         
         processImages(withIds: "\(uploadProperties.imageId)",
                       inCategory: uploadProperties.category) { error in
