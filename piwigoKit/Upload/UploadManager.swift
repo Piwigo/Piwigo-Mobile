@@ -386,7 +386,7 @@ public class UploadManager: NSObject {
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
                         print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
@@ -416,7 +416,7 @@ public class UploadManager: NSObject {
                     switch task.state {
                     case .running:
                         // Retrieve upload request properties
-                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                         guard let objectURI = URL(string: objectURIstr) else {
                             print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                             continue
@@ -1377,7 +1377,7 @@ public class UploadManager: NSObject {
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue

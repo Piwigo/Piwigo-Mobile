@@ -114,13 +114,13 @@ extension UploadManager {
         var request = URLRequest(url: validUrl)
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "uploadID")
+        request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: UploadVars.HTTPuploadID)
         request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
-        request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
-        request.addValue(String(chunk), forHTTPHeaderField: "chunk")
-        request.addValue(String(chunks), forHTTPHeaderField: "chunks")
-        request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
-        request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
+        request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
+        request.addValue(String(chunk), forHTTPHeaderField: UploadVars.HTTPchunk)
+        request.addValue(String(chunks), forHTTPHeaderField: UploadVars.HTTPchunks)
+        request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
+        request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
 
         // As soon as a task is created, the timeout counter starts
         let uploadSession: URLSession = UploadSessions.shared.frgdSession
@@ -149,11 +149,11 @@ extension UploadManager {
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
         
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: "chunks"), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks), let chunks = Int(chunksStr),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
             print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
         }
@@ -228,10 +228,10 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: "chunks"), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks), let chunks = Int(chunksStr),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
             return
         }
         
@@ -476,14 +476,14 @@ extension UploadManager {
                 var request = URLRequest(url: validUrl)
                 request.httpMethod = "POST"
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-                request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "uploadID")
+                request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: UploadVars.HTTPuploadID)
                 request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
-                request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
-                request.addValue(chunkStr, forHTTPHeaderField: "chunk")
-                request.addValue(chunksStr, forHTTPHeaderField: "chunks")
+                request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
+                request.addValue(chunkStr, forHTTPHeaderField: UploadVars.HTTPchunk)
+                request.addValue(chunksStr, forHTTPHeaderField: UploadVars.HTTPchunks)
                 request.addValue("1", forHTTPHeaderField: "tries")
-                request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
-                request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
+                request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
+                request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
@@ -516,10 +516,10 @@ extension UploadManager {
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: Error?) {
         
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"),
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk),
               let chunk = Int(chunkStr) else {
             print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
@@ -607,9 +607,9 @@ extension UploadManager {
 
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
             return
         }
         
