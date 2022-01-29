@@ -151,6 +151,15 @@ public class PwgSession: NSObject {
                                                             (request.allHTTPHeaderFields ?? [:]).count)
             task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
         }
+
+        // Sets the task description from the method
+        if let pos = method.lastIndex(of: "=") {
+            task.taskDescription = String(method[pos...].dropFirst())
+        } else {
+            task.taskDescription = method.components(separatedBy: "=").last
+        }
+        
+        // Execute the task
         task.resume()
     }
 }
