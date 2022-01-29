@@ -83,11 +83,32 @@ public class UploadSessions: NSObject {
         config.urlCache = nil
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         
-        /// Do not send upload requests with cookie so that each upload session remains ephemeral.
-        /// The user session, if it exists, remains untouched and kept alive until it expires.
+        /// The user session, if it exists, should remain untouched so  we do not update the Piwigo cookie.
+        /// We send a custom cookie to avoid a reject by ModSecurity if it is set to reject requests not containing cookies.
         config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
-        
+        if #available(iOS 10.0, *) {
+            let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+            let url = URL(string: urlStr)
+            if let validUrl = url {
+                var params: [HTTPCookiePropertyKey : Any] = [
+                    HTTPCookiePropertyKey.version           : NSString("0"),
+                    HTTPCookiePropertyKey.name              : NSString("pwg_method"),
+                    HTTPCookiePropertyKey.value             : NSString("uploadAsync"),
+                    HTTPCookiePropertyKey.domain            : NSString(string: validUrl.host ?? ""),
+                    HTTPCookiePropertyKey.path              : NSString(string: validUrl.path),
+                    HTTPCookiePropertyKey.expires           : NSDate(),
+                    HTTPCookiePropertyKey.discard           : NSString("TRUE")
+                ]
+                if NetworkVars.serverProtocol == "https" {
+                    params[HTTPCookiePropertyKey.secure] = "TRUE"
+                }
+                if let cookie = HTTPCookie(properties: params) {
+                    config.httpAdditionalHeaders = HTTPCookie.requestHeaderFields(with: [cookie])
+                }
+            }
+        }
+
         /// Allows a seamless handover from Wi-Fi to cellular
         if #available(iOS 11.0, *) {
             config.multipathServiceType = .handover
