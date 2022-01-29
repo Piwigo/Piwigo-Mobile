@@ -48,7 +48,11 @@ public class PwgSession: NSObject {
             config.multipathServiceType = .handover
         }
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the main session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Main Session"
+        
+        return session
     }()
     
 
