@@ -478,12 +478,12 @@ extension UploadManager {
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: UploadVars.HTTPuploadID)
                 request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
-                request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
-                request.addValue(chunkStr, forHTTPHeaderField: UploadVars.HTTPchunk)
-                request.addValue(chunksStr, forHTTPHeaderField: UploadVars.HTTPchunks)
-                request.addValue("1", forHTTPHeaderField: "tries")
-                request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
-                request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
+                request.setValue(uploadProperties.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
+                request.setValue(chunkStr, forHTTPHeaderField: UploadVars.HTTPchunk)
+                request.setValue(chunksStr, forHTTPHeaderField: UploadVars.HTTPchunks)
+                request.setValue("1", forHTTPHeaderField: "tries")
+                request.setValue(uploadProperties.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
+                request.setValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
