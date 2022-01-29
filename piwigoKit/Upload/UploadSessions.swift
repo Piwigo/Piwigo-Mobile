@@ -47,7 +47,11 @@ public class UploadSessions: NSObject {
             config.multipathServiceType = .handover
         }
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the background session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Upload Session (frgd)"
+        
+        return session
     }()
 
     // Background upload session
@@ -92,7 +96,11 @@ public class UploadSessions: NSObject {
         /// The identifier for the shared container into which files in background URL sessions should be downloaded.
         config.sharedContainerIdentifier = UserDefaults.appGroup
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the background session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Upload Session (bckg)"
+        
+        return session
     }()
 
     // Constants and variables
