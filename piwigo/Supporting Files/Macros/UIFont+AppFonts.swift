@@ -60,27 +60,32 @@ extension UIFont {
     }
 
     class func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
+        // Check label is not nil
+        guard let label = label, let font = label.font else { return 17.0 }
         
-        if label?.adjustsFontSizeToFitWidth == false || (label?.minimumScaleFactor ?? 1.0) >= 1.0 {
-            // font adjustment is disabled
-            return label?.font.pointSize ?? 17.0
+        // Check that we can adjust the font
+        if (label.adjustsFontSizeToFitWidth == false) ||
+            (label.minimumScaleFactor >= 1.0) {
+            // Font adjustment is disabled
+            return font.pointSize
         }
 
-        var unadjustedSize: CGSize? = nil
-        if let font = label?.font {
-            unadjustedSize = label?.text?.size(withAttributes: [
-                NSAttributedString.Key.font: font])
+        // Should we scale the font?
+        var unadjustedWidth: CGFloat = 1.0
+        if let text = label.text {
+            unadjustedWidth = text.size(withAttributes: [NSAttributedString.Key.font: font]).width
         }
-        var scaleFactor:CGFloat = (label?.frame.size.width ?? 0.0) / ((unadjustedSize?.width ?? 1.0) / CGFloat(nberLines))
-
+        let width: CGFloat = label.frame.size.width
+        let height: CGFloat = unadjustedWidth / CGFloat(nberLines)
+        var scaleFactor: CGFloat = width / height
         if scaleFactor >= 1.0 {
-            // the text already fits at full font size
-            return label?.font.pointSize ?? 17.0
+            // The text already fits at full font size
+            return font.pointSize
         }
 
         // Respect minimumScaleFactor
-        scaleFactor = fmax(scaleFactor, label?.minimumScaleFactor ?? 0.4)
-        let newFontSize = (label?.font.pointSize ?? 0.0) * scaleFactor
+        scaleFactor = fmax(scaleFactor, label.minimumScaleFactor)
+        let newFontSize: CGFloat = font.pointSize * scaleFactor
 
         // Uncomment this if you insist on integer font sizes
         //newFontSize = floor(newFontSize);
