@@ -141,7 +141,12 @@ class ImagePreviewViewController: UIViewController
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.descTextView.textColor = .piwigoColorWhiteCream()
+        if #available(iOS 13.0, *) {
+            descContainer.descTextView.textColor = .piwigoColorText()
+        } else {
+            descContainer.backgroundColor = .piwigoColorBackground()
+            descContainer.descTextView.textColor = .piwigoColorText()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
