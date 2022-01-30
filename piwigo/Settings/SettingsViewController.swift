@@ -398,7 +398,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
-        var activeSection = indexPath.section
+        var activeSection:Int = indexPath.section
         if !(NetworkVars.hasAdminRights ||
              (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
@@ -420,20 +420,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0:
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 let title = NSLocalizedString("settings_server", comment: "Address")
-                var detail: String
-                detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
+                let detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
             
             case 1:
                 let title = NSLocalizedString("settings_username", comment: "Username")
-                var detail: String
-                if NetworkVars.username.isEmpty {
-                    detail = NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ")
-                } else {
-                    detail = NetworkVars.username
-                }
+                let detail = NetworkVars.username.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.username
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "user"
