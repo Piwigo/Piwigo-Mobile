@@ -35,7 +35,7 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
     private var downloadTask: URLSessionDataTask?
-    private var userDidTapView: Bool = false        // True if the user did tap the view
+    private var userdidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
     private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
@@ -160,8 +160,8 @@ class ImagePreviewViewController: UIViewController
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if userDidTapView {
-            userDidTapView = false
+        if userdidTapOnce {
+            userdidTapOnce = false
             return
         }
         
@@ -309,15 +309,37 @@ class ImagePreviewViewController: UIViewController
         
     
     // MARK: - Image Metadata
-    func didTapView() {
+    func didTapOnce() {
         // Remember that user did tap the view
-        userDidTapView = true
+        userdidTapOnce = true
         
         // Show/hide the description
         if imageData.comment.isEmpty {
             descContainer.isHidden = true
         } else {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+        }
+    }
+    
+    func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
+        // Get current scale
+        let scale = min(scrollView.zoomScale * 2, scrollView.maximumZoomScale)
+        
+        // Should we zoom in?
+        if scale != scrollView.zoomScale {
+            // Let's zoom in…
+            let point = gestureRecognizer.location(in: imageView)
+            let scrollSize = scrollView.frame.size
+            let size = CGSize(width: scrollSize.width / scale,
+                              height: scrollSize.height / scale)
+            let origin = CGPoint(x: point.x - size.width / 2,
+                                 y: point.y - size.height / 2)
+            scrollView.zoom(to:CGRect(origin: origin, size: size), animated: true)
+            print(CGRect(origin: origin, size: size))
+        }
+        else {
+            // Let's zoom out…
+            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
         }
     }
     

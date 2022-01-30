@@ -206,8 +206,15 @@ import piwigoKit
         let toolbar = navigationController?.toolbar
         toolbar?.tintColor = .piwigoColorOrange()
 
-        // Manage single taps
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapView)))
+        // Single taps display/hide the navigation bar, toolbar and description
+        // Double taps zoom in/out the image
+        let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
+        let tapTwice = UITapGestureRecognizer(target: self, action: #selector(didTapTwice(_:)))
+        tapOnce.numberOfTapsRequired = 1
+        tapTwice.numberOfTapsRequired = 2
+        tapOnce.require(toFail: tapTwice)
+        view.addGestureRecognizer(tapOnce)
+        view.addGestureRecognizer(tapTwice)
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -649,7 +656,7 @@ import piwigoKit
         return true
     }
 
-    @objc func didTapView() {
+    @objc func didTapOnce() {
         // Should we do something else?
         if imageData.isVideo {
             // User wants to play/replay the video
@@ -675,7 +682,7 @@ import piwigoKit
             // Display/hide the description if any
             if let pVC = pageViewController,
                let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-                imagePVC.didTapView()
+                imagePVC.didTapOnce()
             }
 
             // Set background color according to navigation bar visibility
@@ -684,6 +691,14 @@ import piwigoKit
             } else {
                 view.backgroundColor = .clear
             }
+        }
+    }
+    
+    @objc func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
+        // Zoom in/out the image if necessary
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.didTapTwice(gestureRecognizer)
         }
     }
 
