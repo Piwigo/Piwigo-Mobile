@@ -21,7 +21,7 @@ class ImageUtilities: NSObject {
                         completion: @escaping (PiwigoImageData) -> Void,
                         failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id" : "\(imageId)"]
+        let paramsDict: [String : Any] = ["image_id" : imageId]
         
         // Launch request
         let JSONsession = PwgSession.shared
@@ -263,7 +263,7 @@ class ImageUtilities: NSObject {
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : "\(imageData.imageId)"]
+        let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesAdd, paramDict: paramsDict,
@@ -320,7 +320,7 @@ class ImageUtilities: NSObject {
                                    completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : "\(imageData.imageId)"]
+        let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesRemove, paramDict: paramsDict,
