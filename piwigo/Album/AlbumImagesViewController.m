@@ -1131,14 +1131,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (self.addButton.isHidden)
         {
             // Unhide transparent Add button
-            self.addButton.tintColor = [UIColor whiteColor];
             [self.addButton setHidden:NO];
 
             // Animate appearance of Add button
             [UIView animateWithDuration:0.3 animations:^{
                 [self.addButton.layer setOpacity:0.9];
-                self.addButton.tintColor = [UIColor whiteColor];
             } completion:^(BOOL finished) {
+                // Fixes tintColor forgotten (often on iOS 9)
+                self.addButton.tintColor = [UIColor whiteColor];
                 // Show button on the left of the Add button if needed
                 if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
                     // Show Home button if not in root or default album
