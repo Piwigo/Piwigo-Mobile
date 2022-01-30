@@ -36,22 +36,23 @@ class AlbumTableViewCell: MGSwipeTableCell {
         bottomCut.backgroundColor = UIColor.piwigoColorBackground()
 
         // Album name
-        albumName.text = albumData.name
+        albumName.text = albumData.name ?? "—?—"
         albumName.font = UIFont.piwigoFontButton()
         albumName.textColor = UIColor.piwigoColorOrange()
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
         // Album comment
-        if albumData.comment.count == 0 {
+        if let comment = albumData.comment {
+            albumComment.text = comment
+            albumComment.textColor = UIColor.piwigoColorText()
+        }
+        else {  // No comment
             if NetworkVarsObjc.hasAdminRights {
                 albumComment.text = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
                 albumComment.textColor = UIColor.piwigoColorRightLabel()
             } else {
                 albumComment.text = ""
             }
-        } else {
-            albumComment.text = albumData.comment
-            albumComment.textColor = UIColor.piwigoColorText()
         }
         albumComment.font = UIFont.piwigoFontSmall()
         albumComment.font = albumComment.font.withSize(UIFont.fontSizeFor(label: albumComment, nberLines: 3))
