@@ -15,7 +15,6 @@
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"
-#import "ImageCollectionViewCell.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "NetworkHandler.h"
@@ -2062,7 +2061,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Deselect image cell and disable interaction
         if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
-            if(imageCell.isSelected) imageCell.isSelected = NO;
+            if (imageCell.isSelection) imageCell.isSelection = NO;
         }
     }
 
@@ -2126,9 +2125,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Update the selection state
                 if(![self.selectedImageIds containsObject:imageIdObject]) {
                     [self.selectedImageIds addObject:imageIdObject];
-                    imageCell.isSelected = YES;
+                    imageCell.isSelection = YES;
                 } else {
-                    imageCell.isSelected = NO;
+                    imageCell.isSelection = NO;
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
@@ -3235,8 +3234,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                [cell setupWithImageData:imageData inCategoryId:self.categoryId forSize:self.imageCellSize];
-                cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
+                [cell configWith:imageData inCategoryId:self.categoryId for:self.imageCellSize];
+                cell.isSelection = [self.selectedImageIds containsObject:[NSNumber numberWithInteger: imageData.imageId]];
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
@@ -3309,9 +3308,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 NSNumber *imageIdObject = [NSNumber numberWithInteger:selectedCell.imageData.imageId];
                 if(![self.selectedImageIds containsObject:imageIdObject]) {
                     [self.selectedImageIds addObject:imageIdObject];
-                    selectedCell.isSelected = YES;
+                    selectedCell.isSelection = YES;
                 } else {
-                    selectedCell.isSelected = NO;
+                    selectedCell.isSelection = NO;
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
