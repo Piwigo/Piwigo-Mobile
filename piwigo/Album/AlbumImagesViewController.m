@@ -145,12 +145,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }];
 
             // Display most visited images
-            self.mostVisitedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited") image:[UIImage systemImageNamed:@"rectangle.inset.filled.and.person.filled"] identifier:@"Most visited" handler:^(__kindof UIAction * _Nonnull action) {
+            self.mostVisitedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited") image:[UIImage systemImageNamed:@"person.3.fill"] identifier:@"Most visited" handler:^(__kindof UIAction * _Nonnull action) {
                     [self discoverImagesInCategoryId:kPiwigoVisitsCategoryId];
             }];
 
             // Display best rated images
-            self.bestRatedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated") image:[UIImage systemImageNamed:@"star.leadinghalf.filled"] identifier:@"Best rated" handler:^(__kindof UIAction * _Nonnull action) {
+            self.bestRatedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated") image:[UIImage systemImageNamed:@"star.leadinghalf.fill"] identifier:@"Best rated" handler:^(__kindof UIAction * _Nonnull action) {
                     [self discoverImagesInCategoryId:kPiwigoBestCategoryId];
             }];
 
