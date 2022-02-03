@@ -39,6 +39,7 @@
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
+		AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -392,6 +393,7 @@
 		AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
 		AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -1414,6 +1416,7 @@
 				AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */,
 				ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */,
 				AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */,
+				AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1964,6 +1967,7 @@
 				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
 				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
+				AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				AD3DB4112773957A00017542 /* ImageDetailViewController.storyboard in Resources */,

@@ -12,9 +12,42 @@ import UIKit
 
 @objc
 class ImageCollectionViewCell: UICollectionViewCell {
-    @objc var cellImage: UIImageView?
+    
     @objc var imageData: PiwigoImageData?
 
+    @IBOutlet weak var cellImage: UIImageView!
+    @IBOutlet weak var darkenView: UIView!
+    @IBOutlet weak var darkImgWidth: NSLayoutConstraint!
+    @IBOutlet weak var darkImgHeight: NSLayoutConstraint!
+    
+    // Image title
+    @IBOutlet weak var bottomLayer: UIView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var noDataLabel: UILabel!
+
+    // Icon showing that it is a movie
+    @IBOutlet weak var playImg: UIImageView!
+    @IBOutlet weak var playBckg: UIImageView!
+    @IBOutlet weak var playLeft: NSLayoutConstraint!
+    @IBOutlet weak var playTop: NSLayoutConstraint!
+    
+    // Icon showing that it is a favorite
+    @IBOutlet weak var favImg: UIImageView!
+    @IBOutlet weak var favBckg: UIImageView!
+    @IBOutlet weak var favLeft: NSLayoutConstraint!
+    @IBOutlet weak var favBottom: NSLayoutConstraint!
+    
+    // Selected images are darkened
+    @IBOutlet weak var selectedImg: UIImageView!
+    @IBOutlet weak var selImgRight: NSLayoutConstraint!
+    @IBOutlet weak var selImgTop: NSLayoutConstraint!
+    
+    // On iPad, thumbnails are presented with native aspect ratio
+    private var size = CGSize.zero
+    private var deltaX: CGFloat = 0.0
+    private var deltaY: CGFloat = 0.0
+
+    // Constants used to place and resize objects
     private let margin: CGFloat = 1.0
     private let offset: CGFloat = 1.0
     private let bannerHeight: CGFloat = 16.0
@@ -48,11 +81,11 @@ class ImageCollectionViewCell: UICollectionViewCell {
             // Update the vertical constraint
             if bottomLayer?.isHidden ?? false {
                 // Place icon at the bottom
-                favBottom?.constant = -deltaY
+                favBottom?.constant = deltaY
             } else {
                 // Place icon at the bottom but above the title
                 let height = CGFloat(fmax(Float(bannerHeight + margin), Float(deltaY)))
-                favBottom?.constant = -height
+                favBottom?.constant = height
             }
 
             // Display/hide the favorite icon
@@ -60,187 +93,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             favImg?.isHidden = !isFavorite
         }
     }
-    
-    // On iPad, thumbnails are presented with native aspect ratio
-    private var size = CGSize.zero
-    private var deltaX: CGFloat = 0.0
-    private var deltaY: CGFloat = 0.0
-    
-    // Image title
-    private var nameLabel: UILabel?
-    private var bottomLayer: UIView?
-    private var noDataLabel: UILabel?
-    
-    // Icon showing that it is a favorite
-    private var favImg: UIImageView?
-    private var favBckg: UIImageView?
-    private var favLeft: NSLayoutConstraint?
-    private var favBottom: NSLayoutConstraint?
-    
-    // Icon showing that it is a movie
-    private var playImg: UIImageView?
-    private var playBckg: UIImageView?
-    private var playLeft: NSLayoutConstraint?
-    private var playTop: NSLayoutConstraint?
-    
-    // Selected images are darkened
-    private var selectedImg: UIImageView?
-    private var selImgRight: NSLayoutConstraint?
-    private var selImgTop: NSLayoutConstraint?
-    private var darkenView: UIView?
-    private var darkImgWidth: NSLayoutConstraint?
-    private var darkImgHeight: NSLayoutConstraint?
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
         
-        backgroundColor = UIColor.clear
-        clipsToBounds = true
-        isSelection = false
-
-        // Thumbnails
-        cellImage = UIImageView()
-        cellImage?.translatesAutoresizingMaskIntoConstraints = false
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            cellImage?.contentMode = .scaleAspectFill
-        } else {
-            cellImage?.contentMode = .scaleAspectFit
-        }
-        cellImage?.image = UIImage(named: "placeholderImage")
-        if let cellImage = cellImage {
-            contentView.addSubview(cellImage)
-            contentView.addConstraints(NSLayoutConstraint.constraintFillSize(cellImage)!)
-        }
-
-        // Movie type
-        playBckg = UIImageView()
-        playBckg?.setMovieIconImage()
-        let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-        var width = frame.size.width * playScale + (scale - 1)
-        if let playBckg = playBckg {
-            cellImage?.addSubview(playBckg)
-        }
-        var iconWidth = NSLayoutConstraint.constraintView(playBckg,
-            toWidth: width + 2 * offset)
-        var iconHeight = NSLayoutConstraint.constraintView(playBckg,
-            toHeight: (width + 2 * offset) * playRatio)
-        playLeft = NSLayoutConstraint.constraintView(fromLeft: playBckg, amount: margin)
-        playTop = NSLayoutConstraint.constraintView(fromTop: playBckg, amount: margin)
-        cellImage?.addConstraints([iconWidth, iconHeight, playLeft, playTop].compactMap { $0 })
-
-        playImg = UIImageView()
-        playImg?.setMovieIconImage()
-        if let playImg = playImg {
-            playBckg?.addSubview(playImg)
-        }
-        playBckg?.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
-        playBckg?.addConstraint(NSLayoutConstraint.constraintView(playImg, toWidth: width)!)
-        playBckg?.addConstraint(NSLayoutConstraint.constraintView(playImg, toHeight: width * playRatio)!)
-
-        // Favorite image
-        favBckg = UIImageView()
-        favBckg?.setFavoriteIconImage()
-        width = frame.size.width * favScale + (scale - 1)
-        if let favBckg = favBckg {
-            cellImage?.addSubview(favBckg)
-        }
-        iconWidth = NSLayoutConstraint.constraintView(favBckg,
-            toWidth: width + 2 * offset)
-        iconHeight = NSLayoutConstraint.constraintView(favBckg,
-            toHeight: (width + 2 * offset) * favRatio)
-        favLeft = NSLayoutConstraint.constraintView(fromLeft: favBckg, amount: margin)
-        favBottom = NSLayoutConstraint.constraintView(fromBottom: favBckg, amount: -margin)
-        cellImage?.addConstraints([iconWidth, iconHeight, favLeft, favBottom].compactMap { $0 })
-
-        favImg = UIImageView()
-        favImg?.setFavoriteIconImage()
-        if let favImg = favImg {
-            favBckg?.addSubview(favImg)
-        }
-        favBckg?.addConstraints(NSLayoutConstraint.constraintCenter(favImg)!)
-        favBckg?.addConstraint(NSLayoutConstraint.constraintView(favImg, toWidth: width)!)
-        favBckg?.addConstraint(NSLayoutConstraint.constraintView(favImg, toHeight: width * favRatio)!)
-
-        // Selected images are darker
-        darkenView = UIView()
-        darkenView?.translatesAutoresizingMaskIntoConstraints = false
-        darkenView?.backgroundColor = UIColor(white: 0, alpha: 0.45)
-        darkenView?.isHidden = true
-        if let darkenView = darkenView {
-            cellImage?.addSubview(darkenView)
-        }
-        darkImgWidth = NSLayoutConstraint.constraintView(
-            darkenView,
-            toWidth: frame.size.width)
-        darkImgHeight = NSLayoutConstraint.constraintView(
-            darkenView,
-            toHeight: frame.size.height)
-        cellImage?.addConstraints([darkImgWidth, darkImgHeight].compactMap { $0 })
-        cellImage?.addConstraints(NSLayoutConstraint.constraintCenter(darkenView)!)
-
-        // Banners at bottom of thumbnails
-        bottomLayer = UIView()
-        bottomLayer?.translatesAutoresizingMaskIntoConstraints = false
-        bottomLayer?.alpha = 0.7
-        if let bottomLayer = bottomLayer {
-            cellImage?.addSubview(bottomLayer)
-        }
-        cellImage?.addConstraints(NSLayoutConstraint.constraintFillWidth(bottomLayer)!)
-        cellImage?.addConstraint(NSLayoutConstraint.constraintView(fromBottom: bottomLayer, amount: 0)!)
-        cellImage?.addConstraint(NSLayoutConstraint.constraintView(bottomLayer, toHeight: bannerHeight)!)
-
-        // Title of images shown in banners
-        nameLabel = UILabel(frame: CGRect(x: 0, y: 0, width: contentView.bounds.size.width, height: frame.size.height))
-        nameLabel?.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel?.font = UIFont.piwigoFontTiny()
-        nameLabel?.adjustsFontSizeToFitWidth = true
-        nameLabel?.minimumScaleFactor = 0.7
-        nameLabel?.numberOfLines = 1
-        nameLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        if let nameLabel = nameLabel {
-            bottomLayer?.addSubview(nameLabel)
-        }
-        bottomLayer?.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(nameLabel)!)
-        bottomLayer?.addConstraint(NSLayoutConstraint.constraintView(fromBottom: nameLabel, amount: 1)!)
-        if let nameLabel = nameLabel {
-            bottomLayer?.addConstraint(
-                NSLayoutConstraint(item: nameLabel, attribute: .left,
-                    relatedBy: .greaterThanOrEqual, toItem: bottomLayer,
-                    attribute: .left, multiplier: 1.0, constant: 3))
-        }
-        if let nameLabel = nameLabel {
-            bottomLayer?.addConstraint(
-                NSLayoutConstraint(
-                    item: nameLabel, attribute: .right,
-                    relatedBy: .lessThanOrEqual, toItem: bottomLayer,
-                    attribute: .right,multiplier: 1.0, constant: 3))
-        }
-
-        if let bottomLayer = bottomLayer {
-            cellImage?.addConstraint(NSLayoutConstraint(
-                    item: bottomLayer, attribute: .centerY,
-                    relatedBy: .equal, toItem: nameLabel,
-                    attribute: .centerY, multiplier: 1.0, constant: 0))
-        }
-
-        // Selected image thumbnails
-        selectedImg = UIImageView()
-        selectedImg?.translatesAutoresizingMaskIntoConstraints = false
-        selectedImg?.contentMode = .scaleAspectFit
-        let checkMark = UIImage(named: "checkMark")
-        selectedImg?.image = checkMark?.withRenderingMode(.alwaysTemplate)
-        selectedImg?.tintColor = UIColor.piwigoColorOrange()
-        selectedImg?.isHidden = true
-        if let selectedImg = selectedImg {
-            cellImage?.addSubview(selectedImg)
-        }
-        width = frame.size.width * selectScale + (scale - 1)
-        cellImage?.addConstraint(NSLayoutConstraint.constraintView(selectedImg, toHeight: width)!)
-        selImgRight = NSLayoutConstraint.constraintView(fromRight: selectedImg, amount: 0.0)
-        selImgTop = NSLayoutConstraint.constraintView(fromTop: selectedImg, amount: 2 * margin)
-        cellImage?.addConstraints([selImgRight, selImgTop].compactMap { $0 })
-    }
-
     @objc func applyColorPalette() {
         bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
@@ -250,12 +103,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     @objc func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int, for size: CGSize) {
         // Do we have any info on that image ?
+        noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         guard let imageData = imageData else { return }
         if imageData.imageId == 0 { return }
 
         // Store image data
         self.size = size
         self.imageData = imageData
+        noDataLabel.isHidden = true
         isAccessibilityElement = true
 
         // Play button
@@ -293,6 +148,11 @@ class ImageCollectionViewCell: UICollectionViewCell {
             nameLabel?.isHidden = true
         }
 
+        // Thumbnails are not squared on iPad
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            cellImage?.contentMode = .scaleAspectFit
+        }
+        
         // Download the image of the requested resolution (or get it from the cache)
         switch kPiwigoImageSize(rawValue: AlbumVars.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
@@ -432,7 +292,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 }
 
                 // Update horizontal constraints
-                self.selImgRight?.constant = -(self.deltaX)
+                self.selImgRight?.constant = self.deltaX
                 self.favLeft?.constant = self.deltaX
                 self.playLeft?.constant = self.deltaX
 
@@ -441,11 +301,11 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 self.playTop?.constant = self.deltaY
                 if self.bottomLayer?.isHidden ?? false {
                     // The title is not displayed
-                    self.favBottom?.constant = -(self.deltaY)
+                    self.favBottom?.constant = self.deltaY
                 } else {
                     // The title is displayed
                     let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
-                    self.favBottom?.constant = -deltaY
+                    self.favBottom?.constant = deltaY
                 }
             },
         failure: { request, response, error in
@@ -478,9 +338,5 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 completion()
             }
         }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
