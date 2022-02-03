@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.2_text" = "Versione 2.9.2\n\n• Correzioni bug\n• Modernizzazione del codice";
+"v2.9.3_text" = "Version 2.9.3\n\n• Double tap to zoom in and out photos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.9.2_text" = "Versione 2.9.2\n24 gennaio 2022\n\n• Correzioni bug\n• Modernizzazione del codice";
 
 "v2.9.1_text" = "Versione 2.9.1\n20 gennaio 2022\n\n• Album in evidenza aggiornati di recente\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 

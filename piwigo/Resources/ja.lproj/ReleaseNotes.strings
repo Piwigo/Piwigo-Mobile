@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.2_text" = "バージョン 2.9.2\n\n• バグの修正\n• コードの近代化";
+"v2.9.3_text" = "Version 2.9.3\n\n• Double tap to zoom in and out photos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.9.2_text" = "バージョン 2.9.2\n2022年1月24日\n\n• バグの修正\n• コードの近代化";
 
 "v2.9.1_text" = "バージョン 2.9.1\n2022年1月20日\n\n• 最近更新されたアルバムのハイライト\n• 軽微なバグの修正とインタフェースの改善";
 

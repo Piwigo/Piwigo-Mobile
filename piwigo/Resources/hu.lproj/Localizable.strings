@@ -600,7 +600,7 @@
 
 // Settings — Albums
 "defaultImageSort" = "Rendezés";
-"defaultImageSort>320px" = "Alapértelmezett rendezés";
+"defaultImageSort>320px" = "Rendezés";
 "defaultImageSort>414px" = "Fotók alapértelmezett rendezése";
 "defaultAlbumThumbnailFile>414px" = "Albumok bélyegképe";
 "defaultAlbumThumbnailSizeHeader" = "Elérhető bélyegképméretek";
@@ -608,7 +608,7 @@
 "maxNberOfRecentAlbums>320px" = "Új albumok";
 "maxNberOfRecentAlbums>414px" = "Legújabb albumok száma";
 "recentPeriod_title" = "Legutóbbi időszak";
-"recentPeriod_days" = "%@ napok";
+"recentPeriod_days" = "%@ nap";
 
 "thumbnailSizeSquare" = "Négyzet";
 "thumbnailSizeThumbnail" = "Bélyegkép";
@@ -631,8 +631,8 @@
 "defaultThumbnailSize>320px" = "Bélyegképek mérete";
 "defaultThumbnailSize>414px" = "Alapértelmezett bélyegkép-méretek";
 "defaultNberOfThumbnails" = "Darab";
-"defaultNberOfThumbnails>320px" = "Darab/sor";
-"defaultNberOfThumbnails>414px" = "Darab soronként";
+"defaultNberOfThumbnails>320px" = "Elem/Sor";
+"defaultNberOfThumbnails>414px" = "Elem Soronként";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Elérhető bélyegképméretek";
 "settings_displayTitles" = "Cím a bélyegképen";
