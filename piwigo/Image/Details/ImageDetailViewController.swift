@@ -349,11 +349,11 @@ import piwigoKit
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        if imageData.imageTitle.isEmpty {
+        if let title = imageData.imageTitle, !title.isEmpty {
+            titleLabel.text = title
+        } else {
             // No title => Use file name
             titleLabel.text = imageData.fileName
-        } else {
-            titleLabel.text = imageData.imageTitle
         }
         titleLabel.sizeToFit()
 
