@@ -1863,10 +1863,11 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             // Add upload request to cache and update cell
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
+                let newUpload = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
+                    uploadsInQueue[index] = newUpload
                 } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!))
+                    uploadsInQueue.append(newUpload)
                 }
                 
                 // Get index of selected image, deselect it and add request to cache
