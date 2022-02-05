@@ -319,11 +319,11 @@ class ImagePreviewViewController: UIViewController
         userdidTapOnce = true
         
         // Show/hide the description
-        if imageData.comment.isEmpty {
+        guard let comment = imageData.comment, !comment.isEmpty else {
             descContainer.isHidden = true
-        } else {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+            return
         }
+        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
     }
     
     func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
