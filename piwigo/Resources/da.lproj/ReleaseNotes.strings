@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.3_text" = "Version 2.9.3\n\n• Double tap to zoom in and out photos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.9.3_text" = "Version 2.9.3\n\n• Dobbelttryk for at zoome ind og ud af fotos\n• Mindre fejl rettet og forbedringer af brugerflade\n• Modernisering af kode";
 
 "v2.9.2_text" = "Version 2.9.2\n24 januar 2022\n\n• Fejlrettelser\n• Modernisering af kode";
 
@@ -20,7 +20,7 @@
 
 "v2.8.0_text" = "Version 2.8\n23 oktober 2021\n\n• Tilføj og fjern fotos og videoer fra dine favoritter\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
-"v2.7.2_text" = "Version 2.7.2\n20 september 2021\n\n• iOS 15 kompabilitet\n• Mindre fejlrettelser og forbedringer af brugerflade\n• Modernisering af kode";
+"v2.7.2_text" = "Version 2.7.2\n20 september 2021\n\n• iOS 15 kompatibilitet\n• Mindre fejlrettelser og forbedringer af brugerflade\n• Modernisering af kode";
 
 "v2.7.1_text" = "Version 2.7.1\n1 september 2021\n\n• Mindre fejlrettelser og forbedringer af brugerflade\n• Forbedrede oversættelser";
 
