@@ -923,8 +923,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             let idx = fetchedImages.index(of: asset)
                             if idx != NSNotFound {
                                 let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
+                                if idx >= indexedUploadsInQueue.count {
+                                    let newElements:[(String,kPiwigoUploadState,Bool)?] = .init(repeating: nil, count: indexedUploadsInQueue.count + 1 - idx)
+                                    indexedUploadsInQueue.append(contentsOf: newElements)
+                                }
                             	indexedUploadsInQueue[idx] = cachedObject
-							      }
+                                }
 						    }
 					    }
 				    }
