@@ -28,7 +28,7 @@ public class UploadsProvider: NSObject {
     public func importUploads(from uploadRequest: [UploadProperties],
                               completionHandler: @escaping (Error?) -> Void) {
         
-        guard !uploadRequest.isEmpty else {
+        guard uploadRequest.isEmpty == false else {
             completionHandler(nil)
             return
         }
@@ -356,7 +356,7 @@ public class UploadsProvider: NSObject {
     public func delete(uploadRequests: [NSManagedObjectID],
                        completionHandler: @escaping (Error?) -> Void) {
         
-        guard !uploadRequests.isEmpty else { return }
+        guard uploadRequests.isEmpty == false else { return }
         
         // Create the queue context.
         var taskContext: NSManagedObjectContext
@@ -414,7 +414,7 @@ public class UploadsProvider: NSObject {
                 // Delete corresponding temporary files if any
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                if !filenamePrefix.isEmpty {
+                if filenamePrefix.isEmpty == false {
                     // Called from main or background thread
                     UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)

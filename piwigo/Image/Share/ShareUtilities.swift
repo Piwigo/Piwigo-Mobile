@@ -36,7 +36,7 @@ class ShareUtilities {
         var selectedSize = Int.zero
 
         // Square Size (should always be available)
-        if !image.squarePath.isEmpty {
+        if image.squarePath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.squareWidth, image.squareHeight)
             // Ensure that at least an URL will be returned
@@ -47,7 +47,7 @@ class ShareUtilities {
         }
 
         // Thumbnail Size (should always be available)
-        if !image.thumbPath.isEmpty {
+        if image.thumbPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.thumbWidth, image.thumbHeight)
             // Ensure that at least an URL will be returned
@@ -63,7 +63,7 @@ class ShareUtilities {
         }
 
         // XX Small Size
-        if !image.xxSmallPath.isEmpty {
+        if image.xxSmallPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.xxSmallWidth, image.xxSmallHeight)
             // Ensure that at least an URL will be returned
@@ -79,7 +79,7 @@ class ShareUtilities {
         }
 
         // X Small Size
-        if !image.xSmallPath.isEmpty {
+        if image.xSmallPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.xSmallWidth, image.xSmallHeight)
             // Ensure that at least an URL will be returned
@@ -95,7 +95,7 @@ class ShareUtilities {
         }
 
         // Small Size
-        if !image.smallPath.isEmpty {
+        if image.smallPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.smallWidth, image.smallHeight)
             // Ensure that at least an URL will be returned
@@ -111,7 +111,7 @@ class ShareUtilities {
         }
 
         // Medium Size (should always be available)
-        if !image.mediumPath.isEmpty {
+        if image.mediumPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.mediumWidth, image.mediumHeight)
             // Ensure that at least an URL will be returned
@@ -127,7 +127,7 @@ class ShareUtilities {
         }
 
         // Large Size
-        if !image.largePath.isEmpty {
+        if image.largePath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.largeWidth, image.largeHeight)
             // Ensure that at least an URL will be returned
@@ -143,7 +143,7 @@ class ShareUtilities {
         }
 
         // X Large Size
-        if !image.xLargePath.isEmpty {
+        if image.xLargePath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.xLargeWidth, image.xLargeHeight)
             // Ensure that at least an URL will be returned
@@ -159,7 +159,7 @@ class ShareUtilities {
         }
 
         // XX Large Size
-        if !image.xxLargePath.isEmpty {
+        if image.xxLargePath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.xxLargeWidth, image.xxLargeHeight)
             // Ensure that at least an URL will be returned
@@ -175,7 +175,7 @@ class ShareUtilities {
         }
 
         // Full Resolution
-        if !image.fullResPath.isEmpty {
+        if image.fullResPath.isEmpty == false {
             // Max dimension of this image
             let size = max(image.fullResWidth, image.fullResHeight)
             // Ensure that at least an URL will be returned

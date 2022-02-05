@@ -188,7 +188,7 @@ extension UploadManager {
         
         print("\(debugFormatter.string(from: Date())) > moderateImages() in", queueName())
         // Check that we have a token
-        guard !NetworkVars.pwgToken.isEmpty else {
+        guard NetworkVars.pwgToken.isEmpty == false else {
             // We shall retry later —> Continue in background queue!
             self.backgroundQueue.async {
                 // Will retry later

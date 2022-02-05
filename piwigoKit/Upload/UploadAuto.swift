@@ -14,7 +14,7 @@ extension UploadManager {
     public func appendAutoUploadRequests() {
         // Check access to Photo Library album
         let collectionID = UploadVars.autoUploadAlbumId
-        guard !collectionID.isEmpty,
+        guard collectionID.isEmpty == false,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album -> Reset album ID
             UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
@@ -142,7 +142,7 @@ extension UploadManager {
         let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        if !objectIDs.isEmpty {
+        if objectIDs.isEmpty == false {
             uploadsProvider.delete(uploadRequests: objectIDs) { error in
                 // Job done in background task
                 if self.isExecutingBackgroundUploadTask { return }

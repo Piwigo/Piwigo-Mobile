@@ -93,7 +93,7 @@ public class TagsProvider {
                 
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
-        guard !tagPropertiesArray.isEmpty else {
+        guard tagPropertiesArray.isEmpty == false else {
             _ = importOneBatch([TagProperties](), taskContext: taskContext)
             return
         }

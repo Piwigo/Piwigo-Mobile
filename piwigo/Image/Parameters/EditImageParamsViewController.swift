@@ -430,7 +430,7 @@ class EditImageParamsViewController: UIViewController
         
         // File name
         var fileName = ""
-        if let name = imageData.fileName, !name.isEmpty {
+        if let name = imageData.fileName, name.isEmpty == false {
             fileName = name
         }
         if fileName == "NSNotFound" { fileName = "Unknown.jpg" }
@@ -445,7 +445,7 @@ class EditImageParamsViewController: UIViewController
 
         // Image title
         var imageTitle = ""
-        if let title = imageData.imageTitle, !title.isEmpty {
+        if let title = imageData.imageTitle, title.isEmpty == false {
             imageTitle = NetworkUtilities.utf8mb3String(from: title)
         }
 
@@ -458,7 +458,7 @@ class EditImageParamsViewController: UIViewController
 
         // Description
         var comment = ""
-        if let desc = imageData.comment, !desc.isEmpty {
+        if let desc = imageData.comment, desc.isEmpty == false {
             comment = NetworkUtilities.utf8mb3String(from: desc)
         }
 
@@ -1068,7 +1068,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
         }
 
         // Do we need to update images?
-        if !addedTags.isEmpty || !removedTags.isEmpty {
+        if (addedTags.isEmpty == false) || (removedTags.isEmpty == false) {
             // Update common tag list and remember to update image info
             shouldUpdateTags = true
             commonParameters.tags = selectedPiwigoTags

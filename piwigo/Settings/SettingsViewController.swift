@@ -270,7 +270,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Inform user if the AutoUploadViewController is not presented
         children.forEach { if $0 is AutoUploadViewController { return } }
-        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
+        if let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
         }
@@ -1334,7 +1334,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Any footer text?
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (!UploadVars.serverFileTypes.isEmpty) {
+            if UploadVars.serverFileTypes.isEmpty == false {
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
@@ -1349,7 +1349,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                          height: CGFloat.greatestFiniteMagnitude),
+                                             options: .usesLineFragmentOrigin,
+                                             attributes: attributes, context: context)
 
         return ceil(footerRect.size.height + 10.0)
     }
@@ -1380,7 +1383,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Footer text
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if !UploadVars.serverFileTypes.isEmpty {
+            if UploadVars.serverFileTypes.isEmpty == false {
                 footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
@@ -1450,42 +1453,42 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             let nberImages = nber > 1 ?
                                 String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
                                 String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                            if !nberImages.isEmpty { self.appendStats(nberImages) }
+                            if nberImages.isEmpty == false { self.appendStats(nberImages) }
                         }
                     case "nb_categories":
                         if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
                             let nberCategories = nber > 1 ?
                                 String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
                                 String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
-                            if !nberCategories.isEmpty { self.appendStats(nberCategories) }
+                            if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
                         }
                     case "nb_tags":
                         if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
                             let nberTags = nber > 1 ?
                                 String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
                                 String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
-                            if !nberTags.isEmpty { self.appendStats(nberTags) }
+                            if nberTags.isEmpty == false { self.appendStats(nberTags) }
                         }
                     case "nb_users":
                         if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
                             let nberUsers = nber > 1 ?
                                 String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
                                 String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
-                            if !nberUsers.isEmpty { self.appendStats(nberUsers) }
+                            if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
                         }
                     case "nb_groups":
                         if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
                             let nberGroups = nber > 1 ?
                                 String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
                                 String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
-                            if !nberGroups.isEmpty { self.appendStats(nberGroups) }
+                            if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
                         }
                     case "nb_comments":
                         if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
                             let nberComments = nber > 1 ?
                                 String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
                                 String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
-                            if !nberComments.isEmpty { self.appendStats(nberComments) }
+                            if nberComments.isEmpty == false { self.appendStats(nberComments) }
                         }
                     default:
                         break

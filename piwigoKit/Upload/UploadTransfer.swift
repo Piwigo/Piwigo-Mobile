@@ -826,7 +826,7 @@ extension UploadManager {
         print("\(debugFormatter.string(from: Date())) > didEndTransfer in", queueName())
         
         // Error?
-        if !properties.requestError.isEmpty {
+        if properties.requestError.isEmpty == false {
             print("\(debugFormatter.string(from: Date())) > task \(taskID) returned \(properties.requestError)")
             // Cancel related tasks
             if taskID != Int.max {

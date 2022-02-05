@@ -682,7 +682,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Can we calculate the number of images already in the upload queue?
-        if !pendingOperations.preparationsInProgress.isEmpty {
+        if pendingOperations.preparationsInProgress.isEmpty == false {
             // Keep Select button disabled
             if sectionState != .none {
                 sectionState = .none

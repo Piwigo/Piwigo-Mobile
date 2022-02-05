@@ -156,7 +156,7 @@ class ImagePreviewViewController: UIViewController
         applyColorPalette()
 
         // Show/hide the description
-        guard let comment = imageData.comment, !comment.isEmpty else {
+        guard let comment = imageData.comment, comment.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
@@ -319,7 +319,7 @@ class ImagePreviewViewController: UIViewController
         userdidTapOnce = true
         
         // Show/hide the description
-        guard let comment = imageData.comment, !comment.isEmpty else {
+        guard let comment = imageData.comment, comment.isEmpty == false else {
             descContainer.isHidden = true
             return
         }

@@ -126,11 +126,9 @@ extension TagSelectorViewController {
     // Returns the section that the table view should scroll to
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
 
-        var newRow = 0
+        var newRow: Int = 0
         for tag in dataProvider.fetchedResultsController.fetchedObjects! {
-            if  tag.tagName.hasPrefix(title) {
-                break
-            }
+            if tag.tagName.hasPrefix(title) { break }
             newRow += 1
         }
         let newIndexPath = IndexPath(row: newRow, section: 0)
@@ -191,7 +189,10 @@ extension TagSelectorViewController {
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes as [NSAttributedString.Key : Any], context: context)
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                          height: CGFloat.greatestFiniteMagnitude),
+                                             options: .usesLineFragmentOrigin,
+                                             attributes: attributes as [NSAttributedString.Key : Any], context: context)
 
         return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
     }

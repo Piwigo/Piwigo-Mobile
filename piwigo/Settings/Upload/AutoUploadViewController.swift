@@ -235,7 +235,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 0 /* Select Photos Library album */ :
                 title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
                 let collectionID = UploadVars.autoUploadAlbumId
-                if !collectionID.isEmpty,
+                if collectionID.isEmpty == false,
                    let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject {
                     detail = collection.localizedTitle ?? ""
                 } else {
@@ -359,7 +359,10 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                          height: CGFloat.greatestFiniteMagnitude),
+                                             options: .usesLineFragmentOrigin,
+                                             attributes: attributes, context: context)
 
         return ceil(footerRect.size.height + 10.0)
     }
@@ -489,7 +492,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         autoUploadTableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
         
         // Inform user if an error was reported
-        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
+        if let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
         }

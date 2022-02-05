@@ -309,7 +309,7 @@ extension Data {
                 filteredDataStr = ""
                 continue
             }
-        } while !filteredDataStr.isEmpty
+        } while filteredDataStr.isEmpty == false
         
         self = Data()
         return false

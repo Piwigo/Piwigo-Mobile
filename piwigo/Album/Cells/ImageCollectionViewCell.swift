@@ -84,7 +84,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 favBottom?.constant = deltaY
             } else {
                 // Place icon at the bottom but above the title
-                let height = CGFloat(fmax(Float(bannerHeight + margin), Float(deltaY)))
+                let height = CGFloat(fmax(bannerHeight + margin, deltaY))
                 favBottom?.constant = height
             }
 
@@ -128,7 +128,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
             } else if categoryId == kPiwigoBestCategoryId {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
-                if let imageTitle = imageData.imageTitle, !imageTitle.isEmpty {
+                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
                     nameLabel?.text = imageTitle
                 } else {
                     nameLabel?.text = imageData.fileName
@@ -137,7 +137,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                       let dateCreated = imageData.dateCreated {
                 nameLabel?.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .medium, timeStyle: .none)
             } else {
-                if let imageTitle = imageData.imageTitle, !imageTitle.isEmpty {
+                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
                     nameLabel?.text = imageTitle
                 } else {
                     nameLabel?.text = imageData.fileName
@@ -156,70 +156,72 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Download the image of the requested resolution (or get it from the cache)
         switch kPiwigoImageSize(rawValue: AlbumVars.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if AlbumVars.hasSquareSizeImages, let squarePath = imageData.squarePath, !squarePath.isEmpty {
+            if AlbumVars.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
                 setImageFromPath(squarePath)
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+                setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXXSmall:
-            if AlbumVars.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, !xxSmallPath.isEmpty {
+            if AlbumVars.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
                 setImageFromPath(xxSmallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXSmall:
-            if AlbumVars.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, !xSmallPath.isEmpty {
+            if AlbumVars.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
                 setImageFromPath(xSmallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeSmall:
-            if AlbumVars.hasSmallSizeImages, let smallPath = imageData.smallPath, !smallPath.isEmpty {
+            if AlbumVars.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
                 setImageFromPath(smallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeMedium:
-            if AlbumVars.hasMediumSizeImages, let mediumPath = imageData.mediumPath, !mediumPath.isEmpty {
+            if AlbumVars.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
                 setImageFromPath(mediumPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeLarge:
-            if AlbumVars.hasLargeSizeImages, let largePath = imageData.largePath, !largePath.isEmpty {
+            if AlbumVars.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
                 setImageFromPath(largePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXLarge:
-            if AlbumVars.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, !xLargePath.isEmpty {
+            if AlbumVars.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
                 setImageFromPath(xLargePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXXLarge:
-            if AlbumVars.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, !xxLargePath.isEmpty {
+            if AlbumVars.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
                 setImageFromPath(xxLargePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
@@ -228,7 +230,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
             fallthrough
         default:
-            if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, !thumbPath.isEmpty {
+            if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
@@ -254,7 +256,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         var request = URLRequest(url: anURL)
         request.addValue("image/*", forHTTPHeaderField: "Accept")
         cellImage?.setImageWith(request, placeholderImage: placeHolderImage,
-            success: { [self] request, response, image in
+            success: { [self] _, _, image in
                 // Downsample image is necessary
                 var displayedImage = image
                 let maxDimensionInPixels = CGFloat(max(self.size.width, self.size.height)) * scale

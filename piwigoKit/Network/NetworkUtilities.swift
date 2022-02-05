@@ -14,7 +14,7 @@ public class NetworkUtilities: NSObject {
     public class
     func utf8mb4String(from string: String?) -> String {
         // Return empty string if nothing provided
-        guard let strToConvert = string, !strToConvert.isEmpty else {
+        guard let strToConvert = string, strToConvert.isEmpty == false else {
             return ""
         }
         
@@ -31,7 +31,7 @@ public class NetworkUtilities: NSObject {
     public class
     func utf8mb3String(from string: String?) -> String {
         // Return empty string is nothing provided
-        guard let strToFilter = string, !strToFilter.isEmpty else {
+        guard let strToFilter = string, strToFilter.isEmpty == false else {
             return ""
         }
 

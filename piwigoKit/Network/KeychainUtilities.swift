@@ -33,7 +33,7 @@ class KeychainUtilities : NSObject {
     public class
     func setPassword(_ password:String, forService service:String, account:String) {
         // Check input parameters
-        guard !service.isEmpty, !account.isEmpty, !password.isEmpty,
+        guard service.isEmpty == false, account.isEmpty == false, password.isEmpty == false,
               let passwordData = password.data(using: .utf8) else { return }
         
         // Prepare query
@@ -75,7 +75,7 @@ class KeychainUtilities : NSObject {
     public class
     func password(forService service:String, account:String) -> String {
         // Check input parameters
-        guard !service.isEmpty, !account.isEmpty else { return "" }
+        guard service.isEmpty == false, account.isEmpty == false else { return "" }
 
         // Prepare query
         let query = [kSecClass as String                : kSecClassGenericPassword,
@@ -112,7 +112,7 @@ class KeychainUtilities : NSObject {
                 
                 // Did found username
                 guard let username = String(data: data as! Data, encoding: .utf8),
-                      !username.isEmpty else { return "" }
+                      username.isEmpty == false else { return "" }
                 if username == NetworkVars.username {
                     // Retrieve password
                     let query = [kSecClass as String            : kSecClassGenericPassword,
@@ -128,7 +128,7 @@ class KeychainUtilities : NSObject {
                         return ""
                     }
                     guard let password = String(data: data as! Data, encoding: .utf8),
-                          !password.isEmpty else { return "" }
+                          password.isEmpty == false else { return "" }
                     return password
                 }
             }
@@ -136,7 +136,7 @@ class KeychainUtilities : NSObject {
             return ""
         }
         guard let password = String(data: data as! Data, encoding: .utf8),
-              !password.isEmpty else {
+              password.isEmpty == false else {
             logOSStatus(status)
             return ""
         }
@@ -146,7 +146,7 @@ class KeychainUtilities : NSObject {
     public class
     func deletePassword(forService service:String, account:String) {
         // Check input parameters
-        guard !service.isEmpty, !account.isEmpty else { return }
+        guard service.isEmpty == false, account.isEmpty == false else { return }
 
         // Prepare query
         let query = [kSecClass as String                : kSecClassGenericPassword,

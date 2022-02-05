@@ -92,7 +92,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         case 1...2:
             return 44.0
         default:
-            return 0
+            return 0.0
         }
     }
 
@@ -198,7 +198,10 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
             ]
             let context = NSStringDrawingContext()
             context.minimumScaleFactor = 1.0
-            let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+            let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                              height: CGFloat.greatestFiniteMagnitude),
+                                                 options: .usesLineFragmentOrigin,
+                                                 attributes: attributes, context: context)
 
             return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
         }

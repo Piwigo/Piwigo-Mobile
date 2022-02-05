@@ -349,7 +349,7 @@ import piwigoKit
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        if let title = imageData.imageTitle, !title.isEmpty {
+        if let title = imageData.imageTitle, title.isEmpty == false {
             titleLabel.text = title
         } else {
             // No title => Use file name
@@ -387,7 +387,7 @@ import piwigoKit
             }
             subTitleLabel.sizeToFit()
 
-            var titleWidth:CGFloat  = fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width)
+            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
             titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                 height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))

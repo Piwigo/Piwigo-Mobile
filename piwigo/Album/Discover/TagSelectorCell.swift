@@ -17,21 +17,21 @@ class TagSelectorCell: UITableViewCell {
     func configure(with tag: Tag) {
         
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
-        tagLabel.font = .piwigoFontNormal()
-        tagLabel.textColor = .piwigoColorLeftLabel()
+        backgroundColor = UIColor.piwigoColorCellBackground()
+        tintColor = UIColor.piwigoColorOrange()
+        tagLabel.font = UIFont.piwigoFontNormal()
+        tagLabel.textColor = UIColor.piwigoColorLeftLabel()
 
         // => pwg.tags.getList returns in addition: counter, url
-        let nber = tag.numberOfImagesUnderTag
-        if (nber == 0) || (nber == Int64.max) {
+        let nber: Int64 = tag.numberOfImagesUnderTag
+        if (nber == Int64.zero) || (nber == Int64.max) {
             // Unknown number of images
             tagLabel.text = tag.tagName
         } else {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
-            let nberImages = nber > 1 ?
+            let nberImages: String = nber > 1 ?
                 String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
                 String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
             tagLabel.text = "\(tag.tagName) (\(nberImages))"

@@ -112,8 +112,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Do we have the movie in cache?
         if let cache = NetworkVarsObjc.imageCache,
-           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data,
-            !cachedImageData.isEmpty {
+           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data, cachedImageData.isEmpty == false {
             // Create file URL where the shared file is expected to be found
             imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
             

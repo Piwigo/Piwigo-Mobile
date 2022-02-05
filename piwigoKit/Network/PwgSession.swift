@@ -71,7 +71,7 @@ public class PwgSession: NSObject {
         // Combine percent encoded parameters
         var encPairs = [String]()
         for (key, value) in paramDict {
-            if let valStr = value as? String, !valStr.isEmpty {
+            if let valStr = value as? String, valStr.isEmpty == false {
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = NetworkUtilities.utf8mb3String(from: valStr)
                 if let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),

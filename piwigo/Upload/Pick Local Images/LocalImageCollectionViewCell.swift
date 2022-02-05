@@ -156,7 +156,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         localIdentifier = imageAsset.localIdentifier
 
         // Selected icon: match size to cell size
-        let scale: CGFloat = fmax(1.0, self.traitCollection.displayScale);
+        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
         selectImgWidth.constant = frame.size.width * selectScale + (scale - 1)
         selectImgHeight.constant = selectImgWidth.constant * selectRatio
 
