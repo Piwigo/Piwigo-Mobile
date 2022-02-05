@@ -1870,10 +1870,14 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     uploadsInQueue.append(newUpload)
                 }
                 
-                // Get index of selected image, deselect it and add request to cache
+                // Get index of selected image and deselect it
                 if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
+                }
+                
+                // Get index of image and update request in cache
+                if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     // Add upload request to cache
                     let fetchOptions = PHFetchOptions()
                     fetchOptions.includeHiddenAssets = true
