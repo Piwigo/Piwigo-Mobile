@@ -272,6 +272,7 @@ class piwigoAppStore: XCTestCase {
         super.tearDown()
     }
     
+    // MARK: - Prepare Screenshots
     func testScreenshots() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -537,5 +538,88 @@ class piwigoAppStore: XCTestCase {
         sleep(2)                        // Leave time for animation
         app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
         snapshot("Image10")
+    }
+
+    // MARK: - Prepare Video
+    func testVideoUpload() {
+        // Use recording to get started writing UI tests.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+
+        let app = XCUIApplication()
+        let deviceType = UIDevice().type.rawValue
+        sleep(3);
+        
+        // Create "Delft" album
+        app.buttons["add"].tap()
+        sleep(1)                        // Leave time for animation
+        app.typeText("Delft")
+        app.alerts["CreateAlbum"].scrollViews.otherElements.buttons["Add"].tap()
+        sleep(2)                        // Leave time for animation
+
+        // Open "Delft" album
+        app.collectionViews.children(matching: .cell).element(boundBy: 0).tap()
+        sleep(1);
+        
+        // Start uploading photos
+        app.buttons["add"].tap()
+        app/*@START_MENU_TOKEN@*/.buttons["addImages"]/*[[".buttons[\"imageUpload\"]",".buttons[\"addImages\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        sleep(1)                        // Leave time for animation
+        
+        // Select Recent album
+        app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
+        sleep(1)                        // Leave time for animation
+        
+        // Sort photos by days
+        let moreButton = app.navigationBars["LocalImagesNav"].buttons["Action"]
+        moreButton.tap()
+        sleep(1)                        // Leave time for animation
+        app.collectionViews.buttons["Days"].tap()
+        sleep(1)                        // Leave time for animation
+        
+        // Select photos taken the first day
+        app.collectionViews["CameraRoll"].children(matching: .other).element(boundBy: 0).buttons["SelectAll"].tap()
+        
+        // Display upload settings
+        if deviceType.contains("iPhone") {
+            app.toolbars.buttons["Upload"].tap()
+        } else {
+            app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
+        }
+        sleep(1)                        // Leave time for animation
+
+        // Select tag
+        app.tables["Parameters"].cells["setTags"].tap()
+        app.tables/*@START_MENU_TOKEN@*/.staticTexts["Cities"]/*[[".cells.staticTexts[\"Cities\"]",".staticTexts[\"Cities\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        app.navigationBars["UploadSwitchView"].buttons["Back"].tap()
+        sleep(1)
+
+        // Check upload settings
+        app.navigationBars["UploadSwitchView"]/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".segmentedControls.buttons[\"settings\"]",".buttons[\"settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        sleep(1)
+
+        // Upload photos
+        app.navigationBars["UploadSwitchView"].buttons["Upload"].tap()
+        sleep(3)
+
+        // Return to album
+        app.navigationBars["LocalImagesNav"].buttons["Photo Library"].tap()
+        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
+        sleep(2)
+        
+        // Return to root
+        app.buttons["rootAlbum"].tap()
+        sleep(15)                        // Leave time for animation
+        
+        // Delete temporary album
+        let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: 0)
+        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
+        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
+        tableQuery.buttons["swipeTrash"].tap()
+        sleep(1)                        // Leave time for animation
+        app.sheets["DeleteAlbum"].scrollViews.otherElements.buttons["DeleteAll"].tap()
+        let elementsQuery = app.alerts["Are you sure?"].scrollViews.otherElements
+        app.typeText("5")
+        elementsQuery.buttons["DeleteAll"].tap()
+        sleep(2)                        // Leave time for animation
     }
 }

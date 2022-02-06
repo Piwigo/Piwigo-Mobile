@@ -1943,6 +1943,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [alert addAction:cancelAction];
     [alert addAction:self.createAlbumAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
+    alert.view.accessibilityIdentifier = @"CreateAlbum";
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {

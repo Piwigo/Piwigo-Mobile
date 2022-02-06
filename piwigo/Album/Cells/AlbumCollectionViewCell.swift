@@ -257,6 +257,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                                         deletionMode: kCategoryDeletionModeAll,
                                         andViewController: topViewController)
             })
+        allImagesAction.accessibilityIdentifier = "DeleteAll"
 
         // Add actions
         switch albumData.totalNumberOfImages {
@@ -272,6 +273,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.accessibilityIdentifier = "DeleteAlbum"
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -318,6 +320,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                                     deletionMode: deletionMode, andViewController: topViewController)
                 }
             })
+        deleteAction?.accessibilityIdentifier = "DeleteAll"
 
         alert.addAction(defaultAction)
         if let deleteAction = deleteAction {
