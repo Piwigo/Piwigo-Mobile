@@ -586,23 +586,32 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         queue.qualityOfService = .userInteractive
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
 
-        // Hide HUD (displayed when Photo Library motifies changes)
-        updatePiwigoHUDwithSuccess {
-            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                // Enable Select buttons
-                DispatchQueue.main.async {
-                    self.updateActionButton()
-                    self.updateNavBar()
-                    self.localImagesCollection.reloadData()
-                }
-                // Restart UplaodManager activity if all images are already in the upload queue
-                if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
-                   UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
+        // Hide HUD when Photo Library motifies changes
+        DispatchQueue.main.async {
+            if self.isShowingPiwigoHUD() {
+                self.updatePiwigoHUDwithSuccess {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.didFinishSorting()
+                        self.localImagesCollection.reloadData()
                     }
                 }
+            } else {
+                self.didFinishSorting()
+            }
+        }
+    }
+    
+    private func didFinishSorting() {
+        // Enable Select buttons
+        self.updateActionButton()
+        self.updateNavBar()
+
+        // Restart UplaodManager activity if all images are already in the upload queue
+        if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
+           UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
             }
         }
     }
