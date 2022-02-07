@@ -348,7 +348,7 @@ class EditImageParamsViewController: UIViewController
 
     func updateImageProperties() {
         // Any further image to update?
-        if imagesToUpdate.count == 0 {
+        if imagesToUpdate.isEmpty {
             // Done, hide HUD and dismiss controller
             self.updatePiwigoHUDwithSuccess { [unowned self] in
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
@@ -370,9 +370,11 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: image) { [unowned self] in
+        setProperties(ofImage: image) { [self] in
             // Next image?
-            self.imagesToUpdate.removeLast()
+            if self.imagesToUpdate.isEmpty ==  false {
+                self.imagesToUpdate.removeLast()
+            }
             self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
             self.updateImageProperties()
         }
