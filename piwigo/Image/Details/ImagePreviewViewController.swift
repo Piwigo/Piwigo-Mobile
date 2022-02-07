@@ -268,7 +268,10 @@ class ImagePreviewViewController: UIViewController
         // Vertical constraints
         let imageHeight = image.size.height * scrollView.zoomScale
         var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
-        let descHeight = imageData.comment.isEmpty ? 0 : descContainer.descHeight.constant + 8
+        var descHeight: CGFloat = 0.0
+        if let comment = imageData.comment, comment.isEmpty == false {
+            descHeight = descContainer.descHeight.constant + 8
+        }
         if isToolbarRequired {
             if verticalSpaceAvailable >= descHeight {
                 // Centre image between navigation bar and description/toolbar
