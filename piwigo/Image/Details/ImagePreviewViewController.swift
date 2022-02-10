@@ -28,14 +28,12 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var videoView: UIView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
     private var downloadTask: URLSessionDataTask?
-    private var userDidTapView: Bool = false        // True if the user did tap the view
+    private var userdidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
     private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
@@ -141,7 +139,12 @@ class ImagePreviewViewController: UIViewController
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.descTextView.textColor = .piwigoColorWhiteCream()
+        if #available(iOS 13.0, *) {
+            descContainer.descTextView.textColor = .piwigoColorText()
+        } else {
+            descContainer.backgroundColor = .piwigoColorBackground()
+            descContainer.descTextView.textColor = .piwigoColorText()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -151,17 +154,17 @@ class ImagePreviewViewController: UIViewController
         applyColorPalette()
 
         // Show/hide the description
-        if imageData.comment.isEmpty {
+        guard let comment = imageData.comment, comment.isEmpty == false else {
             descContainer.isHidden = true
-        } else {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+            return
         }
+        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if userDidTapView {
-            userDidTapView = false
+        if userdidTapOnce {
+            userdidTapOnce = false
             return
         }
         
@@ -171,7 +174,7 @@ class ImagePreviewViewController: UIViewController
         /// - loading the high-resolution image
         /// - rotating the device
         configScrollView()
-        updateImageViewConstraints()
+        centerImageView()
     }
 
     deinit {
@@ -219,7 +222,7 @@ class ImagePreviewViewController: UIViewController
 //        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
-    private func updateImageViewConstraints() {
+    private func centerImageView() {
         guard let image = imageView?.image else { return }
 
         // Determine the orientation of the device
@@ -263,7 +266,10 @@ class ImagePreviewViewController: UIViewController
         // Vertical constraints
         let imageHeight = image.size.height * scrollView.zoomScale
         var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
-        let descHeight = imageData.comment.isEmpty ? 0 : descContainer.descHeight.constant + 8
+        var descHeight: CGFloat = 0.0
+        if let comment = imageData.comment, comment.isEmpty == false {
+            descHeight = descContainer.descHeight.constant + 8
+        }
         if isToolbarRequired {
             if verticalSpaceAvailable >= descHeight {
                 // Centre image between navigation bar and description/toolbar
@@ -302,22 +308,43 @@ class ImagePreviewViewController: UIViewController
         scrollView.contentInset.left = max(0, spaceLeading)
         scrollView.contentInset.right = max(0, spaceTrailing)
         
-        // Update vertical constraints
-        imageViewTopConstraint.constant = max(0, spaceTop)
-        imageViewBottomConstraint.constant = max(0, spaceBottom)
+        // Center image vertically  in scrollview
+        scrollView.contentInset.top = max(0, spaceTop)
+        scrollView.contentInset.bottom = max(0, spaceBottom)
     }
         
     
     // MARK: - Image Metadata
-    func didTapView() {
+    func didTapOnce() {
         // Remember that user did tap the view
-        userDidTapView = true
+        userdidTapOnce = true
         
         // Show/hide the description
-        if imageData.comment.isEmpty {
+        guard let comment = imageData.comment, comment.isEmpty == false else {
             descContainer.isHidden = true
-        } else {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+            return
+        }
+        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+    }
+    
+    func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
+        // Get current scale
+        let scale = min(scrollView.zoomScale * 1.5, scrollView.maximumZoomScale)
+        
+        // Should we zoom in?
+        if scale != scrollView.zoomScale {
+            // Let's zoom in…
+            let point = gestureRecognizer.location(in: imageView)
+            let scrollSize = scrollView.frame.size
+            let size = CGSize(width: scrollSize.width / scale,
+                              height: scrollSize.height / scale)
+            let origin = CGPoint(x: point.x - size.width / 2,
+                                 y: point.y - size.height / 2)
+            scrollView.zoom(to:CGRect(origin: origin, size: size), animated: true)
+        }
+        else {
+            // Let's zoom out…
+            scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
         }
     }
     
@@ -477,17 +504,17 @@ extension ImagePreviewViewController: UIScrollViewDelegate
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        updateImageViewConstraints()
+        centerImageView()
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         // Limit the zoom scale
         if scale < scrollView.minimumZoomScale {
             scrollView.zoomScale = scrollView.minimumZoomScale
-            updateImageViewConstraints()
+            centerImageView()
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
-            updateImageViewConstraints()
+            centerImageView()
         }
     }
 }

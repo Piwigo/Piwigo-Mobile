@@ -348,7 +348,7 @@ class EditImageParamsViewController: UIViewController
 
     func updateImageProperties() {
         // Any further image to update?
-        if imagesToUpdate.count == 0 {
+        if imagesToUpdate.isEmpty {
             // Done, hide HUD and dismiss controller
             self.updatePiwigoHUDwithSuccess { [unowned self] in
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
@@ -370,9 +370,11 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: image) { [unowned self] in
+        setProperties(ofImage: image) { [self] in
             // Next image?
-            self.imagesToUpdate.removeLast()
+            if self.imagesToUpdate.isEmpty ==  false {
+                self.imagesToUpdate.removeLast()
+            }
             self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
             self.updateImageProperties()
         }
@@ -430,7 +432,7 @@ class EditImageParamsViewController: UIViewController
         
         // File name
         var fileName = ""
-        if let name = imageData.fileName, !name.isEmpty {
+        if let name = imageData.fileName, name.isEmpty == false {
             fileName = name
         }
         if fileName == "NSNotFound" { fileName = "Unknown.jpg" }
@@ -445,7 +447,7 @@ class EditImageParamsViewController: UIViewController
 
         // Image title
         var imageTitle = ""
-        if let title = imageData.imageTitle, !title.isEmpty {
+        if let title = imageData.imageTitle, title.isEmpty == false {
             imageTitle = NetworkUtilities.utf8mb3String(from: title)
         }
 
@@ -458,7 +460,7 @@ class EditImageParamsViewController: UIViewController
 
         // Description
         var comment = ""
-        if let desc = imageData.comment, !desc.isEmpty {
+        if let desc = imageData.comment, desc.isEmpty == false {
             comment = NetworkUtilities.utf8mb3String(from: desc)
         }
 
@@ -1068,7 +1070,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
         }
 
         // Do we need to update images?
-        if !addedTags.isEmpty || !removedTags.isEmpty {
+        if (addedTags.isEmpty == false) || (removedTags.isEmpty == false) {
             // Update common tag list and remember to update image info
             shouldUpdateTags = true
             commonParameters.tags = selectedPiwigoTags

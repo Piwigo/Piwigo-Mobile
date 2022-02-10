@@ -312,7 +312,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableView - Rows
     private func albumTypeFor(section: Int) -> LocalAlbumType {
         // First section added for pasteboard?
-        var activeSection = section
+        var activeSection: Int = section
         if hasImagesInPasteboard {
             switch section {
             case 0:
@@ -322,7 +322,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
 
-        var counter = -1
+        var counter: Int = -1
         counter += LocalAlbumsProvider.shared.localAlbums.isEmpty ? 0 : 1
         if activeSection == counter { return .localAlbums }
         counter += LocalAlbumsProvider.shared.eventsAlbums.isEmpty ? 0 : 1
@@ -340,7 +340,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        var count = 0
+        var count = Int.zero
 
         // Consider non-empty collections
         count += LocalAlbumsProvider.shared.localAlbums.isEmpty ? 0 : 1
@@ -532,7 +532,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                          height: CGFloat.greatestFiniteMagnitude),
+                                             options: .usesLineFragmentOrigin,
+                                             attributes: attributes, context: context)
 
         return ceil(footerRect.size.height + 10.0)
     }

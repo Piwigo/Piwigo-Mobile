@@ -181,6 +181,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             }
             cell.config(withList: tagList,
                             inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.accessibilityIdentifier = "setTags"
             tableViewCell = cell
 
         case .comment:

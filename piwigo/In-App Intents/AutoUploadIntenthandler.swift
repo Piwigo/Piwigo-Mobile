@@ -39,7 +39,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         
         // Check access to Photo Library album
         let collectionID = UploadVars.autoUploadAlbumId
-        guard !collectionID.isEmpty,
+        guard collectionID.isEmpty == false,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album -> Reset album ID
             UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album

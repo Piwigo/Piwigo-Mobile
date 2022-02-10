@@ -63,7 +63,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
-                                        <rect key="frame" x="0.0" y="200" width="414" height="496"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="496"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="414" id="h5m-A0-Ysg"/>
                                             <constraint firstAttribute="height" constant="496" id="yK6-53-GS0"/>
@@ -73,8 +73,8 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="7gX-s9-oHd" firstAttribute="trailing" secondItem="cGF-ek-t3W" secondAttribute="trailing" id="jBw-hw-WPG"/>
-                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" constant="200" id="szd-gM-XkS"/>
-                                    <constraint firstAttribute="bottom" secondItem="7gX-s9-oHd" secondAttribute="bottom" constant="200" id="tts-BT-zQi"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" id="szd-gM-XkS"/>
+                                    <constraint firstAttribute="bottom" secondItem="7gX-s9-oHd" secondAttribute="bottom" id="tts-BT-zQi"/>
                                     <constraint firstItem="7gX-s9-oHd" firstAttribute="leading" secondItem="cGF-ek-t3W" secondAttribute="leading" id="wHB-bO-rYg"/>
                                 </constraints>
                                 <connections>
@@ -93,7 +93,7 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="87" y="774" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
@@ -108,6 +108,7 @@
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         </textView>
                                     </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstItem="ZCz-IB-MpK" firstAttribute="leading" secondItem="QaB-1D-fdH" secondAttribute="leading" id="0k0-dX-buH"/>
                                         <constraint firstItem="ZCz-IB-MpK" firstAttribute="top" secondItem="QaB-1D-fdH" secondAttribute="top" id="FZc-dN-xca"/>
@@ -119,7 +120,7 @@
                                     <constraint firstAttribute="height" constant="88" id="5VJ-vg-mGz"/>
                                     <constraint firstAttribute="width" constant="240" id="75C-3O-otD"/>
                                 </constraints>
-                                <blurEffect style="prominent"/>
+                                <blurEffect style="regular"/>
                                 <connections>
                                     <outlet property="descHeight" destination="5VJ-vg-mGz" id="OxL-v0-VXT"/>
                                     <outlet property="descOffset" destination="5W9-hW-wav" id="vAb-2D-flR"/>
@@ -150,9 +151,7 @@
                     <connections>
                         <outlet property="descContainer" destination="Ydg-dw-Gdx" id="uoE-Ka-7eP"/>
                         <outlet property="imageView" destination="7gX-s9-oHd" id="D1r-Fu-F7H"/>
-                        <outlet property="imageViewBottomConstraint" destination="tts-BT-zQi" id="4DJ-en-dzr"/>
                         <outlet property="imageViewHeightConstraint" destination="yK6-53-GS0" id="An0-dM-Vno"/>
-                        <outlet property="imageViewTopConstraint" destination="szd-gM-XkS" id="oAY-ZD-7RW"/>
                         <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
                         <outlet property="playImage" destination="NAw-1Y-mdv" id="NIe-8s-wTm"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>

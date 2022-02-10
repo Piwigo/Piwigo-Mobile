@@ -106,6 +106,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         selectButton.backgroundColor = bckgColor
         selectButton.setTitle(title, for: .normal)
         selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
+        selectButton.accessibilityIdentifier = "SelectAll"
     }
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {

@@ -21,26 +21,26 @@ class TableViewUtilities: NSObject {
         // Initialise variables and width constraint
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
-        var height = CGFloat.zero
-        let margin =  CGFloat(15), minWidth = CGFloat(320.0 - 2*margin), minHeight = CGFloat(44)
-        let maxWidth = CGFloat(fmax(width - 2*margin, minWidth))
-        let widthConstraint = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+        var height: CGFloat = CGFloat.zero
+        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin, minHeight: CGFloat = 44.0
+        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
-        if !title.isEmpty {
+        if title.isEmpty == false {
             let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
             height += title.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                          attributes: titleAttributes, context: context).height
         }
 
         // Add text height
-        if !text.isEmpty {
+        if text.isEmpty == false {
             let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
             height += text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                            attributes: textAttributes, context: context).height
         }
 
-        return fmax(minHeight, CGFloat(ceil(height)))
+        return CGFloat(fmax(minHeight, ceil(height)))
     }
     
     class func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
@@ -51,7 +51,7 @@ class TableViewUtilities: NSObject {
         let headerAttributedString = NSMutableAttributedString(string: "")
 
         // Add title attributed string
-        if !title.isEmpty {
+        if title.isEmpty == false {
             let titleAttributedString = NSMutableAttributedString(string: title)
             titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(),
                                                range: NSRange(location: 0, length: title.count))
@@ -59,7 +59,7 @@ class TableViewUtilities: NSObject {
         }
         
         // Add text attributed string
-        if !text.isEmpty {
+        if text.isEmpty == false {
             let textAttributedString = NSMutableAttributedString(string: text)
             textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(),
                                               range: NSRange(location: 0, length: text.count))

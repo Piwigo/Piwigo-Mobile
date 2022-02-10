@@ -48,7 +48,11 @@ public class PwgSession: NSObject {
             config.multipathServiceType = .handover
         }
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the main session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Main Session"
+        
+        return session
     }()
     
 
@@ -67,7 +71,7 @@ public class PwgSession: NSObject {
         // Combine percent encoded parameters
         var encPairs = [String]()
         for (key, value) in paramDict {
-            if let valStr = value as? String, !valStr.isEmpty {
+            if let valStr = value as? String, valStr.isEmpty == false {
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = NetworkUtilities.utf8mb3String(from: valStr)
                 if let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -102,7 +106,7 @@ public class PwgSession: NSObject {
                     if var jsonData = data, jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) {
                         #if DEBUG
                         let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        print(" > JSON: \(dataStr.debugDescription)")
+                        print(" > JSON: \(dataStr)")
                         #endif
                         completionHandler(jsonData, nil)
                     } else {
@@ -133,7 +137,7 @@ public class PwgSession: NSObject {
                 jsonData.count * MemoryLayout<Data>.stride
             print("countsOfBytesReceived: \(countsOfByte) bytes")
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr.debugDescription)")
+            print(" > JSON: \(dataStr)")
             #endif
             
             // The caller will decode the returned data
@@ -147,6 +151,15 @@ public class PwgSession: NSObject {
                                                             (request.allHTTPHeaderFields ?? [:]).count)
             task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
         }
+
+        // Sets the task description from the method
+        if let pos = method.lastIndex(of: "=") {
+            task.taskDescription = String(method[pos...].dropFirst())
+        } else {
+            task.taskDescription = method.components(separatedBy: "=").last
+        }
+        
+        // Execute the task
         task.resume()
     }
 }

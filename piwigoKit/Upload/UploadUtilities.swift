@@ -93,7 +93,7 @@ extension UploadManager {
         do {
             // Get list of files
             var filesToDelete = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            if !prefix.isEmpty {
+            if prefix.isEmpty == false {
                 // Will delete files with given prefix only
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
             }

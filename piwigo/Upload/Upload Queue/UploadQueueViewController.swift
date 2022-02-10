@@ -313,7 +313,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Items
         let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        snapshot.appendItems(items.map({$0.objectID}))
+        snapshot.appendItems(items.compactMap({$0.objectID}))
         diffableDataSource.apply(snapshot, animatingDifferences: false)
     }
     

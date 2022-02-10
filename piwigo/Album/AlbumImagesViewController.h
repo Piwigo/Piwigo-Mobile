@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ImageCollectionViewCell.h"
+
+@class ImageCollectionViewCell;
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShare;

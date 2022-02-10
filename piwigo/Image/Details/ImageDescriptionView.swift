@@ -23,7 +23,7 @@ class ImageDescriptionView: UIVisualEffectView {
     func configDescription(with imageComment:String?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
-        guard var comment = imageComment, !comment.isEmpty else {
+        guard var comment = imageComment, comment.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true

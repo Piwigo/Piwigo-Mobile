@@ -1340,6 +1340,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
             categories.insert(rootAlbum, at: 0)
         }
+        
+        completion()
     }
     
     private func buildRecentCategoryArray() -> Void {

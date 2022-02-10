@@ -586,23 +586,32 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         queue.qualityOfService = .userInteractive
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
 
-        // Hide HUD (displayed when Photo Library motifies changes)
-        updatePiwigoHUDwithSuccess {
-            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                // Enable Select buttons
-                DispatchQueue.main.async {
-                    self.updateActionButton()
-                    self.updateNavBar()
-                    self.localImagesCollection.reloadData()
-                }
-                // Restart UplaodManager activity if all images are already in the upload queue
-                if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
-                   UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
+        // Hide HUD when Photo Library motifies changes
+        DispatchQueue.main.async {
+            if self.isShowingPiwigoHUD() {
+                self.updatePiwigoHUDwithSuccess {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.didFinishSorting()
+                        self.localImagesCollection.reloadData()
                     }
                 }
+            } else {
+                self.didFinishSorting()
+            }
+        }
+    }
+    
+    private func didFinishSorting() {
+        // Enable Select buttons
+        self.updateActionButton()
+        self.updateNavBar()
+
+        // Restart UplaodManager activity if all images are already in the upload queue
+        if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
+           UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
             }
         }
     }
@@ -923,8 +932,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             let idx = fetchedImages.index(of: asset)
                             if idx != NSNotFound {
                                 let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
+                                if idx >= indexedUploadsInQueue.count {
+                                    let newElements:[(String,kPiwigoUploadState,Bool)?] = .init(repeating: nil, count: indexedUploadsInQueue.count + 1 - idx)
+                                    indexedUploadsInQueue.append(contentsOf: newElements)
+                                }
                             	indexedUploadsInQueue[idx] = cachedObject
-							      }
+                                }
 						    }
 					    }
 				    }
@@ -1859,16 +1872,21 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             // Add upload request to cache and update cell
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
+                let newUpload = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
+                    uploadsInQueue[index] = newUpload
                 } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!))
+                    uploadsInQueue.append(newUpload)
                 }
                 
-                // Get index of selected image, deselect it and add request to cache
+                // Get index of selected image and deselect it
                 if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
+                }
+                
+                // Get index of image and update request in cache
+                if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     // Add upload request to cache
                     let fetchOptions = PHFetchOptions()
                     fetchOptions.includeHiddenAssets = true

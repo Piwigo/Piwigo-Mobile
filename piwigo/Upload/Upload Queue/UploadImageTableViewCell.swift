@@ -145,7 +145,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Bottom label
         if let errorDescription = userInfo["Error"] as? String,
-           !errorDescription.isEmpty {
+           errorDescription.isEmpty == false {
             imageInfoLabel.text = errorDescription
         }
     }
@@ -394,7 +394,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     
     private func addMovieIcon() {
         // Match size to cell size
-        let scale: CGFloat = fmax(1.0, self.traitCollection.displayScale);
+        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
         let width = cellImage.frame.size.width * playScale + (scale - 1)
         playBckg.setMovieIconImage()
         playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)

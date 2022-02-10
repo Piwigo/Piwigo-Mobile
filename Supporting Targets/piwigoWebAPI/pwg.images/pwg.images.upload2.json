@@ -3,7 +3,7 @@
         "category" :         {
             "id" : 142,
             "label" : "Test 22",
-            "nb_photos" : "10",
+            "nb_photos" : 10,
         },
         "image_id" : 6582,
         "name" : "Screenshot 2020-06-28 at 14.01.38",

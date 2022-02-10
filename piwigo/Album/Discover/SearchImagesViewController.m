@@ -9,7 +9,6 @@
 #import "AlbumData.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
-#import "ImageCollectionViewCell.h"
 #import "ImagesCollection.h"
 #import "SearchImagesViewController.h"
 
@@ -46,7 +45,7 @@
         self.imagesCollection.dataSource = self;
         self.imagesCollection.delegate = self;
         
-        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
+        [self.imagesCollection registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         
@@ -380,7 +379,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId forSize:self.imageCellSize];
+        [cell configWith:imageData inCategoryId:kPiwigoSearchCategoryId for:self.imageCellSize];
     
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {

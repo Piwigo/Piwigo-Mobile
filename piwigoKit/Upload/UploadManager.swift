@@ -294,7 +294,7 @@ public class UploadManager: NSObject {
         // Considers only uploads to the server to which the user is logged in
         let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
                                                                 markedForDeletion: true)
-        if !imageIDs.isEmpty, !uploadIDs.isEmpty {
+        if imageIDs.isEmpty == false, uploadIDs.isEmpty == false {
             print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
             self.delete(uploadedImages: imageIDs, with: uploadIDs)
         }
@@ -386,7 +386,7 @@ public class UploadManager: NSObject {
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
                         print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
@@ -416,7 +416,7 @@ public class UploadManager: NSObject {
                     switch task.state {
                     case .running:
                         // Retrieve upload request properties
-                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                         guard let objectURI = URL(string: objectURIstr) else {
                             print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                             continue
@@ -456,7 +456,7 @@ public class UploadManager: NSObject {
             // Prepare image for transfer
             prepare(for: uploadID)
         }
-        if !uploadRequestsToPrepare.isEmpty {
+        if uploadRequestsToPrepare.isEmpty == false {
             // Remove objectID
             uploadRequestsToPrepare.removeFirst()
         }
@@ -621,7 +621,7 @@ public class UploadManager: NSObject {
 
         // Check/update serverFileTypes if possible
         let fileTypes = UploadVars.serverFileTypes
-        if !fileTypes.isEmpty {
+        if fileTypes.isEmpty == false {
             uploadProperties.serverFileTypes = fileTypes
         }
 
@@ -869,7 +869,7 @@ public class UploadManager: NSObject {
         
         // Check/update serverFileTypes if possible
         let fileTypes = UploadVars.serverFileTypes
-        if !fileTypes.isEmpty {
+        if fileTypes.isEmpty == false {
             uploadProperties.serverFileTypes = fileTypes
         }
         
@@ -1377,7 +1377,7 @@ public class UploadManager: NSObject {
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue

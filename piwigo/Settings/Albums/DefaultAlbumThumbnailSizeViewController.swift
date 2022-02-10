@@ -248,7 +248,10 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
+                                                          height: CGFloat.greatestFiniteMagnitude),
+                                             options: .usesLineFragmentOrigin,
+                                             attributes: attributes, context: context)
 
         return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
     }

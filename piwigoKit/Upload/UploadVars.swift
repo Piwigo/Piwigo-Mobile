@@ -252,5 +252,11 @@ public class UploadVars: NSObject {
     
     // MARK: - Vars in Memory
     // Upload variables kept in memory
-    /// - None
+    /// - Custom HTTP header field names
+    static let HTTPuploadID = "X-PWG-UploadID"
+    static let HTTPimageID  = "X-PWG-localIdentifier"
+    static let HTTPchunk    = "X-PWG-chunk"
+    static let HTTPchunks   = "X-PWG-chunks"
+    static let HTTPmd5sum   = "X-PWG-md5sum"
+    static let HTTPfileSize = "X-PWG-fileSize"
 }

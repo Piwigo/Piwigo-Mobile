@@ -58,6 +58,13 @@ extension UIViewController {
         }
     }
     
+    func isShowingPiwigoHUD() -> Bool {
+        if let _ = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
+            return true
+        }
+        return false
+    }
+    
     func updatePiwigoHUD(withProgress progress:Float) {
         DispatchQueue.main.async {
             let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD

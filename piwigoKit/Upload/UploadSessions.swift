@@ -47,7 +47,11 @@ public class UploadSessions: NSObject {
             config.multipathServiceType = .handover
         }
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the background session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Upload Session (frgd)"
+        
+        return session
     }()
 
     // Background upload session
@@ -79,11 +83,32 @@ public class UploadSessions: NSObject {
         config.urlCache = nil
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         
-        /// Do not send upload requests with cookie so that each upload session remains ephemeral.
-        /// The user session, if it exists, remains untouched and kept alive until it expires.
+        /// The user session, if it exists, should remain untouched so  we do not update the Piwigo cookie.
+        /// We send a custom cookie to avoid a reject by ModSecurity if it is set to reject requests not containing cookies.
         config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
-        
+        if #available(iOS 10.0, *) {
+            let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+            let url = URL(string: urlStr)
+            if let validUrl = url {
+                var params: [HTTPCookiePropertyKey : Any] = [
+                    HTTPCookiePropertyKey.version           : NSString("0"),
+                    HTTPCookiePropertyKey.name              : NSString("pwg_method"),
+                    HTTPCookiePropertyKey.value             : NSString("uploadAsync"),
+                    HTTPCookiePropertyKey.domain            : NSString(string: validUrl.host ?? ""),
+                    HTTPCookiePropertyKey.path              : NSString(string: validUrl.path),
+                    HTTPCookiePropertyKey.expires           : NSDate(),
+                    HTTPCookiePropertyKey.discard           : NSString("TRUE")
+                ]
+                if NetworkVars.serverProtocol == "https" {
+                    params[HTTPCookiePropertyKey.secure] = "TRUE"
+                }
+                if let cookie = HTTPCookie(properties: params) {
+                    config.httpAdditionalHeaders = HTTPCookie.requestHeaderFields(with: [cookie])
+                }
+            }
+        }
+
         /// Allows a seamless handover from Wi-Fi to cellular
         if #available(iOS 11.0, *) {
             config.multipathServiceType = .handover
@@ -92,7 +117,11 @@ public class UploadSessions: NSObject {
         /// The identifier for the shared container into which files in background URL sessions should be downloaded.
         config.sharedContainerIdentifier = UserDefaults.appGroup
         
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        /// Create the background session and set its description
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        session.sessionDescription = "Upload Session (bckg)"
+        
+        return session
     }()
 
     // Constants and variables
@@ -121,8 +150,9 @@ public class UploadSessions: NSObject {
         // Loop over all tasks
         bckgSession.getAllTasks { uploadTasks in
             // Select remaining tasks related with this request if any
-            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr })
-                                           .filter({ $0.taskIdentifier != exceptedTaskID})
+            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?
+                .value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr })
+                .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
@@ -139,14 +169,14 @@ public class UploadSessions: NSObject {
 //            // Select remaining tasks of chunks already uploaded
 //            if uploadTasks.count == 0 { return }
 //
-//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr})
+//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr})
 //            if tasksToCancel.count > 0 {
 //                let firstTask = tasksToCancel.first
-//                let chunk = firstTask?.originalRequest?.value(forHTTPHeaderField: "chunk") ?? ""
+//                let chunk = firstTask?.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? ""
 //                debugPrint("==> \(chunk) compared to \(alreadyUploadedChunks)?")
 //            }
-//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr})
-//                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: "chunk") ?? "")})
+//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr})
+//                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? "")})
 //            // Cancel queued tasks which are useless
 //            tasksToCancel.forEach({
 //                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
@@ -254,8 +284,8 @@ extension UploadSessions: URLSessionTaskDelegate {
 
         // Get upload info from the task
         // The size of the uploaded image is set in the Content-Length field.
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let fileSizeStr = task.originalRequest?.value(forHTTPHeaderField: "fileSize"),
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
+              let fileSizeStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPfileSize),
               let fileSize = Float(fileSizeStr)
                else {
                 print("   > Could not extract HTTP header fields !!!!!!")
@@ -289,9 +319,9 @@ extension UploadSessions: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         // Get upload info from task
-//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
+//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk))!),
+//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks))!) else {
 //                print("   > Could not extract HTTP header fields !!!!!!")
 //                return
 //        }
@@ -353,9 +383,9 @@ extension UploadSessions: URLSessionDataDelegate {
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Get upload info from task
-//        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
+//            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk))!),
+//            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks))!) else {
 //                print("   > Could not extract HTTP header fields !!!!!!")
 //                return
 //        }
@@ -363,7 +393,7 @@ extension UploadSessions: URLSessionDataDelegate {
         
         #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        debugPrint(" > JSON: \(dataStr.debugDescription)")
+        debugPrint(" > JSON: \(dataStr)")
         #endif
         
         switch dataTask.taskDescription {
