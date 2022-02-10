@@ -1,0 +1,20 @@
+App Preview
+
+-> Capturing iOS simulator video
+
+1. Open the simulator and run the app
+2. Open the terminal
+3. Start recording using the command:
+
+	xcrun simctl io booted recordvideo app-preview.mp4
+
+4. Press ctrl + c to stop recording
+
+-> Add silent audio track
+
+cd [folder containing the video]
+/Applications/FFmpeg/./ffmpeg -i iPhone13ProMax.mp4 -f lavfi -i anullsrc -vcodec copy -acodec aac -shortest iPhone13ProMaxAppStore.mp4
+
+-> Resize video to requested sizes with WonderShare
+
+https://help.apple.com/app-store-connect/?lang=en/#/dev4e413fcb8
