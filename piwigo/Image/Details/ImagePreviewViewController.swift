@@ -28,8 +28,6 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var imageViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var videoView: UIView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
@@ -176,7 +174,7 @@ class ImagePreviewViewController: UIViewController
         /// - loading the high-resolution image
         /// - rotating the device
         configScrollView()
-        updateImageViewConstraints()
+        centerImageView()
     }
 
     deinit {
@@ -224,7 +222,7 @@ class ImagePreviewViewController: UIViewController
 //        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
-    private func updateImageViewConstraints() {
+    private func centerImageView() {
         guard let image = imageView?.image else { return }
 
         // Determine the orientation of the device
@@ -310,9 +308,9 @@ class ImagePreviewViewController: UIViewController
         scrollView.contentInset.left = max(0, spaceLeading)
         scrollView.contentInset.right = max(0, spaceTrailing)
         
-        // Update vertical constraints
-        imageViewTopConstraint.constant = max(0, spaceTop)
-        imageViewBottomConstraint.constant = max(0, spaceBottom)
+        // Center image vertically  in scrollview
+        scrollView.contentInset.top = max(0, spaceTop)
+        scrollView.contentInset.bottom = max(0, spaceBottom)
     }
         
     
@@ -331,7 +329,7 @@ class ImagePreviewViewController: UIViewController
     
     func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
         // Get current scale
-        let scale = min(scrollView.zoomScale * 2, scrollView.maximumZoomScale)
+        let scale = min(scrollView.zoomScale * 1.5, scrollView.maximumZoomScale)
         
         // Should we zoom in?
         if scale != scrollView.zoomScale {
@@ -343,7 +341,6 @@ class ImagePreviewViewController: UIViewController
             let origin = CGPoint(x: point.x - size.width / 2,
                                  y: point.y - size.height / 2)
             scrollView.zoom(to:CGRect(origin: origin, size: size), animated: true)
-            print(CGRect(origin: origin, size: size))
         }
         else {
             // Let's zoom out…
@@ -507,17 +504,17 @@ extension ImagePreviewViewController: UIScrollViewDelegate
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        updateImageViewConstraints()
+        centerImageView()
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         // Limit the zoom scale
         if scale < scrollView.minimumZoomScale {
             scrollView.zoomScale = scrollView.minimumZoomScale
-            updateImageViewConstraints()
+            centerImageView()
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
-            updateImageViewConstraints()
+            centerImageView()
         }
     }
 }
