@@ -805,63 +805,6 @@ NSInteger const loadingViewTag = 899;
     return task;
 }
 
-// Only used to upload images
-+(NSURLSessionTask*)postMultiPart:(NSString*)path
-                             data:(NSData*)fileData
-                       parameters:(NSDictionary*)parameters
-                   sessionManager:(AFHTTPSessionManager *)sessionManager
-                         progress:(void (^)(NSProgress *))progress
-                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
-                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    NSURLSessionTask *task = [sessionManager
-                              POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
-                              parameters:nil headers:nil
-         constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
-                {
-                    [formData appendPartWithFileData:fileData
-                                                name:@"file"
-                                            fileName:[parameters valueForKey:kPiwigoImagesUploadParamFileName]
-                                            mimeType:[parameters valueForKey:kPiwigoImagesUploadParamMimeType]];
-                    
-                    // Image title is mandatory and must not be empty.
-                    // We provide the file name with extension and will then replace it with the image title
-                    // Not doing so prevents video uploads — see bug #212 — pwg.images.upload
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamFileName] dataUsingEncoding:NSUTF8StringEncoding] name:@"name"];
-                    
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunk"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunks"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding] name:@"category"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding] name:@"level"];
-
-                    [formData appendPartWithFormData:[NetworkVarsObjc.pwgToken dataUsingEncoding:NSUTF8StringEncoding] name:@"pwg_token"];
-                }
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       NSLog(@"==> post: %@", task.response.MIMEType);
-                                       NSLog(@"==> post: %@", task.response.textEncodingName);
-                                       if (success) {
-                                           success(task, responseObject);
-                                       }
-                                   }
-                                   failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG_SESSION)
-                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
-                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
-                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
-                                       NSLog(@"=> response= %@", task.response);
-#endif
-                                       if(fail) {
-                                           fail(task, error);
-                                       }
-                                   }];
-    
-    return task;
-}
-
 
 #pragma mark - Piwigo Errors
 

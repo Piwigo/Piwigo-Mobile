@@ -84,14 +84,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)postMultiPart:(NSString*)path
-                             data:(NSData*)fileData
-                       parameters:(NSDictionary*)parameters
-                   sessionManager:(AFHTTPSessionManager *)sessionManager
-                         progress:(void (^)(NSProgress *))progress
-                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
-                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSError *)getPiwigoErrorFromResponse:(id)responseObject path:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 +(void)showPiwigoError:(NSError*)error withCompletion:(void (^)(void))completion;
 
