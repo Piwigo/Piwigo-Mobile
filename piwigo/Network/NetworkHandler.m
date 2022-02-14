@@ -16,7 +16,7 @@
 //#endif
 
 // Piwigo URLs:
-NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
+//NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";

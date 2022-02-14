@@ -40,6 +40,10 @@
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
 		AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
+		AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7927BAD596005D5E4F /* LoginUtilities.swift */; };
+		AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */; };
+		AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */; };
+		AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -394,6 +398,9 @@
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
 		AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
+		AD211A7927BAD596005D5E4F /* LoginUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUtilities.swift; sourceTree = "<group>"; };
+		AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reflection.getMethodList.json; sourceTree = "<group>"; };
+		AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reflection.getMethodList.swift; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -881,6 +888,7 @@
 			children = (
 				AD11E46024A930B000C8876F /* piwigoWebAPI.swift */,
 				AD38C04924AF73D900CDC765 /* community */,
+				AD211A7C27BAD873005D5E4F /* reflection */,
 				ADF2329F26D4072A002ACEC9 /* pwg */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
 				AD5F64E624C601B500660BE3 /* pwg.tags */,
@@ -888,6 +896,22 @@
 				AD11E46224A930B000C8876F /* Info.plist */,
 			);
 			path = piwigoWebAPI;
+			sourceTree = "<group>";
+		};
+		AD211A7B27BAD844005D5E4F /* reflection */ = {
+			isa = PBXGroup;
+			children = (
+				AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */,
+			);
+			path = reflection;
+			sourceTree = "<group>";
+		};
+		AD211A7C27BAD873005D5E4F /* reflection */ = {
+			isa = PBXGroup;
+			children = (
+				AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */,
+			);
+			path = reflection;
 			sourceTree = "<group>";
 		};
 		AD224022267B7D8800269B84 /* Strings */ = {
@@ -925,6 +949,7 @@
 				ADB274722676480D0002DD09 /* PwgSessionErrors.swift */,
 				ADB27474267661980002DD09 /* ParseXMLData.swift */,
 				AD9A1BE324E03AAF00D22C86 /* community */,
+				AD211A7B27BAD844005D5E4F /* reflection */,
 				ADF2329C26D40619002ACEC9 /* pwg */,
 				AD9A1BE424E03AC700D22C86 /* pwg.images */,
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
@@ -1540,6 +1565,7 @@
 		D863EEBE1A6A440D00C0A6E9 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				AD211A7927BAD596005D5E4F /* LoginUtilities.swift */,
 				D863EECB1A6A495700C0A6E9 /* LoginViewController.h */,
 				D863EECC1A6A495700C0A6E9 /* LoginViewController.m */,
 				ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */,
@@ -1890,6 +1916,7 @@
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
 				ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
+				AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
 				AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */,
@@ -2081,55 +2108,56 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
-				AD0B6ACD268A218F007DEE70 /* UploadManager.swift in Sources */,
-				AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */,
-				ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */,
-				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
-				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
-				AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */,
-				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
-				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
-				AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */,
-				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
-				AD0B6AD5268A21B7007DEE70 /* UploadFinisher.swift in Sources */,
-				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
-				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
 				AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */,
+				AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */,
+				AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */,
+				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
+				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
+				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
+				AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */,
+				AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */,
+				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
+				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
+				AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */,
+				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
+				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
+				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
 				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
 				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
-				ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */,
-				AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */,
-				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
-				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
-				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
-				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
-				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
-				AD0B6ACF268A219B007DEE70 /* UploadImage.swift in Sources */,
-				ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */,
-				AD0B6AD3268A21AD007DEE70 /* UploadTransfer.swift in Sources */,
-				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
 				AD3FF5F92683B9F900D2F52A /* PwgNotifications.swift in Sources */,
-				AD62CC8726828DC100CA66C5 /* VideoMetadata.swift in Sources */,
-				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
-				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
-				AD0B6AC9268A2166007DEE70 /* UploadUtilities.swift in Sources */,
-				AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */,
-				ADF72EA126712CA80027E2CC /* UploadsProvider.swift in Sources */,
-				ADF6264926B9ED4A0085A299 /* Tag+CoreDataProperties.swift in Sources */,
-				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
+				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
+				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				AD0B6ACD268A218F007DEE70 /* UploadManager.swift in Sources */,
+				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
+				ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */,
 				ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */,
-				AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */,
-				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
-				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
-				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
-				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
-				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
-				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
-				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
+				ADF6264926B9ED4A0085A299 /* Tag+CoreDataProperties.swift in Sources */,
 				AD0B6AD7268A21C0007DEE70 /* UploadAuto.swift in Sources */,
-				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
+				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
+				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
+				AD0B6AD5268A21B7007DEE70 /* UploadFinisher.swift in Sources */,
+				AD0B6ACF268A219B007DEE70 /* UploadImage.swift in Sources */,
+				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
+				AD0B6AD3268A21AD007DEE70 /* UploadTransfer.swift in Sources */,
+				AD0B6AC9268A2166007DEE70 /* UploadUtilities.swift in Sources */,
+				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
+				AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */,
+				ADF72EA126712CA80027E2CC /* UploadsProvider.swift in Sources */,
+				ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */,
+				ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */,
+				AD62CC8726828DC100CA66C5 /* VideoMetadata.swift in Sources */,
+				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
+				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
+				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
+				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
+				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
+				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
+				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
+				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
+				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
+				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
+				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2140,6 +2168,7 @@
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */,
+				AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */,
 				ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */,
 				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
 				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
@@ -2198,6 +2227,7 @@
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
+				AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */,
 				AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
 				ADBC08D02446060700BF82E8 /* CategoryHeaderReusableView.swift in Sources */,

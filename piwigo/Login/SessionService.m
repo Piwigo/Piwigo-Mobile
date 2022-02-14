@@ -14,60 +14,60 @@
 
 // Get Piwigo server methods
 // and determine if the Community extension is installed and active
-+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    // API reflection.getMethodList returns:
-    //      methods
-
-    return [self post:kReflectionGetMethodList
-        URLParameters:nil
-           parameters:nil
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:^(NSProgress * progress) {
-                 if (NetworkVarsObjc.userCancelledCommunication) {
-                     [progress cancel];
-                 }
-             }
-              success:^(NSURLSessionTask *task, id responseObject) {
-                  
-                  if(completion) {
-                      
-                      // Initialise flags
-                      NetworkVarsObjc.usesCommunityPluginV29 = NO;
-                      NetworkVarsObjc.usesUploadAsync = NO;
-                      
-                      // Did the server answer the request? (it should have)
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          // Loop over the methods
-                          id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
-                          for (NSString *method in methodsList) {
-                              // Check if the Community extension is installed and active (> 2.9a)
-                              if([method isEqualToString:@"community.session.getStatus"]) {
-                                  NetworkVarsObjc.usesCommunityPluginV29 = YES;
-                              }
-                              // Check if the pwg.images.uploadAsync method is available
-                              if ([method isEqualToString:@"pwg.images.uploadAsync"]) {
-                                  NetworkVarsObjc.usesUploadAsync = YES;
-                              }
-                          }
-                          completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
-                      }
-                      else  // Strange…
-                      {
-                          NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                                 path:kPiwigoSessionLogin andURLparams:nil];
-                          fail(task, error);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
-                  
-                  if(fail) {
-                      fail(task, error);
-                  }
-              }];
-}
+//+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
+//                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
+//{
+//    // API reflection.getMethodList returns:
+//    //      methods
+//
+//    return [self post:kReflectionGetMethodList
+//        URLParameters:nil
+//           parameters:nil
+//       sessionManager:NetworkVarsObjc.sessionManager
+//             progress:^(NSProgress * progress) {
+//                 if (NetworkVarsObjc.userCancelledCommunication) {
+//                     [progress cancel];
+//                 }
+//             }
+//              success:^(NSURLSessionTask *task, id responseObject) {
+//
+//                  if(completion) {
+//
+//                      // Initialise flags
+//                      NetworkVarsObjc.usesCommunityPluginV29 = NO;
+//                      NetworkVarsObjc.usesUploadAsync = NO;
+//
+//                      // Did the server answer the request? (it should have)
+//                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+//                      {
+//                          // Loop over the methods
+//                          id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
+//                          for (NSString *method in methodsList) {
+//                              // Check if the Community extension is installed and active (> 2.9a)
+//                              if([method isEqualToString:@"community.session.getStatus"]) {
+//                                  NetworkVarsObjc.usesCommunityPluginV29 = YES;
+//                              }
+//                              // Check if the pwg.images.uploadAsync method is available
+//                              if ([method isEqualToString:@"pwg.images.uploadAsync"]) {
+//                                  NetworkVarsObjc.usesUploadAsync = YES;
+//                              }
+//                          }
+//                          completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
+//                      }
+//                      else  // Strange…
+//                      {
+//                          NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+//                                                 path:kPiwigoSessionLogin andURLparams:nil];
+//                          fail(task, error);
+//                      }
+//                  }
+//              } failure:^(NSURLSessionTask *task, NSError *error) {
+//
+//                  if(fail) {
+//                      fail(task, error);
+//                  }
+//              }];
+//}
 
 +(NSURLSessionTask*)performLoginWithUser:(NSString*)user
                              andPassword:(NSString*)password

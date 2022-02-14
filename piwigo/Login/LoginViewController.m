@@ -281,32 +281,17 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     NSLog(@"=> launchLogin: getMethodsList using %@", NetworkVarsObjc.serverProtocol);
 #endif
     NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 10;
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+    [LoginUtilities getMethodsWithCompletion:^{
         
         // Back to default timeout
         NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 30;
 
-        if(methodsList) {
-            // Community extension installed and active ?
-            for (NSString *method in methodsList) {
-                
-                // Check if the Community extension is installed and active (> 2.9a)
-                if([method isEqualToString:@"community.session.getStatus"]) {
-                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
-                }
-            }
-            // Known methods, pursue logging in…
+        // Known methods, pursue logging in…
+        dispatch_async(dispatch_get_main_queue(), ^{
             [self performLogin];
-        } else {
-            // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-        }
+        });
         
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-
-        // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
-        NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+    } failure:^(NSError * _Nonnull error) {
 
         // If Piwigo used a non-trusted certificate, ask permission
         if (NetworkVarsObjc.didRejectCertificate) {
@@ -316,7 +301,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         }
         
         // HTTP Basic authentication required?
-        if (statusCode == 401 || statusCode == 403 || NetworkVarsObjc.didFailHTTPauthentication) {
+        if (error.code == 401 || error.code == 403 || NetworkVarsObjc.didFailHTTPauthentication) {
             // Without prior knowledge, the app already tried Piwigo credentials
             // but unsuccessfully, so we request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
@@ -559,32 +544,20 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin using http: getMethodsList…");
 #endif
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
-        
+    [LoginUtilities getMethodsWithCompletion:^{
         // Back to default timeout
         NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 30;
-
-        if(methodsList) {
-            // Community extension installed and active ?
-            for (NSString *method in methodsList) {
-                
-                // Check if the Community extension is installed and active (> 2.9a)
-                if([method isEqualToString:@"community.session.getStatus"]) {
-                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
-                }
-            }
-            // Known methods, pursue logging in…
-            [self performLogin];
-            
-        } else {
-            // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-        }
         
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Known methods, pursue logging in…
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performLogin];
+        });
+
+    } failure:^(NSError * _Nonnull error) {
         // Get Piwigo methods failed
-        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        });
     }];
 }
 
@@ -941,6 +914,11 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 {
     // Propagate user's request
     NetworkVarsObjc.userCancelledCommunication = YES;
+    [NetworkVarsObjc.dataSession getAllTasksWithCompletionHandler:^(NSArray<__kindof NSURLSessionTask *> * _Nonnull tasks) {
+        for (NSURLSessionTask *task in tasks) {
+            [task cancel];
+        }
+    }];
     NSArray <NSURLSessionTask *> *tasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in tasks) {
         [task cancel];
