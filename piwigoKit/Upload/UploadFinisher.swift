@@ -22,7 +22,7 @@ extension UploadManager {
         let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
         let creationDate = dateFormat.string(from: date)
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for setting the image/video data
         let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
         let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
         let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)

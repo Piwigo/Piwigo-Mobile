@@ -286,7 +286,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Display HUD during the update
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for renaming the image/video filename
         let paramsDict: [String : Any] = ["image_id" : imageId,
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]

@@ -470,7 +470,7 @@ class EditImageParamsViewController: UIViewController
         // Privacy level
         let privacyLevel = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for changing the images/videos data
         let paramsDict: [String : Any] = ["image_id"            : imageId,
                                           "file"                : fileName,
                                           "name"                : imageTitle,

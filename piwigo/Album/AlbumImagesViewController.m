@@ -2425,7 +2425,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSMutableArray *categoryIds = [self.selectedImage.categoryIds mutableCopy];
     [categoryIds removeObject:@(self.categoryId)];
     
-    // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+    // Prepare parameters for removing the images/videos from the category
     NSString *newImageCategories = [categoryIds componentsJoinedByString:@";"];
     NSDictionary *paramsDict = @{
         @"image_id" : [NSString stringWithFormat:@"%ld", (long)self.selectedImage.imageId],

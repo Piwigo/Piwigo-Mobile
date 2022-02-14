@@ -1143,7 +1143,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         categoryIds.append(NSNumber(value: categoryData.albumId))
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for copying the image/video to the selected category
         let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
         let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
                                           "categories"          : newImageCategories,
@@ -1266,7 +1266,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Remove current categoryId from image category list
         categoryIds.removeAll(where: {$0 == NSNumber(value: inputCategoryId)} )
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for moving the image/video to the selected category
         let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
         let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
                                           "categories"          : newImageCategories,

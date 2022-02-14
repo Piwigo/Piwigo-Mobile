@@ -799,7 +799,7 @@ import piwigoKit
         }
         categoryIds.removeAll { $0 as AnyObject === NSNumber(value: categoryId) as AnyObject }
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for removing the image/video from the selected category
         let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
         let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
                                           "categories"          : newImageCategories,
