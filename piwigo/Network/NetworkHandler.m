@@ -43,9 +43,9 @@ NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdmi
 NSString * const kPiwigoTagsGetImages = @"format=json&method=pwg.tags.getImages";
 NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
 
-NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
-NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";
-NSString * const kPiwigoUserFavoritesGetList = @"format=json&method=pwg.users.favorites.getList";
+//NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
+//NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";
+//NSString * const kPiwigoUserFavoritesGetList = @"format=json&method=pwg.users.favorites.getList";
 
 // Parameter keys:
 NSString * const kPiwigoImagesUploadParamFileName = @"file";
