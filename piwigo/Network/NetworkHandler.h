@@ -42,7 +42,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
 
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
-//FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesGetList;
+FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesGetList;
 
 // Parameter keys:
 FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamData;
