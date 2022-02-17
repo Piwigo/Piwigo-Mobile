@@ -24,7 +24,6 @@ extension UIViewController {
                 hud?.tag = loadingViewTag
 
                 // Change the background view shape, style and color.
-                hud?.mode = mode
                 hud?.isSquare = false
                 hud?.animationType = MBProgressHUDAnimation.fade
                 hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
@@ -37,6 +36,9 @@ extension UIViewController {
                 // Will look best, if we set a minimum size.
                 hud?.minSize = CGSize(width: 200.0, height: 100.0)
             }
+            
+            // Change mode
+            hud?.mode = mode
 
             // Set title if needed
             if title.count > 0 {
