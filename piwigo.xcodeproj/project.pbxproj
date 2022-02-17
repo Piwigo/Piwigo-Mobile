@@ -44,6 +44,9 @@
 		AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */; };
 		AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */; };
 		AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */; };
+		AD211A8627BAFE1E005D5E4F /* pwg.session.login.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */; };
+		AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */; };
+		AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -401,6 +404,8 @@
 		AD211A7927BAD596005D5E4F /* LoginUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUtilities.swift; sourceTree = "<group>"; };
 		AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reflection.getMethodList.json; sourceTree = "<group>"; };
 		AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reflection.getMethodList.swift; sourceTree = "<group>"; };
+		AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.session.login.json; sourceTree = "<group>"; };
+		AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.session.login.swift; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -891,6 +896,7 @@
 				AD211A7C27BAD873005D5E4F /* reflection */,
 				ADF2329F26D4072A002ACEC9 /* pwg */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
+				AD211A8227BAFCDD005D5E4F /* pwg.session */,
 				AD5F64E624C601B500660BE3 /* pwg.tags */,
 				ADDD2100270A0B5200CACFF2 /* pwg.users */,
 				AD11E46224A930B000C8876F /* Info.plist */,
@@ -912,6 +918,22 @@
 				AD211A7D27BAD87E005D5E4F /* reflection.getMethodList.json */,
 			);
 			path = reflection;
+			sourceTree = "<group>";
+		};
+		AD211A8227BAFCDD005D5E4F /* pwg.session */ = {
+			isa = PBXGroup;
+			children = (
+				AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */,
+			);
+			path = pwg.session;
+			sourceTree = "<group>";
+		};
+		AD211A8427BAFD51005D5E4F /* pwg.session */ = {
+			isa = PBXGroup;
+			children = (
+				AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */,
+			);
+			path = pwg.session;
 			sourceTree = "<group>";
 		};
 		AD224022267B7D8800269B84 /* Strings */ = {
@@ -952,6 +974,7 @@
 				AD211A7B27BAD844005D5E4F /* reflection */,
 				ADF2329C26D40619002ACEC9 /* pwg */,
 				AD9A1BE424E03AC700D22C86 /* pwg.images */,
+				AD211A8427BAFD51005D5E4F /* pwg.session */,
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
 				ADDD2102270A0CAB00CACFF2 /* pwg.users */,
 			);
@@ -1915,6 +1938,7 @@
 				ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */,
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
 				ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */,
+				AD211A8627BAFE1E005D5E4F /* pwg.session.login.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
@@ -2155,6 +2179,7 @@
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
 				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
 				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
+				AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
 				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
@@ -2166,6 +2191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
+				AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */,
 				AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */,

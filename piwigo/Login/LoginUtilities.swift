@@ -20,17 +20,8 @@ class LoginUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
-                                countOfBytesClientExpectsToReceive: 32500) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 32500) { jsonData in
+            // Decode the JSON object and set variables.
             do {
                 // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
@@ -38,9 +29,9 @@ class LoginUtilities: NSObject {
 
                 // Piwigo error?
                 if (methodsJSON.errorCode != 0) || methodsJSON.data.isEmpty {
-                    let error = NSError(domain: "Piwigo", code: methodsJSON.errorCode,
-                                        userInfo: [NSLocalizedDescriptionKey : methodsJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: methodsJSON.errorCode,
+                                                                    errorMessage: methodsJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -57,6 +48,58 @@ class LoginUtilities: NSObject {
                 let error = error as NSError
                 failure(error)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
+    @objc
+    class func performLogin(withUsername username:String, password:String,
+                            completion: @escaping () -> Void,
+                            failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for retrieving image/video infos
+        let paramsDict: [String : Any] = ["username" : username,
+                                          "password" : password]
+        // Launch request
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoSessionLogin, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
+                                countOfBytesClientExpectsToReceive: 620) { jsonData in
+            // Decode the JSON object and check if the login was successful
+            do {
+                // Decode the JSON into codable type ImagesGetInfoJSON.
+                let decoder = JSONDecoder()
+                let loginJSON = try decoder.decode(SessionLoginJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if loginJSON.errorCode != 0 {
+                    let error = PwgSession.shared
+                        .localizedError(for: loginJSON.errorCode, errorMessage: loginJSON.errorMessage)
+                    NetworkVars.hadOpenedSession = false
+                    failure(error as NSError)
+                    return
+                }
+
+                // Login successful
+                NetworkVars.username = username
+                NetworkVars.hadOpenedSession = true
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                NetworkVars.hadOpenedSession = false
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            NetworkVars.hadOpenedSession = false
+            failure(error)
         }
     }
 }

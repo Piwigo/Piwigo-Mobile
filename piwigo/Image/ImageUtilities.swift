@@ -27,17 +27,8 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesGetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 50000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
+            // Decode the JSON object and store image data in cache.
             do {
                 // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
@@ -45,9 +36,9 @@ class ImageUtilities: NSObject {
 
                 // Piwigo error?
                 if (imageJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: imageJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : imageJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
+                                                                    errorMessage: imageJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -55,10 +46,7 @@ class ImageUtilities: NSObject {
                 guard let data = imageJSON.data,
                       let derivatives = imageJSON.derivatives else {
                           // Data cannot be digested
-                          let message = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
-                          let error = NSError(domain: "Piwigo", code: -1,
-                                      userInfo: [NSLocalizedDescriptionKey : message])
-                          failure(error)
+                          failure(JsonError.unexpectedError as NSError)
                           return
                 }
 
@@ -147,6 +135,11 @@ class ImageUtilities: NSObject {
                 let error = error as NSError
                 failure(error)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
     
@@ -157,17 +150,8 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and check if image data were updated on server.
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.
                 let decoder = JSONDecoder()
@@ -175,9 +159,9 @@ class ImageUtilities: NSObject {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -188,14 +172,17 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not set image parameters
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    failure(error)
+                    failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
-                failure(error)
+                failure(JsonError.wrongJSONobject as NSError)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
     
@@ -213,17 +200,8 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON and delete image from cache if successful.
             do {
                 // Decode the JSON into codable type ImagesDeleteJSON.
                 let decoder = JSONDecoder()
@@ -231,9 +209,9 @@ class ImageUtilities: NSObject {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -253,14 +231,17 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    failure(error)
+                    failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
-                failure(error)
+                failure(JsonError.wrongJSONobject as NSError)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 
@@ -274,17 +255,8 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and add image to favorites.
             do {
                 // Decode the JSON into codable type FavoritesAddRemoveJSON.
                 let decoder = JSONDecoder()
@@ -292,9 +264,9 @@ class ImageUtilities: NSObject {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -310,14 +282,17 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    failure(error)
+                    failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
-                failure(error)
+                failure(JsonError.wrongJSONobject as NSError)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 
@@ -331,17 +306,8 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesRemove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                failure(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and remove image from faborites.
             do {
                 // Decode the JSON into codable type FavoritesAddRemoveJSON.
                 let decoder = JSONDecoder()
@@ -349,9 +315,9 @@ class ImageUtilities: NSObject {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    failure(error)
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
                     return
                 }
 
@@ -367,14 +333,17 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    failure(error)
+                    failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
-                failure(error)
+                failure(JsonError.wrongJSONobject as NSError)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 

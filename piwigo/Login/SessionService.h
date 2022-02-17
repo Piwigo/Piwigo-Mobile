@@ -11,14 +11,6 @@
 
 @interface SessionService : NetworkHandler
 
-+(NSURLSessionTask*)performLoginWithUser:(NSString*)user
-                             andPassword:(NSString*)password
-                            onCompletion:(void (^)(BOOL result, id response))completion
-                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-//+(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
-//                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSURLSessionTask*)getPiwigoStatusAtLogin:(BOOL)isLogginIn
                               OnCompletion:(void (^)(NSDictionary *responseObject))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

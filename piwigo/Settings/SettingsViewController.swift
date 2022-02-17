@@ -1418,15 +1418,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            /// -> nothing presented in the footer
-            if error != nil { return }
-            
-            // Decode the JSON and collect statistics.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and retrieve statistics.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
@@ -1435,8 +1428,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
                     #if DEBUG
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
@@ -1501,6 +1494,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 #endif
                 return
             }
+        } failure: { _ in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            /// -> nothing presented in the footer
         }
     }
 

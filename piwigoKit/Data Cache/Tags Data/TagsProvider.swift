@@ -8,6 +8,7 @@
 //  A class to fetch data from the remote server and save it to the Core Data store.
 
 import CoreData
+import CoreMedia
 
 public class TagsProvider {
 
@@ -43,17 +44,8 @@ public class TagsProvider {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error {
-                completionHandler(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
+            // Decode the JSON object and import it into Core Data.
             DispatchQueue.global(qos: .background).async {
                 do {
                     // Decode the JSON into codable type TagJSON.
@@ -62,8 +54,8 @@ public class TagsProvider {
 
                     // Piwigo error?
                     if (tagJSON.errorCode != 0) {
-                        let error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
-                                            userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                        let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
+                                                                        errorMessage: tagJSON.errorMessage)
                         completionHandler(error)
                         return
                     }
@@ -78,6 +70,11 @@ public class TagsProvider {
                 }
                 completionHandler(nil)
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            completionHandler(error)
         }
     }
     
@@ -301,17 +298,8 @@ public class TagsProvider {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error {
-                completionHandler(error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 3000) { jsonData in
+            // Decode the JSON object and import it into Core Data.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
@@ -343,6 +331,11 @@ public class TagsProvider {
                 completionHandler(TagError.wrongDataFormat)
                 return
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            completionHandler(error)
         }
     }
 

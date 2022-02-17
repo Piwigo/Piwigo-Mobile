@@ -294,21 +294,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error {
-                topViewController?.hidePiwigoHUD {
-                    topViewController?.dismissPiwigoError(
-                        withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                          message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
-                }
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update image filename if successful.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
@@ -316,8 +303,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
@@ -346,7 +333,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 else {
                     // Could not change the filename
                     debugPrint("••>> setImageInfoForImageWithId(): no successful")
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                    let error = JsonError.unexpectedError
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
@@ -356,13 +343,22 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
+                let error = JsonError.wrongJSONobject
                 topViewController?.hidePiwigoHUD {
                     topViewController?.dismissPiwigoError(
                         withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
                           message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
                 }
                 return
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            topViewController?.hidePiwigoHUD {
+                topViewController?.dismissPiwigoError(
+                    withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
+                      message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
             }
         }
     }

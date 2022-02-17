@@ -572,6 +572,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 #endif
     
     // Perform login if username exists
+    NSString *username = self.userTextField.text;
+    NSString *password = self.passwordTextField.text;
 	if((self.userTextField.text.length > 0) && (!NetworkVarsObjc.userCancelledCommunication))
 	{
         // Update HUD during login
@@ -582,38 +584,25 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                   inMode:MBProgressHUDModeIndeterminate];
         
         // Perform login
-        [SessionService performLoginWithUser:self.userTextField.text
-                  andPassword:self.passwordTextField.text
-                 onCompletion:^(BOOL result, id response) {
-                     if(result)
-                     {
-                         // Session now opened
-                         // First determine user rights if Community extension installed
-                         [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
-                     }
-                     else
-                     {
-                         // Don't keep unaccepted credentials
-                         [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath account:self.userTextField.text];
-
-                         // Session could not be opened
-                         NSError *pwgError = (NSError *)response;
-                         if (pwgError.code == 999) {
-                             NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-                             [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                         } else {
-                             [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : pwgError)];
-                         }
-                     }
-                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                     // Login request failed
-                     [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                 }];
+        [LoginUtilities performLoginWithUsername:username password:password
+                                      completion:^(void) {
+            // Session now opened
+            // First determine user rights if Community extension installed
+            [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
+            
+        } failure:^(NSError * _Nonnull error) {
+            // Don't keep unaccepted credentials
+            [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath
+                                                    account:username];
+            // Login request failed
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        }];
 	}
 	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
-        [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath account:NetworkVarsObjc.username];
+        [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath
+                                                account:NetworkVarsObjc.username];
         NetworkVarsObjc.username = @"";
 
         // Check Piwigo version, get token, available sizes, etc.
@@ -835,32 +824,18 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.hudViewController = nil;
 
     // Perform re-login
-    NSString *user = NetworkVarsObjc.username;
-    NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:user];
+    NSString *username = NetworkVarsObjc.username;
+    NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:username];
     self.isAlreadyTryingToLogin = YES;
-    [SessionService performLoginWithUser:user
-                             andPassword:password
-                            onCompletion:^(BOOL result, id response) {
-        if(result) {
-            // Session now re-opened
-            NetworkVarsObjc.hadOpenedSession = YES;
-            
-            // First determine user rights if Community extension installed
-            [self getCommunityStatusAtFirstLogin:NO
-                           withReloginCompletion:reloginCompletion];
-        }
-        else {
-            // Session could not be re-opened, inform user
-            NetworkVarsObjc.hadOpenedSession = NO;
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-            self.isAlreadyTryingToLogin = NO;
-        }
-
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+    [LoginUtilities performLoginWithUsername:username password:password completion:^{
+        // Session re-opened
+        // First determine user rights if Community extension installed
+        [self getCommunityStatusAtFirstLogin:NO
+                       withReloginCompletion:reloginCompletion];
+    }
+    failure:^(NSError * _Nonnull error) {
         // Could not re-establish the session, login/pwd changed, something else ?
         self.isAlreadyTryingToLogin = NO;
-        NetworkVarsObjc.hadOpenedSession = NO;
         
         // Display error message
         [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
@@ -947,8 +922,12 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             buttonTarget:self buttonSelector:@selector(hideLoading)
                   inMode:MBProgressHUDModeText];
     } else {
+        NSString *detail = [error localizedDescription];
+        if (detail.length == 0) {
+            detail = [NSString stringWithFormat:@"%ld", error.code];
+        }
         [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                  detail:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+                  detail:detail
              buttonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
             buttonTarget:self buttonSelector:@selector(hideLoading)
                   inMode:MBProgressHUDModeText];

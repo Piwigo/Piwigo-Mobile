@@ -42,18 +42,9 @@ extension UploadManager {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
             print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error {
-                self.didFinishTransfer(for: uploadID, error: error)
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+            // Decode the JSON object
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
@@ -61,8 +52,8 @@ extension UploadManager {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     self.didFinishTransfer(for: uploadID, error: error)
                     return
                 }
@@ -84,6 +75,11 @@ extension UploadManager {
                 self.didFinishTransfer(for: uploadID, error: error)
                 return
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            self.didFinishTransfer(for: uploadID, error: error)
         }
     }
 
@@ -104,7 +100,7 @@ extension UploadManager {
 
     func processImages(withIds imageIds: String,
                        inCategory categoryId: Int,
-                       completionHandler: @escaping (NSError?) -> Void) -> (Void) {
+                       completionHandler: @escaping (Error?) -> Void) -> (Void) {
         
         print("\(debugFormatter.string(from: Date())) > processImages() in", queueName())
 
@@ -115,18 +111,8 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kPiwigoImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 2500) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 2500) { jsonData in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                completionHandler(error)
-                return
-            }
-            
-            // Decode the JSON.
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -135,9 +121,8 @@ extension UploadManager {
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
                     // Will retry later
-                    debugPrint("••>> processUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     completionHandler(error)
                     return
                 }
@@ -153,6 +138,11 @@ extension UploadManager {
                 completionHandler(UploadError.wrongJSONobject as NSError)
                 return
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            completionHandler(error)
         }
     }
 
@@ -205,18 +195,8 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let _ = error {
-                completionHandler(false, [])
-                return
-            }
-            
-            // Decode the JSON.
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -244,6 +224,11 @@ extension UploadManager {
                 completionHandler(false, [])
                 return
             }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            completionHandler(false, [])
         }
     }
 }

@@ -13,6 +13,13 @@ public enum JsonError: Error {
     case emptyJSONobject
     case invalidJSONobject
     case wrongJSONobject
+    case unexpectedError
+    
+    // Piwigo server errors
+    case invalidMethod          // 501
+    case invalidCredentials     // 999
+    case missingParameter       // 1002
+    case invalidParameter       // 1003
 }
 
 extension JsonError: LocalizedError {
@@ -30,6 +37,40 @@ extension JsonError: LocalizedError {
         case .wrongJSONobject:
             return NSLocalizedString("PiwigoServer_wrongJSONobject",
                                      comment: "Could not digest JSON object returned by Piwigo server.")
+        case .unexpectedError:
+            return NSLocalizedString("serverUnknownError_message",
+                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
+        case .invalidMethod:
+            return NSLocalizedString("loginError_message",
+                                     comment: "The username and password don't match on the given server.")
+        case .invalidCredentials:
+            return NSLocalizedString("loginError_message",
+                                     comment: "The username and password don't match on the given server")
+        case .missingParameter:
+            return NSLocalizedString("serverMissingParamError_message",
+                                     comment: "Failed to execute server method with missing parameter.")
+        case .invalidParameter:
+            return NSLocalizedString("serverUnknownError_message",
+                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+extension PwgSession {
+    public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
+        switch errorCode {
+        case 501:
+            return JsonError.invalidMethod
+        case 999:
+            return JsonError.invalidCredentials
+        case 1002:
+            return JsonError.missingParameter
+        case 1003:
+            return JsonError.invalidParameter
+        default:
+            let error = NSError(domain: "Piwigo", code: errorCode,
+                                userInfo: [NSLocalizedDescriptionKey : errorMessage])
+            return error as Error
         }
     }
 }
