@@ -79,6 +79,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         guard let imageData = imageData else {
             return
         }
+        
+        // Store image ID
+        imageId = imageData.imageId
 
         // Image file name
         if let fileName: String = imageData.fileName, fileName.isEmpty == false {

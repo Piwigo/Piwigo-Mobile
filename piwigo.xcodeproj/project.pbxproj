@@ -1946,8 +1946,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */,
-				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
 				AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */,
+				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
 				ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */,
