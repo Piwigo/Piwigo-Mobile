@@ -21,7 +21,7 @@
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
 NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
-NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
+//NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
 NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList";

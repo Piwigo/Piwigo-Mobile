@@ -1801,62 +1801,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
 
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
+        })
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-                SessionService.sessionLogout(onCompletion: { task, success in
-
-                    if success {
-                        self.closeSessionAndClearCache()
-                    } else {
-                        let alert = UIAlertController(title: NSLocalizedString("logoutFail_title", comment: "Logout Failed"), message: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), preferredStyle: .alert)
-
-                        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-                                self.closeSessionAndClearCache()
-                            })
-
-                        // Add action
-                        alert.addAction(dismissAction)
-
-                        // Present list of actions
-                        alert.view.tintColor = .piwigoColorOrange()
-                        if #available(iOS 13.0, *) {
-                            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
-                        } else {
-                            // Fallback on earlier versions
-                        }
-                        self.present(alert, animated: true, completion: {
-                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                            alert.view.tintColor = .piwigoColorOrange()
-                        })
-                    }
-
-                }, onFailure: { task, error in
-                    // Failed! This may be due to the replacement of a self-signed certificate.
-                    // So we inform the user that there may be something wrong with the server,
-                    // or simply a connection drop.
-                    let alert = UIAlertController(title: NSLocalizedString("logoutFail_title", comment: "Logout Failed"), message: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), preferredStyle: .alert)
-
-                    let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-                            self.closeSessionAndClearCache()
-                        })
-
-                    // Add action
-                    alert.addAction(dismissAction)
-
-                    // Present list of actions
-                    alert.view.tintColor = .piwigoColorOrange()
-                    if #available(iOS 13.0, *) {
-                        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
-                    } else {
-                        // Fallback on earlier versions
-                    }
-                    self.present(alert, animated: true, completion: {
-                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                        alert.view.tintColor = .piwigoColorOrange()
-                    })
-                })
-            })
+            LoginUtilities.performLogout {
+                // Logout successful
+                DispatchQueue.main.async {
+                    self.closeSessionAndClearCache()
+                }
+            } failure: { error in
+                // Failed! This may be due to the replacement of a self-signed certificate.
+                // So we inform the user that there may be something wrong with the server,
+                // or simply a connection drop.
+                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                        message: error.localizedDescription) {
+                    self.closeSessionAndClearCache()
+                }
+            }
+        })
 
         // Add actions
         alert.addAction(cancelAction)
@@ -1887,7 +1849,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
         NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
         NetworkVarsObjc.imageCache?.removeAllCachedResponses()
-        NetworkVars.hadOpenedSession = false
 
         // Back to default values
         AlbumVars.defaultCategory = 0

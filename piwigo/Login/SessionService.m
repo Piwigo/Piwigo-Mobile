@@ -432,41 +432,4 @@
               }];
 }
 
-+(NSURLSessionTask*)sessionLogoutOnCompletion:(void (^)(NSURLSessionTask *task, BOOL sucessfulLogout))completion
-                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoSessionLogout
-		URLParameters:nil
-           parameters:nil
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-
-                    if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          if (completion) {
-                              completion(task, YES);
-                          }
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                                path:kPiwigoSessionLogout andURLparams:nil];
-                          if(completion) {
-                              [NetworkHandler showPiwigoError:error withCompletion:^{
-                                  completion(task, NO);
-                              }];
-                          } else {
-                              [NetworkHandler showPiwigoError:error withCompletion:nil];
-                          }
-                      }
-
-    } failure:^(NSURLSessionTask *task, NSError *error) {
-                  if (fail) {
-                      fail(task, error);
-                  }
-			  }];
-}
-
 @end

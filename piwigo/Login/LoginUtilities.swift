@@ -102,4 +102,47 @@ class LoginUtilities: NSObject {
             failure(error)
         }
     }
+
+    @objc
+    class func performLogout(completion: @escaping () -> Void,
+                             failure: @escaping (NSError) -> Void) {
+        // Launch request
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoSessionLogout, paramDict: [:],
+                                jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
+                                countOfBytesClientExpectsToReceive: 620) { jsonData in
+            // Decode the JSON object and check if the logout was successful
+            do {
+                // Decode the JSON into codable type ImagesGetInfoJSON.
+                let decoder = JSONDecoder()
+                let loginJSON = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if loginJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: loginJSON.errorCode,
+                                                                    errorMessage: loginJSON.errorMessage)
+                    NetworkVars.hadOpenedSession = false
+                    failure(error as NSError)
+                    return
+                }
+
+                // Logout successful
+                NetworkVars.hadOpenedSession = false
+                let error = PwgSession.shared.localizedError(for: 0, errorMessage: "prout")
+                failure(error as NSError)
+//                completion()
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            NetworkVars.hadOpenedSession = false
+            failure(error)
+        }
+    }
 }

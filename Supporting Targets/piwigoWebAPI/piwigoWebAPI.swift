@@ -235,6 +235,35 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.success, true)
     }
 
+    func testPwgSessionLogoutDecoding() {
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.session.logout", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: SessionLogoutJSON.self) {
+            XCTFail()
+            return
+        }
+
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(SessionLogoutJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.errorCode, 0)
+        XCTAssertEqual(result.errorMessage, "")
+
+        XCTAssertEqual(result.success, true)
+    }
+
 
     // MARK: - pwg.tags…
     func testPwgTagsGetListDecoding() {

@@ -47,6 +47,9 @@
 		AD211A8627BAFE1E005D5E4F /* pwg.session.login.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */; };
 		AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */; };
 		AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */; };
+		AD211A8C27C14B7E005D5E4F /* pwg.session.logout.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A8B27C14B7E005D5E4F /* pwg.session.logout.json */; };
+		AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */; };
+		AD211A8F27C14EE2005D5E4F /* pwg.session.logout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -406,6 +409,8 @@
 		AD211A7E27BAD8E4005D5E4F /* reflection.getMethodList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reflection.getMethodList.swift; sourceTree = "<group>"; };
 		AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.session.login.json; sourceTree = "<group>"; };
 		AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.session.login.swift; sourceTree = "<group>"; };
+		AD211A8B27C14B7E005D5E4F /* pwg.session.logout.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.logout.json; sourceTree = "<group>"; };
+		AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.logout.swift; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -924,6 +929,7 @@
 			isa = PBXGroup;
 			children = (
 				AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */,
+				AD211A8B27C14B7E005D5E4F /* pwg.session.logout.json */,
 			);
 			path = pwg.session;
 			sourceTree = "<group>";
@@ -932,6 +938,7 @@
 			isa = PBXGroup;
 			children = (
 				AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */,
+				AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */,
 			);
 			path = pwg.session;
 			sourceTree = "<group>";
@@ -1939,6 +1946,7 @@
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
 				ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */,
 				AD211A8627BAFE1E005D5E4F /* pwg.session.login.json in Resources */,
+				AD211A8C27C14B7E005D5E4F /* pwg.session.logout.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				AD211A8027BADECA005D5E4F /* reflection.getMethodList.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
@@ -2147,6 +2155,7 @@
 				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
 				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
 				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
+				AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */,
 				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
 				AD3FF5F92683B9F900D2F52A /* PwgNotifications.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
@@ -2197,6 +2206,7 @@
 				AD211A8127BADED3005D5E4F /* reflection.getMethodList.swift in Sources */,
 				ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */,
 				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
+				AD211A8F27C14EE2005D5E4F /* pwg.session.logout.swift in Sources */,
 				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
 				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */,
