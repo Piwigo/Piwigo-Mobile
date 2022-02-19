@@ -71,7 +71,7 @@ extension UploadManager {
                 }
             } catch {
                 // Data cannot be digested, upload still ready for finish
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+                let error = error as NSError
                 self.didFinishTransfer(for: uploadID, error: error)
                 return
             }
@@ -135,7 +135,8 @@ extension UploadManager {
             }
             catch {
                 // Will retry later
-                completionHandler(UploadError.wrongJSONobject as NSError)
+                let error = error as NSError
+                completionHandler(error)
                 return
             }
         } failure: { error in

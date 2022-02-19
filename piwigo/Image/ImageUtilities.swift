@@ -176,7 +176,8 @@ class ImageUtilities: NSObject {
                 }
             } catch {
                 // Data cannot be digested
-                failure(JsonError.wrongJSONobject as NSError)
+                let error = error as NSError
+                failure(error)
             }
         } failure: { error in
             /// - Network communication errors
@@ -235,7 +236,8 @@ class ImageUtilities: NSObject {
                 }
             } catch {
                 // Data cannot be digested
-                failure(JsonError.wrongJSONobject as NSError)
+                let error = error as NSError
+                failure(error)
             }
         } failure: { error in
             /// - Network communication errors
@@ -286,7 +288,8 @@ class ImageUtilities: NSObject {
                 }
             } catch {
                 // Data cannot be digested
-                failure(JsonError.wrongJSONobject as NSError)
+                let error = error as NSError
+                failure(error)
             }
         } failure: { error in
             /// - Network communication errors
@@ -337,7 +340,8 @@ class ImageUtilities: NSObject {
                 }
             } catch {
                 // Data cannot be digested
-                failure(JsonError.wrongJSONobject as NSError)
+                let error = error as NSError
+                failure(error)
             }
         } failure: { error in
             /// - Network communication errors

@@ -343,13 +343,12 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
             } catch {
                 // Data cannot be digested
-                let error = JsonError.wrongJSONobject
+                let error = error as NSError
                 topViewController?.hidePiwigoHUD {
                     topViewController?.dismissPiwigoError(
                         withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
                           message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
                 }
-                return
             }
         } failure: { error in
             /// - Network communication errors

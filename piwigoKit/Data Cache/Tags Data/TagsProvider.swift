@@ -65,7 +65,8 @@ public class TagsProvider {
 
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completionHandler(TagError.wrongDataFormat)
+                    let error = error as NSError
+                    completionHandler(error)
                     return
                 }
                 completionHandler(nil)
@@ -328,7 +329,8 @@ public class TagsProvider {
 
             } catch {
                 // Alert the user if data cannot be digested.
-                completionHandler(TagError.wrongDataFormat)
+                let error = error as NSError
+                completionHandler(error)
                 return
             }
         } failure: { error in
