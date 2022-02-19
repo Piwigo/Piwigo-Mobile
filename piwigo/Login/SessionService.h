@@ -15,7 +15,4 @@
                               OnCompletion:(void (^)(NSDictionary *responseObject))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 @end

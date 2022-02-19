@@ -19,7 +19,7 @@
 //NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
 //NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
-NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
+//NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
 NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 //NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 

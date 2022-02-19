@@ -389,47 +389,4 @@
               }];
 }
 
-+(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
-                                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    // API community.session.getStatus returns:
-    //      real_user_status
-    //      upload_categories_getList_method
-
-    return [self post:kCommunitySessionGetStatus
-        URLParameters:nil
-           parameters:nil
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:^(NSProgress * progress) {
-                 if (NetworkVarsObjc.userCancelledCommunication) {
-                     [progress cancel];
-                 }
-             }
-              success:^(NSURLSessionTask *task, id responseObject) {
-                  
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
-                          NetworkVarsObjc.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                          NetworkVarsObjc.hasNormalRights = [userStatus isEqualToString:@"normal"];
-                          NetworkVarsObjc.hasGuestRights = [userStatus isEqualToString:@"guest"];
-                          completion([responseObject objectForKey:@"result"]);
-                      }
-                      else
-                      {
-                          NetworkVarsObjc.hasAdminRights = NO;
-                          NetworkVarsObjc.hasNormalRights = NO;
-                          NetworkVarsObjc.usesUploadAsync = NO;
-                          completion(nil);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
-                  
-                  if(fail) {
-                      fail(task, error);
-                  }
-              }];
-}
-
 @end

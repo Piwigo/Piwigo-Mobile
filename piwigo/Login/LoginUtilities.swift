@@ -57,6 +57,57 @@ class LoginUtilities: NSObject {
     }
 
     @objc
+    class func communityGetStatus(completion: @escaping () -> Void,
+                                  failure: @escaping (NSError) -> Void) {
+        // Launch request
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
+                                jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
+                                countOfBytesClientExpectsToReceive: 2100) { jsonData in
+            // Decode the JSON object and retrieve the status
+            do {
+                // Decode the JSON into codable type ImagesGetInfoJSON.
+                let decoder = JSONDecoder()
+                let statusJSON = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if statusJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: statusJSON.errorCode,
+                                                                    errorMessage: statusJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+                
+                // No status returned
+                if statusJSON.realUser.isEmpty {
+                    failure(JsonError.unknownStatus as NSError)
+                    return
+                }
+
+                // Update session flags
+                NetworkVars.hasAdminRights = statusJSON.realUser.contains("admin") ||
+                                                statusJSON.realUser.contains("webmaster")
+                NetworkVars.hasNormalRights = statusJSON.realUser.contains("normal")
+                NetworkVars.hasGuestRights = statusJSON.realUser.contains("guest")
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                NetworkVars.hasAdminRights = false
+                NetworkVars.hasNormalRights = false
+                NetworkVars.usesUploadAsync = false
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
+    @objc
     class func performLogin(withUsername username:String, password:String,
                             completion: @escaping () -> Void,
                             failure: @escaping (NSError) -> Void) {

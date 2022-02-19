@@ -632,28 +632,16 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                   inMode:MBProgressHUDModeIndeterminate];
         
         // Community extension installed
-        [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
-            
-            if(responseObject)
-            {
-                // Check Piwigo version, get token, available sizes, etc.
-                [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
-            }
-            else {
-                // Inform user that server failed to retrieve Community parameters
-                NetworkVarsObjc.hadOpenedSession = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                self.isAlreadyTryingToLogin = NO;
-            }
-            
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Get Community status failed
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        [LoginUtilities communityGetStatusWithCompletion:^{
+            // Check Piwigo version, get token, available sizes, etc.
+            [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
+        }
+        failure:^(NSError * _Nonnull error) {
+            // Inform user that server failed to retrieve Community parameters
             NetworkVarsObjc.hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
         }];
-
     } else {
         // Community extension not installed
         // Check Piwigo version, get token, available sizes, etc.

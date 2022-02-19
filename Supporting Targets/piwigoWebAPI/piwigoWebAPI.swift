@@ -13,39 +13,50 @@ import XCTest
 import piwigoKit
 
 class piwigoWebAPI: XCTestCase {
-
-    // MARK: - reflection.…
-    func testReflectionGetMethodListDecoding() {
+    
+    // MARK: - community.…
+    func testCommunityImagesUploadCompletedDecoding() {
+        
         // Case of a successful request
         let bundle = Bundle(for: type(of: self))
-        guard let url = bundle.url(forResource: "reflection.getMethodList", withExtension: "json"),
-            var data = try? Data(contentsOf: url) else {
+        guard let url = bundle.url(forResource: "community.images.uploadCompleted", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: ReflectionGetMethodListJSON.self) {
-            XCTFail()
-            return
-        }
-
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
-        guard let result = try? decoder.decode(ReflectionGetMethodListJSON.self, from: data) else {
+        guard let result = try? decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data) else {
             XCTFail()
             return
         }
-
+        
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-
-        XCTAssertEqual(result.data[0], "community.categories.getList")
-        XCTAssertEqual(result.data[1], "community.images.uploadCompleted")
+        XCTAssertTrue(result.data.contains(where: { $0.id == "51768" }))
     }
 
-    
+    func testCommunitySessionGetStatusDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "community.session.getStatus", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CommunitySessionGetStatusJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.realUser, "webmaster")
+        XCTAssertEqual(result.uploadMethod, "pwg.categories.getAdminList")
+    }
+
+
     // MARK: - pwg.…
     func testPwgGetInfosDecoding() {
         // Case of a successful request
@@ -350,25 +361,35 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.result, true)
     }
 
-
-    // MARK: - community
-    func testCommunityImagesUploadCompletedDecoding() {
-        
+    
+    // MARK: - reflection.…
+    func testReflectionGetMethodListDecoding() {
         // Case of a successful request
         let bundle = Bundle(for: type(of: self))
-        guard let url = bundle.url(forResource: "community.images.uploadCompleted", withExtension: "json"),
-            let data = try? Data(contentsOf: url) else {
+        guard let url = bundle.url(forResource: "reflection.getMethodList", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
             XCTFail("Could not load resource file")
             return
         }
         
-        let decoder = JSONDecoder()
-        guard let result = try? decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data) else {
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: ReflectionGetMethodListJSON.self) {
             XCTFail()
             return
         }
-        
+
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ReflectionGetMethodListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
         XCTAssertEqual(result.status, "ok")
-        XCTAssertTrue(result.data.contains(where: { $0.id == "51768" }))
+        XCTAssertEqual(result.errorCode, 0)
+        XCTAssertEqual(result.errorMessage, "")
+
+        XCTAssertEqual(result.data[0], "community.categories.getList")
+        XCTAssertEqual(result.data[1], "community.images.uploadCompleted")
     }
 }

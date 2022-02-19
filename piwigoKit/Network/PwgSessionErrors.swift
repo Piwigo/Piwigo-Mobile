@@ -13,6 +13,7 @@ public enum JsonError: Error {
     case emptyJSONobject
     case invalidJSONobject
     case wrongJSONobject
+    case unknownStatus
     case unexpectedError
     
     // Piwigo server errors
@@ -37,6 +38,9 @@ extension JsonError: LocalizedError {
         case .wrongJSONobject:
             return NSLocalizedString("PiwigoServer_wrongJSONobject",
                                      comment: "Could not digest JSON object returned by Piwigo server.")
+        case .unknownStatus:
+            return NSLocalizedString("serverCommunityError_message",
+                                     comment: "Failed to get Community extension parameters.\nTry logging in again.")
         case .unexpectedError:
             return NSLocalizedString("serverUnknownError_message",
                                      comment: "Unexpected error encountered while calling server method with provided parameters.")
