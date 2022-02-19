@@ -128,9 +128,7 @@ class LoginUtilities: NSObject {
 
                 // Logout successful
                 NetworkVars.hadOpenedSession = false
-                let error = PwgSession.shared.localizedError(for: 0, errorMessage: "prout")
-                failure(error as NSError)
-//                completion()
+                completion()
             }
             catch {
                 // Data cannot be digested
