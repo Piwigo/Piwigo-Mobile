@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.3_text" = "Wersja 2.9.3\n\n• Dotknij dwukrotnie, aby powiększyć i pomniejszyć zdjęcie\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
+"v2.9.4_text" = "Wersja 2.9.4\n\n• Poprawki błędów\n• Modernizacja kodu";
+
+"v2.9.3_text" = "Wersja 2.9.3\n11 lutego 2022\n\n• Dotknij dwukrotnie, aby powiększyć i pomniejszyć zdjęcie\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
 
 "v2.9.2_text" = "Wersja 2.9.2\n24 stycznia 2022\n\n• Poprawki błędów\n• Modernizacja kodu";
 
