@@ -1426,7 +1426,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     #if DEBUG
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)

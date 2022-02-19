@@ -28,7 +28,7 @@ class LoginUtilities: NSObject {
                 let methodsJSON = try decoder.decode(ReflectionGetMethodListJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (methodsJSON.errorCode != 0) || methodsJSON.data.isEmpty {
+                if methodsJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: methodsJSON.errorCode,
                                                                     errorMessage: methodsJSON.errorMessage)
                     failure(error as NSError)
@@ -76,8 +76,8 @@ class LoginUtilities: NSObject {
 
                 // Piwigo error?
                 if loginJSON.errorCode != 0 {
-                    let error = PwgSession.shared
-                        .localizedError(for: loginJSON.errorCode, errorMessage: loginJSON.errorMessage)
+                    let error = PwgSession.shared.localizedError(for: loginJSON.errorCode,
+                                                                    errorMessage: loginJSON.errorMessage)
                     NetworkVars.hadOpenedSession = false
                     failure(error as NSError)
                     return

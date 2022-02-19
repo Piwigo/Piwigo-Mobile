@@ -35,7 +35,7 @@ class ImageUtilities: NSObject {
                 let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (imageJSON.errorCode != 0) {
+                if imageJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
                                                                     errorMessage: imageJSON.errorMessage)
                     failure(error as NSError)
@@ -158,7 +158,7 @@ class ImageUtilities: NSObject {
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
                     failure(error as NSError)
@@ -208,7 +208,7 @@ class ImageUtilities: NSObject {
                 let uploadJSON = try decoder.decode(ImagesDeleteJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
                     failure(error as NSError)
@@ -263,7 +263,7 @@ class ImageUtilities: NSObject {
                 let uploadJSON = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
                     failure(error as NSError)
@@ -314,7 +314,7 @@ class ImageUtilities: NSObject {
                 let uploadJSON = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
                     failure(error as NSError)

@@ -53,7 +53,7 @@ public class TagsProvider {
                     let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
 
                     // Piwigo error?
-                    if (tagJSON.errorCode != 0) {
+                    if tagJSON.errorCode != 0 {
                         let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
                                                                         errorMessage: tagJSON.errorMessage)
                         completionHandler(error)
@@ -306,9 +306,9 @@ public class TagsProvider {
                 let tagJSON = try decoder.decode(TagAddJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (tagJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                if tagJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
+                                                                    errorMessage: tagJSON.errorMessage)
                     completionHandler(error)
                     return
                 }

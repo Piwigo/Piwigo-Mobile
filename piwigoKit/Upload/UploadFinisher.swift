@@ -51,7 +51,7 @@ extension UploadManager {
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
                     self.didFinishTransfer(for: uploadID, error: error)
@@ -119,7 +119,7 @@ extension UploadManager {
                 let uploadJSON = try decoder.decode(ImagesUploadCompletedJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     // Will retry later
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
@@ -203,7 +203,7 @@ extension UploadManager {
                 let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     // Will retry later
                     debugPrint("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
                     completionHandler(false, [])
