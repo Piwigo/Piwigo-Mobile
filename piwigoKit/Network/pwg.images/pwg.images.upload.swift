@@ -14,7 +14,8 @@ public let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
 public struct ImagesUploadJSON: Decodable {
 
     public var status: String?
-    public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
+    public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "", name: "")
+    public var category = Category(catId: NSNotFound, catName: "", nbPhotos: NSNotFound)
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -23,6 +24,16 @@ public struct ImagesUploadJSON: Decodable {
         case data = "result"
         case errorCode = "err"
         case errorMessage = "message"
+    }
+
+    private enum ResultCodingKeys: String, CodingKey {
+        case category
+    }
+
+    private enum CategoryCodingKeys: String, CodingKey {
+        case catId = "id"
+        case catName = "label"
+        case nbPhotos = "nb_photos"
     }
 
     private enum ErrorCodingKeys: String, CodingKey {
@@ -37,15 +48,34 @@ public struct ImagesUploadJSON: Decodable {
             guard let rootContainer = try? decoder.container(keyedBy: RootCodingKeys.self) else {
                 return
             }
-//            dump(rootContainer)
+            dump(rootContainer)
 
             // Status returned by Piwigo
             status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
             if status == "ok"
             {
                 // Decodes response from the data and store them in the array
-                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
+                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "", name: "")
 //                dump(data)
+
+                // Result container keyed by ResultCodingKeys
+                let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
+//                dump(resultContainer)
+
+                // Decodes derivatives
+                do {
+                    try category = resultContainer.decode(Category.self, forKey: .category)
+                }
+                catch {
+                    // Sometimes, nbPhotos is provided as String instead of Int!
+                    var categoryStr = CategoryStr(catId: NSNotFound, catName: "", nbPhotos: "")
+                    try categoryStr = resultContainer.decode(CategoryStr.self, forKey: .category)
+                    if let nbPhotosStr = categoryStr.nbPhotos, let nbPhotos = Int(nbPhotosStr) {
+                        category = Category(catId: categoryStr.catId,
+                                            catName: categoryStr.catName,
+                                            nbPhotos: nbPhotos)
+                    }
+                }
             }
             else if status == "fail"
             {
@@ -81,16 +111,27 @@ public struct ImagesUpload: Decodable
     public let square_src: String?         // "https://…-sq.jpg"
     public let src: String?                // "https://…-th.jpg"
 
-    // The following data are not used yet
-    public let category: Category?         // {"id":140,"nb_photos":"7","label":"Essai"}
+    // The following data is not used yet
     public let name: String?               // "Delft - 01"
 }
 
 // MARK: - Category
 public struct Category: Decodable {
-    public let catId: Int?
-    public let catName: String?
-    public let nbPhotos: Int?
+    public let catId: Int?                  // 140
+    public let catName: String?             // "Essai"
+    public let nbPhotos: Int?               // 7
+
+    public enum CodingKeys: String, CodingKey {
+        case catId = "id"
+        case catName = "label"
+        case nbPhotos = "nb_photos"
+    }
+}
+
+public struct CategoryStr: Decodable {
+    public let catId: Int?                  // 140
+    public let catName: String?             // "Essai"
+    public let nbPhotos: String?            // "7"
 
     public enum CodingKeys: String, CodingKey {
         case catId = "id"
