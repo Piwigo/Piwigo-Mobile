@@ -162,6 +162,9 @@
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
 		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
+		AD98DEB227C1AF2900FAC983 /* pwg.session.getStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */; };
+		AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
+		AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
@@ -591,6 +594,8 @@
 		AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumVars.swift; sourceTree = "<group>"; };
 		AD98762E2626014500B964C5 /* UploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProperties.swift; sourceTree = "<group>"; };
 		AD987633262606C600B964C5 /* UIViewController+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppTools.swift"; sourceTree = "<group>"; };
+		AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.getStatus.json; sourceTree = "<group>"; };
+		AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.getStatus.swift; sourceTree = "<group>"; };
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
 		ADA0049C2739C036006FE8ED /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
 		ADA0049D2739C038006FE8ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -934,6 +939,7 @@
 			isa = PBXGroup;
 			children = (
 				AD211A8327BAFCF2005D5E4F /* pwg.session.login.json */,
+				AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */,
 				AD211A8B27C14B7E005D5E4F /* pwg.session.logout.json */,
 			);
 			path = pwg.session;
@@ -943,6 +949,7 @@
 			isa = PBXGroup;
 			children = (
 				AD211A8527BAFD68005D5E4F /* pwg.session.login.swift */,
+				AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */,
 				AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */,
 			);
 			path = pwg.session;
@@ -1955,6 +1962,7 @@
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
 				ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */,
 				AD211A8627BAFE1E005D5E4F /* pwg.session.login.json in Resources */,
+				AD98DEB227C1AF2900FAC983 /* pwg.session.getStatus.json in Resources */,
 				AD211A8C27C14B7E005D5E4F /* pwg.session.logout.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
@@ -2168,6 +2176,7 @@
 				AD3FF5F92683B9F900D2F52A /* PwgNotifications.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
 				AD0B6ACD268A218F007DEE70 /* UploadManager.swift in Sources */,
 				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
 				ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */,
@@ -2218,6 +2227,7 @@
 				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */,
 				AD211A8A27BAFE30005D5E4F /* pwg.session.login.swift in Sources */,
+				AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
 				AD211A8F27C14EE2005D5E4F /* pwg.session.logout.swift in Sources */,
 				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
 				AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,

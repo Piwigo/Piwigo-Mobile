@@ -246,6 +246,27 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.success, true)
     }
 
+    func testPwgSessionGetStatusDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.session.getStatus", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(SessionGetStatusJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data?.userName, "Eddy")
+        XCTAssertEqual(result.data?.language, "fr_FR")
+    }
+
     func testPwgSessionLogoutDecoding() {
         // Case of a successful request
         let bundle = Bundle(for: type(of: self))
