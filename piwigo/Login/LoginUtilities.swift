@@ -57,7 +57,7 @@ class LoginUtilities: NSObject {
     }
 
     @objc
-    class func performLogin(withUsername username:String, password:String,
+    class func sessionLogin(withUsername username:String, password:String,
                             completion: @escaping () -> Void,
                             failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -466,7 +466,7 @@ class LoginUtilities: NSObject {
     }
 
     @objc
-    class func performLogout(completion: @escaping () -> Void,
+    class func sessionLogout(completion: @escaping () -> Void,
                              failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared

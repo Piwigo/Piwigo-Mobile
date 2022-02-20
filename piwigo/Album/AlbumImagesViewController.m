@@ -17,7 +17,6 @@
 #import "FavoritesImagesViewController.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
-#import "NetworkHandler.h"
 #import "SearchImagesViewController.h"
 
 #ifndef DEBUG_LIFECYCLE

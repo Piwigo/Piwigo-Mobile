@@ -15,9 +15,9 @@
 #import "LoginViewController_iPad.h"
 #import "MBProgressHUD.h"
 
-#ifndef DEBUG_SESSION
-#define DEBUG_SESSION
-#endif
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
 
 NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
@@ -583,7 +583,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                   inMode:MBProgressHUDModeIndeterminate];
         
         // Perform login
-        [LoginUtilities performLoginWithUsername:username password:password
+        [LoginUtilities sessionLoginWithUsername:username password:password
                                       completion:^(void) {
             // Session now opened
             // First determine user rights if Community extension installed
@@ -807,7 +807,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     NSString *username = NetworkVarsObjc.username;
     NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:username];
     self.isAlreadyTryingToLogin = YES;
-    [LoginUtilities performLoginWithUsername:username password:password completion:^{
+    [LoginUtilities sessionLoginWithUsername:username password:password completion:^{
         // Session re-opened
         // First determine user rights if Community extension installed
         [self getCommunityStatusAtFirstLogin:NO

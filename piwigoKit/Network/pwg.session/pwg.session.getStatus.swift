@@ -1,14 +1,14 @@
 //
-//  pwg.session.login.swift
+//  pwg.session.getStatus.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 14/02/2022.
+//  Created by Eddy Lelièvre-Berna on 20/02/2022.
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 
-// MARK: - pwg.session.login
+// MARK: - pwg.session.getStatus
 public let kPiwigoSessionGetStatus = "format=json&method=pwg.session.getStatus"
 
 public struct SessionGetStatusJSON: Decodable {
@@ -65,7 +65,7 @@ public struct SessionGetStatusJSON: Decodable {
     }
 }
 
-// MARK: - Infos
+// MARK: - Status Info
 public struct StatusInfo: Decodable
 {
     public let version: String?             // "12.2.0"

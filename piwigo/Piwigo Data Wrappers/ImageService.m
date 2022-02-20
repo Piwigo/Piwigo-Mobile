@@ -636,6 +636,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     return task;
 }
 
+
+#pragma mark - Get image data
+
 +(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json forCategoryId:(NSInteger)categoryId
 {
 	NSArray *imagesInfo = [json objectForKey:@"images"];
@@ -652,9 +655,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
 	return albumImages;
 }
-
-
-#pragma mark - Get image data
 
 +(PiwigoImageData*)parseBasicImageInfoJSON:(NSDictionary*)imageJson
 {
