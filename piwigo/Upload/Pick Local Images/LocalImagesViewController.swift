@@ -242,7 +242,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -264,7 +264,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = .piwigoColorBackground()
-            navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+            navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
@@ -272,14 +272,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             segmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
             if #available(iOS 13.0, *) {
                 // Keep standard background color
-                segmentedControl.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                segmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             } else {
                 segmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
             }
         }
 
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 
@@ -1172,7 +1172,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 alert.addAction(deleteAction)
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1784,21 +1784,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Determine which help pages should be presented
         var displayHelpPagesWithIndex: [Int] = []
-        if (AppVars.didWatchHelpViews & 0b00000000_00010000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00010000) == 0 {
             displayHelpPagesWithIndex.append(4)     // i.e. submit upload requests and let it go
         }
-        if (AppVars.didWatchHelpViews & 0b00000000_00001000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00001000) == 0 {
             displayHelpPagesWithIndex.append(3)     // i.e. remove images from camera roll
         }
-        if (AppVars.didWatchHelpViews & 0b00000000_00100000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
         }
         if #available(iOS 13, *),
-           (AppVars.didWatchHelpViews & 0b00000000_00000010) == 0 {
+           (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
         }
         if #available(iOS 14, *),
-           (AppVars.didWatchHelpViews & 0b00000000_01000000) == 0 {
+           (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
             displayHelpPagesWithIndex.append(6)     // i.e. use auto-uploading
         }
         if displayHelpPagesWithIndex.count > 0 {

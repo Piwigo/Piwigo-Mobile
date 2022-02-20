@@ -114,7 +114,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
             navigationController?.navigationBar.prefersLargeTitles = true
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -131,7 +131,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Table view
         settingsTableView?.separatorColor = .piwigoColorSeparator()
-        settingsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
 
@@ -161,12 +161,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if #available(iOS 10, *) {
             let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
-//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.dateOfLastTranslationRequest, k2WeeksInDays))
+//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
             let now: Double = Date().timeIntervalSinceReferenceDate
-            let dueDate: Double = AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth
+            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.kPiwigoOneMonth
             if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
                 // Store date of last translation request
-                AppVars.dateOfLastTranslationRequest = now
+                AppVars.shared.dateOfLastTranslationRequest = now
 
                 // Request a translation
                 let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
@@ -184,7 +184,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.addAction(defaultAction)
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1013,9 +1013,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
-            if AppVars.isLightPaletteModeActive == true {
+            if AppVars.shared.isLightPaletteModeActive == true {
                 detail = NSLocalizedString("settings_lightColor", comment: "Light")
-            } else if AppVars.isDarkPaletteModeActive == true {
+            } else if AppVars.shared.isDarkPaletteModeActive == true {
                 detail = NSLocalizedString("settings_darkColor", comment: "Dark")
             } else {
                 detail = NSLocalizedString("settings_switchPalette", comment: "Automatic")
@@ -1034,7 +1034,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.diskCache)
+                let value = Float(AppVars.shared.diskCache)
 
                 // Slider configuration
                 let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
@@ -1050,15 +1050,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
                                value: value,
-                               increment: Float(AppVars.kPiwigoDiskCacheInc),
-                               minValue: Float(AppVars.kPiwigoDiskCacheMin),
-                               maxValue: Float(AppVars.kPiwigoDiskCacheMax),
+                               increment: Float(AppVars.shared.kPiwigoDiskCacheInc),
+                               minValue: Float(AppVars.shared.kPiwigoDiskCacheMin),
+                               maxValue: Float(AppVars.shared.kPiwigoDiskCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.diskCache = Int(newValue)
+                    AppVars.shared.diskCache = Int(newValue)
                     // Update disk cache size
-                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.diskCache * 1024 * 1024
+                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
                 }
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
@@ -1069,7 +1069,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.memoryCache)
+                let value = Float(AppVars.shared.memoryCache)
 
                 // Slider configuration
                 let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
@@ -1085,15 +1085,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
                                value: value,
-                               increment: Float(AppVars.kPiwigoMemoryCacheInc),
-                               minValue: Float(AppVars.kPiwigoMemoryCacheMin),
-                               maxValue: Float(AppVars.kPiwigoMemoryCacheMax),
+                               increment: Float(AppVars.shared.kPiwigoMemoryCacheInc),
+                               minValue: Float(AppVars.shared.kPiwigoMemoryCacheMin),
+                               maxValue: Float(AppVars.shared.kPiwigoMemoryCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.memoryCache = Int(newValue)
+                    AppVars.shared.memoryCache = Int(newValue)
                     // Update memory cache size
-                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.memoryCache * 1024 * 1024)
+                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
                 }
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
@@ -1685,7 +1685,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Present list of actions
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1831,7 +1831,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

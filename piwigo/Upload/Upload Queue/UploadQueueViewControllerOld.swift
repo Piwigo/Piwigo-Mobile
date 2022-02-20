@@ -105,14 +105,14 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
         queueTableView.separatorColor = .piwigoColorSeparator()
-        queueTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -224,7 +224,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 								alert.addAction(cancelAction)
 								alert.view.tintColor = .piwigoColorOrange()
 								if #available(iOS 13.0, *) {
-									alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+									alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 								} else {
 									// Fallback on earlier versions
 								}
@@ -279,7 +279,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

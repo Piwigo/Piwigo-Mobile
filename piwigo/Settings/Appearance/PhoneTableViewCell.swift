@@ -47,7 +47,7 @@ class PhoneTableViewCell: UITableViewCell {
         
         // Buttons
         if #available(iOS 13.0, *) {
-            if AppVars.isDarkPaletteActive {
+            if AppVars.shared.isDarkPaletteActive {
                 lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
                 lightButton.tintColor = .piwigoColorRightLabel()
                 darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -60,7 +60,7 @@ class PhoneTableViewCell: UITableViewCell {
             }
         } else {
             // Fallback on earlier versions
-            if AppVars.isDarkPaletteActive {
+            if AppVars.shared.isDarkPaletteActive {
                 lightButton.setImage(UIImage(named: "circle"), for: .normal)
                 lightButton.tintColor = .piwigoColorRightLabel()
                 darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
@@ -76,9 +76,9 @@ class PhoneTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        AppVars.isLightPaletteModeActive = true
-        AppVars.isDarkPaletteModeActive = false
-        AppVars.switchPaletteAutomatically = false
+        AppVars.shared.isLightPaletteModeActive = true
+        AppVars.shared.isDarkPaletteModeActive = false
+        AppVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
@@ -97,9 +97,9 @@ class PhoneTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        AppVars.isLightPaletteModeActive = false
-        AppVars.isDarkPaletteModeActive = true
-        AppVars.switchPaletteAutomatically = false
+        AppVars.shared.isLightPaletteModeActive = false
+        AppVars.shared.isDarkPaletteModeActive = true
+        AppVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

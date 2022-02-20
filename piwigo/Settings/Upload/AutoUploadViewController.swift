@@ -57,7 +57,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -74,7 +74,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Table view
         autoUploadTableView.separatorColor = .piwigoColorSeparator()
-        autoUploadTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        autoUploadTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         autoUploadTableView.reloadData()
     }
 

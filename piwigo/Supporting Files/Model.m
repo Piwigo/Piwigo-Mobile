@@ -338,15 +338,15 @@ NSInteger const kDelayPiwigoHUD = 500;
         ImageVars.shared.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
         ImageVars.shared.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
 
-        AppVars.isDarkPaletteActive = modelData.isDarkPaletteActive;
-        AppVars.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
-        AppVars.switchPaletteThreshold = modelData.switchPaletteThreshold;
-        AppVars.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
-        AppVars.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
-        AppVars.diskCache = modelData.diskCache;
-        AppVars.memoryCache = modelData.memoryCache;
-        AppVars.didWatchHelpViews = modelData.didWatchHelpViews;
-        AppVars.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
+        AppVars.shared.isDarkPaletteActive = modelData.isDarkPaletteActive;
+        AppVars.shared.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
+        AppVars.shared.switchPaletteThreshold = modelData.switchPaletteThreshold;
+        AppVars.shared.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
+        AppVars.shared.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
+        AppVars.shared.diskCache = modelData.diskCache;
+        AppVars.shared.memoryCache = modelData.memoryCache;
+        AppVars.shared.didWatchHelpViews = modelData.didWatchHelpViews;
+        AppVars.shared.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
 
         UploadVarsObjc.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
         UploadVarsObjc.defaultAuthor = modelData.defaultAuthor;

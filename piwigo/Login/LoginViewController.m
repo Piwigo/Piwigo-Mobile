@@ -169,7 +169,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.passwordTextField.backgroundColor = [UIColor piwigoColorBackground];
     
     // Login button
-    if (AppVars.isDarkPaletteActive) {
+    if (AppVars.shared.isDarkPaletteActive) {
         self.loginButton.backgroundColor = [UIColor piwigoColorOrangeSelected];
     } else {
         self.loginButton.backgroundColor = [UIColor piwigoColorOrange];
@@ -184,7 +184,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            AppVars.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -240,7 +240,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         [alert addAction:defaultAction];
         alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
@@ -407,7 +407,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:acceptAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -435,7 +435,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         userTextField.text = (user.length > 0) ? user : @"";
         userTextField.clearButtonMode = UITextFieldViewModeAlways;
         userTextField.keyboardType = UIKeyboardTypeDefault;
-        userTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         userTextField.returnKeyType = UIReturnKeyContinue;
         userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -448,7 +448,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
         pwdTextField.keyboardType = UIKeyboardTypeDefault;
         pwdTextField.secureTextEntry = YES;
-        pwdTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         pwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         pwdTextField.returnKeyType = UIReturnKeyContinue;
@@ -478,7 +478,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:self.httpLoginAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -515,7 +515,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:acceptAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -1141,7 +1141,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [alert addAction:defaultAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

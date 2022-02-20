@@ -182,7 +182,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -204,14 +204,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = .piwigoColorBackground()
-            navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+            navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
         }
 
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 
@@ -523,7 +523,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

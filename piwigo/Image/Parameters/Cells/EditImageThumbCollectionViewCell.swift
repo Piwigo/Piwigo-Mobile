@@ -245,7 +245,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             textField.text = imageFile.text
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -274,7 +274,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

@@ -107,7 +107,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.text = albumData.name ?? "?"
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -119,7 +119,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.text = albumData.comment ?? ""
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -151,7 +151,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -275,7 +275,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         alert.view.tintColor = UIColor.piwigoColorOrange()
         alert.view.accessibilityIdentifier = "DeleteAlbum"
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -299,7 +299,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
         alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = "\(NSNumber(value: albumData.numberOfImages))"
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
             textField.delegate = self
@@ -328,7 +328,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

@@ -35,7 +35,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -52,7 +52,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
         // Table view
         tableView.separatorColor = .piwigoColorSeparator()
-        tableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -133,17 +133,17 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(AppVars.switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
 
                 // Number of rows will change accordingly
-                AppVars.switchPaletteAutomatically = switchState
+                AppVars.shared.switchPaletteAutomatically = switchState
 
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    AppVars.isLightPaletteModeActive = false
-                    AppVars.isDarkPaletteModeActive = false
+                    AppVars.shared.isLightPaletteModeActive = false
+                    AppVars.shared.isDarkPaletteModeActive = false
                 }
 
                 // Notify palette change

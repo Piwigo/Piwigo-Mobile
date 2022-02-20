@@ -36,7 +36,7 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()
             ])
         }
-        cellTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+        cellTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
     }
 
     override func prepareForReuse() {

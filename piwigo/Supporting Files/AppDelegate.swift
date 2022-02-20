@@ -506,11 +506,11 @@ import piwigoKit
 
         // Color palette depends on system settings
         if #available(iOS 13.0, *) {
-            AppVars.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
-            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.isSystemDarkModeActive ? "Dark" : "Light", AppVars.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.switchPaletteThreshold, AppVars.isDarkPaletteActive ? "Dark" : "Light");
+            AppVars.shared.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
+            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
         } else {
             // Fallback on earlier versions
-            AppVars.isSystemDarkModeActive = false
+            AppVars.shared.isSystemDarkModeActive = false
         }
         
         // Apply color palette
@@ -587,44 +587,44 @@ import piwigoKit
     // Called when the screen brightness has changed, when user changes settings
     // and by traitCollectionDidChange: when the system switches between Light and Dark modes
     @objc func screenBrightnessChanged() {
-        if AppVars.isLightPaletteModeActive
+        if AppVars.shared.isLightPaletteModeActive
         {
-            if !AppVars.isDarkPaletteActive {
+            if !AppVars.shared.isDarkPaletteActive {
                 // Already in light mode
                 return;
             } else {
                 // "Always Light Mode" selected
-                AppVars.isDarkPaletteActive = false
+                AppVars.shared.isDarkPaletteActive = false
             }
         }
-        else if AppVars.isDarkPaletteModeActive
+        else if AppVars.shared.isDarkPaletteModeActive
         {
-            if AppVars.isDarkPaletteActive {
+            if AppVars.shared.isDarkPaletteActive {
                 // Already showing dark palette
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-                AppVars.isDarkPaletteActive = true
+                AppVars.shared.isDarkPaletteActive = true
             }
         }
-        else if AppVars.switchPaletteAutomatically
+        else if AppVars.shared.switchPaletteAutomatically
         {
             // Dynamic palette mode chosen
             if #available(iOS 13.0, *) {
-                if AppVars.isSystemDarkModeActive {
+                if AppVars.shared.isSystemDarkModeActive {
                     // System-wide dark mode active
-                    if AppVars.isDarkPaletteActive {
+                    if AppVars.shared.isDarkPaletteActive {
                         // Keep dark palette
                         return;
                     } else {
                         // Switch to dark mode
-                        AppVars.isDarkPaletteActive = true
+                        AppVars.shared.isDarkPaletteActive = true
                     }
                 } else {
                     // System-wide light mode active
-                    if AppVars.isDarkPaletteActive {
+                    if AppVars.shared.isDarkPaletteActive {
                         // Switch to light mode
-                        AppVars.isDarkPaletteActive = false
+                        AppVars.shared.isDarkPaletteActive = false
                     } else {
                         // Keep light palette
                         return;
@@ -634,22 +634,22 @@ import piwigoKit
             else {
                 // Option managed by screen brightness
                 let currentBrightness = lroundf(Float(UIScreen.main.brightness) * 100.0);
-                if AppVars.isDarkPaletteActive {
+                if AppVars.shared.isDarkPaletteActive {
                     // Dark palette displayed
-                    if currentBrightness > AppVars.switchPaletteThreshold
+                    if currentBrightness > AppVars.shared.switchPaletteThreshold
                     {
                         // Screen brightness > thereshold, switch to light palette
-                        AppVars.isDarkPaletteActive = false
+                        AppVars.shared.isDarkPaletteActive = false
                     } else {
                         // Keep dark palette
                         return;
                     }
                 } else {
                     // Light palette displayed
-                    if currentBrightness < AppVars.switchPaletteThreshold
+                    if currentBrightness < AppVars.shared.switchPaletteThreshold
                     {
                         // Screen brightness < threshold, switch to dark palette
-                        AppVars.isDarkPaletteActive = true
+                        AppVars.shared.isDarkPaletteActive = true
                     } else {
                         // Keep light palette
                         return;
@@ -658,9 +658,9 @@ import piwigoKit
             }
         } else {
             // Return to either static Light or Dark mode
-            AppVars.isLightPaletteModeActive = !AppVars.isSystemDarkModeActive;
-            AppVars.isDarkPaletteModeActive = AppVars.isSystemDarkModeActive;
-            AppVars.isDarkPaletteActive = AppVars.isSystemDarkModeActive;
+            AppVars.shared.isLightPaletteModeActive = !AppVars.shared.isSystemDarkModeActive;
+            AppVars.shared.isDarkPaletteModeActive = AppVars.shared.isSystemDarkModeActive;
+            AppVars.shared.isDarkPaletteActive = AppVars.shared.isSystemDarkModeActive;
         }
         
         // Tint colour
@@ -673,7 +673,7 @@ import piwigoKit
         UITabBar.appearance().barTintColor = .piwigoColorBackground()
 
         // Styles
-        if AppVars.isDarkPaletteActive
+        if AppVars.shared.isDarkPaletteActive
         {
             UITabBar.appearance().barStyle = .black
             UIToolbar.appearance().barStyle = .black
@@ -685,7 +685,7 @@ import piwigoKit
 
         // Notify palette change to views
         NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
-//        print("•••> app changed to \(AppVars.isDarkPaletteActive ? "dark" : "light") mode");
+//        print("•••> app changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 
 

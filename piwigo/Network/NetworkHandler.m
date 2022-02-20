@@ -223,7 +223,7 @@ NSInteger const loadingViewTag = 899;
     // rely on NSURLCache to store shared and previewed images in disk cache.
     NetworkVarsObjc.imageCache = [[NSURLCache alloc]
                              initWithMemoryCapacity:0
-                                       diskCapacity:AppVars.diskCache * 1024 * 1024
+                                       diskCapacity:AppVars.shared.diskCache * 1024 * 1024
                                            diskPath:@"com.alamofire.imagedownloader"];
     // Configuration
     NSURLSessionConfiguration *config = [AFImageDownloader defaultURLSessionConfiguration];
@@ -244,7 +244,7 @@ NSInteger const loadingViewTag = 899;
     NetworkVarsObjc.imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
     
     // Create image downloader
-    NetworkVarsObjc.thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:AppVars.memoryCache * 1024 * 1024 preferredMemoryCapacity:AppVars.memoryCache * 1024 * 768];
+    NetworkVarsObjc.thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:AppVars.shared.memoryCache * 1024 * 1024 preferredMemoryCapacity:AppVars.shared.memoryCache * 1024 * 768];
     AFImageDownloader *imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:NetworkVarsObjc.imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:NetworkVarsObjc.thumbnailCache];
     [UIImageView setSharedImageDownloader:imageDownloader];
     
@@ -858,7 +858,7 @@ NSInteger const loadingViewTag = 899;
     [alert addAction:defaultAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

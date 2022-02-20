@@ -231,11 +231,11 @@ import piwigoKit
 
         // Navigation bar
         let navigationBar = navigationController?.navigationBar
-        navigationBar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
 
         // Toolbar
         let toolbar = navigationController?.toolbar
-        toolbar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
 
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
@@ -251,7 +251,7 @@ import piwigoKit
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithTransparentBackground()
             barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.shadowColor = AppVars.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
+            barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
             navigationBar?.standardAppearance = barAppearance
             navigationBar?.compactAppearance = barAppearance
             navigationBar?.scrollEdgeAppearance = barAppearance
@@ -321,7 +321,7 @@ import piwigoKit
         if #available(iOS 13.0, *) {
             let hasUserInterfaceStyleChanged = previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle
             if hasUserInterfaceStyleChanged {
-                AppVars.isSystemDarkModeActive = (traitCollection.userInterfaceStyle == .dark)
+                AppVars.shared.isSystemDarkModeActive = (traitCollection.userInterfaceStyle == .dark)
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.screenBrightnessChanged()
             }
@@ -771,7 +771,7 @@ import piwigoKit
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -1078,7 +1078,7 @@ import piwigoKit
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

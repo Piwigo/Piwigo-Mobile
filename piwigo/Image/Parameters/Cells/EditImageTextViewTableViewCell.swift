@@ -34,7 +34,7 @@ class EditImageTextViewTableViewCell: UITableViewCell {
         textView.text = imageDetail
         textView.textColor = color
         textView.backgroundColor = .piwigoColorBackground()
-        textView.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+        textView.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
     }
 
     override func prepareForReuse() {

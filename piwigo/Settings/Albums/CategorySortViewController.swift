@@ -94,7 +94,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -111,7 +111,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         // Table view
         sortSelectTableView.separatorColor = .piwigoColorSeparator()
-        sortSelectTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        sortSelectTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
 

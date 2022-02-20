@@ -180,7 +180,7 @@ extension UIViewController {
             // Present alert
             alert.view.tintColor = .piwigoColorOrange()
             if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             } else {
                 // Fallback on earlier versions
             }

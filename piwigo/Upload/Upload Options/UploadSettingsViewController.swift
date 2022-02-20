@@ -37,7 +37,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
         // Table view
         settingsTableView.separatorColor = .piwigoColorSeparator()
-        settingsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        settingsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
 

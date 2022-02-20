@@ -199,7 +199,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -217,7 +217,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Table view
         setTableViewMainHeader()
         categoriesTableView.separatorColor = .piwigoColorSeparator()
-        categoriesTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        categoriesTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         buildCategoryArray {
             self.categoriesTableView.reloadData()
         }
@@ -370,7 +370,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         alert.addAction(dismissAction)
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -861,7 +861,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Present popover view
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
