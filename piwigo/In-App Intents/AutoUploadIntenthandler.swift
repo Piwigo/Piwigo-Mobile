@@ -92,7 +92,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Initialise upload operations
-                    let uploadOperations = getUploadOperations()
+                    let uploadOperations = self.getUploadOperations()
 
                     // Launch upload operations
                     let uploadQueue = OperationQueue()
