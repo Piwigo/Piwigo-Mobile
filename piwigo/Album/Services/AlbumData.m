@@ -28,7 +28,7 @@
 	{
         self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
-		self.sortType = (kPiwigoSortObjc)AlbumVars.defaultSort;
+		self.sortType = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
         
         // Is image data already in cache?
         NSMutableArray<PiwigoImageData *> *imageList = [NSMutableArray<PiwigoImageData *> new];

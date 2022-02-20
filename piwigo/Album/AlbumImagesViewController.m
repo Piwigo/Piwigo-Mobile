@@ -103,7 +103,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 		// Initialise data source
         self.categoryId = albumId;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
-        self.displayImageTitles = AlbumVars.displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
 		
         // Initialise selection mode
         self.isSelect = NO;
@@ -372,7 +372,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
 
     // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
@@ -473,7 +473,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                                       NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                       };
     if (@available(iOS 11.0, *)) {
-        if (self.categoryId == AlbumVars.defaultCategory) {
+        if (self.categoryId == AlbumVars.shared.defaultCategory) {
             // Title
             navigationBar.largeTitleTextAttributes = attributesLarge;
             navigationBar.prefersLargeTitles = YES;
@@ -497,7 +497,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             barAppearance.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
             barAppearance.titleTextAttributes = attributes;
             barAppearance.largeTitleTextAttributes = attributesLarge;
-            if (self.categoryId != AlbumVars.defaultCategory) {
+            if (self.categoryId != AlbumVars.shared.defaultCategory) {
                 barAppearance.shadowColor = AppVars.isDarkPaletteActive ? [UIColor colorWithWhite:1.0 alpha:0.15] : [UIColor colorWithWhite:0.0 alpha:0.3];
             }
             self.navigationItem.standardAppearance = barAppearance;
@@ -585,8 +585,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self.imagesCollection reloadData];
 
     // Refresh image collection if displayImageTitles option changed in Settings
-//    if (self.displayImageTitles != AlbumVars.displayImageTitles) {
-//        self.displayImageTitles = AlbumVars.displayImageTitles;
+//    if (self.displayImageTitles != AlbumVars.shared.displayImageTitles) {
+//        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
 //        if (self.categoryId != 0) {
 //            [self.albumData reloadAlbumOnCompletion:^{
 //                [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
@@ -610,7 +610,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
 
     // Load album data if this is the default album
-//    if ((self.categoryId == AlbumVars.defaultCategory) && (!self.isCachedAtInit)) {
+//    if ((self.categoryId == AlbumVars.shared.defaultCategory) && (!self.isCachedAtInit)) {
 //        // Display HUD while downloading category data recursively for the first time
 //        // This HUD will be closed inside categoriesUpdated.
 //        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…")
@@ -712,7 +712,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
         self.imageCellSize = CGSizeMake(size, size);
 
         // Reload colelction
@@ -910,8 +910,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     else {
         // Refresh all images if displayImageTitles option changed in Settings
         BOOL didChangeSettings = NO;
-        if (self.displayImageTitles != AlbumVars.displayImageTitles) {
-            self.displayImageTitles = AlbumVars.displayImageTitles;
+        if (self.displayImageTitles != AlbumVars.shared.displayImageTitles) {
+            self.displayImageTitles = AlbumVars.shared.displayImageTitles;
             didChangeSettings = YES;
         }
         
@@ -1139,7 +1139,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Fixes tintColor forgotten (often on iOS 9)
                 self.addButton.tintColor = [UIColor whiteColor];
                 // Show button on the left of the Add button if needed
-                if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
+                if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
                     // Show Home button if not in root or default album
                     [self showHomeAlbumButtonIfNeeded];
                 } else {
@@ -1152,7 +1152,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }];
         } else {
             // Present Home button if needed and if not in root or default album
-            if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
+            if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
                 [self showHomeAlbumButtonIfNeeded];
             }
         }
@@ -1161,14 +1161,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     {
         // Show Home button if not in root or default album
         [self.addButton setHidden:YES];
-        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
+        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
             [self showHomeAlbumButtonIfNeeded];
         }
     }
     
     // Left side of navigation bar
     if ((self.categoryId == 0) ||
-        (self.categoryId == AlbumVars.defaultCategory)){
+        (self.categoryId == AlbumVars.shared.defaultCategory)){
         // Button for accessing settings
         [self.navigationItem setLeftBarButtonItems:@[self.settingsBarButton] animated:YES];
         [self.navigationItem setHidesBackButton:YES];
@@ -1269,7 +1269,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.addButton.tintColor = [UIColor whiteColor];
             
         // Show button on the left of the Add button if needed
-        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
+        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
             // Show Home button if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
         }
@@ -1313,7 +1313,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateNberOfUploads:(NSNotification *)notification
 {
-    if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) { return; }
+    if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) { return; }
     if (notification == nil) { return; }
     NSDictionary *userInfo = notification.userInfo;
     
@@ -1389,7 +1389,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateUploadQueueButtonWithProgress:(NSNotification *)notification
 {
-    if ((self.categoryId != 0) || (self.categoryId != AlbumVars.defaultCategory)) { return; }
+    if ((self.categoryId != 0) || (self.categoryId != AlbumVars.shared.defaultCategory)) { return; }
     if (notification == nil) { return; }
     NSDictionary *userInfo = notification.userInfo;
 
@@ -1796,7 +1796,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
             
             // Is this the view controller of the default album?
-            if (thisViewController.categoryId == AlbumVars.defaultCategory) {
+            if (thisViewController.categoryId == AlbumVars.shared.defaultCategory) {
                 // The view controller of the parent category already exist
                 rootAlbumViewController = thisViewController;
             }
@@ -1812,7 +1812,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // The view controller of the default album does not exist yet
     if (!rootAlbumViewController) {
-        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:AlbumVars.defaultCategory];
+        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:AlbumVars.shared.defaultCategory];
         NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
         [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
         self.navigationController.viewControllers = arrayOfVC;
@@ -3541,7 +3541,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)didChangeDefaultAlbum
 {
     // Change default album
-    self.categoryId = AlbumVars.defaultCategory;
+    self.categoryId = AlbumVars.shared.defaultCategory;
 
     // Add/remove search bar
     if (@available(iOS 11.0, *)) {
@@ -3725,7 +3725,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height;
 //    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
     if ((roundf(scrollView.contentOffset.y + navBarHeight) > 1) ||
-        (self.categoryId != AlbumVars.defaultCategory)) {
+        (self.categoryId != AlbumVars.shared.defaultCategory)) {
         // Show navigation bar border
         if (@available(iOS 13.0, *)) {
             UINavigationItem *navBar = self.navigationItem;

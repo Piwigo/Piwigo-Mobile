@@ -73,7 +73,7 @@
         self.tagId = tagId;
         self.tagName = tagName;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-        self.displayImageTitles = AlbumVars.displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
 
         // Initialise album in cache
         NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
@@ -174,7 +174,7 @@
     [super viewDidLoad];
 
     // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
@@ -269,7 +269,7 @@
 
     // Load, sort images and reload collection
     NSArray *oldImageList = self.albumData.images;
-    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
         // Reload collection
@@ -332,7 +332,7 @@
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
         self.imageCellSize = CGSizeMake(size, size);
 
         // Reload colelction

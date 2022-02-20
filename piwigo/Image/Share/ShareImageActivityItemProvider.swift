@@ -52,7 +52,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         self.imageData = imageData
 
         // We use the thumbnail cached in memory
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
@@ -392,7 +392,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let linkMetaData = LPLinkMetadata()
         
         // We use the thumbnail in cache
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
         if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()

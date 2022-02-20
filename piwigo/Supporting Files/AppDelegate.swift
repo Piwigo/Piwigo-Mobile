@@ -540,7 +540,7 @@ import piwigoKit
 
     @objc func loadNavigation() {
         // Display default album
-        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.defaultCategory) else { return }
+        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
         if #available(iOS 13.0, *) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
@@ -708,7 +708,7 @@ import piwigoKit
         newList.append(categoryIdStr)
 
         // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.recentCategories
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
 
         // Add recent albums while avoiding duplicates
         if (recentAlbumsStr.count != 0) {
@@ -726,11 +726,11 @@ import piwigoKit
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let count = newList.count
         if count > 20 {
-            AlbumVars.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
+            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
         } else {
-            AlbumVars.recentCategories = newList.joined(separator: ",")
+            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
         }
-//        debugPrint("•••> Recent albums: \(AlbumVars.recentCategories) (max: \(AlbumVars.maxNberRecentCategories))")
+//        debugPrint("•••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -741,7 +741,7 @@ import piwigoKit
         if (categoryId <= 0) || (categoryId == NSNotFound) { return }
 
         // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.recentCategories
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
         if recentAlbumsStr.isEmpty { return }
 
         // Get new album Id as string
@@ -757,8 +757,8 @@ import piwigoKit
         }
 
         // Update list
-        AlbumVars.recentCategories = recentCategories.joined(separator: ",")
-//        pring("•••> Recent albums: \(AlbumVars.recentCategories)"
+        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
+//        pring("•••> Recent albums: \(AlbumVars.shared.recentCategories)"
     }
 
     

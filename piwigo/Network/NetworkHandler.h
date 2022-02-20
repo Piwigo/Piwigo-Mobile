@@ -13,7 +13,7 @@ typedef void(^SuccessBlock)(id responseObject);
 // Piwigo URLs:
 //FOUNDATION_EXPORT NSString * const kReflectionGetMethodList;
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
-FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+//FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
 //FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;

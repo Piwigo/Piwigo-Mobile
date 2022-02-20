@@ -175,7 +175,7 @@ import piwigoKit
             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
-                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
+                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.shared.defaultSort)),
                                           forProgress: { [unowned self] onPage, outOf in
                     let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
                     self.updatePiwigoHUD(withProgress: fraction)

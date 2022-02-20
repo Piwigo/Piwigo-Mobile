@@ -718,7 +718,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: categoryData, at: indexPath, handler: { _ in
                 // Set new Default Album
-                if categoryData.albumId != AlbumVars.defaultCategory {
+                if categoryData.albumId != AlbumVars.shared.defaultCategory {
                     self.delegate?.didSelectCategory(withId: categoryData.albumId)
                 }
                 // Return to Settings
@@ -1346,7 +1346,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     private func buildRecentCategoryArray() -> Void {
         // Current recent categories
-        let recentCatIds = AlbumVars.recentCategories.components(separatedBy: ",")
+        let recentCatIds = AlbumVars.shared.recentCategories.components(separatedBy: ",")
         if recentCatIds.isEmpty { return }
 
         // Build list of recent categories
@@ -1369,7 +1369,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             recentCategories.append(categoryData)
 
             // Reach max number of recent categories?
-            if recentCategories.count == AlbumVars.maxNberRecentCategories { break }
+            if recentCategories.count == AlbumVars.shared.maxNberRecentCategories { break }
         }
     }
 

@@ -469,7 +469,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize)
+                let albumImageSize = kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize)
                 let defaultSize = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -493,7 +493,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AlbumVars.maxNberRecentCategories)
+                let value = Float(AlbumVars.shared.maxNberRecentCategories)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -510,7 +510,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.maxNberRecentCategories = Int(newValue)
+                    AlbumVars.shared.maxNberRecentCategories = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
@@ -521,20 +521,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value is the index of kRecentPeriods
-                var value:Float = Float(AlbumVars.recentPeriodIndex)
-                value = min(value, Float(AlbumVars.recentPeriodList.count - 1))
+                var value:Float = Float(AlbumVars.shared.recentPeriodIndex)
+                value = min(value, Float(AlbumVars.shared.recentPeriodList.count - 1))
                 value = max(0.0, value)
 
                 // Slider configuration
                 let title = NSLocalizedString("recentPeriod_title", comment: "Recent Period")
-                cell.configure(with: title, value: value, increment: Float(AlbumVars.recentPeriodKey),
-                               minValue: 0.0, maxValue: Float(AlbumVars.recentPeriodList.count - 1),
+                cell.configure(with: title, value: value, increment: Float(AlbumVars.shared.recentPeriodKey),
+                               minValue: 0.0, maxValue: Float(AlbumVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     let index = Int(newValue)
-                    if index >= 0, index < AlbumVars.recentPeriodList.count {
-                        AlbumVars.recentPeriodIndex = index
+                    if index >= 0, index < AlbumVars.shared.recentPeriodList.count {
+                        AlbumVars.shared.recentPeriodIndex = index
                     }
                     
                     // Reload root/default album
@@ -555,7 +555,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.defaultSort)
+                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
                 let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -578,7 +578,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize), withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize), withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -601,17 +601,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize))
+                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize))
                 let minNberOfImages = Float(ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
-                if Float(AlbumVars.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
+                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
                 }
-                if Float(AlbumVars.thumbnailsPerRowInPortrait) < minNberOfImages {
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(minNberOfImages)
+                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) < minNberOfImages {
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(minNberOfImages)
                 }
-                let value = Float(AlbumVars.thumbnailsPerRowInPortrait)
+                let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -628,7 +628,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: minNberOfImages, maxValue: minNberOfImages * 2, prefix: "", suffix: "/\(Int(minNberOfImages * 2))")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(newValue)
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
@@ -646,10 +646,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 
                 // Switch status
-                cell.cellSwitch.setOn(AlbumVars.displayImageTitles, animated: true)
+                cell.cellSwitch.setOn(AlbumVars.shared.displayImageTitles, animated: true)
                 cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
                 cell.cellSwitchBlock = { switchState in
-                    AlbumVars.displayImageTitles = switchState
+                    AlbumVars.shared.displayImageTitles = switchState
                 }
                 cell.accessibilityIdentifier = "displayImageTitles"
                 tableViewCell = cell
@@ -1543,7 +1543,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: AlbumVars.defaultCategory,
+                categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
@@ -1851,8 +1851,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NetworkVarsObjc.imageCache?.removeAllCachedResponses()
 
         // Back to default values
-        AlbumVars.defaultCategory = 0
-        AlbumVars.recentCategories = "0"
+        AlbumVars.shared.defaultCategory = 0
+        AlbumVars.shared.recentCategories = "0"
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.hasAdminRights = false
         
@@ -1941,11 +1941,11 @@ extension SettingsViewController: SelectCategoryDelegate {
     func didSelectCategory(withId categoryId: Int) {
         // Do nothing if new default album is unknown or unchanged
         if categoryId == NSNotFound ||
-            categoryId == AlbumVars.defaultCategory
+            categoryId == AlbumVars.shared.defaultCategory
         { return }
 
         // Save new choice
-        AlbumVars.defaultCategory = categoryId
+        AlbumVars.shared.defaultCategory = categoryId
 
         // Change album name in row
         let indexPath = IndexPath(row: 0, section: SettingsSection.albums.rawValue)
@@ -1967,15 +1967,15 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
 
         // Root album?
-        if AlbumVars.defaultCategory == 0 {
+        if AlbumVars.shared.defaultCategory == 0 {
             return rootName
         }
         
         // Default album…
-        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
+        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory).name {
             return albumName
         } else {
-            AlbumVars.defaultCategory = 0
+            AlbumVars.shared.defaultCategory = 0
             return rootName
         }
     }
@@ -1986,10 +1986,10 @@ extension SettingsViewController: SelectCategoryDelegate {
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.defaultAlbumThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings row
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
@@ -2005,10 +2005,10 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 extension SettingsViewController: CategorySortDelegate {
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(rawValue: AlbumVars.defaultSort) { return }
+        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
         
         // Save new choice
-        AlbumVars.defaultSort = sortType.rawValue
+        AlbumVars.shared.defaultSort = sortType.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
@@ -2029,10 +2029,10 @@ extension SettingsViewController: CategorySortDelegate {
 extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.defaultThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)

@@ -67,7 +67,7 @@
     {
         // Initialisation
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-        self.displayImageTitles = AlbumVars.displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         
         // Initialise selection mode
         self.isSelect = NO;
@@ -163,7 +163,7 @@
     [super viewDidLoad];
 
     // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
@@ -263,7 +263,7 @@
 
     // Load, sort images and reload collection
     NSArray *oldImageList = self.albumData.images;
-    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
         [self reloadImagesCollectionFrom:oldImageList];
@@ -302,7 +302,7 @@
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
         self.imageCellSize = CGSizeMake(size, size);
 
         // Reload colelction
@@ -1526,7 +1526,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     return CGSizeMake(size, size);
 }
 

@@ -41,7 +41,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
-            return _categoryId ?? AlbumVars.defaultCategory
+            return _categoryId ?? AlbumVars.shared.defaultCategory
         }
         set(categoryId) {
             _categoryId = categoryId
@@ -1522,7 +1522,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -1539,7 +1539,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
+        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
 
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))

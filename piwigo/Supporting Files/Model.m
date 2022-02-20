@@ -309,14 +309,14 @@ NSInteger const kDelayPiwigoHUD = 500;
         CacheVarsObjc.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
 
         // Album variables stored in UserDefaults / Standard
-        AlbumVars.defaultCategory = modelData.defaultCategory;
-        AlbumVars.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
-        AlbumVars.recentCategories = modelData.recentCategories;
-        AlbumVars.maxNberRecentCategories = modelData.maxNberRecentCategories;
-        AlbumVars.defaultSort = modelData.defaultSort;
-        AlbumVars.displayImageTitles = modelData.displayImageTitles;
-        AlbumVars.defaultThumbnailSize = modelData.defaultThumbnailSize;
-        AlbumVars.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
+        AlbumVars.shared.defaultCategory = modelData.defaultCategory;
+        AlbumVars.shared.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
+        AlbumVars.shared.recentCategories = modelData.recentCategories;
+        AlbumVars.shared.maxNberRecentCategories = modelData.maxNberRecentCategories;
+        AlbumVars.shared.defaultSort = modelData.defaultSort;
+        AlbumVars.shared.displayImageTitles = modelData.displayImageTitles;
+        AlbumVars.shared.defaultThumbnailSize = modelData.defaultThumbnailSize;
+        AlbumVars.shared.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
 
         ImageVars.shared.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
         ImageVars.shared.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;

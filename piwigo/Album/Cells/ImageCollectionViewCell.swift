@@ -118,7 +118,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playBckg?.isHidden = !(imageData.isVideo)
 
         // Title
-        if AlbumVars.displayImageTitles ||
+        if AlbumVars.shared.displayImageTitles ||
             (categoryId == kPiwigoVisitsCategoryId) ||
             (categoryId == kPiwigoBestCategoryId) ||
             (categoryId == kPiwigoRecentCategoryId) {
@@ -154,74 +154,74 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Download the image of the requested resolution (or get it from the cache)
-        switch kPiwigoImageSize(rawValue: AlbumVars.defaultThumbnailSize) {
+        switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if AlbumVars.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
+            if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
                 setImageFromPath(squarePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXXSmall:
-            if AlbumVars.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
+            if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
                 setImageFromPath(xxSmallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXSmall:
-            if AlbumVars.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
+            if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
                 setImageFromPath(xSmallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeSmall:
-            if AlbumVars.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
+            if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
                 setImageFromPath(smallPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeMedium:
-            if AlbumVars.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
+            if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
                 setImageFromPath(mediumPath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeLarge:
-            if AlbumVars.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
+            if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
                 setImageFromPath(largePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXLarge:
-            if AlbumVars.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
+            if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
                 setImageFromPath(xLargePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
                 return
             }
         case kPiwigoImageSizeXXLarge:
-            if AlbumVars.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
+            if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
                 setImageFromPath(xxLargePath)
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false
@@ -230,7 +230,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
             fallthrough
         default:
-            if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 setImageFromPath(thumbPath)
             } else {
                 noDataLabel?.isHidden = false

@@ -14,7 +14,6 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "MBProgressHUD.h"
-#import "SessionService.h"
 
 #ifndef DEBUG_SESSION
 #define DEBUG_SESSION
@@ -670,15 +669,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
                   inMode:MBProgressHUDModeIndeterminate];
         
-        [SessionService getPiwigoStatusAtLogin:isLoggingIn
-                                  OnCompletion:^(NSDictionary *responseObject) {
-            if(responseObject)
-            {
-                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
-                {   // They need to update, ask user what to do
-                    // Reinitialise flag
-                    NetworkVarsObjc.userCancelledCommunication = NO;
-                    // Close loading or re-login view and ask what to do
+        [LoginUtilities sessionGetStatusAtLogin:isLoggingIn completion:^{
+            if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
+            {   // They need to update, ask user what to do
+                // Reinitialise flag
+                NetworkVarsObjc.userCancelledCommunication = NO;
+                
+                // Close loading or re-login view and ask what to do
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [self.hudViewController hidePiwigoHUDWithCompletion:^{
                         UIAlertAction* defaultAction = [UIAlertAction
                                 actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -696,19 +694,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                 }];
                         [self presentPiwigoAlertWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible") message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVarsObjc.version] actions:@[defaultAction, continueAction]];
                     }];
-                } else {
-                    // Their version is Ok. Close HUD.
-                    [self launchAppAtFirstLogin:isFirstLogin
-                          withReloginCompletion:reloginCompletion];
-                }
+                });
             } else {
-                // Inform user that we could not authenticate with server
-                NetworkVarsObjc.hadOpenedSession = NO;
-                self.isAlreadyTryingToLogin = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                // Their version is Ok. Close HUD.
+                [self launchAppAtFirstLogin:isFirstLogin
+                      withReloginCompletion:reloginCompletion];
             }
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             NetworkVarsObjc.hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
             // Display error message
@@ -767,7 +759,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     
                     // Load favorites data in the background with dedicated URL session
                     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort
                         forProgress:nil onCompletion:nil onFailure:nil];
                     });
                 }
@@ -856,7 +848,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 //
 //                // Load favorites data in the background with dedicated URL session
 //                dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort
 //                    forProgress:nil onCompletion:nil onFailure:nil];
 //                });
 //            }

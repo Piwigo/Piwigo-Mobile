@@ -77,7 +77,7 @@
         }
 
         // Sort option depends on album type
-        self.displayImageTitles = AlbumVars.displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.currentSort = kPiwigoSortObjcVisitsDescending;
         } else if (categoryId == kPiwigoBestCategoryId) {
@@ -85,7 +85,7 @@
         } else if (categoryId == kPiwigoRecentCategoryId) {
             self.currentSort = kPiwigoSortObjcDatePostedDescending;
         } else {
-            self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
+            self.currentSort = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
         }
 
         // Initialise selection mode
@@ -182,7 +182,7 @@
     [super viewDidLoad];
 
     // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
@@ -340,7 +340,7 @@
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
         self.imageCellSize = CGSizeMake(size, size);
 
         // Reload colelction

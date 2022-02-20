@@ -376,7 +376,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     func getMissingImages(beforeDeletingInMode deletionMode: String, with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
-        let sortDesc = CategoryImageSort.getPiwigoSortDescription(for: kPiwigoSort(rawValue: AlbumVars.defaultSort)!)
+        let sortDesc = CategoryImageSort.getPiwigoSortDescription(for: kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)!)
         albumData.loadCategoryImageDataChunk(
             withSort: sortDesc,
             forProgress: nil,

@@ -27,45 +27,45 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     
     // Album thumbnail size
     NSString *thumbnailSize = @"thumb";
-    kPiwigoImageSize albumThumbnailSize = (kPiwigoImageSize)AlbumVars.defaultAlbumThumbnailSize;
+    kPiwigoImageSize albumThumbnailSize = (kPiwigoImageSize)AlbumVars.shared.defaultAlbumThumbnailSize;
     switch (albumThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if (AlbumVars.hasSquareSizeImages) {
+            if (AlbumVars.shared.hasSquareSizeImages) {
                 thumbnailSize = @"square";
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if (AlbumVars.hasXXSmallSizeImages) {
+            if (AlbumVars.shared.hasXXSmallSizeImages) {
                 thumbnailSize = @"2small";
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if (AlbumVars.hasXSmallSizeImages) {
+            if (AlbumVars.shared.hasXSmallSizeImages) {
                 thumbnailSize = @"xsmall";
             }
             break;
         case kPiwigoImageSizeSmall:
-            if (AlbumVars.hasSmallSizeImages) {
+            if (AlbumVars.shared.hasSmallSizeImages) {
                 thumbnailSize = @"small";
             }
             break;
         case kPiwigoImageSizeMedium:
-            if (AlbumVars.hasMediumSizeImages) {
+            if (AlbumVars.shared.hasMediumSizeImages) {
                 thumbnailSize = @"medium";
             }
             break;
         case kPiwigoImageSizeLarge:
-            if (AlbumVars.hasLargeSizeImages) {
+            if (AlbumVars.shared.hasLargeSizeImages) {
                 thumbnailSize = @"large";
             }
             break;
         case kPiwigoImageSizeXLarge:
-            if (AlbumVars.hasXLargeSizeImages) {
+            if (AlbumVars.shared.hasXLargeSizeImages) {
                 thumbnailSize = @"xlarge";
             }
             break;
         case kPiwigoImageSizeXXLarge:
-            if (AlbumVars.hasXXLargeSizeImages) {
+            if (AlbumVars.shared.hasXXLargeSizeImages) {
                 thumbnailSize = @"xxlarge";
             }
             break;
@@ -119,7 +119,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       }
                       
                       // Check whether the default album still exists
-                      NSInteger defaultCatId = AlbumVars.defaultCategory;
+                      NSInteger defaultCatId = AlbumVars.shared.defaultCategory;
                       if (defaultCatId != 0) {
                           NSInteger indexOfDefault = [albums indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                               PiwigoAlbumData *category = (PiwigoAlbumData *)obj;
@@ -130,7 +130,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                               }
                           }];
                           if (indexOfDefault == NSNotFound) {
-                              AlbumVars.defaultCategory = 0;    // Back to root album
+                              AlbumVars.shared.defaultCategory = 0;    // Back to root album
                           }
                       }
                       

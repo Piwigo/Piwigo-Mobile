@@ -46,7 +46,7 @@ class ImagePreviewViewController: UIViewController
         playImage.isHidden = !imageData.isVideo
 
         // Thumbnail image should be available in cache
-        let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.defaultThumbnailSize)
+        let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)
         let thumbnailStr = imageData.getURLFromImageSizeType(thumbnailSize)
         let thumbnailURL = URL(string: thumbnailStr ?? "")
         let thumb = UIImageView()

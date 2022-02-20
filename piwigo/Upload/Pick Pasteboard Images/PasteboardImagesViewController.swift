@@ -33,7 +33,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
-            return _categoryId ?? AlbumVars.defaultCategory
+            return _categoryId ?? AlbumVars.shared.defaultCategory
         }
         set(categoryId) {
             _categoryId = categoryId
@@ -786,7 +786,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -815,7 +815,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Configure cell
-        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
         cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
         
         // Add pan gesture recognition

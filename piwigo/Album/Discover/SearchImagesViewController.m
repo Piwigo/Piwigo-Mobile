@@ -35,7 +35,7 @@
     {
         // Initialisation
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
-        self.displayImageTitles = AlbumVars.displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         
         // Collection of images
         self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
@@ -68,7 +68,7 @@
     [super viewDidLoad];
 
     // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
@@ -206,7 +206,7 @@
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
         self.imageCellSize = CGSizeMake(size, size);
 
         // Reload colelction
@@ -251,7 +251,7 @@
 
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.defaultSort onCompletion:^{
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
         [self.imagesCollection reloadData];
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
         if ((error.domain == NSURLErrorDomain) && (error.code == NSURLErrorCancelled)) { return; }
