@@ -228,6 +228,10 @@ class AlbumCollectionViewCell: UICollectionViewCell
         let emptyCategoryAction = UIAlertAction(
             title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
             style: .destructive, handler: { [self] action in
+                // Display HUD during the deletion
+                topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+
+                // Delete empty album
                 deleteCategory(withDeletionMode: kCategoryDeletionModeNone,
                                andViewController: topViewController)
             })
