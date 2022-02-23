@@ -506,11 +506,11 @@ import piwigoKit
 
         // Color palette depends on system settings
         if #available(iOS 13.0, *) {
-            AppVars.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
-            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.isSystemDarkModeActive ? "Dark" : "Light", AppVars.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.switchPaletteThreshold, AppVars.isDarkPaletteActive ? "Dark" : "Light");
+            AppVars.shared.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
+            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
         } else {
             // Fallback on earlier versions
-            AppVars.isSystemDarkModeActive = false
+            AppVars.shared.isSystemDarkModeActive = false
         }
         
         // Apply color palette
@@ -540,7 +540,7 @@ import piwigoKit
 
     @objc func loadNavigation() {
         // Display default album
-        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.defaultCategory) else { return }
+        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
         if #available(iOS 13.0, *) {
             if let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
@@ -587,44 +587,44 @@ import piwigoKit
     // Called when the screen brightness has changed, when user changes settings
     // and by traitCollectionDidChange: when the system switches between Light and Dark modes
     @objc func screenBrightnessChanged() {
-        if AppVars.isLightPaletteModeActive
+        if AppVars.shared.isLightPaletteModeActive
         {
-            if !AppVars.isDarkPaletteActive {
+            if !AppVars.shared.isDarkPaletteActive {
                 // Already in light mode
                 return;
             } else {
                 // "Always Light Mode" selected
-                AppVars.isDarkPaletteActive = false
+                AppVars.shared.isDarkPaletteActive = false
             }
         }
-        else if AppVars.isDarkPaletteModeActive
+        else if AppVars.shared.isDarkPaletteModeActive
         {
-            if AppVars.isDarkPaletteActive {
+            if AppVars.shared.isDarkPaletteActive {
                 // Already showing dark palette
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-                AppVars.isDarkPaletteActive = true
+                AppVars.shared.isDarkPaletteActive = true
             }
         }
-        else if AppVars.switchPaletteAutomatically
+        else if AppVars.shared.switchPaletteAutomatically
         {
             // Dynamic palette mode chosen
             if #available(iOS 13.0, *) {
-                if AppVars.isSystemDarkModeActive {
+                if AppVars.shared.isSystemDarkModeActive {
                     // System-wide dark mode active
-                    if AppVars.isDarkPaletteActive {
+                    if AppVars.shared.isDarkPaletteActive {
                         // Keep dark palette
                         return;
                     } else {
                         // Switch to dark mode
-                        AppVars.isDarkPaletteActive = true
+                        AppVars.shared.isDarkPaletteActive = true
                     }
                 } else {
                     // System-wide light mode active
-                    if AppVars.isDarkPaletteActive {
+                    if AppVars.shared.isDarkPaletteActive {
                         // Switch to light mode
-                        AppVars.isDarkPaletteActive = false
+                        AppVars.shared.isDarkPaletteActive = false
                     } else {
                         // Keep light palette
                         return;
@@ -634,22 +634,22 @@ import piwigoKit
             else {
                 // Option managed by screen brightness
                 let currentBrightness = lroundf(Float(UIScreen.main.brightness) * 100.0);
-                if AppVars.isDarkPaletteActive {
+                if AppVars.shared.isDarkPaletteActive {
                     // Dark palette displayed
-                    if currentBrightness > AppVars.switchPaletteThreshold
+                    if currentBrightness > AppVars.shared.switchPaletteThreshold
                     {
                         // Screen brightness > thereshold, switch to light palette
-                        AppVars.isDarkPaletteActive = false
+                        AppVars.shared.isDarkPaletteActive = false
                     } else {
                         // Keep dark palette
                         return;
                     }
                 } else {
                     // Light palette displayed
-                    if currentBrightness < AppVars.switchPaletteThreshold
+                    if currentBrightness < AppVars.shared.switchPaletteThreshold
                     {
                         // Screen brightness < threshold, switch to dark palette
-                        AppVars.isDarkPaletteActive = true
+                        AppVars.shared.isDarkPaletteActive = true
                     } else {
                         // Keep light palette
                         return;
@@ -658,9 +658,9 @@ import piwigoKit
             }
         } else {
             // Return to either static Light or Dark mode
-            AppVars.isLightPaletteModeActive = !AppVars.isSystemDarkModeActive;
-            AppVars.isDarkPaletteModeActive = AppVars.isSystemDarkModeActive;
-            AppVars.isDarkPaletteActive = AppVars.isSystemDarkModeActive;
+            AppVars.shared.isLightPaletteModeActive = !AppVars.shared.isSystemDarkModeActive;
+            AppVars.shared.isDarkPaletteModeActive = AppVars.shared.isSystemDarkModeActive;
+            AppVars.shared.isDarkPaletteActive = AppVars.shared.isSystemDarkModeActive;
         }
         
         // Tint colour
@@ -673,7 +673,7 @@ import piwigoKit
         UITabBar.appearance().barTintColor = .piwigoColorBackground()
 
         // Styles
-        if AppVars.isDarkPaletteActive
+        if AppVars.shared.isDarkPaletteActive
         {
             UITabBar.appearance().barStyle = .black
             UIToolbar.appearance().barStyle = .black
@@ -685,7 +685,7 @@ import piwigoKit
 
         // Notify palette change to views
         NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
-//        print("•••> app changed to \(AppVars.isDarkPaletteActive ? "dark" : "light") mode");
+//        print("•••> app changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 
 
@@ -708,7 +708,7 @@ import piwigoKit
         newList.append(categoryIdStr)
 
         // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.recentCategories
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
 
         // Add recent albums while avoiding duplicates
         if (recentAlbumsStr.count != 0) {
@@ -726,11 +726,11 @@ import piwigoKit
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let count = newList.count
         if count > 20 {
-            AlbumVars.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
+            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
         } else {
-            AlbumVars.recentCategories = newList.joined(separator: ",")
+            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
         }
-//        debugPrint("•••> Recent albums: \(AlbumVars.recentCategories) (max: \(AlbumVars.maxNberRecentCategories))")
+//        debugPrint("•••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -741,7 +741,7 @@ import piwigoKit
         if (categoryId <= 0) || (categoryId == NSNotFound) { return }
 
         // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.recentCategories
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
         if recentAlbumsStr.isEmpty { return }
 
         // Get new album Id as string
@@ -757,8 +757,8 @@ import piwigoKit
         }
 
         // Update list
-        AlbumVars.recentCategories = recentCategories.joined(separator: ",")
-//        pring("•••> Recent albums: \(AlbumVars.recentCategories)"
+        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
+//        pring("•••> Recent albums: \(AlbumVars.shared.recentCategories)"
     }
 
     

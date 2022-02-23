@@ -23,6 +23,5 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "PiwigoTagData.h"
-#import "SessionService.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"

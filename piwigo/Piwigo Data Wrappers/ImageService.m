@@ -636,6 +636,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     return task;
 }
 
+
+#pragma mark - Get image data
+
 +(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json forCategoryId:(NSInteger)categoryId
 {
 	NSArray *imagesInfo = [json objectForKey:@"images"];
@@ -652,9 +655,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 	}
 	return albumImages;
 }
-
-
-#pragma mark - Get image data
 
 +(PiwigoImageData*)parseBasicImageInfoJSON:(NSDictionary*)imageJson
 {
@@ -1040,69 +1040,6 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     return imageData;
-}
-
-
-#pragma mark - Set image data
-
-+(NSURLSessionTask*)addToFavoritesImageWithId:(NSInteger)imageId
-                                   onProgress:(void (^)(NSProgress *))progress
-                                 OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
-                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    NSURLSessionTask *request = [self post:kPiwigoUserFavoritesAdd
-             URLParameters:nil
-                parameters:@{
-                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)imageId]
-                             }
-            sessionManager:NetworkVarsObjc.sessionManager
-                  progress:progress
-                   success:^(NSURLSessionTask *task, id responseObject) {
-                       
-                       if(completion)
-                       {
-                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                       }
-                } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                    NSLog(@"=> addToFavoritesImageWithId — Fail: %@", [error description]);
-#endif
-                    if(fail) {
-                        fail(task, error);
-                    }
-                }];
-
-    return request;
-}
-
-+(NSURLSessionTask*)removeImageFromFavorites:(PiwigoImageData *)image
-                                  onProgress:(void (^)(NSProgress *))progress
-                                OnCompletion:(void (^)(NSURLSessionTask *task, BOOL removedSuccessfully))completion
-                                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    NSURLSessionTask *request = [self post:kPiwigoUserFavoritesRemove
-             URLParameters:nil
-                parameters:@{
-                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
-                             }
-            sessionManager:NetworkVarsObjc.sessionManager
-                  progress:progress
-                   success:^(NSURLSessionTask *task, id responseObject) {
-                       
-                       if(completion)
-                       {
-                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                       }
-                } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                   NSLog(@"=> removeImageFromFavorites — Fail: %@", [error description]);
-#endif
-                   if(fail) {
-                       fail(task, error);
-                   }
-               }];
-
-    return request;
 }
 
 @end

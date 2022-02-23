@@ -16,12 +16,12 @@
 //#endif
 
 // Piwigo URLs:
-NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
-NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
-NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
-NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
+//NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
+//NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
+//NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
+//NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
 NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
-NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
+//NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
 NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList";
@@ -43,8 +43,8 @@ NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdmi
 NSString * const kPiwigoTagsGetImages = @"format=json&method=pwg.tags.getImages";
 NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
 
-NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
-NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";
+//NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
+//NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";
 NSString * const kPiwigoUserFavoritesGetList = @"format=json&method=pwg.users.favorites.getList";
 
 // Parameter keys:
@@ -223,7 +223,7 @@ NSInteger const loadingViewTag = 899;
     // rely on NSURLCache to store shared and previewed images in disk cache.
     NetworkVarsObjc.imageCache = [[NSURLCache alloc]
                              initWithMemoryCapacity:0
-                                       diskCapacity:AppVars.diskCache * 1024 * 1024
+                                       diskCapacity:AppVars.shared.diskCache * 1024 * 1024
                                            diskPath:@"com.alamofire.imagedownloader"];
     // Configuration
     NSURLSessionConfiguration *config = [AFImageDownloader defaultURLSessionConfiguration];
@@ -244,7 +244,7 @@ NSInteger const loadingViewTag = 899;
     NetworkVarsObjc.imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
     
     // Create image downloader
-    NetworkVarsObjc.thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:AppVars.memoryCache * 1024 * 1024 preferredMemoryCapacity:AppVars.memoryCache * 1024 * 768];
+    NetworkVarsObjc.thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:AppVars.shared.memoryCache * 1024 * 1024 preferredMemoryCapacity:AppVars.shared.memoryCache * 1024 * 768];
     AFImageDownloader *imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:NetworkVarsObjc.imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:NetworkVarsObjc.thumbnailCache];
     [UIImageView setSharedImageDownloader:imageDownloader];
     
@@ -805,63 +805,6 @@ NSInteger const loadingViewTag = 899;
     return task;
 }
 
-// Only used to upload images
-+(NSURLSessionTask*)postMultiPart:(NSString*)path
-                             data:(NSData*)fileData
-                       parameters:(NSDictionary*)parameters
-                   sessionManager:(AFHTTPSessionManager *)sessionManager
-                         progress:(void (^)(NSProgress *))progress
-                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
-                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    NSURLSessionTask *task = [sessionManager
-                              POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
-                              parameters:nil headers:nil
-         constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
-                {
-                    [formData appendPartWithFileData:fileData
-                                                name:@"file"
-                                            fileName:[parameters valueForKey:kPiwigoImagesUploadParamFileName]
-                                            mimeType:[parameters valueForKey:kPiwigoImagesUploadParamMimeType]];
-                    
-                    // Image title is mandatory and must not be empty.
-                    // We provide the file name with extension and will then replace it with the image title
-                    // Not doing so prevents video uploads — see bug #212 — pwg.images.upload
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamFileName] dataUsingEncoding:NSUTF8StringEncoding] name:@"name"];
-                    
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunk] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunk"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamChunks] dataUsingEncoding:NSUTF8StringEncoding] name:@"chunks"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamCategory] dataUsingEncoding:NSUTF8StringEncoding] name:@"category"];
-
-                    [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding] name:@"level"];
-
-                    [formData appendPartWithFormData:[NetworkVarsObjc.pwgToken dataUsingEncoding:NSUTF8StringEncoding] name:@"pwg_token"];
-                }
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       NSLog(@"==> post: %@", task.response.MIMEType);
-                                       NSLog(@"==> post: %@", task.response.textEncodingName);
-                                       if (success) {
-                                           success(task, responseObject);
-                                       }
-                                   }
-                                   failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG_SESSION)
-                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
-                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
-                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
-                                       NSLog(@"=> response= %@", task.response);
-#endif
-                                       if(fail) {
-                                           fail(task, error);
-                                       }
-                                   }];
-    
-    return task;
-}
-
 
 #pragma mark - Piwigo Errors
 
@@ -915,7 +858,7 @@ NSInteger const loadingViewTag = 899;
     [alert addAction:defaultAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

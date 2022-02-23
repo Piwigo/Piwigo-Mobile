@@ -107,7 +107,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.text = albumData.name ?? "?"
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -119,7 +119,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.text = albumData.comment ?? ""
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -151,7 +151,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -228,6 +228,10 @@ class AlbumCollectionViewCell: UICollectionViewCell
         let emptyCategoryAction = UIAlertAction(
             title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
             style: .destructive, handler: { [self] action in
+                // Display HUD during the deletion
+                topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+
+                // Delete empty album
                 deleteCategory(withDeletionMode: kCategoryDeletionModeNone,
                                andViewController: topViewController)
             })
@@ -275,7 +279,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         alert.view.tintColor = UIColor.piwigoColorOrange()
         alert.view.accessibilityIdentifier = "DeleteAlbum"
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -299,7 +303,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
         alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = "\(NSNumber(value: albumData.numberOfImages))"
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
             textField.delegate = self
@@ -328,7 +332,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -376,7 +380,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     func getMissingImages(beforeDeletingInMode deletionMode: String, with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
-        let sortDesc = CategoryImageSort.getPiwigoSortDescription(for: kPiwigoSort(rawValue: AlbumVars.defaultSort)!)
+        let sortDesc = CategoryImageSort.getPiwigoSortDescription(for: kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)!)
         albumData.loadCategoryImageDataChunk(
             withSort: sortDesc,
             forProgress: nil,

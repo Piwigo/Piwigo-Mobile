@@ -114,7 +114,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -131,7 +131,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
         // Table view
         queueTableView.separatorColor = .piwigoColorSeparator()
-        queueTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -223,7 +223,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                         })
                                     alert.addAction(cancelAction)
                                     alert.view.tintColor = .piwigoColorOrange()
-                                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                                     self.present(alert, animated: true, completion: {
                                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                                         alert.view.tintColor = .piwigoColorOrange()
@@ -273,7 +273,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

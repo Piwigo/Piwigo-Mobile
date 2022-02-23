@@ -1,0 +1,7 @@
+{
+    "result": {
+        "real_user_status" : "webmaster",
+        "upload_categories_getList_method" : "pwg.categories.getAdminList"
+    },
+    "stat": "ok"
+}

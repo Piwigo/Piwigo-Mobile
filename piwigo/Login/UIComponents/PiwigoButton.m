@@ -26,7 +26,7 @@
 {
 	[super setHighlighted:highlighted];
     
-    if (AppVars.isDarkPaletteActive) {
+    if (AppVars.shared.isDarkPaletteActive) {
         if (highlighted) {
             self.backgroundColor = [UIColor piwigoColorOrange];
         } else {

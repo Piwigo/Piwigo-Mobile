@@ -454,44 +454,44 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         imageCategory.albumThumbnailId = image.imageId;
         
         // Album thumbnail size
-        switch ((kPiwigoImageSize)AlbumVars.defaultAlbumThumbnailSize) {
+        switch ((kPiwigoImageSize)AlbumVars.shared.defaultAlbumThumbnailSize) {
             case kPiwigoImageSizeSquare:
-                if (AlbumVars.hasSquareSizeImages) {
+                if (AlbumVars.shared.hasSquareSizeImages) {
                     imageCategory.albumThumbnailUrl = image.SquarePath;
                 }
                 break;
             case kPiwigoImageSizeXXSmall:
-                if (AlbumVars.hasXXSmallSizeImages) {
+                if (AlbumVars.shared.hasXXSmallSizeImages) {
                     imageCategory.albumThumbnailUrl = image.XXSmallPath;
                 }
                 break;
             case kPiwigoImageSizeXSmall:
-                if (AlbumVars.hasXSmallSizeImages) {
+                if (AlbumVars.shared.hasXSmallSizeImages) {
                     imageCategory.albumThumbnailUrl = image.XSmallPath;
                 }
                 break;
             case kPiwigoImageSizeSmall:
-                if (AlbumVars.hasSmallSizeImages) {
+                if (AlbumVars.shared.hasSmallSizeImages) {
                     imageCategory.albumThumbnailUrl = image.SmallPath;
                 }
                 break;
             case kPiwigoImageSizeMedium:
-                if (AlbumVars.hasMediumSizeImages) {
+                if (AlbumVars.shared.hasMediumSizeImages) {
                     imageCategory.albumThumbnailUrl = image.MediumPath;
                 }
                 break;
             case kPiwigoImageSizeLarge:
-                if (AlbumVars.hasLargeSizeImages) {
+                if (AlbumVars.shared.hasLargeSizeImages) {
                     imageCategory.albumThumbnailUrl = image.LargePath;
                 }
                 break;
             case kPiwigoImageSizeXLarge:
-                if (AlbumVars.hasXLargeSizeImages) {
+                if (AlbumVars.shared.hasXLargeSizeImages) {
                     imageCategory.albumThumbnailUrl = image.XLargePath;
                 }
                 break;
             case kPiwigoImageSizeXXLarge:
-                if (AlbumVars.hasXXLargeSizeImages) {
+                if (AlbumVars.shared.hasXXLargeSizeImages) {
                     imageCategory.albumThumbnailUrl = image.XXLargePath;
                 }
                 break;

@@ -135,7 +135,7 @@ CGFloat const kImageDetailsMarginsSpacing = 16;   // Left and right margins for 
 +(NSInteger)numberOfImagesToDownloadPerPage
 {
     // CGFloat version of imagesPerRowInPortrait
-    CGFloat nberOfImagesInPortrait = (CGFloat)AlbumVars.thumbnailsPerRowInPortrait;
+    CGFloat nberOfImagesInPortrait = (CGFloat)AlbumVars.shared.thumbnailsPerRowInPortrait;
     
     // Size of screen
     CGSize pageSize = [self sizeOfPageForView:nil];

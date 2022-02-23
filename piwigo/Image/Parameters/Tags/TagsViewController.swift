@@ -93,14 +93,14 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
         tagsTableView?.separatorColor = .piwigoColorSeparator()
-        tagsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
 
@@ -293,7 +293,7 @@ extension TagsViewController {
             textField.placeholder = NSLocalizedString("tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -316,7 +316,7 @@ extension TagsViewController {
         }
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

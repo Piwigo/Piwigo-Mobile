@@ -1,0 +1,26 @@
+{
+    "result": {
+        "available_sizes": [
+            "square",
+            "thumb",
+            "2small",
+            "xsmall",
+            "small",
+            "medium",
+            "large",
+            "xlarge",
+            "xxlarge"
+        ],
+        "charset": "utf-8",
+        "current_datetime": "2022-02-19 23:04:17",
+        "language": "fr_FR",
+        "pwg_token": "8814066d722b4ce75aaa5110e0019b9f",
+        "status": "webmaster",
+        "theme": "bootstrap_darkroom",
+        "upload_file_types": "jpg,jpeg,png,gif,tif,tiff,mp4,m4v,mpg,ogg,ogv,webm,webmv,strm",
+        "upload_form_chunk_size": 1024,
+        "username": "Eddy",
+        "version": "12.2.0"
+    },
+    "stat": "ok"
+}

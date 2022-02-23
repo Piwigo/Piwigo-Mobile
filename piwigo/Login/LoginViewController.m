@@ -14,11 +14,10 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "MBProgressHUD.h"
-#import "SessionService.h"
 
-#ifndef DEBUG_SESSION
-#define DEBUG_SESSION
-#endif
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
 
 NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
@@ -170,7 +169,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.passwordTextField.backgroundColor = [UIColor piwigoColorBackground];
     
     // Login button
-    if (AppVars.isDarkPaletteActive) {
+    if (AppVars.shared.isDarkPaletteActive) {
         self.loginButton.backgroundColor = [UIColor piwigoColorOrangeSelected];
     } else {
         self.loginButton.backgroundColor = [UIColor piwigoColorOrange];
@@ -185,7 +184,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            AppVars.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -241,7 +240,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         [alert addAction:defaultAction];
         alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
@@ -281,32 +280,17 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     NSLog(@"=> launchLogin: getMethodsList using %@", NetworkVarsObjc.serverProtocol);
 #endif
     NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 10;
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
+    [LoginUtilities getMethodsWithCompletion:^{
         
         // Back to default timeout
         NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 30;
 
-        if(methodsList) {
-            // Community extension installed and active ?
-            for (NSString *method in methodsList) {
-                
-                // Check if the Community extension is installed and active (> 2.9a)
-                if([method isEqualToString:@"community.session.getStatus"]) {
-                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
-                }
-            }
-            // Known methods, pursue logging in…
+        // Known methods, pursue logging in…
+        dispatch_async(dispatch_get_main_queue(), ^{
             [self performLogin];
-        } else {
-            // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-        }
+        });
         
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
-
-        // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
-        NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+    } failure:^(NSError * _Nonnull error) {
 
         // If Piwigo used a non-trusted certificate, ask permission
         if (NetworkVarsObjc.didRejectCertificate) {
@@ -316,7 +300,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         }
         
         // HTTP Basic authentication required?
-        if (statusCode == 401 || statusCode == 403 || NetworkVarsObjc.didFailHTTPauthentication) {
+        if (error.code == 401 || error.code == 403 || NetworkVarsObjc.didFailHTTPauthentication) {
             // Without prior knowledge, the app already tried Piwigo credentials
             // but unsuccessfully, so we request HTTP credentials
             [self requestHttpCredentialsAfterError:error];
@@ -423,7 +407,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:acceptAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -451,7 +435,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         userTextField.text = (user.length > 0) ? user : @"";
         userTextField.clearButtonMode = UITextFieldViewModeAlways;
         userTextField.keyboardType = UIKeyboardTypeDefault;
-        userTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         userTextField.returnKeyType = UIReturnKeyContinue;
         userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -464,7 +448,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
         pwdTextField.keyboardType = UIKeyboardTypeDefault;
         pwdTextField.secureTextEntry = YES;
-        pwdTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         pwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         pwdTextField.returnKeyType = UIReturnKeyContinue;
@@ -494,7 +478,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:self.httpLoginAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -531,7 +515,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [self.httpAlertController addAction:acceptAction];
     self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -559,32 +543,20 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin using http: getMethodsList…");
 #endif
-    [SessionService getMethodsListOnCompletion:^(NSDictionary *methodsList) {
-        
+    [LoginUtilities getMethodsWithCompletion:^{
         // Back to default timeout
         NetworkVarsObjc.sessionManager.session.configuration.timeoutIntervalForRequest = 30;
-
-        if(methodsList) {
-            // Community extension installed and active ?
-            for (NSString *method in methodsList) {
-                
-                // Check if the Community extension is installed and active (> 2.9a)
-                if([method isEqualToString:@"community.session.getStatus"]) {
-                    NetworkVarsObjc.usesCommunityPluginV29 = YES;
-                }
-            }
-            // Known methods, pursue logging in…
-            [self performLogin];
-            
-        } else {
-            // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-        }
         
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Known methods, pursue logging in…
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performLogin];
+        });
+
+    } failure:^(NSError * _Nonnull error) {
         // Get Piwigo methods failed
-        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        });
     }];
 }
 
@@ -599,6 +571,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 #endif
     
     // Perform login if username exists
+    NSString *username = self.userTextField.text;
+    NSString *password = self.passwordTextField.text;
 	if((self.userTextField.text.length > 0) && (!NetworkVarsObjc.userCancelledCommunication))
 	{
         // Update HUD during login
@@ -609,38 +583,25 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                   inMode:MBProgressHUDModeIndeterminate];
         
         // Perform login
-        [SessionService performLoginWithUser:self.userTextField.text
-                  andPassword:self.passwordTextField.text
-                 onCompletion:^(BOOL result, id response) {
-                     if(result)
-                     {
-                         // Session now opened
-                         // First determine user rights if Community extension installed
-                         [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
-                     }
-                     else
-                     {
-                         // Don't keep unaccepted credentials
-                         [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath account:self.userTextField.text];
-
-                         // Session could not be opened
-                         NSError *pwgError = (NSError *)response;
-                         if (pwgError.code == 999) {
-                             NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-                             [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                         } else {
-                             [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : pwgError)];
-                         }
-                     }
-                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                     // Login request failed
-                     [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                 }];
+        [LoginUtilities sessionLoginWithUsername:username password:password
+                                      completion:^(void) {
+            // Session now opened
+            // First determine user rights if Community extension installed
+            [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
+            
+        } failure:^(NSError * _Nonnull error) {
+            // Don't keep unaccepted credentials
+            [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath
+                                                    account:username];
+            // Login request failed
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        }];
 	}
 	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
-        [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath account:NetworkVarsObjc.username];
+        [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.serverPath
+                                                account:NetworkVarsObjc.username];
         NetworkVarsObjc.username = @"";
 
         // Check Piwigo version, get token, available sizes, etc.
@@ -670,28 +631,16 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                   inMode:MBProgressHUDModeIndeterminate];
         
         // Community extension installed
-        [SessionService getCommunityStatusOnCompletion:^(NSDictionary *responseObject) {
-            
-            if(responseObject)
-            {
-                // Check Piwigo version, get token, available sizes, etc.
-                [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
-            }
-            else {
-                // Inform user that server failed to retrieve Community parameters
-                NetworkVarsObjc.hadOpenedSession = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-                self.isAlreadyTryingToLogin = NO;
-            }
-            
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Get Community status failed
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        [LoginUtilities communityGetStatusWithCompletion:^{
+            // Check Piwigo version, get token, available sizes, etc.
+            [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
+        }
+        failure:^(NSError * _Nonnull error) {
+            // Inform user that server failed to retrieve Community parameters
             NetworkVarsObjc.hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
+            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
         }];
-
     } else {
         // Community extension not installed
         // Check Piwigo version, get token, available sizes, etc.
@@ -720,15 +669,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             buttonTarget:self buttonSelector:@selector(cancelLoggingIn)
                   inMode:MBProgressHUDModeIndeterminate];
         
-        [SessionService getPiwigoStatusAtLogin:isLoggingIn
-                                  OnCompletion:^(NSDictionary *responseObject) {
-            if(responseObject)
-            {
-                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
-                {   // They need to update, ask user what to do
-                    // Reinitialise flag
-                    NetworkVarsObjc.userCancelledCommunication = NO;
-                    // Close loading or re-login view and ask what to do
+        [LoginUtilities sessionGetStatusAtLogin:isLoggingIn completion:^{
+            if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
+            {   // They need to update, ask user what to do
+                // Reinitialise flag
+                NetworkVarsObjc.userCancelledCommunication = NO;
+                
+                // Close loading or re-login view and ask what to do
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [self.hudViewController hidePiwigoHUDWithCompletion:^{
                         UIAlertAction* defaultAction = [UIAlertAction
                                 actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
@@ -746,19 +694,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                 }];
                         [self presentPiwigoAlertWithTitle:NSLocalizedString(@"serverVersionNotCompatible_title", @"Server Incompatible") message:[NSString stringWithFormat:NSLocalizedString(@"serverVersionNotCompatible_message", @"Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVarsObjc.version] actions:@[defaultAction, continueAction]];
                     }];
-                } else {
-                    // Their version is Ok. Close HUD.
-                    [self launchAppAtFirstLogin:isFirstLogin
-                          withReloginCompletion:reloginCompletion];
-                }
+                });
             } else {
-                // Inform user that we could not authenticate with server
-                NetworkVarsObjc.hadOpenedSession = NO;
-                self.isAlreadyTryingToLogin = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                // Their version is Ok. Close HUD.
+                [self launchAppAtFirstLogin:isFirstLogin
+                      withReloginCompletion:reloginCompletion];
             }
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             NetworkVarsObjc.hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
             // Display error message
@@ -817,7 +759,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     
                     // Load favorites data in the background with dedicated URL session
                     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort
                         forProgress:nil onCompletion:nil onFailure:nil];
                     });
                 }
@@ -862,32 +804,18 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.hudViewController = nil;
 
     // Perform re-login
-    NSString *user = NetworkVarsObjc.username;
-    NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:user];
+    NSString *username = NetworkVarsObjc.username;
+    NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:username];
     self.isAlreadyTryingToLogin = YES;
-    [SessionService performLoginWithUser:user
-                             andPassword:password
-                            onCompletion:^(BOOL result, id response) {
-        if(result) {
-            // Session now re-opened
-            NetworkVarsObjc.hadOpenedSession = YES;
-            
-            // First determine user rights if Community extension installed
-            [self getCommunityStatusAtFirstLogin:NO
-                           withReloginCompletion:reloginCompletion];
-        }
-        else {
-            // Session could not be re-opened, inform user
-            NetworkVarsObjc.hadOpenedSession = NO;
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-            [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
-            self.isAlreadyTryingToLogin = NO;
-        }
-
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+    [LoginUtilities sessionLoginWithUsername:username password:password completion:^{
+        // Session re-opened
+        // First determine user rights if Community extension installed
+        [self getCommunityStatusAtFirstLogin:NO
+                       withReloginCompletion:reloginCompletion];
+    }
+    failure:^(NSError * _Nonnull error) {
         // Could not re-establish the session, login/pwd changed, something else ?
         self.isAlreadyTryingToLogin = NO;
-        NetworkVarsObjc.hadOpenedSession = NO;
         
         // Display error message
         [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
@@ -920,7 +848,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 //
 //                // Load favorites data in the background with dedicated URL session
 //                dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+//                    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort
 //                    forProgress:nil onCompletion:nil onFailure:nil];
 //                });
 //            }
@@ -941,6 +869,11 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 {
     // Propagate user's request
     NetworkVarsObjc.userCancelledCommunication = YES;
+    [NetworkVarsObjc.dataSession getAllTasksWithCompletionHandler:^(NSArray<__kindof NSURLSessionTask *> * _Nonnull tasks) {
+        for (NSURLSessionTask *task in tasks) {
+            [task cancel];
+        }
+    }];
     NSArray <NSURLSessionTask *> *tasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in tasks) {
         [task cancel];
@@ -969,8 +902,12 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             buttonTarget:self buttonSelector:@selector(hideLoading)
                   inMode:MBProgressHUDModeText];
     } else {
+        NSString *detail = [error localizedDescription];
+        if (detail.length == 0) {
+            detail = [NSString stringWithFormat:@"%ld", error.code];
+        }
         [self.hudViewController showPiwigoHUDWithTitle:NSLocalizedString(@"internetErrorGeneral_title", @"Connection Error")
-                  detail:[NSString stringWithFormat:@"%@", [error localizedDescription]]
+                  detail:detail
              buttonTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
             buttonTarget:self buttonSelector:@selector(hideLoading)
                   inMode:MBProgressHUDModeText];
@@ -1204,7 +1141,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [alert addAction:defaultAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

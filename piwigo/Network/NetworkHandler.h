@@ -11,12 +11,12 @@
 typedef void(^SuccessBlock)(id responseObject);
 
 // Piwigo URLs:
-FOUNDATION_EXPORT NSString * const kReflectionGetMethodList;
-FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
-FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
-FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
+//FOUNDATION_EXPORT NSString * const kReflectionGetMethodList;
+//FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
+//FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+//FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
 FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
-FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
+//FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
 
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
 FOUNDATION_EXPORT NSString * const kCommunityCategoriesGetList;
@@ -40,8 +40,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetImages;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
 
-FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
-FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
+//FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
+//FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
 FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesGetList;
 
 // Parameter keys:
@@ -83,14 +83,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
                 progress:(void (^)(NSProgress *))progress
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)postMultiPart:(NSString*)path
-                             data:(NSData*)fileData
-                       parameters:(NSDictionary*)parameters
-                   sessionManager:(AFHTTPSessionManager *)sessionManager
-                         progress:(void (^)(NSProgress *))progress
-                          success:(void (^)(NSURLSessionTask *task, id responseObject))success
-                          failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSError *)getPiwigoErrorFromResponse:(id)responseObject path:(NSString *)path andURLparams:(NSDictionary *)urlParams;
 +(void)showPiwigoError:(NSError*)error withCompletion:(void (^)(void))completion;

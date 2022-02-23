@@ -104,10 +104,10 @@ class AlbumTableViewCell: MGSwipeTableCell {
             guard let dateLast = CategoriesData.sharedInstance()
                     .getDateLastOfCategories(inCategory: albumData.albumId) else { return }
             let timeSinceLastUpload: TimeInterval = dateLast.timeIntervalSinceNow
-            var indexOfPeriod: Int = AlbumVars.recentPeriodIndex
-            indexOfPeriod = min(indexOfPeriod, AlbumVars.recentPeriodList.count - 1)
+            var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
+            indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
             indexOfPeriod = max(0, indexOfPeriod)
-            let periodInDays: Int = AlbumVars.recentPeriodList[indexOfPeriod]
+            let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
             if timeSinceLastUpload > TimeInterval(-24*3600*periodInDays) {
                 DispatchQueue.main.async {
                     self.recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)

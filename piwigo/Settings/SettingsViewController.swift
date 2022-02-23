@@ -114,7 +114,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
             navigationController?.navigationBar.prefersLargeTitles = true
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
@@ -131,7 +131,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Table view
         settingsTableView?.separatorColor = .piwigoColorSeparator()
-        settingsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
+        settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
 
@@ -161,12 +161,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if #available(iOS 10, *) {
             let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
-//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.dateOfLastTranslationRequest, k2WeeksInDays))
+//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
             let now: Double = Date().timeIntervalSinceReferenceDate
-            let dueDate: Double = AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth
+            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.kPiwigoOneMonth
             if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
                 // Store date of last translation request
-                AppVars.dateOfLastTranslationRequest = now
+                AppVars.shared.dateOfLastTranslationRequest = now
 
                 // Request a translation
                 let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
@@ -184,7 +184,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.addAction(defaultAction)
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -469,7 +469,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize)
+                let albumImageSize = kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize)
                 let defaultSize = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -493,7 +493,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AlbumVars.maxNberRecentCategories)
+                let value = Float(AlbumVars.shared.maxNberRecentCategories)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -510,7 +510,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.maxNberRecentCategories = Int(newValue)
+                    AlbumVars.shared.maxNberRecentCategories = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
@@ -521,20 +521,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value is the index of kRecentPeriods
-                var value:Float = Float(AlbumVars.recentPeriodIndex)
-                value = min(value, Float(AlbumVars.recentPeriodList.count - 1))
+                var value:Float = Float(AlbumVars.shared.recentPeriodIndex)
+                value = min(value, Float(AlbumVars.shared.recentPeriodList.count - 1))
                 value = max(0.0, value)
 
                 // Slider configuration
                 let title = NSLocalizedString("recentPeriod_title", comment: "Recent Period")
-                cell.configure(with: title, value: value, increment: Float(AlbumVars.recentPeriodKey),
-                               minValue: 0.0, maxValue: Float(AlbumVars.recentPeriodList.count - 1),
+                cell.configure(with: title, value: value, increment: Float(AlbumVars.shared.recentPeriodKey),
+                               minValue: 0.0, maxValue: Float(AlbumVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     let index = Int(newValue)
-                    if index >= 0, index < AlbumVars.recentPeriodList.count {
-                        AlbumVars.recentPeriodIndex = index
+                    if index >= 0, index < AlbumVars.shared.recentPeriodList.count {
+                        AlbumVars.shared.recentPeriodIndex = index
                     }
                     
                     // Reload root/default album
@@ -555,7 +555,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.defaultSort)
+                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
                 let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -578,7 +578,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize), withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize), withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -601,17 +601,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize))
+                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize))
                 let minNberOfImages = Float(ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
-                if Float(AlbumVars.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
+                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
                 }
-                if Float(AlbumVars.thumbnailsPerRowInPortrait) < minNberOfImages {
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(minNberOfImages)
+                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) < minNberOfImages {
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(minNberOfImages)
                 }
-                let value = Float(AlbumVars.thumbnailsPerRowInPortrait)
+                let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -628,7 +628,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: minNberOfImages, maxValue: minNberOfImages * 2, prefix: "", suffix: "/\(Int(minNberOfImages * 2))")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.thumbnailsPerRowInPortrait = Int(newValue)
+                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
@@ -646,10 +646,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 
                 // Switch status
-                cell.cellSwitch.setOn(AlbumVars.displayImageTitles, animated: true)
+                cell.cellSwitch.setOn(AlbumVars.shared.displayImageTitles, animated: true)
                 cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
                 cell.cellSwitchBlock = { switchState in
-                    AlbumVars.displayImageTitles = switchState
+                    AlbumVars.shared.displayImageTitles = switchState
                 }
                 cell.accessibilityIdentifier = "displayImageTitles"
                 tableViewCell = cell
@@ -1013,9 +1013,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
-            if AppVars.isLightPaletteModeActive == true {
+            if AppVars.shared.isLightPaletteModeActive == true {
                 detail = NSLocalizedString("settings_lightColor", comment: "Light")
-            } else if AppVars.isDarkPaletteModeActive == true {
+            } else if AppVars.shared.isDarkPaletteModeActive == true {
                 detail = NSLocalizedString("settings_darkColor", comment: "Dark")
             } else {
                 detail = NSLocalizedString("settings_switchPalette", comment: "Automatic")
@@ -1034,7 +1034,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.diskCache)
+                let value = Float(AppVars.shared.diskCache)
 
                 // Slider configuration
                 let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
@@ -1050,15 +1050,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
                                value: value,
-                               increment: Float(AppVars.kPiwigoDiskCacheInc),
-                               minValue: Float(AppVars.kPiwigoDiskCacheMin),
-                               maxValue: Float(AppVars.kPiwigoDiskCacheMax),
+                               increment: Float(AppVars.shared.kPiwigoDiskCacheInc),
+                               minValue: Float(AppVars.shared.kPiwigoDiskCacheMin),
+                               maxValue: Float(AppVars.shared.kPiwigoDiskCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.diskCache = Int(newValue)
+                    AppVars.shared.diskCache = Int(newValue)
                     // Update disk cache size
-                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.diskCache * 1024 * 1024
+                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
                 }
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
@@ -1069,7 +1069,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.memoryCache)
+                let value = Float(AppVars.shared.memoryCache)
 
                 // Slider configuration
                 let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
@@ -1085,15 +1085,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
                                value: value,
-                               increment: Float(AppVars.kPiwigoMemoryCacheInc),
-                               minValue: Float(AppVars.kPiwigoMemoryCacheMin),
-                               maxValue: Float(AppVars.kPiwigoMemoryCacheMax),
+                               increment: Float(AppVars.shared.kPiwigoMemoryCacheInc),
+                               minValue: Float(AppVars.shared.kPiwigoMemoryCacheMin),
+                               maxValue: Float(AppVars.shared.kPiwigoMemoryCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.memoryCache = Int(newValue)
+                    AppVars.shared.memoryCache = Int(newValue)
                     // Update memory cache size
-                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.memoryCache * 1024 * 1024)
+                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
                 }
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
@@ -1418,25 +1418,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            /// -> nothing presented in the footer
-            if error != nil { return }
-            
-            // Decode the JSON and collect statistics.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and retrieve statistics.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
+                if uploadJSON.errorCode != 0 {
                     #if DEBUG
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
@@ -1501,6 +1494,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 #endif
                 return
             }
+        } failure: { _ in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            /// -> nothing presented in the footer
         }
     }
 
@@ -1545,7 +1543,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: AlbumVars.defaultCategory,
+                categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
@@ -1687,7 +1685,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Present list of actions
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1803,62 +1801,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
 
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
+        })
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-                SessionService.sessionLogout(onCompletion: { task, success in
-
-                    if success {
-                        self.closeSessionAndClearCache()
-                    } else {
-                        let alert = UIAlertController(title: NSLocalizedString("logoutFail_title", comment: "Logout Failed"), message: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), preferredStyle: .alert)
-
-                        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-                                self.closeSessionAndClearCache()
-                            })
-
-                        // Add action
-                        alert.addAction(dismissAction)
-
-                        // Present list of actions
-                        alert.view.tintColor = .piwigoColorOrange()
-                        if #available(iOS 13.0, *) {
-                            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
-                        } else {
-                            // Fallback on earlier versions
-                        }
-                        self.present(alert, animated: true, completion: {
-                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                            alert.view.tintColor = .piwigoColorOrange()
-                        })
-                    }
-
-                }, onFailure: { task, error in
-                    // Failed! This may be due to the replacement of a self-signed certificate.
-                    // So we inform the user that there may be something wrong with the server,
-                    // or simply a connection drop.
-                    let alert = UIAlertController(title: NSLocalizedString("logoutFail_title", comment: "Logout Failed"), message: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), preferredStyle: .alert)
-
-                    let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-                            self.closeSessionAndClearCache()
-                        })
-
-                    // Add action
-                    alert.addAction(dismissAction)
-
-                    // Present list of actions
-                    alert.view.tintColor = .piwigoColorOrange()
-                    if #available(iOS 13.0, *) {
-                        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
-                    } else {
-                        // Fallback on earlier versions
-                    }
-                    self.present(alert, animated: true, completion: {
-                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                        alert.view.tintColor = .piwigoColorOrange()
-                    })
-                })
-            })
+            LoginUtilities.sessionLogout {
+                // Logout successful
+                DispatchQueue.main.async {
+                    self.closeSessionAndClearCache()
+                }
+            } failure: { error in
+                // Failed! This may be due to the replacement of a self-signed certificate.
+                // So we inform the user that there may be something wrong with the server,
+                // or simply a connection drop.
+                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                        message: error.localizedDescription) {
+                    self.closeSessionAndClearCache()
+                }
+            }
+        })
 
         // Add actions
         alert.addAction(cancelAction)
@@ -1871,7 +1831,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -1889,11 +1849,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
         NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
         NetworkVarsObjc.imageCache?.removeAllCachedResponses()
-        NetworkVars.hadOpenedSession = false
 
         // Back to default values
-        AlbumVars.defaultCategory = 0
-        AlbumVars.recentCategories = "0"
+        AlbumVars.shared.defaultCategory = 0
+        AlbumVars.shared.recentCategories = "0"
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.hasAdminRights = false
         
@@ -1982,11 +1941,11 @@ extension SettingsViewController: SelectCategoryDelegate {
     func didSelectCategory(withId categoryId: Int) {
         // Do nothing if new default album is unknown or unchanged
         if categoryId == NSNotFound ||
-            categoryId == AlbumVars.defaultCategory
+            categoryId == AlbumVars.shared.defaultCategory
         { return }
 
         // Save new choice
-        AlbumVars.defaultCategory = categoryId
+        AlbumVars.shared.defaultCategory = categoryId
 
         // Change album name in row
         let indexPath = IndexPath(row: 0, section: SettingsSection.albums.rawValue)
@@ -2008,15 +1967,15 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
 
         // Root album?
-        if AlbumVars.defaultCategory == 0 {
+        if AlbumVars.shared.defaultCategory == 0 {
             return rootName
         }
         
         // Default album…
-        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
+        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory).name {
             return albumName
         } else {
-            AlbumVars.defaultCategory = 0
+            AlbumVars.shared.defaultCategory = 0
             return rootName
         }
     }
@@ -2027,10 +1986,10 @@ extension SettingsViewController: SelectCategoryDelegate {
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.defaultAlbumThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings row
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
@@ -2046,10 +2005,10 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 extension SettingsViewController: CategorySortDelegate {
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(rawValue: AlbumVars.defaultSort) { return }
+        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
         
         // Save new choice
-        AlbumVars.defaultSort = sortType.rawValue
+        AlbumVars.shared.defaultSort = sortType.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
@@ -2070,10 +2029,10 @@ extension SettingsViewController: CategorySortDelegate {
 extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.defaultThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)

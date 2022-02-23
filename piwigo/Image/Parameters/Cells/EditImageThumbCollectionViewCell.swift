@@ -79,6 +79,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         guard let imageData = imageData else {
             return
         }
+        
+        // Store image ID
+        imageId = imageData.imageId
 
         // Image file name
         if let fileName: String = imageData.fileName, fileName.isEmpty == false {
@@ -117,54 +120,54 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
         // Retrieve image thumbnail from Piwigo server
         var thumbnailUrl: String?
-        let albumThumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.defaultAlbumThumbnailSize)
+        let albumThumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)
         switch albumThumbnailSize {
         case kPiwigoImageSizeSquare:
-            if AlbumVars.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
+            if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
                 thumbnailUrl = squarePath
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeXXSmall:
-            if AlbumVars.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
+            if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
                 thumbnailUrl = xxSmallPath
-            } else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeXSmall:
-            if AlbumVars.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
+            if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
                 thumbnailUrl = xSmallPath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeSmall:
-            if AlbumVars.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
+            if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
                 thumbnailUrl = smallPath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeMedium:
-            if AlbumVars.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
+            if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
                 thumbnailUrl = mediumPath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeLarge:
-            if AlbumVars.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
+            if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
                 thumbnailUrl = largePath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeXLarge:
-            if AlbumVars.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
+            if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
                 thumbnailUrl = xLargePath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeXXLarge:
-            if AlbumVars.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
+            if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
                 thumbnailUrl = xxLargePath
-            }  else if AlbumVars.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
+            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
         case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
@@ -242,7 +245,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             textField.text = imageFile.text
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -271,7 +274,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -286,7 +289,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Display HUD during the update
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for renaming the image/video filename
         let paramsDict: [String : Any] = ["image_id" : imageId,
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]
@@ -294,30 +297,17 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error {
-                topViewController?.hidePiwigoHUD {
-                    topViewController?.dismissPiwigoError(
-                        withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                          message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
-                }
-                return
-            }
-            
-            // Decode the JSON and import it into Core Data.
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update image filename if successful.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                    errorMessage: uploadJSON.errorMessage)
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
@@ -346,7 +336,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 else {
                     // Could not change the filename
                     debugPrint("••>> setImageInfoForImageWithId(): no successful")
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                    let error = JsonError.unexpectedError
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
@@ -356,13 +346,21 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
             } catch {
                 // Data cannot be digested
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
+                let error = error as NSError
                 topViewController?.hidePiwigoHUD {
                     topViewController?.dismissPiwigoError(
                         withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
                           message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
                 }
-                return
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            topViewController?.hidePiwigoHUD {
+                topViewController?.dismissPiwigoError(
+                    withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
+                      message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"), errorMessage: error.localizedDescription) { }
             }
         }
     }

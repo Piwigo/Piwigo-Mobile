@@ -78,6 +78,11 @@ class NetworkVarsObjc: NSObject {
     // - Image and thumbnail caches
     @objc static var imageCache: URLCache?
     @objc static var thumbnailCache: AFAutoPurgingImageCache?
+    
+    // - piwigoKit session manager
+    @objc static var dataSession: URLSession {
+        get { return PwgSession.shared.dataSession}
+    }
 
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
     @objc static var usesCommunityPluginV29: Bool {

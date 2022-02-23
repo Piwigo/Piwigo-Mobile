@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.3_text" = "2.7.2-es verzió\n\n• Koppintson duplán a fényképek nagyításához és kicsinyítéséhez\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
+"v2.9.4_text" = "2.9.4-es verzió\n\n• Hibajavítások\n• Kódmodernizálás";
+
+"v2.9.3_text" = "2.9.3-es verzió\n2022 Február 11\n\n• Koppintson duplán a fényképek nagyításához és kicsinyítéséhez\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
 
 "v2.9.2_text" = "2.9.2-es verzió\n2022 Január 24\n\n• Hibajavítások\n• Kódmodernizálás";
 

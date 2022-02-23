@@ -16,7 +16,7 @@
 
 // Alert buttons
 "alertOkButton" = "OK";
-"alertDismissButton" = "Annuler";
+"alertDismissButton" = "Fermer";
 "alertYesButton" = "Oui";
 "alertNoButton" = "Non";
 "alertTryAgainButton" = "Réessayez";
