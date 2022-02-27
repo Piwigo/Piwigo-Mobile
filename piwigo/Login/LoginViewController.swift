@@ -24,10 +24,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var byLabel2: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
-    var isAlreadyTryingToLogin = false
-//    var portraitConstraints: [AnyHashable]?
-//    var landscapeConstraints: [AnyHashable]?
-
+    private var isAlreadyTryingToLogin = false
     private var httpAlertController: UIAlertController?
     private var httpLoginAction: UIAlertAction?
     private var hudViewController: UIViewController?
@@ -543,19 +540,21 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Community extension installed
-            LoginUtilities.communityGetStatus {
+            LoginUtilities.communityGetStatus { [self] in
                 // Check Piwigo version, get token, available sizes, etc.
-                self.getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin, withReloginCompletion: reloginCompletion)
-            } failure: { error in
+                getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin,
+                                 withReloginCompletion: reloginCompletion)
+            } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
                 NetworkVars.hadOpenedSession = false
-                self.isAlreadyTryingToLogin = false
-                self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                isAlreadyTryingToLogin = false
+                logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
             }
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin, withReloginCompletion: reloginCompletion)
+            getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin,
+                             withReloginCompletion: reloginCompletion)
         }
     }
 
