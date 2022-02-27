@@ -116,6 +116,10 @@ public class PwgSession: NSObject {
                     // Data returned, is this a valid JSON object?
                     guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
                         // Invalid JSON data
+						#if DEBUG
+						let dataStr = String(decoding: jsonData, as: UTF8.self)
+						print(" > JSON: \(dataStr)")
+						#endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
                             failure(JsonError.invalidJSONobject as NSError)
