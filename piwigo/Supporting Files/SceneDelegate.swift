@@ -14,7 +14,6 @@ import piwigoKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    let loginVC = LoginViewController()
 
     @available(iOS 13.0, *)
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -28,10 +27,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        }
 
         guard let _ = (scene as? UIWindowScene) else { return }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if let windowScene = scene as? UIWindowScene {
             // Show login view
             let window = UIWindow(windowScene: windowScene)
-            let nav = LoginNavigationController(rootViewController: loginVC)
+            let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
             nav.isNavigationBarHidden = true
             window.rootViewController = nav
 
@@ -39,12 +39,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController?.view.setNeedsUpdateConstraints()
 
             // Color palette depends on system settings
-            AppVars.shared.isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
+            AppVars.shared.isSystemDarkModeActive = appDelegate.loginVC.traitCollection.userInterfaceStyle == .dark
 //            print("•••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
             // Apply color palette
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.screenBrightnessChanged()
+            appDelegate.screenBrightnessChanged()
 
             // Present login window
             self.window = window
@@ -62,7 +61,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             // Login?
             if service.count > 0 || (username.count > 0 && password.count > 0) {
-                loginVC.launchLogin()
+                appDelegate.loginVC.launchLogin()
             }
         }
     }
@@ -104,7 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.reloginAndRetry {
                     // Reload category data from server in background mode
-                    self.loginVC.reloadCatagoryDataInBckgMode()
+                    appDelegate?.loginVC.reloadCatagoryDataInBckgMode()
                 }
             } else {
                 /// - Resume upload operations in background queue

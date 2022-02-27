@@ -26,7 +26,10 @@ import piwigoKit
     var loginVC: LoginViewController {
         // Already existing?
         if _loginVC != nil { return _loginVC }
-        return LoginViewController()
+        // Create view controller
+        let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
+        guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else { fatalError("LoginViewController could not be instantiated!") }
+        return loginVC
     }
 
 

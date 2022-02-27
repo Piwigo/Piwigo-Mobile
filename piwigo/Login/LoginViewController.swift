@@ -13,147 +13,24 @@ import System
 import UIKit
 import piwigoKit
 
-let kPiwigoSupport = "— iOS@piwigo.org —"
-
 class LoginViewController: UIViewController {
 
-    var piwigoLogo: UIButton?
-    var piwigoButton: UIButton?
-    var serverTextField: PiwigoTextField?
-    var userTextField: PiwigoTextField?
-    var passwordTextField: PiwigoTextField?
-    var loginButton: PiwigoButton?
-    var websiteNotSecure: UILabel?
-    var byLabel1: UILabel?
-    var byLabel2: UILabel?
-    var versionLabel: UILabel?
+    @IBOutlet weak var serverTextField: UITextField!
+    @IBOutlet weak var userTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var websiteNotSecure: UILabel!
+    @IBOutlet weak var byLabel1: UILabel!
+    @IBOutlet weak var byLabel2: UILabel!
+    @IBOutlet weak var versionLabel: UILabel!
+    
     var isAlreadyTryingToLogin = false
-    var portraitConstraints: [AnyHashable]?
-    var landscapeConstraints: [AnyHashable]?
+//    var portraitConstraints: [AnyHashable]?
+//    var landscapeConstraints: [AnyHashable]?
 
     private var httpAlertController: UIAlertController?
     private var httpLoginAction: UIAlertAction?
     private var hudViewController: UIViewController?
-
-    override init(nibName: String?, bundle: Bundle?) {
-        super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = UIColor.piwigoColorBrown()
-
-        piwigoLogo = UIButton(type: .custom)
-        piwigoLogo?.setImage(UIImage(named: "piwigoLogo"), for: .normal)
-        piwigoLogo?.translatesAutoresizingMaskIntoConstraints = false
-        piwigoLogo?.contentMode = .scaleAspectFit
-        piwigoLogo?.addTarget(self, action: #selector(openPiwigoURL), for: .touchUpInside)
-        if let piwigoLogo = piwigoLogo {
-            view.addSubview(piwigoLogo)
-        }
-
-        piwigoButton = UIButton()
-        piwigoButton?.backgroundColor = UIColor.clear
-        piwigoButton?.translatesAutoresizingMaskIntoConstraints = false
-        piwigoButton?.titleLabel?.font = UIFont.piwigoFontNormal()
-        piwigoButton?.setTitleColor(UIColor.piwigoColorOrange(), for: .normal)
-        piwigoButton?.setTitle(kPiwigoSupport, for: .normal)
-        piwigoButton?.addTarget(self, action: #selector(mailPiwigoSupport), for: .touchUpInside)
-        if let piwigoButton = piwigoButton {
-            view.addSubview(piwigoButton)
-        }
-
-        serverTextField = PiwigoTextField()
-        serverTextField?.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
-        serverTextField?.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        serverTextField?.keyboardType = .URL
-        serverTextField?.returnKeyType = .next
-        serverTextField?.delegate = self
-        if let serverTextField = serverTextField {
-            view.addSubview(serverTextField)
-        }
-
-        userTextField = PiwigoTextField()
-        userTextField?.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
-        userTextField?.text = NetworkVars.username
-        userTextField?.keyboardType = .default
-        userTextField?.returnKeyType = .next
-        if #available(iOS 11.0, *) {
-            userTextField?.textContentType = .username
-        }
-        userTextField?.delegate = self
-        if let userTextField = userTextField {
-            view.addSubview(userTextField)
-        }
-
-        passwordTextField = PiwigoTextField()
-        passwordTextField?.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
-        passwordTextField?.isSecureTextEntry = true
-        passwordTextField?.text = KeychainUtilitiesObjc.password(forService: NetworkVars.serverPath, account: NetworkVars.username)
-        passwordTextField?.keyboardType = .default
-        if #available(iOS 11.0, *) {
-            passwordTextField?.textContentType = .password
-        }
-        passwordTextField?.returnKeyType = .go
-        if let passwordTextField = passwordTextField {
-            view.addSubview(passwordTextField)
-        }
-
-        loginButton = PiwigoButton()
-        loginButton?.translatesAutoresizingMaskIntoConstraints = false
-        loginButton?.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
-        loginButton?.addTarget(self, action: #selector(launchLogin), for: .touchUpInside)
-        if let loginButton = loginButton {
-            view.addSubview(loginButton)
-        }
-
-        websiteNotSecure = UILabel()
-        websiteNotSecure?.translatesAutoresizingMaskIntoConstraints = false
-        websiteNotSecure?.font = UIFont.piwigoFontSmall()
-        websiteNotSecure?.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
-        websiteNotSecure?.textAlignment = .center
-        websiteNotSecure?.textColor = UIColor.white
-        websiteNotSecure?.adjustsFontSizeToFitWidth = true
-        websiteNotSecure?.minimumScaleFactor = 0.8
-        websiteNotSecure?.lineBreakMode = .byTruncatingTail
-        if let websiteNotSecure = websiteNotSecure {
-            view.addSubview(websiteNotSecure)
-        }
-
-        byLabel1 = UILabel()
-        byLabel1?.translatesAutoresizingMaskIntoConstraints = false
-        byLabel1?.font = UIFont.piwigoFontSmall()
-        byLabel1?.textColor = UIColor.piwigoColorOrangeLight()
-        byLabel1?.text = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        if let byLabel1 = byLabel1 {
-            view.addSubview(byLabel1)
-        }
-
-        byLabel2 = UILabel()
-        byLabel2?.translatesAutoresizingMaskIntoConstraints = false
-        byLabel2?.font = UIFont.piwigoFontSmall()
-        byLabel2?.textColor = UIColor.piwigoColorOrangeLight()
-        byLabel2?.text = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-        if let byLabel2 = byLabel2 {
-            view.addSubview(byLabel2)
-        }
-
-        versionLabel = UILabel()
-        versionLabel?.translatesAutoresizingMaskIntoConstraints = false
-        versionLabel?.font = UIFont.piwigoFontTiny()
-        versionLabel?.textColor = UIColor.piwigoColorOrangeLight()
-        if let versionLabel = versionLabel {
-            view.addSubview(versionLabel)
-        }
-
-        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        versionLabel?.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
-
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
-
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            setupAutoLayout4iPhone()
-        } else {
-            setupAutoLayout4iPad()
-        }
-    }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -161,6 +38,47 @@ class LoginViewController: UIViewController {
 
     
     // MARK: - View Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Server URL text field
+        serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
+        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+
+        // Username text field
+        userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
+        userTextField.text = NetworkVars.username
+        if #available(iOS 11.0, *) {
+            userTextField.textContentType = .username
+        }
+        
+        // Password text field
+        passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
+        passwordTextField.text = KeychainUtilitiesObjc.password(forService: NetworkVars.serverPath, account: NetworkVars.username)
+        if #available(iOS 11.0, *) {
+            passwordTextField.textContentType = .password
+        }
+        
+        // Login button
+        loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
+        loginButton.addTarget(self, action: #selector(launchLogin), for: .touchUpInside)
+
+        // Website not secure info
+        websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+        
+        // Developpers
+        byLabel1.text = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
+        byLabel2.text = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
+
+        // App version
+        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
+
+        // Keyboard
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -172,7 +90,7 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = false
 
         // Inform user if the connection is not secure
-        websiteNotSecure?.isHidden = NetworkVars.serverProtocol == "https://"
+        websiteNotSecure.isHidden = NetworkVars.serverProtocol == "https://"
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -180,23 +98,26 @@ class LoginViewController: UIViewController {
     }
 
     @objc func applyColorPalette() {
-        // Server
-        serverTextField?.textColor = UIColor.piwigoColorText()
-        serverTextField?.backgroundColor = UIColor.piwigoColorBackground()
+        // Server address
+        serverTextField.textColor = UIColor.piwigoColorText()
+        serverTextField.tintColor = UIColor.piwigoColorText()
+        serverTextField.backgroundColor = UIColor.piwigoColorBackground()
 
         // Username
-        userTextField?.textColor = UIColor.piwigoColorText()
-        userTextField?.backgroundColor = UIColor.piwigoColorBackground()
+        userTextField.textColor = UIColor.piwigoColorText()
+        userTextField.tintColor = UIColor.piwigoColorText()
+        userTextField.backgroundColor = UIColor.piwigoColorBackground()
 
         // Password
-        passwordTextField?.textColor = UIColor.piwigoColorText()
-        passwordTextField?.backgroundColor = UIColor.piwigoColorBackground()
+        passwordTextField.textColor = UIColor.piwigoColorText()
+        passwordTextField.tintColor = UIColor.piwigoColorText()
+        passwordTextField.backgroundColor = UIColor.piwigoColorBackground()
 
         // Login button
         if AppVars.shared.isDarkPaletteActive {
-            loginButton?.backgroundColor = UIColor.piwigoColorOrangeSelected()
+            loginButton.backgroundColor = UIColor.piwigoColorOrangeSelected()
         } else {
-            loginButton?.backgroundColor = UIColor.piwigoColorOrange()
+            loginButton.backgroundColor = UIColor.piwigoColorOrange()
         }
     }
 
@@ -235,6 +156,7 @@ class LoginViewController: UIViewController {
         NetworkVars.hasAdminRights = false
         NetworkVars.hasNormalRights = false
         NetworkVars.usesCommunityPluginV29 = false
+        NetworkVars.userCancelledCommunication = false
 
         #if DEBUG_SESSION
         print("=> launchLogin: starting with…")
@@ -243,7 +165,7 @@ class LoginViewController: UIViewController {
         #endif
 
         // Check server address and cancel login if address not provided
-        if (serverTextField?.text?.count ?? 0) <= 0 {
+        if (serverTextField.text?.count ?? 0) <= 0 {
             let alert = UIAlertController(
                 title: NSLocalizedString("loginEmptyServer_title", comment: "Enter a Web Address"),
                 message: NSLocalizedString("loginEmptyServer_message", comment: "Please select a protocol and enter a Piwigo web address in order to proceed."),
@@ -273,7 +195,7 @@ class LoginViewController: UIViewController {
         // Display HUD during login
         //    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
         //    self.hudViewController = rootViewController.childViewControllers.firstObject;
-        hudViewController = UIApplication.shared.keyWindow?.rootViewController
+        hudViewController = self
         hudViewController?.showPiwigoHUD(
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
             detail: NSLocalizedString("login_connecting", comment: "Connecting"),
@@ -283,9 +205,9 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         // Save credentials in Keychain (needed before login when using HTTP Authentication)
-        if let username = userTextField?.text, username.isEmpty == false {
+        if let username = userTextField.text, username.isEmpty == false {
             // Store credentials in Keychain
-            KeychainUtilities.setPassword(passwordTextField?.text ?? "",
+            KeychainUtilities.setPassword(passwordTextField.text ?? "",
                                           forService: NetworkVars.serverPath,
                                           account: username)
         }
@@ -527,10 +449,10 @@ class LoginViewController: UIViewController {
         NetworkVars.serverProtocol = "http://"
 
         // Update URL on UI
-        serverTextField?.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
 
         // Display security message below credentials
-        websiteNotSecure?.isHidden = false
+        websiteNotSecure.isHidden = false
 
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
@@ -561,9 +483,9 @@ class LoginViewController: UIViewController {
         #endif
 
         // Perform login if username exists
-        let username = userTextField?.text ?? ""
-        let password = passwordTextField?.text ?? ""
-        if ((userTextField?.text?.count ?? 0) > 0) && !NetworkVars.userCancelledCommunication {
+        let username = userTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        if ((userTextField.text?.count ?? 0) > 0) && !NetworkVars.userCancelledCommunication {
             // Update HUD during login
             hudViewController?.showPiwigoHUD(
                 withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -645,7 +567,7 @@ class LoginViewController: UIViewController {
     ) {
         #if DEBUG_SESSION
         print(
-            "   hudViewController=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
         print(
             "=> getSessionStatusAtLogin:\(isLoggingIn ? "YES" : "NO") andFirstLogin:\(isFirstLogin ? "YES" : "NO") starting…")
         #endif
@@ -920,7 +842,6 @@ class LoginViewController: UIViewController {
         guard var serverString = serverString else { return false }
         if serverString.isEmpty {
             // The URL is not correct
-            //        NSLog(@"ATTENTION!!! Incorrect URL");
             return false
         }
 
@@ -934,11 +855,13 @@ class LoginViewController: UIViewController {
             serverString.removeLast()
         }
 
-        // User may have entered an incorrect URLs (would lead to a crash)
+        // Add default scheme if needed
         if serverString.contains("http://") == false,
            serverString.contains("https://") == false {
             serverString = "https://" + serverString
         }
+
+        // User may have entered an incorrect URLs (would lead to a crash)
         guard let serverURL = URL(string: serverString) else { return false }
 
         // Is the port provided ?
@@ -949,8 +872,10 @@ class LoginViewController: UIViewController {
             switch serverURL.port {
             case 80:
                 NetworkVars.serverProtocol = "http://"
+                serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
             case 443:
                 NetworkVars.serverProtocol = "https://"
+                serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
             default:
                 NetworkVars.serverProtocol = "\(serverURL.scheme ?? "https")://"
             }
@@ -958,10 +883,10 @@ class LoginViewController: UIViewController {
             // Hide/show warning
             if NetworkVars.serverProtocol == "https://" {
                 // Hide security message below credentials if needed
-                websiteNotSecure?.isHidden = true
+                websiteNotSecure.isHidden = true
             } else {
                 // Show security message below credentials if needed
-                websiteNotSecure?.isHidden = false
+                websiteNotSecure.isHidden = false
             }
 
             // Save username, server address and protocol to disk
@@ -976,10 +901,10 @@ class LoginViewController: UIViewController {
         // Hide/show warning
         if NetworkVars.serverProtocol == "https://" {
             // Hide security message below credentials if needed
-            websiteNotSecure?.isHidden = true
+            websiteNotSecure.isHidden = true
         } else {
             // Show security message below credentials if needed
-            websiteNotSecure?.isHidden = false
+            websiteNotSecure.isHidden = false
         }
 
         // Save username, server address and protocol to disk
@@ -1018,13 +943,13 @@ class LoginViewController: UIViewController {
         view.endEditing(true)
     }
 
-    @objc func openPiwigoURL() {
+    @IBAction func openPiwigoURL(_ sender: UIButton) {
         if let url = URL(string: "https://piwigo.org") {
             UIApplication.shared.openURL(url)
         }
     }
-
-    @objc func mailPiwigoSupport() {
+    
+    @IBAction func mailPiwigoSupport(_ sender: UIButton) {
         if MFMailComposeViewController.canSendMail() {
             let composeVC = MFMailComposeViewController()
             composeVC.mailComposeDelegate = self
@@ -1094,7 +1019,7 @@ extension LoginViewController: UITextFieldDelegate
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         // Disable login buttons
         if textField == serverTextField {
-            loginButton?.isEnabled = false
+            loginButton.isEnabled = false
         } else if let httpAlertController = httpAlertController {
             // Requesting autorisation to access non secure web site
             // or asking HTTP basic authentication credentials
@@ -1109,13 +1034,14 @@ extension LoginViewController: UITextFieldDelegate
         return true
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
 
         if textField == serverTextField {
             // Disable Login button if URL invalid
-            let _ = saveServerAddress(finalString, andUsername: userTextField?.text)
-            loginButton?.isEnabled = true
+            let _ = saveServerAddress(finalString, andUsername: userTextField.text)
+            loginButton.isEnabled = true
         } else if let httpAlertController = httpAlertController {
             // Requesting autorisation to access non secure web site
             // or asking HTTP basic authentication credentials
@@ -1134,8 +1060,8 @@ extension LoginViewController: UITextFieldDelegate
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == serverTextField {
             // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField?.text, andUsername: userTextField?.text)
-            loginButton?.isEnabled = validURL
+            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
+            loginButton.isEnabled = validURL
             if !validURL {
                 // Incorrect URL
                 showIncorrectWebAddressAlert()
@@ -1143,14 +1069,14 @@ extension LoginViewController: UITextFieldDelegate
             }
 
             // User entered acceptable server address
-            userTextField?.becomeFirstResponder()
+            userTextField.becomeFirstResponder()
         }
         else if textField == userTextField {
             // User entered username
-            let pwd = KeychainUtilities.password(forService: serverTextField?.text ?? "",
-                                                 account: userTextField?.text ?? "")
-            passwordTextField?.text = pwd
-            passwordTextField?.becomeFirstResponder()
+            let pwd = KeychainUtilities.password(forService: NetworkVars.serverPath,
+                                                 account: userTextField.text ?? "")
+            passwordTextField.text = pwd
+            passwordTextField.becomeFirstResponder()
         }
         else if textField == passwordTextField {
             // User entered password —> Launch login
@@ -1162,8 +1088,8 @@ extension LoginViewController: UITextFieldDelegate
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if textField == serverTextField {
             // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField?.text, andUsername: userTextField?.text)
-            loginButton?.isEnabled = validURL
+            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
+            loginButton.isEnabled = validURL
             if !validURL {
                 // Incorrect URL
                 showIncorrectWebAddressAlert()

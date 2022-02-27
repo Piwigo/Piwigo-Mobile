@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20019"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+        <array key="OpenSansSemiBold.TTF">
+            <string>OpenSans-Semibold</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="LoginViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="LoginViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <subviews>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CCH-Yv-yXe">
+                                <rect key="frame" x="79" y="88" width="232" height="57.666666666666657"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="CCH-Yv-yXe" secondAttribute="height" multiplier="981:244" id="OHK-VX-2zc"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Button" image="piwigoLogo"/>
+                                <connections>
+                                    <action selector="openPiwigoURL:" destination="v1i-nc-bpr" eventType="touchUpInside" id="7PR-Mb-lMZ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3nC-PN-s27">
+                                <rect key="frame" x="147" y="145.66666666666666" width="96" height="30"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="iOS@piwigo.org">
+                                    <color key="titleColor" red="0.98877537250000003" green="0.37905481460000001" blue="0.034007694569999997" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="mailPiwigoSupport:" destination="v1i-nc-bpr" eventType="touchUpInside" id="kQc-05-ouI"/>
+                                </connections>
+                            </button>
+                            <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="example.com" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="eJO-Fa-ceu">
+                                <rect key="frame" x="20" y="316" width="350" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="lLZ-VD-fQv"/>
+                                    <constraint firstAttribute="width" constant="500" id="pSx-tA-nJV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="URL" returnKeyType="next" textContentType="url"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="pSx-tA-nJV"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="pSx-tA-nJV"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="delegate" destination="Y6W-OH-hqX" id="VZf-Tf-30g"/>
+                                </connections>
+                            </textField>
+                            <label hidden="YES" opaque="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Website NotSecure" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000004" adjustsLetterSpacingToFitWidth="YES" showsExpansionTextWhenTruncated="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rv7-Lg-dyW">
+                                <rect key="frame" x="137.66666666666666" y="364" width="115" height="18"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username (optional)" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="J1S-58-xfG">
+                                <rect key="frame" x="50" y="435" width="290" height="44"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="next" textContentType="username"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="delegate" destination="Y6W-OH-hqX" id="Pce-Dy-8Zb"/>
+                                </connections>
+                            </textField>
+                            <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password (optional)" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="d5N-dw-hHL">
+                                <rect key="frame" x="50" y="489" width="290" height="44"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES" smartDashesType="no" smartQuotesType="no" textContentType="password"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="delegate" destination="Y6W-OH-hqX" id="6rd-6o-xFD"/>
+                                </connections>
+                            </textField>
+                            <button clipsSubviews="YES" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OsE-ov-vLE">
+                                <rect key="frame" x="50" y="543" width="290" height="44"/>
+                                <color key="backgroundColor" red="0.98877537250000003" green="0.37905481460000001" blue="0.034007694569999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="OpenSans-Semibold" family="Open Sans" pointSize="17"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By Spencer Baker, Olaf Greck," textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b7n-hX-uyG">
+                                <rect key="frame" x="105.66666666666669" y="753.66666666666663" width="179" height="18"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <color key="textColor" red="0.98431372549019602" green="0.38039215686274508" blue="0.043137254901960784" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="and Eddy Lelièvre-Berna" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X8f-zs-T3s">
+                                <rect key="frame" x="121.66666666666669" y="773.66666666666663" width="147" height="18"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <color key="textColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="— Version 2.10 (443) —" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ems-Z0-ysf">
+                                <rect key="frame" x="140.66666666666666" y="793" width="109" height="14"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
+                                <color key="textColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ntc-uS-KYs"/>
+                        <color key="backgroundColor" red="0.30588235294117649" green="0.30588235294117649" blue="0.30588235294117649" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ems-Z0-ysf" firstAttribute="centerX" secondItem="b7n-hX-uyG" secondAttribute="centerX" id="28t-QA-gze"/>
+                            <constraint firstAttribute="centerY" secondItem="Rv7-Lg-dyW" secondAttribute="bottom" constant="40" id="4Jd-ba-Klt"/>
+                            <constraint firstItem="X8f-zs-T3s" firstAttribute="centerX" secondItem="b7n-hX-uyG" secondAttribute="centerX" id="64L-Px-nYJ"/>
+                            <constraint firstItem="Rv7-Lg-dyW" firstAttribute="top" secondItem="eJO-Fa-ceu" secondAttribute="bottom" constant="4" id="7eh-xZ-zFd"/>
+                            <constraint firstItem="OsE-ov-vLE" firstAttribute="height" secondItem="J1S-58-xfG" secondAttribute="height" id="AyT-iw-uqm"/>
+                            <constraint firstItem="J1S-58-xfG" firstAttribute="width" secondItem="eJO-Fa-ceu" secondAttribute="width" constant="-60" id="CfT-md-qxk">
+                                <variation key="heightClass=regular-widthClass=regular" constant="-120"/>
+                            </constraint>
+                            <constraint firstItem="X8f-zs-T3s" firstAttribute="firstBaseline" secondItem="b7n-hX-uyG" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="Ddd-Ei-Eix"/>
+                            <constraint firstItem="ems-Z0-ysf" firstAttribute="firstBaseline" secondItem="X8f-zs-T3s" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="G3z-Py-Arh"/>
+                            <constraint firstItem="J1S-58-xfG" firstAttribute="centerX" secondItem="eJO-Fa-ceu" secondAttribute="centerX" id="Igl-3O-UCz"/>
+                            <constraint firstItem="J1S-58-xfG" firstAttribute="height" secondItem="eJO-Fa-ceu" secondAttribute="height" id="J8r-q7-Eu0"/>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="top" secondItem="ntc-uS-KYs" secondAttribute="top" constant="44" id="Put-j6-tAF"/>
+                            <constraint firstItem="OsE-ov-vLE" firstAttribute="width" secondItem="J1S-58-xfG" secondAttribute="width" id="PxU-PI-RnE"/>
+                            <constraint firstItem="eJO-Fa-ceu" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="20" id="RYy-G1-5yp"/>
+                            <constraint firstItem="d5N-dw-hHL" firstAttribute="width" secondItem="J1S-58-xfG" secondAttribute="width" id="SkN-C3-a5F"/>
+                            <constraint firstItem="eJO-Fa-ceu" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="TLi-wP-d5D"/>
+                            <constraint firstItem="ntc-uS-KYs" firstAttribute="bottom" secondItem="ems-Z0-ysf" secondAttribute="bottom" constant="3" id="VDm-Ib-EbK"/>
+                            <constraint firstItem="ntc-uS-KYs" firstAttribute="trailing" secondItem="eJO-Fa-ceu" secondAttribute="trailing" constant="20" id="XBS-VH-iOZ"/>
+                            <constraint firstItem="b7n-hX-uyG" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="aHu-fB-n4O"/>
+                            <constraint firstItem="3nC-PN-s27" firstAttribute="top" secondItem="CCH-Yv-yXe" secondAttribute="bottom" id="iW1-KA-tsl"/>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="lTn-Ik-25X"/>
+                            <constraint firstItem="OsE-ov-vLE" firstAttribute="centerX" secondItem="J1S-58-xfG" secondAttribute="centerX" id="lqh-Ay-OrZ"/>
+                            <constraint firstItem="d5N-dw-hHL" firstAttribute="top" secondItem="J1S-58-xfG" secondAttribute="bottom" constant="10" id="q81-d4-UOx"/>
+                            <constraint firstItem="d5N-dw-hHL" firstAttribute="height" secondItem="eJO-Fa-ceu" secondAttribute="height" id="qFM-eT-iXJ"/>
+                            <constraint firstItem="OsE-ov-vLE" firstAttribute="top" secondItem="d5N-dw-hHL" secondAttribute="bottom" constant="10" id="rZT-X4-jyo"/>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="width" secondItem="J1S-58-xfG" secondAttribute="width" multiplier="0.8" id="sNF-nz-Sgf"/>
+                            <constraint firstItem="J1S-58-xfG" firstAttribute="centerY" secondItem="ntc-uS-KYs" secondAttribute="centerY" constant="30" id="t8T-DC-b0T">
+                                <variation key="heightClass=regular-widthClass=regular" constant="60"/>
+                            </constraint>
+                            <constraint firstItem="d5N-dw-hHL" firstAttribute="centerX" secondItem="J1S-58-xfG" secondAttribute="centerX" id="tre-ni-NIw"/>
+                            <constraint firstItem="3nC-PN-s27" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="uOy-d5-yKz"/>
+                            <constraint firstItem="Rv7-Lg-dyW" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="vWr-0b-cRq"/>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="xRO-4S-c00"/>
+                        </constraints>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <exclude reference="XBS-VH-iOZ"/>
+                                <exclude reference="RYy-G1-5yp"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="byLabel1" destination="b7n-hX-uyG" id="TJR-bD-v8n"/>
+                        <outlet property="byLabel2" destination="X8f-zs-T3s" id="qbj-Sr-Dns"/>
+                        <outlet property="loginButton" destination="OsE-ov-vLE" id="EdY-WL-zgh"/>
+                        <outlet property="passwordTextField" destination="d5N-dw-hHL" id="AbK-sL-krG"/>
+                        <outlet property="serverTextField" destination="eJO-Fa-ceu" id="IEd-K9-KCk"/>
+                        <outlet property="userTextField" destination="J1S-58-xfG" id="T1k-17-YJj"/>
+                        <outlet property="versionLabel" destination="ems-Z0-ysf" id="Cfn-pK-sXp"/>
+                        <outlet property="websiteNotSecure" destination="Rv7-Lg-dyW" id="H4K-yb-Gid"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="v1i-nc-bpr" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="57.971014492753625" y="79.6875"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="piwigoLogo" width="981" height="244"/>
+    </resources>
+</document>
