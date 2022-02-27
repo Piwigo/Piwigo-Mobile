@@ -9,7 +9,6 @@
 //
 
 import MessageUI
-import System
 import UIKit
 import piwigoKit
 
