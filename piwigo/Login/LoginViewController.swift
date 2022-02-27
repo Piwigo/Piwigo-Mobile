@@ -248,19 +248,19 @@ class LoginViewController: UIViewController {
             }
 
             switch (error as NSError).code {
-            case Int(NSURLErrorUserAuthenticationRequired):
+            case NSURLErrorUserAuthenticationRequired:
                 // Without prior knowledge, the app already tried Piwigo credentials
                 // but unsuccessfully, so must now request HTTP credentials
                 self.requestHttpCredentials(afterError: error)
                 return
-            case Int(NSURLErrorUserCancelledAuthentication):
+            case NSURLErrorUserCancelledAuthentication:
                 self.logging(inConnectionError: nil)
                 return
-            case Int(NSURLErrorBadServerResponse), Int(NSURLErrorBadURL), Int(NSURLErrorCallIsActive), Int(NSURLErrorCannotDecodeContentData), Int(NSURLErrorCannotDecodeRawData), Int(NSURLErrorCannotFindHost), Int(NSURLErrorCannotParseResponse), Int(NSURLErrorClientCertificateRequired), Int(NSURLErrorDataLengthExceedsMaximum), Int(NSURLErrorDataNotAllowed), Int(NSURLErrorDNSLookupFailed), Int(NSURLErrorHTTPTooManyRedirects), Int(NSURLErrorInternationalRoamingOff), Int(NSURLErrorNetworkConnectionLost), Int(NSURLErrorNotConnectedToInternet), Int(NSURLErrorRedirectToNonExistentLocation), Int(NSURLErrorRequestBodyStreamExhausted), Int(NSURLErrorTimedOut), Int(NSURLErrorUnknown), Int(NSURLErrorUnsupportedURL), Int(NSURLErrorZeroByteResource):
+            case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive, NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData, NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired, NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed, NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation, NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL, NSURLErrorZeroByteResource:
                 self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                 return
-            case Int(NSURLErrorCannotConnectToHost),                 // Happens when the server does not reply to the request (HTTP or HTTPS)
-            Int(NSURLErrorSecureConnectionFailed):
+            case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
+                NSURLErrorSecureConnectionFailed:
                 // HTTPS request failed ?
                 if (NetworkVars.serverProtocol == "https://") && !NetworkVars.userCancelledCommunication {
                     // Suggest HTTP connection if HTTPS attempt failed
@@ -268,7 +268,7 @@ class LoginViewController: UIViewController {
                     return
                 }
                 return
-            case Int(NSURLErrorClientCertificateRejected), Int(NSURLErrorServerCertificateHasBadDate), Int(NSURLErrorServerCertificateHasUnknownRoot), Int(NSURLErrorServerCertificateNotYetValid), Int(NSURLErrorServerCertificateUntrusted):
+            case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid, NSURLErrorServerCertificateUntrusted:
                 // The SSL certificate is not trusted
                 self.requestCertificateApproval(afterError: error)
                 return
