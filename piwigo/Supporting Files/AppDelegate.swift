@@ -26,14 +26,7 @@ import piwigoKit
     var loginVC: LoginViewController {
         // Already existing?
         if _loginVC != nil { return _loginVC }
-        
-        // Create login view controller for current device
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            _loginVC = LoginViewController_iPhone()
-        } else {
-            _loginVC = LoginViewController_iPad()
-        }
-        return _loginVC
+        return LoginViewController()
     }
 
 
@@ -221,7 +214,7 @@ import piwigoKit
 
             // Should we resume uploads?
             if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
-               !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
+               !(child is LoginViewController) {
                 // Determine for how long the session is opened
                 /// Piwigo 11 session duration defaults to an hour.
                 let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow

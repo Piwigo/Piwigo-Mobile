@@ -153,22 +153,10 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - UITableView - Footer
-    private func deviceVideoResolution() -> String {
-        // Collect system and device data
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-        let resolution: String = DeviceUtilities.deviceVideoCapabilities(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
-            p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
-                return String(cString: p2)
-            })
-        })
-        return resolution
-    }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
-        let resolution = deviceVideoResolution()
+        let resolution = UIDevice.current.modelVideoCapabilities
         if resolution.isEmpty { return 0.0 }
         let footer = String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), resolution)
         let attributes = [
@@ -192,7 +180,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
-        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), deviceVideoResolution())
+        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), UIDevice.current.modelVideoCapabilities)
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
 

@@ -1,5 +1,5 @@
 //
-//  DeviceUtilities.swift
+//  Device+Model.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/08/2020.
@@ -8,20 +8,28 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 19/09/2020
 //
 
-@objc
-class DeviceUtilities: NSObject {
+extension UIDevice {
+    
+    // MARK: - Identifier
+    var identifier: String {
+        #if targetEnvironment(simulator)
+        let identifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"]!
+        #else
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8 , value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        #endif
+        return identifier
+    }
     
     // MARK: - Device names
-    @objc
-    class func name(forCode deviceCode: String?) -> String {
-        // See https://everyi.com/ipod-iphone-ipad-identification/index-how-to-identify-my-ipod-iphone-ipad.html
-        // or https://apps.apple.com/fr/app/mactracker/id430255202?l=en&mt=12
-        guard let deviceCode = deviceCode else {
-            return "Unknown device"
-        }
-        
+    var modelName: String {
+        switch identifier {
         // MARK: iPhone
-        switch deviceCode {
         case "iPhone1,1":
             return "iPhone"
         case "iPhone1,2":
@@ -100,12 +108,8 @@ class DeviceUtilities: NSObject {
             return "iPhone 13 mini"
         case "iPhone14,5":
             return "iPhone 13"
-        default:
-            break
-        }
 
         // MARK: iPad
-        switch deviceCode {
         case "iPad1,1":
             return "iPad"
         case "iPad2,1":
@@ -144,12 +148,8 @@ class DeviceUtilities: NSObject {
             return "iPad (9th generation) (Wi-Fi)"
         case "iPad12,2":
             return "iPad (9th generation) (Wi-Fi + Cellular)"
-        default:
-            break
-        }
 
         // MARK: iPad Air
-        switch deviceCode {
         case "iPad4,1":
             return "iPad Air (Wi-Fi)"
         case "iPad4,2":
@@ -166,12 +166,8 @@ class DeviceUtilities: NSObject {
             return "iPad Air (4th generation) (Wi-Fi)"
         case "iPad13,2":
             return "iPad Air (4th generation) (Wi-Fi + Cellular)"
-        default:
-            break
-        }
 
         // MARK: iPad Pro
-        switch deviceCode {
         case "iPad6,3":
             return "iPad Pro 9.7-inch (Wi-Fi)"
         case "iPad6,4":
@@ -216,12 +212,8 @@ class DeviceUtilities: NSObject {
             return "iPad Pro 12.9-inch (5th generation) (Wi-Fi)"
         case "iPad13,10", "iPad13,11":
             return "iPad Pro 12.9-inch (5th generation) (Wi-Fi + Cellular)"
-        default:
-            break
-        }
 
         // MARK: iPad mini
-        switch deviceCode {
         case "iPad2,5":
             return "iPad Mini (Wi-Fi)"
         case "iPad2,6":
@@ -248,12 +240,8 @@ class DeviceUtilities: NSObject {
             return "iPad mini (6th generation) (Wi-Fi)"
         case "iPad14,2":
             return "iPad mini (6th generation) (Wi-Fi + Cellular)"
-        default:
-            break
-        }
 
         // MARK: iPod
-        switch deviceCode {
         case "iPod1,1":
             return "iPod touch"
         case "iPod2,1":
@@ -268,30 +256,21 @@ class DeviceUtilities: NSObject {
             return "iPod touch (6th generation)"
         case "iPod9,1":
             return "iPod touch (7th generation)"
-        default:
-            break
-        }
 
         // MARK: Simulator
-        switch deviceCode {
         case "i386", "x86_64":
             return "Simulator"
         default:
-            break
+            return identifier
         }
-
-        return deviceCode
     }
 
 
     // MARK: - Photo Resolutions
-    class func devicePotoResolution(forCode deviceCode: String?) -> String {
-        guard let deviceCode = deviceCode else {
-            return ""
-        }
-        
+    var modelPotoResolution: String {
+        switch identifier {
+
         // MARK: iPhone
-        switch deviceCode {
         case "iPhone1,1", "iPhone1,2":
             return "2 Mpx"
         case "iPhone2,1":
@@ -310,12 +289,8 @@ class DeviceUtilities: NSObject {
              "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
              "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5":
             return "12 Mpx"
-        default:
-            break
-        }
 
         // MARK: iPad
-        switch deviceCode {
         case "iPad1,1":
             return ""
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
@@ -328,12 +303,8 @@ class DeviceUtilities: NSObject {
             return "8 Mpx"
         case "iPad12,1", "iPad12,2":
             return "12 Mpx"
-        default:
-            break
-        }
 
         // MARK: iPad Air
-        switch deviceCode {
         case "iPad4,1", "iPad4,2":
             return "5 Mpx"
         case "iPad5,3", "iPad5,4",
@@ -341,12 +312,8 @@ class DeviceUtilities: NSObject {
             return "8 Mpx"
         case "iPad13,1", "iPad13,2":
             return "12 Mpx"
-        default:
-            break
-        }
 
         // MARK: iPad Pro
-        switch deviceCode {
         case "iPad6,7", "iPad6,8":
             return "8 Mpx"
         case "iPad6,3", "iPad6,4",
@@ -355,12 +322,8 @@ class DeviceUtilities: NSObject {
              "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
              "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7", "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11":
             return "12 Mpx"
-        default:
-            break
-        }
 
         // MARK: iPad mini
-        switch deviceCode {
         case "iPad2,5", "iPad2,6", "iPad2,7",
              "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
             return "5 Mpx"
@@ -368,12 +331,8 @@ class DeviceUtilities: NSObject {
             return "8 Mpx"
         case "iPad14,1", "iPad14,2":
             return "12 Mpx"
-        default:
-            break
-        }
 
         // MARK: iPod
-        switch deviceCode {
         case "iPod1,1", "iPod2,1", "iPod3,1":
             return ""
         case "iPod4,1":
@@ -382,30 +341,21 @@ class DeviceUtilities: NSObject {
             return "5 Mpx"
         case "iPod7,1", "iPod9,1":
             return "8 Mpx"
-        default:
-            break
-        }
 
         // MARK: Simulator
-        switch deviceCode {
         case "i386", "x86_64":
             return "? Mpx"
         default:
-            break
+            return "? Mpx"
         }
-
-        return "? Mpx"
     }
 
 
     // MARK: - Video Capabilities
-    class func deviceVideoCapabilities(forCode deviceCode: String?) -> String {
-        guard let deviceCode = deviceCode else {
-            return ""
-        }
-        
+    var modelVideoCapabilities: String {
+        switch identifier {
+            
         // MARK: iPhone
-        switch deviceCode {
         case "iPhone1,1", "iPhone1,2", "iPhone2,1":
             return "VGA, 30 fps"
         case "iPhone3,1", "iPhone3,2", "iPhone3,3":
@@ -426,12 +376,8 @@ class DeviceUtilities: NSObject {
             return "4K, 60 fps"
         case "iPhone13,3", "iPhone13,4":
             return "4K, 120 fps"
-        default:
-            break
-        }
 
         // MARK: iPad
-        switch deviceCode {
         case "iPad1,1":
             return ""
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
@@ -444,12 +390,8 @@ class DeviceUtilities: NSObject {
             return "Full HD, 30 fps"
         case "iPad12,1", "iPad12,2":
             return "4K, 30 fps"
-        default:
-            break
-        }
 
         // MARK: iPad Air
-        switch deviceCode {
         case "iPad4,1", "iPad4,2":
             return "HD, 30 fps"
         case "iPad5,3", "iPad5,4",
@@ -457,12 +399,8 @@ class DeviceUtilities: NSObject {
             return "Full HD, 30 fps"
         case "iPad13,1", "iPad13,2":
             return "4K, 30 fps"
-        default:
-            break
-        }
 
         // MARK: iPad Pro
-        switch deviceCode {
         case "iPad6,3", "iPad6,4":
             return "HD, 30 fps"
         case "iPad6,7", "iPad6,8":
@@ -475,12 +413,8 @@ class DeviceUtilities: NSObject {
         case "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7",
              "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11":
             return "4K, 60 fps"
-        default:
-            break
-        }
 
         // MARK: iPad mini
-        switch deviceCode {
         case "iPad2,5", "iPad2,6", "iPad2,7",
              "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
             return "HD, 30 fps"
@@ -489,30 +423,20 @@ class DeviceUtilities: NSObject {
             return "Full HD, 30 fps"
         case "iPad14,1", "iPad14,2":
             return "4K, 30 fps"
-        default:
-            break
-        }
 
         // MARK: iPod
-        switch deviceCode {
         case "iPod1,1", "iPod2,1", "iPod3,1":
             return ""
         case "iPod4,1":
             return "HD, 30 fps"
         case "iPod5,1", "iPod7,1", "iPod9,1":
             return "Full HD, 30 fps"
-        default:
-            break
-        }
 
         // MARK: Simulator
-        switch deviceCode {
         case "i386", "x86_64":
             return "? Mpx"
         default:
-            break
+            return "? Mpx"
         }
-
-        return "? Mpx"
     }
 }

@@ -152,22 +152,10 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - UITableView - Footer
-    private func devicePhotoResolution() -> String {
-        // Collect system and device data
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-        let resolution: String = DeviceUtilities.devicePotoResolution(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
-            p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
-                return String(cString: p2)
-            })
-        })
-        return resolution
-    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
-        let resolution = devicePhotoResolution()
+        let resolution = UIDevice.current.modelPotoResolution
         if resolution.isEmpty { return 0.0 }
         let footer = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), resolution)
         let attributes = [
@@ -191,7 +179,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
-        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), devicePhotoResolution())
+        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), UIDevice.current.modelPotoResolution)
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
 

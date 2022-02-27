@@ -14,14 +14,7 @@ import piwigoKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    
-    let loginVC: LoginViewController = {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return LoginViewController_iPhone()
-        } else {
-            return LoginViewController_iPad()
-        }
-    }()
+    let loginVC = LoginViewController()
 
     @available(iOS 13.0, *)
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -99,8 +92,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Should we reopen the session and restart uploads?
-        if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
-           !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
+        if let rootVC = self.window?.rootViewController,
+            let child = rootVC.children.first, !(child is LoginViewController) {
             // Determine for how long the session is opened
             /// Piwigo 11 session duration defaults to an hour.
             let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
