@@ -24,18 +24,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <subviews>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CCH-Yv-yXe">
-                                <rect key="frame" x="60" y="88" width="270" height="67"/>
+                                <rect key="frame" x="80" y="88" width="230" height="57.333333333333343"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="Grq-5P-hq2"/>
                                     <constraint firstAttribute="width" secondItem="CCH-Yv-yXe" secondAttribute="height" multiplier="981:244" id="OHK-VX-2zc"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="Button" image="piwigoLogo"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Grq-5P-hq2"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Grq-5P-hq2"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <action selector="openPiwigoURL:" destination="v1i-nc-bpr" eventType="touchUpInside" id="7PR-Mb-lMZ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3nC-PN-s27">
-                                <rect key="frame" x="147" y="155" width="96" height="30"/>
+                                <rect key="frame" x="147" y="145.33333333333334" width="96" height="30"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="iOS@piwigo.org">
@@ -196,9 +207,7 @@
                             <constraint firstItem="X8f-zs-T3s" firstAttribute="firstBaseline" secondItem="b7n-hX-uyG" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="Ddd-Ei-Eix"/>
                             <constraint firstItem="ems-Z0-ysf" firstAttribute="firstBaseline" secondItem="X8f-zs-T3s" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="G3z-Py-Arh"/>
                             <constraint firstItem="OsE-ov-vLE" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="50" id="J3i-xr-Rno"/>
-                            <constraint firstItem="ntc-uS-KYs" firstAttribute="trailing" secondItem="CCH-Yv-yXe" secondAttribute="trailing" constant="60" id="MON-CD-zrd">
-                                <variation key="heightClass=regular-widthClass=regular" constant="300"/>
-                            </constraint>
+                            <constraint firstItem="ntc-uS-KYs" firstAttribute="trailing" secondItem="CCH-Yv-yXe" secondAttribute="trailing" constant="60" id="MON-CD-zrd"/>
                             <constraint firstItem="J1S-58-xfG" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="OsI-NF-JGr"/>
                             <constraint firstItem="CCH-Yv-yXe" firstAttribute="top" secondItem="ntc-uS-KYs" secondAttribute="top" constant="44" id="Put-j6-tAF"/>
                             <constraint firstItem="eJO-Fa-ceu" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="20" id="RYy-G1-5yp"/>
@@ -208,11 +217,11 @@
                             <constraint firstItem="CCH-Yv-yXe" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="XOZ-Oj-XlV"/>
                             <constraint firstItem="d5N-dw-hHL" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="Zh4-mQ-SeX"/>
                             <constraint firstItem="b7n-hX-uyG" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="aHu-fB-n4O"/>
+                            <constraint firstItem="ntc-uS-KYs" firstAttribute="trailing" secondItem="CCH-Yv-yXe" secondAttribute="trailing" constant="80" id="cVO-TW-bbm"/>
                             <constraint firstItem="OsE-ov-vLE" firstAttribute="centerX" secondItem="ntc-uS-KYs" secondAttribute="centerX" id="e4q-HR-jhk"/>
-                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="60" id="gwb-ir-d9u">
-                                <variation key="heightClass=regular-widthClass=regular" constant="300"/>
-                            </constraint>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="60" id="gwb-ir-d9u"/>
                             <constraint firstItem="3nC-PN-s27" firstAttribute="top" secondItem="CCH-Yv-yXe" secondAttribute="bottom" id="iW1-KA-tsl"/>
+                            <constraint firstItem="CCH-Yv-yXe" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="80" id="mzw-Ck-nDJ"/>
                             <constraint firstItem="d5N-dw-hHL" firstAttribute="top" secondItem="J1S-58-xfG" secondAttribute="bottom" constant="10" id="q81-d4-UOx"/>
                             <constraint firstItem="OsE-ov-vLE" firstAttribute="top" secondItem="d5N-dw-hHL" secondAttribute="bottom" constant="10" id="rZT-X4-jyo"/>
                             <constraint firstItem="J1S-58-xfG" firstAttribute="centerY" secondItem="ntc-uS-KYs" secondAttribute="centerY" constant="30" id="t8T-DC-b0T">
@@ -223,6 +232,20 @@
                             <constraint firstItem="ntc-uS-KYs" firstAttribute="trailing" secondItem="J1S-58-xfG" secondAttribute="trailing" constant="50" id="xNw-fE-if6"/>
                             <constraint firstItem="J1S-58-xfG" firstAttribute="leading" secondItem="ntc-uS-KYs" secondAttribute="leading" constant="50" id="yDh-Nm-UV7"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="MON-CD-zrd"/>
+                                <exclude reference="mzw-Ck-nDJ"/>
+                                <exclude reference="cVO-TW-bbm"/>
+                                <exclude reference="gwb-ir-d9u"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="mzw-Ck-nDJ"/>
+                                <include reference="cVO-TW-bbm"/>
+                            </mask>
+                        </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
                                 <exclude reference="6hS-hG-2Oi"/>
