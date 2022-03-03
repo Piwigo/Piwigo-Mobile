@@ -278,43 +278,43 @@ class LoginViewController: UIViewController {
     }
 
     func requestCertificateApproval(afterError error: Error?) {
-        let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.certificateInformation)"
-        httpAlertController = UIAlertController(
-            title: NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private"),
-            message: message,
-            preferredStyle: .alert)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel,
-            handler: { [self] action in
-                // Should forget certificate
-                NetworkVars.didApproveCertificate = false
-                // Report error
-                logging(inConnectionError: error)
-            })
-
-        let acceptAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
-            style: .default,
-            handler: { [self] action in
-                // Cancel task
-                NetworkVarsObjc.sessionManager!.invalidateSessionCancelingTasks(true, resetSession: true)
-                // Will accept certificate
-                NetworkVars.didApproveCertificate = true
-                // Try logging in with approved certificate
-                launchLogin()
-            })
-
-        httpAlertController?.addAction(cancelAction)
-        httpAlertController?.addAction(acceptAction)
-        httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
         DispatchQueue.main.async { [self] in
+            let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.certificateInformation)"
+            httpAlertController = UIAlertController(
+                title: NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private"),
+                message: message,
+                preferredStyle: .alert)
+
+            let cancelAction = UIAlertAction(
+                title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                style: .cancel,
+                handler: { [self] action in
+                    // Should forget certificate
+                    NetworkVars.didApproveCertificate = false
+                    // Report error
+                    logging(inConnectionError: error)
+                })
+
+            let acceptAction = UIAlertAction(
+                title: NSLocalizedString("alertOkButton", comment: "OK"),
+                style: .default,
+                handler: { [self] action in
+                    // Cancel task
+                    NetworkVarsObjc.sessionManager!.invalidateSessionCancelingTasks(true, resetSession: true)
+                    // Will accept certificate
+                    NetworkVars.didApproveCertificate = true
+                    // Try logging in with approved certificate
+                    launchLogin()
+                })
+
+            httpAlertController?.addAction(cancelAction)
+            httpAlertController?.addAction(acceptAction)
+            httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
+            }
             if let httpAlertController = httpAlertController {
                 present(httpAlertController, animated: true) {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -325,112 +325,114 @@ class LoginViewController: UIViewController {
     }
 
     func requestHttpCredentials(afterError error: Error?) {
-        let username = NetworkVars.httpUsername
-        let password = KeychainUtilitiesObjc.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
+        DispatchQueue.main.async { [self] in
+            let username = NetworkVars.httpUsername
+            let password = KeychainUtilitiesObjc.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
 
-        httpAlertController = UIAlertController(
-            title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
-            message: NSLocalizedString("loginHTTP_message", comment: "HTTP basic authentification is required by the Piwigo server:"),
-            preferredStyle: .alert)
+            httpAlertController = UIAlertController(
+                title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
+                message: NSLocalizedString("loginHTTP_message", comment: "HTTP basic authentification is required by the Piwigo server:"),
+                preferredStyle: .alert)
 
-        httpAlertController?.addTextField(configurationHandler: { [self] userTextField in
-            userTextField.placeholder = NSLocalizedString("loginHTTPuser_placeholder", comment: "username")
-            userTextField.text = (username.count > 0) ? username : ""
-            userTextField.clearButtonMode = .always
-            userTextField.keyboardType = .default
-            userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
-            userTextField.returnKeyType = .continue
-            userTextField.autocapitalizationType = .none
-            userTextField.autocorrectionType = .no
-            userTextField.delegate = self;
-        })
-
-        httpAlertController?.addTextField(configurationHandler: { pwdTextField in
-            pwdTextField.placeholder = NSLocalizedString("loginHTTPpwd_placeholder", comment: "password")
-            pwdTextField.text = (password.count > 0) ? password : ""
-            pwdTextField.clearButtonMode = .always
-            pwdTextField.keyboardType = .default
-            pwdTextField.isSecureTextEntry = true
-            pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
-            pwdTextField.autocapitalizationType = .none
-            pwdTextField.autocorrectionType = .no
-            pwdTextField.returnKeyType = .continue
-            pwdTextField.delegate = self;
-        })
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel,
-            handler: { [self] action in
-                // Stop logging in action, display error message
-                logging(inConnectionError: error)
+            httpAlertController?.addTextField(configurationHandler: { [self] userTextField in
+                userTextField.placeholder = NSLocalizedString("loginHTTPuser_placeholder", comment: "username")
+                userTextField.text = (username.count > 0) ? username : ""
+                userTextField.clearButtonMode = .always
+                userTextField.keyboardType = .default
+                userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+                userTextField.returnKeyType = .continue
+                userTextField.autocapitalizationType = .none
+                userTextField.autocorrectionType = .no
+                userTextField.delegate = self;
             })
 
-        httpLoginAction = UIAlertAction(
-            title: NSLocalizedString("alertOkButton", comment: "OK"),
-            style: .default,
-            handler: { [self] action in
-                // Store credentials
-                if let httpUsername = httpAlertController?.textFields?[0].text,
-                   httpUsername.isEmpty == false {
-                    NetworkVars.httpUsername = httpUsername
-                    KeychainUtilities.setPassword(httpAlertController?.textFields?[1].text ?? "",
-                        forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)",
-                        account: httpUsername)
-                    // Try logging in with new HTTP credentials
-                    launchLogin()
+            httpAlertController?.addTextField(configurationHandler: { pwdTextField in
+                pwdTextField.placeholder = NSLocalizedString("loginHTTPpwd_placeholder", comment: "password")
+                pwdTextField.text = (password.count > 0) ? password : ""
+                pwdTextField.clearButtonMode = .always
+                pwdTextField.keyboardType = .default
+                pwdTextField.isSecureTextEntry = true
+                pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+                pwdTextField.autocapitalizationType = .none
+                pwdTextField.autocorrectionType = .no
+                pwdTextField.returnKeyType = .continue
+                pwdTextField.delegate = self;
+            })
+
+            let cancelAction = UIAlertAction(
+                title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                style: .cancel,
+                handler: { [self] action in
+                    // Stop logging in action, display error message
+                    logging(inConnectionError: error)
+                })
+
+            httpLoginAction = UIAlertAction(
+                title: NSLocalizedString("alertOkButton", comment: "OK"),
+                style: .default,
+                handler: { [self] action in
+                    // Store credentials
+                    if let httpUsername = httpAlertController?.textFields?[0].text,
+                       httpUsername.isEmpty == false {
+                        NetworkVars.httpUsername = httpUsername
+                        KeychainUtilities.setPassword(httpAlertController?.textFields?[1].text ?? "",
+                            forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)",
+                            account: httpUsername)
+                        // Try logging in with new HTTP credentials
+                        launchLogin()
+                    }
+                })
+
+            httpAlertController?.addAction(cancelAction)
+            if let httpLoginAction = httpLoginAction {
+                httpAlertController?.addAction(httpLoginAction)
+            }
+            httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
+            }
+            if let httpAlertController = httpAlertController {
+                present(httpAlertController, animated: true) {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    httpAlertController.view.tintColor = UIColor.piwigoColorOrange()
                 }
-            })
-
-        httpAlertController?.addAction(cancelAction)
-        if let httpLoginAction = httpLoginAction {
-            httpAlertController?.addAction(httpLoginAction)
-        }
-        httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        if let httpAlertController = httpAlertController {
-            present(httpAlertController, animated: true) {
-                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                httpAlertController.view.tintColor = UIColor.piwigoColorOrange()
             }
         }
     }
 
     func requestNonSecuredAccess(afterError error: Error?) {
-        httpAlertController = UIAlertController(
-            title: NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed"),
-            message: NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?"),
-            preferredStyle: .alert)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertNoButton", comment: "No"),
-            style: .cancel,
-            handler: { [self] action in
-                // Stop logging in action, display error message
-                logging(inConnectionError: error)
-            })
-
-        let acceptAction = UIAlertAction(
-            title: NSLocalizedString("alertYesButton", comment: "Yes"),
-            style: .default,
-            handler: { [self] action in
-                // Try logging in with HTTP scheme
-                tryNonSecuredAccess(afterError: error)
-            })
-
-        httpAlertController?.addAction(cancelAction)
-        httpAlertController?.addAction(acceptAction)
-        httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
         DispatchQueue.main.async { [self] in
+            httpAlertController = UIAlertController(
+                title: NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed"),
+                message: NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?"),
+                preferredStyle: .alert)
+
+            let cancelAction = UIAlertAction(
+                title: NSLocalizedString("alertNoButton", comment: "No"),
+                style: .cancel,
+                handler: { [self] action in
+                    // Stop logging in action, display error message
+                    logging(inConnectionError: error)
+                })
+
+            let acceptAction = UIAlertAction(
+                title: NSLocalizedString("alertYesButton", comment: "Yes"),
+                style: .default,
+                handler: { [self] action in
+                    // Try logging in with HTTP scheme
+                    tryNonSecuredAccess(afterError: error)
+                })
+
+            httpAlertController?.addAction(cancelAction)
+            httpAlertController?.addAction(acceptAction)
+            httpAlertController?.view.tintColor = UIColor.piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                httpAlertController?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
+            }
             if let httpAlertController = httpAlertController {
                 present(httpAlertController, animated: true) {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
