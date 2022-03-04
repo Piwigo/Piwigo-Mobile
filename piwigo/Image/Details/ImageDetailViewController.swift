@@ -1134,7 +1134,7 @@ import piwigoKit
                 } else {
                     // Update favorite button
                     self.favoriteBarButton?.setFavoriteImage(for: false)
-                    self.favoriteBarButton?.action = #selector(addToFavorites)
+                    self.favoriteBarButton?.action = #selector(self.addToFavorites)
                     self.favoriteBarButton?.isEnabled = true
                 }
             }
