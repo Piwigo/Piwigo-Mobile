@@ -244,6 +244,7 @@ class EditImageParamsViewController: UIViewController
     }
 
     deinit {
+        debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
@@ -400,11 +401,11 @@ class EditImageParamsViewController: UIViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.updateImageProperties()
-                    })
+                    }
                 } else {
-                    updateImageProperties()
+                    self.updateImageProperties()
                 }
             })
         } else {
@@ -414,11 +415,11 @@ class EditImageParamsViewController: UIViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.updateImageProperties()
-                    })
+                    }
                 } else {
-                    updateImageProperties()
+                    self.updateImageProperties()
                 }
             })
         }

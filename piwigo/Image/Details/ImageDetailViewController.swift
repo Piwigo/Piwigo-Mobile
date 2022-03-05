@@ -331,6 +331,7 @@ import piwigoKit
     }
 
     deinit {
+        debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
@@ -638,9 +639,9 @@ import piwigoKit
                     if error.code == 401 {
                         // Try relogin
                         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                        appDelegate?.reloginAndRetry() { [unowned self] in
                             self.retrieveCompleteImageDataOfImage(self.imageData)
-                        })
+                        }
                     } else {
                         self.retrieveCompleteImageDataOfImage(self.imageData)
                     }
@@ -832,9 +833,9 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.removeImageFromCategory()
-                    })
+                    }
                 } else {
                     self.removeImageFromCategory()
                 }
@@ -867,9 +868,9 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.deleteImageFromDatabase()
-                    })
+                    }
                 } else {
                     self.deleteImageFromDatabase()
                 }
