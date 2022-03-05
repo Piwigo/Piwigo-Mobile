@@ -1254,11 +1254,10 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         }
 
         // Should we load more images?
-        let downloadedImageCount = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).imageList.count
-        let totalImageCount = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).numberOfImages
-        if downloadedImageCount < totalImageCount,
+        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+        let totalImageCount = albumData?.numberOfImages ?? 0
+        let downloadedImageCount = albumData?.imageList?.count ?? 0
+        if totalImageCount > 0, downloadedImageCount < totalImageCount,
            imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
                 imgDetailDelegate?.needToLoadMoreImages()
         }
