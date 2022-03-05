@@ -726,11 +726,16 @@ class LoginViewController: UIViewController {
             getCommunityStatus(atFirstLogin: false,
                                withReloginCompletion: reloginCompletion)
         }, failure: { [self] error in
-            // Could not re-establish the session, login/pwd changed, something else ?
+            // Could not re-establish the session, login/pwd changed, something else?
             isAlreadyTryingToLogin = false
 
-            // Display error message
-            logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+            // Return to login view
+            DispatchQueue.main.async {
+                ClearCache.closeSessionAndClearCache { [self] in
+                    self.hudViewController = self
+                    self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                }
+            }
         })
     }
 

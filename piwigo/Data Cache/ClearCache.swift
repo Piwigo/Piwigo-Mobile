@@ -39,11 +39,9 @@ class ClearCache: NSObject {
                     return
                 }
 
-                let loginVC: LoginViewController
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    loginVC = LoginViewController_iPhone()
-                } else {
-                    loginVC = LoginViewController_iPad()
+                let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
+                guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else {
+                    fatalError("LoginViewController could not be instantiated!")
                 }
                 let nav = LoginNavigationController(rootViewController: loginVC)
                 nav.isNavigationBarHidden = true
