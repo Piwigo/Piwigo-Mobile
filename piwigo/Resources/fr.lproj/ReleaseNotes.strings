@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.9.4_text" = "Version 2.9.4\n\n• Correction de bugs\n• Modernisation du code";
+"v2.9.5_text" = "Version 2.9.5\n\n• Correction de bugs\n• Modernisation du code";
+
+"v2.9.4_text" = "Version 2.9.4\n23 février 2022\n\n• Correction de bugs\n• Modernisation du code";
 
 "v2.9.3_text" = "Version 2.9.3\n11 février 2022\n\n• Zoomer et dézoomer les photos avec un double-appui\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code";
 
