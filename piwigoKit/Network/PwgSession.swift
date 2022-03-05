@@ -123,9 +123,9 @@ public class PwgSession: NSObject {
                         }
                         
                         // Return error code
-                        let dataStr = String(decoding: jsonData, as: UTF8.self)
+                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
                         let error = PwgSession.shared.localizedError(for: httpResponse.statusCode,
-                                                                     errorMessage: dataStr)
+                                                                     errorMessage: errorMessage)
                         failure(error as NSError)
                         return
                     }
