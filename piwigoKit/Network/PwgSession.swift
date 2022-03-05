@@ -312,10 +312,10 @@ extension PwgSession: URLSessionDataDelegate {
         // Supply requested credentials if not provided yet
         if (challenge.previousFailureCount == 0) {
             // Try HTTP credentials…
-            let credential = URLCredential(user: account,
-                                           password: password,
-                                           persistence: .forSession)
-            completionHandler(.useCredential, credential)
+			let credential = URLCredential(user: account,
+										   password: password,
+										   persistence: .forSession)
+			completionHandler(.useCredential, credential)
             return
         }
 
