@@ -819,8 +819,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         // Could not re-establish the session, login/pwd changed, something else ?
         self.isAlreadyTryingToLogin = NO;
         
-        // Display error message
-        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        // Return to login view
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ClearCache closeSessionAndClearCacheWithCompletion:^{
+                // Display error message
+                self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            }];
+        });
     }];
 }
 
