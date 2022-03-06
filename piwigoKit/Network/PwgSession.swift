@@ -70,24 +70,29 @@ public class PwgSession: NSObject {
         request.networkServiceType = .responsiveData
 
         // Combine percent encoded parameters
-        var urlComponents = URLComponents(string: urlStr + "/ws.php?")
-        var queryItems = [URLQueryItem]()
+        var encPairs = [String]()
         for (key, value) in paramDict {
             if let valStr = value as? String, valStr.isEmpty == false {
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = NetworkUtilities.utf8mb3String(from: valStr)
-                queryItems.append(URLQueryItem(name: key, value: utf8mb3Str))
+                let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
+                encPairs.append(String(format: "%@=%@", encKey, encVal))
+                continue
             }
             else if let val = value as? NSNumber {
-                queryItems.append(URLQueryItem(name: key, value: val.stringValue))
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
+                let encVal = val.stringValue
+                encPairs.append(String(format: "%@=%@", encKey, encVal))
+                continue
             }
             else {
-                queryItems.append(URLQueryItem(name: key, value: ""))
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
+                encPairs.append(encKey)
             }
         }
-        urlComponents?.queryItems = queryItems
-        debugPrint(urlComponents?.url?.query ?? "")
-        let httpBody = urlComponents?.url?.query?.data(using: .utf8, allowLossyConversion: true)
+        let encParams = encPairs.joined(separator: "&")
+        let httpBody = encParams.data(using: .utf8, allowLossyConversion: true)
         request.httpBody = httpBody
 
         // Launch the HTTP(S) request
