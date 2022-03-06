@@ -26,7 +26,7 @@ enum SettingsSection : Int {
     case count
 }
 
-enum kImageUploadSetting : Int {
+enum ImageUploadSetting : Int {
     case author
     case prefix
 }
@@ -258,8 +258,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) { return }
+        if !hasUploadRights() { return }
 
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {
@@ -279,21 +278,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: - UITableView - Header
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         // Header strings
         var title = "", text = ""
-        switch activeSection {
-        case SettingsSection.server.rawValue:
+        switch activeSection(section) {
+        case .server:
             if (NetworkVars.serverProtocol == "https://") {
                 title = String(format: "%@ %@",
                                NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
@@ -304,19 +292,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                NetworkVars.pwgVersion)
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-        case SettingsSection.albums.rawValue:
+        case .albums:
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
-        case SettingsSection.images.rawValue:
+        case .images:
             title = NSLocalizedString("settingsHeader_images", comment: "Images")
-        case SettingsSection.imageUpload.rawValue:
+        case .imageUpload:
             title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.appearance.rawValue:
+        case .appearance:
             title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
-        case SettingsSection.cache.rawValue:
+        case .cache:
             title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
-        case SettingsSection.about.rawValue:
+        case .about:
             title = NSLocalizedString("settingsHeader_about", comment: "Information")
-        case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
+        case .logout, .clear:
             fallthrough
         default:
             break
@@ -340,49 +328,52 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-    // MARK: - UITableView - Rows
+    // MARK: - UITableView - Sections
+    private func hasUploadRights() -> Bool {
+        /// User can upload images/videos if he/she is logged in and has:
+        /// — admin rights
+        /// — normal rights with upload access to some categories with Community
+        return NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
+    }
+    
+    private func activeSection(_ section: Int) -> SettingsSection {
+        let rawSection = section + (hasUploadRights() ? 0 : 1)
+        guard let activeSection = SettingsSection(rawValue: rawSection) else {
+            fatalError("Unknown Section index!")
+        }
+        return activeSection
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
-        let hasUploadSection = NetworkVars.hasAdminRights ||
-                               (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
-        return SettingsSection.count.rawValue - (hasUploadSection ? 0 : 1)
+        return SettingsSection.count.rawValue - (hasUploadRights() ? 0 : 1)
     }
 
+    // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         var nberOfRows = 0
-        switch activeSection {
-        case SettingsSection.server.rawValue:
+        switch activeSection(section) {
+        case .server:
             nberOfRows = 2
-        case SettingsSection.logout.rawValue:
+        case .logout:
             nberOfRows = 1
-        case SettingsSection.albums.rawValue:
+        case .albums:
             nberOfRows = 4
-        case SettingsSection.images.rawValue:
+        case .images:
             nberOfRows = 6
-        case SettingsSection.imageUpload.rawValue:
+        case .imageUpload:
             nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
-        case SettingsSection.appearance.rawValue:
+        case .appearance:
             nberOfRows = 1
-        case SettingsSection.cache.rawValue:
+        case .cache:
             nberOfRows = 2
-        case SettingsSection.clear.rawValue:
+        case .clear:
             nberOfRows = 1
-        case SettingsSection.about.rawValue:
+        case .about:
             nberOfRows = 8
         default:
             break
@@ -395,23 +386,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection:Int = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         var tableViewCell = UITableViewCell()
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
@@ -437,7 +415,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             tableViewCell = cell
 
-        case SettingsSection.logout.rawValue /* Login/Logout Button */:
+        case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                 return ButtonTableViewCell()
@@ -451,7 +429,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             tableViewCell = cell
         
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -548,7 +526,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -719,7 +697,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
+        case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -744,7 +722,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self
-                cell.rightTextField.tag = kImageUploadSetting.author.rawValue
+                cell.rightTextField.tag = ImageUploadSetting.author.rawValue
                 cell.accessibilityIdentifier = "defaultAuthorName"
                 tableViewCell = cell
                 
@@ -933,7 +911,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self
-                cell.rightTextField.tag = kImageUploadSetting.prefix.rawValue
+                cell.rightTextField.tag = ImageUploadSetting.prefix.rawValue
                 cell.accessibilityIdentifier = "prefixFileName"
                 tableViewCell = cell
                 
@@ -1006,7 +984,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
@@ -1026,7 +1004,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             tableViewCell = cell
 
         // MARK: Cache Settings
-        case SettingsSection.cache.rawValue /* Cache Settings */:
+        case .cache /* Cache Settings */:
             switch indexPath.row {
             case 0 /* Disk */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
@@ -1102,7 +1080,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
-        case SettingsSection.clear.rawValue /* Clear Cache Button */:
+        case .clear /* Clear Cache Button */:
             switch indexPath.row {
             case 0 /* Clear */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
@@ -1124,7 +1102,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* Information */:
+        case .about /* Information */:
             switch indexPath.row {
             case 0 /* @piwigo (Twitter) */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -1222,29 +1200,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         var result = true
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             result = false
-        case SettingsSection.logout.rawValue /* Logout Button */:
+        case .logout /* Logout Button */:
             result = true
         
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */, 1 /* Default Thumbnail File */:
                 result = true
@@ -1253,7 +1218,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
@@ -1265,7 +1230,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
+        case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -1283,17 +1248,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             result = true
 
         // MARK: Cache Settings
-        case SettingsSection.cache.rawValue /* Cache Settings */:
+        case .cache /* Cache Settings */:
             result = false
-        case SettingsSection.clear.rawValue /* Cache Settings */:
+        case .clear /* Cache Settings */:
             result = true
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* Information */:
+        case .about /* Information */:
             switch indexPath.row {
             case 1 /* Contact Us */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
@@ -1319,25 +1284,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // No footer by default (nil => 0 point)
         var footer = ""
 
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         // Any footer text?
-        switch activeSection {
-        case SettingsSection.logout.rawValue:
+        switch activeSection(section) {
+        case .logout:
             if UploadVars.serverFileTypes.isEmpty == false {
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
-        case SettingsSection.about.rawValue:
+        case .about:
             footer = statistics
         default:
             return 16.0
@@ -1368,25 +1321,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
 
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         // Footer text
-        switch activeSection {
-        case SettingsSection.logout.rawValue:
+        switch activeSection(section) {
+        case .logout:
             if UploadVars.serverFileTypes.isEmpty == false {
                 footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
-        case SettingsSection.about.rawValue:
+        case .about:
             footerLabel.text = statistics
         default:
             break
@@ -1514,31 +1455,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             break
 
         // MARK: Logout
-        case SettingsSection.logout.rawValue /* Logout */:
+        case .logout /* Logout */:
             loginLogout()
 
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
@@ -1557,7 +1484,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
@@ -1583,7 +1510,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
+        case .imageUpload /* Default upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -1618,7 +1545,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             if #available(iOS 13.0, *) {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
                 guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else { return }
@@ -1630,7 +1557,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Cache Settings
-        case SettingsSection.clear.rawValue /* Cache Clear */:
+        case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
                 #if DEBUG
@@ -1701,7 +1628,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* About — Informations */:
+        case .about /* About — Informations */:
             switch indexPath.row {
             case 0 /* Open @piwigo on Twitter */:
                 if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
@@ -1856,10 +1783,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField.tag {
-        case kImageUploadSetting.author.rawValue:
+        switch ImageUploadSetting(rawValue: textField.tag) {
+        case .author:
             UploadVars.defaultAuthor = textField.text ?? ""
-        case kImageUploadSetting.prefix.rawValue:
+        case .prefix:
             UploadVars.defaultPrefix = textField.text ?? ""
             if UploadVars.defaultPrefix.isEmpty {
                 UploadVars.prefixFileNameBeforeUpload = false

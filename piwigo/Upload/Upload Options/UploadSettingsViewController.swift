@@ -272,7 +272,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             }
             cell.configure(with: title, input: input, placeHolder: placeHolder)
             cell.rightTextField.delegate = self
-            cell.rightTextField.tag = kImageUploadSetting.prefix.rawValue
+            cell.rightTextField.tag = ImageUploadSetting.prefix.rawValue
             cell.rightTextField.textColor = shouldUpdateDefaultPrefix ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.accessibilityIdentifier = "prefixFileName"
             tableViewCell = cell
@@ -349,8 +349,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     // MARK: - UITextFieldDelegate Methods
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let tag = kImageUploadSetting(rawValue: textField.tag)
-        switch tag {
+        switch ImageUploadSetting(rawValue: textField.tag) {
         case .prefix:
             shouldUpdateDefaultPrefix = true
         default:
@@ -364,8 +363,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: newString) else {
             return true
         }
-        let tag = kImageUploadSetting(rawValue: textField.tag)
-        switch tag {
+        switch ImageUploadSetting(rawValue: textField.tag) {
         case .prefix:
             defaultPrefix = finalString
         default:
@@ -375,8 +373,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        let tag = kImageUploadSetting(rawValue: textField.tag)
-        switch tag {
+        switch ImageUploadSetting(rawValue: textField.tag) {
         case .prefix:
             defaultPrefix = ""
         default:
@@ -391,8 +388,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let tag = kImageUploadSetting(rawValue: textField.tag)
-        switch tag {
+        switch ImageUploadSetting(rawValue: textField.tag) {
         case .prefix:
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
             defaultPrefix = NetworkUtilities.utf8mb3String(from: textField.text)
