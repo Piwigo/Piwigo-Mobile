@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="ipad9_7" orientation="portrait" layout="fullscreen" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20019"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,15 +18,16 @@
             <objects>
                 <viewController storyboardIdentifier="ColorPaletteViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ColorPaletteViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="5qi-2z-Ngd">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="PhoneTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="PhoneTableViewCell" rowHeight="214" id="msY-Kk-nKM" customClass="PhoneTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="49.5" width="768" height="214"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="msY-Kk-nKM" translatesAutoresizingMaskIntoConstraints="NO" id="jPv-g2-vgW">
-                                    <rect key="frame" x="0.0" y="0.0" width="768" height="214"/>
+                                <rect key="frame" x="0.0" y="49" width="428" height="214"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="msY-Kk-nKM" id="jPv-g2-vgW">
+                                    <rect key="frame" x="0.0" y="0.0" width="428" height="214"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btT-Of-PqE">
                                             <rect key="frame" x="70" y="20" width="60" height="130"/>
@@ -34,6 +35,11 @@
                                                 <constraint firstAttribute="height" constant="130" id="8m9-w0-3EJ"/>
                                                 <constraint firstAttribute="width" constant="60" id="Vqw-uS-BQ9"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="8"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="Yrb-LS-2Yv"/>
                                             </connections>
@@ -61,17 +67,22 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gg7-9S-Q2I">
-                                            <rect key="frame" x="-130" y="20" width="60" height="130"/>
+                                            <rect key="frame" x="298" y="20" width="60" height="130"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="130" id="Kfk-C4-kUE"/>
                                                 <constraint firstAttribute="width" constant="60" id="kgI-i7-R9V"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="8"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="didTapDarkMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="JKh-9q-93n"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dzy-dy-8A4">
-                                            <rect key="frame" x="-160" y="150" width="120" height="30"/>
+                                            <rect key="frame" x="268" y="150" width="120" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="ZCe-lH-7xd"/>
                                                 <constraint firstAttribute="width" constant="120" id="p0O-KS-y4S"/>
@@ -85,7 +96,7 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vX1-IS-IRw">
-                                            <rect key="frame" x="-110" y="180" width="20" height="22"/>
+                                            <rect key="frame" x="318" y="180" width="20" height="22"/>
                                             <color key="tintColor" systemColor="systemGrayColor"/>
                                             <state key="normal" image="circle" catalog="system"/>
                                             <connections>
@@ -103,7 +114,7 @@
                                         <constraint firstItem="acd-Ef-Tf9" firstAttribute="centerX" secondItem="kXw-QF-2Ta" secondAttribute="centerX" id="bLX-eC-6jN"/>
                                         <constraint firstItem="vX1-IS-IRw" firstAttribute="centerX" secondItem="dzy-dy-8A4" secondAttribute="centerX" id="jqk-IL-Sls"/>
                                         <constraint firstItem="Gg7-9S-Q2I" firstAttribute="top" secondItem="jPv-g2-vgW" secondAttribute="top" constant="20" symbolic="YES" id="ljx-fq-GZE"/>
-                                        <constraint firstItem="dzy-dy-8A4" firstAttribute="right" secondItem="jPv-g2-vgW" secondAttribute="right" constant="-40" id="rTe-hk-ohS"/>
+                                        <constraint firstAttribute="right" secondItem="dzy-dy-8A4" secondAttribute="right" constant="40" id="rTe-hk-ohS"/>
                                         <constraint firstItem="kXw-QF-2Ta" firstAttribute="left" secondItem="jPv-g2-vgW" secondAttribute="left" constant="40" id="xzY-vW-Tn9"/>
                                         <constraint firstItem="btT-Of-PqE" firstAttribute="top" secondItem="jPv-g2-vgW" secondAttribute="top" constant="20" symbolic="YES" id="ykE-Ru-ImU"/>
                                     </constraints>
@@ -118,18 +129,23 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="PadTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="PadTableViewCell" rowHeight="214" id="L09-er-AGn" customClass="PadTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="263.5" width="768" height="214"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <rect key="frame" x="0.0" y="263" width="428" height="214"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="L09-er-AGn" id="QOh-G8-Yx0">
-                                    <rect key="frame" x="0.0" y="0.0" width="768" height="214"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="428" height="214"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E1p-J1-KHW">
-                                            <rect key="frame" x="91.5" y="20" width="97.5" height="130"/>
+                                            <rect key="frame" x="91.333333333333343" y="20" width="97.333333333333343" height="130"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="130" id="KgL-dc-aRp"/>
                                                 <constraint firstAttribute="width" constant="97.5" id="mHb-lA-RTc"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="didTapLightMode:" destination="L09-er-AGn" eventType="touchUpInside" id="Q25-fb-j8n"/>
                                             </connections>
@@ -157,17 +173,22 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="frA-fO-Av2">
-                                            <rect key="frame" x="579.5" y="20" width="97.5" height="130"/>
+                                            <rect key="frame" x="239.33333333333334" y="20" width="97.333333333333343" height="130"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="130" id="DPN-8P-Tp9"/>
                                                 <constraint firstAttribute="width" constant="97.5" id="SwO-RI-q4A"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="didTapDarkMode:" destination="L09-er-AGn" eventType="touchUpInside" id="l3g-KG-dem"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="enE-NO-Ulm">
-                                            <rect key="frame" x="568" y="150" width="120" height="30"/>
+                                            <rect key="frame" x="228" y="150" width="120" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="120" id="DZu-7u-JcU"/>
                                                 <constraint firstAttribute="height" constant="30" id="u1n-IT-hAb"/>
@@ -181,7 +202,7 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hW-vB-QTw">
-                                            <rect key="frame" x="618" y="180" width="20" height="22"/>
+                                            <rect key="frame" x="278" y="180" width="20" height="22"/>
                                             <color key="tintColor" systemColor="systemGrayColor"/>
                                             <state key="normal" image="circle" catalog="system"/>
                                             <connections>
@@ -217,21 +238,21 @@
                                     <outlet property="lightLabel" destination="ndO-7W-Vbx" id="sqx-XF-oaj"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="XeI-aw-MtI" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="477.5" width="768" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="XeI-aw-MtI" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="477" width="428" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XeI-aw-MtI" id="dTK-lb-dlc">
-                                    <rect key="frame" x="0.0" y="0.0" width="768" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="XeI-aw-MtI" id="dTK-lb-dlc">
+                                    <rect key="frame" x="0.0" y="0.0" width="428" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Vv-yX-3xP">
-                                            <rect key="frame" x="20" y="10" width="48" height="23.5"/>
+                                            <rect key="frame" x="20" y="10.000000000000002" width="48" height="23.666666666666671"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Eh-zQ-1fn">
-                                            <rect key="frame" x="699" y="6.5" width="51" height="31"/>
+                                            <rect key="frame" x="359" y="6.3333333333333321" width="51" height="30.999999999999996"/>
                                             <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <action selector="switchChanged:" destination="XeI-aw-MtI" eventType="valueChanged" id="EWb-Lf-CRI"/>

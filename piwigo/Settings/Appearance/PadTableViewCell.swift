@@ -27,7 +27,6 @@ class PadTableViewCell: UITableViewCell {
         var size = lightImage.bounds.size
         var scale = lightImage.traitCollection.displayScale
         lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
-        lightImage.layer.cornerRadius = 5
         
         // iPad - dark mode
         guard let darkUrl = Bundle.main.url(forResource: "darkPad", withExtension: "png") else {
@@ -37,7 +36,6 @@ class PadTableViewCell: UITableViewCell {
         size = darkImage.bounds.size
         scale = darkImage.traitCollection.displayScale
         darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
-        darkImage.layer.cornerRadius = 5
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
