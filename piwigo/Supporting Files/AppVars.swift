@@ -37,6 +37,10 @@ class AppVars: NSObject {
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
     @objc var isLightPaletteModeActive: Bool
     
+    /// - App Lock option
+    @UserDefault("isAppLockActive", defaultValue: false)
+    @objc var isAppLockActive: Bool
+    
     /// - Memory cache size
     let kPiwigoMemoryCacheInc = 8            // Slider increment
     let kPiwigoMemoryCacheMin = 0            // Minimum size
