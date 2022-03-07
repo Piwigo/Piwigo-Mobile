@@ -13,8 +13,54 @@ import piwigoKit
 class ClearCache: NSObject {
     
     @objc
+    class func closeSessionAndClearCache(completion: @escaping () -> Void) {
+        // Session closed
+        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
+
+        // Back to default values
+        AlbumVars.shared.defaultCategory = 0
+        AlbumVars.shared.recentCategories = "0"
+        NetworkVars.usesCommunityPluginV29 = false
+        NetworkVars.hasAdminRights = false
+        
+        // Disable Auto-Uploading and clear settings
+        UploadVars.isAutoUploadActive = false
+        UploadVars.autoUploadCategoryId = NSNotFound
+        UploadVars.autoUploadAlbumId = ""
+        UploadVars.autoUploadTagIds = ""
+        UploadVars.autoUploadComments = ""
+
+        // Erase cache
+        self.clearAllCache(exceptCategories: false) {
+            if #available(iOS 13.0, *) {
+                guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
+                    return
+                }
+
+                let loginVC: LoginViewController
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    loginVC = LoginViewController_iPhone()
+                } else {
+                    loginVC = LoginViewController_iPad()
+                }
+                let nav = LoginNavigationController(rootViewController: loginVC)
+                nav.isNavigationBarHidden = true
+                window.rootViewController = nav
+                UIView.transition(with: window, duration: 0.5,
+                                  options: .transitionCrossDissolve,
+                                  animations: nil, completion: { _ in completion() })
+            } else {
+                // Fallback on earlier versions
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.loadLoginView()
+            }
+        }
+    }
+
     class func clearAllCache(exceptCategories: Bool,
-                             completionHandler: @escaping () -> Void) {
+                             completion: @escaping () -> Void) {
         
         // Tags
         TagsProvider().clearTags()
@@ -35,6 +81,6 @@ class ClearCache: NSObject {
         appDelegate?.cleanUpTemporaryDirectory(immediately: true)
         
         // Job done
-        completionHandler()
+        completion()
     }
 }

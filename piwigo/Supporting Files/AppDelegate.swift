@@ -522,9 +522,12 @@ import piwigoKit
         let server = NetworkVars.serverPath
         let user = NetworkVars.username
         
-        if hadOpenedSession && (server.count > 0) && (user.count > 0) {
-            DispatchQueue.main.async {
-                self.loginVC.performRelogin(completion: completion)
+        DispatchQueue.main.async {
+            if hadOpenedSession && (server.count > 0) && (user.count > 0) {
+                self.loginVC.performRelogin() { completion() }
+            } else {
+                // Return to login view
+                ClearCache.closeSessionAndClearCache() { }
             }
         }
     }

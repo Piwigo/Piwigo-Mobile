@@ -3055,7 +3055,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.4;
+				MARKETING_VERSION = 2.9.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -3117,7 +3117,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.4;
+				MARKETING_VERSION = 2.9.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

@@ -331,6 +331,7 @@ import piwigoKit
     }
 
     deinit {
+        debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
@@ -638,9 +639,9 @@ import piwigoKit
                     if error.code == 401 {
                         // Try relogin
                         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                        appDelegate?.reloginAndRetry() { [unowned self] in
                             self.retrieveCompleteImageDataOfImage(self.imageData)
-                        })
+                        }
                     } else {
                         self.retrieveCompleteImageDataOfImage(self.imageData)
                     }
@@ -832,9 +833,9 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.removeImageFromCategory()
-                    })
+                    }
                 } else {
                     self.removeImageFromCategory()
                 }
@@ -867,9 +868,9 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(completion: { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.deleteImageFromDatabase()
-                    })
+                    }
                 } else {
                     self.deleteImageFromDatabase()
                 }
@@ -1134,7 +1135,7 @@ import piwigoKit
                 } else {
                     // Update favorite button
                     self.favoriteBarButton?.setFavoriteImage(for: false)
-                    self.favoriteBarButton?.action = #selector(addToFavorites)
+                    self.favoriteBarButton?.action = #selector(self.addToFavorites)
                     self.favoriteBarButton?.isEnabled = true
                 }
             }
@@ -1253,11 +1254,10 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         }
 
         // Should we load more images?
-        let downloadedImageCount = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).imageList.count
-        let totalImageCount = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).numberOfImages
-        if downloadedImageCount < totalImageCount,
+        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+        let totalImageCount = albumData?.numberOfImages ?? 0
+        let downloadedImageCount = albumData?.imageList?.count ?? 0
+        if totalImageCount > 0, downloadedImageCount < totalImageCount,
            imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
                 imgDetailDelegate?.needToLoadMoreImages()
         }

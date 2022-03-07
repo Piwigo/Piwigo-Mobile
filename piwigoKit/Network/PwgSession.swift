@@ -73,21 +73,21 @@ public class PwgSession: NSObject {
         var encPairs = [String]()
         for (key, value) in paramDict {
             if let valStr = value as? String, valStr.isEmpty == false {
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = NetworkUtilities.utf8mb3String(from: valStr)
-                if let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                   let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                    encPairs.append(String(format: "%@=%@", encKey, encVal))
-                    continue
-                }
+                let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
+                encPairs.append(String(format: "%@=%@", encKey, encVal))
+                continue
             }
-            else if let val = value as? NSNumber,
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            else if let val = value as? NSNumber {
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
                 let encVal = val.stringValue
                 encPairs.append(String(format: "%@=%@", encKey, encVal))
                 continue
             }
-            else if let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            else {
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
                 encPairs.append(encKey)
             }
         }
@@ -119,10 +119,6 @@ public class PwgSession: NSObject {
                     }
 
                     // Data returned, is this a valid JSON object?
-                    #if DEBUG
-                    let dataStr = String(decoding: jsonData, as: UTF8.self)
-                    print(" > JSON: \(dataStr)")
-                    #endif
                     guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
                         // Invalid JSON data
                         guard let httpResponse = response as? HTTPURLResponse else {
@@ -132,7 +128,9 @@ public class PwgSession: NSObject {
                         }
                         
                         // Return error code
-                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode)
+                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode,
+                                                                     errorMessage: errorMessage)
                         failure(error as NSError)
                         return
                     }
@@ -216,6 +214,9 @@ extension PwgSession: URLSessionDelegate {
                 return
         }
 
+        // Initialise SSL certificate approval flag
+        NetworkVars.didRejectCertificate = false
+
         // Get state of the server SSL transaction state
         guard let serverTrust = protectionSpace.serverTrust else {
             completionHandler(.performDefaultHandling, nil)
@@ -231,20 +232,48 @@ extension PwgSession: URLSessionDelegate {
         
         // If there is no certificate, reject server (should rarely happen)
         if SecTrustGetCertificateCount(serverTrust) == 0 {
-            // No certificate!
-            completionHandler(.rejectProtectionSpace, nil)
+            completionHandler(.performDefaultHandling, nil)
+        }
+
+        // Retrieve the certificate of the server
+        guard let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0)) else {
+            completionHandler(.performDefaultHandling, nil)
+            return
         }
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust, for: NetworkVars.domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
         }
         
-        // Cancel the upload
-        completionHandler(.cancelAuthenticationChallenge, nil)
+        // No certificate or different non-trusted certificate found in Keychain
+        // Did the user approve this certificate?
+        if NetworkVars.didApproveCertificate {
+            // Delete certificate in Keychain (updating the certificate data is not sufficient)
+            KeychainUtilities.deleteCertificate(for: NetworkVars.domain)
+
+            // Store server certificate in Keychain with same label "Piwigo:<host>"
+            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.domain)
+
+            // Will reject a connection if the certificate is changed during a session
+            // but it will still be possible to logout.
+            NetworkVars.didApproveCertificate = false
+            
+            // Accept connection
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+            return
+        }
+        
+        // Will ask the user whether we should trust this server.
+        NetworkVars.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.domain)
+        NetworkVars.didRejectCertificate = true
+
+        // Reject the request
+        completionHandler(.performDefaultHandling, nil)
     }
 }
 
@@ -257,23 +286,45 @@ extension PwgSession: URLSessionDataDelegate {
 
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
-        guard authMethod == NSURLAuthenticationMethodHTTPBasic,
-            authMethod == NSURLAuthenticationMethodHTTPDigest else {
+        guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {
             completionHandler(.performDefaultHandling, nil)
             return
         }
         
+        // Initialise HTTP authentication flag
+        NetworkVars.didFailHTTPauthentication = false
+        
         // Get HTTP basic authentification credentials
         let service = NetworkVars.serverProtocol + NetworkVars.serverPath
-        let account = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: service, account: account)
-        if password.isEmpty {
-            completionHandler(.cancelAuthenticationChallenge, nil)
+        var account = NetworkVars.httpUsername
+        var password = KeychainUtilities.password(forService: service, account: account)
+
+        // Without HTTP credentials available, tries Piwigo credentials
+        if account.isEmpty || password.isEmpty {
+            // Retrieve Piwigo credentials
+            account = NetworkVars.username
+            password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: account)
+            
+            // Adopt Piwigo credentials as HTTP basic authentification credentials
+            NetworkVars.httpUsername = account
+            KeychainUtilities.setPassword(password, forService: service, account: account)
+        }
+
+        // Supply requested credentials if not provided yet
+        if (challenge.previousFailureCount == 0) {
+            // Try HTTP credentials…
+            let credential = URLCredential(user: account,
+                                           password: password,
+                                           persistence: .forSession)
+            completionHandler(.useCredential, credential)
             return
         }
-        let credential = URLCredential(user: account,
-                                       password: password,
-                                       persistence: .forSession)
-        completionHandler(.useCredential, credential)
+
+        // HTTP credentials refused... delete them in Keychain
+        KeychainUtilities.deletePassword(forService: service, account: account)
+
+        // Remember failed HTTP authentication
+        NetworkVars.didFailHTTPauthentication = true
+        completionHandler(.performDefaultHandling, nil)
     }
 }

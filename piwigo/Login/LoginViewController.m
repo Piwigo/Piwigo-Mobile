@@ -375,43 +375,43 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(void)requestCertificateApprovalAfterError:(NSError *)error
 {
-    NSString *message = [NSString stringWithFormat:@"%@\r\r%@", NSLocalizedString(@"loginCertFailed_message", @"Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"), NetworkVarsObjc.certificateInformation];
-    self.httpAlertController = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"loginCertFailed_title", @"Connection Not Private")
-        message:message
-        preferredStyle:UIAlertControllerStyleAlert];
-
-    UIAlertAction* cancelAction = [UIAlertAction
-           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-           style:UIAlertActionStyleCancel
-           handler:^(UIAlertAction * action) {
-                // Should forget certificate
-        NetworkVarsObjc.didApproveCertificate = NO;
-                // Report error
-                [self loggingInConnectionError:error];
-           }];
-    
-    UIAlertAction* acceptAction = [UIAlertAction
-          actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
-          style:UIAlertActionStyleDefault
-          handler:^(UIAlertAction * action) {
-                // Cancel task
-                [NetworkVarsObjc.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
-                // Will accept certificate
-                NetworkVarsObjc.didApproveCertificate = YES;
-                // Try logging in with approved certificate
-                [self launchLogin];
-          }];
-    
-    [self.httpAlertController addAction:cancelAction];
-    [self.httpAlertController addAction:acceptAction];
-    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *message = [NSString stringWithFormat:@"%@\r\r%@", NSLocalizedString(@"loginCertFailed_message", @"Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"), NetworkVarsObjc.certificateInformation];
+        self.httpAlertController = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"loginCertFailed_title", @"Connection Not Private")
+            message:message
+            preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* cancelAction = [UIAlertAction
+               actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+               style:UIAlertActionStyleCancel
+               handler:^(UIAlertAction * action) {
+                    // Should forget certificate
+            NetworkVarsObjc.didApproveCertificate = NO;
+                    // Report error
+                    [self loggingInConnectionError:error];
+               }];
+        
+        UIAlertAction* acceptAction = [UIAlertAction
+              actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
+              style:UIAlertActionStyleDefault
+              handler:^(UIAlertAction * action) {
+                    // Cancel task
+                    [NetworkVarsObjc.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+                    // Will accept certificate
+                    NetworkVarsObjc.didApproveCertificate = YES;
+                    // Try logging in with approved certificate
+                    [self launchLogin];
+              }];
+        
+        [self.httpAlertController addAction:cancelAction];
+        [self.httpAlertController addAction:acceptAction];
+        self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        if (@available(iOS 13.0, *)) {
+            self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         [self presentViewController:self.httpAlertController animated:YES completion:^{
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
@@ -421,105 +421,107 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(void)requestHttpCredentialsAfterError:(NSError *)error
 {
-    NSString *user = NetworkVarsObjc.httpUsername;
-    NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:user];
-    if (password == nil) password = @"";
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *user = NetworkVarsObjc.httpUsername;
+        NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:user];
+        if (password == nil) password = @"";
 
-    self.httpAlertController = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"loginHTTP_title", @"HTTP Credentials")
-        message:NSLocalizedString(@"loginHTTP_message", @"HTTP basic authentification is required by the Piwigo server:")
-        preferredStyle:UIAlertControllerStyleAlert];
-    
-    [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull userTextField) {
-        userTextField.placeholder = NSLocalizedString(@"loginHTTPuser_placeholder", @"username");
-        userTextField.text = (user.length > 0) ? user : @"";
-        userTextField.clearButtonMode = UITextFieldViewModeAlways;
-        userTextField.keyboardType = UIKeyboardTypeDefault;
-        userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        userTextField.returnKeyType = UIReturnKeyContinue;
-        userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-//        userTextField.delegate = self;
-    }];
-    
-    [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull pwdTextField) {
-        pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
-        pwdTextField.text = (password.length > 0) ? password : @"";
-        pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
-        pwdTextField.keyboardType = UIKeyboardTypeDefault;
-        pwdTextField.secureTextEntry = YES;
-        pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        pwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-        pwdTextField.returnKeyType = UIReturnKeyContinue;
-//        pwdTextField.delegate = self;
-    }];
+        self.httpAlertController = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"loginHTTP_title", @"HTTP Credentials")
+            message:NSLocalizedString(@"loginHTTP_message", @"HTTP basic authentification is required by the Piwigo server:")
+            preferredStyle:UIAlertControllerStyleAlert];
+        
+        [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull userTextField) {
+            userTextField.placeholder = NSLocalizedString(@"loginHTTPuser_placeholder", @"username");
+            userTextField.text = (user.length > 0) ? user : @"";
+            userTextField.clearButtonMode = UITextFieldViewModeAlways;
+            userTextField.keyboardType = UIKeyboardTypeDefault;
+            userTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+            userTextField.returnKeyType = UIReturnKeyContinue;
+            userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    //        userTextField.delegate = self;
+        }];
+        
+        [self.httpAlertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull pwdTextField) {
+            pwdTextField.placeholder = NSLocalizedString(@"loginHTTPpwd_placeholder", @"password");
+            pwdTextField.text = (password.length > 0) ? password : @"";
+            pwdTextField.clearButtonMode = UITextFieldViewModeAlways;
+            pwdTextField.keyboardType = UIKeyboardTypeDefault;
+            pwdTextField.secureTextEntry = YES;
+            pwdTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+            pwdTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            pwdTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+            pwdTextField.returnKeyType = UIReturnKeyContinue;
+    //        pwdTextField.delegate = self;
+        }];
 
-    UIAlertAction* cancelAction = [UIAlertAction
-           actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-           style:UIAlertActionStyleCancel
-           handler:^(UIAlertAction * action) {
-               // Stop logging in action, display error message
-               [self loggingInConnectionError:error];
-           }];
-    
-    self.httpLoginAction = [UIAlertAction
-          actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
-          style:UIAlertActionStyleDefault
-          handler:^(UIAlertAction * action) {
-              // Store credentials
-              NetworkVarsObjc.httpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
-              [KeychainUtilitiesObjc setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
-              // Try logging in with new HTTP credentials
-              [self launchLogin];
-          }];
-    
-    [self.httpAlertController addAction:cancelAction];
-    [self.httpAlertController addAction:self.httpLoginAction];
-    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [self presentViewController:self.httpAlertController animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        UIAlertAction* cancelAction = [UIAlertAction
+               actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+               style:UIAlertActionStyleCancel
+               handler:^(UIAlertAction * action) {
+                   // Stop logging in action, display error message
+                   [self loggingInConnectionError:error];
+               }];
+        
+        self.httpLoginAction = [UIAlertAction
+              actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
+              style:UIAlertActionStyleDefault
+              handler:^(UIAlertAction * action) {
+                  // Store credentials
+                  NetworkVarsObjc.httpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
+                  [KeychainUtilitiesObjc setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
+                  // Try logging in with new HTTP credentials
+                  [self launchLogin];
+              }];
+        
+        [self.httpAlertController addAction:cancelAction];
+        [self.httpAlertController addAction:self.httpLoginAction];
         self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
-    }];
+        if (@available(iOS 13.0, *)) {
+            self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
+        [self presentViewController:self.httpAlertController animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        }];
+    });
 }
 
 -(void)requestNonSecuredAccessAfterError:(NSError *)error
 {
-    self.httpAlertController = [UIAlertController
-        alertControllerWithTitle:NSLocalizedString(@"loginHTTPSfailed_title", @"Secure Connection Failed")
-        message:NSLocalizedString(@"loginHTTPSfailed_message", @"Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
-        preferredStyle:UIAlertControllerStyleAlert];
-
-    UIAlertAction* cancelAction = [UIAlertAction
-           actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-           style:UIAlertActionStyleCancel
-           handler:^(UIAlertAction * action) {
-                // Stop logging in action, display error message
-                [self loggingInConnectionError:error];
-           }];
-    
-    UIAlertAction* acceptAction = [UIAlertAction
-          actionWithTitle:NSLocalizedString(@"alertYesButton", "Yes")
-          style:UIAlertActionStyleDefault
-          handler:^(UIAlertAction * action) {
-                // Try logging in with HTTP scheme
-                [self tryNonSecuredAccessAfterError:error];
-          }];
-    
-    [self.httpAlertController addAction:cancelAction];
-    [self.httpAlertController addAction:acceptAction];
-    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.httpAlertController = [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"loginHTTPSfailed_title", @"Secure Connection Failed")
+            message:NSLocalizedString(@"loginHTTPSfailed_message", @"Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
+            preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* cancelAction = [UIAlertAction
+               actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
+               style:UIAlertActionStyleCancel
+               handler:^(UIAlertAction * action) {
+                    // Stop logging in action, display error message
+                    [self loggingInConnectionError:error];
+               }];
+        
+        UIAlertAction* acceptAction = [UIAlertAction
+              actionWithTitle:NSLocalizedString(@"alertYesButton", "Yes")
+              style:UIAlertActionStyleDefault
+              handler:^(UIAlertAction * action) {
+                    // Try logging in with HTTP scheme
+                    [self tryNonSecuredAccessAfterError:error];
+              }];
+        
+        [self.httpAlertController addAction:cancelAction];
+        [self.httpAlertController addAction:acceptAction];
+        self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        if (@available(iOS 13.0, *)) {
+            self.httpAlertController.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
         [self presentViewController:self.httpAlertController animated:YES completion:^{
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
@@ -817,8 +819,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         // Could not re-establish the session, login/pwd changed, something else ?
         self.isAlreadyTryingToLogin = NO;
         
-        // Display error message
-        [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+        // Return to login view
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ClearCache closeSessionAndClearCacheWithCompletion:^{
+                // Display error message
+                self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            }];
+        });
     }];
 }
 

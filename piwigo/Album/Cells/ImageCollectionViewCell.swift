@@ -272,23 +272,19 @@ class ImageCollectionViewCell: UICollectionViewCell {
                     self.size.width / displayedImage.size.width, self.size.height / displayedImage.size.height))
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     // Case of an iPad: respect aspect ratio
-                    // Image width…
+                    // Image width smaller than collection view cell?
                     let imageWidth = displayedImage.size.width * imageScale
-                    self.darkImgWidth?.constant = imageWidth
-
-                    // Horizontal correction?
                     if imageWidth < self.size.width {
                         // The image does not fill the cell horizontally
+                        self.darkImgWidth?.constant = imageWidth
                         self.deltaX += (self.size.width - imageWidth) / 2.0
                     }
 
-                    // Image height…
+                    // Image height smaller than collection view cell?
                     let imageHeight = displayedImage.size.height * imageScale
-                    self.darkImgHeight?.constant = imageHeight
-
-                    // Vertical correction?
                     if imageHeight < self.size.height {
                         // The image does not fill the cell vertically
+                        self.darkImgHeight?.constant = imageHeight
                         self.deltaY += (self.size.height - imageHeight) / 2.0
                     }
                 }

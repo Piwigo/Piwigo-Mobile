@@ -201,11 +201,8 @@ class KeychainUtilities : NSObject {
     }
     
     public class
-    func isCertKnownForSSLtransaction(inState serverTrust: SecTrust,
-                                      for domain: String) -> (Bool) {
-        // Retrieve the certificate of the server
-        let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0))!
-
+    func isCertKnownForSSLtransaction(_ certificate: SecCertificate,
+                                      for domain: String) -> Bool {
         // Get certificate in Keychain (should exist)
         // Certificates are stored in the Keychain with label "Piwigo:<host>"
         let query = [kSecClass as String            : kSecClassCertificate,
@@ -227,5 +224,51 @@ class KeychainUtilities : NSObject {
             }
         }
         return isInKeychain
+    }
+    
+    public class
+    func deleteCertificate(for domain: String) {
+        // Certificates are stored in the Keychain with label "Piwigo:<host>"
+        let query = [kSecClass as String            : kSecClassCertificate,
+                     kSecAttrLabel as String        : "Piwigo:\(domain)",
+                     kSecAttrAccessGroup as String  : getAccessGroup()] as [String : Any]
+        let status: OSStatus = SecItemDelete(query as CFDictionary)
+        if status != errSecSuccess { logOSStatus(status) }
+    }
+    
+    public class
+    func storeCertificate(_ certificate: SecCertificate, for domain: String) {
+        // Certificates are stored in the Keychain with label "Piwigo:<host>"
+        let query = [kSecClass as String            : kSecClassCertificate,
+                     kSecAttrLabel as String        : "Piwigo:\(domain)",
+                     kSecAttrAccessGroup as String  : getAccessGroup(),
+                     kSecValueRef as String         : certificate] as [String : Any]
+        let status: OSStatus = SecItemAdd(query as CFDictionary, nil)
+        if status != errSecSuccess { logOSStatus(status) }
+    }
+    
+    public class
+    func getCertificateInfo(_ certificate: SecCertificate, for fomain: String) -> String {
+        // Initialise string that will be presented to the user.
+        var certString = "(" + NetworkVars.domain
+        
+        // Add summary, e.g. "QNAP NAS"
+        if let summary = SecCertificateCopySubjectSummary(certificate) as String?,
+           summary.isEmpty == false, summary != NetworkVars.domain {
+            certString.append(", " + summary)
+        }
+        
+        // Add contact email, e.g. support@qnap.com
+        if #available(iOS 10.3, *) {
+            var emailAddresses: CFArray!
+            let status: OSStatus = SecCertificateCopyEmailAddresses(certificate, &emailAddresses)
+            if status == errSecSuccess, CFArrayGetCount(emailAddresses) > 0 {
+                if let address = (emailAddresses as Array).first {
+                    certString.append(", " + address.string)
+                }
+            }
+        }
+        certString.append(")")
+        return certString
     }
 }

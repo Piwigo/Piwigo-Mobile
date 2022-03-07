@@ -158,3 +158,27 @@ public class NetworkUtilities: NSObject {
     }
 }
 
+
+// MARK: - RFC 3986 allowed characters
+extension CharacterSet {
+    /// Creates a CharacterSet from RFC 3986 allowed characters.
+    ///
+    /// https://datatracker.ietf.org/doc/html/rfc3986/#section-2.2
+    /// Section 2.2 states that the following characters are "reserved" characters.
+    ///
+    /// - General Delimiters: ":", "#", "[", "]", "@", "?", "/"
+    /// - Sub-Delimiters: "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "="
+    ///
+    /// https://datatracker.ietf.org/doc/html/rfc3986/#section-3.4
+    /// Section 3.4 states that the "?" and "/" characters should not be escaped to allow
+    /// query strings to include a URL. Therefore, all "reserved" characters with the exception of "?" and "/"
+    /// should be percent-escaped in the query string.
+    ///
+    public static let pwgURLQueryAllowed: CharacterSet = {
+        let generalDelimitersToEncode = ":#[]@"
+        let subDelimitersToEncode = "!$&'()*+,;="
+        let encodableDelimiters = CharacterSet(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
+
+        return CharacterSet.urlQueryAllowed.subtracting(encodableDelimiters)
+    }()
+}

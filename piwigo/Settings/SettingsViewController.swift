@@ -1793,7 +1793,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func loginLogout() {
         if NetworkVars.username.isEmpty {
             // Clear caches and display login view
-            self.closeSessionAndClearCache()
+            ClearCache.closeSessionAndClearCache() { }
             return
         }
         
@@ -1807,7 +1807,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             LoginUtilities.sessionLogout {
                 // Logout successful
                 DispatchQueue.main.async {
-                    self.closeSessionAndClearCache()
+                    ClearCache.closeSessionAndClearCache() { }
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
@@ -1815,7 +1815,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // or simply a connection drop.
                 self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
                                         message: error.localizedDescription) {
-                    self.closeSessionAndClearCache()
+                    ClearCache.closeSessionAndClearCache() { }
                 }
             }
         })
@@ -1841,53 +1841,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
-        })
-    }
-
-    func closeSessionAndClearCache() {
-        // Session closed
-        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
-
-        // Back to default values
-        AlbumVars.shared.defaultCategory = 0
-        AlbumVars.shared.recentCategories = "0"
-        NetworkVars.usesCommunityPluginV29 = false
-        NetworkVars.hasAdminRights = false
-        
-        // Disable Auto-Uploading and clear settings
-        UploadVars.isAutoUploadActive = false
-        UploadVars.autoUploadCategoryId = NSNotFound
-        UploadVars.autoUploadAlbumId = ""
-        UploadVars.autoUploadTagIds = ""
-        UploadVars.autoUploadComments = ""
-
-        // Erase cache
-        ClearCache.clearAllCache(exceptCategories: false,
-                                 completionHandler: {
-            if #available(iOS 13.0, *) {
-                guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
-                    return
-                }
-
-                let loginVC: LoginViewController
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    loginVC = LoginViewController_iPhone()
-                } else {
-                    loginVC = LoginViewController_iPad()
-                }
-                let nav = LoginNavigationController(rootViewController: loginVC)
-                nav.isNavigationBarHidden = true
-                window.rootViewController = nav
-                UIView.transition(with: window, duration: 0.5,
-                                  options: .transitionCrossDissolve,
-                                  animations: nil, completion: nil)
-            } else {
-                // Fallback on earlier versions
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.loadLoginView()
-            }
         })
     }
 

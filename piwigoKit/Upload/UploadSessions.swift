@@ -222,21 +222,26 @@ extension UploadSessions: URLSessionDelegate {
         
         // If there is no certificate, reject server (should rarely happen)
         if SecTrustGetCertificateCount(serverTrust) == 0 {
-            // No certificate!
-            completionHandler(.rejectProtectionSpace, nil)
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        // Retrieve the certificate of the server
+        guard let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0)) else {
+            completionHandler(.performDefaultHandling, nil)
+            return
         }
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust,
-                                                          for: NetworkVars.domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
         }
         
-        // Cancel the upload
-        completionHandler(.cancelAuthenticationChallenge, nil)
+        // Could not validate the certificate
+        completionHandler(.performDefaultHandling, nil)
     }
     
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
