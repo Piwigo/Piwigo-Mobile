@@ -19,6 +19,7 @@ enum SettingsSection : Int {
     case albums
     case images
     case imageUpload
+    case privacy
     case appearance
     case cache
     case clear
@@ -40,7 +41,7 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
 }
 
 @objc
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var settingsDelegate: ChangedSettingsDelegate?
 
@@ -228,6 +229,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
     }
 
+
+    // MARK: - Actions Methods
     @objc func quitSettings() {
         dismiss(animated: true)
     }
@@ -275,6 +278,60 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
 
+    func loginLogout() {
+        if NetworkVars.username.isEmpty {
+            // Clear caches and display login view
+            ClearCache.closeSessionAndClearCache() { }
+            return
+        }
+        
+        // Ask user for confirmation
+        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
+
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
+        })
+
+        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+            LoginUtilities.sessionLogout {
+                // Logout successful
+                DispatchQueue.main.async {
+                    ClearCache.closeSessionAndClearCache() { }
+                }
+            } failure: { error in
+                // Failed! This may be due to the replacement of a self-signed certificate.
+                // So we inform the user that there may be something wrong with the server,
+                // or simply a connection drop.
+                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                        message: error.localizedDescription) {
+                    ClearCache.closeSessionAndClearCache() { }
+                }
+            }
+        })
+
+        // Add actions
+        alert.addAction(cancelAction)
+        alert.addAction(logoutAction)
+
+        // Determine position of cell in table view
+        let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.logout.rawValue)
+        let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
+
+        // Present list of actions
+        alert.view.tintColor = .piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.sourceView = settingsTableView
+        alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = .piwigoColorOrange()
+        })
+    }
+
     
     // MARK: - UITableView - Header
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
@@ -300,6 +357,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
         case .appearance:
             title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+        case .privacy:
+            title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
         case .cache:
             title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case .about:
@@ -367,6 +426,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
+        case .privacy:
+            nberOfRows = 1
         case .appearance:
             nberOfRows = 1
         case .cache:
@@ -983,6 +1044,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
         }
         
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                return LabelTableViewCell()
+            }
+            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+            let detail: String
+            if AppVars.shared.isAppLockActive == true {
+                detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
+            cell.configure(with: title, detail: detail)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            cell.accessibilityIdentifier = "appLock"
+            tableViewCell = cell
+
         // MARK: Appearance
         case .appearance /* Appearance */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -1246,6 +1325,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 result = false
             }
+
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            result = true
 
         // MARK: Appearance
         case .appearance /* Appearance */:
@@ -1544,6 +1627,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            navigationController?.pushViewController(appLockVC, animated: true)
+
         // MARK: Appearance
         case .appearance /* Appearance */:
             if #available(iOS 13.0, *) {
@@ -1707,72 +1796,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             break
         }
     }
+}
 
-    
-    // MARK: - Actions Methods
-    func loginLogout() {
-        if NetworkVars.username.isEmpty {
-            // Clear caches and display login view
-            ClearCache.closeSessionAndClearCache() { }
-            return
-        }
-        
-        // Ask user for confirmation
-        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-        })
-
-        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-            LoginUtilities.sessionLogout {
-                // Logout successful
-                DispatchQueue.main.async {
-                    ClearCache.closeSessionAndClearCache() { }
-                }
-            } failure: { error in
-                // Failed! This may be due to the replacement of a self-signed certificate.
-                // So we inform the user that there may be something wrong with the server,
-                // or simply a connection drop.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                        message: error.localizedDescription) {
-                    ClearCache.closeSessionAndClearCache() { }
-                }
-            }
-        })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(logoutAction)
-
-        // Determine position of cell in table view
-        let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.logout.rawValue)
-        let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
-
-        // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.sourceView = settingsTableView
-        alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
-        present(alert, animated: true, completion: {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
-        })
-    }
-
+// MARK: - MFMailComposeViewControllerDelegate
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.
         dismiss(animated: true)
     }
+}
 
-    
-    // MARK: - UITextFieldDelegate Methods
+
+// MARK: - UITextFieldDelegate Methods
+extension SettingsViewController: UITextFieldDelegate {
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }

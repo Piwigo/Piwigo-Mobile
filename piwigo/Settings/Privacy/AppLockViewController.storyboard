@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20019"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--App Lock View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="AppLockViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="AppLockViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="vbA-A0-q1R">
+                                <rect key="frame" x="15" y="792" width="384" height="70"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="gzN-jw-wHG"/>
+                                </constraints>
+                                <string key="text">With App Lock, a device-specific code is required to  access the app. If you loose this code, you will have to reinstall the app.</string>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="vbA-A0-q1R" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="15" id="2fA-3W-2aI"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="vbA-A0-q1R" secondAttribute="bottom" id="GqK-s7-X0X"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="vbA-A0-q1R" secondAttribute="trailing" constant="15" id="j0E-22-DJI"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="infoTextView" destination="vbA-A0-q1R" id="6Ab-Se-YJS"/>
+                        <outlet property="infoTextViewHeight" destination="gzN-jw-wHG" id="pF3-Af-Nn3"/>
+                        <outlet property="infoTextViewOffset" destination="GqK-s7-X0X" id="2Bb-Py-RF3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="76.811594202898561" y="52.901785714285715"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
