@@ -62,6 +62,7 @@
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
 		AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */; };
 		AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */; };
+		AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
@@ -216,7 +217,6 @@
 		ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */; };
 		ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */; };
 		ADCCFC3527D532AA00E42A6E /* AppLockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */; };
-		ADCCFC3727D532B700E42A6E /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADCCFC3627D532B700E42A6E /* AppLockViewController.storyboard */; };
 		ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */; };
 		ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */; };
 		ADD063BC26A08961002558D2 /* UploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778368267E384500317F36 /* UploadPhotosHandler.swift */; };
@@ -431,6 +431,7 @@
 		AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySortViewController.swift; sourceTree = "<group>"; };
 		AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CategorySortViewController.storyboard; sourceTree = "<group>"; };
 		AD2BC90625E9721B00EF335F /* DataModel 4 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 4 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
 		AD2FEA5725AFA1470072596A /* VideoMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMetadata.swift; sourceTree = "<group>"; };
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
@@ -681,7 +682,6 @@
 		ADCA95D426B3434400F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADCC996425B452670034CB4A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
 		ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockViewController.swift; sourceTree = "<group>"; };
-		ADCCFC3627D532B700E42A6E /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
 		ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadVideoSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadVideoSizeViewController.swift; sourceTree = "<group>"; };
 		ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
@@ -1313,7 +1313,7 @@
 			isa = PBXGroup;
 			children = (
 				ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */,
-				ADCCFC3627D532B700E42A6E /* AppLockViewController.storyboard */,
+				AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -2017,7 +2017,6 @@
 				AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */,
 				AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */,
 				AD8D217926B0B16A0008E907 /* help03.png in Resources */,
-				ADCCFC3727D532B700E42A6E /* AppLockViewController.storyboard in Resources */,
 				AD8D217B26B0B16A0008E907 /* help04.png in Resources */,
 				AD8D218126B0B16A0008E907 /* help05-top.png in Resources */,
 				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
@@ -2027,6 +2026,7 @@
 				AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
+				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
 				AD3DB4112773957A00017542 /* ImageDetailViewController.storyboard in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
