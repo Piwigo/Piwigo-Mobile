@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="ipad7_9" orientation="portrait" layout="fullscreen" appearance="light"/>
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20019"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,10 +13,10 @@
             <objects>
                 <viewController storyboardIdentifier="LaunchScreen" id="01J-lp-oVM" userLabel="View Controller" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="744" height="1133"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <subviews>
                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qh6-JN-X1B">
-                                <rect key="frame" x="222" y="64" width="300" height="74.5"/>
+                                <rect key="frame" x="80" y="40" width="160" height="40"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -31,6 +31,16 @@
                                         <exclude reference="Xac-G9-Bxc"/>
                                     </mask>
                                 </variation>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
                                 <variation key="heightClass=regular-widthClass=regular">
                                     <mask key="constraints">
                                         <include reference="Xac-G9-Bxc"/>
@@ -38,7 +48,7 @@
                                 </variation>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pnv-ed-x0O">
-                                <rect key="frame" x="323.5" y="138.5" width="97" height="28"/>
+                                <rect key="frame" x="111.5" y="80" width="97" height="28"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -49,7 +59,7 @@
                                 </state>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By Spencer Baker, Olaf Greck" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YHx-TX-2YF">
-                                <rect key="frame" x="0.0" y="1066" width="744" height="16"/>
+                                <rect key="frame" x="0.0" y="433" width="320" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -58,7 +68,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="and Eddy Lelièvre-Berna" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsV-EZ-kw8">
-                                <rect key="frame" x="0.0" y="1082" width="744" height="16"/>
+                                <rect key="frame" x="0.0" y="449" width="320" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -67,7 +77,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wso-dH-WXg" userLabel="All rights reserved.">
-                                <rect key="frame" x="0.0" y="1098" width="744" height="12"/>
+                                <rect key="frame" x="0.0" y="465" width="320" height="12"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
