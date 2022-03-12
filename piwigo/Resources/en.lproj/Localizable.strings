@@ -719,7 +719,8 @@
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
 "settings_appLock" = "App Lock";
-"settings_appLockTitle" = "Enter Passcode";
+"settings_appLockEnter" = "Enter Passcode";
+"settings_appLockVerify" = "Verify Passcode";
 "settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
 
 // Settings — Cache

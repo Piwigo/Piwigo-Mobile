@@ -9,8 +9,19 @@
 import Foundation
 import piwigoKit
 
+enum AppLockAction {
+    case enterPassword
+    case verifyPassword
+}
+
+protocol AppLockDelegate: NSObjectProtocol {
+    func didSetAppLock(toState isLocked: Bool)
+}
+
 class AppLockViewController: UIViewController {
-    
+
+    weak var delegate: AppLockDelegate?
+
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var titleLabelHorSpace: NSLayoutConstraint!
     @IBOutlet weak var digitStackVertSpace: NSLayoutConstraint!
@@ -36,10 +47,25 @@ class AppLockViewController: UIViewController {
     @IBOutlet weak var button8: UIButton!
     @IBOutlet weak var button9: UIButton!
     @IBOutlet weak var button0: UIButton!
+    @IBOutlet weak var buttonBackSpace: UIButton!
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var infoLabelMaxWidth: NSLayoutConstraint!
     @IBOutlet weak var infoLabelVertSpace: NSLayoutConstraint!
     
+    private var passcode = String()
+    private var passcodeToVerify = String()
+    private var wantedAction = AppLockAction.enterPassword  // Action to perform after category selection
+    
+    func config(password: String = "", forAction action:AppLockAction) {
+        wantedAction = action
+        switch action {
+        case .enterPassword:
+            passcode = password
+        case .verifyPassword:
+            passcodeToVerify = password
+        }
+    }
+
     
     // MARK: - View Lifecycle
     
@@ -81,12 +107,7 @@ class AppLockViewController: UIViewController {
         titleLabel.textColor = UIColor.piwigoColorText()
         
         // App Lock digits
-        digit1.backgroundColor = UIColor.piwigoColorCellBackground()
-        digit2.backgroundColor = UIColor.piwigoColorCellBackground()
-        digit3.backgroundColor = UIColor.piwigoColorCellBackground()
-        digit4.backgroundColor = UIColor.piwigoColorCellBackground()
-        digit5.backgroundColor = UIColor.piwigoColorCellBackground()
-        digit6.backgroundColor = UIColor.piwigoColorCellBackground()
+        updateDigits()
 
         // App Lock numpad
         button1.setTitleColor(UIColor.piwigoColorRightLabel(), for: .normal)
@@ -118,8 +139,14 @@ class AppLockViewController: UIViewController {
         super.viewWillAppear(animated)
 
         // Title and Info labels
-        titleLabel.text = NSLocalizedString("settings_appLockTitle", comment: "Enter Passcode")
-        infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        switch wantedAction {
+        case .enterPassword:
+            titleLabel.text = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+            infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        case .verifyPassword:
+            titleLabel.text = NSLocalizedString("settings_appLockVerify", comment: "Verify Passcode")
+            infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        }
 
         // Set constraints, colors, fonts, etc.
         configConstraints()
@@ -137,13 +164,6 @@ class AppLockViewController: UIViewController {
         coordinator.animate(alongsideTransition: { _ in
             self.configConstraints()
         })
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super .viewWillDisappear(animated)
-
-        // Update cell of parent view
-//        delegate?.didSelectPrivacyLevel(privacy)
     }
 
     deinit {
@@ -212,6 +232,70 @@ class AppLockViewController: UIViewController {
             let horMidPosition = safeAreaWidth/4
             titleLabelHorSpace.constant = horMidPosition
             mainStackHorSpace.constant = horMidPosition
+        }
+    }
+    
+    
+    // MARK: - Numpad management
+    @IBAction func touchedKey(_ sender: UIButton) {
+        if passcode.count == 6 { return }
+        guard let buttonTitle = sender.currentTitle else { return }
+        if "0123456789".contains(buttonTitle) {
+            // Add typed digit to passcode
+            passcode.append(buttonTitle)
+            // Update digits
+            updateDigits()
+        }
+        
+        // Passcode provided?
+        if passcode.count == 6 {
+            switch wantedAction {
+            case .enterPassword:    // Just finshed entering passcode —> verify passcode
+                let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+                appLockVC.config(password: passcode, forAction: .verifyPassword)
+                appLockVC.delegate = self.delegate
+                navigationController?.pushViewController(appLockVC, animated: true)
+                
+            case .verifyPassword:   // Passcode re-entered —> match?
+                if passcode == passcodeToVerify {
+                    // Activate the app lock
+                    AppVars.shared.isAppLockActive = true
+                    delegate?.didSetAppLock(toState: true)
+                    // Return to the Settings view
+                    if let settingsVC = navigationController?.children.first {
+                        navigationController?.popToViewController(settingsVC, animated: true)
+                        return
+                    }
+                } else {
+
+                }
+            }
+        }
+    }
+    
+    @IBAction func touchedBackSpace(_ sender: Any) {
+        // NOP if no digit
+        if passcode.isEmpty { return }
+        
+        // Remove last digit
+        passcode.removeLast()
+        // Update digits
+        updateDigits()
+    }
+    
+    private func updateDigits() {
+        let nberOfDigits = passcode.count
+        digit1.backgroundColor = nberOfDigits > 0 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        digit2.backgroundColor = nberOfDigits > 1 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        digit3.backgroundColor = nberOfDigits > 2 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        digit4.backgroundColor = nberOfDigits > 3 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        digit5.backgroundColor = nberOfDigits > 4 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        digit6.backgroundColor = nberOfDigits > 5 ? UIColor.piwigoColorOrange() : UIColor.piwigoColorCellBackground()
+        if nberOfDigits == 0 {
+            buttonBackSpace.setTitleColor(UIColor.piwigoColorRightLabel().withAlphaComponent(0.0), for: .normal)
+        } else {
+            buttonBackSpace.setTitleColor(UIColor.piwigoColorRightLabel(), for: .normal)
         }
     }
 }

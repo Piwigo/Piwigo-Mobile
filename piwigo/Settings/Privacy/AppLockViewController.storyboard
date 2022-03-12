@@ -3,7 +3,7 @@
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20019"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -141,6 +141,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="PZ0-Dt-rjA"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Rpg-gO-cMP">
                                                 <rect key="frame" x="80" y="0.0" width="60" height="60"/>
@@ -160,6 +163,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="6jD-XW-2rC"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="iaP-rX-Ky4">
                                                 <rect key="frame" x="160" y="0.0" width="60" height="60"/>
@@ -179,6 +185,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Cag-f1-dL3"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -203,6 +212,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="TNv-PQ-viy"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="hUz-j4-Qfv">
                                                 <rect key="frame" x="80" y="0.0" width="60" height="60"/>
@@ -222,6 +234,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="fQP-LL-2KL"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Lzm-hK-aWf">
                                                 <rect key="frame" x="160" y="0.0" width="60" height="60"/>
@@ -241,6 +256,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="eTQ-IH-7ug"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -265,6 +283,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="pZr-1j-6iQ"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="JsB-bD-GTe">
                                                 <rect key="frame" x="80" y="0.0" width="60" height="60"/>
@@ -284,6 +305,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Idw-9Z-zGL"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="WNb-Xl-l6z">
                                                 <rect key="frame" x="160" y="0.0" width="60" height="60"/>
@@ -303,6 +327,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="D5r-rC-ll7"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -346,6 +373,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="A6E-F8-Wxw"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Y83-0d-5ic">
                                                 <rect key="frame" x="160" y="0.0" width="60" height="60"/>
@@ -354,10 +384,10 @@
                                                     <constraint firstAttribute="height" constant="60" id="FBb-0T-CXW"/>
                                                     <constraint firstAttribute="width" constant="60" id="UpC-nQ-7M8"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="32"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title=" ">
+                                                <state key="normal" title="⌫">
                                                     <color key="titleColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                                 <userDefinedRuntimeAttributes>
@@ -365,6 +395,9 @@
                                                         <integer key="value" value="30"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="touchedBackSpace:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="E49-Iw-tto"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -400,47 +433,47 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="egm-Ge-NXR"/>
+                                <exclude reference="3Jw-8b-5bS"/>
+                                <exclude reference="Dgk-7c-59n"/>
+                                <exclude reference="bAe-cV-Ad4"/>
                                 <exclude reference="7JE-49-3Gw"/>
                                 <exclude reference="Zeq-p7-kEt"/>
                                 <exclude reference="mQc-FZ-Mar"/>
-                                <exclude reference="3Jw-8b-5bS"/>
-                                <exclude reference="Dgk-7c-59n"/>
-                                <exclude reference="egm-Ge-NXR"/>
-                                <exclude reference="bAe-cV-Ad4"/>
                                 <exclude reference="4n2-YB-DQA"/>
                                 <exclude reference="rvA-90-NGG"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="Zeq-p7-kEt"/>
-                                <include reference="3Jw-8b-5bS"/>
                                 <include reference="egm-Ge-NXR"/>
+                                <include reference="3Jw-8b-5bS"/>
+                                <include reference="Zeq-p7-kEt"/>
                                 <include reference="4n2-YB-DQA"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="Zeq-p7-kEt"/>
-                                <include reference="3Jw-8b-5bS"/>
                                 <include reference="egm-Ge-NXR"/>
+                                <include reference="3Jw-8b-5bS"/>
+                                <include reference="Zeq-p7-kEt"/>
                                 <include reference="4n2-YB-DQA"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="7JE-49-3Gw"/>
-                                <include reference="mQc-FZ-Mar"/>
                                 <include reference="Dgk-7c-59n"/>
                                 <include reference="bAe-cV-Ad4"/>
+                                <include reference="7JE-49-3Gw"/>
+                                <include reference="mQc-FZ-Mar"/>
                                 <include reference="rvA-90-NGG"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
+                                <include reference="bAe-cV-Ad4"/>
                                 <include reference="7JE-49-3Gw"/>
                                 <include reference="mQc-FZ-Mar"/>
-                                <include reference="bAe-cV-Ad4"/>
                                 <include reference="rvA-90-NGG"/>
                             </mask>
                         </variation>
@@ -456,6 +489,7 @@
                         <outlet property="button7" destination="Hr1-HM-UdT" id="eDn-1i-zSe"/>
                         <outlet property="button8" destination="JsB-bD-GTe" id="cSL-8a-qkm"/>
                         <outlet property="button9" destination="WNb-Xl-l6z" id="uTi-JQ-nMX"/>
+                        <outlet property="buttonBackSpace" destination="Y83-0d-5ic" id="gMK-7j-vRT"/>
                         <outlet property="digit1" destination="9Od-jw-pY2" id="4TL-eg-sUf"/>
                         <outlet property="digit2" destination="Osq-bT-vIP" id="EkJ-ca-xjJ"/>
                         <outlet property="digit3" destination="6Qs-qP-iww" id="MGq-sM-acF"/>

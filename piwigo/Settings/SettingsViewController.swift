@@ -1629,8 +1629,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // MARK: Privacy
         case .privacy   /* Privacy */:
+            // Is the app lock activated?
+            if AppVars.shared.isAppLockActive {
+                // Deactivate the app lock
+                AppVars.shared.isAppLockActive = false
+                didSetAppLock(toState: false)
+                return
+            }
+            
+            // Display numpad for setting up a passcode
             let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
             guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            appLockVC.config(forAction: .enterPassword)
+            appLockVC.delegate = self
             navigationController?.pushViewController(appLockVC, animated: true)
 
         // MARK: Appearance
@@ -2050,9 +2061,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
             let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             // Remove rows in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
@@ -2061,5 +2072,22 @@ extension SettingsViewController: UploadVideoSizeDelegate {
                                       section: SettingsSection.imageUpload.rawValue)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
         }
+    }
+}
+
+// MARK: - AppLockDelegate Methods
+extension SettingsViewController: AppLockDelegate {
+    func didSetAppLock(toState isLocked: Bool) {
+        // Refresh corresponding row
+        let appLockAtIndexPath = IndexPath(row: 0, section: SettingsSection.privacy.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(appLockAtIndexPath),
+           let cell = settingsTableView.cellForRow(at: appLockAtIndexPath) as? LabelTableViewCell {
+            if isLocked {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
+        }
+        settingsTableView.reloadRows(at: [appLockAtIndexPath], with: .automatic)
     }
 }
