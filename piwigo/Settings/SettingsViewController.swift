@@ -2088,6 +2088,5 @@ extension SettingsViewController: AppLockDelegate {
                 cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
             }
         }
-        settingsTableView.reloadRows(at: [appLockAtIndexPath], with: .automatic)
     }
 }

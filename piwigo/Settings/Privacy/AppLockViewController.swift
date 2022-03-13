@@ -261,14 +261,32 @@ class AppLockViewController: UIViewController {
                 if passcode == passcodeToVerify {
                     // Activate the app lock
                     AppVars.shared.isAppLockActive = true
+                    AppVars.shared.appLockKey = passcode.encrypted()
                     delegate?.didSetAppLock(toState: true)
+                    
                     // Return to the Settings view
                     if let settingsVC = navigationController?.children.first {
                         navigationController?.popToViewController(settingsVC, animated: true)
                         return
+                    } else {
+                        // Return to the root album
+                        self.dismiss(animated: true)
                     }
                 } else {
-
+                    dismissRetryPiwigoError(withTitle: NSLocalizedString("settings_appLock", comment: "App Lock")) { [self] in
+                        // Return to the Settings view
+                        if let settingsVC = navigationController?.children.first {
+                            navigationController?.popToViewController(settingsVC, animated: true)
+                            return
+                        } else {
+                            // Return to the root album
+                            self.dismiss(animated: true)
+                        }
+                    } retry: {
+                        // Re-verify passcode
+                        self.passcode = ""
+                        self.updateDigits()
+                    }
                 }
             }
         }
@@ -297,5 +315,19 @@ class AppLockViewController: UIViewController {
         } else {
             buttonBackSpace.setTitleColor(UIColor.piwigoColorRightLabel(), for: .normal)
         }
+    }
+}
+
+extension String {
+    fileprivate func encrypted() -> String {
+        let encoded = (Int(self)! + 2323) * 7777 + 3141592657
+        let key = String(encoded, radix: 23, uppercase: true)
+        return String(repeating: "0", count: max(0, 8 - key.count)) + key
+    }
+
+    fileprivate func decrypted() -> String {
+        let key = Int(self, radix: 23)!
+        let decoded = String(((key - 3141592657) / 7777) - 2323)
+        return String(repeating: "0", count: max(0, 6 - decoded.count)) + decoded
     }
 }

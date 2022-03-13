@@ -40,7 +40,9 @@ class AppVars: NSObject {
     /// - App Lock option
     @UserDefault("isAppLockActive", defaultValue: false)
     @objc var isAppLockActive: Bool
-    
+    @UserDefault("appLockKey", defaultValue: "")
+    @objc var appLockKey: String
+
     /// - Memory cache size
     let kPiwigoMemoryCacheInc = 8            // Slider increment
     let kPiwigoMemoryCacheMin = 0            // Minimum size
