@@ -273,7 +273,8 @@ class AppLockViewController: UIViewController {
                         self.dismiss(animated: true)
                     }
                 } else {
-                    dismissRetryPiwigoError(withTitle: NSLocalizedString("settings_appLock", comment: "App Lock")) { [self] in
+                    dismissRetryPiwigoError(withTitle: NSLocalizedString("settings_appLock", comment: "App Lock"),
+                    message: NSLocalizedString("settings_appLockVerifyError", comment: "The passcode verification failed.")) { [self] in
                         // Return to the Settings view
                         if let settingsVC = navigationController?.children.first {
                             navigationController?.popToViewController(settingsVC, animated: true)
@@ -318,6 +319,7 @@ class AppLockViewController: UIViewController {
     }
 }
 
+// MARK: - Passcode Encryption
 extension String {
     fileprivate func encrypted() -> String {
         let encoded = (Int(self)! + 2323) * 7777 + 3141592657
