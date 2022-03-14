@@ -5,6 +5,8 @@
 //  Created by Eddy Lelièvre-Berna on 14/03/2022.
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
+/// - https://ahap.fancypixel.it/0b758273087c
+/// - https://github.com/FancyPixel/moby
 
 import AVFoundation
 import CoreHaptics
