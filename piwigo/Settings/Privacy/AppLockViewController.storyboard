@@ -506,6 +506,7 @@
                         <outlet property="digit4" destination="UfC-jg-pN4" id="axc-tT-vjQ"/>
                         <outlet property="digit5" destination="FdG-OG-HlG" id="HQt-HQ-S2n"/>
                         <outlet property="digit6" destination="6us-0s-cOd" id="D5Q-Aq-nj3"/>
+                        <outlet property="digitStack" destination="vB7-e8-ED8" id="9U1-3T-rTO"/>
                         <outlet property="digitStackVertSpace" destination="mQc-FZ-Mar" id="j6x-OE-cPk"/>
                         <outlet property="infoLabel" destination="CX5-PV-biQ" id="ZmY-26-dtc"/>
                         <outlet property="infoLabelMaxWidth" destination="1EC-Hq-9rr" id="XLq-0r-TkP"/>

@@ -170,6 +170,8 @@
 		AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
+		AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
+		AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
 		ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */; };
@@ -599,6 +601,8 @@
 		AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.getStatus.json; sourceTree = "<group>"; };
 		AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.getStatus.swift; sourceTree = "<group>"; };
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
+		AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */ = {isa = PBXFileReference; lastKnownFileType = text; path = VerificationFailed.ahap; sourceTree = "<group>"; };
+		AD9D684927DFE9E600517261 /* HapticUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticUtilities.swift; sourceTree = "<group>"; };
 		ADA0049C2739C036006FE8ED /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
 		ADA0049D2739C038006FE8ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -1592,6 +1596,7 @@
 				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 				ADF3EC0B2516515500379E53 /* Device+Model.swift */,
+				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
 				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
@@ -1624,6 +1629,7 @@
 				AD56B7BB266905ED001D4E21 /* release.entitlements */,
 				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
+				AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */,
 				AD8D214D26B0A53C0008E907 /* Images */,
 				AD5C14B7266C2E3E007E8C99 /* Fonts */,
 				AD224022267B7D8800269B84 /* Strings */,
@@ -2011,6 +2017,7 @@
 				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
 				AD96F4302748601D004C8DFF /* piwigo.png in Resources */,
+				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
 				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
 				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				AD11AC4C273B17A100433038 /* help01.png in Resources */,
@@ -2306,6 +2313,7 @@
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
 				AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
+				AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */,
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
 				AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */,
 				ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */,

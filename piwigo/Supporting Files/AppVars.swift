@@ -79,4 +79,7 @@ class AppVars: NSObject {
     
     /// - Is system dark palette active?
     @objc var isSystemDarkModeActive = false
+    
+    /// - Check for haptics compatibility at the app’s launch
+    var supportsHaptics: Bool = false
 }

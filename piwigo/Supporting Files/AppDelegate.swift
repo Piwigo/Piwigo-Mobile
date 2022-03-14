@@ -8,6 +8,7 @@
 
 import AVFoundation
 import BackgroundTasks
+import CoreHaptics
 import Foundation
 import Intents
 import UIKit
@@ -57,6 +58,12 @@ import piwigoKit
         keyboardManager.shouldToolbarUsesTextFieldTintColor = true
         keyboardManager.shouldShowToolbarPlaceholder = true
 
+        // Check if the device supports haptics.
+        if #available(iOS 13.0, *) {
+            let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+            AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
+        }
+        
         // Set Settings Bundle data
         setSettingsBundleData()
         

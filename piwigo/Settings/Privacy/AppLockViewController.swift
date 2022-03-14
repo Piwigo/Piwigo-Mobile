@@ -24,6 +24,7 @@ class AppLockViewController: UIViewController {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var titleLabelHorSpace: NSLayoutConstraint!
+    @IBOutlet weak var digitStack: UIStackView!
     @IBOutlet weak var digitStackVertSpace: NSLayoutConstraint!
     @IBOutlet weak var digit1: UIButton!
     @IBOutlet weak var digit2: UIButton!
@@ -281,20 +282,31 @@ class AppLockViewController: UIViewController {
                         self.dismiss(animated: true)
                     }
                 } else {
-                    dismissRetryPiwigoError(withTitle: NSLocalizedString("settings_appLock", comment: "App Lock"),
-                    message: NSLocalizedString("settings_appLockVerifyError", comment: "The passcode verification failed.")) { [self] in
-                        // Return to the Settings view
-                        if let settingsVC = navigationController?.children.first {
-                            navigationController?.popToViewController(settingsVC, animated: true)
-                            return
-                        } else {
-                            // Return to the root album
-                            self.dismiss(animated: true)
-                        }
-                    } retry: {
-                        // Re-verify passcode
-                        self.passcode = ""
-                        self.updateDigits()
+                    // Passcode not verified!
+                    // Move digits to the left and right several times
+                    let options: UIView.AnimationOptions = [.autoreverse]
+                    UIView.animate(withDuration: 0.1, delay: 0.0, options:options, animations: {
+                        self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                    }, completion: { _ in
+                        self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
+                        UIView.animate(withDuration: 0.1, delay: 0.0, options:options, animations: {
+                            self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                        }, completion: { _ in
+                            self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
+                            UIView.animate(withDuration: 0.2, delay: 0.0, options:options, animations: {
+                                self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                            }, completion: { _ in
+                                self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
+                                // Re-verify passcode
+                                self.passcode = ""
+                                self.updateDigits()
+                            })
+                        })
+                    })
+                    
+                    // If the device doesn't support Core Haptics, done.
+                    if #available(iOS 13.9, *) {
+                        HapticUtilities.shared.playHapticsFile(named: "VerificationFailed")
                     }
                 }
             }
