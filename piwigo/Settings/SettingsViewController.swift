@@ -397,7 +397,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     private func activeSection(_ section: Int) -> SettingsSection {
-        let rawSection = section + (hasUploadRights() ? 0 : 1)
+        // User can upload images/videos if he/she is logged in and has:
+        // — admin rights
+        // — normal rights with upload access to some categories with Community
+        var rawSection = section
+        if !hasUploadRights(), rawSection > SettingsSection.images.rawValue {
+            rawSection += 1
+        }
         guard let activeSection = SettingsSection(rawValue: rawSection) else {
             fatalError("Unknown Section index!")
         }
