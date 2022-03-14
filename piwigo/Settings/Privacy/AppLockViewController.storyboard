@@ -143,6 +143,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="PZ0-Dt-rjA"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="Y0R-aq-Hwt"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Rpg-gO-cMP">
@@ -165,6 +166,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="6jD-XW-2rC"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="Deh-Z0-GSX"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="iaP-rX-Ky4">
@@ -187,6 +189,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Cag-f1-dL3"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="Ybh-Sg-XCT"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -214,6 +217,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="TNv-PQ-viy"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="5J7-Jy-osp"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="hUz-j4-Qfv">
@@ -236,6 +240,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="fQP-LL-2KL"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="BwT-7n-ff6"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Lzm-hK-aWf">
@@ -258,6 +263,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="eTQ-IH-7ug"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="y0P-c9-jtm"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -285,6 +291,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="pZr-1j-6iQ"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="hS2-w6-8Sp"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="JsB-bD-GTe">
@@ -307,6 +314,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Idw-9Z-zGL"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="XHM-qZ-1QH"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" adjustsImageWhenHighlighted="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="WNb-Xl-l6z">
@@ -329,6 +337,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="D5r-rC-ll7"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="xIF-85-3Jb"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -375,6 +384,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="touchedKey:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="A6E-F8-Wxw"/>
+                                                    <action selector="touchingKey:" destination="Y6W-OH-hqX" eventType="touchDown" id="3rv-en-Qfn"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Y83-0d-5ic">

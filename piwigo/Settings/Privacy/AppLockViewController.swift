@@ -237,7 +237,15 @@ class AppLockViewController: UIViewController {
     
     
     // MARK: - Numpad management
+    @IBAction func touchingKey(_ sender: UIButton) {
+        // Apply darker backgroud colour while pressing key (reveals the glowing number).
+        sender.backgroundColor = UIColor.piwigoColorRightLabel()
+    }
+    
     @IBAction func touchedKey(_ sender: UIButton) {
+        // Re-apply normal background colour when the key is released
+        sender.backgroundColor = UIColor.piwigoColorCellBackground()
+
         if passcode.count == 6 { return }
         guard let buttonTitle = sender.currentTitle else { return }
         if "0123456789".contains(buttonTitle) {
