@@ -284,22 +284,32 @@ class AppLockViewController: UIViewController {
                 } else {
                     // Passcode not verified!
                     // Move digits to the left and right several times
-                    let options: UIView.AnimationOptions = [.autoreverse]
-                    UIView.animate(withDuration: 0.1, delay: 0.0, options:options, animations: {
-                        self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                    UIView.animate(withDuration: 0.1, delay: 0, options:[.curveLinear], animations: {
+                        self.digitStack.transform = CGAffineTransform(translationX: 50, y: 0)
                     }, completion: { _ in
-                        self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
-                        UIView.animate(withDuration: 0.1, delay: 0.0, options:options, animations: {
-                            self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                        UIView.animate(withDuration: 0.15, delay: 0, options:[.curveLinear], animations: {
+                            self.digitStack.transform = CGAffineTransform(translationX: -50, y: 0)
                         }, completion: { _ in
-                            self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
-                            UIView.animate(withDuration: 0.2, delay: 0.0, options:options, animations: {
-                                self.digitStack.transform = CGAffineTransform(translationX: 20, y: 0)
+                            UIView.animate(withDuration: 0.15, delay: 0, options:[.curveLinear], animations: {
+                                self.digitStack.transform = CGAffineTransform(translationX: 40, y: 0)
                             }, completion: { _ in
-                                self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
-                                // Re-verify passcode
-                                self.passcode = ""
-                                self.updateDigits()
+                                UIView.animate(withDuration: 0.15, delay: 0, options:[.curveLinear], animations: {
+                                    self.digitStack.transform = CGAffineTransform(translationX: -40, y: 0)
+                                }, completion: { _ in
+                                    UIView.animate(withDuration: 0.15, delay: 0, options:[.curveLinear], animations: {
+                                        self.digitStack.transform = CGAffineTransform(translationX: 30, y: 0)
+                                    }, completion: { _ in
+                                        UIView.animate(withDuration: 0.1, delay: 0, options:[.curveEaseOut], animations: {
+                                            self.digitStack.transform = CGAffineTransform(translationX: 0, y: 0)
+                                        }, completion: { _ in
+                                            // Re-verify passcode
+                                            self.passcode = ""
+                                            UIView.animate(withDuration: 1) {
+                                                self.updateDigits()
+                                            }
+                                        })
+                                    })
+                                })
                             })
                         })
                     })
