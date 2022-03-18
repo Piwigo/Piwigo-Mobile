@@ -284,6 +284,15 @@
 {
     [super viewDidAppear:animated];
     
+    // Update title of current scene (iPad only)
+    if (@available(iOS 13.0, *)) {
+        if (self.view.window != nil) {
+            if (self.view.window.windowScene != nil) {
+                self.view.window.windowScene.title = self.title;
+            }
+        }
+    }
+
     // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
         // Highlight the cell of interest

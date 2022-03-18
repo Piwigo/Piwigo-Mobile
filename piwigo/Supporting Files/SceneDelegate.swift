@@ -11,11 +11,12 @@ import AVFoundation
 import BackgroundTasks
 import piwigoKit
 
+@available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    private var privacyWindow: UIWindow?
 
-    @available(iOS 13.0, *)
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -26,47 +27,45 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //            debugPrint(userActivity)
 //        }
 
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        if let windowScene = scene as? UIWindowScene {
-            // Show login view
-            let window = UIWindow(windowScene: windowScene)
-            let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
-            nav.isNavigationBarHidden = true
-            window.rootViewController = nav
+        
+        // Create login view
+        let window = UIWindow(windowScene: windowScene)
+        let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
+        nav.isNavigationBarHidden = true
+        window.rootViewController = nav
 
-            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-            window.rootViewController?.view.setNeedsUpdateConstraints()
+        // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+        window.rootViewController?.view.setNeedsUpdateConstraints()
 
-            // Color palette depends on system settings
-            AppVars.shared.isSystemDarkModeActive = appDelegate.loginVC.traitCollection.userInterfaceStyle == .dark
+        // Color palette depends on system settings
+        AppVars.shared.isSystemDarkModeActive = appDelegate.loginVC.traitCollection.userInterfaceStyle == .dark
 //            print("•••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
-            // Apply color palette
-            appDelegate.screenBrightnessChanged()
+        // Apply color palette
+        appDelegate.screenBrightnessChanged()
 
-            // Present login window
-            self.window = window
-            window.makeKeyAndVisible()
+        // Hold and present login window
+        self.window = window
+        window.makeKeyAndVisible()
 
-            // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
+        // Look for credentials if server address provided
+        let username = NetworkVars.username
+        let service = NetworkVars.serverPath
+        var password = ""
 
-            // Look for paswword in Keychain if server address and username are provided
-            if service.count > 0, username.count > 0 {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
+        // Look for paswword in Keychain if server address and username are provided
+        if service.count > 0, username.count > 0 {
+            password = KeychainUtilities.password(forService: service, account: username)
+        }
 
-            // Login?
-            if service.count > 0 || (username.count > 0 && password.count > 0) {
-                appDelegate.loginVC.launchLogin()
-            }
+        // Login?
+        if service.count > 0 || (username.count > 0 && password.count > 0) {
+            appDelegate.loginVC.launchLogin()
         }
     }
 
-    @available(iOS 13.0, *)
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -74,10 +73,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
 
-    @available(iOS 13.0, *)
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+
+        // Unhide views by removing privacy wndow
+//        if AppVars.shared.isAppLockActive,
+//           let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
+//           let window = window {
+//            sceneDelegate.window = window
+//        }
 
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
@@ -90,7 +95,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
 
-        // Should we reopen the session and restart uploads?
+        // Should we relogin before resuming uploads?
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, !(child is LoginViewController) {
             // Determine for how long the session is opened
@@ -115,18 +120,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    @available(iOS 13.0, *)
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
-        // Save cached data (crashes eported by TestFlight and App Store…)
+        // Hide views with privacy window
+//        if AppVars.shared.isAppLockActive {
+//            for scene in UIApplication.shared.connectedScenes {
+//                if let windowScene = scene as? UIWindowScene {
+//                    // Create privacy window
+//                    privacyWindow = UIWindow(windowScene: windowScene)
+//                    let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+//                    let initialViewController = storyboard.instantiateInitialViewController()
+//                    privacyWindow?.rootViewController = initialViewController
+//                    
+//                    // Make privacy window visible
+//                    privacyWindow?.makeKeyAndVisible()
+//                }
+//            }
+//        }
+
+        // Inform Upload Manager to pause activities
+        UploadManager.shared.isPaused = true
+
+        // Save cached data
+        DataController.saveContext()
+        // Save cached data (crashes reported by TestFlight and App Store…)
 //        DispatchQueue.main.async {
 //            DataController.saveContext()
 //        }
     }
 
-    @available(iOS 13.0, *)
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
@@ -138,7 +162,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AFNetworkReachabilityManager.shared().startMonitoring()
     }
 
-    @available(iOS 13.0, *)
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information

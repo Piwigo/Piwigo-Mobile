@@ -92,6 +92,15 @@ class LoginViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Update title of current scene (iPad only)
+        if #available(iOS 13.0, *) {
+            view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
+        }
+    }
 
     @objc func applyColorPalette() {
         // Server address

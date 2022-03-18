@@ -159,6 +159,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        // Update title of current scene (iPad only)
+        if #available(iOS 13.0, *) {
+            view.window?.windowScene?.title = title
+        }
+
+        // Invite user to translate the app
         if #available(iOS 10, *) {
             let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))

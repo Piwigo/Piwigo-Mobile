@@ -152,6 +152,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             header?.headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Update title of current scene (iPad only)
+        view.window?.windowScene?.title = title
+    }
 
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
@@ -181,6 +188,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
+        // Set title of current scene (iPad only)
+        view.window?.windowScene?.title = title
+
         // Action menu
         var hasImpossibleUploadsSection = false
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {

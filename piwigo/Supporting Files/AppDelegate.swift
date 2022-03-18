@@ -22,7 +22,7 @@ import piwigoKit
     let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
-    
+    private var privacyWindow: UIWindow?
     private var _loginVC: LoginViewController!
     var loginVC: LoginViewController {
         // Already existing?
@@ -153,95 +153,89 @@ import piwigoKit
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Save cached data
-            /// - Schedule background tasks
-        } else {
-            // Inform Upload Manager to pause activities
-            UploadManager.shared.isPaused = true
-            // Save cached data
-            DataController.saveContext()
+        // Hide views with privacy window
+        if AppVars.shared.isAppLockActive {
+            privacyWindow = UIWindow(frame: UIScreen.main.bounds)
+            let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+            let initialViewController = storyboard.instantiateInitialViewController()
+            privacyWindow?.rootViewController = initialViewController
+            privacyWindow?.windowLevel = .alert + 1
+            privacyWindow?.makeKeyAndVisible()
         }
+
+        // Inform Upload Manager to pause activities
+        UploadManager.shared.isPaused = true
+
+        // Save cached data
+        DataController.saveContext()
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Save cached data
-            /// - Schedule background tasks
-            /// - Delete files stored in /tmp directory
-        } else {
-            // Save cached data
-            DataController.saveContext()
+        // Save cached data
+        DataController.saveContext()
 
-            // Disable network activity indicator
-            AFNetworkActivityIndicatorManager.shared().isEnabled = false
-            
-            // Disable network reachability monitoring
-            AFNetworkReachabilityManager.shared().stopMonitoring()
+        // Disable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = false
+        
+        // Disable network reachability monitoring
+        AFNetworkReachabilityManager.shared().stopMonitoring()
 
-            // Clean up /tmp directory
-            cleanUpTemporaryDirectory(immediately: false)
-        }
+        // Clean up /tmp directory
+        cleanUpTemporaryDirectory(immediately: false)
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state.
         // This call is then followed by a call to applicationDidBecomeActive().
 
-        if #available(iOS 13.0, *) {
-            // Managed by SceneDelegate
-        } else {
-            // Enable network activity indicator
-            AFNetworkActivityIndicatorManager.shared().isEnabled = true
-            
-            // Enable network reachability monitoring
-            AFNetworkReachabilityManager.shared().startMonitoring()
-        }
+        // Enable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = true
+        
+        // Enable network reachability monitoring
+        AFNetworkReachabilityManager.shared().startMonitoring()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
         
-        if #available(iOS 13.0, *) {
-            // Managed by SceneDelegate
-        } else {
-            // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
-            // Furthermore, it will interrupt any other current audio sessions (no mixing)
-            let audioSession = AVAudioSession.sharedInstance()
-            let availableCategories = audioSession.availableCategories
-            if availableCategories.contains(AVAudioSession.Category.playback) {
-                do {
-                    try audioSession.setCategory(.playback)
-                } catch {
-                }
-            }
+        // Unhide views by removing privacy window
+        privacyWindow?.isHidden = true
+        privacyWindow = nil
 
-            // Should we resume uploads?
-            if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
-               !(child is LoginViewController) {
-                // Determine for how long the session is opened
-                /// Piwigo 11 session duration defaults to an hour.
-                let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-                if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                    /// - Perform relogin
-                    /// - Resume upload operations in background queue
-                    ///   and update badge, upload button of album navigator
-                    reloginAndRetry {
-                        // Reload category data from server in background mode
-                        self.loginVC.reloadCatagoryDataInBckgMode()
-                    }
-                } else {
-                    /// - Resume upload operations in background queue
-                    ///   and update badge, upload button of album navigator
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeAll()
-                    }
+        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+        // Furthermore, it will interrupt any other current audio sessions (no mixing)
+        let audioSession = AVAudioSession.sharedInstance()
+        let availableCategories = audioSession.availableCategories
+        if availableCategories.contains(AVAudioSession.Category.playback) {
+            do {
+                try audioSession.setCategory(.playback)
+            } catch {
+            }
+        }
+
+        // Should we relogin before resuming uploads?
+        if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
+           !(child is LoginViewController) {
+            // Determine for how long the session is opened
+            /// Piwigo 11 session duration defaults to an hour.
+            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+                /// - Perform relogin
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                reloginAndRetry {
+                    // Reload category data from server in background mode
+                    self.loginVC.reloadCatagoryDataInBckgMode()
+                }
+            } else {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAll()
                 }
             }
         }

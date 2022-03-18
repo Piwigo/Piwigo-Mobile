@@ -608,6 +608,15 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"viewDidAppear     => ID:%ld", (long)self.categoryId);
 #endif
 
+    // Update title of current scene (iPad only)
+    if (@available(iOS 13.0, *)) {
+        if (self.view.window != nil) {
+            if (self.view.window.windowScene != nil) {
+                self.view.window.windowScene.title = self.title;
+            }
+        }
+    }
+
     // Load album data if this is the default album
 //    if ((self.categoryId == AlbumVars.shared.defaultCategory) && (!self.isCachedAtInit)) {
 //        // Display HUD while downloading category data recursively for the first time

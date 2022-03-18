@@ -216,6 +216,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Update title of current scene (iPad only)
+        if #available(iOS 13.0, *) {
+            view.window?.windowScene?.title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        }
+    }
 
     @objc func checkPasteboard() {
         // Don't consider the pasteboard if the cateogry is null.
