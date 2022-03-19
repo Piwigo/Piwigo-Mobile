@@ -335,7 +335,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
                 else {
                     // Could not change the filename
-                    debugPrint("••>> setImageInfoForImageWithId(): no successful")
+                    debugPrint("••> setImageInfoForImageWithId(): no successful")
                     let error = JsonError.unexpectedError
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
