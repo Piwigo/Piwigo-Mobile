@@ -173,7 +173,7 @@ public class UploadSessions: NSObject {
 //            if tasksToCancel.count > 0 {
 //                let firstTask = tasksToCancel.first
 //                let chunk = firstTask?.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? ""
-//                debugPrint("==> \(chunk) compared to \(alreadyUploadedChunks)?")
+//                debugPrint("••> \(chunk) compared to \(alreadyUploadedChunks)?")
 //            }
 //            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr})
 //                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? "")})
