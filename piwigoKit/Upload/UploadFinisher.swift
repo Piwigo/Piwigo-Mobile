@@ -206,7 +206,7 @@ extension UploadManager {
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     // Will retry later
-                    debugPrint("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    debugPrint("••> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
                     completionHandler(false, [])
                     return
                 }
