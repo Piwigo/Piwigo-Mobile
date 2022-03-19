@@ -307,7 +307,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 }
             },
         failure: { request, response, error in
-            print("==> cell image: \(error.localizedDescription)")
+            debugPrint("••> cell image: \(error.localizedDescription)")
         })
     }
 
