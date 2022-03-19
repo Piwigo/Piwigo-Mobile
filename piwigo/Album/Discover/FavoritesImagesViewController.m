@@ -1713,7 +1713,7 @@
                 }
 
                 // Should we continue loading images?
-                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                NSLog(@"••> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
                 if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                     [self needToLoadMoreImages];
                 }

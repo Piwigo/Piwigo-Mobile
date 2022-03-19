@@ -37,6 +37,7 @@ import piwigoKit
     // MARK: - Application delegate methods
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        debugPrint("••> App did finish launching with options.")
         // Read old settings file and create UserDefaults cached files
         Model.sharedInstance().readFromDisk()
 
@@ -199,6 +200,8 @@ import piwigoKit
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
+        debugPrint("••> App did become active.")
+        // The app has become active.
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
         

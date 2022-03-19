@@ -18,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var privacyWindow: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        debugPrint("••> Scene will connect to session \(session.persistentIdentifier).")
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
@@ -41,7 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Color palette depends on system settings
         AppVars.shared.isSystemDarkModeActive = appDelegate.loginVC.traitCollection.userInterfaceStyle == .dark
-//            print("•••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
+        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
         // Apply color palette
         appDelegate.screenBrightnessChanged()
@@ -67,6 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        debugPrint("••> Scene \(scene.session.persistentIdentifier) did disconnect.")
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -74,7 +76,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
+        debugPrint("••> Scene \(scene.session.persistentIdentifier) did become active.")
+        // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
         // Unhide views by removing privacy wndow
@@ -121,7 +124,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
+        debugPrint("••> Scene \(scene.session.persistentIdentifier) will resign active.")
+        // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
         // Hide views with privacy window
@@ -163,9 +167,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+        debugPrint("••> Scene \(scene.session.persistentIdentifier) did enter background.")
+        // Called when the scene is running in the background and is no longer onscreen.
+        // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
 
         // Save changes in the app's managed object context when the app transitions to the background.
         DataController.saveContext()

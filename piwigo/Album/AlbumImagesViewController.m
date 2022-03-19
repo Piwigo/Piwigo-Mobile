@@ -3471,7 +3471,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     [self hidePiwigoHUDWithCompletion:^{}];
                 }
                 // Should we continue loading images?
-                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                NSLog(@"••> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
                 if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                     [self needToLoadMoreImages];
                 }
@@ -3731,7 +3731,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height;
-//    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
+//    NSLog(@"••> %f", scrollView.contentOffset.y + navBarHeight);
     if ((roundf(scrollView.contentOffset.y + navBarHeight) > 1) ||
         (self.categoryId != AlbumVars.shared.defaultCategory)) {
         // Show navigation bar border
