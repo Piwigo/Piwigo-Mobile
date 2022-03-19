@@ -539,19 +539,16 @@ import piwigoKit
     }
 
     
-    // MARK: - Album navigator
-
+    // MARK: - Album Navigator
     @objc func loadNavigation() {
         // Display default album
         guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
         if #available(iOS 13.0, *) {
-            if let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
-               let window = sceneDelegate.window {
-                window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
-                UIView.transition(with: window, duration: 0.5,
-                                  options: .transitionCrossDissolve) { }
-                    completion: { _ in }
-            }
+            guard let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return }
+            window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve) { }
+                completion: { _ in }
         } else {
             // Fallback on earlier versions
             window?.rootViewController = UINavigationController(rootViewController: defaultAlbum)
