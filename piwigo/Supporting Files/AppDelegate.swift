@@ -34,7 +34,7 @@ import piwigoKit
     }
 
 
-    // MARK: - Application delegate methods
+    // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         debugPrint("••> App did finish launching with options.")
@@ -68,13 +68,11 @@ import piwigoKit
         // Set Settings Bundle data
         setSettingsBundleData()
         
-        // Register launch handlers for tasks if using iOS 13
-        // Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {
+            // Register launch handlers for tasks if using iOS 13
+            /// Will have to check if pwg.images.uploadAsync is available
             registerBgTasks()
-        }
 
-        if #available(iOS 13.0, *) {
             // Delegate to SceneDelegate
             /// - Present login view
         } else {
@@ -113,6 +111,8 @@ import piwigoKit
         return true
     }
 
+
+    // MARK: - App Remote Notifications
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     }
 
@@ -120,76 +120,11 @@ import piwigoKit
         print("Did fail to register notifications.")
     }
     
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate.
-        // Save data if appropriate. See also applicationDidEnterBackground:.
-        
-        // Save cached data
-        DataController.saveContext()
 
-        // Cancel tasks and close sessions
-        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-        
-        // Clean up /tmp directory
-        cleanUpTemporaryDirectory(immediately: false)
-
-        // Unregister left upload requests notifications updating the badge
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.leftUploads, object: nil)
-        
-        // Unregister auto-upload appender failures
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
-        
-        // Unregister uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.addUploadedImageToCache, object: nil)
-    }
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-
-        // Hide views with privacy window
-        if AppVars.shared.isAppLockActive {
-            privacyWindow = UIWindow(frame: UIScreen.main.bounds)
-            let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
-            let initialViewController = storyboard.instantiateInitialViewController()
-            privacyWindow?.rootViewController = initialViewController
-            privacyWindow?.windowLevel = .alert + 1
-            privacyWindow?.makeKeyAndVisible()
-        }
-
-        // Inform Upload Manager to pause activities
-        UploadManager.shared.isPaused = true
-
-        // Save cached data
-        DataController.saveContext()
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
-        // Save cached data
-        DataController.saveContext()
-
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-
-        // Clean up /tmp directory
-        cleanUpTemporaryDirectory(immediately: false)
-    }
-    
+    // MARK: - Transitioning to the Foreground
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state.
+        debugPrint("••> App will enter foreground.")
+        // Called when the app is about to enter the foreground.
         // This call is then followed by a call to applicationDidBecomeActive().
 
         // Enable network activity indicator
@@ -198,7 +133,7 @@ import piwigoKit
         // Enable network reachability monitoring
         AFNetworkReachabilityManager.shared().startMonitoring()
     }
-    
+        
     func applicationDidBecomeActive(_ application: UIApplication) {
         debugPrint("••> App did become active.")
         // The app has become active.
@@ -243,8 +178,79 @@ import piwigoKit
             }
         }
     }
+
+
+    // MARK: - Transitioning to the Background
+    func applicationWillResignActive(_ application: UIApplication) {
+        debugPrint("••> App will resign active.")
+        // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
+        // Hide views with privacy window
+        if AppVars.shared.isAppLockActive {
+            privacyWindow = UIWindow(frame: UIScreen.main.bounds)
+            let privacySB = UIStoryboard(name: "LaunchScreen", bundle: nil)
+            let privacyVC = privacySB.instantiateInitialViewController()
+            privacyWindow?.rootViewController = privacyVC
+            privacyWindow?.windowLevel = .alert + 1
+            privacyWindow?.makeKeyAndVisible()
+        }
+
+        // Inform Upload Manager to pause activities
+        UploadManager.shared.isPaused = true
+    }
     
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        debugPrint("••> App did enter background.")
+        // Called when the app is now in the background.
+        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        // Save cached data
+        DataController.saveContext()
+
+        // Disable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = false
+        
+        // Disable network reachability monitoring
+        AFNetworkReachabilityManager.shared().stopMonitoring()
+
+        // Clean up /tmp directory
+        cleanUpTemporaryDirectory(immediately: false)
+    }
     
+    func applicationWillTerminate(_ application: UIApplication) {
+        debugPrint("••> App will terminate.")
+        // Called when the application is about to terminate.
+        // Save data if appropriate. See also applicationDidEnterBackground:.
+        
+        // Save cached data
+        DataController.saveContext()
+
+        // Cancel tasks and close sessions
+        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+
+        // Disable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = false
+        
+        // Disable network reachability monitoring
+        AFNetworkReachabilityManager.shared().stopMonitoring()
+        
+        // Clean up /tmp directory
+        cleanUpTemporaryDirectory(immediately: false)
+
+        // Unregister left upload requests notifications updating the badge
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.leftUploads, object: nil)
+        
+        // Unregister auto-upload appender failures
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
+        
+        // Unregister uploaded image notification appending image to CategoriesData cache
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.addUploadedImageToCache, object: nil)
+    }
+    
+
     // MARK: - Background Uploading
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
@@ -398,23 +404,6 @@ import piwigoKit
             }
         }
     }
-    
-    
-    // MARK: - UISceneSession lifecycle
-
-    @available(iOS 13.0, *)
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-    
-    @available(iOS 13.0, *)
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
 
 
     // MARK: - Cleaning
@@ -437,6 +426,7 @@ import piwigoKit
         }
     }
 
+    
     // MARK: - Intents
     
     @available(iOS 14.0, *)
@@ -473,8 +463,7 @@ import piwigoKit
     
     
     // MARK: - Settings bundle
-
-    // Updates the version and build numbers in the app's settings bundle.
+    /// Updates the version and build numbers in the app's settings bundle.
     private func setSettingsBundleData() {
         
         // Get the Settings.bundle object
@@ -581,8 +570,78 @@ import piwigoKit
         }
     }
 
+    @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
+        // NOP if albumId undefined, root or smart album
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+            fatalError("!!! Did not provide a category ID !!!")
+        }
+        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
 
-    // MARK: - Light and dark modes
+        // Get new album Id as string
+        let categoryIdStr = String(categoryId)
+        
+        // Create new array of recent albums
+        var newList = [String]()
+        
+        // Add albumId to top of list
+        newList.append(categoryIdStr)
+
+        // Get current list of recent albums
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
+
+        // Add recent albums while avoiding duplicates
+        if (recentAlbumsStr.count != 0) {
+            // List of recent album IDs
+            let oldList = recentAlbumsStr.components(separatedBy: ",")
+            
+            // Append album IDs of old list
+            for catId in oldList {
+                if newList.contains(catId) { continue }
+                newList.append(catId)
+            }
+        }
+
+        // We will present 3 - 10 albums (5 by default), but because some recent albums
+        // may not be suggested or other may be deleted, we store more than 10, say 20.
+        let count = newList.count
+        if count > 20 {
+            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
+        } else {
+            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
+        }
+//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+    }
+
+    @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
+        // NOP if albumId undefined, root or smart album
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+            fatalError("!!! Did not provide a category ID !!!")
+        }
+        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+
+        // Get current list of recent albums
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
+        if recentAlbumsStr.isEmpty { return }
+
+        // Get new album Id as string
+        let categoryIdStr = String(categoryId)
+
+        // Remove albumId from list if necessary
+        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
+        recentCategories.removeAll(where: { $0 == categoryIdStr })
+
+        // List should not be empty (add root album Id)
+        if recentCategories.isEmpty {
+            recentCategories.append(String(0))
+        }
+
+        // Update list
+        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
+//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories)"
+    }
+
+
+    // MARK: - Light and Dark Modes
 
     // Called when the screen brightness has changed, when user changes settings
     // and by traitCollectionDidChange: when the system switches between Light and Dark modes
@@ -685,80 +744,7 @@ import piwigoKit
 
         // Notify palette change to views
         NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
-//        print("•••> app changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
-    }
-
-
-    // MARK: - Recent albums
-
-    @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
-        // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
-        }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
-
-        // Get new album Id as string
-        let categoryIdStr = String(categoryId)
-        
-        // Create new array of recent albums
-        var newList = [String]()
-        
-        // Add albumId to top of list
-        newList.append(categoryIdStr)
-
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-
-        // Add recent albums while avoiding duplicates
-        if (recentAlbumsStr.count != 0) {
-            // List of recent album IDs
-            let oldList = recentAlbumsStr.components(separatedBy: ",")
-            
-            // Append album IDs of old list
-            for catId in oldList {
-                if newList.contains(catId) { continue }
-                newList.append(catId)
-            }
-        }
-
-        // We will present 3 - 10 albums (5 by default), but because some recent albums
-        // may not be suggested or other may be deleted, we store more than 10, say 20.
-        let count = newList.count
-        if count > 20 {
-            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
-        } else {
-            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
-        }
-//        debugPrint("•••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
-    }
-
-    @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
-        // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
-        }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
-
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-        if recentAlbumsStr.isEmpty { return }
-
-        // Get new album Id as string
-        let categoryIdStr = String(categoryId)
-
-        // Remove albumId from list if necessary
-        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
-        recentCategories.removeAll(where: { $0 == categoryIdStr })
-
-        // List should not be empty (add root album Id)
-        if recentCategories.isEmpty {
-            recentCategories.append(String(0))
-        }
-
-        // Update list
-        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
-//        pring("•••> Recent albums: \(AlbumVars.shared.recentCategories)"
+//        debugPrint("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 
     

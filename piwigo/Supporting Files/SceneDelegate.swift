@@ -17,6 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var privacyWindow: UIWindow?
 
+    // MARK: - Connecting and Disconnecting scenes
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         debugPrint("••> Scene will connect to session \(session.persistentIdentifier).")
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -75,17 +76,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
 
+    
+    // MARK: - Transitioning to the Foreground
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        debugPrint("••> Scene \(scene.session.persistentIdentifier) will enter foreground.")
+        // Called as the scene is about to begin running in the foreground and become visible to the user.
+        // Use this method to undo the changes made on entering the background.
+
+        // Enable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = true
+
+        // Enable network reachability monitoring
+        AFNetworkReachabilityManager.shared().startMonitoring()
+    }
+
     func sceneDidBecomeActive(_ scene: UIScene) {
         debugPrint("••> Scene \(scene.session.persistentIdentifier) did become active.")
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
-        // Unhide views by removing privacy wndow
-//        if AppVars.shared.isAppLockActive,
-//           let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
-//           let window = window {
-//            sceneDelegate.window = window
-//        }
+        // Unhide views by removing privacy window
+        privacyWindow?.isHidden = true
+        privacyWindow = nil
 
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
@@ -123,47 +135,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
+    
+    // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
         debugPrint("••> Scene \(scene.session.persistentIdentifier) will resign active.")
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
-        // Hide views with privacy window
-//        if AppVars.shared.isAppLockActive {
-//            for scene in UIApplication.shared.connectedScenes {
-//                if let windowScene = scene as? UIWindowScene {
-//                    // Create privacy window
-//                    privacyWindow = UIWindow(windowScene: windowScene)
-//                    let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
-//                    let initialViewController = storyboard.instantiateInitialViewController()
-//                    privacyWindow?.rootViewController = initialViewController
-//                    
-//                    // Make privacy window visible
-//                    privacyWindow?.makeKeyAndVisible()
-//                }
-//            }
-//        }
+        // Hide views with privacy window if App Lock enabled
+        if AppVars.shared.isAppLockActive,
+           let windowScene = scene as? UIWindowScene {
+            privacyWindow = UIWindow(windowScene: windowScene)
+            let privacySB = UIStoryboard(name: "LaunchScreen", bundle: nil)
+            let privacyVC = privacySB.instantiateInitialViewController()
+            privacyWindow?.rootViewController = privacyVC
+            privacyWindow?.makeKeyAndVisible()
+        }
 
         // Inform Upload Manager to pause activities
         UploadManager.shared.isPaused = true
-
-        // Save cached data
-        DataController.saveContext()
-        // Save cached data (crashes reported by TestFlight and App Store…)
-//        DispatchQueue.main.async {
-//            DataController.saveContext()
-//        }
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-
-        // Enable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = true
-
-        // Enable network reachability monitoring
-        AFNetworkReachabilityManager.shared().startMonitoring()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
