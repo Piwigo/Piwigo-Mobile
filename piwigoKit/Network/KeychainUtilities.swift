@@ -166,10 +166,10 @@ class KeychainUtilities : NSObject {
         #if DEBUG
         if #available(iOSApplicationExtension 11.3, *) {
             let msg = SecCopyErrorMessageString(status, nil)
-            print("==>> OSStatus Error #\(status): \(msg as String?)")
+            debugPrint("••> OSStatus Error #\(status): \(msg as String?)")
         } else {
             let url = "https://www.osstatus.com/search/results?platform=all&framework=all&search=\(status)"
-            print("==>> OSStatus Error #\(status): \(url)")
+            debugPrint("••> OSStatus Error #\(status): \(url)")
         }
         #endif
     }
