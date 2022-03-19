@@ -225,7 +225,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         }
         
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("==> Took \(diff) ms to filter albums")
+//        debugPrint("••> Took \(diff) ms to filter albums")
         return collections
     }
 
