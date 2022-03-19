@@ -330,7 +330,7 @@
     
     // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
+        BOOL hasUserInterfaceStyleChanged = self.view.window.isKeyWindow && (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
             AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
