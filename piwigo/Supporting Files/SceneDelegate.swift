@@ -102,9 +102,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
             guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
             appLockVC.config(forAction: .unlockApp)
-            appLockVC.modalPresentationStyle = .overCurrentContext
+            appLockVC.modalPresentationStyle = .overFullScreen
             appLockVC.modalTransitionStyle = .crossDissolve
-            window?.rootViewController?.present(appLockVC, animated: false, completion: {
+            let topViewController = UIApplication.shared.topViewController()
+            topViewController?.present(appLockVC, animated: false, completion: {
                 self.privacyView?.isHidden = true
             })
         }
@@ -116,9 +117,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func unlockAppAndResume() {
         // Unhide views and remove passcode window
-        if let presentedVC = window?.rootViewController?.presentedViewController,
-           presentedVC is AppLockViewController {
-            presentedVC.dismiss(animated: true)
+        if let topViewController = UIApplication.shared.topViewController(),
+           topViewController is AppLockViewController {
+            topViewController.dismiss(animated: true)
         }
         privacyView = nil
 
