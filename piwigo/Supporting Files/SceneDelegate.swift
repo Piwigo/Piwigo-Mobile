@@ -15,7 +15,8 @@ import piwigoKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    private var privacyWindow: UIWindow?
+    private var privacyView: UIView?
+    private var passcodeWindow: UIWindow?
 
     // MARK: - Connecting and Disconnecting scenes
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -95,9 +96,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
-        // Unhide views by removing privacy window
-        privacyWindow?.isHidden = true
-        privacyWindow = nil
+        // Request passcode if App Lock is enabled
+        if AppVars.shared.isAppLockActive, privacyView != nil {
+            // Show passcode window
+            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            appLockVC.config(forAction: .unlockApp)
+            appLockVC.modalPresentationStyle = .overCurrentContext
+            appLockVC.modalTransitionStyle = .crossDissolve
+            window?.rootViewController?.present(appLockVC, animated: false, completion: {
+                self.privacyView?.isHidden = true
+            })
+        }
+        else {
+            // Relogin and resume operations
+            unlockAppAndResume()
+        }
+    }
+
+    func unlockAppAndResume() {
+        // Unhide views and remove passcode window
+        if let presentedVC = window?.rootViewController?.presentedViewController,
+           presentedVC is AppLockViewController {
+            presentedVC.dismiss(animated: true)
+        }
+        privacyView = nil
 
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
@@ -134,22 +157,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
     }
-
     
+
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
         debugPrint("••> Scene \(scene.session.persistentIdentifier) will resign active.")
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
-        // Hide views with privacy window if App Lock enabled
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented now
+        /// so that the app does not request the passcode until it is put into the background.
         if AppVars.shared.isAppLockActive,
-           let windowScene = scene as? UIWindowScene {
-            privacyWindow = UIWindow(windowScene: windowScene)
-            let privacySB = UIStoryboard(name: "LaunchScreen", bundle: nil)
-            let privacyVC = privacySB.instantiateInitialViewController()
-            privacyWindow?.rootViewController = privacyVC
-            privacyWindow?.makeKeyAndVisible()
+           let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
+            if privacyView == nil {
+                if UIAccessibility.isReduceTransparencyEnabled {
+                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
+                    let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+                    let initialViewController = storyboard.instantiateInitialViewController()
+                    privacyView = initialViewController?.view
+                } else {
+                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
+                    let blurEffect = UIBlurEffect(style: .dark)
+                    privacyView = UIVisualEffectView(effect: blurEffect)
+                    privacyView?.frame = keyWindow.frame
+                }
+                keyWindow.addSubview(privacyView!)
+            }
+            privacyView?.isHidden = false
+            
+            // Remove passcode view if needed
+            if let presentedVC = window?.rootViewController?.presentedViewController,
+               presentedVC is AppLockViewController {
+                presentedVC.dismiss(animated: true)
+            }
         }
 
         // Inform Upload Manager to pause activities

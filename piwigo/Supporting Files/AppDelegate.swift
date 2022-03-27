@@ -22,7 +22,8 @@ import piwigoKit
     let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
-    private var privacyWindow: UIWindow?
+    private var privacyView: UIView?
+    private var passcodeWindow: UIWindow?
     private var _loginVC: LoginViewController!
     var loginVC: LoginViewController {
         // Already existing?
@@ -140,10 +141,32 @@ import piwigoKit
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
         
-        // Unhide views by removing privacy window
-        privacyWindow?.isHidden = true
-        privacyWindow = nil
+        // Request passcode if App Lock is enabled
+        if AppVars.shared.isAppLockActive, privacyView != nil {
+            // Show passcode window
+            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            appLockVC.config(forAction: .unlockApp)
+            appLockVC.modalPresentationStyle = .overCurrentContext
+            appLockVC.modalTransitionStyle = .crossDissolve
+            window?.rootViewController?.present(appLockVC, animated: false, completion: {
+                self.privacyView?.isHidden = true
+            })
+        }
+        else {
+            // Relogin and resume operations
+            unlockAppAndResume()
+        }
+    }
 
+    func unlockAppAndResume() {
+        // Unhide views and remove passcode window
+        if let presentedVC = window?.rootViewController?.presentedViewController,
+           presentedVC is AppLockViewController {
+            presentedVC.dismiss(animated: true)
+        }
+        privacyView = nil
+        
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
         let audioSession = AVAudioSession.sharedInstance()
@@ -156,7 +179,7 @@ import piwigoKit
         }
 
         // Should we relogin before resuming uploads?
-        if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
+        if let rootVC = window?.rootViewController, let child = rootVC.children.first,
            !(child is LoginViewController) {
             // Determine for how long the session is opened
             /// Piwigo 11 session duration defaults to an hour.
@@ -179,21 +202,39 @@ import piwigoKit
         }
     }
 
-
+    
     // MARK: - Transitioning to the Background
     func applicationWillResignActive(_ application: UIApplication) {
         debugPrint("••> App will resign active.")
         // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
-        // Hide views with privacy window
-        if AppVars.shared.isAppLockActive {
-            privacyWindow = UIWindow(frame: UIScreen.main.bounds)
-            let privacySB = UIStoryboard(name: "LaunchScreen", bundle: nil)
-            let privacyVC = privacySB.instantiateInitialViewController()
-            privacyWindow?.rootViewController = privacyVC
-            privacyWindow?.windowLevel = .alert + 1
-            privacyWindow?.makeKeyAndVisible()
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented now
+        /// so that the app does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive,
+           let keyWindow = UIApplication.shared.keyWindow {
+            if privacyView == nil {
+                if UIAccessibility.isReduceTransparencyEnabled {
+                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
+                    let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+                    let initialViewController = storyboard.instantiateInitialViewController()
+                    privacyView = initialViewController?.view
+                } else {
+                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
+                    let blurEffect = UIBlurEffect(style: .dark)
+                    privacyView = UIVisualEffectView(effect: blurEffect)
+                    privacyView?.frame = keyWindow.frame
+                }
+                window?.addSubview(privacyView!)
+            }
+            privacyView?.isHidden = false
+            
+            // Remove passcode view if needed
+            if let presentedVC = window?.rootViewController?.presentedViewController,
+               presentedVC is AppLockViewController {
+                presentedVC.dismiss(animated: true)
+            }
         }
 
         // Inform Upload Manager to pause activities
@@ -496,7 +537,7 @@ import piwigoKit
         // Color palette depends on system settings
         if #available(iOS 13.0, *) {
             AppVars.shared.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
-            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
+            print("••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
         } else {
             // Fallback on earlier versions
             AppVars.shared.isSystemDarkModeActive = false

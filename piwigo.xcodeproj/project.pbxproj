@@ -237,6 +237,8 @@
 		ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
 		ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */; };
 		ADDD210A270A13E300CACFF2 /* pwg.users.favorites.addRemove.json in Resources */ = {isa = PBXBuildFile; fileRef = ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */; };
+		ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */; };
+		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
 		ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */; };
 		ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */; };
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
@@ -704,6 +706,8 @@
 		ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageShiftPickerTableViewCell.xib; sourceTree = "<group>"; };
 		ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.users.favorites.addRemove.json; sourceTree = "<group>"; };
 		ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.users.favorites.addRemove.swift; sourceTree = "<group>"; };
+		ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
+		ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AppTools.swift"; sourceTree = "<group>"; };
 		ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewControllerOld.swift; sourceTree = "<group>"; };
 		ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ColorPaletteViewControllerOld.storyboard; sourceTree = "<group>"; };
 		ADE03F3223D4CF1D00F21ED9 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1599,11 +1603,13 @@
 				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
 				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
+				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */,
+				ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */,
 				AD987633262606C600B964C5 /* UIViewController+AppTools.swift */,
 			);
 			path = Macros;
@@ -2285,6 +2291,7 @@
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
+				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,
 				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
@@ -2308,6 +2315,7 @@
 				AD64ED2C27946C2500687793 /* AlbumTableViewCell.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
 				ADB65D5126FBC4650094DAF1 /* ImageDetailViewController.swift in Sources */,
+				ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */,
 				ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */,
 				ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */,
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
