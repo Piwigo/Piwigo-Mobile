@@ -60,7 +60,7 @@ class AppLockViewController: UIViewController {
     
     private var passcode = String()
     private var passcodeToVerify = String()
-    private var wantedAction = AppLockAction.enterPassword  // Action to perform after category selection
+    private var wantedAction = AppLockAction.enterPassword
     
     func config(password: String = "", forAction action:AppLockAction) {
         wantedAction = action
@@ -321,7 +321,7 @@ class AppLockViewController: UIViewController {
             /// See AppLockViewController.nb file
             let dWidth: CGFloat = 5 * (safeAreaWidth - 2*margin)/17
             let dHeight: CGFloat = 5 * (safeAreaHeight - 23.5 - 16 - 10 - height - 4*margin)/23
-            diameter = min(min(dWidth, dHeight), 90)
+            diameter = min(min(dWidth, dHeight), 80)
 
             // Set vertical constraints
             let mainStackHeight: CGFloat = 23*diameter/5
@@ -346,7 +346,7 @@ class AppLockViewController: UIViewController {
             /// See AppLockViewController.nb file
             let dWidth: CGFloat = 5 * (safeAreaWidth - 4*margin)/34
             let dHeight: CGFloat = 5 * (safeAreaHeight - 2*margin)/23
-            diameter = min(min(dWidth, dHeight), 90)
+            diameter = min(min(dWidth, dHeight), 80)
 
             // Fix size and vertical positions of labels
             titleLabelVertOffset.constant = safeAreaHeight/2 - CGFloat(100)
@@ -358,83 +358,69 @@ class AppLockViewController: UIViewController {
     
     
     // MARK: - Numpad management
-    @IBAction func touchDown(_ sender: UIButton) {
-        // Apply darker backgroud colour while pressing key (reveals the glowing number).
-//        if wantedAction == .unlockApp, !UIAccessibility.isReduceTransparencyEnabled {
-//            // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
-//            sender.backgroundColor = UIColor.piwigoColorGray()
-//        } else {
-//            sender.backgroundColor = UIColor.piwigoColorRightLabel()
-//        }
-    }
-    
     @IBAction func touchUpInside(_ sender: UIButton) {
-        // Re-apply normal background colour when the key is released
-//        if wantedAction == .unlockApp, !UIAccessibility.isReduceTransparencyEnabled {
-//            // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
-//            sender.backgroundColor = UIColor.piwigoColorNumkey()
-//        } else {
-//            sender.backgroundColor = UIColor.piwigoColorCellBackground()
-//        }
-
+        // No more than 6 digits
         if passcode.count == 6 { return }
-        guard let buttonTitle = sender.currentTitle else { return }
-        if "0123456789".contains(buttonTitle) {
-            // Add typed digit to passcode
-            passcode.append(buttonTitle)
-            // Update digits
-            updateDigits()
-        }
         
-        // Passcode provided?
-        if passcode.count == 6 {
-            switch wantedAction {
-            case .enterPassword:    // Just finshed entering passcode —> verify passcode
-                let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
-                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-                appLockVC.config(password: passcode, forAction: .verifyPassword)
-                appLockVC.delegate = self.delegate
-                navigationController?.pushViewController(appLockVC, animated: true)
-                
-            case .verifyPassword:   // Passcode re-entered
-                // Do passcodes match?
-                if passcode != passcodeToVerify {
-                    // Passcode not verified!
-                    shakeDigitRow()
-                    return
-                }
-                
-                // Activate the app lock
-                AppVars.shared.isAppLockActive = true
-                AppVars.shared.appLockKey = passcode.encrypted()
-                delegate?.didSetAppLock(toState: true)
-                
-                // Return to the Settings view
-                if let settingsVC = navigationController?.children.first {
-                    navigationController?.popToViewController(settingsVC, animated: true)
-                    return
-                } else {
-                    // Return to the root album
-                    self.dismiss(animated: true)
-                }
-                
-            case .unlockApp:
-                // Do passcodes match?
-                if passcode != passcodeToVerify {
-                    // Passcode not verified!
-                    shakeDigitRow()
-                    return
-                }
-                
-                // Unlock the app
-                if #available(iOS 13.0, *) {
-                    let sceneDelegate = UIApplication.shared.connectedScenes
-                        .filter({$0.activationState == .foregroundActive}).first?.delegate as? SceneDelegate
-                    sceneDelegate?.unlockAppAndResume()
-                } else {
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.unlockAppAndResume()
-                }
+        // Retrieve pressed key
+        guard let buttonTitle = sender.currentTitle else { return }
+        if "0123456789".contains(buttonTitle) == false { return }
+
+        // Add typed digit to passcode
+        passcode.append(buttonTitle)
+        // Update digits
+        updateDigits()
+        
+        // Passcode complete?
+        if passcode.count < 6 { return }
+        
+        // Manage provided passcode
+        switch wantedAction {
+        case .enterPassword:    // Just finshed entering passcode —> verify passcode
+            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            appLockVC.config(password: passcode, forAction: .verifyPassword)
+            appLockVC.delegate = self.delegate
+            navigationController?.pushViewController(appLockVC, animated: true)
+            
+        case .verifyPassword:   // Passcode re-entered
+            // Do passcodes match?
+            if passcode != passcodeToVerify {
+                // Passcode not verified!
+                shakeDigitRow()
+                return
+            }
+            
+            // Activate the app lock
+            AppVars.shared.isAppLockActive = true
+            AppVars.shared.appLockKey = passcode.encrypted()
+            delegate?.didSetAppLock(toState: true)
+            
+            // Return to the Settings view
+            if let settingsVC = navigationController?.children.first {
+                navigationController?.popToViewController(settingsVC, animated: true)
+                return
+            } else {
+                // Return to the root album
+                self.dismiss(animated: true)
+            }
+            
+        case .unlockApp:
+            // Do passcodes match?
+            if passcode != passcodeToVerify {
+                // Passcode not verified!
+                shakeDigitRow()
+                return
+            }
+            
+            // Unlock the app
+            if #available(iOS 13.0, *) {
+                let sceneDelegate = UIApplication.shared.connectedScenes
+                    .filter({$0.activationState == .foregroundActive}).first?.delegate as? SceneDelegate
+                sceneDelegate?.unlockAppAndResume()
+            } else {
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.unlockAppAndResume()
             }
         }
     }
