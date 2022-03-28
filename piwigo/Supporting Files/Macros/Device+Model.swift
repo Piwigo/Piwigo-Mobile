@@ -108,6 +108,8 @@ extension UIDevice {
             return "iPhone 13 mini"
         case "iPhone14,5":
             return "iPhone 13"
+        case "iPhone14,6":
+            return "iPhone SE (3rd generation)"
 
         // MARK: iPad
         case "iPad1,1":
@@ -166,6 +168,10 @@ extension UIDevice {
             return "iPad Air (4th generation) (Wi-Fi)"
         case "iPad13,2":
             return "iPad Air (4th generation) (Wi-Fi + Cellular)"
+        case "iPad13,16":
+            return "iPad Air (5th generation) (Wi-Fi)"
+        case "iPad13,17":
+            return "iPad Air (5th generation) (Wi-Fi + Cellular)"
 
         // MARK: iPad Pro
         case "iPad6,3":
@@ -287,7 +293,7 @@ extension UIDevice {
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
              "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
-             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5":
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6":
             return "12 Mpx"
 
         // MARK: iPad
@@ -310,7 +316,7 @@ extension UIDevice {
         case "iPad5,3", "iPad5,4",
              "iPad11,3", "iPad11,4":
             return "8 Mpx"
-        case "iPad13,1", "iPad13,2":
+        case "iPad13,1", "iPad13,2", "iPad13,16", "iPad13,17":
             return "12 Mpx"
 
         // MARK: iPad Pro
@@ -372,7 +378,7 @@ extension UIDevice {
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
              "iPhone13,1", "iPhone13,2",
-             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5":
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6":
             return "4K, 60 fps"
         case "iPhone13,3", "iPhone13,4":
             return "4K, 120 fps"
@@ -399,6 +405,8 @@ extension UIDevice {
             return "Full HD, 30 fps"
         case "iPad13,1", "iPad13,2":
             return "4K, 30 fps"
+        case "iPad13,16", "iPad13,17":
+            return "4K, 60 fps"
 
         // MARK: iPad Pro
         case "iPad6,3", "iPad6,4":
