@@ -212,8 +212,7 @@ extension PwgSession: URLSessionDelegate {
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
-        guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.domain) else {
+        guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
