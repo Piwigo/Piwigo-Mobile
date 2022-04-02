@@ -1642,17 +1642,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Privacy
         case .privacy   /* Privacy */:
             // Is the app lock activated?
-            if AppVars.shared.isAppLockActive {
-                // Deactivate the app lock
-                AppVars.shared.isAppLockActive = false
-                didSetAppLock(toState: false)
-                return
-            }
+//            if AppVars.shared.isAppLockActive {
+//                // Deactivate the app lock
+//                AppVars.shared.isAppLockActive = false
+//                didSetAppLock(toState: false)
+//                return
+//            }
             
             // Display numpad for setting up a passcode
-            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
-            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-            appLockVC.config(forAction: .enterPassword)
+            let appLockSB = UIStoryboard(name: "LockOptionsViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController else { return }
             appLockVC.delegate = self
             navigationController?.pushViewController(appLockVC, animated: true)
 
@@ -2087,8 +2086,8 @@ extension SettingsViewController: UploadVideoSizeDelegate {
     }
 }
 
-// MARK: - AppLockDelegate Methods
-extension SettingsViewController: AppLockDelegate {
+// MARK: - LockOptionsDelegate Methods
+extension SettingsViewController: LockOptionsDelegate {
     func didSetAppLock(toState isLocked: Bool) {
         // Refresh corresponding row
         let appLockAtIndexPath = IndexPath(row: 0, section: SettingsSection.privacy.rawValue)

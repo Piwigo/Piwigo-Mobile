@@ -12,14 +12,14 @@ extension String {
 
     // MARK: - Passcode Encryption
     func encrypted() -> String {
-        let encoded = (Int(self)! + 2323) * 7777 + 3141592657
+        let encoded = (Int64(self)! + Int64(2323)) * Int64(7777) + Int64(3141592657)
         let key = String(encoded, radix: 23, uppercase: true)
         return String(repeating: "0", count: max(0, 8 - key.count)) + key
     }
 
     func decrypted() -> String {
-        let key = Int(self, radix: 23)!
-        let decoded = String(((key - 3141592657) / 7777) - 2323)
+        let key = Int64(self, radix: 23)!
+        let decoded = String(((key - Int64(3141592657)) / Int64(7777)) - Int64(2323))
         return String(repeating: "0", count: max(0, 6 - decoded.count)) + decoded
     }
 }

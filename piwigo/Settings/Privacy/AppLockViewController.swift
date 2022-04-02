@@ -11,18 +11,13 @@ import piwigoKit
 import UIKit
 
 enum AppLockAction {
-    case enterPassword
-    case verifyPassword
+    case enterPasscode
+    case verifyPasscode
+    case modifyPasscode
     case unlockApp
 }
 
-protocol AppLockDelegate: NSObjectProtocol {
-    func didSetAppLock(toState isLocked: Bool)
-}
-
 class AppLockViewController: UIViewController {
-
-    weak var delegate: AppLockDelegate?
 
     @IBOutlet weak var blurEffectView: UIVisualEffectView!
     @IBOutlet weak var vibrancyEffectView: UIVisualEffectView!
@@ -60,14 +55,14 @@ class AppLockViewController: UIViewController {
     
     private var passcode = String()
     private var passcodeToVerify = String()
-    private var wantedAction = AppLockAction.enterPassword
+    private var wantedAction = AppLockAction.enterPasscode
     
     func config(password: String = "", forAction action:AppLockAction) {
         wantedAction = action
         switch action {
-        case .enterPassword:
-            passcode = password
-        case .verifyPassword:
+        case .enterPasscode, .modifyPasscode:
+            passcode = ""
+        case .verifyPasscode:
             passcodeToVerify = password
         case .unlockApp:
             passcodeToVerify = AppVars.shared.appLockKey.decrypted()
@@ -243,13 +238,14 @@ class AppLockViewController: UIViewController {
 
         // Title and Info labels
         switch wantedAction {
-        case .enterPassword, .unlockApp:
+        case .enterPasscode, .unlockApp:
             titleLabel.text = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
-            infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
-        case .verifyPassword:
+        case .verifyPasscode:
             titleLabel.text = NSLocalizedString("settings_appLockVerify", comment: "Verify Passcode")
-            infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
+        case .modifyPasscode:
+            titleLabel.text = NSLocalizedString("settings_appLockModify", comment: "Modify Passcode")
         }
+        infoLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
 
         // Set constraints, colors, fonts, etc.
         configConstraints()
@@ -358,7 +354,19 @@ class AppLockViewController: UIViewController {
     
     
     // MARK: - Numpad management
+    @IBAction func touchDown(_ sender: UIButton) {
+        // Apply darker backgroud colour while pressing key (reveals the glowing number).
+        if wantedAction != .unlockApp {
+            sender.backgroundColor = UIColor.piwigoColorRightLabel()
+        }
+    }
+
     @IBAction func touchUpInside(_ sender: UIButton) {
+        // Re-apply normal background colour when the key is released
+        if wantedAction != .unlockApp {
+            sender.backgroundColor = UIColor.piwigoColorCellBackground()
+        }
+
         // No more than 6 digits
         if passcode.count == 6 { return }
         
@@ -376,14 +384,13 @@ class AppLockViewController: UIViewController {
         
         // Manage provided passcode
         switch wantedAction {
-        case .enterPassword:    // Just finshed entering passcode —> verify passcode
+        case .enterPasscode, .modifyPasscode:    // Just finshed entering passcode —> verify passcode
             let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
             guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-            appLockVC.config(password: passcode, forAction: .verifyPassword)
-            appLockVC.delegate = self.delegate
+            appLockVC.config(password: passcode, forAction: .verifyPasscode)
             navigationController?.pushViewController(appLockVC, animated: true)
             
-        case .verifyPassword:   // Passcode re-entered
+        case .verifyPasscode:   // Passcode re-entered
             // Do passcodes match?
             if passcode != passcodeToVerify {
                 // Passcode not verified!
@@ -391,10 +398,8 @@ class AppLockViewController: UIViewController {
                 return
             }
             
-            // Activate the app lock
-            AppVars.shared.isAppLockActive = true
+            // Store passcode
             AppVars.shared.appLockKey = passcode.encrypted()
-            delegate?.didSetAppLock(toState: true)
             
             // Return to the Settings view
             if let settingsVC = navigationController?.children.first {

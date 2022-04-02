@@ -173,6 +173,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="X1d-Z4-vLc"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="VoP-0c-g5l"/>
                                                                         </connections>
                                                                     </button>
@@ -194,6 +195,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="Gbi-av-QDL"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="eG1-1p-Xea"/>
                                                                         </connections>
                                                                     </button>
@@ -215,6 +217,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="M20-Nb-nCe"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="xpt-br-GAs"/>
                                                                         </connections>
                                                                     </button>
@@ -241,6 +244,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="D8R-lq-BcM"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="J88-ep-OfC"/>
                                                                         </connections>
                                                                     </button>
@@ -262,6 +266,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="tHO-RP-KU2"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Ro2-mX-LbC"/>
                                                                         </connections>
                                                                     </button>
@@ -283,6 +288,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="Wb8-dK-RJe"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bfE-rv-pWW"/>
                                                                         </connections>
                                                                     </button>
@@ -309,6 +315,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="2Uh-3N-jeM"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="IGl-8i-heJ"/>
                                                                         </connections>
                                                                     </button>
@@ -330,6 +337,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="zyQ-p0-QOt"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Zl6-ao-Fu0"/>
                                                                         </connections>
                                                                     </button>
@@ -351,6 +359,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="97e-rF-a7B"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="aRp-gr-BYs"/>
                                                                         </connections>
                                                                     </button>
@@ -391,6 +400,7 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
+                                                                            <action selector="touchDown:" destination="Y6W-OH-hqX" eventType="touchDown" id="KDL-N2-nfE"/>
                                                                             <action selector="touchUpInside:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="FoB-hP-atU"/>
                                                                         </connections>
                                                                     </button>
