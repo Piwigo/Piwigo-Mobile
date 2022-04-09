@@ -18,31 +18,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     weak var delegate: LockOptionsDelegate?
     
-    enum BiometricType {
-      case none
-      case touchID
-      case faceID
-    }
-
-    var biometricType: BiometricType {
-        let context = LAContext()
-        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-        if #available(iOS 11.0, *) {
-            switch context.biometryType {
-            case .none:
-                return .none
-            case .touchID:
-                return .touchID
-            case .faceID:
-                return .faceID
-            @unknown default:
-                return .none
-            }
-        } else {
-            // Fallback on earlier versions
-            return .none
-        }
-    }
+    var context = LAContext()
+    var contextErrorMsg = ""
 
     @IBOutlet var lockOptionsTableView: UITableView!
     
@@ -51,7 +28,13 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Set title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        
+        // Evaluate biometrics policy
+        var error: NSError?
+        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        contextErrorMsg = error?.localizedDescription ?? ""
     }
 
     @objc func applyColorPalette() {
@@ -128,7 +111,11 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 + (biometricType == .none ? 0 : 1)
+        var nberOfSection = 2
+        if #available(iOS 11.0, *) {
+            nberOfSection += context.biometryType == .none ? 0 : 1
+        }
+        return nberOfSection
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -191,15 +178,21 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
                 return SwitchTableViewCell()
             }
             var title = ""
-            switch biometricType {
-            case .touchID:
-                title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
-            case .faceID:
-                title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
-            default:
-                title = "—?—"
+            if #available(iOS 11.0, *) {
+                switch context.biometryType {
+                case .touchID:
+                    title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
+                case .faceID:
+                    title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+                default:
+                    title = "—?—"
+                }
             }
             cell.configure(with: title)
+            if contextErrorMsg.isEmpty == false {
+                AppVars.shared.isBiometricsEnabled = false
+                cell.isUserInteractionEnabled = false
+            }
             cell.cellSwitch.setOn(AppVars.shared.isBiometricsEnabled, animated: true)
             cell.cellSwitchBlock = { switchState in
                 AppVars.shared.isBiometricsEnabled = switchState
@@ -225,13 +218,21 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
         case 1:     // Change Passcode
             footer = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
         case 2:     // Touch ID / Face ID On/Off
-            switch biometricType {
-            case .touchID:
-                footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
-            case .faceID:
-                footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
-            default:
-                footer = "—?—"
+            if contextErrorMsg.isEmpty {
+                if #available(iOS 11.0, *) {
+                    switch context.biometryType {
+                    case .none:
+                        footer = ""
+                    case .touchID:
+                        footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
+                    case .faceID:
+                        footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+                    @unknown default:
+                        footer = ""
+                    }
+                }
+            } else {
+                footer = contextErrorMsg
             }
         default:
             footer = " "
@@ -241,7 +242,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.heightOfFooter(withText: text)
+        return TableViewUtilities.heightOfFooter(withText: text, width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

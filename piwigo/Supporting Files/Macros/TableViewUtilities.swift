@@ -14,7 +14,7 @@ class TableViewUtilities: NSObject {
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
     class func heightOfHeader(withTitle title: String, text: String = "",
-                               width: CGFloat = 0.0) -> CGFloat {
+                              width: CGFloat = CGFloat.zero) -> CGFloat {
         // Initialise drawing context
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -98,7 +98,7 @@ class TableViewUtilities: NSObject {
     // MARK: - Footers
     // Returns the height of a footer containing some text
     class func heightOfFooter(withText text: String,
-                              width: CGFloat = 0.0) -> CGFloat {
+                              width: CGFloat = CGFloat.zero) -> CGFloat {
 
         // Check header content
         if text.isEmpty { return CGFloat.zero }
@@ -110,7 +110,7 @@ class TableViewUtilities: NSObject {
         // Initialise variables and width constraint
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
-        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin, minHeight: CGFloat = 44.0
+        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin
         let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
@@ -119,7 +119,7 @@ class TableViewUtilities: NSObject {
         let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                                 attributes: titleAttributes, context: context).height
 
-        return CGFloat(fmax(minHeight, ceil(height)) + 10.0)
+        return CGFloat(ceil(height) + 10.0)
     }
     
     class func viewOfFooter(withText text: String = "") -> UIView? {
