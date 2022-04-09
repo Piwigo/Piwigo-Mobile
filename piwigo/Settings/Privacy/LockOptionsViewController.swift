@@ -6,6 +6,7 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import LocalAuthentication
 import UIKit
 import piwigoKit
 
@@ -16,6 +17,32 @@ protocol LockOptionsDelegate: NSObjectProtocol {
 class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     weak var delegate: LockOptionsDelegate?
+    
+    enum BiometricType {
+      case none
+      case touchID
+      case faceID
+    }
+
+    var biometricType: BiometricType {
+        let context = LAContext()
+        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        if #available(iOS 11.0, *) {
+            switch context.biometryType {
+            case .none:
+                return .none
+            case .touchID:
+                return .touchID
+            case .faceID:
+                return .faceID
+            @unknown default:
+                return .none
+            }
+        } else {
+            // Fallback on earlier versions
+            return .none
+        }
+    }
 
     @IBOutlet var lockOptionsTableView: UITableView!
     
@@ -101,14 +128,12 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 2 + (biometricType == .none ? 0 : 1)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0:
-            return 1
-        case 1:
+        case 0...2:
             return 1
         default:
             return 0
@@ -138,10 +163,11 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
                     let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
                     guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
                     appLockVC.config(forAction: .enterPasscode)
+                    self.navigationController?.pushViewController(appLockVC, animated: true)
                 } else {
                     // Enable/disable app-lock option
                     AppVars.shared.isAppLockActive = switchState
-                    self.delegate?.didSetAppLock(toState: true)
+                    self.delegate?.didSetAppLock(toState: switchState)
                 }
             }
             tableViewCell = cell
@@ -159,6 +185,27 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             cell.accessibilityIdentifier = "passcode"
             tableViewCell = cell
 
+        case 2:     // TouchID / FaceID On/Off
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                return SwitchTableViewCell()
+            }
+            var title = ""
+            switch biometricType {
+            case .touchID:
+                title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
+            case .faceID:
+                title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+            default:
+                title = "—?—"
+            }
+            cell.configure(with: title)
+            cell.cellSwitch.setOn(AppVars.shared.isBiometricsEnabled, animated: true)
+            cell.cellSwitchBlock = { switchState in
+                AppVars.shared.isBiometricsEnabled = switchState
+            }
+            tableViewCell = cell
+
         default:
             break
         }
@@ -170,71 +217,36 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
 
     // MARK: - UITableView - Footer
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // No footer by default (nil => 0 point)
+    private func getContentOfFooter(inSection section: Int) -> String {
         var footer = ""
-
-        // Any footer text?
         switch section {
         case 0:     // App-Lock On/Off
             footer = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
         case 1:     // Change Passcode
             footer = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
+        case 2:     // Touch ID / Face ID On/Off
+            switch biometricType {
+            case .touchID:
+                footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
+            case .faceID:
+                footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+            default:
+                footer = "—?—"
+            }
         default:
-            return CGFloat.zero
+            footer = " "
         }
-
-        // Footer height?
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return ceil(footerRect.size.height + 10.0)
+        return footer
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.heightOfFooter(withText: text)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // Any footer text?
-        switch section {
-        case 0:     // App-Lock On/Off
-            footerLabel.text = NSLocalizedString("settings_appLockInfo", comment: "With App Lock, ...")
-        case 1:     // Change Passcode
-            footerLabel.text = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
-        default:
-            break
-        }
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.viewOfFooter(withText: text)
     }
 
     

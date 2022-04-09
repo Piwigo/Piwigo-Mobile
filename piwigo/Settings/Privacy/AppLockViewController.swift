@@ -402,9 +402,8 @@ class AppLockViewController: UIViewController {
             AppVars.shared.appLockKey = passcode.encrypted()
             
             // Return to the Settings view
-            if let settingsVC = navigationController?.children.first {
-                navigationController?.popToViewController(settingsVC, animated: true)
-                return
+            if let vc = navigationController?.children.filter({ $0 is LockOptionsViewController}).first {
+                navigationController?.popToViewController(vc, animated: true)
             } else {
                 // Return to the root album
                 self.dismiss(animated: true)
@@ -413,7 +412,7 @@ class AppLockViewController: UIViewController {
         case .unlockApp:
             // Do passcodes match?
             if passcode != passcodeToVerify {
-                // Passcode not verified!
+                // Incorrect passcode!
                 shakeDigitRow()
                 return
             }
@@ -422,10 +421,10 @@ class AppLockViewController: UIViewController {
             if #available(iOS 13.0, *) {
                 let sceneDelegate = UIApplication.shared.connectedScenes
                     .filter({$0.activationState == .foregroundActive}).first?.delegate as? SceneDelegate
-                sceneDelegate?.unlockAppAndResume()
+                sceneDelegate?.loginOrReloginAndResumeUploads()
             } else {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.unlockAppAndResume()
+                appDelegate?.loginOrReloginAndResumeUploads()
             }
         }
     }

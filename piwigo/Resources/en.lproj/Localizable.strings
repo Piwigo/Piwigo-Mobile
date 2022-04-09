@@ -724,6 +724,11 @@
 "settings_appLockModify" = "Modify Passcode";
 "settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
 "settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+"settings_biometricsReason" = "Access your Piwigo albums";
+"settings_biometricsTouchID" = "Touch ID";
+"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceID" = "Face ID";
+"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";

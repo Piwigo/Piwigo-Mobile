@@ -11,6 +11,7 @@ import UIKit
 @objc
 class TableViewUtilities: NSObject {
     
+    // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
     class func heightOfHeader(withTitle title: String, text: String = "",
                                width: CGFloat = 0.0) -> CGFloat {
@@ -91,5 +92,73 @@ class TableViewUtilities: NSObject {
                                                                  ]))
         }
         return header
+    }
+
+
+    // MARK: - Footers
+    // Returns the height of a footer containing some text
+    class func heightOfFooter(withText text: String,
+                              width: CGFloat = 0.0) -> CGFloat {
+
+        // Check header content
+        if text.isEmpty { return CGFloat.zero }
+
+        // Initialise drawing context
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // Initialise variables and width constraint
+        /// The minimum width of a screen is of 320 pixels.
+        /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
+        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin, minHeight: CGFloat = 44.0
+        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+
+        // Add title height
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
+        let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
+                                                attributes: titleAttributes, context: context).height
+
+        return CGFloat(fmax(minHeight, ceil(height)) + 10.0)
+    }
+    
+    class func viewOfFooter(withText text: String = "") -> UIView? {
+        // Check header content
+        if text.isEmpty { return nil }
+
+        // Initialisation
+        let footerAttributedString = NSMutableAttributedString(string: "")
+        
+        // Add text attributed string
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(),
+                                          range: NSRange(location: 0, length: text.count))
+        footerAttributedString.append(textAttributedString)
+                
+        // Create header label
+        let footerLabel = UILabel()
+        footerLabel.translatesAutoresizingMaskIntoConstraints = false
+        footerLabel.textColor = .piwigoColorHeader()
+        footerLabel.numberOfLines = 0
+        footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.lineBreakMode = .byWordWrapping
+        footerLabel.attributedText = footerAttributedString
+
+        // Create header view
+        let footer = UIView()
+        footer.addSubview(footerLabel)
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromBottom: footerLabel, amount: 4)!)
+        if #available(iOS 11, *) {
+            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|",
+                                                                 options: [], metrics: nil, views: [
+                                                                    "header": footerLabel
+                                                                 ]))
+        } else {
+            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|",
+                                                                 options: [], metrics: nil, views: [
+                                                                    "header": footerLabel
+                                                                 ]))
+        }
+        return footer
     }
 }

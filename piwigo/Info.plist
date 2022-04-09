@@ -95,5 +95,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID instead of a passcode to access your albums.</string>
 </dict>
 </plist>

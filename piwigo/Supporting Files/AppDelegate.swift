@@ -11,6 +11,7 @@ import BackgroundTasks
 import CoreHaptics
 import Foundation
 import Intents
+import LocalAuthentication
 import UIKit
 
 import IQKeyboardManagerSwift
@@ -24,6 +25,8 @@ import piwigoKit
     var window: UIWindow?
     private var privacyView: UIView?
     private var passcodeWindow: UIWindow?
+    private var isAllowedToAccessApp = true
+    private var isAuthenticatingWithBiometrics = false
     private var _loginVC: LoginViewController!
     var loginVC: LoginViewController {
         // Already existing?
@@ -75,26 +78,21 @@ import piwigoKit
             registerBgTasks()
 
             // Delegate to SceneDelegate
-            /// - Present login view
+            /// - Present login view and if needed passcode view
         } else {
-            // Complete user interface initialization, login ?
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
-
-            // Look for paswword in Keychain if server address and username are provided
-            if service.count > 0, username.count > 0 {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
-
-            // Show login view
+            // Create login view
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.makeKeyAndVisible()
             loadLoginView()
             
-            // Login?
-            if service.count > 0 || (username.count > 0 && password.count > 0) {
-                loginVC.launchLogin()
+            // Blur views if the App Lock is enabled
+            /// The passcode window is not presented  so that the app
+            /// does not request the passcode until it is put into the background.
+            if AppVars.shared.isAppLockActive {
+                // User is not allowed to access albums yet
+                isAllowedToAccessApp = false
+                // Protect presented login view
+                showPrivacyProtectionWindow()
             }
         }
         
@@ -141,9 +139,20 @@ import piwigoKit
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
         
-        // Request passcode if App Lock is enabled
-        if AppVars.shared.isAppLockActive, privacyView != nil {
-            // Show passcode window
+        // Relogin and resume upload operations if user can access app
+        if isAllowedToAccessApp {
+            loginOrReloginAndResumeUploads()
+        }
+        else {
+            // Request passcode for accessing app
+            requestPasscode()
+        }
+    }
+
+    private func requestPasscode() {
+        if let topViewController = UIApplication.shared.topViewController(),
+           !(topViewController is AppLockViewController) {
+            // Show passcode view controller if needed
             let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
             guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
             appLockVC.config(forAction: .unlockApp)
@@ -151,22 +160,57 @@ import piwigoKit
             appLockVC.modalTransitionStyle = .crossDissolve
             let topViewController = UIApplication.shared.topViewController()
             topViewController?.present(appLockVC, animated: false, completion: {
+                // Hide privacy view
                 self.privacyView?.isHidden = true
+
+                // Does user enabled biometrics?
+                if !AppVars.shared.isBiometricsEnabled { return }
+                
+                // Get a fresh context
+                let context = LAContext()
+                if #available(iOS 11.0, *) {
+                    context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+                }
+                context.localizedFallbackTitle = NSLocalizedString("settings_appLockFallback", comment: "Use Passcode")
+
+                // First check if we have the needed hardware support
+                var error: NSError?
+                if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+                    // Exploit TouchID or FaceID
+                    self.isAuthenticatingWithBiometrics = true
+                    let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
+                    context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason ) { success, error in
+                        if success {
+                            // User allowed to access app
+                            self.isAllowedToAccessApp = true
+                            // Biometric authentication completed
+                            self.isAuthenticatingWithBiometrics = false
+                            // Return to main thread
+                            DispatchQueue.main.async {
+                                // Dismiss passcode view and activate scene
+                                appLockVC.dismiss(animated: true)
+                            }
+                        }
+                        else {
+                            // Fall back to a asking for passcode
+                            print(error?.localizedDescription ?? "Failed to authenticate")
+                        }
+                    }
+                }
             })
         }
-        else {
-            // Relogin and resume operations
-            unlockAppAndResume()
-        }
     }
-
-    func unlockAppAndResume() {
+    
+    func loginOrReloginAndResumeUploads() {
         // Unhide views and remove passcode window
         if let topViewController = UIApplication.shared.topViewController(),
            topViewController is AppLockViewController {
-            topViewController.dismiss(animated: true)
+            topViewController.dismiss(animated: true) {
+                self.privacyView = nil
+            }
+        } else {
+            privacyView = nil
         }
-        privacyView = nil
         
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
@@ -179,7 +223,28 @@ import piwigoKit
             }
         }
 
-        // Should we relogin before resuming uploads?
+        // Should we log in?
+        if let rootVC = self.window?.rootViewController,
+            let child = rootVC.children.first, child is LoginViewController {
+            // Look for credentials if server address provided
+            let username = NetworkVars.username
+            let service = NetworkVars.serverPath
+            var password = ""
+
+            // Look for paswword in Keychain if server address and username are provided
+            if service.count > 0, username.count > 0 {
+                password = KeychainUtilities.password(forService: service, account: username)
+            }
+
+            // Login?
+            if service.count > 0 || (username.count > 0 && password.count > 0) {
+                loginVC.launchLogin()
+            }
+            return
+        }
+
+        // Determine for how long the session is opened
+        /// Piwigo 11 session duration defaults to an hour.
         if let rootVC = window?.rootViewController, let child = rootVC.children.first,
            !(child is LoginViewController) {
             // Determine for how long the session is opened
@@ -210,31 +275,25 @@ import piwigoKit
         // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
+        // Called during biometric authentication?
+        if isAuthenticatingWithBiometrics { return }
+
         // Blur views if the App Lock is enabled
-        /// The passcode window is not presented now
-        /// so that the app does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive,
-           let keyWindow = UIApplication.shared.keyWindow {
-            if privacyView == nil {
-                if UIAccessibility.isReduceTransparencyEnabled {
-                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
-                    let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
-                    let initialViewController = storyboard.instantiateInitialViewController()
-                    privacyView = initialViewController?.view
-                } else {
-                    // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
-                    let blurEffect = UIBlurEffect(style: .dark)
-                    privacyView = UIVisualEffectView(effect: blurEffect)
-                    privacyView?.frame = keyWindow.frame
-                }
-                window?.addSubview(privacyView!)
-            }
-            privacyView?.isHidden = false
-            
-            // Remove passcode view if needed
-            if let presentedVC = window?.rootViewController?.presentedViewController,
-               presentedVC is AppLockViewController {
-                presentedVC.dismiss(animated: true)
+        /// The passcode window is not presented  so that the app
+        /// does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive {
+            // Remember to ask for passcode
+            isAllowedToAccessApp = false
+            // Remove passcode view controller if presented
+            if let topViewController = UIApplication.shared.topViewController(),
+               topViewController is AppLockViewController {
+                // Protect presented views
+                self.privacyView?.isHidden = false
+                // Dismiss passcode view
+                topViewController.dismiss(animated: true)
+            } else {
+                // Protect presented views
+                showPrivacyProtectionWindow()
             }
         }
 
@@ -259,6 +318,28 @@ import piwigoKit
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
+    }
+    
+    private func showPrivacyProtectionWindow() {
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented now so that the app
+        /// does not request the passcode until it is put into the background.
+        if privacyView == nil,
+           let keyWindow = UIApplication.shared.keyWindow {
+            if UIAccessibility.isReduceTransparencyEnabled {
+                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
+                 let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+                 let initialViewController = storyboard.instantiateInitialViewController()
+                 privacyView = initialViewController?.view
+             } else {
+                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
+                 let blurEffect = UIBlurEffect(style: .dark)
+                 privacyView = UIVisualEffectView(effect: blurEffect)
+                 privacyView?.frame = keyWindow.frame
+             }
+             window?.addSubview(privacyView!)
+         }
+         privacyView?.isHidden = false
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -536,13 +617,7 @@ import piwigoKit
         window?.rootViewController?.view.setNeedsUpdateConstraints()
 
         // Color palette depends on system settings
-        if #available(iOS 13.0, *) {
-            AppVars.shared.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
-            print("••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
-        } else {
-            // Fallback on earlier versions
-            AppVars.shared.isSystemDarkModeActive = false
-        }
+        AppVars.shared.isSystemDarkModeActive = false
         
         // Apply color palette
         screenBrightnessChanged()
