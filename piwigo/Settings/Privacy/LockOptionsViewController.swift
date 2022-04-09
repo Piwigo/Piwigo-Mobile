@@ -100,12 +100,13 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
 
 
@@ -190,7 +191,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             }
             cell.configure(with: title)
             if contextErrorMsg.isEmpty == false {
-                AppVars.shared.isBiometricsEnabled = false
+                cell.switchName.textColor = .piwigoColorRightLabel()
+                cell.cellSwitch.onTintColor = .piwigoColorRightLabel()
                 cell.isUserInteractionEnabled = false
             }
             cell.cellSwitch.setOn(AppVars.shared.isBiometricsEnabled, animated: true)
@@ -242,12 +244,13 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.heightOfFooter(withText: text, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfFooter(withText: text,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
-        return TableViewUtilities.viewOfFooter(withText: text)
+        return TableViewUtilities.shared.viewOfFooter(withText: text)
     }
 
     

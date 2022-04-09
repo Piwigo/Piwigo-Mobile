@@ -301,14 +301,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Get title of section
         let albumType = albumTypeFor(section: section)
         let title = LocalAlbumsProvider.shared.titleForHeaderInSectionOf(albumType: albumType)
-        return TableViewUtilities.viewOfHeader(withTitle: title)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

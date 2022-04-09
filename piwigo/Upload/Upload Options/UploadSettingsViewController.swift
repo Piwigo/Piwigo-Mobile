@@ -75,13 +75,13 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                 width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

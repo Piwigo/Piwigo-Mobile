@@ -335,7 +335,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
-        return TableViewUtilities.heightOfHeader(withTitle: sectionName, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionName,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

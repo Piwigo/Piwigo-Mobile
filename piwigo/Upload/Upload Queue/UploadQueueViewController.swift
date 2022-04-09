@@ -361,7 +361,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot()
                                         .sectionIdentifiers[section]) ?? SectionKeys.Section4
-        return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

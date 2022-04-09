@@ -11,10 +11,17 @@ import UIKit
 @objc
 class TableViewUtilities: NSObject {
     
+    // Singleton
+    static let shared = TableViewUtilities()
+
+    // Constants
+    let margin: CGFloat = 20.0
+    let minHeight: CGFloat = 44.0
+    
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
-    class func heightOfHeader(withTitle title: String, text: String = "",
-                              width: CGFloat = CGFloat.zero) -> CGFloat {
+    func heightOfHeader(withTitle title: String, text: String = "",
+                        width: CGFloat = CGFloat.zero) -> CGFloat {
         // Initialise drawing context
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -23,7 +30,7 @@ class TableViewUtilities: NSObject {
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height: CGFloat = CGFloat.zero
-        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin, minHeight: CGFloat = 44.0
+        let minWidth: CGFloat = 320.0 - 2 * margin
         let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
@@ -44,7 +51,7 @@ class TableViewUtilities: NSObject {
         return CGFloat(fmax(minHeight, ceil(height)))
     }
     
-    class func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
+    func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
         // Check header content
         if title.isEmpty, text.isEmpty { return nil }
 
@@ -79,26 +86,20 @@ class TableViewUtilities: NSObject {
         // Create header view
         let header = UIView()
         header.addSubview(headerLabel)
+        let metrics = ["margin": NSNumber(value: margin)]
         header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|",
-                                                                 options: [], metrics: nil, views: [
-                                                                    "header": headerLabel
-                                                                 ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|",
-                                                                 options: [], metrics: nil, views: [
-                                                                    "header": headerLabel
-                                                                 ]))
-        }
+        header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(margin)-[header]-(margin)-|",
+                                                             options: [], metrics: metrics, views: [
+                                                                "header": headerLabel
+                                                             ]))
         return header
     }
 
 
     // MARK: - Footers
     // Returns the height of a footer containing some text
-    class func heightOfFooter(withText text: String,
-                              width: CGFloat = CGFloat.zero) -> CGFloat {
+    func heightOfFooter(withText text: String,
+                        width: CGFloat = CGFloat.zero) -> CGFloat {
 
         // Check header content
         if text.isEmpty { return CGFloat.zero }
@@ -122,7 +123,7 @@ class TableViewUtilities: NSObject {
         return CGFloat(ceil(height) + 10.0)
     }
     
-    class func viewOfFooter(withText text: String = "") -> UIView? {
+    func viewOfFooter(withText text: String = "") -> UIView? {
         // Check header content
         if text.isEmpty { return nil }
 
@@ -147,18 +148,12 @@ class TableViewUtilities: NSObject {
         // Create header view
         let footer = UIView()
         footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromBottom: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|",
-                                                                 options: [], metrics: nil, views: [
-                                                                    "header": footerLabel
-                                                                 ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|",
-                                                                 options: [], metrics: nil, views: [
-                                                                    "header": footerLabel
-                                                                 ]))
-        }
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
+        let metrics = ["margin": NSNumber(value: margin)]
+        footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(margin)-[footer]-(margin)-|",
+                                                             options: [], metrics: metrics, views: [
+                                                                "footer": footerLabel
+                                                             ]))
         return footer
     }
 }

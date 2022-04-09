@@ -457,13 +457,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                 width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
