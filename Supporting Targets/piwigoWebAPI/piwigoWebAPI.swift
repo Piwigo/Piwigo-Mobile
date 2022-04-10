@@ -85,7 +85,7 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.errorMessage, "")
 
         XCTAssertEqual(result.data[0].name, "version")
-        XCTAssertEqual(result.data[0].value, "11.5.0")
+        XCTAssertEqual(result.data[0].value?.stringValue, "12.2.0")
     }
 
 

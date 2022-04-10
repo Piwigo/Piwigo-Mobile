@@ -1430,7 +1430,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = .decimal
                 for info in uploadJSON.data {
-                    guard let value = info.value, let nber = Int(value) else { continue }
+                    guard let nber = info.value?.intValue else { continue }
                     switch info.name ?? "" {
                     case "nb_elements":
                         if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {

@@ -51,6 +51,7 @@ public struct GetInfosJSON: Decodable {
             do {
                 // Use TagProperties struct
                 try data = resultContainer.decode([InfoKeyValue].self, forKey: .infos)
+                debugPrint(data)
             }
             catch {
                 // Could not decode JSON data
@@ -86,5 +87,51 @@ public struct GetInfosJSON: Decodable {
 public struct InfoKeyValue: Decodable
 {
     public let name: String?        // "version"
-    public let value: String?       // "11.5.0"
+    public let value: StringOrInt?  // "11.5.0"
+}
+
+public enum StringOrInt: Codable {
+    case integer(Int)
+    case string(String)
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(Int.self) {
+            self = .integer(x)
+            return
+        }
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        throw DecodingError.typeMismatch(StringOrInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Value"))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .integer(let x):
+            try container.encode(x)
+        case .string(let x):
+            try container.encode(x)
+        }
+    }
+    
+    public var stringValue: String {
+        switch self {
+        case .integer(let x):
+            return String(x)
+        case .string(let x):
+            return x
+        }
+    }
+
+    public var intValue: Int {
+        switch self {
+        case .integer(let x):
+            return x
+        case .string(let x):
+            return Int(x) ?? NSNotFound
+        }
+    }
 }
