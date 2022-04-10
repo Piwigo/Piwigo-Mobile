@@ -180,54 +180,7 @@ extension TagSelectorViewController {
     }
 
     // MARK: - Footers
-    // Return the height and width of the footer
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Footer height?
-        let footer = getFooter()
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontLight()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes as [NSAttributedString.Key : Any], context: context)
-
-        return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
-    }
-    
-    // Return the footer view
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontLight()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 1
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.text = getFooter()
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
-    }
-    
-    private func getFooter() -> String {
+    private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         let nberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
@@ -238,6 +191,18 @@ extension TagSelectorViewController {
         return footer
     }
 
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let footer = getContentOfFooter()
+        let height = TableViewUtilities.shared.heightOfFooter(withText: footer)
+        return CGFloat(fmax(44.0, height))
+    }
+    
+    // Return the footer view
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let text = getContentOfFooter()
+        return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
+    }
+    
 
     // MARK: - UITableViewDelegate Methods
     // Display images tagged with the tag selected a row of the table

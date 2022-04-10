@@ -534,55 +534,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        if footer.isEmpty { return 0.0 }
-        
-        // Footer height?
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return ceil(footerRect.size.height + 10.0)
+        return TableViewUtilities.shared.heightOfFooter(withText: footer,
+                                                        width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         // Get footer of section
         let albumType = albumTypeFor(section: section)
         let footer = LocalAlbumsProvider.shared.titleForFooterInSectionOf(albumType: albumType)
-        if footer.isEmpty { return nil }
-
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-        footerLabel.text = footer
-
-        // Footer view
-        let footerView = UIView()
-        footerView.backgroundColor = UIColor.clear
-        footerView.addSubview(footerLabel)
-        footerView.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footerView
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 
 

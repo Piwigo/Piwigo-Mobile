@@ -1375,11 +1375,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     // MARK: - UITableView - Footer
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // No footer by default (nil => 0 point)
+    private func getContentOfFooter(inSection section: Int) -> String {
         var footer = ""
-
-        // Any footer text?
         switch activeSection(section) {
         case .logout:
             if UploadVars.serverFileTypes.isEmpty == false {
@@ -1388,62 +1385,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .about:
             footer = statistics
         default:
-            return 16.0
+            footer = ""
         }
-
-        // Footer height?
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return ceil(footerRect.size.height + 10.0)
+        return footer
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.heightOfFooter(withText: text,
+                                                        width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // Footer text
-        switch activeSection(section) {
-        case .logout:
-            if UploadVars.serverFileTypes.isEmpty == false {
-                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
-            }
-        case .about:
-            footerLabel.text = statistics
-        default:
-            break
-        }
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
     }
     
     private func getInfos() {
@@ -1465,7 +1420,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if uploadJSON.errorCode != 0 {
                     #if DEBUG
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                    errorMessage: uploadJSON.errorMessage)
+                                                                 errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
@@ -1563,8 +1518,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self

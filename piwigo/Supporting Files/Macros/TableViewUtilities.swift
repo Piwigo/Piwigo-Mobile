@@ -123,7 +123,7 @@ class TableViewUtilities: NSObject {
         return CGFloat(ceil(height) + 10.0)
     }
     
-    func viewOfFooter(withText text: String = "") -> UIView? {
+    func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
         // Check header content
         if text.isEmpty { return nil }
 
@@ -142,6 +142,7 @@ class TableViewUtilities: NSObject {
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.textAlignment = alignment
         footerLabel.lineBreakMode = .byWordWrapping
         footerLabel.attributedText = footerAttributedString
 
