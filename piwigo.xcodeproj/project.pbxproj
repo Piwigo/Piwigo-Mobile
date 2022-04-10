@@ -266,6 +266,8 @@
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
 		ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */; };
+		ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */; };
+		ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */; };
 		ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		ADF40020266D7062004352B9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
@@ -735,6 +737,8 @@
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
 		ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
+		ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearClipboardViewController.swift; sourceTree = "<group>"; };
+		ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClearClipboardViewController.storyboard; sourceTree = "<group>"; };
 		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADF3B310207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/About.strings; sourceTree = "<group>"; };
 		ADF3B311207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -1325,6 +1329,8 @@
 				AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */,
 				ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */,
 				AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */,
+				ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */,
+				ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -2009,6 +2015,7 @@
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
 				AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */,
 				AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */,
+				ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
@@ -2385,6 +2392,7 @@
 				AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */,
 				AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */,
 				ADF72EB7267336E70027E2CC /* UploadVarsObjc.swift in Sources */,
+				ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */,
 				AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,

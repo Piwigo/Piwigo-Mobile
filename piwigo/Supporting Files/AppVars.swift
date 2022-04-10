@@ -44,6 +44,10 @@ class AppVars: NSObject {
     var appLockKey: String
     @UserDefault("isBiometricsEnabled", defaultValue: true)
     var isBiometricsEnabled: Bool
+    
+    /// — Clear clipboard after delay option (0: never by default)
+    @UserDefault("clearClipboardDelay", defaultValue: 0)
+    @objc var clearClipboardDelay: Int
 
     /// - Memory cache size
     let kPiwigoMemoryCacheInc = 8            // Slider increment

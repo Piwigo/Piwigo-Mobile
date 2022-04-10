@@ -439,7 +439,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
         case .privacy:
-            nberOfRows = 1
+            nberOfRows = 2
         case .appearance:
             nberOfRows = 1
         case .cache:
@@ -1058,21 +1058,39 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // MARK: Privacy
         case .privacy   /* Privacy */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                return LabelTableViewCell()
+            switch indexPath.row {
+            case 0 /* App Lock */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+                let detail: String
+                if AppVars.shared.isAppLockActive == true {
+                    detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                } else {
+                    detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                }
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "appLock"
+                tableViewCell = cell
+            
+            case 1 /* Clear Clipboard */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard")
+                let detail = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.delayUnit ?? ""
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "clearClipboard"
+                tableViewCell = cell
+
+            default:
+                break
             }
-            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
-            let detail: String
-            if AppVars.shared.isAppLockActive == true {
-                detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
-            } else {
-                detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
-            }
-            cell.configure(with: title, detail: detail)
-            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            cell.accessibilityIdentifier = "appLock"
-            tableViewCell = cell
 
         // MARK: Appearance
         case .appearance /* Appearance */:
@@ -1596,19 +1614,23 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // MARK: Privacy
         case .privacy   /* Privacy */:
-            // Is the app lock activated?
-//            if AppVars.shared.isAppLockActive {
-//                // Deactivate the app lock
-//                AppVars.shared.isAppLockActive = false
-//                didSetAppLock(toState: false)
-//                return
-//            }
-            
-            // Display numpad for setting up a passcode
-            let appLockSB = UIStoryboard(name: "LockOptionsViewController", bundle: nil)
-            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController else { return }
-            appLockVC.delegate = self
-            navigationController?.pushViewController(appLockVC, animated: true)
+            switch indexPath.row {
+            case 0 /* Clear cache */:
+                // Display numpad for setting up a passcode
+                let appLockSB = UIStoryboard(name: "LockOptionsViewController", bundle: nil)
+                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController else { return }
+                appLockVC.delegate = self
+                navigationController?.pushViewController(appLockVC, animated: true)
+            case 1 /* Clear Clipboard */:
+                // Display list of delays
+                let delaySB = UIStoryboard(name: "ClearClipboardViewController", bundle: nil)
+                guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController else { return }
+                delayVC.delegate = self
+                navigationController?.pushViewController(delayVC, animated: true)
+
+            default:
+                break
+            }
 
         // MARK: Appearance
         case .appearance /* Appearance */:
@@ -2053,6 +2075,18 @@ extension SettingsViewController: LockOptionsDelegate {
             } else {
                 cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
             }
+        }
+    }
+}
+
+// MARK: - ClearClipboardDelegate Methods
+extension SettingsViewController: ClearClipboardDelegate {
+    func didSelectClearClipboardDelay(_ delay: pwgClearClipboard) {
+        // Refresh corresponding row
+        let delayAtIndexPath = IndexPath(row: 1, section: SettingsSection.privacy.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(delayAtIndexPath),
+           let cell = settingsTableView.cellForRow(at: delayAtIndexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = delay.delayUnit
         }
     }
 }
