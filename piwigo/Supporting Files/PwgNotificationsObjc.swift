@@ -1,5 +1,5 @@
 //
-//  PwgNotifications.swift
+//  PwgNotificationsObjc.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 20/06/2021.
@@ -13,27 +13,27 @@ import piwigoKit
 class PwgNotificationsObjc: NSObject {
     
     /// - Change palette colour
-    @objc public static let paletteChanged = PwgNotifications.paletteChanged.rawValue
+    @objc public static let pwgPaletteChanged = Notification.Name.pwgPaletteChanged.rawValue
     
     
     // MARK: - Recent albums
     /// - Add category ID to the top of the list of recent albums
-    @objc public static let addRecentAlbum = PwgNotifications.addRecentAlbum.rawValue
+    @objc public static let pwgAddRecentAlbum = Notification.Name.pwgAddRecentAlbum.rawValue
     
     /// - Remove category ID from the list of recent albums
-    @objc public static let removeRecentAlbum = PwgNotifications.removeRecentAlbum.rawValue
+    @objc public static let pwgRemoveRecentAlbum = Notification.Name.pwgRemoveRecentAlbum.rawValue
     
     
     // MARK: - Uploads
     /// - Update left number of upload requests
-    @objc public static let leftUploads = PwgNotifications.leftUploads.rawValue
+    @objc public static let pwgLeftUploads = Notification.Name.pwgLeftUploads.rawValue
     
     /// - Update progress bars of upload requests
-    @objc public static let uploadProgress = PwgNotifications.uploadProgress.rawValue
+    @objc public static let pwgUploadProgress = Notification.Name.pwgUploadProgress.rawValue
 
     /// - Notifies that auto-uploading is enabled by user
-    @objc public static let autoUploadEnabled = PwgNotifications.autoUploadEnabled.rawValue
+    @objc public static let pwgAutoUploadEnabled = Notification.Name.pwgAutoUploadEnabled.rawValue
 
     /// - Notifies that auto-uploading was disabled by appendAutoUploadRequests()
-    @objc public static let autoUploadDisabled = PwgNotifications.autoUploadDisabled.rawValue
+    @objc public static let pwgAutoUploadDisabled = Notification.Name.pwgAutoUploadDisabled.rawValue
 }

@@ -86,7 +86,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -112,7 +112,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     

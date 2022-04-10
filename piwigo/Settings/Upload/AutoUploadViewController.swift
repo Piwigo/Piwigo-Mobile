@@ -86,11 +86,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
 
         // Register auto-upload option disabler
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: PwgNotifications.autoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadDisabled, object: nil)
         
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
@@ -122,10 +122,10 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
     
@@ -215,7 +215,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         UploadManager.shared.appendAutoUploadRequests()
                         // Update Settings tableview
                         DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: PwgNotifications.autoUploadEnabled, object: nil, userInfo: nil)
+                            NotificationCenter.default.post(name: .pwgAutoUploadEnabled, object: nil, userInfo: nil)
                         }
                     } else {
                         // Disable auto-uploading

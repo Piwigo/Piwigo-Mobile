@@ -179,7 +179,7 @@
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
-                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+                                                 name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 -(void)applyColorPalette
@@ -389,7 +389,7 @@
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 #pragma mark - Buttons in Preview mode

@@ -64,12 +64,12 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
 

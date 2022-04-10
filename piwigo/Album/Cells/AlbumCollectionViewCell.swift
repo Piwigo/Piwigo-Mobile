@@ -42,8 +42,10 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         contentView.addConstraints(NSLayoutConstraint.constraintFillSize(tableView)!)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)), name: PwgNotifications.autoUploadEnabled, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)), name: PwgNotifications.autoUploadDisabled, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)),
+                                               name: .pwgAutoUploadEnabled, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)),
+                                               name: .pwgAutoUploadDisabled, object: nil)
     }
 
     @objc
@@ -72,7 +74,11 @@ class AlbumCollectionViewCell: UICollectionViewCell
         cell?.refreshButtons(true)
     }
 
-    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
+    }
+
     // MARK: - Move Category
     func moveCategory() {
         guard let albumData = albumData else { return }

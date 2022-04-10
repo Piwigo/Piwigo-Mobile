@@ -54,7 +54,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {

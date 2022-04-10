@@ -87,7 +87,6 @@
 		AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4142773958A00017542 /* ImageDescriptionView.swift */; };
 		AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCC996425B452670034CB4A /* UIImage+AppTools.swift */; };
 		AD3FF5F82683B5C700D2F52A /* PwgNotificationsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3FF5F52683B49900D2F52A /* PwgNotificationsObjc.swift */; };
-		AD3FF5F92683B9F900D2F52A /* PwgNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB91267FBF3E001C1EEB /* PwgNotifications.swift */; };
 		AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD41530E27C6D35D00DE01CB /* LoginViewController.swift */; };
 		AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD41531427C6D37C00DE01CB /* LoginNavigationController.swift */; };
 		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
@@ -266,6 +265,7 @@
 		ADF26FBC24C1FE860036E778 /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
+		ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */; };
 		ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		ADF40020266D7062004352B9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
@@ -716,7 +716,6 @@
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
 		ADE1AB87267E4BB0001C1EEB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		ADE1AB91267FBF3E001C1EEB /* PwgNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgNotifications.swift; sourceTree = "<group>"; };
 		ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.getInfo.swift; sourceTree = "<group>"; };
 		ADE21700250E23EC003AE588 /* pwg.images.getInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.getInfo.json; sourceTree = "<group>"; };
 		ADE250D4266FE99A00285978 /* PwgSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSession.swift; sourceTree = "<group>"; };
@@ -735,6 +734,7 @@
 		ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectCategoryViewController.storyboard; sourceTree = "<group>"; };
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
+		ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADF3B310207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/About.strings; sourceTree = "<group>"; };
 		ADF3B311207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -864,7 +864,6 @@
 		AD084E3B2659846400159FE1 /* piwigoKit */ = {
 			isa = PBXGroup;
 			children = (
-				ADE1AB91267FBF3E001C1EEB /* PwgNotifications.swift */,
 				AD7038A5267DE21B00A72CE1 /* Upload */,
 				AD94F63A266D615000EFC6A9 /* Data Cache */,
 				AD2913E826696A8300403026 /* Network */,
@@ -1248,6 +1247,7 @@
 				ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */,
 				AD2FEA5725AFA1470072596A /* VideoMetadata.swift */,
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
+				ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */,
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
 				AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */,
@@ -2170,7 +2170,7 @@
 				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
 				AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */,
 				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
-				AD3FF5F92683B9F900D2F52A /* PwgNotifications.swift in Sources */,
+				ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
 				AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,

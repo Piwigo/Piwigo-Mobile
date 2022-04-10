@@ -300,11 +300,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: PwgNotifications.uploadProgress, object: nil)
+                                               name: .pwgUploadProgress, object: nil)
         
         // Prevent device from sleeping if uploads are in progress
         let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
@@ -358,10 +358,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
 
     func updateNavBar() {

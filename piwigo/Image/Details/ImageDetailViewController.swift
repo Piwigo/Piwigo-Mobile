@@ -218,7 +218,7 @@ import piwigoKit
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -333,7 +333,7 @@ import piwigoKit
     deinit {
         debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
 
@@ -972,7 +972,7 @@ import piwigoKit
             setEnableStateOfButtons(true)
 
             // Remove observers
-            let name = NSNotification.Name(kPiwigoNotificationDidShare)
+            let name = Notification.Name(kPiwigoNotificationDidShare)
             NotificationCenter.default.post(name: name, object: nil)
 
             if !completed {
@@ -981,7 +981,7 @@ import piwigoKit
                 } else {
                     debugPrint("Activity was not performed.")
                     // Cancel download task
-                    let name = NSNotification.Name(kPiwigoNotificationCancelDownload)
+                    let name = Notification.Name(kPiwigoNotificationCancelDownload)
                     NotificationCenter.default.post(name: name, object: nil)
                 }
             }
@@ -994,7 +994,7 @@ import piwigoKit
 
     @objc func cancelShareImage() {
         // Cancel file donwload
-        let name = NSNotification.Name(kPiwigoNotificationCancelDownload)
+        let name = Notification.Name(kPiwigoNotificationCancelDownload)
         NotificationCenter.default.post(name: name, object: nil)
     }
 

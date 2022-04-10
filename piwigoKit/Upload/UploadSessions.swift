@@ -317,7 +317,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                                           "progressFraction" : progressFraction]
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)
-            NotificationCenter.default.post(name: PwgNotifications.uploadProgress, object: nil, userInfo: uploadInfo)
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
     }
     

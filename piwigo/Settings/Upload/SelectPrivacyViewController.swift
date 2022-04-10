@@ -82,7 +82,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,7 +94,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
     
     

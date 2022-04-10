@@ -72,17 +72,19 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: PwgNotifications.uploadProgress, object: nil)
+                                               name: .pwgUploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -167,16 +169,16 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
         // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Unregister Low Power Mode status
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
     
     // MARK: - Action Menu

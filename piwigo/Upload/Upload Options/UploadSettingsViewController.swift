@@ -49,7 +49,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Can we propose to delete images after upload?
         if let switchVC = parent as? UploadSwitchViewController {
@@ -62,7 +62,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     

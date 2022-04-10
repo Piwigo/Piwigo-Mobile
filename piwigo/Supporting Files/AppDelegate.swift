@@ -98,15 +98,15 @@ import piwigoKit
         
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
-                                               name: PwgNotifications.leftUploads, object: nil)
+                                               name: .pwgLeftUploads, object: nil)
         
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
-                                               name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
+                                               name: .pwgAppendAutoUploadRequestsFailed, object: nil)
 
         // Register uploaded image notification appending image to CategoriesData cache
         NotificationCenter.default.addObserver(self, selector: #selector(addImage),
-                                               name: PwgNotifications.addUploadedImageToCache, object: nil)
+                                               name: .pwgAddUploadedImageToCache, object: nil)
         return true
     }
 
@@ -364,13 +364,13 @@ import piwigoKit
         cleanUpTemporaryDirectory(immediately: false)
 
         // Unregister left upload requests notifications updating the badge
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.leftUploads, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
         
         // Unregister auto-upload appender failures
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
         
         // Unregister uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.addUploadedImageToCache, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
     }
     
 
@@ -669,11 +669,11 @@ import piwigoKit
 
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
-                                               name: PwgNotifications.addRecentAlbum, object: nil)
+                                               name: .pwgAddRecentAlbum, object: nil)
 
         // Observe the PiwigoRemoveRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(removeRecentAlbumWithAlbumId),
-                                               name: PwgNotifications.removeRecentAlbum, object: nil)
+                                               name: .pwgRemoveRecentAlbum, object: nil)
 
         // Observe the Power State notification
         let name = Notification.Name.NSProcessInfoPowerStateDidChange
@@ -860,7 +860,7 @@ import piwigoKit
         }
 
         // Notify palette change to views
-        NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
 //        debugPrint("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 

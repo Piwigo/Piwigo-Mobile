@@ -145,15 +145,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
 
         // Register auto-upload option enabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: PwgNotifications.autoUploadEnabled, object: nil)
+                                               name: .pwgAutoUploadEnabled, object: nil)
 
         // Register auto-upload option disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: PwgNotifications.autoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadDisabled, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -226,13 +226,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option enabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadEnabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
 
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
 

@@ -229,11 +229,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: PwgNotifications.uploadProgress, object: nil)
+                                               name: .pwgUploadProgress, object: nil)
         
         // Register app becoming active for updating the pasteboard
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
@@ -288,10 +288,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
 
         // Unregister app becoming active for updating the pasteboard
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)

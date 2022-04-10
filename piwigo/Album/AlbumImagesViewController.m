@@ -376,7 +376,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
-                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+                                                 name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
@@ -557,15 +557,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self applyColorPalette];
 
     // Register default album changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory)
+                                                 name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Register upload manager changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:)
-                                                 name:PwgNotificationsObjc.leftUploads object:nil];
+                                                 name:PwgNotificationsObjc.pwgLeftUploads object:nil];
 
     // Register upload progress
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:)
-                                                 name:PwgNotificationsObjc.uploadProgress object:nil];
+                                                 name:PwgNotificationsObjc.pwgUploadProgress object:nil];
 
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
@@ -577,7 +578,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory
+                                                        object:nil userInfo:userInfo];
     
     // Display the album/images collection
     // Images will be loaded if needed after displaying cells
@@ -805,16 +807,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 
     // Unregister root album changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Unregister upload manager changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.leftUploads object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgLeftUploads object:nil];
 
     // Unregister upload progress
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.uploadProgress object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgUploadProgress object:nil];
 
     // Clear memory
     self.imagesCollection = nil;
@@ -1154,7 +1156,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     // Show UploadQueue button if needed
                     NSInteger nberOfUploads = [[UIApplication sharedApplication] applicationIconBadgeNumber];
                     NSDictionary *userInfo = @{@"nberOfUploadsToComplete" : @(nberOfUploads)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.leftUploads
+                    [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgLeftUploads
                                                                         object:nil userInfo:userInfo];
                 }
             }];
@@ -3296,7 +3298,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Add category to list of recent albums
                 NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:self.categoryId]};
-                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.addRecentAlbum object:nil userInfo:userInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgAddRecentAlbum object:nil userInfo:userInfo];
 
                 // Selection mode not active => display full screen image
                 UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];

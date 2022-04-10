@@ -117,7 +117,7 @@ public class UploadManager: NSObject {
             DispatchQueue.main.async { [unowned self] in
                 // Update app badge and button of root album (or default album)
                 let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
-                NotificationCenter.default.post(name: PwgNotifications.leftUploads, object: nil, userInfo: uploadInfo)
+                NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
             }
         }
     }
@@ -136,7 +136,7 @@ public class UploadManager: NSObject {
         }
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)
-            NotificationCenter.default.post(name: PwgNotifications.uploadProgress,
+            NotificationCenter.default.post(name: .pwgUploadProgress,
                                             object: nil, userInfo: uploadInfo)
         }
     }
@@ -515,7 +515,7 @@ public class UploadManager: NSObject {
         
         // Add category to list of recent albums
         let userInfo = ["categoryId": uploadProperties.category]
-        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
