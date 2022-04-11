@@ -763,7 +763,8 @@ import piwigoKit
         // Add actions
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-        if (imageData.categoryIds.count > 1) && (categoryId > 0) {
+        if let categoryIds = imageData.categoryIds, categoryIds.count > 1,
+           categoryId > 0 {
             // This image is used in another album
             // Proposes to remove it from the current album, unless it was selected from a smart album
             alert.addAction(removeAction)
