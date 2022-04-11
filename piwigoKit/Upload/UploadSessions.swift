@@ -377,7 +377,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                 }
             }
         default:
-            fatalError("!!! unexpected session identifier !!!")
+            debugPrint("!!! unexpected session identifier !!!")
         }
     }
 }
