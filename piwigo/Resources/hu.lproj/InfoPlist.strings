@@ -7,3 +7,4 @@
 */
 
 "NSPhotoLibraryUsageDescription" = "hogy tárolhasson képeket a Fotók alkalmazásban, és fel tudjon tölteni fotókat a saját Piwigodba.";
+"NSSiriUsageDescription" = "so that Piwigo will be able to upload images with Siri.";

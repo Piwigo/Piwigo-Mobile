@@ -716,6 +716,35 @@
 "UploadVideoSize_resolution" = "Inbyggda kameror maximala specifikationer:";
 "UploadPhotoSize_original" = "Ingen neddimensionering";
 
+// Settings — Privacy
+"settingsHeader_privacy" = "Privacy";
+"settings_appLock" = "App Lock";
+"settings_appLockEnter" = "Enter Passcode";
+"settings_appLockVerify" = "Verify Passcode";
+"settings_appLockModify" = "Modify Passcode";
+"settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
+"settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+
+"settings_biometricsReason" = "Access your Piwigo albums";
+"settings_biometricsTouchID" = "Touch ID";
+"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceID" = "Face ID";
+"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+
+"settings_clearClipboard" = "Clear Clipboard";
+"settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
+"settings_clearClipboard10sUnit" = "10 s";
+"settings_clearClipboard10sText" = "10 seconds";
+"settings_clearClipboard30sUnit" = "30 s";
+"settings_clearClipboard30sText" = "30 seconds";
+"settings_clearClipboard1minText" = "1 minute";
+"settings_clearClipboard1minUnit" = "1 min";
+"settings_clearClipboard2minText" = "2 minute";
+"settings_clearClipboard2minUnit" = "2 min";
+"settings_clearClipboard5minText" = "5 minute";
+"settings_clearClipboard5minUnit" = "5 min";
+"settings_clearClipboardNever" = "Never";
+
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
 "settings_cacheDisk" = "Disk";
