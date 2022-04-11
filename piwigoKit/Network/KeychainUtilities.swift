@@ -253,7 +253,7 @@ class KeychainUtilities : NSObject {
         var certString = "(" + NetworkVars.domain
         
         // Add summary, e.g. "QNAP NAS"
-        if let summary = SecCertificateCopySubjectSummary(certificate) as String?,
+        if let summary = SecCertificateCopySubjectSummary(certificate) as? String,
            summary.isEmpty == false, summary != NetworkVars.domain {
             certString.append(", " + summary)
         }
