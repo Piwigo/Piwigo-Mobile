@@ -45,8 +45,8 @@ class AppVars: NSObject {
     @UserDefault("isBiometricsEnabled", defaultValue: true)
     var isBiometricsEnabled: Bool
     
-    /// — Clear clipboard after delay option (0: never by default)
-    @UserDefault("clearClipboardDelay", defaultValue: 0)
+    /// — Clear clipboard after delay option (never by default)
+    @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     @objc var clearClipboardDelay: Int
 
     /// - Memory cache size
