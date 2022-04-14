@@ -56,9 +56,12 @@ public class NetworkUtilities: NSObject {
         // Return nil if originalURL is nil and a placeholder will be used
         guard let okURL = originalURL else { return nil }
         
+        // TEMPORARY PATCH for case where $conf['original_url_protection'] = 'images';
+        /// See https://github.com/Piwigo/Piwigo-Mobile/issues/503
+        var serverURL: NSURL? = NSURL(string: okURL.replacingOccurrences(of: "&amp;part=", with: "&part="))
+        
         // Servers may return incorrect URLs
         // See https://tools.ietf.org/html/rfc3986#section-2
-        var serverURL = NSURL(string: okURL)
         if serverURL == nil {
             // URL not RFC compliant!
             var leftURL = okURL
