@@ -1331,9 +1331,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */,
-                 5 /* Share Image Metadata Options */:
+                 4 /* Default Size of Previewed Images */:
                 result = true
+            case 5 /* Share Image Metadata Options */:
+                if #available(iOS 10, *) {
+                    result = true
+                } else {
+                    result = false
+                }
             default:
                 result = false
             }
