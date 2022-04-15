@@ -717,8 +717,8 @@
 "UploadPhotoSize_original" = "不缩小大小";
 
 // Settings — Privacy
-"settingsHeader_privacy" = "Privacy";
-"settings_appLock" = "App Lock";
+"settingsHeader_privacy" = "隐私";
+"settings_appLock" = "应用锁";
 "settings_appLockEnter" = "Enter Passcode";
 "settings_appLockVerify" = "Verify Passcode";
 "settings_appLockModify" = "Modify Passcode";
