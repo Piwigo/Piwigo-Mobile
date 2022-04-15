@@ -1570,9 +1570,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 5 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
+                if #available(iOS 10, *) {
+                    let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                    guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
+                }
             default:
                 break
             }
