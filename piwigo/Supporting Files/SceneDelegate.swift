@@ -122,8 +122,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 // Get a fresh context
                 let context = LAContext()
+                context.localizedFallbackTitle = ""
                 context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
-                context.localizedFallbackTitle = NSLocalizedString("settings_appLockFallback", comment: "Use Passcode")
 
                 // First check if we have the needed hardware support
                 var error: NSError?
@@ -145,7 +145,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         }
                         else {
                             // Fall back to a asking for passcode
-                            print(error?.localizedDescription ?? "Failed to authenticate")
+                            debugPrint(error?.localizedDescription ?? "Failed to authenticate")
                         }
                     }
                 }
