@@ -501,6 +501,7 @@
                         <outlet property="infoLabelVertOffset" destination="1q5-Us-stN" id="wHB-5Z-o3y"/>
                         <outlet property="mainStack" destination="sDl-8e-09j" id="tRj-3f-KQZ"/>
                         <outlet property="mainStackHorOffset" destination="Ytf-nP-1zg" id="gwU-RQ-v0J"/>
+                        <outlet property="mainStackVertOffset" destination="kPB-fp-5ar" id="wOO-J9-gZG"/>
                         <outlet property="stackRow1" destination="0ac-h6-ihB" id="mYG-1h-m7d"/>
                         <outlet property="stackRow2" destination="5qD-jk-y3g" id="br2-yM-jlX"/>
                         <outlet property="stackRow3" destination="Bfh-Pm-Yws" id="ZpD-w2-eDS"/>

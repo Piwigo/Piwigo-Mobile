@@ -33,6 +33,7 @@ class AppLockViewController: UIViewController {
     @IBOutlet weak var digit6: UIButton!
     @IBOutlet weak var mainStack: UIStackView!
     @IBOutlet weak var mainStackHorOffset: NSLayoutConstraint!
+    @IBOutlet weak var mainStackVertOffset: NSLayoutConstraint!
     @IBOutlet weak var stackRow1: UIStackView!
     @IBOutlet weak var stackRow2: UIStackView!
     @IBOutlet weak var stackRow3: UIStackView!
@@ -272,6 +273,7 @@ class AppLockViewController: UIViewController {
     
     private func configConstraints() {
         // Get the safe area width and height
+        var vertOffset = CGFloat.zero       // Used when safe area unknown i.e. before iOS 11
         var safeAreaWidth = view.bounds.size.width
         var safeAreaHeight = view.bounds.size.height
         if #available(iOS 11.0, *) {
@@ -279,9 +281,13 @@ class AppLockViewController: UIViewController {
                 safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
                 safeAreaHeight -= root.view.safeAreaInsets.top + root.view.safeAreaInsets.bottom
             }
+        } else {
+            vertOffset += UIApplication.shared.statusBarFrame.size.height
+            safeAreaHeight -= vertOffset
         }
         if let nav = navigationController {
             // Remove the height of the navigation bar
+            vertOffset += nav.navigationBar.bounds.height
             safeAreaHeight -= nav.navigationBar.bounds.height
         }
 
@@ -315,20 +321,33 @@ class AppLockViewController: UIViewController {
 
             // Calculate diameter of buttons and update UI elements
             /// See AppLockViewController.nb file
-            let dWidth: CGFloat = 5 * (safeAreaWidth - 2*margin)/17
-            let dHeight: CGFloat = 5 * (safeAreaHeight - 23.5 - 16 - 10 - height - 4*margin)/23
+            let dWidth: CGFloat = floor(5 * (safeAreaWidth - 2*margin)/17)
+            let dHeight: CGFloat = floor(5 * (safeAreaHeight - 23.5 - 16 - 10 - height - 4*margin)/23)
             diameter = min(min(dWidth, dHeight), 80)
 
             // Set vertical constraints
             let mainStackHeight: CGFloat = 23*diameter/5
             safeAreaHeight -= mainStackHeight
-            let topElementsHeight: CGFloat = 24+10+16
-            titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2
+            let topElementsHeight: CGFloat = 23.5 + 16 + 10
+            if #available(iOS 11.0, *) {
+                // Safe area known
+                titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2
+                mainStackVertOffset.constant = CGFloat.zero
+            } else {
+                // Safe area unknown
+                titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2 + vertOffset
+                mainStackVertOffset.constant = vertOffset / 2
+            }
             infoLabelMaxWidth.constant = maxWidth
             infoLabelVertOffset.constant = (safeAreaHeight/2 - height) / 2
         }
         else {
             // iPhone in landscape mode ▸ Labels and numpad side by side
+            if #available(iOS 11.0, *) {
+                mainStackVertOffset.constant = CGFloat.zero
+            } else {
+                mainStackVertOffset.constant = vertOffset / 2
+            }
             let horOffset = min(safeAreaWidth/4.0, 300.0)
             if orientation == .landscapeLeft {
                 titleLabelHorOffset.constant = horOffset
