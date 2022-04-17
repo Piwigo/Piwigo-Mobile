@@ -11,6 +11,7 @@ import Foundation
 extension UIApplication {
     
     // MARK: - Top View Controller
+    @objc
     func topViewController() -> UIViewController? {
         var topViewController: UIViewController? = nil
         

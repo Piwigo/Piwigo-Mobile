@@ -98,10 +98,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
-        var topViewController = UIApplication.shared.keyWindow?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
+        var topViewController = UIApplication.shared.topViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("renameCategory_title", comment: "Rename Album"),
@@ -213,10 +210,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
-        var topViewController = UIApplication.shared.keyWindow?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
+        var topViewController = UIApplication.shared.topViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),

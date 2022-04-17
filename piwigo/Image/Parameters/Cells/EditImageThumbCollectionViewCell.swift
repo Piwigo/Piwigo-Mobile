@@ -230,10 +230,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         oldFileName = imageFile.text
 
         // Determine the present view controller
-        var topViewController = UIApplication.shared.keyWindow?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
+        var topViewController = UIApplication.shared.topViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("renameImage_title", comment: "Original File"),
