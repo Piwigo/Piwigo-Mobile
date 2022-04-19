@@ -319,14 +319,12 @@ import piwigoKit
 
         // Should we update user interface based on the appearance?
         if #available(iOS 13.0, *) {
-            let hasUserInterfaceStyleChanged = (self.view.window?.isKeyWindow ?? false) && (previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle)
-            if hasUserInterfaceStyleChanged {
-                AppVars.shared.isSystemDarkModeActive = (traitCollection.userInterfaceStyle == .dark)
+            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.screenBrightnessChanged()
             }
-        } else {
-            // Fallback on earlier versions
         }
     }
 

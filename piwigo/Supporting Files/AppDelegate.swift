@@ -63,6 +63,18 @@ import piwigoKit
         keyboardManager.shouldToolbarUsesTextFieldTintColor = true
         keyboardManager.shouldShowToolbarPlaceholder = true
 
+        // Color palette depends on system settings
+        if #available(iOS 12.0, *) {
+            AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
+        } else {
+            // Fallback on earlier versions
+            AppVars.shared.isSystemDarkModeActive = false
+        }
+        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
+
+        // Apply color palette
+        screenBrightnessChanged()
+
         // Check if the device supports haptics.
         if #available(iOS 13.0, *) {
             let hapticCapability = CHHapticEngine.capabilitiesForHardware()
@@ -615,12 +627,6 @@ import piwigoKit
         
         // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
         window?.rootViewController?.view.setNeedsUpdateConstraints()
-
-        // Color palette depends on system settings
-        AppVars.shared.isSystemDarkModeActive = false
-        
-        // Apply color palette
-        screenBrightnessChanged()
     }
 
     @objc func reloginAndRetry(completion: @escaping () -> Void) {
@@ -761,7 +767,7 @@ import piwigoKit
     // MARK: - Light and Dark Modes
 
     // Called when the screen brightness has changed, when user changes settings
-    // and by traitCollectionDidChange: when the system switches between Light and Dark modes
+    // and by traitCollectionDidChange() when the system switches between Light and Dark modes
     @objc func screenBrightnessChanged() {
         if AppVars.shared.isLightPaletteModeActive
         {

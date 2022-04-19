@@ -41,16 +41,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         nav.isNavigationBarHidden = true
         window.rootViewController = nav
 
-        // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-        window.rootViewController?.view.setNeedsUpdateConstraints()
-
-        // Color palette depends on system settings
-        AppVars.shared.isSystemDarkModeActive = appDelegate.loginVC.traitCollection.userInterfaceStyle == .dark
-        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
-
-        // Apply color palette
-        appDelegate.screenBrightnessChanged()
-
         // Hold and present login window
         self.window = window
         window.makeKeyAndVisible()
