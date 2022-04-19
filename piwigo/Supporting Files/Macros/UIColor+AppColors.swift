@@ -40,7 +40,7 @@ extension UIColor {
 
     // MARK: - Piwigo Logo Colors
     class func piwigoColorBrown() -> UIColor {
-        return UIColor(red: 78 / 255.0, green: 78 / 255.0, blue: 78 / 255.0, alpha: 1.0)
+        return UIColor(red: 60 / 255.0, green: 60 / 255.0, blue: 60 / 255.0, alpha: 1.0)
     }
 
     class func piwigoColorOrange() -> UIColor {
