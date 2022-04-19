@@ -58,10 +58,13 @@
                             </button>
                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="example.com" textAlignment="center" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="eJO-Fa-ceu">
                                 <rect key="frame" x="20" y="312" width="350" height="48"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="lLZ-VD-fQv"/>
                                     <constraint firstAttribute="width" constant="500" id="pSx-tA-nJV"/>
                                 </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="URL" returnKeyType="next" textContentType="url"/>
                                 <userDefinedRuntimeAttributes>
@@ -92,10 +95,13 @@
                             </label>
                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username (optional)" textAlignment="center" minimumFontSize="15" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="J1S-58-xfG">
                                 <rect key="frame" x="50" y="435" width="290" height="44"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="5C6-uH-rQF"/>
                                     <constraint firstAttribute="width" constant="300" id="OeH-LI-yZR"/>
                                 </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="next" textContentType="username"/>
                                 <userDefinedRuntimeAttributes>
@@ -120,10 +126,13 @@
                             </textField>
                             <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password (optional)" textAlignment="center" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="d5N-dw-hHL">
                                 <rect key="frame" x="50" y="489" width="290" height="44"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="3cy-3h-VYB"/>
                                     <constraint firstAttribute="width" constant="300" id="tAw-VN-BBF"/>
                                 </constraints>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES" smartDashesType="no" smartQuotesType="no" textContentType="password"/>
                                 <userDefinedRuntimeAttributes>

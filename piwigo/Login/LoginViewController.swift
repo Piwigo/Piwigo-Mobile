@@ -84,18 +84,11 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
         // Not yet trying to login
         isAlreadyTryingToLogin = false
 
         // Inform user if the connection is not secure
         websiteNotSecure.isHidden = NetworkVars.serverProtocol == "https://"
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -107,50 +100,7 @@ class LoginViewController: UIViewController {
         }
     }
 
-    @objc func applyColorPalette() {
-        // Server address
-        serverTextField.textColor = UIColor.piwigoColorText()
-        serverTextField.tintColor = UIColor.piwigoColorText()
-        serverTextField.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Username
-        userTextField.textColor = UIColor.piwigoColorText()
-        userTextField.tintColor = UIColor.piwigoColorText()
-        userTextField.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Password
-        passwordTextField.textColor = UIColor.piwigoColorText()
-        passwordTextField.tintColor = UIColor.piwigoColorText()
-        passwordTextField.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Login button
-        if AppVars.shared.isDarkPaletteActive {
-            loginButton.backgroundColor = UIColor.piwigoColorOrangeSelected()
-        } else {
-            loginButton.backgroundColor = UIColor.piwigoColorOrange()
-        }
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let hasUserInterfaceStyleChanged = (self.view.window?.isKeyWindow ?? false) && (previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle)
-            if hasUserInterfaceStyleChanged {
-                AppVars.shared.isSystemDarkModeActive = (traitCollection.userInterfaceStyle == .dark)
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
-        } else {
-            // Fallback on earlier versions
-        }
-    }
-
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
         // Release memory
         hudViewController = nil
     }
