@@ -38,6 +38,11 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Always adopt a dark interface style
+        if #available(iOS 13.0, *) {
+            overrideUserInterfaceStyle = .dark
+        }
+
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
         serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
