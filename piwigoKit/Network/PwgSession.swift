@@ -169,9 +169,8 @@ public class PwgSession: NSObject {
             #if DEBUG
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
-            print(" > Bytes received: \(countsOfByte) bytes")
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr)")
+            print(" > JSON — \(countsOfByte) bytes received:\r \(dataStr)")
             #endif
             
             // The caller will decode the returned data
