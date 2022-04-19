@@ -51,7 +51,6 @@ public struct GetInfosJSON: Decodable {
             do {
                 // Use TagProperties struct
                 try data = resultContainer.decode([InfoKeyValue].self, forKey: .infos)
-                debugPrint(data)
             }
             catch {
                 // Could not decode JSON data
