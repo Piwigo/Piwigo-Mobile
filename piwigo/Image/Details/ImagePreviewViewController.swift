@@ -448,7 +448,7 @@ class ImagePreviewViewController: UIViewController
     func assetFailedToPrepare(forPlayback error: Error?) {
         // Determine the present view controller
         if let error = error as NSError?,
-           let topViewController = UIApplication.shared.topViewController() {
+           let topViewController = view.window?.topMostViewController() {
             topViewController.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
                                                  errorMessage: error.localizedFailureReason ?? "",
                                                  completion: { })

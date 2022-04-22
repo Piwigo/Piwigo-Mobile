@@ -17,26 +17,72 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     private var privacyView: UIView?
-    private var isAllowedToAccessApp = true
-    private var isAuthenticatingWithBiometrics = false
 
     // MARK: - Connecting and Disconnecting scenes
+    /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
+        The system calls willConnectTo shortly after the app delegate's "configurationForConnecting" function.
+        Use this function to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
+     
+        When using a storyboard file, as specified by the Info.plist key, UISceneStoryboardFile, the system automatically configures
+        the window property and attaches it to the windowScene.
+ 
+        Remember to retain the SceneDelegate's UIWindow.
+        The recommended approach is for the SceneDelegate to retain the scene's window.
+    */
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        debugPrint("••> Scene will connect to session \(session.persistentIdentifier).")
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        
-        // TO DO when all data will be cached in Core Data database: Scene management 
+        print("••> \(session.persistentIdentifier): Scene will connect to session.")
+        // TO DO when all data will be cached in Core Data database: Scene management
 //        if let userActivity = connectionOptions.userActivities.first {
 //            debugPrint(userActivity)
 //        }
 
+        // Initialisation
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        let window = UIWindow(windowScene: windowScene)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         
-        // Create login view
-        let window = UIWindow(windowScene: windowScene)
+        // Get other existing scenes
+        let existingScenes = UIApplication.shared.connectedScenes
+            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+
+        // Present login if this is the first scene
+        if existingScenes.isEmpty {
+            // Create login view
+            let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
+            nav.isNavigationBarHidden = true
+            window.rootViewController = nav
+
+            // Hold and present login window
+            self.window = window
+            window.makeKeyAndVisible()
+
+            // Blur views if the App Lock is enabled
+            /// The passcode window is not presented  so that the app
+            /// does not request the passcode until it is put into the background.
+            if AppVars.shared.isAppLockActive {
+                // Protect presented login view
+                showPrivacyProtectionWindow()
+            }
+            else {
+                // User is allowed to access albums
+                AppVars.shared.isAppUnlocked = true
+            }
+            return
+        }
+        
+        // Additional scene requested
+        if AppVars.shared.isAppUnlocked {
+            // Create additional scene => default album
+            guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
+            window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
+
+            // Hold and present album/images window
+            self.window = window
+            window.makeKeyAndVisible()
+            return
+        }
+        
+        // Create additional login view
         let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
         nav.isNavigationBarHidden = true
         window.rootViewController = nav
@@ -44,20 +90,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Hold and present login window
         self.window = window
         window.makeKeyAndVisible()
-
-        // Blur views if the App Lock is enabled
-        /// The passcode window is not presented  so that the app
-        /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
-            // User is not allowed to access albums yet
-            isAllowedToAccessApp = false
-            // Protect presented login view
-            showPrivacyProtectionWindow()
-        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        debugPrint("••> Scene \(scene.session.persistentIdentifier) did disconnect.")
+        print("••> \(scene.session.persistentIdentifier): Scene did disconnect.")
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
@@ -67,7 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // MARK: - Transitioning to the Foreground
     func sceneWillEnterForeground(_ scene: UIScene) {
-        debugPrint("••> Scene \(scene.session.persistentIdentifier) will enter foreground.")
+        print("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
 
@@ -79,161 +115,85 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        debugPrint("••> Scene \(scene.session.persistentIdentifier) did become active.")
+        print("••> \(scene.session.persistentIdentifier): Scene did become active.")
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
-        // Relogin and resume upload operations if user can access app
-        if isAllowedToAccessApp {
-            loginOrReloginAndResumeUploads()
-        }
-        else {
+        // Called during biometric authentication?
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        if appDelegate.isAuthenticatingWithBiometrics { return }
+
+        // Request passcode if necessary
+        if AppVars.shared.isAppUnlocked == false {
             // Request passcode for accessing app
-            requestPasscode()
-        }
-    }
-    
-    private func requestPasscode() {
-        if let topViewController = UIApplication.shared.topViewController(),
-           !(topViewController is AppLockViewController) {
-            // Show passcode view controller if needed
-            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
-            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-            appLockVC.config(forAction: .unlockApp)
-            appLockVC.modalPresentationStyle = .overFullScreen
-            appLockVC.modalTransitionStyle = .crossDissolve
-            let topViewController = UIApplication.shared.topViewController()
-            topViewController?.present(appLockVC, animated: false, completion: {
+            appDelegate.requestPasscode(onTopOf: window) { appLockVC in
+                // Set delegate
+                appLockVC.delegate = self
                 // Hide privacy view
                 self.privacyView?.isHidden = true
-
-                // Does user enabled biometrics?
-                if !AppVars.shared.isBiometricsEnabled { return }
-                
-                // Get a fresh context
-                let context = LAContext()
-                context.localizedFallbackTitle = ""
-                context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
-
-                // First check if we have the needed hardware support
-                var error: NSError?
-                if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-                    // Exploit TouchID or FaceID
-                    self.isAuthenticatingWithBiometrics = true
-                    let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
-                    context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason ) { success, error in
-                        if success {
-                            // User allowed to access app
-                            self.isAllowedToAccessApp = true
-                            // Biometric authentication completed
-                            self.isAuthenticatingWithBiometrics = false
-                            // Return to main thread
-                            DispatchQueue.main.async {
-                                // Dismiss passcode view and activate scene
-                                appLockVC.dismiss(animated: true)
-                            }
-                        }
-                        else {
-                            // Fall back to a asking for passcode
-                            debugPrint(error?.localizedDescription ?? "Failed to authenticate")
+                // Did user enable biometrics?
+                if AppVars.shared.isBiometricsEnabled,
+                   appDelegate.didCancelBiometricsAuthentication == false {
+                    // Yes, perform biometrics authentication
+                    appDelegate.performBiometricAuthentication() { success in
+                        // Authentication successful?
+                        if !success { return }
+                        // Dismiss passcode view controller
+                        appLockVC.dismiss(animated: true) {
+                            // Unlock the app
+                            self.loginOrReloginAndResumeUploads()
                         }
                     }
                 }
-            })
-        }
-    }
-    
-    func loginOrReloginAndResumeUploads() {
-        // Remove passcode window and protection view
-        if let topViewController = UIApplication.shared.topViewController(),
-           topViewController is AppLockViewController {
-            topViewController.dismiss(animated: true) {
-                self.privacyView = nil
-            }
-        } else {
-            privacyView = nil
-        }
-
-        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
-        // Furthermore, it will interrupt any other current audio sessions (no mixing)
-        let audioSession = AVAudioSession.sharedInstance()
-        let availableCategories = audioSession.availableCategories
-        if availableCategories.contains(AVAudioSession.Category.playback) {
-            do {
-                try audioSession.setCategory(.playback)
-            } catch {
-            }
-        }
-
-        // Should we log in?
-        if let rootVC = self.window?.rootViewController,
-            let child = rootVC.children.first, child is LoginViewController {
-            // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
-
-            // Look for paswword in Keychain if server address and username are provided
-            if service.count > 0, username.count > 0 {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
-
-            // Login?
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-               service.count > 0 || (username.count > 0 && password.count > 0) {
-                appDelegate.loginVC.launchLogin()
             }
             return
         }
-            
-        // Determine for how long the session is opened
-        /// Piwigo 11 session duration defaults to an hour.
-        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-            /// - Perform relogin
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.reloginAndRetry {
-                // Reload category data from server in background mode
-                appDelegate?.loginVC.reloadCatagoryDataInBckgMode()
-            }
-        } else {
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
-        }
+
+        // Login/relogin and resume uploads
+        loginOrReloginAndResumeUploads()
     }
     
 
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
-        debugPrint("••> Scene \(scene.session.persistentIdentifier) will resign active.")
+        print("••> \(scene.session.persistentIdentifier): Scene will resign active.")
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
 
         // Called during biometric authentication?
-        if isAuthenticatingWithBiometrics { return }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        if appDelegate.isAuthenticatingWithBiometrics { return }
+        
+        // NOP if at least another scene will remain active in the foreground
+        let connectedScenes = UIApplication.shared.connectedScenes
+        if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 1 { return }
 
         // Blur views if the App Lock is enabled
-        /// The passcode window is not presented  so that the app
+        /// The passcode window is not presented so that the app
         /// does not request the passcode until it is put into the background.
         if AppVars.shared.isAppLockActive {
             // Remember to ask for passcode
-            isAllowedToAccessApp = false
-            // Remove passcode view controller if presented
-            if let topViewController = UIApplication.shared.topViewController(),
-               topViewController is AppLockViewController {
-                // Protect presented views
-                self.privacyView?.isHidden = false
-                // Dismiss passcode view
-                topViewController.dismiss(animated: true)
-            } else {
-                // Protect presented views
-                showPrivacyProtectionWindow()
+            AppVars.shared.isAppUnlocked = false
+            // Loop over all scenes
+            for scene in connectedScenes {
+                let sceneDelegate = scene.delegate as? SceneDelegate
+                // Remove passcode view controller if presented
+                if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
+                   topViewController is AppLockViewController {
+                    // Protect presented views
+                    sceneDelegate?.privacyView?.isHidden = false
+                    // Reset biometry flag
+                    appDelegate.didCancelBiometricsAuthentication = false
+                    // Dismiss passcode view
+                    topViewController.dismiss(animated: true)
+                } else {
+                    // Protect presented views
+                    sceneDelegate?.showPrivacyProtectionWindow()
+                }
             }
+        } else {
+            // Remember to not ask for passcode
+            AppVars.shared.isAppUnlocked = true
         }
 
         // Inform Upload Manager to pause activities
@@ -241,7 +201,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        debugPrint("••> Scene \(scene.session.persistentIdentifier) did enter background.")
+        print("••> \(scene.session.persistentIdentifier): Scene did enter background.")
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
 
@@ -266,12 +226,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
     }
 
-    private func showPrivacyProtectionWindow() {
+
+    // MARK: - Privacy & Passcode
+    func showPrivacyProtectionWindow() {
+        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene shows privacy protection window.")
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented now so that the app
         /// does not request the passcode until it is put into the background.
-        if privacyView == nil,
-           let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
+        if privacyView == nil, let frame = window?.frame {
             if UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
                 let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
@@ -281,10 +243,93 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
                 let blurEffect = UIBlurEffect(style: .dark)
                 privacyView = UIVisualEffectView(effect: blurEffect)
-                privacyView?.frame = keyWindow.frame
+                privacyView?.frame = frame
             }
-            keyWindow.addSubview(privacyView!)
+            window?.addSubview(privacyView!)
         }
         privacyView?.isHidden = false
+    }
+}
+
+
+// MARK: - AppLockDelegate Methods
+@available(iOS 13.0, *)
+extension SceneDelegate: AppLockDelegate {
+    func loginOrReloginAndResumeUploads() {
+        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin and resume uploads.")
+        // Release memory
+        privacyView = nil
+        
+        // Any other scene in the foreground to unlock?
+        let otherScenes = UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .filter({$0.session.persistentIdentifier != window?.windowScene?.session.persistentIdentifier})
+            .compactMap({$0})
+        for scene in otherScenes {
+            let sceneDelegate = scene.delegate as? SceneDelegate
+            // Remove passcode view controller if presented
+            if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
+               topViewController is AppLockViewController {
+                // Remove protection view
+                sceneDelegate?.privacyView = nil
+                // Dismiss passcode view
+                topViewController.dismiss(animated: true)
+            } else {
+                // Remove protection view
+                sceneDelegate?.privacyView = nil
+            }
+        }
+        
+        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+        // Furthermore, it will interrupt any other current audio sessions (no mixing)
+        let audioSession = AVAudioSession.sharedInstance()
+        let availableCategories = audioSession.availableCategories
+        if availableCategories.contains(AVAudioSession.Category.playback) {
+            do {
+                try audioSession.setCategory(.playback)
+            } catch {
+            }
+        }
+
+        // Should we log in?
+        if let rootVC = window?.rootViewController,
+            let child = rootVC.children.first, child is LoginViewController {
+            // Look for credentials if server address provided
+            let username = NetworkVars.username
+            let service = NetworkVars.serverPath
+            var password = ""
+
+            // Look for paswword in Keychain if server address and username are provided
+            if service.count > 0, username.count > 0 {
+                password = KeychainUtilities.password(forService: service, account: username)
+            }
+
+            // Login?
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+               service.count > 0 || (username.count > 0 && password.count > 0) {
+                appDelegate.loginVC.launchLogin()
+            }
+            return
+        }
+
+        // Determine for how long the session is opened
+        /// Piwigo 11 session duration defaults to an hour.
+        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+        if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+            /// - Perform relogin
+            /// - Resume upload operations in background queue
+            ///   and update badge, upload button of album navigator
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.reloginAndRetry {
+                // Reload category data from server in background mode
+                appDelegate?.loginVC.reloadCatagoryDataInBckgMode()
+            }
+        } else {
+            /// - Resume upload operations in background queue
+            ///   and update badge, upload button of album navigator
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
+        }
     }
 }

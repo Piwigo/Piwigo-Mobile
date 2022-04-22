@@ -17,7 +17,13 @@ enum AppLockAction {
     case unlockApp
 }
 
+protocol AppLockDelegate: NSObjectProtocol {
+    func loginOrReloginAndResumeUploads()
+}
+
 class AppLockViewController: UIViewController {
+
+    weak var delegate: AppLockDelegate?
 
     @IBOutlet weak var blurEffectView: UIVisualEffectView!
     @IBOutlet weak var vibrancyEffectView: UIVisualEffectView!
@@ -436,14 +442,12 @@ class AppLockViewController: UIViewController {
                 return
             }
             
+            // User allowed to access app
+            AppVars.shared.isAppUnlocked = true
+
             // Unlock the app
-            if #available(iOS 13.0, *) {
-                let sceneDelegate = UIApplication.shared.connectedScenes
-                    .filter({$0.activationState == .foregroundActive}).first?.delegate as? SceneDelegate
-                sceneDelegate?.loginOrReloginAndResumeUploads()
-            } else {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.loginOrReloginAndResumeUploads()
+            dismiss(animated: true) {
+                self.delegate?.loginOrReloginAndResumeUploads()
             }
         }
     }

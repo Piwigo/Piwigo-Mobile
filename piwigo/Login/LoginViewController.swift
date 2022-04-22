@@ -153,7 +153,7 @@ class LoginViewController: UIViewController {
         }
 
         // Display HUD during login
-        hudViewController = UIApplication.shared.topViewController()
+        hudViewController = view.window?.topMostViewController()
         hudViewController?.showPiwigoHUD(
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
             detail: NSLocalizedString("login_connecting", comment: "Connecting"),
@@ -694,7 +694,7 @@ class LoginViewController: UIViewController {
             // Return to login view
             DispatchQueue.main.async {
                 ClearCache.closeSessionAndClearCache { [self] in
-                    self.hudViewController = UIApplication.shared.topViewController()
+                    self.hudViewController = view.window?.topMostViewController()
                     self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                 }
             }

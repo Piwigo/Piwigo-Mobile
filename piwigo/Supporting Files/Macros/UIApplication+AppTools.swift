@@ -10,37 +10,24 @@ import Foundation
 
 extension UIApplication {
     
-    // MARK: - Top View Controller
+    // MARK: - Top Most View Controller of an App
+    /// One of a few top view controllers is there ae several scenes in the foreground.
     @objc
-    func topViewController() -> UIViewController? {
-        var topViewController: UIViewController? = nil
+    func appTopViewController() -> UIViewController? {
+        var rootViewController: UIViewController? = nil
         
         if #available(iOS 13, *) {
-            for scene in connectedScenes {
-                if let windowScene = scene as? UIWindowScene {
-                    for window in windowScene.windows {
-                        if window.isKeyWindow {
-                            topViewController = window.rootViewController
-                        }
-                    }
-                }
+            // Consider only scenes in the foreground and retain the first one
+            let scene = connectedScenes.filter({$0.activationState == .foregroundActive})
+                .compactMap({$0}).first
+            if let windowScene = scene as? UIWindowScene {
+                return windowScene.topMostViewController()
             }
         } else {
-            topViewController = keyWindow?.rootViewController
+            // No scenes -> get the app key window rootViewController
+            rootViewController = keyWindow?.rootViewController
+            return rootViewController?.topMostViewController()
         }
-        
-        while true {
-            if let presented = topViewController?.presentedViewController {
-                topViewController = presented
-            } else if let navController = topViewController as? UINavigationController {
-                topViewController = navController.topViewController
-            } else if let tabBarController = topViewController as? UITabBarController {
-                topViewController = tabBarController.selectedViewController
-            } else {
-                // Handle any other third party container in `else if` if required
-                break
-            }
-        }
-        return topViewController
+        return nil
     }
 }

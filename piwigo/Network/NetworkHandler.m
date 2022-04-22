@@ -863,7 +863,7 @@ NSInteger const loadingViewTag = 899;
         // Fallback on earlier versions
     }
 
-    UIViewController *topViewController = UIApplication.sharedApplication.topViewController;
+    UIViewController *topViewController = [UIApplication.sharedApplication appTopViewController];
     [topViewController presentViewController:alert animated:YES completion:^{
         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
         alert.view.tintColor = UIColor.piwigoColorOrange;

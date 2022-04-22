@@ -88,4 +88,7 @@ class AppVars: NSObject {
     
     /// - Check for haptics compatibility at the app’s launch
     var supportsHaptics: Bool = false
+
+    /// - App Lock status
+    var isAppUnlocked: Bool = false
 }
