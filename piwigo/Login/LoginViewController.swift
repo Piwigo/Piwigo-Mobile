@@ -119,7 +119,7 @@ class LoginViewController: UIViewController {
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.userCancelledCommunication = false
 
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print("=> launchLogin: starting with…")
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
@@ -178,7 +178,7 @@ class LoginViewController: UIViewController {
 
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print("=> launchLogin: getMethodsList using \(NetworkVars.serverProtocol)")
         #endif
         NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 10
@@ -437,7 +437,7 @@ class LoginViewController: UIViewController {
     }
 
     func performLogin() {
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
         print("=> performLogin: starting…")
@@ -487,7 +487,7 @@ class LoginViewController: UIViewController {
     // Determine true user rights when Community extension installed
     func getCommunityStatus(atFirstLogin isFirstLogin: Bool,
                             withReloginCompletion reloginCompletion: @escaping () -> Void) {
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
         print("=> getCommunityStatusAtFirstLogin:\(isFirstLogin ? "YES" : "NO") starting…")
@@ -525,7 +525,7 @@ class LoginViewController: UIViewController {
     func getSessionStatus(atFirstLogin isFirstLogin: Bool,
                           withReloginCompletion reloginCompletion: @escaping () -> Void
     ) {
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print(
             "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
         print("=> getSessionStatusAtFirstLogin:\(isFirstLogin ? "YES" : "NO") starting…")
@@ -661,7 +661,7 @@ class LoginViewController: UIViewController {
     }
 
     func performRelogin(withCompletion reloginCompletion: @escaping () -> Void) {
-        #if DEBUG_SESSION
+        #if DEBUG_LOGIN
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
         print("=> performRelogin: starting…")
