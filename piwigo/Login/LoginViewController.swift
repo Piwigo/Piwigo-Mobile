@@ -505,7 +505,7 @@ class LoginViewController: UIViewController {
             // Community extension installed
             LoginUtilities.communityGetStatus { [self] in
                 // Check Piwigo version, get token, available sizes, etc.
-                getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin,
+                getSessionStatus(atFirstLogin: isFirstLogin,
                                  withReloginCompletion: reloginCompletion)
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
@@ -516,22 +516,19 @@ class LoginViewController: UIViewController {
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus(atLogin: true, andFirstLogin: isFirstLogin,
+            getSessionStatus(atFirstLogin: isFirstLogin,
                              withReloginCompletion: reloginCompletion)
         }
     }
 
     // Check Piwigo version, get token, available sizes, etc.
-    func getSessionStatus(
-        atLogin isLoggingIn: Bool,
-        andFirstLogin isFirstLogin: Bool,
-        withReloginCompletion reloginCompletion: @escaping () -> Void
+    func getSessionStatus(atFirstLogin isFirstLogin: Bool,
+                          withReloginCompletion reloginCompletion: @escaping () -> Void
     ) {
         #if DEBUG_SESSION
         print(
             "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
-        print(
-            "=> getSessionStatusAtLogin:\(isLoggingIn ? "YES" : "NO") andFirstLogin:\(isFirstLogin ? "YES" : "NO") starting…")
+        print("=> getSessionStatusAtFirstLogin:\(isFirstLogin ? "YES" : "NO") starting…")
         #endif
         if !NetworkVars.userCancelledCommunication {
             // Update HUD during login
@@ -543,7 +540,7 @@ class LoginViewController: UIViewController {
                 buttonSelector: #selector(cancelLoggingIn),
                 inMode: .indeterminate)
 
-            LoginUtilities.sessionGetStatus(atLogin: isLoggingIn, completion: { [self] in
+            LoginUtilities.sessionGetStatus(completion: { [self] in
                 if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedAscending {
                     // They need to update, ask user what to do
                     // Reinitialise flag

@@ -154,8 +154,7 @@ class LoginUtilities: NSObject {
     }
 
     @objc
-    class func sessionGetStatus(atLogin isLogginIn: Bool,
-                                completion: @escaping () -> Void,
+    class func sessionGetStatus(completion: @escaping () -> Void,
                                 failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared
@@ -187,268 +186,265 @@ class LoginUtilities: NSObject {
                     NetworkVars.pwgToken = pwgToken
                 }
                 
-                // Retrieve status info
-                if isLogginIn {
-                    // Default language
-                    NetworkVars.language = data.language ?? ""
-                    
-                    // Piwigo server version should be of format 1.2.3
-                    var versionStr = data.version ?? ""
-                    let components = versionStr.components(separatedBy: ".")
-                    switch components.count {
-                        case 1:     // Version of type 1
-                        versionStr.append(".0.0")
-                        case 2:     // Version of type 1.2
-                        versionStr.append(".0")
-                        default:
-                            break
-                    }
-                    NetworkVars.pwgVersion = versionStr
-
-                    // Community users cannot upload with uploadAsync with Piwigo 11.x
-                    if NetworkVars.usesCommunityPluginV29, NetworkVars.hasNormalRights,
-                       "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
-                       "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
-                        NetworkVars.usesUploadAsync = false
-                    }
-
-                    // Retrieve charset used by the Piwigo server
-                    let charset = (data.charset ?? "UTF-8").uppercased()
-                    switch charset {
-                    case "UNICODE":
-                        NetworkVars.stringEncoding = String.Encoding.unicode.rawValue
-                    case "UNICODEFFFE":
-                        NetworkVars.stringEncoding = String.Encoding.utf16BigEndian.rawValue
-                    case "UTF-8":
-                        NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
-                    case "UTF-16":
-                        NetworkVars.stringEncoding = String.Encoding.utf16.rawValue
-                    case "UTF-32":
-                        NetworkVars.stringEncoding = String.Encoding.utf32.rawValue
-                    case "ISO-2022-JP":
-                        NetworkVars.stringEncoding = String.Encoding.iso2022JP.rawValue
-                    case "ISO-8859-1":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
-                    case "ISO-8859-3":
-                        NetworkVars.stringEncoding = String.Encoding.isoLatin1.rawValue
-                    case "CP870":
-                        NetworkVars.stringEncoding = String.Encoding.isoLatin2.rawValue
-                    case "MACINTOSH":
-                        NetworkVars.stringEncoding = String.Encoding.macOSRoman.rawValue
-                    case "SHIFT-JIS":
-                        NetworkVars.stringEncoding = String.Encoding.shiftJIS.rawValue
-                    case "WINDOWS-1250":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1250.rawValue
-                    case "WINDOWS-1251":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1251.rawValue
-                    case "WINDOWS-1252":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
-                    case "WINDOWS-1253":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1253.rawValue
-                    case "WINDOWS-1254":
-                        NetworkVars.stringEncoding = String.Encoding.windowsCP1254.rawValue
-                    case "X-EUC":
-                        NetworkVars.stringEncoding = String.Encoding.japaneseEUC.rawValue
-                    case "US-ASCII":
-                        NetworkVars.stringEncoding = String.Encoding.ascii.rawValue
+                // Default language
+                NetworkVars.language = data.language ?? ""
+                
+                // Piwigo server version should be of format 1.2.3
+                var versionStr = data.version ?? ""
+                let components = versionStr.components(separatedBy: ".")
+                switch components.count {
+                    case 1:     // Version of type 1
+                    versionStr.append(".0.0")
+                    case 2:     // Version of type 1.2
+                    versionStr.append(".0")
                     default:
-                        NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
-                    }
-                    print("   version: \(NetworkVars.pwgVersion), usesUploadAsync: \(NetworkVars.usesUploadAsync ? "\"true\"" : "\"false\""), charset: \(charset)")
-
-                    // Upload chunk size is null if not provided by server
-                    if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
-                        UploadVars.uploadChunkSize = uploadChunkSize
-                    } else {
-                        UploadVars.uploadChunkSize = 500    // i.e. 500 ko
-                    }
-
-                    // Images and videos can be uploaded if their file types are found.
-                    // The iPhone creates mov files that will be uploaded in mp4 format.
-                    // This string is empty if the server does not provide it.
-                    UploadVars.serverFileTypes = data.uploadFileTypes ?? ""
-                    
-                    // User rights are determined by Community extension (if installed)
-                    if !NetworkVars.usesCommunityPluginV29,
-                       let userStatus = data.userStatus, userStatus.isEmpty == false {
-                        NetworkVars.hasAdminRights = ["admin", "webmaster"].contains(userStatus)
-                        NetworkVars.hasNormalRights = (userStatus == "normal")
-                        NetworkVars.hasGuestRights = (userStatus == "guest")
-                    }
-                    
-                    // Retrieve the list of available sizes
-                    AlbumVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
-                    AlbumVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
-                    AlbumVars.shared.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
-                    AlbumVars.shared.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
-                    AlbumVars.shared.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
-                    AlbumVars.shared.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
-                    AlbumVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
-                    AlbumVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
-                    AlbumVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
-                    
-                    // Check that the actual default album thumbnail size is available
-                    // and select the next available size in case of unavailability
-                    switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
-                    case kPiwigoImageSizeXXSmall:
-                        if !AlbumVars.shared.hasXXSmallSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasXSmallSizeImages {
-                                AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall.rawValue
-                            } else if AlbumVars.shared.hasSmallSizeImages {
-                                AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                            } else {
-                                AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                        }
-                    case kPiwigoImageSizeXSmall:
-                        if !AlbumVars.shared.hasXSmallSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasSmallSizeImages {
-                                AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                            } else {
-                                AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                        }
-                    case kPiwigoImageSizeSmall:
-                        if !AlbumVars.shared.hasSmallSizeImages {
-                            // Select next available larger size
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeLarge:
-                        if !AlbumVars.shared.hasLargeSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeXLarge:
-                        if !AlbumVars.shared.hasXLargeSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeXXLarge:
-                        if !AlbumVars.shared.hasXXLargeSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                         kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
-                        // Should always be available
                         break
-                    default:
+                }
+                NetworkVars.pwgVersion = versionStr
+
+                // Community users cannot upload with uploadAsync with Piwigo 11.x
+                if NetworkVars.usesCommunityPluginV29, NetworkVars.hasNormalRights,
+                   "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
+                   "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
+                    NetworkVars.usesUploadAsync = false
+                }
+
+                // Retrieve charset used by the Piwigo server
+                let charset = (data.charset ?? "UTF-8").uppercased()
+                switch charset {
+                case "UNICODE":
+                    NetworkVars.stringEncoding = String.Encoding.unicode.rawValue
+                case "UNICODEFFFE":
+                    NetworkVars.stringEncoding = String.Encoding.utf16BigEndian.rawValue
+                case "UTF-8":
+                    NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
+                case "UTF-16":
+                    NetworkVars.stringEncoding = String.Encoding.utf16.rawValue
+                case "UTF-32":
+                    NetworkVars.stringEncoding = String.Encoding.utf32.rawValue
+                case "ISO-2022-JP":
+                    NetworkVars.stringEncoding = String.Encoding.iso2022JP.rawValue
+                case "ISO-8859-1":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                case "ISO-8859-3":
+                    NetworkVars.stringEncoding = String.Encoding.isoLatin1.rawValue
+                case "CP870":
+                    NetworkVars.stringEncoding = String.Encoding.isoLatin2.rawValue
+                case "MACINTOSH":
+                    NetworkVars.stringEncoding = String.Encoding.macOSRoman.rawValue
+                case "SHIFT-JIS":
+                    NetworkVars.stringEncoding = String.Encoding.shiftJIS.rawValue
+                case "WINDOWS-1250":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1250.rawValue
+                case "WINDOWS-1251":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1251.rawValue
+                case "WINDOWS-1252":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                case "WINDOWS-1253":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1253.rawValue
+                case "WINDOWS-1254":
+                    NetworkVars.stringEncoding = String.Encoding.windowsCP1254.rawValue
+                case "X-EUC":
+                    NetworkVars.stringEncoding = String.Encoding.japaneseEUC.rawValue
+                case "US-ASCII":
+                    NetworkVars.stringEncoding = String.Encoding.ascii.rawValue
+                default:
+                    NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
+                }
+                print("   version: \(NetworkVars.pwgVersion), usesUploadAsync: \(NetworkVars.usesUploadAsync ? "\"true\"" : "\"false\""), charset: \(charset)")
+
+                // Upload chunk size is null if not provided by server
+                if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
+                    UploadVars.uploadChunkSize = uploadChunkSize
+                } else {
+                    UploadVars.uploadChunkSize = 500    // i.e. 500 ko
+                }
+
+                // Images and videos can be uploaded if their file types are found.
+                // The iPhone creates mov files that will be uploaded in mp4 format.
+                // This string is empty if the server does not provide it.
+                UploadVars.serverFileTypes = data.uploadFileTypes ?? ""
+                
+                // User rights are determined by Community extension (if installed)
+                if !NetworkVars.usesCommunityPluginV29,
+                   let userStatus = data.userStatus, userStatus.isEmpty == false {
+                    NetworkVars.hasAdminRights = ["admin", "webmaster"].contains(userStatus)
+                    NetworkVars.hasNormalRights = (userStatus == "normal")
+                    NetworkVars.hasGuestRights = (userStatus == "guest")
+                }
+                
+                // Retrieve the list of available sizes
+                AlbumVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
+                AlbumVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
+                AlbumVars.shared.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
+                AlbumVars.shared.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
+                AlbumVars.shared.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
+                AlbumVars.shared.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
+                AlbumVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
+                AlbumVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
+                AlbumVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
+                
+                // Check that the actual default album thumbnail size is available
+                // and select the next available size in case of unavailability
+                switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
+                case kPiwigoImageSizeXXSmall:
+                    if !AlbumVars.shared.hasXXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasXSmallSizeImages {
+                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall.rawValue
+                        } else if AlbumVars.shared.hasSmallSizeImages {
+                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
+                        } else {
+                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        }
+                    }
+                case kPiwigoImageSizeXSmall:
+                    if !AlbumVars.shared.hasXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasSmallSizeImages {
+                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
+                        } else {
+                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        }
+                    }
+                case kPiwigoImageSizeSmall:
+                    if !AlbumVars.shared.hasSmallSizeImages {
+                        // Select next available larger size
                         AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
                     }
-                    
-                    // Check that the actual default image thumbnail size is available
-                    // and select the next available size in case of unavailability
-                    switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
-                        case kPiwigoImageSizeXXSmall:
-                            if !AlbumVars.shared.hasXXSmallSizeImages {
-                                // Look for next available larger size
-                                if AlbumVars.shared.hasXSmallSizeImages {
-                                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeXSmall.rawValue
-                                } else if AlbumVars.shared.hasSmallSizeImages {
-                                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                                } else {
-                                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                                }
-                            }
-                        case kPiwigoImageSizeXSmall:
-                            if !AlbumVars.shared.hasXSmallSizeImages {
-                                // Look for next available larger size
-                                if AlbumVars.shared.hasSmallSizeImages {
-                                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                                } else {
-                                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                                }
-                            }
-                        case kPiwigoImageSizeSmall:
-                            if !AlbumVars.shared.hasSmallSizeImages {
-                                // Select next available larger size
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                        case kPiwigoImageSizeLarge:
-                            if !AlbumVars.shared.hasLargeSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                        case kPiwigoImageSizeXLarge:
-                            if !AlbumVars.shared.hasXLargeSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                        case kPiwigoImageSizeXXLarge:
-                            if !AlbumVars.shared.hasXXLargeSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
-                    case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                         kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
-                        // Should always be available
-                        break
-                    default:
-                        AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                case kPiwigoImageSizeLarge:
+                    if !AlbumVars.shared.hasLargeSizeImages {
+                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
                     }
-
-                    // Calculate number of thumbnails per row for that selection
-                    let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)))
-
-                    // Make sure that default number fits inside selected range
-                    AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
-                    AlbumVars.shared.thumbnailsPerRowInPortrait = min(AlbumVars.shared.thumbnailsPerRowInPortrait, 2*minNberOfImages);
-
-                    // Check that the actual default image preview size is still available
-                    // and select the next available size in case of unavailability
-                    switch kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) {
+                case kPiwigoImageSizeXLarge:
+                    if !AlbumVars.shared.hasXLargeSizeImages {
+                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                    }
+                case kPiwigoImageSizeXXLarge:
+                    if !AlbumVars.shared.hasXXLargeSizeImages {
+                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                    }
+                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
+                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                    // Should always be available
+                    break
+                default:
+                    AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                }
+                
+                // Check that the actual default image thumbnail size is available
+                // and select the next available size in case of unavailability
+                switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
                     case kPiwigoImageSizeXXSmall:
                         if !AlbumVars.shared.hasXXSmallSizeImages {
                             // Look for next available larger size
                             if AlbumVars.shared.hasXSmallSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXSmall.rawValue
+                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeXSmall.rawValue
                             } else if AlbumVars.shared.hasSmallSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
                             } else {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
                             }
                         }
                     case kPiwigoImageSizeXSmall:
                         if !AlbumVars.shared.hasXSmallSizeImages {
                             // Look for next available larger size
                             if AlbumVars.shared.hasSmallSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
                             } else {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
                             }
                         }
                     case kPiwigoImageSizeSmall:
                         if !AlbumVars.shared.hasSmallSizeImages {
                             // Select next available larger size
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
                         }
                     case kPiwigoImageSizeLarge:
                         if !AlbumVars.shared.hasLargeSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasXLargeSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXLarge.rawValue
-                            } else if AlbumVars.shared.hasXXLargeSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
-                            } else {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
-                            }
+                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
                         }
                     case kPiwigoImageSizeXLarge:
                         if !AlbumVars.shared.hasXLargeSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasXXLargeSizeImages {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
-                            } else {
-                                ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
-                            }
+                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
                         }
                     case kPiwigoImageSizeXXLarge:
                         if !AlbumVars.shared.hasXXLargeSizeImages {
+                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        }
+                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
+                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                    // Should always be available
+                    break
+                default:
+                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                }
+
+                // Calculate number of thumbnails per row for that selection
+                let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)))
+
+                // Make sure that default number fits inside selected range
+                AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
+                AlbumVars.shared.thumbnailsPerRowInPortrait = min(AlbumVars.shared.thumbnailsPerRowInPortrait, 2*minNberOfImages);
+
+                // Check that the actual default image preview size is still available
+                // and select the next available size in case of unavailability
+                switch kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) {
+                case kPiwigoImageSizeXXSmall:
+                    if !AlbumVars.shared.hasXXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasXSmallSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXSmall.rawValue
+                        } else if AlbumVars.shared.hasSmallSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                        } else {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                        }
+                    }
+                case kPiwigoImageSizeXSmall:
+                    if !AlbumVars.shared.hasXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasSmallSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                        } else {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                        }
+                    }
+                case kPiwigoImageSizeSmall:
+                    if !AlbumVars.shared.hasSmallSizeImages {
+                        // Select next available larger size
+                        ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                    }
+                case kPiwigoImageSizeLarge:
+                    if !AlbumVars.shared.hasLargeSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasXLargeSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXLarge.rawValue
+                        } else if AlbumVars.shared.hasXXLargeSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
+                        } else {
                             ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
                         }
-                    case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                         kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
-                        // Should always be available
-                        break
-                    default:
+                    }
+                case kPiwigoImageSizeXLarge:
+                    if !AlbumVars.shared.hasXLargeSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasXXLargeSizeImages {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
+                        } else {
+                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
+                        }
+                    }
+                case kPiwigoImageSizeXXLarge:
+                    if !AlbumVars.shared.hasXXLargeSizeImages {
                         ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
                     }
+                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
+                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                    // Should always be available
+                    break
+                default:
+                    ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
                 }
                 completion()
             }
