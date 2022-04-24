@@ -680,7 +680,7 @@ class LoginViewController: UIViewController {
 
         // Perform re-login
         let username = NetworkVars.username
-        let password = KeychainUtilitiesObjc.password(forService: NetworkVars.serverPath, account: username)
+        let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
         isAlreadyTryingToLogin = true
         LoginUtilities.sessionLogin(withUsername: username, password: password, completion: { [self] in
             // Session re-opened
