@@ -56,7 +56,8 @@ class LoginViewController: UIViewController {
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
-        passwordTextField.text = KeychainUtilitiesObjc.password(forService: NetworkVars.serverPath, account: NetworkVars.username)
+        passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.serverPath,
+                                                            account: NetworkVars.username)
         if #available(iOS 11.0, *) {
             passwordTextField.textContentType = .password
         }
@@ -289,7 +290,7 @@ class LoginViewController: UIViewController {
     func requestHttpCredentials(afterError error: Error?) {
         DispatchQueue.main.async { [self] in
             let username = NetworkVars.httpUsername
-            let password = KeychainUtilitiesObjc.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
+            let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
 
             httpAlertController = UIAlertController(
                 title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
@@ -467,16 +468,15 @@ class LoginViewController: UIViewController {
                 },
                 failure: { [self] error in
                     // Don't keep unaccepted credentials
-                    KeychainUtilitiesObjc.deletePassword(
-                        forService: NetworkVars.serverPath,
-                        account: username)
+                    KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
+                                                     account: username)
                     // Login request failed
                     logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                 })
         } else {
             // Reset keychain and credentials
-            KeychainUtilitiesObjc.deletePassword(forService: NetworkVars.serverPath,
-                                                 account: NetworkVars.username)
+            KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
+                                             account: NetworkVars.username)
             NetworkVars.username = ""
 
             // Check Piwigo version, get token, available sizes, etc.
