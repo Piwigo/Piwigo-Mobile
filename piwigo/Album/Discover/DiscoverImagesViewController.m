@@ -50,6 +50,8 @@
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
+@property (nonatomic, strong) UIRefreshControl *refreshControl;     // iOS 9.x only
+
 @property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -102,6 +104,16 @@
         self.imagesCollection.delegate = self;
         self.imagesCollection.dataSource = self;
         
+        // Refresh view
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        if (@available(iOS 10.0, *)) {
+            self.imagesCollection.refreshControl = refreshControl;
+        } else {
+            // Fallback on earlier versions
+            self.refreshControl = refreshControl;
+        }
+
         [self.imagesCollection registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         
@@ -195,6 +207,26 @@
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
+    // Refresh controller
+    if (@available(iOS 10.0, *)) {
+        self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
+        NSDictionary *attributesRefresh = @{
+            NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
+            NSFontAttributeName: [UIFont piwigoFontLight],
+        };
+        self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    } else {
+        // Fallback on earlier versions
+        self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.refreshControl.tintColor = [UIColor piwigoColorOrange];
+        NSDictionary *attributesRefresh = @{
+                                     NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
+                                     NSFontAttributeName: [UIFont piwigoFontNormal],
+                                     };
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    }
+    
     // Navigation bar appearance
     UINavigationBar *navigationBar = self.navigationController.navigationBar;
     navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -683,6 +715,37 @@
 
 
 #pragma mark - Category Data
+
+-(void)reloadImages
+{
+    // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
+    [[CategoriesData sharedInstance] deleteCategoryWithId:self.categoryId];
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
+    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+    [self.albumData updateImageSort:self.currentSort onCompletion:^{
+        // Reset navigation bar buttons after image load
+        [self updateButtonsInPreviewMode];
+        // Load, sort images and reload collection
+        [self reloadImagesCollectionFrom:oldImageList];
+        
+        // End refreshing
+        if (@available(iOS 10.0, *)) {
+            if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+        } else {
+            if (self.refreshControl) [self.refreshControl endRefreshing];
+        }
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+    }];
+}
+
+-(void)refresh:(UIRefreshControl*)refreshControl
+{
+    [self reloadImages];
+}
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
