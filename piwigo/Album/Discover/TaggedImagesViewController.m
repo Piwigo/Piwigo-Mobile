@@ -677,7 +677,7 @@
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
-    if (oldImages.count == 0) {
+    if (oldImages.count != self.albumData.images.count) {
         [self.imagesCollection reloadData];
     }
     else {

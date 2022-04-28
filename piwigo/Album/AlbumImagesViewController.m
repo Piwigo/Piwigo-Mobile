@@ -911,7 +911,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
-    if (oldImages.count == 0) {
+    if (oldImages.count != self.albumData.images.count) {
         // This is the first time images are presented
         [self.imagesCollection reloadData];
     }
