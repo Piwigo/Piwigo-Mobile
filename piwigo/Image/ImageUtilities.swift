@@ -358,7 +358,11 @@ class ImageUtilities: NSObject {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
-            return UIImage(named: "placeholder")!
+            if let data = try? Data( contentsOf:imageURL) {
+                return UIImage(data: data) ?? UIImage(named: "placeholder")!
+            } else {
+                return UIImage(named: "placeholder")!
+            }
         }
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
@@ -369,7 +373,7 @@ class ImageUtilities: NSObject {
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageData = image.jpegData(compressionQuality: 1.0),
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions) else {
-            return UIImage(named: "placeholder")!
+            return image
         }
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
