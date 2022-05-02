@@ -33,7 +33,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -369,10 +368,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"===============================");
     NSLog(@"viewDidLoad       => ID:%ld", (long)self.categoryId);
 #endif
-
-    // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-    self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
@@ -721,10 +716,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-        self.imageCellSize = CGSizeMake(size, size);
-
         // Reload colelction
         [self.imagesCollection reloadData];
         
@@ -3205,7 +3196,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             
         default:            // Images
         {
-            return self.imageCellSize;
+            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+            return CGSizeMake(size, size);
         }
     }
 }
@@ -3243,7 +3235,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                [cell configWith:imageData inCategoryId:self.categoryId for:self.imageCellSize];
+                [cell configWith:imageData inCategoryId:self.categoryId];
                 cell.isSelection = [self.selectedImageIds containsObject:[NSNumber numberWithInteger: imageData.imageId]];
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10

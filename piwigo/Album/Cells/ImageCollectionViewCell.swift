@@ -43,7 +43,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var selImgTop: NSLayoutConstraint!
     
     // On iPad, thumbnails are presented with native aspect ratio
-    private var size = CGSize.zero
     private var deltaX: CGFloat = 0.0
     private var deltaY: CGFloat = 0.0
 
@@ -101,14 +100,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
         favImg?.tintColor = UIColor.white
     }
 
-    @objc func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int, for size: CGSize) {
+    @objc func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int) {
         // Do we have any info on that image ?
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         guard let imageData = imageData else { return }
         if imageData.imageId == 0 { return }
 
         // Store image data
-        self.size = size
         self.imageData = imageData
         noDataLabel.isHidden = true
         isAccessibilityElement = true
@@ -259,33 +257,33 @@ class ImageCollectionViewCell: UICollectionViewCell {
             success: { [self] _, _, image in
                 // Downsample image is necessary
                 var displayedImage = image
-                let maxDimensionInPixels = CGFloat(max(self.size.width, self.size.height)) * scale
+                let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
                 if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
-                    displayedImage = ImageUtilities.downsample(image: image, to: size, scale: scale)
+                    displayedImage = ImageUtilities.downsample(image: image, to: self.bounds.size, scale: scale)
                 }
                 self.cellImage?.image = displayedImage
 
                 // Favorite image position depends on device
                 self.deltaX = margin
                 self.deltaY = margin
-                let imageScale = CGFloat(min(
-                    self.size.width / displayedImage.size.width, self.size.height / displayedImage.size.height))
+                let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
+                                             self.bounds.size.height / displayedImage.size.height))
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     // Case of an iPad: respect aspect ratio
                     // Image width smaller than collection view cell?
                     let imageWidth = displayedImage.size.width * imageScale
-                    if imageWidth < self.size.width {
+                    if imageWidth < self.bounds.size.width {
                         // The image does not fill the cell horizontally
                         self.darkImgWidth?.constant = imageWidth
-                        self.deltaX += (self.size.width - imageWidth) / 2.0
+                        self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
                     }
 
                     // Image height smaller than collection view cell?
                     let imageHeight = displayedImage.size.height * imageScale
-                    if imageHeight < self.size.height {
+                    if imageHeight < self.bounds.size.height {
                         // The image does not fill the cell vertically
                         self.darkImgHeight?.constant = imageHeight
-                        self.deltaY += (self.size.height - imageHeight) / 2.0
+                        self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
                     }
                 }
 

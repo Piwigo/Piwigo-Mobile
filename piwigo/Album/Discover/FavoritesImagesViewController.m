@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -173,10 +172,6 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-    self.imageCellSize = CGSizeMake(size, size);
 
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
@@ -342,10 +337,6 @@
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-        self.imageCellSize = CGSizeMake(size, size);
-
         // Reload colelction
         [self.imagesCollection reloadData];
         
@@ -1610,7 +1601,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell configWith:imageData inCategoryId:kPiwigoFavoritesCategoryId for:self.imageCellSize];
+        [cell configWith:imageData inCategoryId:kPiwigoFavoritesCategoryId];
         cell.isSelection = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         cell.isFavorite = YES;
         
