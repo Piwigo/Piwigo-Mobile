@@ -12,6 +12,8 @@
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
+#import "DiscoverImagesViewController.h"
+#import "FavoritesImagesViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
 #import "Model.h"

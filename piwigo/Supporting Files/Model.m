@@ -53,7 +53,6 @@ NSInteger const kDelayPiwigoHUD = 500;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL hasAdminRights;
-@property (nonatomic, assign) BOOL hadOpenedSession;
 @property (nonatomic, strong) NSDate *dateOfLastLogin;
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
@@ -162,7 +161,6 @@ NSInteger const kDelayPiwigoHUD = 500;
 
         instance.hasAdminRights = NO;
         instance.hasNormalRights = NO;
-        instance.hadOpenedSession = NO;
         instance.dateOfLastLogin = [NSDate distantPast];
         instance.didRejectCertificate = NO;
         instance.didFailHTTPauthentication = NO;

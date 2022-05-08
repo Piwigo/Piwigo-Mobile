@@ -26,16 +26,6 @@ import piwigoKit
     var privacyView: UIView?
     var isAuthenticatingWithBiometrics = false
     var didCancelBiometricsAuthentication = false
-    private var _loginVC: LoginViewController!
-    var loginVC: LoginViewController {
-        // Already existing?
-        if _loginVC != nil { return _loginVC }
-        // Create view controller
-        let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
-        guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else { fatalError("LoginViewController could not be instantiated!") }
-        return loginVC
-    }
-
 
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
@@ -74,6 +64,11 @@ import piwigoKit
         // Set Settings Bundle data
         setSettingsBundleData()
         
+        // Create permanent session managers for retrieving data and downloading images
+        NetworkHandler.createJSONdataSessionManager()       // 30s timeout, 4 connections max
+        NetworkHandler.createFavoritesDataSessionManager()  // 30s timeout, 1 connection max
+        NetworkHandler.createImagesSessionManager()         // 60s timeout, 4 connections max
+
         if #available(iOS 13.0, *) {
             // Register launch handlers for tasks if using iOS 13
             /// Will have to check if pwg.images.uploadAsync is available
@@ -84,8 +79,8 @@ import piwigoKit
         } else {
             // Create login view
             window = UIWindow(frame: UIScreen.main.bounds)
+            loadLoginView(in: window)
             window?.makeKeyAndVisible()
-            loadLoginView()
             
             // Blur views if the App Lock is enabled
             /// The passcode window is not presented  so that the app
@@ -113,6 +108,25 @@ import piwigoKit
     }
 
 
+    // MARK: - Scene Configuration
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        
+        var currentActivity: ActivityType?
+        options.userActivities.forEach {
+          currentActivity = ActivityType(rawValue: $0.activityType)
+        }
+
+        let activity = currentActivity ?? ActivityType.album
+        return activity.sceneConfiguration()
+    }
+
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        //..
+    }
+
+    
     // MARK: - App Remote Notifications
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     }
@@ -586,24 +600,46 @@ import piwigoKit
 
 
     // MARK: - Login View
-    func loadLoginView() {
+    private var _loginVC: LoginViewController!
+    var loginVC: LoginViewController {
+        // Already existing?
+        if _loginVC != nil { return _loginVC }
+        
+        // Create login view controller
+        let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
+        _loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+        return _loginVC
+    }
+
+    func loadLoginView(in window: UIWindow?) {
+        guard let window = window else { return }
+        
         // Load Login view
         let nav = LoginNavigationController(rootViewController: loginVC)
         nav.setNavigationBarHidden(true, animated: false)
-        window?.rootViewController = nav
-        
-        // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-        window?.rootViewController?.view.setNeedsUpdateConstraints()
+        window.rootViewController = nav
+
+        if #available(iOS 13.0, *) {
+            // Transition to login view
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil) { _ in }
+        } else {
+            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+            window.rootViewController?.view.setNeedsUpdateConstraints()
+        }
     }
 
-    @objc func reloginAndRetry(completion: @escaping () -> Void) {
-        let hadOpenedSession = NetworkVars.hadOpenedSession
+    @objc func reloginAndRetry(afterRestoringScene: Bool,
+                               completion: @escaping () -> Void) {
         let server = NetworkVars.serverPath
         let user = NetworkVars.username
         
         DispatchQueue.main.async {
-            if hadOpenedSession && (server.count > 0) && (user.count > 0) {
-                self.loginVC.performRelogin() { completion() }
+            if (server.isEmpty == false) && (user.isEmpty == false) {
+                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) { completion() }
+            } else if afterRestoringScene {
+                self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
             } else {
                 // Return to login view
                 ClearCache.closeSessionAndClearCache() { }
@@ -613,26 +649,28 @@ import piwigoKit
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry { }
+            reloginAndRetry(afterRestoringScene: false) { }
         }
     }
 
     
     // MARK: - Album Navigator
-    @objc func loadNavigation() {
+    @objc func loadNavigation(in window: UIWindow?) {
+        guard let window = window else { return }
+        
         // Display default album
         guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
+        window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
-            guard let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return }
-            window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
-                completion: { _ in }
+                completion: { success in
+//                    self._loginVC = nil
+                }
         } else {
             // Fallback on earlier versions
-            window?.rootViewController = UINavigationController(rootViewController: defaultAlbum)
             loginVC.removeFromParent()
-            _loginVC = nil
+//            _loginVC = nil
         }
         
         // Observe the UIScreenBrightnessDidChangeNotification
@@ -989,9 +1027,10 @@ extension AppDelegate: AppLockDelegate {
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
-                reloginAndRetry {
+                NetworkVars.dateOfLastLogin = Date()
+                reloginAndRetry(afterRestoringScene: false) {
                     // Reload category data from server in background mode
-                    self.loginVC.reloadCatagoryDataInBckgMode()
+                    self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: false)
                 }
             } else {
                 /// - Resume upload operations in background queue

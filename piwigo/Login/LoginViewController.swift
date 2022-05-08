@@ -126,30 +126,10 @@ class LoginViewController: UIViewController {
         #endif
 
         // Check server address and cancel login if address not provided
-        if (serverTextField.text?.count ?? 0) <= 0 {
-            let alert = UIAlertController(
-                title: NSLocalizedString("loginEmptyServer_title", comment: "Enter a Web Address"),
-                message: NSLocalizedString("loginEmptyServer_message", comment: "Please select a protocol and enter a Piwigo web address in order to proceed."),
-                preferredStyle: .alert)
-
-            let defaultAction = UIAlertAction(
-                title: NSLocalizedString("alertOkButton", comment: "OK"),
-                style: .cancel,
-                handler: { action in
-                })
-
-            alert.addAction(defaultAction)
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-            if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            } else {
-                // Fallback on earlier versions
-            }
-            present(alert, animated: true) {
-                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-            }
-
+        if let serverURL = serverTextField.text, serverURL.isEmpty {
+            let title = NSLocalizedString("loginEmptyServer_title", comment: "Enter a Web Address")
+            let message = NSLocalizedString("loginEmptyServer_message", comment: "Please select a protocol and enter a Piwigo web address in order to proceed.")
+            dismissPiwigoError(withTitle: title, message: message) { }
             return
         }
 
@@ -171,11 +151,11 @@ class LoginViewController: UIViewController {
                                           account: username)
         }
 
-        // Create permanent session managers for retrieving data and downloading images
-        NetworkHandler.createJSONdataSessionManager() // 30s timeout, 4 connections max
-        NetworkHandler.createFavoritesDataSessionManager() // 30s timeout, 1 connection max
-        NetworkHandler.createImagesSessionManager() // 60s timeout, 4 connections max
-
+        // Collect list of methods supplied by Piwigo server
+        requestServerMethods()
+    }
+    
+    func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         #if DEBUG_LOGIN
@@ -416,24 +396,7 @@ class LoginViewController: UIViewController {
         websiteNotSecure.isHidden = false
 
         // Collect list of methods supplied by Piwigo server
-        // => Determine if Community extension 2.9a or later is installed and active
-        #if DEBUG_SESSION
-        print("=> launchLogin using http: getMethodsList…")
-        #endif
-        LoginUtilities.getMethods {
-            // Back to default timeout
-            NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 30
-
-            // Known methods, pursue logging in…
-            DispatchQueue.main.async { [self] in
-                performLogin()
-            }
-        } failure: { error in
-            // Get Piwigo methods failed
-            DispatchQueue.main.async { [self] in
-                logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-            }
-        }
+        requestServerMethods()
     }
 
     func performLogin() {
@@ -509,7 +472,6 @@ class LoginViewController: UIViewController {
                                  withReloginCompletion: reloginCompletion)
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
-                NetworkVars.hadOpenedSession = false
                 isAlreadyTryingToLogin = false
                 logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
             }
@@ -573,13 +535,11 @@ class LoginViewController: UIViewController {
                               withReloginCompletion: reloginCompletion)
                 }
             }, failure: { [self] error in
-                NetworkVars.hadOpenedSession = false
                 isAlreadyTryingToLogin = false
                 // Display error message
                 logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
             })
         } else {
-            NetworkVars.hadOpenedSession = false
             isAlreadyTryingToLogin = false
             logging(inConnectionError: nil)
         }
@@ -612,18 +572,19 @@ class LoginViewController: UIViewController {
                         hudViewController.hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation()
+                            appDelegate?.loadNavigation(in: self.view.window)
                         }
                     } else {
                         hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation()
+                            appDelegate?.loadNavigation(in: self.view.window)
                         }
                     }
 
                     // Load favorites in the background if necessary
-                    if !NetworkVars.hasGuestRights && ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
+                    if !NetworkVars.hasGuestRights,
+                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
                         // Initialise favorites album
                         if let favoritesAlbum = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId) {
                             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
@@ -641,7 +602,6 @@ class LoginViewController: UIViewController {
                 }, onFailure: { [self] task, error in
                     DispatchQueue.main.async { [self] in
                         // Inform user that we could not load album data
-                        NetworkVars.hadOpenedSession = false
                         logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                     }
                 })
@@ -660,7 +620,8 @@ class LoginViewController: UIViewController {
         }
     }
 
-    func performRelogin(withCompletion reloginCompletion: @escaping () -> Void) {
+    func performRelogin(afterRestoringScene: Bool,
+                        withCompletion reloginCompletion: @escaping () -> Void) {
         #if DEBUG_LOGIN
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
@@ -672,22 +633,54 @@ class LoginViewController: UIViewController {
             return
         }
 
-        // Do not present HUD during re-login
-        hudViewController = nil
+        // Do not present HUD during re-login unless when restoring scenes
+        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
+        hudViewController?.showPiwigoHUD(
+            withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
+            detail: NSLocalizedString("login_connecting", comment: "Connecting"),
+            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
+            buttonTarget: self,
+            buttonSelector: #selector(cancelLoggingIn),
+            inMode: .indeterminate)
 
-        // Perform re-login
-        let username = NetworkVars.username
-        let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
-        isAlreadyTryingToLogin = true
-        LoginUtilities.sessionLogin(withUsername: username, password: password, completion: { [self] in
-            // Session re-opened
-            // First determine user rights if Community extension installed
-            getCommunityStatus(atFirstLogin: false,
-                               withReloginCompletion: reloginCompletion)
-        }, failure: { [self] error in
-            // Could not re-establish the session, login/pwd changed, something else?
-            isAlreadyTryingToLogin = false
+        // Collect list of methods supplied by Piwigo server
+        // => Determine if Community extension 2.9a or later is installed and active
+        NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 10
+        LoginUtilities.getMethods {
+            // Back to default timeout
+            NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 30
 
+            // Update HUD during login
+            self.hudViewController?.showPiwigoHUD(
+                withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
+                detail: NSLocalizedString("login_newSession", comment: "Opening Session"),
+                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
+                buttonTarget: self,
+                buttonSelector: #selector(self.cancelLoggingIn),
+                inMode: .indeterminate)
+
+            // Known methods, perform re-login
+            let username = NetworkVars.username
+            let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
+            self.isAlreadyTryingToLogin = true
+            LoginUtilities.sessionLogin(withUsername: username, password: password, completion: { [self] in
+                // Session re-opened
+                // First determine user rights if Community extension installed
+                getCommunityStatus(atFirstLogin: false,
+                                   withReloginCompletion: reloginCompletion)
+            }, failure: { [self] error in
+                // Could not re-establish the session, login/pwd changed, something else?
+                self.isAlreadyTryingToLogin = false
+
+                // Return to login view
+                DispatchQueue.main.async {
+                    ClearCache.closeSessionAndClearCache { [self] in
+                        self.hudViewController = view.window?.topMostViewController()
+                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                    }
+                }
+            })
+        } failure: { error in
             // Return to login view
             DispatchQueue.main.async {
                 ClearCache.closeSessionAndClearCache { [self] in
@@ -695,38 +688,56 @@ class LoginViewController: UIViewController {
                     self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                 }
             }
-        })
+        }
     }
 
-    func reloadCatagoryDataInBckgMode() {
+    func reloadCatagoryDataInBckgMode(afterRestoringScene: Bool) {
+        // Do not present HUD during re-login unless when restoring scenes
+        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
+
         // Load category data in recursive mode in the background
         DispatchQueue.global(qos: .default).async { [self] in
+            // Update HUD during login
+            self.hudViewController?.showPiwigoHUD(
+                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
+                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
+                buttonTarget: self,
+                buttonSelector: #selector(cancelLoggingIn),
+                inMode: .indeterminate)
+
+            // Reload album data
             AlbumService.getAlbumData(onCompletion: { task, didChange in
-                let viewController = UIApplication.shared.keyWindow?.rootViewController?.children.last
-                if viewController is AlbumImagesViewController {
-                    // Check data source and reload collection if needed
-                    let vc = viewController as? AlbumImagesViewController
-                    vc?.checkDataSource(withChangedCategories: didChange)
+                // Get top view controllers and update collection views
+                let viewControllers = UIApplication.shared.topViewControllers()
+                for viewController in viewControllers {
+                    if viewController is AlbumImagesViewController {
+                        // Check data source and reload collection if needed
+                        let vc = viewController as? AlbumImagesViewController
+                        vc?.checkDataSource(withChangedCategories: didChange)
+                    }
+                    else if viewController is DiscoverImagesViewController {
+                        // Refresh collection if needed
+                        let vc = viewController as? DiscoverImagesViewController
+                        vc?.reloadImages()
+                    }
+                    else if viewController is TaggedImagesViewController {
+                        // Refresh collection if needed
+                        let vc = viewController as? TaggedImagesViewController
+                        vc?.reloadImages()
+                    }
+                    else if viewController is FavoritesImagesViewController, !NetworkVars.hasGuestRights,
+                            ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
+                        // Refresh collection if needed
+                        let vc = viewController as? FavoritesImagesViewController
+                        vc?.reloadImages()
+                    }
                 }
 
                 // Resume uploads
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.resumeAll()
 
-                // Load favorites in the background if necessary
-//                if (!NetworkVars.hasGuestRights &&
-//                    ([@"2.10.0" compare:NetworkVars.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
-//                {
-//                    // Initialise favorites album
-//                    PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-//                    [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
-//
-//                    // Load favorites data in the background with dedicated URL session
-//                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0),^{
-//                        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort
-//                        forProgress:nil onCompletion:nil onFailure:nil];
-//                    });
-//                }
             }, onFailure: { [self] task, error in
                 DispatchQueue.main.async(execute: { [self] in
                     // Inform user that we could not load album data

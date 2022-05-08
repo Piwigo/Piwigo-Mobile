@@ -158,6 +158,8 @@
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD911272281060D9002FB78F /* UIWindow+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD911271281060D9002FB78F /* UIWindow+AppTools.swift */; };
 		AD9112742811FBF7002FB78F /* UIWindowScene+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9112732811FBF7002FB78F /* UIWindowScene+AppTools.swift */; };
+		AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127B28146B6C002FB78F /* SceneConfigurations.swift */; };
+		AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
 		AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */; };
@@ -599,6 +601,8 @@
 		AD8D218A26B20D6E0008E907 /* PadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PadTableViewCell.swift; sourceTree = "<group>"; };
 		AD911271281060D9002FB78F /* UIWindow+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+AppTools.swift"; sourceTree = "<group>"; };
 		AD9112732811FBF7002FB78F /* UIWindowScene+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindowScene+AppTools.swift"; sourceTree = "<group>"; };
+		AD91127B28146B6C002FB78F /* SceneConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneConfigurations.swift; sourceTree = "<group>"; };
+		AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SceneDelegate+StateRestoration.swift"; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
@@ -1600,6 +1604,8 @@
 				AD3335422666B6D4000A1487 /* AppVars.swift */,
 				ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */,
 				ADC709C425115943009CA711 /* SceneDelegate.swift */,
+				AD91127B28146B6C002FB78F /* SceneConfigurations.swift */,
+				AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */,
 				AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */,
 				AD3FF5F52683B49900D2F52A /* PwgNotificationsObjc.swift */,
 			);
@@ -2374,6 +2380,7 @@
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
+				AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
@@ -2402,6 +2409,7 @@
 				ADF72EB7267336E70027E2CC /* UploadVarsObjc.swift in Sources */,
 				ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */,
 				AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */,
+				AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
 				AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import Foundation
 import piwigoKit
+import UIKit
 
 @objc
 class ClearCache: NSObject {
@@ -34,25 +35,27 @@ class ClearCache: NSObject {
 
         // Erase cache
         self.clearAllCache(exceptCategories: false) {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
             if #available(iOS 13.0, *) {
+                // Disconnect inactive scenes
+                let scenesInBackground = UIApplication.shared.connectedScenes
+                    .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
+                for scene in scenesInBackground {
+                    UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                }
+                
+                // Present login view in the remaining scene
                 guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
                     return
                 }
-
-                let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
-                guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else {
-                    fatalError("LoginViewController could not be instantiated!")
-                }
-                let nav = LoginNavigationController(rootViewController: loginVC)
-                nav.isNavigationBarHidden = true
-                window.rootViewController = nav
+                appDelegate?.loadLoginView(in: window)
                 UIView.transition(with: window, duration: 0.5,
                                   options: .transitionCrossDissolve,
                                   animations: nil, completion: { _ in completion() })
             } else {
                 // Fallback on earlier versions
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.loadLoginView()
+                let window = UIApplication.shared.keyWindow
+                appDelegate?.loadLoginView(in: window)
             }
         }
     }

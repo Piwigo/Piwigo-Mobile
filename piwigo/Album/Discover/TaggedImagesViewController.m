@@ -17,8 +17,6 @@
 @interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, assign) NSInteger tagId;
-@property (nonatomic, strong) NSString *tagName;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
@@ -943,7 +941,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeEdit];
                     }];
                 } else {
@@ -1038,7 +1036,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeDelete];
                     }];
                 } else {
@@ -1135,7 +1133,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self deleteImages];
                 }];
             } else {
@@ -1204,7 +1202,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeShare];
                     }];
                 } else {
@@ -1442,7 +1440,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self addImageToFavorites];
                 }];
             } else {
@@ -1519,7 +1517,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self removeImageFromFavorites];
                 }];
             } else {

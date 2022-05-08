@@ -78,19 +78,16 @@ class LoginUtilities: NSObject {
                 if loginJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: loginJSON.errorCode,
                                                                     errorMessage: loginJSON.errorMessage)
-                    NetworkVars.hadOpenedSession = false
                     failure(error as NSError)
                     return
                 }
 
                 // Login successful
                 NetworkVars.username = username
-                NetworkVars.hadOpenedSession = true
                 completion()
             }
             catch {
                 // Data cannot be digested
-                NetworkVars.hadOpenedSession = false
                 let error = error as NSError
                 failure(error)
             }
@@ -98,7 +95,6 @@ class LoginUtilities: NSObject {
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            NetworkVars.hadOpenedSession = false
             failure(error)
         }
     }
@@ -479,13 +475,11 @@ class LoginUtilities: NSObject {
                 if loginJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: loginJSON.errorCode,
                                                                     errorMessage: loginJSON.errorMessage)
-                    NetworkVars.hadOpenedSession = false
                     failure(error as NSError)
                     return
                 }
 
                 // Logout successful
-                NetworkVars.hadOpenedSession = false
                 completion()
             }
             catch {
@@ -497,7 +491,6 @@ class LoginUtilities: NSObject {
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            NetworkVars.hadOpenedSession = false
             failure(error)
         }
     }

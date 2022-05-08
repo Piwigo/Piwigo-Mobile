@@ -144,12 +144,6 @@ class NetworkVarsObjc: NSObject {
         set (value) { NetworkVars.hasAdminRights = value }
     }
 
-    /// - Did open session with success
-    @objc static var hadOpenedSession: Bool {
-        get { return NetworkVars.hadOpenedSession }
-        set (value) { NetworkVars.hadOpenedSession = value }
-    }
-    
     /// - Remembers when the user logged in
     @objc static var dateOfLastLogin: Date {
         get { return NetworkVars.dateOfLastLogin }

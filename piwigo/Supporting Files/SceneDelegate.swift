@@ -31,26 +31,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     */
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         print("••> \(session.persistentIdentifier): Scene will connect to session.")
-        // TO DO when all data will be cached in Core Data database: Scene management
-//        if let userActivity = connectionOptions.userActivities.first {
-//            debugPrint(userActivity)
-//        }
-
-        // Initialisation
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        
-        // Get other existing scenes
-        let existingScenes = UIApplication.shared.connectedScenes
-            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
 
-        // Present login if this is the first scene
-        if existingScenes.isEmpty {
-            // Create login view
-            let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
-            nav.isNavigationBarHidden = true
-            window.rootViewController = nav
+        // Determine the user activity from a new connection or from a session's state restoration.
+        guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
+            // No scene to restore => Create login view
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            appDelegate.loadLoginView(in: window)
 
             // Hold and present login window
             self.window = window
@@ -70,26 +58,72 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        // Additional scene requested
-        if AppVars.shared.isAppUnlocked {
-            // Create additional scene => default album
-            guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
-            window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
+        if configure(window: window, session: session, with: userActivity) {
+            // Remember this activity for later when this app quits or suspends.
+            scene.userActivity = userActivity
+            // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+            scene.title = userActivity.title
+            
+            // Mark this scene's session with this userActivity product identifier so you can update the UI later.
+//            if let sessionProduct = SceneDelegate.product(for: userActivity) {
+//                session.userInfo =
+//                    [SceneDelegate.productIdentifierKey: sessionProduct.identifier]
+//            }
+        } else {
+            debugPrint("Failed to restore scene from \(userActivity)")
+        }
 
-            // Hold and present album/images window
+//        // Get other existing scenes
+//        let existingScenes = UIApplication.shared.connectedScenes
+//            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+//
+//        // Present login if this is the first created scene
+//        if existingScenes.isEmpty {
+//            // Create login view
+//            appDelegate.loadLoginView(in: window)
+//        }
+//        else {
+//            // Create additional scene => default album
+//            appDelegate.loadNavigation(in: window)
+//        }
+//
+//        // Hold and present login window
+//        self.window = window
+//        window.makeKeyAndVisible()
+
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented  so that the app
+        /// does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive {
+            // Protect presented login view
+            showPrivacyProtectionWindow()
+        }
+        else {
+            // User is allowed to access albums
+            AppVars.shared.isAppUnlocked = true
+        }
+    }
+    
+    func configure(window: UIWindow?, session: UISceneSession, with activity: NSUserActivity) -> Bool {
+        var succeeded = false
+        
+        // Check the user activity type to know which part of the app to restore.
+        if activity.activityType == ActivityType.album.rawValue {
+            // The activity type is for restoring AlbumImagesViewController.
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
+            appDelegate.loadNavigation(in: window)
+            
+            // Hold and present login window
             self.window = window
-            window.makeKeyAndVisible()
-            return
+            window?.makeKeyAndVisible()
+    
+            succeeded = true
+        }
+        else {
+            // The incoming userActivity is not recognizable here.
         }
         
-        // Create additional login view
-        let nav = LoginNavigationController(rootViewController: appDelegate.loginVC)
-        nav.isNavigationBarHidden = true
-        window.rootViewController = nav
-
-        // Hold and present login window
-        self.window = window
-        window.makeKeyAndVisible()
+        return succeeded
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -300,13 +334,13 @@ extension SceneDelegate: AppLockDelegate {
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided
-            if service.count > 0, username.count > 0 {
+            if service.isEmpty == false, username.isEmpty == false {
                 password = KeychainUtilities.password(forService: service, account: username)
             }
 
             // Login?
             if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-               service.count > 0 || (username.count > 0 && password.count > 0) {
+               service.isEmpty == false || ((username.isEmpty == false) && (password.isEmpty == false)) {
                 appDelegate.loginVC.launchLogin()
             }
             return
@@ -314,15 +348,17 @@ extension SceneDelegate: AppLockDelegate {
 
         // Determine for how long the session is opened
         /// Piwigo 11 session duration defaults to an hour.
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
         if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
             /// - Perform relogin
+            /// - Reload images in albums
             /// - Resume upload operations in background queue
             ///   and update badge, upload button of album navigator
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.reloginAndRetry {
+            NetworkVars.dateOfLastLogin = Date()
+            appDelegate?.reloginAndRetry(afterRestoringScene: true) {
                 // Reload category data from server in background mode
-                appDelegate?.loginVC.reloadCatagoryDataInBckgMode()
+                appDelegate?.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
             }
         } else {
             /// - Resume upload operations in background queue

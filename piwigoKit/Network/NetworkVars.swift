@@ -107,9 +107,6 @@ public class NetworkVars: NSObject {
     /// - Logged user has admin rigths, false by default
     public static var hasAdminRights = false
 
-    /// - Did open session with success
-    public static var hadOpenedSession = false
-    
     /// - Remembers when the user logged in
     public static var dateOfLastLogin: Date = .distantPast
     

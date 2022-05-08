@@ -637,7 +637,7 @@ import piwigoKit
                     if error.code == 401 {
                         // Try relogin
                         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry() { [unowned self] in
+                        appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                             self.retrieveCompleteImageDataOfImage(self.imageData)
                         }
                     } else {
@@ -832,7 +832,7 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.removeImageFromCategory()
                     }
                 } else {
@@ -867,7 +867,7 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.deleteImageFromDatabase()
                     }
                 } else {

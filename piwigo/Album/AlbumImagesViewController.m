@@ -844,6 +844,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
         dispatch_async(dispatch_get_main_queue(), ^{
+            // Set navigation bar buttons
+            [self initButtonsInSelectionMode];
             // Hide HUD if needed
             [self.navigationController hidePiwigoHUDWithCompletion:^{
                 [self dismissPiwigoErrorWithTitle:@"" message:error.localizedDescription
@@ -889,7 +891,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Other album -> Reload albums
     if (didChange) {
+        // Reload album collection
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        // Set navigation bar buttons
+        [self updateButtonsInPreviewMode];
     }
     
     // Other album —> If the number of images in cache is null, reload collection
@@ -897,14 +902,18 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Something did change… reset album data
         self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
         [self.imagesCollection reloadData];
+        // Cancel selection
+        [self cancelSelect];
     }
 }
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
     if (oldImages.count != self.albumData.images.count) {
-        // This is the first time images are presented
+        // List of images has changed
         [self.imagesCollection reloadData];
+        // Cancel selection
+        [self cancelSelect];
     }
     else {
         // Refresh all images if displayImageTitles option changed in Settings
@@ -2195,7 +2204,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeEdit];
                     }];
                 } else {
@@ -2301,7 +2310,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeDelete];
                     }];
                 } else {
@@ -2456,7 +2465,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self removeImages];
                     }];
                 } else {
@@ -2473,7 +2482,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self removeImages];
                     }];
                 } else {
@@ -2516,7 +2525,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (statusCode == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self deleteImages];
                 }];
             } else {
@@ -2585,7 +2594,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeShare];
                     }];
                 } else {
@@ -2880,7 +2889,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self addImageToFavorites];
                 }];
             } else {
@@ -2957,7 +2966,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self removeImageFromFavorites];
                 }];
             } else {

@@ -950,7 +950,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeEdit];
                     }];
                 } else {
@@ -1046,7 +1046,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeDelete];
                     }];
                 } else {
@@ -1143,7 +1143,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self deleteImages];
                 }];
             } else {
@@ -1212,7 +1212,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeShare];
                     }];
                 } else {

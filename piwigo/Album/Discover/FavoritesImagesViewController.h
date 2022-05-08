@@ -12,5 +12,6 @@
 
 -(instancetype)init;
 -(void)removeImageWithId:(NSInteger)imageId;
+-(void)reloadImages;
 
 @end
