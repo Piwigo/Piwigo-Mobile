@@ -43,8 +43,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var selImgTop: NSLayoutConstraint!
     
     // On iPad, thumbnails are presented with native aspect ratio
-    private var deltaX: CGFloat = 0.0
-    private var deltaY: CGFloat = 0.0
+    private var deltaX: CGFloat = 1.0       // Must be initialised with margin value
+    private var deltaY: CGFloat = 1.0       // Must be initialised with margin value
 
     // Constants used to place and resize objects
     private let margin: CGFloat = 1.0
