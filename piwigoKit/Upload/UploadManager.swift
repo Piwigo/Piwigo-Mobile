@@ -180,7 +180,7 @@ public class UploadManager: NSObject {
         }
         
         // Check network access and status
-        if !NetworkVars.isConnectedToWiFi && UploadVars.wifiOnlyUploading {
+        if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
             return
         }
 

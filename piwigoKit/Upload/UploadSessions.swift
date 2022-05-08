@@ -201,7 +201,7 @@ extension UploadSessions: URLSessionDelegate {
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.domain) else {
+              protectionSpace.host.contains(NetworkVars.domain()) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -214,7 +214,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust,
-                                                   for: NetworkVars.domain) {
+                                                   for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -234,7 +234,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
