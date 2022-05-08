@@ -447,6 +447,11 @@ class AppLockViewController: UIViewController {
 
             // Unlock the app
             dismiss(animated: true) {
+                // Re-enable biometry for the next time
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.didCancelBiometricsAuthentication = false
+                
+                // Login/relogin and resume uploads
                 self.delegate?.loginOrReloginAndResumeUploads()
             }
         }

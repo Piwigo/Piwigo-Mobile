@@ -980,8 +980,6 @@ import piwigoKit
 extension AppDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
         print("••> loginOrReloginAndResumeUploads() in AppDelegate.")
-        // Re-enable biometry for the next time
-        didCancelBiometricsAuthentication = false
         // Release memory
         privacyView = nil
 
