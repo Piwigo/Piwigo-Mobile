@@ -526,9 +526,9 @@ import piwigoKit
                  privacyView = UIVisualEffectView(effect: blurEffect)
                  privacyView?.frame = frame
              }
-             window?.addSubview(privacyView!)
          }
-         privacyView?.isHidden = false
+        window?.addSubview(privacyView!)
+        privacyView?.isHidden = false
     }
 
     func requestPasscode(onTopOf window: UIWindow?,
@@ -981,7 +981,7 @@ extension AppDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
         print("••> loginOrReloginAndResumeUploads() in AppDelegate.")
         // Release memory
-        privacyView = nil
+        privacyView?.removeFromSuperview()
 
         // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)

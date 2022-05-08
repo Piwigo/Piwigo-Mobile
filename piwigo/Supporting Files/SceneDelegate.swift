@@ -36,28 +36,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Determine the user activity from a new connection or from a session's state restoration.
         guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
-            // No scene to restore => Create login view
+            // No scene to restore => Get other existing scenes
+            let existingScenes = UIApplication.shared.connectedScenes
+                .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+
+            // Present login only if this is the first created scene
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-            appDelegate.loadLoginView(in: window)
+            if existingScenes.isEmpty {
+                // Create login view
+                appDelegate.loadLoginView(in: window)
+
+                // Blur views if the App Lock is enabled
+                /// The passcode window is not presented so that the app
+                /// does not request the passcode until it is put into the background.
+                if AppVars.shared.isAppLockActive {
+                    // Protect presented login view
+                    addPrivacyProtection()
+                }
+                else {
+                    // User is allowed to access albums
+                    AppVars.shared.isAppUnlocked = true
+                }
+            }
+            else {
+                // Create additional scene => default album
+                appDelegate.loadNavigation(in: window)
+            }
 
             // Hold and present login window
             self.window = window
             window.makeKeyAndVisible()
-
-            // Blur views if the App Lock is enabled
-            /// The passcode window is not presented  so that the app
-            /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
-                // Protect presented login view
-                showPrivacyProtectionWindow()
-            }
-            else {
-                // User is allowed to access albums
-                AppVars.shared.isAppUnlocked = true
-            }
             return
         }
         
+        // Restore scene
         if configure(window: window, session: session, with: userActivity) {
             // Remember this activity for later when this app quits or suspends.
             scene.userActivity = userActivity
@@ -73,34 +85,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             debugPrint("Failed to restore scene from \(userActivity)")
         }
 
-//        // Get other existing scenes
-//        let existingScenes = UIApplication.shared.connectedScenes
-//            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
-//
-//        // Present login if this is the first created scene
-//        if existingScenes.isEmpty {
-//            // Create login view
-//            appDelegate.loadLoginView(in: window)
-//        }
-//        else {
-//            // Create additional scene => default album
-//            appDelegate.loadNavigation(in: window)
-//        }
-//
-//        // Hold and present login window
-//        self.window = window
-//        window.makeKeyAndVisible()
-
-        // Blur views if the App Lock is enabled
+        // Blur views if the App is locked
         /// The passcode window is not presented  so that the app
         /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
+        if AppVars.shared.isAppUnlocked == false {
             // Protect presented login view
-            showPrivacyProtectionWindow()
-        }
-        else {
-            // User is allowed to access albums
-            AppVars.shared.isAppUnlocked = true
+            addPrivacyProtection()
         }
     }
     
@@ -159,12 +149,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
+            // Loop over all scenes
+            let connectedScenes = UIApplication.shared.connectedScenes
+            for scene in connectedScenes {
+                // If passcode view controller already presented ▶ NOP
+                if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
+                   topViewController is AppLockViewController { return }
+            }
+            
             // Request passcode for accessing app
             appDelegate.requestPasscode(onTopOf: window) { appLockVC in
                 // Set delegate
                 appLockVC.delegate = self
-                // Hide privacy view
-                self.privacyView?.isHidden = true
+                // Remove privacy view
+                self.privacyView?.removeFromSuperview()
                 // Did user enable biometrics?
                 if AppVars.shared.isBiometricsEnabled,
                    appDelegate.didCancelBiometricsAuthentication == false {
@@ -198,31 +196,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if appDelegate.isAuthenticatingWithBiometrics { return }
         
-        // NOP if at least another scene will remain active in the foreground
-        let connectedScenes = UIApplication.shared.connectedScenes
-        if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 1 { return }
-
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented so that the app
         /// does not request the passcode until it is put into the background.
         if AppVars.shared.isAppLockActive {
-            // Remember to ask for passcode
-            AppVars.shared.isAppUnlocked = false
             // Loop over all scenes
+            let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
                 let sceneDelegate = scene.delegate as? SceneDelegate
                 // Remove passcode view controller if presented
                 if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
                    topViewController is AppLockViewController {
                     // Protect presented views
-                    sceneDelegate?.privacyView?.isHidden = false
+                    sceneDelegate?.addPrivacyProtection()
                     // Reset biometry flag
                     appDelegate.didCancelBiometricsAuthentication = false
                     // Dismiss passcode view
                     topViewController.dismiss(animated: true)
                 } else {
                     // Protect presented views
-                    sceneDelegate?.showPrivacyProtectionWindow()
+                    sceneDelegate?.addPrivacyProtection()
                 }
             }
         } else {
@@ -238,6 +231,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("••> \(scene.session.persistentIdentifier): Scene did enter background.")
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
+
+        // NOP if at least another scene is active in the foreground
+        let connectedScenes = UIApplication.shared.connectedScenes
+        if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 0 { return }
+
+        // Remember to ask for passcode
+        if AppVars.shared.isAppLockActive {
+            AppVars.shared.isAppUnlocked = false
+        }
 
         // Save changes in the app's managed object context when the app transitions to the background.
         DataController.saveContext()
@@ -262,7 +264,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     // MARK: - Privacy & Passcode
-    func showPrivacyProtectionWindow() {
+    func addPrivacyProtection() {
         print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene shows privacy protection window.")
         // Blur views if the App Lock is enabled
         /// The passcode window is not presented now so that the app
@@ -279,9 +281,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 privacyView = UIVisualEffectView(effect: blurEffect)
                 privacyView?.frame = frame
             }
-            window?.addSubview(privacyView!)
         }
-        privacyView?.isHidden = false
+        window?.addSubview(privacyView!)
     }
 }
 
@@ -291,8 +292,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
         print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin and resume uploads.")
-        // Release memory
-        privacyView = nil
+        // Remove privacy view
+        privacyView?.removeFromSuperview()
         
         // Any other scene in the foreground to unlock?
         let otherScenes = UIApplication.shared.connectedScenes
@@ -305,12 +306,12 @@ extension SceneDelegate: AppLockDelegate {
             if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
                topViewController is AppLockViewController {
                 // Remove protection view
-                sceneDelegate?.privacyView = nil
+                sceneDelegate?.privacyView?.removeFromSuperview()
                 // Dismiss passcode view
                 topViewController.dismiss(animated: true)
             } else {
                 // Remove protection view
-                sceneDelegate?.privacyView = nil
+                sceneDelegate?.privacyView?.removeFromSuperview()
             }
         }
         
