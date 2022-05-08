@@ -919,15 +919,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Only concerns cells of section 1
             if (indexPath.section == 0) { continue; }
 
-            // Check that this image exist in the old and new data sources?
+            // Check that there exists a cell at this indexPath
             if (indexPath.item >= oldImages.count) { continue; }
-            if (indexPath.item >= self.albumData.images.count) { continue;}
-            
-            // Did we replace a dummy image with a real image?
-            NSInteger oldImageId = oldImages[indexPath.item].imageId;
-            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
-            if ((newImageId == oldImageId) && !didChangeSettings) { continue; }
-            
+
             // We should update this cell
             [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
         }

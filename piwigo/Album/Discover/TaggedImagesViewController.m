@@ -738,14 +738,9 @@
     }
     else {
         for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
-            // Retrieve old image Id
+            // Check that there exists a cell at this indexPath
             if (indexPath.item >= oldImages.count) { continue; }
-            NSInteger oldImageId = oldImages[indexPath.item].imageId;
-            
-            // Did we replace a dummy image with a real image?
-            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
-            if (newImageId == oldImageId) { continue; }
-            
+
             // We should update this cell
             [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
         }
