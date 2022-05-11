@@ -18,7 +18,10 @@ extension String {
     }
 
     func decrypted() -> String {
-        let key = Int64(self, radix: 23)!
+        guard let key = Int64(self, radix: 23) else {
+            // No known passscode -> empty string
+            return ""
+        }
         let decoded = String(((key - Int64(3141592657)) / Int64(7777)) - Int64(2323))
         return String(repeating: "0", count: max(0, 6 - decoded.count)) + decoded
     }
