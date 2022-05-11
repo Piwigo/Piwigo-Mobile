@@ -69,6 +69,13 @@ import piwigoKit
         NetworkHandler.createFavoritesDataSessionManager()  // 30s timeout, 1 connection max
         NetworkHandler.createImagesSessionManager()         // 60s timeout, 4 connections max
 
+        // In absence of passcode, albums are always accessible
+        if AppVars.shared.appLockKey.isEmpty {
+            AppVars.shared.isAppLockActive = false
+            AppVars.shared.isAppUnlocked = true
+        }
+        
+        // What follows depends on iOS version
         if #available(iOS 13.0, *) {
             // Register launch handlers for tasks if using iOS 13
             /// Will have to check if pwg.images.uploadAsync is available
@@ -90,6 +97,10 @@ import piwigoKit
                 AppVars.shared.isAppUnlocked = false
                 // Protect presented login view
                 addPrivacyProtection(to: window)
+            }
+            else {
+                // User is allowed to access albums
+                AppVars.shared.isAppUnlocked = true
             }
         }
         
