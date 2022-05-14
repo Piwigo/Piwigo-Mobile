@@ -24,8 +24,12 @@ class AlbumCollectionViewCell: UICollectionViewCell
     @objc var albumData: PiwigoAlbumData?
     
     private var tableView: UITableView?
+    private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
     private var deleteAction: UIAlertAction?
+    private enum textFieldTag: Int {
+        case albumName = 1000, albumDescription, nberOfImages
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,12 +79,13 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     deinit {
+        renameAction = nil
         NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
         NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
     // MARK: - Move Category
-    func moveCategory() {
+    private func moveCategory() {
         guard let albumData = albumData else { return }
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
@@ -94,18 +99,18 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
     
     // MARK: - Rename Category
-    func renameCategory() {
+    private func renameCategory() {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
         let topViewController = window?.topMostViewController()
 
-        let alert = UIAlertController(
+        renameAlert = UIAlertController(
             title: NSLocalizedString("renameCategory_title", comment: "Rename Album"),
             message: String(format: "%@ (%@):", NSLocalizedString("renameCategory_message", comment: "Enter a new name for this album"), albumData.name ?? "?"),
             preferredStyle: .alert)
 
-        alert.addTextField(configurationHandler: { [self] textField in
+        renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name")
             textField.text = albumData.name ?? "?"
             textField.clearButtonMode = .always
@@ -115,9 +120,10 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
             textField.delegate = self
+            textField.tag = textFieldTag.albumName.rawValue
         })
 
-        alert.addTextField(configurationHandler: { [self] textField in
+        renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
             textField.text = albumData.comment ?? ""
             textField.clearButtonMode = .always
@@ -127,6 +133,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
             textField.delegate = self
+            textField.tag = textFieldTag.albumDescription.rawValue
         })
 
         let cancelAction = UIAlertAction(
@@ -141,30 +148,59 @@ class AlbumCollectionViewCell: UICollectionViewCell
             title: NSLocalizedString("renameCategory_button", comment: "Rename"),
             style: .default, handler: { [self] action in
                 // Rename album if possible
-                if (alert.textFields?.first?.text?.count ?? 0) > 0 {
-                    renameCategory(withName: alert.textFields?.first?.text,
-                                   comment: alert.textFields?.last?.text,
+                if (self.renameAlert?.textFields?.first?.text?.count ?? 0) > 0 {
+                    renameCategory(withName: self.renameAlert?.textFields?.first?.text,
+                                   comment: self.renameAlert?.textFields?.last?.text,
                                    andViewController: topViewController)
                 }
             })
 
-        alert.addAction(cancelAction)
+        renameAlert?.addAction(cancelAction)
         if let renameAction = renameAction {
-            alert.addAction(renameAction)
+            renameAlert?.addAction(renameAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
-        topViewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+        if let alert = renameAlert {
+            topViewController?.present(alert, animated: true) { [self] in
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
+            }
         }
     }
 
-    func renameCategory(withName albumName: String?, comment albumComment: String?, andViewController topViewController: UIViewController?) {
+    private func shouldEnableActionWith(newName: String?, newDescription: String?) -> Bool {
+        // Renaming the album is not possible with a nil or an empty string.
+        guard let newAlbumName = newName, newAlbumName.isEmpty == false else {
+            return false
+        }
+        // Get the old album name
+        guard let oldAlbumName = albumData?.name else {
+            // Old album name is nil (should never happen)
+            return true
+        }
+        // Compare with the old album name
+        if newAlbumName != oldAlbumName {
+            return true
+        }
+        // Changing the album description is not possible with a nil.
+        guard let newAlbumDesc = newDescription else {
+            return false
+        }
+        // Get the old album description
+        guard let oldAlbumDesc = albumData?.comment else {
+            // Old album description is nil
+            return newAlbumDesc.isEmpty ? false : true
+        }
+        // Compare the old and new album descriptions
+        return (oldAlbumDesc != newAlbumDesc)
+    }
+    
+    private func renameCategory(withName albumName: String?, comment albumComment: String?, andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Display HUD during the update
@@ -206,7 +242,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
     
     // MARK: - Delete Category
-    func deleteCategory() {
+    private func deleteCategory() {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
@@ -292,7 +328,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    func confirmCategoryDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
+    private func confirmCategoryDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Are you sure?
@@ -307,6 +343,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             textField.clearButtonMode = .always
             textField.keyboardType = .numberPad
             textField.delegate = self
+            textField.tag = textFieldTag.nberOfImages.rawValue
         })
 
         let defaultAction = UIAlertAction(
@@ -342,7 +379,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    func prepareDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
+    private func prepareDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Check provided number of iamges
@@ -377,7 +414,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    func getMissingImages(beforeDeletingInMode deletionMode: String, with topViewController: UIViewController?) {
+    private func getMissingImages(beforeDeletingInMode deletionMode: String,
+                                  with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         let sortDesc = CategoryImageSort.getPiwigoSortDescription(for: kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)!)
@@ -414,8 +452,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
             })
     }
 
-    func deleteCategory(withDeletionMode deletionMode: String,
-                        andViewController topViewController: UIViewController?) {
+    private func deleteCategory(withDeletionMode deletionMode: String,
+                                andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Stores image data before category deletion
@@ -567,25 +605,75 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
 extension AlbumCollectionViewCell: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        // Disable Add/Delete Category action
-        renameAction?.isEnabled = false
-        deleteAction?.isEnabled = false
+        switch textFieldTag(rawValue: textField.tag) {
+        case .albumName, .albumDescription:
+            // Check both text fields
+            let newName = renameAlert?.textFields?.first?.text
+            let newDescription = renameAlert?.textFields?.last?.text
+            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
+                                                             newDescription: newDescription)
+        case .nberOfImages:
+            // The album deletion cannot be requested if a number of images is not provided.
+            if let _ = Int(textField.text ?? "") {
+                deleteAction?.isEnabled = true
+            } else {
+                deleteAction?.isEnabled = false
+            }
+        case .none:
+            renameAction?.isEnabled = false
+            deleteAction?.isEnabled = false
+        }
         return true
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        // Enable Add/Delete Category action if text field not empty
-        let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        renameAction?.isEnabled = (finalString?.count ?? 0) >= 1
-        deleteAction?.isEnabled = (finalString?.count ?? 0) >= 1
+        switch textFieldTag(rawValue: textField.tag) {
+        case .albumName:
+            // Check both text fields
+            let newName = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+            let newDescription = renameAlert?.textFields?.last?.text
+            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
+                                                             newDescription: newDescription)
+        case .albumDescription:
+            // Check both text fields
+            let newName = renameAlert?.textFields?.first?.text
+            let newDescription = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
+                                                             newDescription: newDescription)
+        case .nberOfImages:
+            // The album deletion cannot be requested if a number of images is not provided.
+            if let nberAsText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string),
+               let _ = Int(nberAsText) {
+                deleteAction?.isEnabled = true
+            } else {
+                deleteAction?.isEnabled = false
+            }
+        case .none:
+            renameAction?.isEnabled = false
+            deleteAction?.isEnabled = false
+        }
         return true
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        // Disable Add/Delete Category action
-        renameAction?.isEnabled = false
-        deleteAction?.isEnabled = false
+        switch textFieldTag(rawValue: textField.tag) {
+        case .albumName:
+            // The album cannot be renamed with an empty string.
+            renameAction?.isEnabled = false
+        case .albumDescription:
+            // The album cannot be renamed with an empty string or the same name.
+            // Check both text fields
+            let newName = renameAlert?.textFields?.first?.text
+            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
+                                                             newDescription: "")
+        case .nberOfImages:
+            // The album deletion cannot be requested if a number of images is not provided.
+            deleteAction?.isEnabled = false
+        case .none:
+            renameAction?.isEnabled = false
+            deleteAction?.isEnabled = false
+        }
         return true
     }
 
