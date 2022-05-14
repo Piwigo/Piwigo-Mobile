@@ -24,7 +24,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     @objc var albumData: PiwigoAlbumData?
     
     private var tableView: UITableView?
-    private var categoryAction: UIAlertAction?
+    private var renameAction: UIAlertAction?
     private var deleteAction: UIAlertAction?
 
     override init(frame: CGRect) {
@@ -137,7 +137,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                 cell?.hideSwipe(animated: true)
             })
 
-        categoryAction = UIAlertAction(
+        renameAction = UIAlertAction(
             title: NSLocalizedString("renameCategory_button", comment: "Rename"),
             style: .default, handler: { [self] action in
                 // Rename album if possible
@@ -149,8 +149,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
             })
 
         alert.addAction(cancelAction)
-        if let categoryAction = categoryAction {
-            alert.addAction(categoryAction)
+        if let renameAction = renameAction {
+            alert.addAction(renameAction)
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
@@ -568,7 +568,7 @@ extension AlbumCollectionViewCell: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Disable Add/Delete Category action
-        categoryAction?.isEnabled = false
+        renameAction?.isEnabled = false
         deleteAction?.isEnabled = false
         return true
     }
@@ -577,14 +577,14 @@ extension AlbumCollectionViewCell: UITextFieldDelegate
                    replacementString string: String) -> Bool {
         // Enable Add/Delete Category action if text field not empty
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        categoryAction?.isEnabled = (finalString?.count ?? 0) >= 1
+        renameAction?.isEnabled = (finalString?.count ?? 0) >= 1
         deleteAction?.isEnabled = (finalString?.count ?? 0) >= 1
         return true
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         // Disable Add/Delete Category action
-        categoryAction?.isEnabled = false
+        renameAction?.isEnabled = false
         deleteAction?.isEnabled = false
         return true
     }
