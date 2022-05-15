@@ -886,7 +886,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Root album -> reload collection
     if (self.categoryId == 0) {
         if (didChange) {
+            // Reload album collection
             [self.imagesCollection reloadData];
+            // Set navigation bar buttons
+            [self updateButtonsInPreviewMode];
         }
         if (completion) { completion(); }
         return;
