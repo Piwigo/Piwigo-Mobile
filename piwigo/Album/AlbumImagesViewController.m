@@ -923,10 +923,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     else {
         // Refresh all images if displayImageTitles option changed in Settings
-        BOOL didChangeSettings = NO;
         if (self.displayImageTitles != AlbumVars.shared.displayImageTitles) {
             self.displayImageTitles = AlbumVars.shared.displayImageTitles;
-            didChangeSettings = YES;
         }
         
         // Loop over the visible cells (the number of images did not changed)
