@@ -18,7 +18,7 @@ extension UIApplication {
         
         if #available(iOS 13, *) {
             // Consider only scenes in the foreground and retain the first one
-            let activeScenes = connectedScenes.filter({$0.activationState == .foregroundActive})
+            let activeScenes = connectedScenes.filter({[.foregroundActive,.foregroundInactive].contains($0.activationState)})
                 .compactMap({$0})
             for scene in activeScenes {
                 if let windowScene = scene as? UIWindowScene,
