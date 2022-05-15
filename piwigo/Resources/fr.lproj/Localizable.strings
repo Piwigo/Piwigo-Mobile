@@ -727,7 +727,7 @@
 
 "settings_biometricsReason" = "Accéder à vos albums Piwigo";
 "settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Utiliser Touch ID comme alternative à votre code de verrouillage de l'application.";
+"settings_biometricsTouchIDinfo" = "Utilise Touch ID comme alternative à votre code de verrouillage de l'application.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Utiliser Face ID comme alternative à votre code de verrouillage de l'application.";
 

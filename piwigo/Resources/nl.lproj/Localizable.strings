@@ -743,7 +743,7 @@
 "settings_clearClipboard2minUnit" = "After 2 min";
 "settings_clearClipboard5minText" = "After 5 minute";
 "settings_clearClipboard5minUnit" = "After 5 min";
-"settings_clearClipboardNever" = "Never";
+"settings_clearClipboardNever" = "Nooit";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
