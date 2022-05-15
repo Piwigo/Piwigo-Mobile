@@ -573,11 +573,12 @@ import piwigoKit
 
         // First check if we have the needed hardware support
         var error: NSError?
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+        let policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
+        if context.canEvaluatePolicy(policy, error: &error) {
             // Exploit TouchID or FaceID
             self.isAuthenticatingWithBiometrics = true
             let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
-            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason ) { success, error in
+            context.evaluatePolicy(policy, localizedReason: reason ) { success, error in
                 // Biometric authentication completed
                 self.isAuthenticatingWithBiometrics = false
                 // Did user authenticate successfully?
