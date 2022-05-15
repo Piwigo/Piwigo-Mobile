@@ -15,6 +15,6 @@
 
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
 -(void)removeImageWithId:(NSInteger)imageId;
--(void)reloadImages;
+-(void)reloadImagesOnCompletion:(void (^)(void))completion;
 
 @end

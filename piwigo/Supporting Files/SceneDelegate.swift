@@ -61,6 +61,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             else {
                 // Create additional scene => default album
                 appDelegate.loadNavigation(in: window)
+
+                // Blur views if the App is locked
+                if AppVars.shared.isAppUnlocked == false {
+                    // Protect presented login view
+                    addPrivacyProtection()
+                }
             }
 
             // Hold and present login window

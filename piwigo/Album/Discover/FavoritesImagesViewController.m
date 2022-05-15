@@ -669,7 +669,7 @@
 
 #pragma mark - Category Data
 
--(void)reloadImages
+-(void)reloadImagesOnCompletion:(void (^)(void))completion
 {
     // Load, sort images and reload collection
     NSArray *oldImageList = self.albumData.images;
@@ -682,22 +682,24 @@
         [self updateButtonsInPreviewMode];
         // Load, sort images and reload collection
         [self reloadImagesCollectionFrom:oldImageList];
-        
-        // End refreshing
-        if (@available(iOS 10.0, *)) {
-            if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
-        } else {
-            if (self.refreshControl) [self.refreshControl endRefreshing];
-        }
+        if (completion) { completion(); }
     }
     onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (completion) { completion(); }
         [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    [self reloadImages];
+    [self reloadImagesOnCompletion:^{
+        // End refreshing
+        if (@available(iOS 10.0, *)) {
+            if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+        } else {
+            if (self.refreshControl) [self.refreshControl endRefreshing];
+        }
+    }];
 }
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages

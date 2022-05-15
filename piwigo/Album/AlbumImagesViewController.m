@@ -826,17 +826,17 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
-            [self checkDataSourceWithChangedCategories:didChange];
-            
-            // End refreshing
-            if (@available(iOS 10.0, *)) {
-                if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
-            } else {
-                if (self.refreshControl) [self.refreshControl endRefreshing];
-            }
-            
-            // Hide HUD
-            [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+            [self checkDataSourceWithChangedCategories:didChange onCompletion:^{
+                // End refreshing
+                if (@available(iOS 10.0, *)) {
+                    if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+                } else {
+                    if (self.refreshControl) [self.refreshControl endRefreshing];
+                }
+                
+                // Hide HUD
+                [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+            }];
         });
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -855,7 +855,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }];
 }
 
--(void)checkDataSourceWithChangedCategories:(BOOL)didChange
+-(void)checkDataSourceWithChangedCategories:(BOOL)didChange onCompletion:(void (^)(void))completion
 {
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"checkDataSource...=> ID:%ld - Categories did change:%@", (long)self.categoryId, didChange ? @"YES" : @"NO");
@@ -872,12 +872,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if ((vc.categoryId == 0) ||
                     ([[CategoriesData sharedInstance] getCategoryById:vc.categoryId] != nil)) {
                     // Present the root album
+                    if (completion) { completion(); }
                     [self.navigationController popToViewController:vc animated:YES];
                     return;
                 }
             }
         }
         // We did not find a parent album — should never happen…
+        if (completion) { completion(); }
         return;
     }
     
@@ -886,6 +888,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (didChange) {
             [self.imagesCollection reloadData];
         }
+        if (completion) { completion(); }
         return;
     }
     
@@ -905,6 +908,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Cancel selection
         [self cancelSelect];
     }
+
+    // Close HUD (for example)
+    if (completion) { completion(); }
 }
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages

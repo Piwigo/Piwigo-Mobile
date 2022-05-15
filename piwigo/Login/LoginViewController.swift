@@ -699,52 +699,73 @@ class LoginViewController: UIViewController {
         self.hudViewController?.showPiwigoHUD(
             withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
             detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self,
-            buttonSelector: #selector(cancelLoggingIn),
+            buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
             inMode: .indeterminate)
 
         // Load category data in recursive mode in the background
-        DispatchQueue.global(qos: .default).async { [self] in
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
             // Reload album data
             AlbumService.getAlbumData(onCompletion: { task, didChange in
-                // Close HUD if needed
-                self.hudViewController?.hidePiwigoHUD {
+                // Back to main queue
+                DispatchQueue.main.async {
                     // Get top view controllers and update collection views
                     let viewControllers = UIApplication.shared.topViewControllers()
                     for viewController in viewControllers {
                         if viewController is AlbumImagesViewController {
                             // Check data source and reload collection if needed
                             let vc = viewController as? AlbumImagesViewController
-                            vc?.checkDataSource(withChangedCategories: didChange)
+                            vc?.checkDataSource(withChangedCategories: didChange) {
+                                // Close HUD if needed
+                                self.hudViewController?.hidePiwigoHUD { }
+                                // Resume uploads
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                appDelegate?.resumeAll()
+                            }
                         }
                         else if viewController is DiscoverImagesViewController {
                             // Refresh collection if needed
                             let vc = viewController as? DiscoverImagesViewController
-                            vc?.reloadImages()
+                            vc?.reloadImages() {
+                                // Close HUD if needed
+                               self.hudViewController?.hidePiwigoHUD { }
+                                // Resume uploads
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                appDelegate?.resumeAll()
+                            }
                         }
                         else if viewController is TaggedImagesViewController {
                             // Refresh collection if needed
                             let vc = viewController as? TaggedImagesViewController
-                            vc?.reloadImages()
+                            vc?.reloadImages() {
+                                // Close HUD if needed
+                                self.hudViewController?.hidePiwigoHUD { }
+                                // Resume uploads
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                appDelegate?.resumeAll()
+                            }
                         }
                         else if viewController is FavoritesImagesViewController, !NetworkVars.hasGuestRights,
                                 ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
                             // Refresh collection if needed
                             let vc = viewController as? FavoritesImagesViewController
-                            vc?.reloadImages()
+                            vc?.reloadImages() {
+                                // Close HUD if needed
+                                self.hudViewController?.hidePiwigoHUD { }
+                                // Resume uploads
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                appDelegate?.resumeAll()
+                            }
                         }
                     }
-                    
-                    // Resume uploads
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.resumeAll()
                 }
             },
             onFailure: { [self] task, error in
                 DispatchQueue.main.async(execute: { [self] in
-                    // Inform user that we could not load album data
-                    logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                    // Close HUD if needed
+                    self.hudViewController?.hidePiwigoHUD {
+                        // Inform user that we could not load album data
+                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                    }
                 })
             })
         }
