@@ -423,7 +423,12 @@ class AppLockViewController: UIViewController {
                 return
             }
             
-            // Store passcode
+            // Activate App-Lock if this is the first time we create a passcode
+            if AppVars.shared.appLockKey.isEmpty {
+                AppVars.shared.isAppLockActive =  true
+            }
+            
+            // Store encrypted passcode
             AppVars.shared.appLockKey = passcode.encrypted()
             
             // Return to the Settings view
