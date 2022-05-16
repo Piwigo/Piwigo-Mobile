@@ -34,13 +34,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
 
+        // Get other existing scenes
+        let existingScenes = UIApplication.shared.connectedScenes
+            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+
         // Determine the user activity from a new connection or from a session's state restoration.
         guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
-            // No scene to restore => Get other existing scenes
-            let existingScenes = UIApplication.shared.connectedScenes
-                .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
-
-            // Present login only if this is the first created scene
+            // No scene to restore —> Present login only if this is the first created scene
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             if existingScenes.isEmpty {
                 // Create login view
@@ -91,12 +91,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             debugPrint("Failed to restore scene from \(userActivity)")
         }
 
-        // Blur views if the App is locked
-        /// The passcode window is not presented  so that the app
-        /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppUnlocked == false {
-            // Protect presented login view
-            addPrivacyProtection()
+        // Check whether this is the first restored scene
+        if existingScenes.isEmpty {
+            // First restored scene —> Blur views if the App Lock is enabled
+            if AppVars.shared.isAppLockActive {
+                // Protect presented login view
+                addPrivacyProtection()
+            }
+            else {
+                // User is allowed to access albums
+                AppVars.shared.isAppUnlocked = true
+            }
+        } else {
+            // Additional restored scene —> Blur views if the App is locked
+            if AppVars.shared.isAppUnlocked == false {
+                // Protect presented login view
+                addPrivacyProtection()
+            }
         }
     }
     
@@ -242,10 +253,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let connectedScenes = UIApplication.shared.connectedScenes
         if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 0 { return }
 
-        // Remember to ask for passcode
-        if AppVars.shared.isAppLockActive {
-            AppVars.shared.isAppUnlocked = false
-        }
+        // Remember to ask for passcode or not
+        AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
 
         // Save changes in the app's managed object context when the app transitions to the background.
         DataController.saveContext()
