@@ -692,6 +692,9 @@ class LoginViewController: UIViewController {
     }
 
     func reloadCatagoryDataInBckgMode(afterRestoringScene: Bool) {
+        // Get current top view controllers
+        let viewControllers = UIApplication.shared.topViewControllers()
+        
         // Do not present HUD during re-login unless when restoring scenes
         hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
 
@@ -709,17 +712,17 @@ class LoginViewController: UIViewController {
                 // Back to main queue
                 DispatchQueue.main.async {
                     // Get top view controllers and update collection views
-                    let viewControllers = UIApplication.shared.topViewControllers()
+                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
                     for viewController in viewControllers {
                         if viewController is AlbumImagesViewController {
                             // Check data source and reload collection if needed
                             let vc = viewController as? AlbumImagesViewController
                             vc?.checkDataSource(withChangedCategories: didChange) {
                                 // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD { }
-                                // Resume uploads
-                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                                appDelegate?.resumeAll()
+                                self.hudViewController?.hidePiwigoHUD {
+                                    // Resume uploads
+                                    appDelegate?.resumeAll()
+                                }
                             }
                         }
                         else if viewController is DiscoverImagesViewController {
@@ -727,10 +730,10 @@ class LoginViewController: UIViewController {
                             let vc = viewController as? DiscoverImagesViewController
                             vc?.reloadImages() {
                                 // Close HUD if needed
-                               self.hudViewController?.hidePiwigoHUD { }
-                                // Resume uploads
-                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                                appDelegate?.resumeAll()
+                                self.hudViewController?.hidePiwigoHUD {
+                                   // Resume uploads
+                                   appDelegate?.resumeAll()
+                               }
                             }
                         }
                         else if viewController is TaggedImagesViewController {
@@ -738,10 +741,10 @@ class LoginViewController: UIViewController {
                             let vc = viewController as? TaggedImagesViewController
                             vc?.reloadImages() {
                                 // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD { }
-                                // Resume uploads
-                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                                appDelegate?.resumeAll()
+                                self.hudViewController?.hidePiwigoHUD {
+                                   // Resume uploads
+                                   appDelegate?.resumeAll()
+                               }
                             }
                         }
                         else if viewController is FavoritesImagesViewController, !NetworkVars.hasGuestRights,
@@ -750,10 +753,10 @@ class LoginViewController: UIViewController {
                             let vc = viewController as? FavoritesImagesViewController
                             vc?.reloadImages() {
                                 // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD { }
-                                // Resume uploads
-                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                                appDelegate?.resumeAll()
+                                self.hudViewController?.hidePiwigoHUD {
+                                   // Resume uploads
+                                   appDelegate?.resumeAll()
+                               }
                             }
                         }
                     }
