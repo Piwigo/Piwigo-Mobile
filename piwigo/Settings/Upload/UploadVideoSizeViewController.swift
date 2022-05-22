@@ -85,7 +85,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -97,7 +97,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
     
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     
@@ -110,13 +110,13 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                 width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
@@ -153,65 +153,21 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - UITableView - Footer
-    private func deviceVideoResolution() -> String {
-        // Collect system and device data
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-        let resolution: String = DeviceUtilities.deviceVideoCapabilities(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
-            p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
-                return String(cString: p2)
-            })
-        })
-        return resolution
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Footer height?
-        let resolution = deviceVideoResolution()
-        if resolution.isEmpty { return 0.0 }
-        let footer = String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), resolution)
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
 
-        return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
+    private func getContentOfFooter() -> String {
+        let resolution = UIDevice.current.modelVideoCapabilities
+        if resolution.isEmpty { return "" }
+        return String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), resolution)
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let footer = getContentOfFooter()
+        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadVideoSize_resolution", comment: "Built-in cameras maximum specifications:"), deviceVideoResolution())
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let footer = getContentOfFooter()
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 
     

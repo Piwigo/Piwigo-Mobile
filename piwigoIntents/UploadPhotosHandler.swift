@@ -38,7 +38,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         let fileTypes = UploadVars.serverFileTypes
         for index in 0..<files.count {
             guard let fileUrl = files[index].fileURL else { continue }
-            print("==>> \(String(describing: files[index].typeIdentifier))")
+            debugPrint("••> \(String(describing: files[index].typeIdentifier))")
             if fileTypes.contains(fileUrl.pathExtension.lowercased()) {
 
                 // Delete file of same name in Uploads directory if it already exists (incomplete previous attempt?)
@@ -168,13 +168,13 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // when the operation completes
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
-                    print("    > Task completed with success.")
+                    debugPrint("  > Task completed with success.")
                     // Save cached data
                     DataController.saveContext()
                 }
 
                 // Start the operations
-                print("    > Start upload operations in background task...");
+                debugPrint("  > Start upload operations in background task...");
                 uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
                 // Inform user that the shortcut was excuted with success

@@ -1,0 +1,340 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     13528,        332]
+NotebookOptionsPosition[     11416,        286]
+NotebookOutlinePosition[     11935,        305]
+CellTagsIndexPosition[     11892,        302]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Constants", "Section",
+ CellChangeTimes->{{3.724239862826426*^9, 
+  3.724239907994989*^9}},ExpressionUUID->"13f6793b-534d-4971-b5d9-\
+ccc7b426f4d5"],
+
+Cell["\<\
+titleLabel height: 23.5 points
+digiStack height: 10 points
+digiStackTop = titleLabel.Bottom + 16 points (i.e. digiTitleDist)
+
+mainStackSpacing: 10 points
+rowStackSpacing: 10 points
+button diameter: 60 to 90 points
+
+infoLabelHeight: depends on available width
+
+margin: 8 points minimum between top/left/right and bottom edges, mainStack \
+and top/bottom elements 
+safeAreaWidth and safeAreaHeight: size of view\
+\>", "Text",
+ CellChangeTimes->{{3.724239932485146*^9, 3.7242399847664843`*^9}, {
+  3.724240751941987*^9, 3.724240766964346*^9}, {3.724242580365882*^9, 
+  3.7242426020005217`*^9}, {3.724311411556035*^9, 3.724311415349601*^9}, {
+  3.72431146112878*^9, 3.724311602539227*^9}, {3.7243116462493668`*^9, 
+  3.724311688679796*^9}, {3.724311814195154*^9, 3.724311913140078*^9}, {
+  3.7243119810907917`*^9, 3.7243119949335117`*^9}, {3.724312059486215*^9, 
+  3.7243120603299723`*^9}, {3.724312148539649*^9, 3.724312149100821*^9}, {
+  3.8573784678076973`*^9, 3.857378604511273*^9}, {3.8573786378087387`*^9, 
+  3.8573787770836773`*^9}, {3.8573788523090057`*^9, 3.857379017677946*^9}, {
+  3.857379118557588*^9, 3.857379130973571*^9}, {3.857379346999194*^9, 
+  3.857379361981657*^9}, {3.857379443020582*^9, 
+  3.857379482036976*^9}},ExpressionUUID->"0a825440-3f39-4154-ad27-\
+1d4a71ed8f62"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Case of  iPhone in portrait mode, or iPad", "Section",
+ CellChangeTimes->{{3.724240928349883*^9, 3.7242409399158783`*^9}, {
+  3.7243131202697678`*^9, 3.724313132146418*^9}, {3.857378788867867*^9, 
+  3.8573788087976713`*^9}},ExpressionUUID->"c9b565e3-58ff-4b52-801e-\
+efae1532a0a2"],
+
+Cell["\<\
+Determine the diameter of each numkey satisfying the available width.
+The spacing between numkeys is a fifth of the diameter of a numkey.\
+\>", "Text",
+ CellChangeTimes->{{3.724240157141981*^9, 3.7242401743874483`*^9}, {
+   3.7242420488894997`*^9, 3.724242054902334*^9}, {3.724242330910983*^9, 
+   3.724242332001546*^9}, {3.724242382958866*^9, 3.724242386886621*^9}, 
+   3.72424257508381*^9, {3.724312885054716*^9, 3.724312913802993*^9}, {
+   3.857379190073473*^9, 3.8573792337038918`*^9}, {3.857384127504038*^9, 
+   3.8573841283828*^9}, {3.8573841842618837`*^9, 
+   3.8573841848757677`*^9}},ExpressionUUID->"53ac8847-08b2-48e6-8bcb-\
+63244922db69"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"safeAreaWidth", "==", 
+    RowBox[{"margin", "+", 
+     RowBox[{"3", "*", "diameter"}], "+", 
+     RowBox[{"2", "*", 
+      FractionBox["diameter", "5"]}], " ", "+", "margin"}]}], ",", " ", 
+   "diameter"}], "]"}]], "Input",
+ CellChangeTimes->{{3.724241019797896*^9, 3.724241141214376*^9}, {
+   3.7242412446308737`*^9, 3.7242412849658213`*^9}, {3.72424135952102*^9, 
+   3.724241382743573*^9}, {3.857378823047596*^9, 3.8573788329181356`*^9}, 
+   3.857379027846314*^9, {3.857379062246964*^9, 3.8573791141494427`*^9}, {
+   3.857379161018821*^9, 3.8573791815183477`*^9}, {3.857383374771577*^9, 
+   3.8573833788404493`*^9}, 3.8573834172944193`*^9},
+ CellLabel->
+  "(Local) In[4]:=",ExpressionUUID->"e9f04111-da44-4dba-9ed6-def397c2aa54"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"diameter", "\[Rule]", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["5", "17"]}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"2", " ", "margin"}], "-", "safeAreaWidth"}], ")"}]}]}], "}"}],
+   "}"}]], "Output",
+ CellChangeTimes->{3.8573792410826807`*^9, 3.857383382071478*^9, 
+  3.857383419218223*^9},
+ CellLabel->
+  "(Local) Out[4]=",ExpressionUUID->"3625ce2d-3e65-483d-81c8-5932c49fe24c"]
+}, Open  ]],
+
+Cell["\<\
+Determine the diameter of each numkey satisfying the available height.
+The spacing between numkeys is a fifth of the diameter of a numkey.\
+\>", "Text",
+ CellChangeTimes->{{3.724240157141981*^9, 3.7242401743874483`*^9}, {
+   3.7242420488894997`*^9, 3.724242054902334*^9}, {3.724242330910983*^9, 
+   3.724242332001546*^9}, {3.724242382958866*^9, 3.724242386886621*^9}, 
+   3.72424257508381*^9, {3.724312885054716*^9, 3.724312913802993*^9}, {
+   3.857379190073473*^9, 3.8573792337038918`*^9}, {3.857379295351275*^9, 
+   3.8573792961118803`*^9}, {3.857384130214942*^9, 3.857384130931322*^9}, {
+   3.85738418758986*^9, 
+   3.857384188214814*^9}},ExpressionUUID->"5065042a-0b25-42f5-b4ca-\
+8c0f799e809f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"safeAreaHeight", "==", 
+    RowBox[{"margin", "+", "infoLabelHeight", "+", "margin", "+", 
+     RowBox[{"4", "*", "diameter"}], "+", 
+     RowBox[{"3", "*", 
+      FractionBox["diameter", "5"]}], "+", "margin", "+", "digiStackHeight", 
+     "+", "digiTitleDist", "+", "titleLabelHeight", "+", "margin"}]}], ",", 
+   " ", "diameter"}], "]"}]], "Input",
+ CellChangeTimes->{{3.724241019797896*^9, 3.724241141214376*^9}, {
+   3.7242412446308737`*^9, 3.7242412849658213`*^9}, {3.72424135952102*^9, 
+   3.724241382743573*^9}, {3.857378823047596*^9, 3.8573788329181356`*^9}, 
+   3.857379027846314*^9, {3.857379062246964*^9, 3.8573791141494427`*^9}, {
+   3.857379161018821*^9, 3.8573791815183477`*^9}, {3.8573793277855873`*^9, 
+   3.857379331730356*^9}, {3.857379388896017*^9, 3.85737942332719*^9}, {
+   3.857379488181292*^9, 3.857379503623376*^9}, 3.857383527895855*^9},
+ CellLabel->
+  "(Local) In[5]:=",ExpressionUUID->"623e88cd-e566-4d7a-854d-b3ede0facd32"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"diameter", "\[Rule]", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["5", "23"]}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+      "digiStackHeight", "+", "digiTitleDist", "+", "infoLabelHeight", "+", 
+       RowBox[{"4", " ", "margin"}], "-", "safeAreaHeight", "+", 
+       "titleLabelHeight"}], ")"}]}]}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{3.8573792410826807`*^9, 3.857379527750678*^9, 
+  3.857383914324349*^9},
+ CellLabel->
+  "(Local) Out[5]=",ExpressionUUID->"62132d7e-e86c-4365-9a91-6313a5f84690"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Case of iPhone in landscape mode", "Section",
+ CellChangeTimes->{{3.724240928349883*^9, 3.7242409399158783`*^9}, {
+  3.724241713543927*^9, 3.724241757114379*^9}, {3.857384047123167*^9, 
+  3.857384057517688*^9}},ExpressionUUID->"f547424c-6509-4135-894b-\
+627542856127"],
+
+Cell["\<\
+Determine the diameter of each numkey satisfying the available width.
+The spacing between numkeys is a fifth of the diameter of a numkey.\
+\>", "Text",
+ CellChangeTimes->{{3.724240157141981*^9, 3.7242401743874483`*^9}, {
+   3.724242060455267*^9, 3.7242420650941687`*^9}, {3.724242338244404*^9, 
+   3.724242339193063*^9}, {3.724242378275432*^9, 3.724242380335005*^9}, {
+   3.724242517962653*^9, 3.724242572771824*^9}, {3.724242743353511*^9, 
+   3.7242427505252113`*^9}, {3.72424352065767*^9, 3.724243534019442*^9}, {
+   3.7242435700989847`*^9, 3.724243585542902*^9}, {3.7242436886642303`*^9, 
+   3.724243712086116*^9}, {3.724243767372967*^9, 3.7242439525694523`*^9}, {
+   3.724244076914476*^9, 3.724244230772067*^9}, {3.724244273127936*^9, 
+   3.7242442800104723`*^9}, 3.857384069379148*^9, {3.8573841341715803`*^9, 
+   3.857384179858902*^9}},ExpressionUUID->"1bfc2349-5de2-447c-b588-\
+08f232a5c0c0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{
+    FractionBox["safeAreaWidth", "2"], "==", 
+    RowBox[{"margin", "+", 
+     RowBox[{"3", "*", "diameter"}], "+", 
+     RowBox[{"2", "*", 
+      FractionBox["diameter", "5"]}], " ", "+", "margin"}]}], ",", " ", 
+   "diameter"}], "]"}]], "Input",
+ CellChangeTimes->{{3.724241019797896*^9, 3.724241141214376*^9}, {
+   3.7242412446308737`*^9, 3.7242412849658213`*^9}, {3.72424135952102*^9, 
+   3.724241382743573*^9}, {3.857378823047596*^9, 3.8573788329181356`*^9}, 
+   3.857379027846314*^9, {3.857379062246964*^9, 3.8573791141494427`*^9}, {
+   3.857379161018821*^9, 3.8573791815183477`*^9}, {3.857383374771577*^9, 
+   3.8573833788404493`*^9}, 3.8573834172944193`*^9, {3.857384107270636*^9, 
+   3.857384108437972*^9}},
+ CellLabel->
+  "(Local) In[6]:=",ExpressionUUID->"49dcd431-455c-4815-b868-a965e237798c"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"diameter", "\[Rule]", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["5", "34"]}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"4", " ", "margin"}], "-", "safeAreaWidth"}], ")"}]}]}], "}"}],
+   "}"}]], "Output",
+ CellChangeTimes->{3.8573792410826807`*^9, 3.857383382071478*^9, 
+  3.857383419218223*^9, 3.8573842103428698`*^9},
+ CellLabel->
+  "(Local) Out[6]=",ExpressionUUID->"0668a5c0-d510-4f32-b1fc-8f87d7c24474"]
+}, Open  ]],
+
+Cell["\<\
+Determine the max diameter of each numkey satisfying the available height.
+The spacing between numkeys is a fifth of the diameter of a numkey.\
+\>", "Text",
+ CellChangeTimes->{{3.724240157141981*^9, 3.7242401743874483`*^9}, {
+   3.7242420488894997`*^9, 3.724242054902334*^9}, {3.724242330910983*^9, 
+   3.724242332001546*^9}, {3.724242382958866*^9, 3.724242386886621*^9}, 
+   3.72424257508381*^9, {3.724312885054716*^9, 3.724312913802993*^9}, {
+   3.857379190073473*^9, 3.8573792337038918`*^9}, {3.857379295351275*^9, 
+   3.8573792961118803`*^9}, {3.857384194379197*^9, 
+   3.8573841951510153`*^9}},ExpressionUUID->"fb7e57e5-01d4-4b99-b1ce-\
+dfbbe9bd3379"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"safeAreaHeight", "==", 
+    RowBox[{"margin", "+", 
+     RowBox[{"4", "*", "diameter"}], "+", 
+     RowBox[{"3", "*", 
+      FractionBox["diameter", "5"]}], "+", "margin"}]}], ",", " ", 
+   "diameter"}], "]"}]], "Input",
+ CellChangeTimes->{{3.724241019797896*^9, 3.724241141214376*^9}, {
+   3.7242412446308737`*^9, 3.7242412849658213`*^9}, {3.72424135952102*^9, 
+   3.724241382743573*^9}, {3.857378823047596*^9, 3.8573788329181356`*^9}, 
+   3.857379027846314*^9, {3.857379062246964*^9, 3.8573791141494427`*^9}, {
+   3.857379161018821*^9, 3.8573791815183477`*^9}, {3.8573793277855873`*^9, 
+   3.857379331730356*^9}, {3.857379388896017*^9, 3.85737942332719*^9}, {
+   3.857379488181292*^9, 3.857379503623376*^9}, 3.857383527895855*^9, {
+   3.8573842877108097`*^9, 3.8573843174226313`*^9}},
+ CellLabel->
+  "(Local) In[7]:=",ExpressionUUID->"9b9ae0e1-cc69-40ef-86f2-5454556b3ae9"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{"diameter", "\[Rule]", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["5", "23"]}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"2", " ", "margin"}], "-", "safeAreaHeight"}], ")"}]}]}], 
+   "}"}], "}"}]], "Output",
+ CellChangeTimes->{3.8573792410826807`*^9, 3.857379527750678*^9, 
+  3.857383914324349*^9, 3.85738432172248*^9},
+ CellLabel->
+  "(Local) Out[7]=",ExpressionUUID->"75325aca-bcf4-458f-af2c-f815296dba28"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{822, 851},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+FrontEndVersion->"13.0 for Mac OS X x86 (64-bit) (February 4, 2022)",
+StyleDefinitions->FrontEnd`FileName[{"Report"}, "StandardReport.nb", 
+  CharacterEncoding -> "UTF-8"],
+ExpressionUUID->"147daf90-d10e-451d-b29a-437f66a89eef"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 154, 3, 69, "Section",ExpressionUUID->"13f6793b-534d-4971-b5d9-ccc7b426f4d5"],
+Cell[737, 27, 1298, 27, 287, "Text",ExpressionUUID->"0a825440-3f39-4154-ad27-1d4a71ed8f62"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2072, 59, 287, 4, 69, "Section",ExpressionUUID->"c9b565e3-58ff-4b52-801e-efae1532a0a2"],
+Cell[2362, 65, 659, 11, 57, "Text",ExpressionUUID->"53ac8847-08b2-48e6-8bcb-63244922db69"],
+Cell[CellGroupData[{
+Cell[3046, 80, 793, 16, 71, "Input",ExpressionUUID->"e9f04111-da44-4dba-9ed6-def397c2aa54"],
+Cell[3842, 98, 463, 14, 67, "Output",ExpressionUUID->"3625ce2d-3e65-483d-81c8-5932c49fe24c"]
+}, Open  ]],
+Cell[4320, 115, 709, 12, 57, "Text",ExpressionUUID->"5065042a-0b25-42f5-b4ca-8c0f799e809f"],
+Cell[CellGroupData[{
+Cell[5054, 131, 1013, 18, 101, "Input",ExpressionUUID->"623e88cd-e566-4d7a-854d-b3ede0facd32"],
+Cell[6070, 151, 571, 15, 98, "Output",ExpressionUUID->"62132d7e-e86c-4365-9a91-6313a5f84690"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6690, 172, 274, 4, 69, "Section",ExpressionUUID->"f547424c-6509-4135-894b-627542856127"],
+Cell[6967, 178, 909, 14, 57, "Text",ExpressionUUID->"1bfc2349-5de2-447c-b588-08f232a5c0c0"],
+Cell[CellGroupData[{
+Cell[7901, 196, 866, 18, 71, "Input",ExpressionUUID->"49dcd431-455c-4815-b868-a965e237798c"],
+Cell[8770, 216, 487, 14, 68, "Output",ExpressionUUID->"0668a5c0-d510-4f32-b1fc-8f87d7c24474"]
+}, Open  ]],
+Cell[9272, 233, 666, 11, 57, "Text",ExpressionUUID->"fb7e57e5-01d4-4b99-b1ce-dfbbe9bd3379"],
+Cell[CellGroupData[{
+Cell[9963, 248, 936, 18, 71, "Input",ExpressionUUID->"9b9ae0e1-cc69-40ef-86f2-5454556b3ae9"],
+Cell[10902, 268, 486, 14, 68, "Output",ExpressionUUID->"75325aca-bcf4-458f-af2c-f815296dba28"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

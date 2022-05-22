@@ -61,7 +61,7 @@ extension UploadManager {
                 let userInfo: [String : Any] = ["message" : NSLocalizedString("CoreDataFetch_UploadCreateFailed",
                                                                               comment: "Failed to create a new Upload object."),
                                                 "errorMsg" : error.localizedDescription];
-                NotificationCenter.default.post(name: PwgNotifications.appendAutoUploadRequestsFailed,
+                NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
                                                 object: nil, userInfo: userInfo)
             }
         }
@@ -129,7 +129,7 @@ extension UploadManager {
             DispatchQueue.main.async {
                 let userInfo: [String : Any] = ["title"   : title,
                                                 "message" : message];
-                NotificationCenter.default.post(name: PwgNotifications.autoUploadDisabled,
+                NotificationCenter.default.post(name: .pwgAutoUploadDisabled,
                                                 object: nil, userInfo: userInfo)
             }
         }
@@ -162,7 +162,7 @@ extension UploadManager {
                 // Error encountered, inform user
                 DispatchQueue.main.async {
                     let userInfo: [String : Any] = ["message" : error.localizedDescription];
-                    NotificationCenter.default.post(name: PwgNotifications.appendAutoUploadRequestsFailed,
+                    NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
                                                     object: nil, userInfo: userInfo)
                 }
             }

@@ -48,7 +48,7 @@ public class DataController: NSObject {
             }
         }
 
-        print("==> appGroupDirectory: \(piwigoURL!)")
+        print("••> AppGroupDirectory: \(piwigoURL!)")
         return piwigoURL!
     }()
 
@@ -76,7 +76,7 @@ public class DataController: NSObject {
             }
         }
 
-        print("==> appSupportDirectory: \(piwigoURL!)")
+        print("••> AppSupportDirectory: \(piwigoURL!)")
         return piwigoURL!
     }()
 

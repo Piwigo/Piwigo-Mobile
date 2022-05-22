@@ -40,7 +40,7 @@ extension UIColor {
 
     // MARK: - Piwigo Logo Colors
     class func piwigoColorBrown() -> UIColor {
-        return UIColor(red: 78 / 255.0, green: 78 / 255.0, blue: 78 / 255.0, alpha: 1.0)
+        return UIColor(red: 60 / 255.0, green: 60 / 255.0, blue: 60 / 255.0, alpha: 1.0)
     }
 
     class func piwigoColorOrange() -> UIColor {
@@ -123,6 +123,15 @@ extension UIColor {
             return UIColor(red: 239 / 255.0, green: 239 / 255.0, blue: 244 / 255.0, alpha: 1.0)
         }
     }
+    
+    // MARK: - Colors of numkeys
+    class func piwigoColorNumkey() -> UIColor {
+        if AppVars.shared.isDarkPaletteActive {
+            return UIColor.black
+        } else {
+            return UIColor.white
+        }
+    }
 
     // MARK: - Old colors
     class func piwigoColorGray() -> UIColor {
@@ -135,7 +144,7 @@ extension UIColor {
 
     class func piwigoColorWhiteCream() -> UIColor {
         if AppVars.shared.isDarkPaletteActive {
-            return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
+            return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
         } else {
             return UIColor(red: 51 / 255.0, green: 51 / 255.0, blue: 53 / 255.0, alpha: 1.0)
         }

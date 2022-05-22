@@ -8,7 +8,7 @@ SELECT
 {
     "stat":"ok",
     "result":{
-        "infos": [{"name":"version","value":"11.5.0"},
+        "infos": [{"name":"version","value":"12.2.0"},
                   {"name":"nb_elements","value":"339"},
                   {"name":"nb_categories","value":"28"},
                   {"name":"nb_virtual","value":"28"},
@@ -19,7 +19,8 @@ SELECT
                   {"name":"nb_users","value":"7"},
                   {"name":"nb_groups","value":"1"},
                   {"name":"nb_comments","value":"0"},
-                  {"name":"first_date","value":"2017-08-31 22:44:11"}
+                  {"name":"first_date","value":"2017-08-31 22:44:11"},
+                  {"name":"cache_size","value":4242}
         ]
     }
 }

@@ -16,7 +16,6 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -67,13 +66,9 @@
 {
     [super viewDidLoad];
 
-    // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-    self.imageCellSize = CGSizeMake(size, size);
-
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
-                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+                                                 name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 -(void)applyColorPalette
@@ -160,6 +155,15 @@
 {
     [super viewDidAppear:animated];
     
+    // Update title of current scene (iPad only)
+    if (@available(iOS 13.0, *)) {
+        if (self.view.window != nil) {
+            if (self.view.window.windowScene != nil) {
+                self.view.window.windowScene.title = self.title;
+            }
+        }
+    }
+
     // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
         // Highlight the cell of interest
@@ -205,10 +209,6 @@
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-        self.imageCellSize = CGSizeMake(size, size);
-
         // Reload colelction
         [self.imagesCollection reloadData];
     } completion:nil];
@@ -220,21 +220,19 @@
     
     // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
-        if (hasUserInterfaceStyleChanged) {
-            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        BOOL isSystemDarkModeActive = UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+        if (AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive) {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive;
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
-    } else {
-        // Fallback on earlier versions
     }
 }
 
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 
@@ -366,7 +364,8 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.imageCellSize;
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+    return CGSizeMake(size, size);
 }
 
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -379,7 +378,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell configWith:imageData inCategoryId:kPiwigoSearchCategoryId for:self.imageCellSize];
+        [cell configWith:imageData inCategoryId:kPiwigoSearchCategoryId];
     
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
@@ -518,7 +517,7 @@
                 }
                 
                 // Should we continue loading images?
-                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                NSLog(@"••> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
                 if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                     [self needToLoadMoreImages];
                 }

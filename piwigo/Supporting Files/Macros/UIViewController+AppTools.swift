@@ -11,6 +11,26 @@ import UIKit
 @objc
 extension UIViewController {
 
+    // MARK: - Top Most View Controller
+    func topMostViewController() -> UIViewController? {
+        // Look for the top most UIViewController
+        var topViewController: UIViewController? = self
+        while true {
+            if let presented = topViewController?.presentedViewController {
+                topViewController = presented
+            } else if let navController = topViewController as? UINavigationController {
+                topViewController = navController.topViewController
+            } else if let tabBarController = topViewController as? UITabBarController {
+                topViewController = tabBarController.selectedViewController
+            } else {
+                // Handle any other third party container in `else if` if required
+                break
+            }
+        }
+        return topViewController
+    }
+
+    
     // MARK: - MBProgressHUD
     func showPiwigoHUD(withTitle title:String = "", detail:String = "",
                        buttonTitle:String = "", buttonTarget:UIViewController? = nil, buttonSelector:Selector? = nil,

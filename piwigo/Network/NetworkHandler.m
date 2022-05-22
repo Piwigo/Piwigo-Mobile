@@ -775,13 +775,13 @@ NSInteger const loadingViewTag = 899;
                               progress:progress
                               success:^(NSURLSessionTask *task, id responseObject) {
 #if defined(DEBUG_SESSION)
-        NSLog(@"==> post request URL: %@", task.originalRequest.URL);
-        NSLog(@"==> post request HTTP headers: %@", task.originalRequest.allHTTPHeaderFields);
-        NSLog(@"==> post request HttpBody: %@ i.e. \"%@\"", task.originalRequest.HTTPBody, [[NSString alloc] initWithData:task.originalRequest.HTTPBody encoding:NSUTF8StringEncoding]);
+        NSLog(@"••> post request URL: %@", task.originalRequest.URL);
+        NSLog(@"••> post request HTTP headers: %@", task.originalRequest.allHTTPHeaderFields);
+        NSLog(@"••> post request HttpBody: %@ i.e. \"%@\"", task.originalRequest.HTTPBody, [[NSString alloc] initWithData:task.originalRequest.HTTPBody encoding:NSUTF8StringEncoding]);
         
-        NSLog(@"==> post response URL: %@", task.response.URL);
-        NSLog(@"==> post response MIME: %@", task.response.MIMEType);
-        NSLog(@"==> post response Encoding: %@", task.response.textEncodingName);
+        NSLog(@"••> post response URL: %@", task.response.URL);
+        NSLog(@"••> post response MIME: %@", task.response.MIMEType);
+        NSLog(@"••> post response Encoding: %@", task.response.textEncodingName);
 #endif
                                    if (success) {
                                        success(task, responseObject);
@@ -863,14 +863,13 @@ NSInteger const loadingViewTag = 899;
         // Fallback on earlier versions
     }
 
-    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
+    NSArray<UIViewController *> *topViewControllers = [UIApplication.sharedApplication topViewControllers];
+    for (UIViewController *topViewController in topViewControllers) {
+        [topViewController presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     }
-    [topViewController presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
 }
 
 @end

@@ -231,7 +231,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Retrieve image data if needed
         if [kPiwigoCategorySelectActionCopyImages,
@@ -291,7 +291,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
     
     @objc
@@ -457,13 +457,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                 width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
@@ -919,7 +919,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
             let userInfo = ["categoryId": parentCatData.albumId]
-            NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
             AlbumService.moveCategory(self.inputCategoryId,
                                       intoCategory: parentCatData.albumId) { task, movedSuccessfully in
@@ -1049,7 +1049,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func copySingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": categoryData.albumId]
-        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
         guard let imageData = self.inputImageData else {
@@ -1090,7 +1090,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func copySeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": categoryData.albumId]
-        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
         if inputImagesData.count == 0 {
@@ -1169,7 +1169,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func moveSingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": categoryData.albumId]
-        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
         guard let imageData = self.inputImageData else {
@@ -1210,7 +1210,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func moveSeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": categoryData.albumId]
-        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
         if inputImagesData.count == 0 {

@@ -54,7 +54,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {
@@ -230,10 +230,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         oldFileName = imageFile.text
 
         // Determine the present view controller
-        var topViewController = UIApplication.shared.keyWindow?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
+        let topViewController = window?.topMostViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("renameImage_title", comment: "Original File"),
@@ -335,7 +332,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
                 else {
                     // Could not change the filename
-                    debugPrint("••>> setImageInfoForImageWithId(): no successful")
+                    debugPrint("••> setImageInfoForImageWithId(): no successful")
                     let error = JsonError.unexpectedError
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(

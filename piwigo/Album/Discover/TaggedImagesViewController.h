@@ -10,7 +10,11 @@
 
 @interface TaggedImagesViewController : UIViewController
 
+@property (nonatomic, assign) NSInteger tagId;
+@property (nonatomic, strong) NSString *tagName;
+
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
 -(void)removeImageWithId:(NSInteger)imageId;
+-(void)reloadImagesOnCompletion:(void (^)(void))completion;
 
 @end

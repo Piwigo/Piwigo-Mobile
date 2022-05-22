@@ -117,16 +117,21 @@ CGFloat const kImageDetailsMarginsSpacing = 16;   // Left and right margins for 
     CGFloat nberOfImagesInPortrait = (CGFloat)imagesPerRowInPortrait;
     
     // Size of view or screen
+    CGSize screenSize = [self sizeOfPageForView:nil];
     CGSize pageSize = [self sizeOfPageForView:view];
     
     // Image horizontal cell spacing
     CGFloat imageCellHorizontalSpacing = [self imageCellHorizontalSpacingForCollectionType:type];
 
-    // Size of images determined for the portrait mode
-    CGFloat imagesSizeInPortrait = floorf((fmin(pageSize.width,pageSize.height) - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait);
+    // Size of images determined for the portrait mode in full screen
+    CGFloat imagesSizeInPortrait = floorf((fmin(screenSize.width,screenSize.height) - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait);
     
     // Images per row in whichever mode we are displaying them
-    CGFloat imagesPerRow = fmax([self minNberOfImagesPerRow], roundf((pageSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing) / (imageCellHorizontalSpacing + imagesSizeInPortrait)));
+    CGFloat imagesPerRow = fmax([self minNberOfImagesPerRow], roundf((screenSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing) / (imageCellHorizontalSpacing + imagesSizeInPortrait)));
+
+    // Images per row for the current size class
+    imagesPerRow *= pageSize.width / screenSize.width;
+    imagesPerRow = fmax(1.0, roundf(imagesPerRow));
     
     // Size of squared images for that number
     return floorf((pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing) / imagesPerRow);

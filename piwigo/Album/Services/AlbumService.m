@@ -369,7 +369,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
               // Add new category to list of recent albums
               NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:newCatId]};
-              [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.addRecentAlbum
+              [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgAddRecentAlbum
                                                                   object:nil userInfo:userInfo];
               
               // Task completed successfully
@@ -450,7 +450,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             // Remove category from list of recent albums
             NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:categoryId]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.removeRecentAlbum
+            [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgRemoveRecentAlbum
                                                                 object:nil userInfo:userInfo];
               if(completion)
               {

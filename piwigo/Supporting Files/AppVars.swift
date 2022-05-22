@@ -37,6 +37,18 @@ class AppVars: NSObject {
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
     @objc var isLightPaletteModeActive: Bool
     
+    /// - App Lock option
+    @UserDefault("isAppLockActive", defaultValue: false)
+    var isAppLockActive: Bool
+    @UserDefault("appLockKey", defaultValue: "")
+    var appLockKey: String
+    @UserDefault("isBiometricsEnabled", defaultValue: true)
+    var isBiometricsEnabled: Bool
+    
+    /// — Clear clipboard after delay option (never by default)
+    @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
+    @objc var clearClipboardDelay: Int
+
     /// - Memory cache size
     let kPiwigoMemoryCacheInc = 8            // Slider increment
     let kPiwigoMemoryCacheMin = 0            // Minimum size
@@ -73,4 +85,10 @@ class AppVars: NSObject {
     
     /// - Is system dark palette active?
     @objc var isSystemDarkModeActive = false
+    
+    /// - Check for haptics compatibility at the app’s launch
+    var supportsHaptics: Bool = false
+
+    /// - App Lock status
+    var isAppUnlocked: Bool = false
 }

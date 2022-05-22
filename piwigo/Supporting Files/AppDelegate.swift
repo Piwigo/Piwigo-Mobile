@@ -8,8 +8,10 @@
 
 import AVFoundation
 import BackgroundTasks
+import CoreHaptics
 import Foundation
 import Intents
+import LocalAuthentication
 import UIKit
 
 import IQKeyboardManagerSwift
@@ -21,25 +23,14 @@ import piwigoKit
     let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
-    
-    private var _loginVC: LoginViewController!
-    var loginVC: LoginViewController {
-        // Already existing?
-        if _loginVC != nil { return _loginVC }
-        
-        // Create login view controller for current device
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            _loginVC = LoginViewController_iPhone()
-        } else {
-            _loginVC = LoginViewController_iPad()
-        }
-        return _loginVC
-    }
+    var privacyView: UIView?
+    var isAuthenticatingWithBiometrics = false
+    var didCancelBiometricsAuthentication = false
 
-
-    // MARK: - Application delegate methods
+    // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        print("••> App did finish launching with options.")
         // Read old settings file and create UserDefaults cached files
         Model.sharedInstance().readFromDisk()
 
@@ -61,54 +52,93 @@ import piwigoKit
         keyboardManager.shouldToolbarUsesTextFieldTintColor = true
         keyboardManager.shouldShowToolbarPlaceholder = true
 
+        // Color palette depends on system settings
+        initColorPalette()
+
+        // Check if the device supports haptics.
+        if #available(iOS 13.0, *) {
+            let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+            AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
+        }
+        
         // Set Settings Bundle data
         setSettingsBundleData()
         
-        // Register launch handlers for tasks if using iOS 13
-        // Will have to check if pwg.images.uploadAsync is available
-        if #available(iOS 13.0, *) {
-            registerBgTasks()
+        // Create permanent session managers for retrieving data and downloading images
+        NetworkHandler.createJSONdataSessionManager()       // 30s timeout, 4 connections max
+        NetworkHandler.createFavoritesDataSessionManager()  // 30s timeout, 1 connection max
+        NetworkHandler.createImagesSessionManager()         // 60s timeout, 4 connections max
+
+        // In absence of passcode, albums are always accessible
+        if AppVars.shared.appLockKey.isEmpty {
+            AppVars.shared.isAppLockActive = false
+            AppVars.shared.isAppUnlocked = true
         }
-
+        
+        // What follows depends on iOS version
         if #available(iOS 13.0, *) {
+            // Register launch handlers for tasks if using iOS 13
+            /// Will have to check if pwg.images.uploadAsync is available
+            registerBgTasks()
+
             // Delegate to SceneDelegate
-            /// - Present login view
+            /// - Present login view and if needed passcode view
         } else {
-            // Complete user interface initialization, login ?
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
-
-            // Look for paswword in Keychain if server address and username are provided
-            if service.count > 0, username.count > 0 {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
-
-            // Show login view
+            // Create login view
             window = UIWindow(frame: UIScreen.main.bounds)
+            loadLoginView(in: window)
             window?.makeKeyAndVisible()
-            loadLoginView()
             
-            // Login?
-            if service.count > 0 || (username.count > 0 && password.count > 0) {
-                loginVC.launchLogin()
+            // Blur views if the App Lock is enabled
+            /// The passcode window is not presented  so that the app
+            /// does not request the passcode until it is put into the background.
+            if AppVars.shared.isAppLockActive {
+                // User is not allowed to access albums yet
+                AppVars.shared.isAppUnlocked = false
+                // Protect presented login view
+                addPrivacyProtection(to: window)
+            }
+            else {
+                // User is allowed to access albums
+                AppVars.shared.isAppUnlocked = true
             }
         }
         
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
-                                               name: PwgNotifications.leftUploads, object: nil)
+                                               name: .pwgLeftUploads, object: nil)
         
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
-                                               name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
+                                               name: .pwgAppendAutoUploadRequestsFailed, object: nil)
 
         // Register uploaded image notification appending image to CategoriesData cache
         NotificationCenter.default.addObserver(self, selector: #selector(addImage),
-                                               name: PwgNotifications.addUploadedImageToCache, object: nil)
+                                               name: .pwgAddUploadedImageToCache, object: nil)
         return true
     }
 
+
+    // MARK: - Scene Configuration
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        
+        var currentActivity: ActivityType?
+        options.userActivities.forEach {
+          currentActivity = ActivityType(rawValue: $0.activityType)
+        }
+
+        let activity = currentActivity ?? ActivityType.album
+        return activity.sceneConfiguration()
+    }
+
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        //..
+    }
+
+    
+    // MARK: - App Remote Notifications
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     }
 
@@ -116,7 +146,118 @@ import piwigoKit
         print("Did fail to register notifications.")
     }
     
+
+    // MARK: - Transitioning to the Foreground
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        print("••> App will enter foreground.")
+        // Called when the app is about to enter the foreground.
+        // This call is then followed by a call to applicationDidBecomeActive().
+
+        // Enable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = true
+        
+        // Enable network reachability monitoring
+        AFNetworkReachabilityManager.shared().startMonitoring()
+    }
+        
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        print("••> App did become active.")
+        // The app has become active.
+        // Restart any tasks that were paused (or not yet started) while the application was inactive.
+        // If the application was previously in the background, optionally refresh the user interface.
+        
+        // Called during biometric authentication?
+        if isAuthenticatingWithBiometrics { return }
+
+        // Request passcode if necessary
+        if AppVars.shared.isAppUnlocked == false {
+            // Request passcode for accessing app
+            requestPasscode(onTopOf: window) { appLockVC in
+                // Set delegate
+                appLockVC.delegate = self
+                // Hide privacy view
+                self.privacyView?.isHidden = true
+                // Did user enable biometrics?
+                if AppVars.shared.isBiometricsEnabled,
+                   self.didCancelBiometricsAuthentication == false {
+                    // Yes, perform biometrics authentication
+                    self.performBiometricAuthentication() { success in
+                        // Authentication successful?
+                        if !success { return }
+                        // Dismiss passcode view controller
+                        appLockVC.dismiss(animated: true) {
+                            // Unlock the app
+                            self.loginOrReloginAndResumeUploads()
+                        }
+                    }
+                }
+            }
+            return
+        }
+
+        // Login/relogin and resume uploads
+        loginOrReloginAndResumeUploads()
+    }
+
+    
+    // MARK: - Transitioning to the Background
+    func applicationWillResignActive(_ application: UIApplication) {
+        print("••> App will resign active.")
+        // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
+        // Called during biometric authentication?
+        if isAuthenticatingWithBiometrics { return }
+
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented  so that the app
+        /// does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive {
+            // Remember to ask for passcode
+            AppVars.shared.isAppUnlocked = false
+            // Remove passcode view controller if presented
+            if let topViewController = window?.topMostViewController(),
+               topViewController is AppLockViewController {
+                // Protect presented views
+                privacyView?.isHidden = false
+                // Reset biometry flag
+                didCancelBiometricsAuthentication = false
+                // Dismiss passcode view
+                topViewController.dismiss(animated: true)
+            } else {
+                // Protect presented views
+                addPrivacyProtection(to: window)
+            }
+        } else {
+            // Remember to not ask for passcode
+            AppVars.shared.isAppUnlocked = true
+        }
+
+        // Inform Upload Manager to pause activities
+        UploadManager.shared.isPaused = true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        print("••> App did enter background.")
+        // Called when the app is now in the background.
+        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        // Save cached data
+        DataController.saveContext()
+
+        // Disable network activity indicator
+        AFNetworkActivityIndicatorManager.shared().isEnabled = false
+        
+        // Disable network reachability monitoring
+        AFNetworkReachabilityManager.shared().stopMonitoring()
+
+        // Clean up /tmp directory
+        cleanUpTemporaryDirectory(immediately: false)
+    }
+        
     func applicationWillTerminate(_ application: UIApplication) {
+        print("••> App will terminate.")
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
@@ -137,114 +278,16 @@ import piwigoKit
         cleanUpTemporaryDirectory(immediately: false)
 
         // Unregister left upload requests notifications updating the badge
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.leftUploads, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
         
         // Unregister auto-upload appender failures
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.appendAutoUploadRequestsFailed, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
         
         // Unregister uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.addUploadedImageToCache, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Save cached data
-            /// - Schedule background tasks
-        } else {
-            // Inform Upload Manager to pause activities
-            UploadManager.shared.isPaused = true
-            // Save cached data
-            DataController.saveContext()
-        }
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Save cached data
-            /// - Schedule background tasks
-            /// - Delete files stored in /tmp directory
-        } else {
-            // Save cached data
-            DataController.saveContext()
-
-            // Disable network activity indicator
-            AFNetworkActivityIndicatorManager.shared().isEnabled = false
-            
-            // Disable network reachability monitoring
-            AFNetworkReachabilityManager.shared().stopMonitoring()
-
-            // Clean up /tmp directory
-            cleanUpTemporaryDirectory(immediately: false)
-        }
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state.
-        // This call is then followed by a call to applicationDidBecomeActive().
-
-        if #available(iOS 13.0, *) {
-            // Managed by SceneDelegate
-        } else {
-            // Enable network activity indicator
-            AFNetworkActivityIndicatorManager.shared().isEnabled = true
-            
-            // Enable network reachability monitoring
-            AFNetworkReachabilityManager.shared().startMonitoring()
-        }
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive.
-        // If the application was previously in the background, optionally refresh the user interface.
-        
-        if #available(iOS 13.0, *) {
-            // Managed by SceneDelegate
-        } else {
-            // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
-            // Furthermore, it will interrupt any other current audio sessions (no mixing)
-            let audioSession = AVAudioSession.sharedInstance()
-            let availableCategories = audioSession.availableCategories
-            if availableCategories.contains(AVAudioSession.Category.playback) {
-                do {
-                    try audioSession.setCategory(.playback)
-                } catch {
-                }
-            }
-
-            // Should we resume uploads?
-            if let rootVC = self.window?.rootViewController, let child = rootVC.children.first,
-               !(child is LoginViewController_iPhone), !(child is LoginViewController_iPad) {
-                // Determine for how long the session is opened
-                /// Piwigo 11 session duration defaults to an hour.
-                let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-                if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                    /// - Perform relogin
-                    /// - Resume upload operations in background queue
-                    ///   and update badge, upload button of album navigator
-                    reloginAndRetry {
-                        // Reload category data from server in background mode
-                        self.loginVC.reloadCatagoryDataInBckgMode()
-                    }
-                } else {
-                    /// - Resume upload operations in background queue
-                    ///   and update badge, upload button of album navigator
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeAll()
-                    }
-                }
-            }
-        }
-    }
-    
-    
     // MARK: - Background Uploading
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
@@ -398,23 +441,6 @@ import piwigoKit
             }
         }
     }
-    
-    
-    // MARK: - UISceneSession lifecycle
-
-    @available(iOS 13.0, *)
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-    
-    @available(iOS 13.0, *)
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
 
 
     // MARK: - Cleaning
@@ -437,6 +463,7 @@ import piwigoKit
         }
     }
 
+    
     // MARK: - Intents
     
     @available(iOS 14.0, *)
@@ -473,8 +500,7 @@ import piwigoKit
     
     
     // MARK: - Settings bundle
-
-    // Updates the version and build numbers in the app's settings bundle.
+    /// Updates the version and build numbers in the app's settings bundle.
     private func setSettingsBundleData() {
         
         // Get the Settings.bundle object
@@ -492,39 +518,140 @@ import piwigoKit
         defaults.setValue(versionNumberInSettings, forKey: "version_prefs")
     }
 
+    
+    // MARK: - Privacy & Passcode
+    func addPrivacyProtection(to window: UIWindow?) {
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented now so that the app
+        /// does not request the passcode until it is put into the background.
+        if privacyView == nil,
+           let frame = window?.frame {
+            if UIAccessibility.isReduceTransparencyEnabled {
+                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
+                 let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+                 let initialViewController = storyboard.instantiateInitialViewController()
+                 privacyView = initialViewController?.view
+             } else {
+                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
+                 let blurEffect = UIBlurEffect(style: .dark)
+                 privacyView = UIVisualEffectView(effect: blurEffect)
+                 privacyView?.frame = frame
+             }
+         }
+        window?.addSubview(privacyView!)
+        privacyView?.isHidden = false
+    }
+
+    func requestPasscode(onTopOf window: UIWindow?,
+                         completion: @escaping (AppLockViewController) -> Void) {
+        // Check if the passcode is already being requested
+        guard let topViewController = window?.topMostViewController() else { return }
+        if let appLockVC = topViewController as? AppLockViewController {
+            // Passcode view controller already presented
+            completion(appLockVC)
+            return
+        }
+
+        // Create passcode view controller
+        let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+        guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+        appLockVC.config(forAction: .unlockApp)
+        appLockVC.modalPresentationStyle = .overFullScreen
+        appLockVC.modalTransitionStyle = .crossDissolve
+        topViewController.present(appLockVC, animated: false, completion: {
+            completion(appLockVC)
+        })
+    }
+    
+    func performBiometricAuthentication(completion: @escaping (Bool) -> Void) {
+        // Get a fresh context
+        let context = LAContext()
+        context.localizedFallbackTitle = ""
+        if #available(iOS 11.0, *) {
+            context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
+        }
+
+        // First check if we have the needed hardware support
+        var error: NSError?
+        let policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
+        if context.canEvaluatePolicy(policy, error: &error) {
+            // Exploit TouchID or FaceID
+            self.isAuthenticatingWithBiometrics = true
+            let reason = NSLocalizedString("settings_biometricsReason", comment: "Access your Piwigo albums")
+            context.evaluatePolicy(policy, localizedReason: reason ) { success, error in
+                // Biometric authentication completed
+                self.isAuthenticatingWithBiometrics = false
+                // Did user authenticate successfully?
+                if success {
+                    // User allowed to access app
+                    AppVars.shared.isAppUnlocked = true
+                    // Dismiss passcode view
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
+                }
+                else {
+                    // Fall back to a asking for passcode
+                    if let error = error as? LAError {
+                        switch error.code {
+                        case .userCancel, .userFallback, .invalidContext, .notInteractive:
+                            self.didCancelBiometricsAuthentication = true
+                        case .authenticationFailed, .systemCancel, .appCancel, .passcodeNotSet:
+                            fallthrough
+                        default:
+                            debugPrint(error.localizedDescription)
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        completion(false)
+                    }
+                }
+            }
+        }
+    }
+
 
     // MARK: - Login View
+    private var _loginVC: LoginViewController!
+    var loginVC: LoginViewController {
+        // Already existing?
+        if _loginVC != nil { return _loginVC }
+        
+        // Create login view controller
+        let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
+        _loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+        return _loginVC
+    }
 
-    func loadLoginView() {
+    func loadLoginView(in window: UIWindow?) {
+        guard let window = window else { return }
+        
         // Load Login view
         let nav = LoginNavigationController(rootViewController: loginVC)
         nav.setNavigationBarHidden(true, animated: false)
-        window?.rootViewController = nav
-        
-        // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-        window?.rootViewController?.view.setNeedsUpdateConstraints()
+        window.rootViewController = nav
 
-        // Color palette depends on system settings
         if #available(iOS 13.0, *) {
-            AppVars.shared.isSystemDarkModeActive = (loginVC.traitCollection.userInterfaceStyle == .dark);
-            print("•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light", AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light", lroundf(Float(UIScreen.main.brightness) * 100.0), AppVars.shared.switchPaletteThreshold, AppVars.shared.isDarkPaletteActive ? "Dark" : "Light");
+            // Transition to login view
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil) { _ in }
         } else {
-            // Fallback on earlier versions
-            AppVars.shared.isSystemDarkModeActive = false
+            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+            window.rootViewController?.view.setNeedsUpdateConstraints()
         }
-        
-        // Apply color palette
-        screenBrightnessChanged()
     }
 
-    @objc func reloginAndRetry(completion: @escaping () -> Void) {
-        let hadOpenedSession = NetworkVars.hadOpenedSession
+    @objc func reloginAndRetry(afterRestoringScene: Bool,
+                               completion: @escaping () -> Void) {
         let server = NetworkVars.serverPath
         let user = NetworkVars.username
         
         DispatchQueue.main.async {
-            if hadOpenedSession && (server.count > 0) && (user.count > 0) {
-                self.loginVC.performRelogin() { completion() }
+            if (server.isEmpty == false) && (user.isEmpty == false) {
+                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) { completion() }
+            } else if afterRestoringScene {
+                self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
             } else {
                 // Return to login view
                 ClearCache.closeSessionAndClearCache() { }
@@ -534,29 +661,28 @@ import piwigoKit
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry { }
+            reloginAndRetry(afterRestoringScene: false) { }
         }
     }
 
     
-    // MARK: - Album navigator
-
-    @objc func loadNavigation() {
+    // MARK: - Album Navigator
+    @objc func loadNavigation(in window: UIWindow?) {
+        guard let window = window else { return }
+        
         // Display default album
         guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
+        window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
-            if let sceneDelegate = UIApplication.shared.connectedScenes.randomElement()?.delegate as? SceneDelegate,
-               let window = sceneDelegate.window {
-                window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
-                UIView.transition(with: window, duration: 0.5,
-                                  options: .transitionCrossDissolve) { }
-                    completion: { _ in }
-            }
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve) { }
+                completion: { success in
+//                    self._loginVC = nil
+                }
         } else {
             // Fallback on earlier versions
-            window?.rootViewController = UINavigationController(rootViewController: defaultAlbum)
             loginVC.removeFromParent()
-            _loginVC = nil
+//            _loginVC = nil
         }
         
         // Observe the UIScreenBrightnessDidChangeNotification
@@ -566,11 +692,11 @@ import piwigoKit
 
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
-                                               name: PwgNotifications.addRecentAlbum, object: nil)
+                                               name: .pwgAddRecentAlbum, object: nil)
 
         // Observe the PiwigoRemoveRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(removeRecentAlbumWithAlbumId),
-                                               name: PwgNotifications.removeRecentAlbum, object: nil)
+                                               name: .pwgRemoveRecentAlbum, object: nil)
 
         // Observe the Power State notification
         let name = Notification.Name.NSProcessInfoPowerStateDidChange
@@ -584,11 +710,94 @@ import piwigoKit
         }
     }
 
+    @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
+        // NOP if albumId undefined, root or smart album
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+            fatalError("!!! Did not provide a category ID !!!")
+        }
+        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
 
-    // MARK: - Light and dark modes
+        // Get new album Id as string
+        let categoryIdStr = String(categoryId)
+        
+        // Create new array of recent albums
+        var newList = [String]()
+        
+        // Add albumId to top of list
+        newList.append(categoryIdStr)
+
+        // Get current list of recent albums
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
+
+        // Add recent albums while avoiding duplicates
+        if (recentAlbumsStr.count != 0) {
+            // List of recent album IDs
+            let oldList = recentAlbumsStr.components(separatedBy: ",")
+            
+            // Append album IDs of old list
+            for catId in oldList {
+                if newList.contains(catId) { continue }
+                newList.append(catId)
+            }
+        }
+
+        // We will present 3 - 10 albums (5 by default), but because some recent albums
+        // may not be suggested or other may be deleted, we store more than 10, say 20.
+        let count = newList.count
+        if count > 20 {
+            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
+        } else {
+            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
+        }
+//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+    }
+
+    @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
+        // NOP if albumId undefined, root or smart album
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+            fatalError("!!! Did not provide a category ID !!!")
+        }
+        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+
+        // Get current list of recent albums
+        let recentAlbumsStr = AlbumVars.shared.recentCategories
+        if recentAlbumsStr.isEmpty { return }
+
+        // Get new album Id as string
+        let categoryIdStr = String(categoryId)
+
+        // Remove albumId from list if necessary
+        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
+        recentCategories.removeAll(where: { $0 == categoryIdStr })
+
+        // List should not be empty (add root album Id)
+        if recentCategories.isEmpty {
+            recentCategories.append(String(0))
+        }
+
+        // Update list
+        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
+//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories)"
+    }
+
+
+    // MARK: - Light and Dark Modes
+    private func initColorPalette() {
+        // Color palette depends on system settings
+        if #available(iOS 12.0, *) {
+            AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
+        } else {
+            // Fallback on earlier versions
+            AppVars.shared.isSystemDarkModeActive = false
+        }
+        print("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
+
+        // Apply color palette
+        screenBrightnessChanged()
+    }
 
     // Called when the screen brightness has changed, when user changes settings
-    // and by traitCollectionDidChange: when the system switches between Light and Dark modes
+    // and by traitCollectionDidChange() when the system switches between Light and Dark modes
     @objc func screenBrightnessChanged() {
         if AppVars.shared.isLightPaletteModeActive
         {
@@ -687,81 +896,8 @@ import piwigoKit
         }
 
         // Notify palette change to views
-        NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
-//        print("•••> app changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
-    }
-
-
-    // MARK: - Recent albums
-
-    @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
-        // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
-        }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
-
-        // Get new album Id as string
-        let categoryIdStr = String(categoryId)
-        
-        // Create new array of recent albums
-        var newList = [String]()
-        
-        // Add albumId to top of list
-        newList.append(categoryIdStr)
-
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-
-        // Add recent albums while avoiding duplicates
-        if (recentAlbumsStr.count != 0) {
-            // List of recent album IDs
-            let oldList = recentAlbumsStr.components(separatedBy: ",")
-            
-            // Append album IDs of old list
-            for catId in oldList {
-                if newList.contains(catId) { continue }
-                newList.append(catId)
-            }
-        }
-
-        // We will present 3 - 10 albums (5 by default), but because some recent albums
-        // may not be suggested or other may be deleted, we store more than 10, say 20.
-        let count = newList.count
-        if count > 20 {
-            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
-        } else {
-            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
-        }
-//        debugPrint("•••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
-    }
-
-    @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
-        // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
-        }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
-
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-        if recentAlbumsStr.isEmpty { return }
-
-        // Get new album Id as string
-        let categoryIdStr = String(categoryId)
-
-        // Remove albumId from list if necessary
-        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
-        recentCategories.removeAll(where: { $0 == categoryIdStr })
-
-        // List should not be empty (add root album Id)
-        if recentCategories.isEmpty {
-            recentCategories.append(String(0))
-        }
-
-        // Update list
-        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
-//        pring("•••> Recent albums: \(AlbumVars.shared.recentCategories)"
+        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+//        print("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 
     
@@ -848,5 +984,71 @@ import piwigoKit
 
         // Add uploaded image to cache and update UI if needed
         CategoriesData.sharedInstance()?.addImage(imageData)
+    }
+}
+
+
+// MARK: - AppLockDelegate Methods
+extension AppDelegate: AppLockDelegate {
+    func loginOrReloginAndResumeUploads() {
+        print("••> loginOrReloginAndResumeUploads() in AppDelegate.")
+        // Release memory
+        privacyView?.removeFromSuperview()
+
+        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+        // Furthermore, it will interrupt any other current audio sessions (no mixing)
+        let audioSession = AVAudioSession.sharedInstance()
+        let availableCategories = audioSession.availableCategories
+        if availableCategories.contains(AVAudioSession.Category.playback) {
+            do {
+                try audioSession.setCategory(.playback)
+            } catch {
+            }
+        }
+
+        // Should we log in?
+        if let rootVC = self.window?.rootViewController,
+            let child = rootVC.children.first, child is LoginViewController {
+            // Look for credentials if server address provided
+            let username = NetworkVars.username
+            let service = NetworkVars.serverPath
+            var password = ""
+
+            // Look for paswword in Keychain if server address and username are provided
+            if service.count > 0, username.count > 0 {
+                password = KeychainUtilities.password(forService: service, account: username)
+            }
+
+            // Login?
+            if service.count > 0 || (username.count > 0 && password.count > 0) {
+                loginVC.launchLogin()
+            }
+            return
+        }
+
+        // Determine for how long the session is opened
+        /// Piwigo 11 session duration defaults to an hour.
+        if let rootVC = window?.rootViewController, let child = rootVC.children.first,
+           !(child is LoginViewController) {
+            // Determine for how long the session is opened
+            /// Piwigo 11 session duration defaults to an hour.
+            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+                /// - Perform relogin
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                NetworkVars.dateOfLastLogin = Date()
+                reloginAndRetry(afterRestoringScene: false) {
+                    // Reload category data from server in background mode
+                    self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: false)
+                }
+            } else {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAll()
+                }
+            }
+        }
     }
 }

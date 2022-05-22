@@ -72,17 +72,19 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: PwgNotifications.uploadProgress, object: nil)
+                                               name: .pwgUploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -152,6 +154,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             header?.headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Update title of current scene (iPad only)
+        view.window?.windowScene?.title = title
+    }
 
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
@@ -160,16 +169,16 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
         // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Unregister Low Power Mode status
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
     
     // MARK: - Action Menu
@@ -181,6 +190,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
+        // Set title of current scene (iPad only)
+        view.window?.windowScene?.title = title
+
         // Action menu
         var hasImpossibleUploadsSection = false
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
@@ -351,7 +363,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot()
                                         .sectionIdentifiers[section]) ?? SectionKeys.Section4
-        return TableViewUtilities.heightOfHeader(withTitle: sectionKey.name, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

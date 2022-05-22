@@ -73,7 +73,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -85,7 +85,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
     
     
@@ -98,13 +98,13 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                 width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader()
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
@@ -241,49 +241,13 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     // MARK: - UITableView - Footer
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Footer height?
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return CGFloat(fmax(44.0, ceil(footerRect.size.height)))
+        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.text = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 
     

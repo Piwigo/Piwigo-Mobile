@@ -181,7 +181,7 @@ class EditImageParamsViewController: UIViewController
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -246,7 +246,7 @@ class EditImageParamsViewController: UIViewController
     deinit {
         debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     
@@ -401,7 +401,7 @@ class EditImageParamsViewController: UIViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.updateImageProperties()
                     }
                 } else {
@@ -415,7 +415,7 @@ class EditImageParamsViewController: UIViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.updateImageProperties()
                     }
                 } else {

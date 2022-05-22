@@ -19,6 +19,7 @@ enum SettingsSection : Int {
     case albums
     case images
     case imageUpload
+    case privacy
     case appearance
     case cache
     case clear
@@ -26,7 +27,7 @@ enum SettingsSection : Int {
     case count
 }
 
-enum kImageUploadSetting : Int {
+enum ImageUploadSetting : Int {
     case author
     case prefix
 }
@@ -40,7 +41,7 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
 }
 
 @objc
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var settingsDelegate: ChangedSettingsDelegate?
 
@@ -144,20 +145,26 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
 
         // Register auto-upload option enabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: PwgNotifications.autoUploadEnabled, object: nil)
+                                               name: .pwgAutoUploadEnabled, object: nil)
 
         // Register auto-upload option disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: PwgNotifications.autoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadDisabled, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        // Update title of current scene (iPad only)
+        if #available(iOS 13.0, *) {
+            view.window?.windowScene?.title = title
+        }
+
+        // Invite user to translate the app
         if #available(iOS 10, *) {
             let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
@@ -219,15 +226,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option enabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadEnabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
 
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
+
+    // MARK: - Actions Methods
     @objc func quitSettings() {
         dismiss(animated: true)
     }
@@ -258,8 +267,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) { return }
+        if !hasUploadRights() { return }
 
         // Reload section instead of row because user's rights may have changed after logout/login
         children.forEach {
@@ -276,24 +284,67 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
 
+    func loginLogout() {
+        if NetworkVars.username.isEmpty {
+            // Clear caches and display login view
+            ClearCache.closeSessionAndClearCache() { }
+            return
+        }
+        
+        // Ask user for confirmation
+        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
+
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
+        })
+
+        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+            LoginUtilities.sessionLogout {
+                // Logout successful
+                DispatchQueue.main.async {
+                    ClearCache.closeSessionAndClearCache() { }
+                }
+            } failure: { error in
+                // Failed! This may be due to the replacement of a self-signed certificate.
+                // So we inform the user that there may be something wrong with the server,
+                // or simply a connection drop.
+                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                        message: error.localizedDescription) {
+                    ClearCache.closeSessionAndClearCache() { }
+                }
+            }
+        })
+
+        // Add actions
+        alert.addAction(cancelAction)
+        alert.addAction(logoutAction)
+
+        // Determine position of cell in table view
+        let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.logout.rawValue)
+        let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
+
+        // Present list of actions
+        alert.view.tintColor = .piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.sourceView = settingsTableView
+        alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = .piwigoColorOrange()
+        })
+    }
+
     
     // MARK: - UITableView - Header
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         // Header strings
         var title = "", text = ""
-        switch activeSection {
-        case SettingsSection.server.rawValue:
+        switch activeSection(section) {
+        case .server:
             if (NetworkVars.serverProtocol == "https://") {
                 title = String(format: "%@ %@",
                                NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
@@ -304,19 +355,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                NetworkVars.pwgVersion)
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-        case SettingsSection.albums.rawValue:
+        case .albums:
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
-        case SettingsSection.images.rawValue:
+        case .images:
             title = NSLocalizedString("settingsHeader_images", comment: "Images")
-        case SettingsSection.imageUpload.rawValue:
+        case .imageUpload:
             title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.appearance.rawValue:
+        case .appearance:
             title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
-        case SettingsSection.cache.rawValue:
+        case .privacy:
+            title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        case .cache:
             title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
-        case SettingsSection.about.rawValue:
+        case .about:
             title = NSLocalizedString("settingsHeader_about", comment: "Information")
-        case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
+        case .logout, .clear:
             fallthrough
         default:
             break
@@ -329,60 +382,71 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if title.isEmpty, text.isEmpty {
             return CGFloat(1)
         } else {
-            return TableViewUtilities.heightOfHeader(withTitle: title, text: text,
-                                                     width: tableView.frame.size.width)
+            return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                            width: tableView.frame.size.width)
         }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title, text: text)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
-    // MARK: - UITableView - Rows
-    func numberOfSections(in tableView: UITableView) -> Int {
-        let hasUploadSection = NetworkVars.hasAdminRights ||
-                               (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
-        return SettingsSection.count.rawValue - (hasUploadSection ? 0 : 1)
+    // MARK: - UITableView - Sections
+    private func hasUploadRights() -> Bool {
+        /// User can upload images/videos if he/she is logged in and has:
+        /// — admin rights
+        /// — normal rights with upload access to some categories with Community
+        return NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
     }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+    private func activeSection(_ section: Int) -> SettingsSection {
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
+        var rawSection = section
+        if !hasUploadRights(), rawSection > SettingsSection.images.rawValue {
+            rawSection += 1
         }
+        guard let activeSection = SettingsSection(rawValue: rawSection) else {
+            fatalError("Unknown Section index!")
+        }
+        return activeSection
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return SettingsSection.count.rawValue - (hasUploadRights() ? 0 : 1)
+    }
 
+    // MARK: - UITableView - Rows
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = 0
-        switch activeSection {
-        case SettingsSection.server.rawValue:
+        switch activeSection(section) {
+        case .server:
             nberOfRows = 2
-        case SettingsSection.logout.rawValue:
+        case .logout:
             nberOfRows = 1
-        case SettingsSection.albums.rawValue:
+        case .albums:
             nberOfRows = 4
-        case SettingsSection.images.rawValue:
+        case .images:
             nberOfRows = 6
-        case SettingsSection.imageUpload.rawValue:
+        case .imageUpload:
             nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
-        case SettingsSection.appearance.rawValue:
-            nberOfRows = 1
-        case SettingsSection.cache.rawValue:
+        case .privacy:
             nberOfRows = 2
-        case SettingsSection.clear.rawValue:
+        case .appearance:
             nberOfRows = 1
-        case SettingsSection.about.rawValue:
+        case .cache:
+            nberOfRows = 2
+        case .clear:
+            nberOfRows = 1
+        case .about:
             nberOfRows = 8
         default:
             break
@@ -395,23 +459,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection:Int = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         var tableViewCell = UITableViewCell()
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
@@ -437,7 +488,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             tableViewCell = cell
 
-        case SettingsSection.logout.rawValue /* Login/Logout Button */:
+        case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                 return ButtonTableViewCell()
@@ -451,7 +502,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             tableViewCell = cell
         
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -548,7 +599,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -719,7 +770,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
+        case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -744,7 +795,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self
-                cell.rightTextField.tag = kImageUploadSetting.author.rawValue
+                cell.rightTextField.tag = ImageUploadSetting.author.rawValue
                 cell.accessibilityIdentifier = "defaultAuthorName"
                 tableViewCell = cell
                 
@@ -933,7 +984,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self
-                cell.rightTextField.tag = kImageUploadSetting.prefix.rawValue
+                cell.rightTextField.tag = ImageUploadSetting.prefix.rawValue
                 cell.accessibilityIdentifier = "prefixFileName"
                 tableViewCell = cell
                 
@@ -1005,8 +1056,44 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
         }
         
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            switch indexPath.row {
+            case 0 /* App Lock */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+                let detail: String
+                if AppVars.shared.isAppLockActive == true {
+                    detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                } else {
+                    detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                }
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "appLock"
+                tableViewCell = cell
+            
+            case 1 /* Clear Clipboard */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard")
+                let detail = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.delayUnit ?? ""
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "clearClipboard"
+                tableViewCell = cell
+
+            default:
+                break
+            }
+
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
@@ -1026,7 +1113,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             tableViewCell = cell
 
         // MARK: Cache Settings
-        case SettingsSection.cache.rawValue /* Cache Settings */:
+        case .cache /* Cache Settings */:
             switch indexPath.row {
             case 0 /* Disk */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
@@ -1102,7 +1189,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
-        case SettingsSection.clear.rawValue /* Clear Cache Button */:
+        case .clear /* Clear Cache Button */:
             switch indexPath.row {
             case 0 /* Clear */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
@@ -1124,7 +1211,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* Information */:
+        case .about /* Information */:
             switch indexPath.row {
             case 0 /* @piwigo (Twitter) */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -1222,29 +1309,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
         var result = true
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             result = false
-        case SettingsSection.logout.rawValue /* Logout Button */:
+        case .logout /* Logout Button */:
             result = true
         
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */, 1 /* Default Thumbnail File */:
                 result = true
@@ -1253,19 +1327,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */,
-                 5 /* Share Image Metadata Options */:
+                 4 /* Default Size of Previewed Images */:
                 result = true
+            case 5 /* Share Image Metadata Options */:
+                if #available(iOS 10, *) {
+                    result = true
+                } else {
+                    result = false
+                }
             default:
                 result = false
             }
             
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
+        case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -1282,18 +1361,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 result = false
             }
 
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            result = true
+
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             result = true
 
         // MARK: Cache Settings
-        case SettingsSection.cache.rawValue /* Cache Settings */:
+        case .cache /* Cache Settings */:
             result = false
-        case SettingsSection.clear.rawValue /* Cache Settings */:
+        case .clear /* Cache Settings */:
             result = true
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* Information */:
+        case .about /* Information */:
             switch indexPath.row {
             case 1 /* Contact Us */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
@@ -1315,99 +1398,30 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     // MARK: - UITableView - Footer
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // No footer by default (nil => 0 point)
+    private func getContentOfFooter(inSection section: Int) -> String {
         var footer = ""
-
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
-        // Any footer text?
-        switch activeSection {
-        case SettingsSection.logout.rawValue:
+        switch activeSection(section) {
+        case .logout:
             if UploadVars.serverFileTypes.isEmpty == false {
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
-        case SettingsSection.about.rawValue:
+        case .about:
             footer = statistics
         default:
-            return 16.0
+            footer = ""
         }
-
-        // Footer height?
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return ceil(footerRect.size.height + 10.0)
+        return footer
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.heightOfFooter(withText: text,
+                                                        width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
-        // Footer text
-        switch activeSection {
-        case SettingsSection.logout.rawValue:
-            if UploadVars.serverFileTypes.isEmpty == false {
-                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
-            }
-        case SettingsSection.about.rawValue:
-            footerLabel.text = statistics
-        default:
-            break
-        }
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let text = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
     }
     
     private func getInfos() {
@@ -1429,7 +1443,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if uploadJSON.errorCode != 0 {
                     #if DEBUG
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                    errorMessage: uploadJSON.errorMessage)
+                                                                 errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
@@ -1439,7 +1453,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = .decimal
                 for info in uploadJSON.data {
-                    guard let value = info.value, let nber = Int(value) else { continue }
+                    guard let nber = info.value?.intValue else { continue }
                     switch info.name ?? "" {
                     case "nb_elements":
                         if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
@@ -1514,35 +1528,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        // User can upload images/videos if he/she is logged in and has:
-        // — admin rights
-        // — normal rights with upload access to some categories with Community
-        var activeSection = indexPath.section
-        if !(NetworkVars.hasAdminRights ||
-             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
-            // Bypass the Upload section
-            if activeSection > SettingsSection.images.rawValue {
-                activeSection += 1
-            }
-        }
-
-        switch activeSection {
-
+        switch activeSection(indexPath.section) {
         // MARK: Server
-        case SettingsSection.server.rawValue /* Piwigo Server */:
+        case .server /* Piwigo Server */:
             break
 
         // MARK: Logout
-        case SettingsSection.logout.rawValue /* Logout */:
+        case .logout /* Logout */:
             loginLogout()
 
         // MARK: Albums
-        case SettingsSection.albums.rawValue /* Albums */:
+        case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self
@@ -1557,7 +1557,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Images
-        case SettingsSection.images.rawValue /* Images */:
+        case .images /* Images */:
             switch indexPath.row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
@@ -1575,15 +1575,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 5 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
+                if #available(iOS 10, *) {
+                    let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                    guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
+                }
             default:
                 break
             }
 
         // MARK: Upload Settings
-        case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
+        case .imageUpload /* Default upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
@@ -1617,8 +1619,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
+        // MARK: Privacy
+        case .privacy   /* Privacy */:
+            switch indexPath.row {
+            case 0 /* Clear cache */:
+                // Display numpad for setting up a passcode
+                let appLockSB = UIStoryboard(name: "LockOptionsViewController", bundle: nil)
+                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController else { return }
+                appLockVC.delegate = self
+                navigationController?.pushViewController(appLockVC, animated: true)
+            case 1 /* Clear Clipboard */:
+                // Display list of delays
+                let delaySB = UIStoryboard(name: "ClearClipboardViewController", bundle: nil)
+                guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController else { return }
+                delayVC.delegate = self
+                navigationController?.pushViewController(delayVC, animated: true)
+
+            default:
+                break
+            }
+
         // MARK: Appearance
-        case SettingsSection.appearance.rawValue /* Appearance */:
+        case .appearance /* Appearance */:
             if #available(iOS 13.0, *) {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
                 guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else { return }
@@ -1630,7 +1652,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Cache Settings
-        case SettingsSection.clear.rawValue /* Cache Clear */:
+        case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
                 #if DEBUG
@@ -1701,7 +1723,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
 
         // MARK: Information
-        case SettingsSection.about.rawValue /* About — Informations */:
+        case .about /* About — Informations */:
             switch indexPath.row {
             case 0 /* Open @piwigo on Twitter */:
                 if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
@@ -1732,14 +1754,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(NSLocalizedString("settings_feedback", comment: "Feedback"))")
 
                     // Collect system and device data
-                    var systemInfo = utsname()
-                    uname(&systemInfo)
-                    let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-                    let deviceModel: String = DeviceUtilities.name(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
-                        p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
-                            return String(cString: p2)
-                        })
-                    })
+                    let deviceModel = UIDevice.current.modelName
                     let deviceOS = UIDevice.current.systemName
                     let deviceOSversion = UIDevice.current.systemVersion
 
@@ -1787,72 +1802,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             break
         }
     }
+}
 
-    
-    // MARK: - Actions Methods
-    func loginLogout() {
-        if NetworkVars.username.isEmpty {
-            // Clear caches and display login view
-            ClearCache.closeSessionAndClearCache() { }
-            return
-        }
-        
-        // Ask user for confirmation
-        let alert = UIAlertController(title: "", message: NSLocalizedString("logoutConfirmation_message", comment: "Are you sure you want to logout?"), preferredStyle: .actionSheet)
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-        })
-
-        let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-            LoginUtilities.sessionLogout {
-                // Logout successful
-                DispatchQueue.main.async {
-                    ClearCache.closeSessionAndClearCache() { }
-                }
-            } failure: { error in
-                // Failed! This may be due to the replacement of a self-signed certificate.
-                // So we inform the user that there may be something wrong with the server,
-                // or simply a connection drop.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                        message: error.localizedDescription) {
-                    ClearCache.closeSessionAndClearCache() { }
-                }
-            }
-        })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(logoutAction)
-
-        // Determine position of cell in table view
-        let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.logout.rawValue)
-        let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
-
-        // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.sourceView = settingsTableView
-        alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
-        present(alert, animated: true, completion: {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
-        })
-    }
-
+// MARK: - MFMailComposeViewControllerDelegate
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         // Check the result or perform other tasks.
 
         // Dismiss the mail compose view controller.
         dismiss(animated: true)
     }
+}
 
-    
-    // MARK: - UITextFieldDelegate Methods
+
+// MARK: - UITextFieldDelegate Methods
+extension SettingsViewController: UITextFieldDelegate {
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }
@@ -1863,10 +1828,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        switch textField.tag {
-        case kImageUploadSetting.author.rawValue:
+        switch ImageUploadSetting(rawValue: textField.tag) {
+        case .author:
             UploadVars.defaultAuthor = textField.text ?? ""
-        case kImageUploadSetting.prefix.rawValue:
+        case .prefix:
             UploadVars.defaultPrefix = textField.text ?? ""
             if UploadVars.defaultPrefix.isEmpty {
                 UploadVars.prefixFileNameBeforeUpload = false
@@ -2091,9 +2056,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
             let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             // Remove rows in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
@@ -2101,6 +2066,34 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
                                       section: SettingsSection.imageUpload.rawValue)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+}
+
+// MARK: - LockOptionsDelegate Methods
+extension SettingsViewController: LockOptionsDelegate {
+    func didSetAppLock(toState isLocked: Bool) {
+        // Refresh corresponding row
+        let appLockAtIndexPath = IndexPath(row: 0, section: SettingsSection.privacy.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(appLockAtIndexPath),
+           let cell = settingsTableView.cellForRow(at: appLockAtIndexPath) as? LabelTableViewCell {
+            if isLocked {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
+        }
+    }
+}
+
+// MARK: - ClearClipboardDelegate Methods
+extension SettingsViewController: ClearClipboardDelegate {
+    func didSelectClearClipboardDelay(_ delay: pwgClearClipboard) {
+        // Refresh corresponding row
+        let delayAtIndexPath = IndexPath(row: 1, section: SettingsSection.privacy.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(delayAtIndexPath),
+           let cell = settingsTableView.cellForRow(at: delayAtIndexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = delay.delayUnit
         }
     }
 }

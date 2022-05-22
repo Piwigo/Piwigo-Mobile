@@ -174,7 +174,7 @@ public class UploadsProvider: NSObject {
                                          properties: UploadProperties,
                                          completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-//        print("•••>> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
+//        print("••> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -229,7 +229,7 @@ public class UploadsProvider: NSObject {
                                      to status: kPiwigoUploadState, error: String?,
                                      completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
+        print("••> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -288,7 +288,7 @@ public class UploadsProvider: NSObject {
     */
     public func markAsDeletedPiwigoImage(withID imageId: Int64) {
         // Check current queue
-//        print("•••>> didDeleteImageWithId()", queueName())
+//        print("••> didDeleteImageWithId()", queueName())
 
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -404,7 +404,7 @@ public class UploadsProvider: NSObject {
     private func deleteOneBatch(_ uploadsBatch: [NSManagedObjectID],
                                 taskContext: NSManagedObjectContext) -> Bool {
         // Check current queue
-//        print("•••>> deleteOneBatch()", queueName())
+//        print("••> deleteOneBatch()", queueName())
 
         var success = false
         var uploadsToDelete = [NSManagedObjectID]()
@@ -454,7 +454,7 @@ public class UploadsProvider: NSObject {
         }
         
         // Check current queue
-//        debugPrint("•••>> getRequests()", queueName())
+//        debugPrint("••> getRequests()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()

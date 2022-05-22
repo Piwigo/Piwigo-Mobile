@@ -33,7 +33,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -370,13 +369,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"viewDidLoad       => ID:%ld", (long)self.categoryId);
 #endif
 
-    // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-    self.imageCellSize = CGSizeMake(size, size);
-
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
-                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+                                                 name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
@@ -557,15 +552,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self applyColorPalette];
 
     // Register default album changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory)
+                                                 name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Register upload manager changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:)
-                                                 name:PwgNotificationsObjc.leftUploads object:nil];
+                                                 name:PwgNotificationsObjc.pwgLeftUploads object:nil];
 
     // Register upload progress
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:)
-                                                 name:PwgNotificationsObjc.uploadProgress object:nil];
+                                                 name:PwgNotificationsObjc.pwgUploadProgress object:nil];
 
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
@@ -577,7 +573,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Inform Upload view controllers that user selected this category
     NSDictionary *userInfo = @{@"currentCategoryId" : @(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedCurrentCategory
+                                                        object:nil userInfo:userInfo];
     
     // Display the album/images collection
     // Images will be loaded if needed after displaying cells
@@ -607,6 +604,15 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"viewDidAppear     => ID:%ld", (long)self.categoryId);
 #endif
+
+    // Update title of current scene (iPad only)
+    if (@available(iOS 13.0, *)) {
+        if (self.view.window != nil) {
+            if (self.view.window.windowScene != nil) {
+                self.view.window.windowScene.title = self.title;
+            }
+        }
+    }
 
     // Load album data if this is the default album
 //    if ((self.categoryId == AlbumVars.shared.defaultCategory) && (!self.isCachedAtInit)) {
@@ -710,10 +716,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-        self.imageCellSize = CGSizeMake(size, size);
-
         // Reload colelction
         [self.imagesCollection reloadData];
         
@@ -756,14 +758,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
-        if (hasUserInterfaceStyleChanged) {
-            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        BOOL isSystemDarkModeActive = UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+        if (AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive) {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive;
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
-    } else {
-        // Fallback on earlier versions
     }
 }
 
@@ -796,16 +796,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 
     // Unregister root album changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Unregister upload manager changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.leftUploads object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgLeftUploads object:nil];
 
     // Unregister upload progress
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.uploadProgress object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgUploadProgress object:nil];
 
     // Clear memory
     self.imagesCollection = nil;
@@ -826,17 +826,17 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
-            [self checkDataSourceWithChangedCategories:didChange];
-            
-            // End refreshing
-            if (@available(iOS 10.0, *)) {
-                if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
-            } else {
-                if (self.refreshControl) [self.refreshControl endRefreshing];
-            }
-            
-            // Hide HUD
-            [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+            [self checkDataSourceWithChangedCategories:didChange onCompletion:^{
+                // End refreshing
+                if (@available(iOS 10.0, *)) {
+                    if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+                } else {
+                    if (self.refreshControl) [self.refreshControl endRefreshing];
+                }
+                
+                // Hide HUD
+                [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+            }];
         });
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -844,6 +844,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
         dispatch_async(dispatch_get_main_queue(), ^{
+            // Set navigation bar buttons
+            [self initButtonsInSelectionMode];
             // Hide HUD if needed
             [self.navigationController hidePiwigoHUDWithCompletion:^{
                 [self dismissPiwigoErrorWithTitle:@"" message:error.localizedDescription
@@ -853,7 +855,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }];
 }
 
--(void)checkDataSourceWithChangedCategories:(BOOL)didChange
+-(void)checkDataSourceWithChangedCategories:(BOOL)didChange onCompletion:(void (^)(void))completion
 {
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"checkDataSource...=> ID:%ld - Categories did change:%@", (long)self.categoryId, didChange ? @"YES" : @"NO");
@@ -870,26 +872,35 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if ((vc.categoryId == 0) ||
                     ([[CategoriesData sharedInstance] getCategoryById:vc.categoryId] != nil)) {
                     // Present the root album
+                    if (completion) { completion(); }
                     [self.navigationController popToViewController:vc animated:YES];
                     return;
                 }
             }
         }
         // We did not find a parent album — should never happen…
+        if (completion) { completion(); }
         return;
     }
     
     // Root album -> reload collection
     if (self.categoryId == 0) {
         if (didChange) {
+            // Reload album collection
             [self.imagesCollection reloadData];
+            // Set navigation bar buttons
+            [self updateButtonsInPreviewMode];
         }
+        if (completion) { completion(); }
         return;
     }
     
     // Other album -> Reload albums
     if (didChange) {
+        // Reload album collection
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        // Set navigation bar buttons
+        [self updateButtonsInPreviewMode];
     }
     
     // Other album —> If the number of images in cache is null, reload collection
@@ -897,21 +908,26 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Something did change… reset album data
         self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
         [self.imagesCollection reloadData];
+        // Cancel selection
+        [self cancelSelect];
     }
+
+    // Close HUD (for example)
+    if (completion) { completion(); }
 }
 
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
-    if (oldImages.count == 0) {
-        // This is the first time images are presented
+    if (oldImages.count != self.albumData.images.count) {
+        // List of images has changed
         [self.imagesCollection reloadData];
+        // Cancel selection
+        [self cancelSelect];
     }
     else {
         // Refresh all images if displayImageTitles option changed in Settings
-        BOOL didChangeSettings = NO;
         if (self.displayImageTitles != AlbumVars.shared.displayImageTitles) {
             self.displayImageTitles = AlbumVars.shared.displayImageTitles;
-            didChangeSettings = YES;
         }
         
         // Loop over the visible cells (the number of images did not changed)
@@ -919,15 +935,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Only concerns cells of section 1
             if (indexPath.section == 0) { continue; }
 
-            // Check that this image exist in the old and new data sources?
+            // Check that there exists a cell at this indexPath
             if (indexPath.item >= oldImages.count) { continue; }
-            if (indexPath.item >= self.albumData.images.count) { continue;}
-            
-            // Did we replace a dummy image with a real image?
-            NSInteger oldImageId = oldImages[indexPath.item].imageId;
-            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
-            if ((newImageId == oldImageId) && !didChangeSettings) { continue; }
-            
+
             // We should update this cell
             [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
         }
@@ -1145,7 +1155,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     // Show UploadQueue button if needed
                     NSInteger nberOfUploads = [[UIApplication sharedApplication] applicationIconBadgeNumber];
                     NSDictionary *userInfo = @{@"nberOfUploadsToComplete" : @(nberOfUploads)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.leftUploads
+                    [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgLeftUploads
                                                                         object:nil userInfo:userInfo];
                 }
             }];
@@ -2201,7 +2211,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeEdit];
                     }];
                 } else {
@@ -2307,7 +2317,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeDelete];
                     }];
                 } else {
@@ -2462,7 +2472,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self removeImages];
                     }];
                 } else {
@@ -2479,7 +2489,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self removeImages];
                     }];
                 } else {
@@ -2522,7 +2532,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (statusCode == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self deleteImages];
                 }];
             } else {
@@ -2591,7 +2601,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeShare];
                     }];
                 } else {
@@ -2886,7 +2896,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self addImageToFavorites];
                 }];
             } else {
@@ -2963,7 +2973,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self removeImageFromFavorites];
                 }];
             } else {
@@ -3196,7 +3206,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             
         default:            // Images
         {
-            return self.imageCellSize;
+            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+            return CGSizeMake(size, size);
         }
     }
 }
@@ -3234,7 +3245,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-                [cell configWith:imageData inCategoryId:self.categoryId for:self.imageCellSize];
+                [cell configWith:imageData inCategoryId:self.categoryId];
                 cell.isSelection = [self.selectedImageIds containsObject:[NSNumber numberWithInteger: imageData.imageId]];
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -3287,7 +3298,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 
                 // Add category to list of recent albums
                 NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:self.categoryId]};
-                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.addRecentAlbum object:nil userInfo:userInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgAddRecentAlbum object:nil userInfo:userInfo];
 
                 // Selection mode not active => display full screen image
                 UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
@@ -3462,7 +3473,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     [self hidePiwigoHUDWithCompletion:^{}];
                 }
                 // Should we continue loading images?
-                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                NSLog(@"••> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
                 if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                     [self needToLoadMoreImages];
                 }
@@ -3722,7 +3733,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     CGFloat navBarHeight = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height;
-//    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
+//    NSLog(@"••> %f", scrollView.contentOffset.y + navBarHeight);
     if ((roundf(scrollView.contentOffset.y + navBarHeight) > 1) ||
         (self.categoryId != AlbumVars.shared.defaultCategory)) {
         // Show navigation bar border

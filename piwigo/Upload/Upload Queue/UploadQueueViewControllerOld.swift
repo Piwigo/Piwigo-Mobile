@@ -139,17 +139,17 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: PwgNotifications.uploadProgress, object: nil)
+                                               name: .pwgUploadProgress, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -159,16 +159,16 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
         // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Unregister Low Power Mode status
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
 
     
@@ -335,7 +335,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
-        return TableViewUtilities.heightOfHeader(withTitle: sectionName, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionName,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

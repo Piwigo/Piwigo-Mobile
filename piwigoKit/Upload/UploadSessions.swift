@@ -173,7 +173,7 @@ public class UploadSessions: NSObject {
 //            if tasksToCancel.count > 0 {
 //                let firstTask = tasksToCancel.first
 //                let chunk = firstTask?.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? ""
-//                debugPrint("==> \(chunk) compared to \(alreadyUploadedChunks)?")
+//                debugPrint("••> \(chunk) compared to \(alreadyUploadedChunks)?")
 //            }
 //            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr})
 //                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? "")})
@@ -201,7 +201,7 @@ extension UploadSessions: URLSessionDelegate {
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.domain) else {
+              protectionSpace.host.contains(NetworkVars.domain()) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -214,7 +214,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust,
-                                                   for: NetworkVars.domain) {
+                                                   for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -234,7 +234,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -317,7 +317,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                                           "progressFraction" : progressFraction]
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)
-            NotificationCenter.default.post(name: PwgNotifications.uploadProgress, object: nil, userInfo: uploadInfo)
+            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
     }
     
@@ -377,7 +377,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                 }
             }
         default:
-            fatalError("!!! unexpected session identifier !!!")
+            debugPrint("!!! unexpected session identifier !!!")
         }
     }
 }

@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
-@property (nonatomic, assign) CGSize imageCellSize;
 @property (nonatomic, assign) NSInteger didScrollToImageIndex;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -49,6 +48,8 @@
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToShare;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
+
+@property (nonatomic, strong) UIRefreshControl *refreshControl;     // iOS 9.x only
 
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -83,6 +84,16 @@
         self.imagesCollection.delegate = self;
         self.imagesCollection.dataSource = self;
         
+        // Refresh view
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        if (@available(iOS 10.0, *)) {
+            self.imagesCollection.refreshControl = refreshControl;
+        } else {
+            // Fallback on earlier versions
+            self.refreshControl = refreshControl;
+        }
+
         [self.imagesCollection registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         
@@ -162,13 +173,9 @@
 {
     [super viewDidLoad];
 
-    // Calculates size of image cells
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-    self.imageCellSize = CGSizeMake(size, size);
-
     // Register palette changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette)
-                                                 name:PwgNotificationsObjc.paletteChanged object:nil];
+                                                 name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 -(void)applyColorPalette
@@ -176,6 +183,26 @@
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
+    // Refresh controller
+    if (@available(iOS 10.0, *)) {
+        self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
+        NSDictionary *attributesRefresh = @{
+            NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
+            NSFontAttributeName: [UIFont piwigoFontLight],
+        };
+        self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    } else {
+        // Fallback on earlier versions
+        self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.refreshControl.tintColor = [UIColor piwigoColorOrange];
+        NSDictionary *attributesRefresh = @{
+                                     NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
+                                     NSFontAttributeName: [UIFont piwigoFontNormal],
+                                     };
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    }
+    
     // Navigation bar appearance
     UINavigationBar *navigationBar = self.navigationController.navigationBar;
     navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
@@ -277,6 +304,15 @@
 {
     [super viewDidAppear:animated];
     
+    // Update title of current scene (iPad only)
+    if (@available(iOS 13.0, *)) {
+        if (self.view.window != nil) {
+            if (self.view.window.windowScene != nil) {
+                self.view.window.windowScene.title = self.title;
+            }
+        }
+    }
+
     // Should we highlight the image of interest?
     if (([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
         // Highlight the cell of interest
@@ -301,10 +337,6 @@
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // Calculates new size of image cells
-        CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
-        self.imageCellSize = CGSizeMake(size, size);
-
         // Reload colelction
         [self.imagesCollection reloadData];
         
@@ -321,14 +353,12 @@
     
     // Should we update user interface based on the appearance?
     if (@available(iOS 13.0, *)) {
-        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
-        if (hasUserInterfaceStyleChanged) {
-            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+        BOOL isSystemDarkModeActive = UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+        if (AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive) {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive;
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
-    } else {
-        // Fallback on earlier versions
     }
 }
 
@@ -350,7 +380,7 @@
 -(void)dealloc
 {
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.paletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:PwgNotificationsObjc.pwgPaletteChanged object:nil];
 }
 
 
@@ -639,21 +669,49 @@
 
 #pragma mark - Category Data
 
+-(void)reloadImagesOnCompletion:(void (^)(void))completion
+{
+    // Load, sort images and reload collection
+    NSArray *oldImageList = self.albumData.images;
+    [[CategoriesData sharedInstance] deleteCategoryWithId:kPiwigoFavoritesCategoryId];
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
+    self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoFavoritesCategoryId andQuery:@""];
+    [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
+        // Reset navigation bar buttons after image load
+        [self updateButtonsInPreviewMode];
+        // Load, sort images and reload collection
+        [self reloadImagesCollectionFrom:oldImageList];
+        if (completion) { completion(); }
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (completion) { completion(); }
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
+    }];
+}
+
+-(void)refresh:(UIRefreshControl*)refreshControl
+{
+    [self reloadImagesOnCompletion:^{
+        // End refreshing
+        if (@available(iOS 10.0, *)) {
+            if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+        } else {
+            if (self.refreshControl) [self.refreshControl endRefreshing];
+        }
+    }];
+}
+
 -(void)reloadImagesCollectionFrom:(NSArray<PiwigoImageData*> *)oldImages
 {
-    if (oldImages.count == 0) {
+    if (oldImages.count != self.albumData.images.count) {
         [self.imagesCollection reloadData];
     }
     else {
         for (NSIndexPath *indexPath in self.imagesCollection.indexPathsForVisibleItems) {
-            // Retrieve old image Id
+            // Check that there exists a cell at this indexPath
             if (indexPath.item >= oldImages.count) { continue; }
-            NSInteger oldImageId = oldImages[indexPath.item].imageId;
-            
-            // Did we replace a dummy image with a real image?
-            NSInteger newImageId = self.albumData.images[indexPath.item].imageId;
-            if (newImageId == oldImageId) { continue; }
-            
+
             // We should update this cell
             [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
         }
@@ -856,7 +914,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeEdit];
                     }];
                 } else {
@@ -949,7 +1007,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeDelete];
                     }];
                 } else {
@@ -1047,7 +1105,7 @@
             if (statusCode == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self deleteImages];
                 }];
             } else {
@@ -1116,7 +1174,7 @@
                 if (error.code == 401) {        // Unauthorized
                     // Try relogin
                     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate reloginAndRetryWithCompletion:^{
+                    [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                         [self retrieveImageDataBeforeShare];
                     }];
                 } else {
@@ -1354,7 +1412,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self addImageToFavorites];
                 }];
             } else {
@@ -1432,7 +1490,7 @@
             if (error.code == 401) {        // Unauthorized
                 // Try relogin
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
+                [appDelegate reloginAndRetryAfterRestoringScene:NO completion:^{
                     [self removeImageFromFavorites];
                 }];
             } else {
@@ -1540,7 +1598,7 @@
         
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell configWith:imageData inCategoryId:kPiwigoFavoritesCategoryId for:self.imageCellSize];
+        [cell configWith:imageData inCategoryId:kPiwigoFavoritesCategoryId];
         cell.isSelection = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         cell.isFavorite = YES;
         
@@ -1704,7 +1762,7 @@
                 }
 
                 // Should we continue loading images?
-                NSLog(@"==> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
+                NSLog(@"••> Should we continue loading images? (scrolled to %ld)", (long)self.didScrollToImageIndex);
                 if (self.didScrollToImageIndex >= newDownloadedImageCount) {
                     [self needToLoadMoreImages];
                 }

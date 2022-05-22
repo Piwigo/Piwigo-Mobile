@@ -64,12 +64,12 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
 
@@ -81,12 +81,13 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader()
-        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader()
-        return TableViewUtilities.viewOfHeader(withTitle: title)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
 
     

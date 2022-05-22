@@ -126,7 +126,7 @@ class ImagePreviewViewController: UIViewController
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Store status bar height (is null when not displayed)
         if #available(iOS 11.0, *) {
@@ -179,7 +179,7 @@ class ImagePreviewViewController: UIViewController
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
     
     
@@ -447,15 +447,11 @@ class ImagePreviewViewController: UIViewController
 
     func assetFailedToPrepare(forPlayback error: Error?) {
         // Determine the present view controller
-        var topViewController = UIApplication.shared.keyWindow?.rootViewController
-        while topViewController?.presentedViewController != nil {
-            topViewController = topViewController?.presentedViewController
-        }
-
-        if let error = error as NSError? {
-            topViewController?.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
-                                                  errorMessage: error.localizedFailureReason ?? "",
-                                                  completion: { })
+        if let error = error as NSError?,
+           let topViewController = view.window?.topMostViewController() {
+            topViewController.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
+                                                 errorMessage: error.localizedFailureReason ?? "",
+                                                 completion: { })
         }
     }
 }

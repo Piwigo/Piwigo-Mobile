@@ -218,7 +218,7 @@ import piwigoKit
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -319,21 +319,19 @@ import piwigoKit
 
         // Should we update user interface based on the appearance?
         if #available(iOS 13.0, *) {
-            let hasUserInterfaceStyleChanged = previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle
-            if hasUserInterfaceStyleChanged {
-                AppVars.shared.isSystemDarkModeActive = (traitCollection.userInterfaceStyle == .dark)
+            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.screenBrightnessChanged()
             }
-        } else {
-            // Fallback on earlier versions
         }
     }
 
     deinit {
         debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
 
@@ -639,7 +637,7 @@ import piwigoKit
                     if error.code == 401 {
                         // Try relogin
                         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry() { [unowned self] in
+                        appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                             self.retrieveCompleteImageDataOfImage(self.imageData)
                         }
                     } else {
@@ -763,7 +761,8 @@ import piwigoKit
         // Add actions
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-        if (imageData.categoryIds.count > 1) && (categoryId > 0) {
+        if let categoryIds = imageData.categoryIds, categoryIds.count > 1,
+           categoryId > 0 {
             // This image is used in another album
             // Proposes to remove it from the current album, unless it was selected from a smart album
             alert.addAction(removeAction)
@@ -833,7 +832,7 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.removeImageFromCategory()
                     }
                 } else {
@@ -868,7 +867,7 @@ import piwigoKit
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.deleteImageFromDatabase()
                     }
                 } else {
@@ -968,11 +967,22 @@ import piwigoKit
         activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
 //            debugPrint("Activity Type selected: \(activityType)")
 
+            // If needed, sets items so that they will be deleted after a delay
+            if #available(iOS 10.0, *) {
+                let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
+                if delay > 0, activityType == .copyToPasteboard {
+                    let items = UIPasteboard.general.items
+                    let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
+                    let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
+                    UIPasteboard.general.setItems(items, options: options)
+                }
+            }
+            
             // Enable buttons after action
             setEnableStateOfButtons(true)
 
             // Remove observers
-            let name = NSNotification.Name(kPiwigoNotificationDidShare)
+            let name = Notification.Name(kPiwigoNotificationDidShare)
             NotificationCenter.default.post(name: name, object: nil)
 
             if !completed {
@@ -981,7 +991,7 @@ import piwigoKit
                 } else {
                     debugPrint("Activity was not performed.")
                     // Cancel download task
-                    let name = NSNotification.Name(kPiwigoNotificationCancelDownload)
+                    let name = Notification.Name(kPiwigoNotificationCancelDownload)
                     NotificationCenter.default.post(name: name, object: nil)
                 }
             }
@@ -994,7 +1004,7 @@ import piwigoKit
 
     @objc func cancelShareImage() {
         // Cancel file donwload
-        let name = NSNotification.Name(kPiwigoNotificationCancelDownload)
+        let name = Notification.Name(kPiwigoNotificationCancelDownload)
         NotificationCenter.default.post(name: name, object: nil)
     }
 

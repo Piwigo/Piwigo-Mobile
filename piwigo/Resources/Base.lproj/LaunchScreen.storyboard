@@ -1,54 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina3_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="OpenSansRegular.TTF">
-            <string>OpenSans</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController storyboardIdentifier="LaunchScreen" id="01J-lp-oVM" userLabel="View Controller" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
-                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="obG-Y5-kRd">
-                                <rect key="frame" x="20" y="840.5" width="374" height="35.5"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">© 2015-2022 Spencer Baker, Olaf Greck,
-and Eddy Lelièvre-Berna. All rights reserved.</string>
-                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
-                                <color key="textColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qh6-JN-X1B">
+                                <rect key="frame" x="80" y="40" width="160" height="40"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="qh6-JN-X1B" secondAttribute="height" multiplier="981:244" id="PVt-7R-Oh7"/>
+                                    <constraint firstAttribute="width" constant="300" id="Xac-G9-Bxc"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="piwigoLogo"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Xac-G9-Bxc"/>
+                                    </mask>
+                                </variation>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pnv-ed-x0O">
+                                <rect key="frame" x="111.5" y="80" width="97" height="28"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" button="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="iOS@piwigo.org">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By Spencer Baker, Olaf Greck" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YHx-TX-2YF">
+                                <rect key="frame" x="0.0" y="433" width="320" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoLogo" translatesAutoresizingMaskIntoConstraints="NO" id="u9J-mh-4h4">
-                                <rect key="frame" x="83" y="327.5" width="248" height="62"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="u9J-mh-4h4" secondAttribute="height" multiplier="767:191" id="1JV-ln-shB"/>
-                                </constraints>
-                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="and Eddy Lelièvre-Berna" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsV-EZ-kw8">
+                                <rect key="frame" x="0.0" y="449" width="320" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wso-dH-WXg" userLabel="All rights reserved.">
+                                <rect key="frame" x="0.0" y="465" width="320" height="12"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.25098039215686274" green="0.25098039215686274" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
+                        <viewLayoutGuide key="safeArea" id="1cY-dd-xU8"/>
+                        <color key="backgroundColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="u9J-mh-4h4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="4ZA-99-BNe"/>
-                            <constraint firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="5cz-MP-9tL"/>
-                            <constraint firstItem="u9J-mh-4h4" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="6/10" id="GdN-6m-7Ej"/>
-                            <constraint firstItem="u9J-mh-4h4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="bottom" multiplier="4/10" id="Orx-j2-Cja"/>
-                            <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="20" symbolic="YES" id="SfN-ll-jLj"/>
-                            <constraint firstAttribute="bottom" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="20" symbolic="YES" id="Y44-ml-fuU"/>
+                            <constraint firstItem="qh6-JN-X1B" firstAttribute="top" secondItem="1cY-dd-xU8" secondAttribute="top" constant="40" id="3oa-F6-aok"/>
+                            <constraint firstItem="qh6-JN-X1B" firstAttribute="leading" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="80" id="8rt-zN-iqH"/>
+                            <constraint firstItem="Pnv-ed-x0O" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="Asu-wb-lyQ"/>
+                            <constraint firstItem="YHx-TX-2YF" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="EOO-Sg-DIm"/>
+                            <constraint firstItem="Wso-dH-WXg" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="JZE-Ft-ZZ0"/>
+                            <constraint firstItem="RsV-EZ-kw8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="QTW-Ii-Pz6"/>
+                            <constraint firstItem="Wso-dH-WXg" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="YpB-sz-V53"/>
+                            <constraint firstItem="RsV-EZ-kw8" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="a07-Y3-29J"/>
+                            <constraint firstItem="qh6-JN-X1B" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="bW3-bN-nfT"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="bottom" secondItem="Wso-dH-WXg" secondAttribute="bottom" constant="3" id="jFG-50-0Rd"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" secondItem="qh6-JN-X1B" secondAttribute="trailing" constant="80" id="pUt-ja-cYi"/>
+                            <constraint firstItem="Wso-dH-WXg" firstAttribute="top" secondItem="RsV-EZ-kw8" secondAttribute="bottom" id="q1k-sx-2dd"/>
+                            <constraint firstItem="Pnv-ed-x0O" firstAttribute="top" secondItem="qh6-JN-X1B" secondAttribute="bottom" id="tHZ-aW-TK0"/>
+                            <constraint firstItem="RsV-EZ-kw8" firstAttribute="top" secondItem="YHx-TX-2YF" secondAttribute="bottom" id="xwm-9A-wop"/>
+                            <constraint firstItem="YHx-TX-2YF" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="zvV-ar-gyF"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="pUt-ja-cYi"/>
+                                <exclude reference="8rt-zN-iqH"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="pUt-ja-cYi"/>
+                                <include reference="8rt-zN-iqH"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>

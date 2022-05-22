@@ -75,8 +75,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
 
         // Register image share methods to perform on completion
-        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage), name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask), name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage), name: Notification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask), name: Notification.Name(kPiwigoNotificationCancelDownload), object: nil)
     }
 
     // MARK: - Download & Prepare Image
@@ -361,8 +361,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
     @objc func didFinishSharingImage() {
         // Remove image share observers
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(kPiwigoNotificationCancelDownload), object: nil)
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {

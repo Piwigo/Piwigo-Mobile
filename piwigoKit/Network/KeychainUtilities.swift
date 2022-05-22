@@ -166,10 +166,10 @@ class KeychainUtilities : NSObject {
         #if DEBUG
         if #available(iOSApplicationExtension 11.3, *) {
             let msg = SecCopyErrorMessageString(status, nil)
-            print("==>> OSStatus Error #\(status): \(msg as String?)")
+            print("••> OSStatus Error #\(status): \(msg as String?)")
         } else {
             let url = "https://www.osstatus.com/search/results?platform=all&framework=all&search=\(status)"
-            print("==>> OSStatus Error #\(status): \(url)")
+            print("••> OSStatus Error #\(status): \(url)")
         }
         #endif
     }
@@ -250,11 +250,11 @@ class KeychainUtilities : NSObject {
     public class
     func getCertificateInfo(_ certificate: SecCertificate, for fomain: String) -> String {
         // Initialise string that will be presented to the user.
-        var certString = "(" + NetworkVars.domain
+        var certString = "(" + NetworkVars.domain()
         
         // Add summary, e.g. "QNAP NAS"
-        if let summary = SecCertificateCopySubjectSummary(certificate) as String?,
-           summary.isEmpty == false, summary != NetworkVars.domain {
+        if let summary = SecCertificateCopySubjectSummary(certificate) as? String,
+           summary.isEmpty == false, summary != NetworkVars.domain() {
             certString.append(", " + summary)
         }
         

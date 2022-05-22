@@ -12,13 +12,14 @@ import SystemConfiguration
 
 public class NetworkVars: NSObject {
 
-    public static var domain: String = {
+    public static func domain() -> String {
         let strURL = "\(serverProtocol)\(serverPath)"
         return URL(string: strURL)?.host ?? ""
-    }()
+    }
 
-    public static var isConnectedToWiFi: Bool = {
-        guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, domain) else { return false }
+    public static func isConnectedToWiFi() -> Bool {
+        guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault,
+                                                                     domain()) else { return false }
         var flags: SCNetworkReachabilityFlags = []
         if !SCNetworkReachabilityGetFlags(reachability, &flags) { return false }
         
@@ -26,7 +27,7 @@ public class NetworkVars: NSObject {
         let cellular = flags.contains(.isWWAN)
         let needsConnection = flags.contains(.connectionRequired)
         return (isReachable && !cellular && !needsConnection)
-    }()
+    }
 
     // Remove deprecated stored objects if needed
 //    override init() {
@@ -106,9 +107,6 @@ public class NetworkVars: NSObject {
     /// - Logged user has admin rigths, false by default
     public static var hasAdminRights = false
 
-    /// - Did open session with success
-    public static var hadOpenedSession = false
-    
     /// - Remembers when the user logged in
     public static var dateOfLastLogin: Date = .distantPast
     

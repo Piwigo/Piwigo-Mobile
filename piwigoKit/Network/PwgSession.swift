@@ -121,6 +121,10 @@ public class PwgSession: NSObject {
                     // Data returned, is this a valid JSON object?
                     guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
                         // Invalid JSON data
+						#if DEBUG
+						let dataStr = String(decoding: jsonData, as: UTF8.self)
+						print(" > JSON: \(dataStr)")
+						#endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
                             failure(JsonError.invalidJSONobject as NSError)
@@ -165,9 +169,8 @@ public class PwgSession: NSObject {
             #if DEBUG
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
-            print(" > Bytes received: \(countsOfByte) bytes")
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON: \(dataStr)")
+            print(" > JSON — \(countsOfByte) bytes received:\r \(dataStr)")
             #endif
             
             // The caller will decode the returned data
@@ -204,12 +207,11 @@ extension PwgSession: URLSessionDelegate {
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server \(NetworkVars.domain)")
+        print("    > Session-level authentication request from the remote server \(NetworkVars.domain())")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
-        guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.domain) else {
+        guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -224,7 +226,7 @@ extension PwgSession: URLSessionDelegate {
         }
 
         // Check validity of certificate
-        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.domain) {
+        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -243,7 +245,7 @@ extension PwgSession: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -253,10 +255,10 @@ extension PwgSession: URLSessionDelegate {
         // Did the user approve this certificate?
         if NetworkVars.didApproveCertificate {
             // Delete certificate in Keychain (updating the certificate data is not sufficient)
-            KeychainUtilities.deleteCertificate(for: NetworkVars.domain)
+            KeychainUtilities.deleteCertificate(for: NetworkVars.domain())
 
             // Store server certificate in Keychain with same label "Piwigo:<host>"
-            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.domain)
+            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.domain())
 
             // Will reject a connection if the certificate is changed during a session
             // but it will still be possible to logout.
@@ -269,7 +271,7 @@ extension PwgSession: URLSessionDelegate {
         }
         
         // Will ask the user whether we should trust this server.
-        NetworkVars.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.domain)
+        NetworkVars.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.domain())
         NetworkVars.didRejectCertificate = true
 
         // Reject the request
@@ -313,10 +315,10 @@ extension PwgSession: URLSessionDataDelegate {
         // Supply requested credentials if not provided yet
         if (challenge.previousFailureCount == 0) {
             // Try HTTP credentials…
-            let credential = URLCredential(user: account,
-                                           password: password,
-                                           persistence: .forSession)
-            completionHandler(.useCredential, credential)
+			let credential = URLCredential(user: account,
+										   password: password,
+										   persistence: .forSession)
+			completionHandler(.useCredential, credential)
             return
         }
 

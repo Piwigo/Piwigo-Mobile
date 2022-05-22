@@ -356,8 +356,13 @@ class ImageUtilities: NSObject {
     // Downsampling large images for display at smaller size (WWDC 2018 - Session 219)
     class func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
-            return UIImage(named: "placeholder")!
+        guard pointSize.equalTo(CGSize.zero) == false,
+              let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
+            if let data = try? Data( contentsOf:imageURL) {
+                return UIImage(data: data) ?? UIImage(named: "placeholder")!
+            } else {
+                return UIImage(named: "placeholder")!
+            }
         }
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
@@ -365,9 +370,10 @@ class ImageUtilities: NSObject {
     @objc
     class func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let imageData = image.jpegData(compressionQuality: 1.0),
+        guard pointSize.equalTo(CGSize.zero) == false,
+              let imageData = image.jpegData(compressionQuality: 1.0),
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions) else {
-            return UIImage(named: "placeholder")!
+            return image
         }
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }

@@ -334,7 +334,7 @@ extension UploadManager {
                 userInfo["thumbPath"]       = uploadJSON.data.src
 
                 // Add image to CategoriesData cache
-                NotificationCenter.default.post(name: PwgNotifications.addUploadedImageToCache,
+                NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
                                                 object: nil, userInfo: userInfo)
             }
 
@@ -787,7 +787,7 @@ extension UploadManager {
                     userInfo["xxLargeWidth"]    = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
                     userInfo["xxLargeHeight"]   = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
 
-                    NotificationCenter.default.post(name: PwgNotifications.addUploadedImageToCache,
+                    NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
                                                     object: nil, userInfo: userInfo)
                 }
             }
@@ -846,7 +846,7 @@ extension UploadManager {
                                                   "Error" : properties.requestError]
                 DispatchQueue.main.async {
                     // Update UploadQueue cell and button shown in root album (or default album)
-                    NotificationCenter.default.post(name: PwgNotifications.uploadProgress, object: nil, userInfo: uploadInfo)
+                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
                 }
 
                 // Consider next image?

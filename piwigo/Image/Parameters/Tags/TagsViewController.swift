@@ -112,7 +112,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
         
         // Prepare data source
         self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
@@ -135,7 +135,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 }
 
@@ -182,12 +182,13 @@ extension TagsViewController {
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
 
 

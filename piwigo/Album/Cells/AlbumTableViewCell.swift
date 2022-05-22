@@ -27,18 +27,13 @@ class AlbumTableViewCell: MGSwipeTableCell {
     func config(with albumData: PiwigoAlbumData) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
-        contentView.layer.cornerRadius = CGFloat(14)
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
         selectionStyle = UITableViewCell.SelectionStyle.none
-        topCut.layer.cornerRadius = CGFloat(7)
         topCut.backgroundColor = UIColor.piwigoColorBackground()
-        bottomCut.layer.cornerRadius = CGFloat(7)
         bottomCut.backgroundColor = UIColor.piwigoColorBackground()
 
         // Album name
         albumName.text = albumData.name ?? "—?—"
-        albumName.font = UIFont.piwigoFontButton()
-        albumName.textColor = UIColor.piwigoColorOrange()
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
         // Album comment
@@ -54,11 +49,9 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 albumComment.text = ""
             }
         }
-        albumComment.font = UIFont.piwigoFontSmall()
         albumComment.font = albumComment.font.withSize(UIFont.fontSizeFor(label: albumComment, nberLines: 3))
 
         // Number of images and sub-albums
-        numberOfImages.font = UIFont.piwigoFontTiny()
         numberOfImages.textColor = UIColor.piwigoColorText()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
@@ -92,12 +85,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
         numberOfImages.font = numberOfImages.font.withSize(UIFont.fontSizeFor(label: numberOfImages, nberLines: 1))
 
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if NetworkVarsObjc.hasAdminRights {
-            // Handle
-            handleButton.layer.cornerRadius = CGFloat(7)
-            handleButton.backgroundColor = UIColor.piwigoColorOrange()
-            handleButton.isHidden = false
-        }
+        handleButton.isHidden = !NetworkVarsObjc.hasAdminRights
 
         // Display recent icon when images have been uploaded recently
         DispatchQueue.global(qos: .userInteractive).async {
@@ -119,7 +107,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
         
         // Display album image
-        backgroundImage.layer.cornerRadius = CGFloat(10)
         let placeHolder = UIImage(named: "placeholder")
 
         // Do we have a correct URL?

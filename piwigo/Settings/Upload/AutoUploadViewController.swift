@@ -86,11 +86,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
+                                               name: .pwgPaletteChanged, object: nil)
 
         // Register auto-upload option disabler
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: PwgNotifications.autoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadDisabled, object: nil)
         
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
@@ -122,10 +122,10 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     deinit {
         // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
     
@@ -147,12 +147,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.heightOfHeader(withTitle: title, width: tableView.frame.size.width)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.viewOfHeader(withTitle: title)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
 
 
@@ -214,7 +215,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         UploadManager.shared.appendAutoUploadRequests()
                         // Update Settings tableview
                         DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: PwgNotifications.autoUploadEnabled, object: nil, userInfo: nil)
+                            NotificationCenter.default.post(name: .pwgAutoUploadEnabled, object: nil, userInfo: nil)
                         }
                     } else {
                         // Disable auto-uploading
@@ -333,11 +334,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     // MARK: - UITableView - Footer
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // No footer by default (nil => 0 point)
+    private func getContentOfFooter(inSection section: Int) -> String {
         var footer = ""
-
-        // Any footer text?
         switch section {
         case 0:
             if UploadVars.isAutoUploadActive {
@@ -350,66 +348,19 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 footer = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
             }
         default:
-            return 16.0
+            footer = " "
         }
-
-        // Footer height?
-        let attributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - CGFloat(30),
-                                                          height: CGFloat.greatestFiniteMagnitude),
-                                             options: .usesLineFragmentOrigin,
-                                             attributes: attributes, context: context)
-
-        return ceil(footerRect.size.height + 10.0)
+        return footer
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let footer = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Footer label
-        let footerLabel = UILabel()
-        footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = .piwigoFontSmall()
-        footerLabel.textColor = .piwigoColorHeader()
-        footerLabel.textAlignment = .center
-        footerLabel.numberOfLines = 0
-        footerLabel.adjustsFontSizeToFitWidth = false
-        footerLabel.lineBreakMode = .byWordWrapping
-
-        // Any footer text?
-        switch section {
-        case 0:
-            if UploadVars.isAutoUploadActive {
-                if UploadVars.serverFileTypes.contains("mp4") {
-                    footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
-                } else {
-                    footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
-                }
-            } else {
-                footerLabel.text = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
-            }
-        default:
-            break
-        }
-
-        // Footer view
-        let footer = UIView()
-        footer.backgroundColor = UIColor.clear
-        footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        } else {
-            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
-            "footer": footerLabel
-            ]))
-        }
-
-        return footer
+        let footer = getContentOfFooter(inSection: section)
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 
     
@@ -426,8 +377,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 if #available(iOS 14, *) {
                     PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
                         // Open local albums view controller
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(NSNotFound)
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
@@ -437,8 +388,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 } else {
                     // Fallback on earlier versions
                     PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self) {
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(NSNotFound)
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
@@ -448,8 +399,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
 
             case 1 /* Select Piwigo album*/ :
-                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                     for: kPiwigoCategorySelectActionSetAutoUploadAlbum)
                 categoryVC.delegate = self
