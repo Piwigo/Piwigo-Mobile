@@ -165,30 +165,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Hide the segmented control
             sortOptionsView.isHidden = true
 
-            // Initialise buttons, toolbar and segmented control
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                // The action button proposes:
-                /// - to swap between ascending and descending sort orders,
-                /// - to choose one of the 4 sort options,
-                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
-                let menu = UIMenu(title: "", children: [getMenuForSorting(),
-                                                        getMenuForSelectingPhotos()].compactMap({$0}))
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+            // The action button proposes:
+            /// - to swap between ascending and descending sort orders,
+            /// - to choose one of the 4 sort options,
+            /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+),
+            /// - to allow/disallow  re-uploading photos,
+            /// - and to delete photos already uploaded to the Piwigo server on iPhone only.
+            let menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                    getMenuForSelectingPhotos(),
+                                                    getMenuForDeletingPhotos()].compactMap({$0}))
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
 
-                // The deletion of photos already uploaded to a Piwigo server is requested with this trash button.
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
                 trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
                 trashBarButton.isEnabled = false
             } else {
-                // The action button proposes:
-                /// - to swap between ascending and descending sort orders,
-                /// - to choose one of the 4 sort options,
-                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
-                /// - to delete photos already uploaded to the Piwigo server.
-                let menu = UIMenu(title: "", children: [getMenuForSorting(),
-                                                        getMenuForSelectingPhotos(),
-                                                        getMenuForDeletingPhotos()].compactMap({$0}))
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-
                 // Presents the number of photos selected and the Upload button in the toolbar
                 navigationController?.isToolbarHidden = false
                 legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
@@ -459,23 +451,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Change button icon or content
         if #available(iOS 14, *) {
             // Update action button
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                // The action button proposes:
-                /// - to swap between ascending and descending sort orders,
-                /// - to choose one of the 4 sort options
-                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
-                actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
-                                                                    getMenuForSelectingPhotos()].compactMap({$0}))
-            } else {
-                // The action button proposes:
-                /// - to swap between ascending and descending sort orders,
-                /// - to choose one of the 4 sort options
-                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
-                /// - to delete photos already uploaded to the Piwigo server.
-                actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
-                                                                    getMenuForSelectingPhotos(),
-                                                                    getMenuForDeletingPhotos()].compactMap({$0}))
-            }
+            // The action button proposes:
+            /// - to swap between ascending and descending sort orders,
+            /// - to choose one of the 4 sort options
+            /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+),
+            /// - to allow/disallow re-uploading photos,
+            /// - to delete photos already uploaded to the Piwigo server on iPhone only.
+            actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                                getMenuForSelectingPhotos(),
+                                                                getMenuForDeletingPhotos()].compactMap({$0}))
         } else {
             // Fallback on earlier versions.
             // The action button simply proposes to swap between the two following sort options:
@@ -1136,8 +1120,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         })
         reUpload.accessibilityIdentifier = "Re-upload"
 
-        // Are there uploaded photos to delete?
-        if canDeleteUploadedImages() {
+        // Are there uploaded photos to delete (trash icon presented on iPad)?
+        if UIDevice.current.userInterfaceIdiom == .phone,
+           canDeleteUploadedImages() {
             // Proposes to change the Photo Library selection
             let delete = UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
                                   image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
@@ -1189,9 +1174,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Refresh collection view
-        DispatchQueue.main.async {
-            self.localImagesCollection.reloadData()
-        }
+        self.updateNavBar()
+        self.localImagesCollection.reloadData()
     }
     
     private func canDeleteUploadedImages() -> Bool {
@@ -1354,9 +1338,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             let index = getImageIndex(for: indexPath)
             let uploadState = getUploadStateOfImage(at: index, for: cell)
 
-//            // Images in the upload queue cannot be selected
-//            let index = getImageIndex(for: indexPath)
-            
             // Update the selection if not already done
             if !imagesBeingTouched.contains(indexPath) {
 
@@ -1367,35 +1348,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if let _ = selectedImages[index] {
                     selectedImages[index] = nil
                     cell.update(selected: false, state: uploadState)
-//                    cell.cellSelected = false
                 } else {
                     // Can we re-upload this image?
                     if uploadState != nil {
                         if !reUploadAllowed { return }
                         if ![.finished, .moderated].contains(uploadState) { return }
                     }
-//                    // Can we select this image?
-//                    if reUploadAllowed == false {
-//                        if queue.operationCount == 0, index < indexedUploadsInQueue.count {
-//                            // Indexed uploads available
-//                            if let upload = indexedUploadsInQueue[index] {
-//                                if !reUploadAllowed { return }
-//                                if ![.finished, .moderated].contains(upload.1) { return }
-//                            }
-//                        } else {
-//                            // Use non-indexed data (might be quite slow)
-//                            if let upload = uploadsInQueue.first(where: { $0?.0 == cell.localIdentifier }) {
-//                                if !reUploadAllowed { return }
-//                                if ![.finished, .moderated].contains(upload?.1) { return }
-//                            }
-//                        }
-//                    }
                     
                     // Select the cell
                     selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
                                                              category: categoryId)
                     cell.update(selected: true, state: uploadState)
-//                    cell.cellSelected = true
                 }
 
                 // Update navigation bar
@@ -1642,48 +1605,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.addGestureRecognizer(imageSeriesRocognizer)
         cell.isUserInteractionEnabled = true
 
-//        if queue.operationCount == 0 {
-//            // Use indexed data
-//            if index < indexedUploadsInQueue.count,
-//               let state = indexedUploadsInQueue[index]?.1 {
-//                switch state {
-//                case .waiting, .preparing, .prepared, .deleted:
-//                    cell.cellWaiting = true
-//                case .uploading:
-//                    cell.cellUploading = true
-//                case .uploaded, .finishing:
-//                    cell.cellUploading = false
-//                case .finished, .moderated:
-//                    cell.cellUploaded = true
-//                case .preparingFail, .preparingError, .formatError,
-//                        .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-//                    cell.cellFailed = true
-//                }
-//            } else {
-//                cell.cellSelected = selectedImages[index] != nil
-//            }
-//        } else {
-//            // Use non-indexed data
-//            if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
-//                switch upload?.1 {
-//                case .waiting, .preparing, .prepared, .deleted:
-//                    cell.cellWaiting = true
-//                case .uploading:
-//                    cell.cellUploading = true
-//                case .uploaded, .finishing:
-//                    cell.cellUploading = false
-//                case .finished, .moderated:
-//                    cell.cellUploaded = true
-//                case .preparingFail, .preparingError, .formatError,
-//                        .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-//                    cell.cellFailed = true
-//                case .none:
-//                    cell.cellSelected = false
-//                }
-//            } else {
-//                cell.cellSelected = selectedImages[index] != nil
-//            }
-//        }
         return cell
     }
 
@@ -1718,7 +1639,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Deselect the cell
             selectedImages[index] = nil
             cell.update(selected: false, state: uploadState)
-//            cell.cellSelected = false
         } else {
             // Can we  re-upload this image?
             if uploadState != nil {
@@ -1730,7 +1650,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
                                                      category: categoryId)
             cell.update(selected: true, state: uploadState)
-//            cell.cellSelected = true
         }
 
         // Update navigation bar
@@ -2062,20 +1981,6 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                    cell.localIdentifier == upload.localIdentifier {
                     // Update cell
                     cell.update(selected: false, state: upload.state)
-//                    cell.selectedImage.isHidden = true
-//                    switch upload.state {
-//                    case .waiting, .preparing, .prepared, .deleted:
-//                        cell.cellWaiting = true
-//                    case .uploading:
-//                        cell.cellUploading = true
-//                    case .uploaded, .finishing:
-//                        cell.cellUploading = false
-//                    case .finished, .moderated:
-//                        cell.cellUploaded = true
-//                    case .preparingFail, .preparingError, .formatError,
-//                            .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-//                        cell.cellFailed = true
-//                    }
                     cell.reloadInputViews()
                     // The section will be refreshed only if the button content needs to be changed
                     self.updateSelectButton(ofSection: indexPath.section, completion: {

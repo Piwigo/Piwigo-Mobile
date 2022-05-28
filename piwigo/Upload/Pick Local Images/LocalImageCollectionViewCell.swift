@@ -25,91 +25,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
-//    private var _cellSelected = false
-//    @objc var cellSelected: Bool {
-//        get {
-//            _cellSelected
-//        }
-//        set(cellSelected) {
-//            _cellSelected = cellSelected
-//            selectedImage?.isHidden = !cellSelected
-//            darkenView?.isHidden = !cellSelected && !_cellUploaded
-//            waitingActivity?.isHidden = true
-//            uploadingProgress?.isHidden = true
-//            uploadingProgress?.setProgress(0, animated: false)
-//            uploadedImage?.isHidden = !_cellUploaded
-//            failedUploadImage?.isHidden = true
-//        }
-//    }
-
-//    private var _cellWaiting = false
-//    @objc var cellWaiting: Bool {
-//        get {
-//            _cellWaiting
-//        }
-//        set(waiting) {
-//            _cellUploading = waiting
-//            darkenView?.isHidden = false
-//            waitingActivity?.isHidden = false
-//            uploadingProgress?.isHidden = false
-//            uploadingProgress?.setProgress(0, animated: false)
-//            uploadedImage?.isHidden = true
-//            failedUploadImage?.isHidden = true
-//        }
-//    }
-
-//    private var _cellUploading = false
-//    @objc var cellUploading: Bool {
-//        get {
-//            _cellUploading
-//        }
-//        set(uploading) {
-//            _cellUploading = uploading
-//            darkenView?.isHidden = false
-//            waitingActivity?.isHidden = true
-//            uploadingProgress?.isHidden = false
-//            if uploading {
-//                uploadingProgress?.setProgress(_progress, animated: false)
-//            } else {
-//                uploadingProgress?.setProgress(1.0, animated: false)
-//            }
-//            uploadedImage?.isHidden = true
-//            failedUploadImage?.isHidden = true
-//        }
-//    }
-
-//    private var _cellUploaded = false
-//    @objc var cellUploaded: Bool {
-//        get {
-//            _cellUploaded
-//        }
-//        set(uploaded) {
-//            _cellUploaded = uploaded
-//            darkenView?.isHidden = !uploaded
-//            uploadingProgress?.isHidden = uploaded
-//            uploadingProgress?.setProgress(1, animated: false)
-//            uploadedImage?.isHidden = !uploaded
-//            failedUploadImage?.isHidden = true
-//            waitingActivity?.isHidden = uploaded
-//        }
-//    }
-
-//    private var _cellFailed = false
-//    @objc var cellFailed: Bool {
-//        get {
-//            _cellFailed
-//        }
-//        set(failed) {
-//            _cellUploaded = false
-//            darkenView?.isHidden = !failed
-//            uploadingProgress?.isHidden = true
-//            uploadingProgress?.setProgress(_progress, animated: false)
-//            uploadedImage?.isHidden = true
-//            failedUploadImage?.isHidden = !failed
-//            waitingActivity?.isHidden = true
-//        }
-//    }
-
     private var _progress: Float = 0.0
     @objc var progress: Float {
         get {
@@ -269,11 +184,5 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         cellImage.image = UIImage(named: "placeholder")
         playBckg.isHidden = true
         playImg.isHidden = true
-//        selectedImage?.isHidden = true
-//        cellSelected = false
-//        uploadingProgress?.isHidden = true
-//        uploadingProgress?.setProgress(0, animated: false)
-//        failedUploadImage.isHidden = true
-//        waitingActivity?.isHidden = true
     }
 }
