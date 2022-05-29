@@ -1503,7 +1503,7 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		D8172E171AB7C06200271DB0 /* Select */ = {
+		D8172E171AB7C06200271DB0 /* Select Album */ = {
 			isa = PBXGroup;
 			children = (
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
@@ -1512,7 +1512,7 @@
 				ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
 			);
-			path = Select;
+			path = "Select Album";
 			sourceTree = "<group>";
 		};
 		D818E9F51A74BF1100733991 /* Cells */ = {
@@ -1727,7 +1727,7 @@
 				AD7B4C2220E360C3003E403A /* Services */,
 				D818E9F51A74BF1100733991 /* Cells */,
 				AD7B4C2120E0E0AC003E403A /* Headers & Footers */,
-				D8172E171AB7C06200271DB0 /* Select */,
+				D8172E171AB7C06200271DB0 /* Select Album */,
 				AD98FB972843A68F00F6C0C5 /* Search Images */,
 				AD98FB942843A28700F6C0C5 /* Tagged Images */,
 				AD77109E22F49A7200E64797 /* Discover */,
