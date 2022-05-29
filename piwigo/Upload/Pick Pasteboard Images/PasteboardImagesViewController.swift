@@ -604,15 +604,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         updateActionButton()
 
         // No further operation if re-uploading is allowed
-        if reUploadAllowed {
-            // Refresh collection view
-            DispatchQueue.main.async {
-                self.localImagesCollection.reloadData()
-            }
-            return
-        }
+        if reUploadAllowed { return }
 
         // Deselect already uploaded photos if needed
+        var didChangeSelection = false
         for index in 0..<selectedImages.count {
             if selectedImages[index] == nil { continue }
             // Can we select this image?
@@ -622,19 +617,23 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if indexedUploadsInQueue[index] != nil {
                     // Deselect cell
                     selectedImages[index] = nil
+                    didChangeSelection = true
                 }
             } else {
                 // Use non-indexed data (might be quite slow)
                 if let localIdentifier = selectedImages[index]?.localIdentifier,
                    let _ = uploadsInQueue.firstIndex(where: { $0?.0 == localIdentifier }) {
                     selectedImages[index] = nil
+                    didChangeSelection = true
                 }
             }
         }
         
-        // Refresh collection view
-        self.updateNavBar()
-        self.localImagesCollection.reloadData()
+        // Refresh collection view if necessary
+        if didChangeSelection {
+            self.updateNavBar()
+            self.localImagesCollection.reloadData()
+        }
     }
     
 
