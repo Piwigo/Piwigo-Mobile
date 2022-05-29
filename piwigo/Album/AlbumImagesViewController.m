@@ -29,7 +29,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -340,7 +340,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
     UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-    searchController.delegate = self;
     searchController.hidesNavigationBarDuringPresentation = YES;
     searchController.searchResultsUpdater = self;
     
@@ -3759,80 +3758,4 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
 }
 
-
-#pragma mark - UISearchBarDelegate
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
-{
-    // Animates Cancel button appearance
-    [searchBar setShowsCancelButton:YES animated:YES];
-    return YES;
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
-    // Title forgotten when searching immediately after launch
-    if (self.categoryId == 0) {
-        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-    } else {
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-    }
-    
-    // Animates Cancel button disappearance
-    [searchBar setShowsCancelButton:NO animated:YES];
-}
-
-
-#pragma mark - UISearchControllerDelegate
-
-- (void)willPresentSearchController:(UISearchController *)searchController
-{
-    // NOP
-}
-
-- (void)didDismissSearchController:(UISearchController *)searchController
-{
-    // NOP
-}
-
-
-#pragma mark - UISearchResultsUpdating
-
--(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    
-    // Query string
-    NSString *searchString = [searchController.searchBar text];
-    
-    // Resfresh image collection for new query only
-    if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
-        SearchImagesViewController *resultsController = (SearchImagesViewController *)searchController.searchResultsController;
-        
-        if (![resultsController.searchQuery isEqualToString:searchString] || !searchString.length) {
-            
-            // Cancel active image downloads if any
-            NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-            for (NSURLSessionTask *task in downloadTasks) {
-                [task cancel];
-            }
-            
-            // Initialise search cache
-            PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
-            [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
-            
-            // Resfresh image collection
-            resultsController.searchQuery = searchString;
-            [resultsController searchAndLoadImages];
-        }
-    }
-}
-
-
-//#pragma mark - TagSelectorViewDelegate Methods
-//
-//-(void)pushTaggedImagesView:(UIViewController *)viewController
-//{
-//    // Push sub-album view
-//    [self.navigationController pushViewController:viewController animated:YES];
-//}
-//
 @end

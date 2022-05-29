@@ -174,6 +174,7 @@
 		AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD98FB962843A2F100F6C0C5 /* AlbumImagesViewController+TaggedImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98FB952843A2F100F6C0C5 /* AlbumImagesViewController+TaggedImages.swift */; };
+		AD98FB992843A6C400F6C0C5 /* AlbumImagesViewController+SearchImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98FB982843A6C400F6C0C5 /* AlbumImagesViewController+SearchImages.swift */; };
 		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
 		AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
 		AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
@@ -615,6 +616,7 @@
 		AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.getStatus.json; sourceTree = "<group>"; };
 		AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.getStatus.swift; sourceTree = "<group>"; };
 		AD98FB952843A2F100F6C0C5 /* AlbumImagesViewController+TaggedImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+TaggedImages.swift"; sourceTree = "<group>"; };
+		AD98FB982843A6C400F6C0C5 /* AlbumImagesViewController+SearchImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+SearchImages.swift"; sourceTree = "<group>"; };
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
 		AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */ = {isa = PBXFileReference; lastKnownFileType = text; path = VerificationFailed.ahap; sourceTree = "<group>"; };
 		AD9D684927DFE9E600517261 /* HapticUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticUtilities.swift; sourceTree = "<group>"; };
@@ -1144,8 +1146,6 @@
 		AD77109E22F49A7200E64797 /* Discover */ = {
 			isa = PBXGroup;
 			children = (
-				AD39165B22A06FF200414E4B /* SearchImagesViewController.h */,
-				AD39165922A06FDF00414E4B /* SearchImagesViewController.m */,
 				ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */,
 				ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */,
 				ADBCFE85235B75F2001D6EE7 /* FavoritesImagesViewController.h */,
@@ -1271,6 +1271,15 @@
 				AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */,
 			);
 			path = "Tagged Images";
+			sourceTree = "<group>";
+		};
+		AD98FB972843A68F00F6C0C5 /* Search Images */ = {
+			isa = PBXGroup;
+			children = (
+				AD39165B22A06FF200414E4B /* SearchImagesViewController.h */,
+				AD39165922A06FDF00414E4B /* SearchImagesViewController.m */,
+			);
+			path = "Search Images";
 			sourceTree = "<group>";
 		};
 		AD9A1BE324E03AAF00D22C86 /* community */ = {
@@ -1711,6 +1720,7 @@
 				ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */,
 				D8D3F71E1A785DF800AEA7F1 /* AlbumImagesViewController.h */,
 				D8D3F71F1A785DF800AEA7F1 /* AlbumImagesViewController.m */,
+				AD98FB982843A6C400F6C0C5 /* AlbumImagesViewController+SearchImages.swift */,
 				AD98FB952843A2F100F6C0C5 /* AlbumImagesViewController+TaggedImages.swift */,
 				AD1B92792703A78D0089C5F4 /* AlbumImagesViewController+TransitioningDelegate.swift */,
 				AD1B927B2703AAD90089C5F4 /* ImageAnimatedTransitioning.swift */,
@@ -1718,6 +1728,7 @@
 				D818E9F51A74BF1100733991 /* Cells */,
 				AD7B4C2120E0E0AC003E403A /* Headers & Footers */,
 				D8172E171AB7C06200271DB0 /* Select */,
+				AD98FB972843A68F00F6C0C5 /* Search Images */,
 				AD98FB942843A28700F6C0C5 /* Tagged Images */,
 				AD77109E22F49A7200E64797 /* Discover */,
 			);
@@ -2405,6 +2416,7 @@
 				AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
+				AD98FB992843A6C400F6C0C5 /* AlbumImagesViewController+SearchImages.swift in Sources */,
 				AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */,
 				ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
