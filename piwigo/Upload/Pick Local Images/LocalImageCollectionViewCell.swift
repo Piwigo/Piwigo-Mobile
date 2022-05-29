@@ -25,6 +25,16 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
+    private var _md5sum = ""
+    @objc var md5sum: String {
+        get {
+            _md5sum
+        }
+        set(md5sum) {
+            _md5sum = md5sum
+        }
+    }
+
     private var _progress: Float = 0.0
     @objc var progress: Float {
         get {
@@ -62,14 +72,11 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var failedUploadImage: UIImageView!
     
-    @objc
-    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
-        
+    private func configureIcons() {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
         waitingActivity.color = UIColor.white
         uploadingProgress.trackTintColor = UIColor.white
-        localIdentifier = imageAsset.localIdentifier
 
         // Selected icon: match size to cell size
         let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
@@ -91,7 +98,15 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         // Uploaded icon: match size to cell size
         uploadedImgWidth.constant = frame.size.width * uploadedScale + (scale - 1)
         uploadedImgHeight.constant = uploadedImgWidth.constant * uploadedRatio
+    }
+
+    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
+        // Configure icons
+        configureIcons()
         
+        // Store local identifier
+        localIdentifier = imageAsset.localIdentifier
+
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
         let retinaSquare = CGSize(width: thumbnailSize * CGFloat(retinaScale), height: thumbnailSize * CGFloat(retinaScale))
@@ -120,6 +135,21 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
                 }
             })
         })
+    }
+    
+    func configure(with image: UIImage, identifier: String, thumbnailSize: CGFloat) {
+        // Configure icons
+        configureIcons()
+        
+        // Store local identifier
+        localIdentifier = identifier
+        
+        // Image: retrieve data of right size and crop image
+        self.cellImage.image = image
+        if identifier.contains("mov") {
+            self.playBckg?.isHidden = false
+            self.playImg.isHidden = false
+        }
     }
     
     func update(selected: Bool, state: kPiwigoUploadState? = nil) {

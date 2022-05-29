@@ -98,7 +98,6 @@
 		AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */; };
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
 		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
-		AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
 		AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */; };
 		AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */; };
@@ -504,7 +503,6 @@
 		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
-		AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
 		AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AutoUploadViewController.storyboard; sourceTree = "<group>"; };
@@ -1057,7 +1055,6 @@
 				AD439E4325E14C3600333A91 /* PasteboardObject.swift */,
 				AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */,
 				AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */,
-				AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */,
 				AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */,
 			);
 			path = "Pick Pasteboard Images";
@@ -2341,7 +2338,6 @@
 				ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */,
 				ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */,
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
-				AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */,
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
