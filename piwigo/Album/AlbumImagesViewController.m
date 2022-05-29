@@ -29,7 +29,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -3827,12 +3827,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 }
 
 
-#pragma mark - TagSelectViewDelegate Methods
-
--(void)pushTaggedImagesView:(UIViewController *)viewController
-{
-    // Push sub-album view
-    [self.navigationController pushViewController:viewController animated:YES];
-}
-
+//#pragma mark - TagSelectorViewDelegate Methods
+//
+//-(void)pushTaggedImagesView:(UIViewController *)viewController
+//{
+//    // Push sub-album view
+//    [self.navigationController pushViewController:viewController animated:YES];
+//}
+//
 @end
