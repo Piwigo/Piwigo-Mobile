@@ -1,5 +1,5 @@
 //
-//  CategoryHeaderReusableView.swift
+//  AlbumHeaderReusableView.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 24/06/2018.
@@ -10,7 +10,7 @@
 
 import UIKit
 
-class CategoryHeaderReusableView: UICollectionReusableView {
+class AlbumHeaderReusableView: UICollectionReusableView {
     @objc var commentLabel: UILabel?
 
     override init(frame: CGRect) {

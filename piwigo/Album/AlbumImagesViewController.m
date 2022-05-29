@@ -221,7 +221,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
         [self.imagesCollection registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:@"AlbumCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
+        [self.imagesCollection registerClass:[AlbumHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
@@ -514,7 +514,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
     if (headers.count > 0) {
-        CategoryHeaderReusableView *header = headers.firstObject;
+        AlbumHeaderReusableView *header = headers.firstObject;
         header.commentLabel.textColor = [UIColor piwigoColorHeader];
         header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
@@ -2988,7 +2988,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     switch (indexPath.section) {
         case 0:     // Section 0 — Album collection
         {
-            CategoryHeaderReusableView *header = nil;
+            AlbumHeaderReusableView *header = nil;
             
             if (kind == UICollectionElementKindSectionHeader) {
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader" forIndexPath:indexPath];

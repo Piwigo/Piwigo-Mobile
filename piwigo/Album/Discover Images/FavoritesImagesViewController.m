@@ -251,7 +251,7 @@
     self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
     if (headers.count > 0) {
-        CategoryHeaderReusableView *header = headers.firstObject;
+        AlbumHeaderReusableView *header = headers.firstObject;
         header.commentLabel.textColor = [UIColor piwigoColorHeader];
     }
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
