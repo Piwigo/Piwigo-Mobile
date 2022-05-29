@@ -94,12 +94,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                         //  - for sorting by day, week or month (or not)
                                                         //  - for deleting uploaded images
                                                         //  - for selecting images in the Photo Library
+                                                        //  - for allowing to re-upload images
                                                         // iPad until iOS 13:
                                                         //  - for reversing the sort order
                                                         // iPad as from iOS 14:
                                                         //  - for reversing the sort order
                                                         //  - for sorting by day, week or month (or not)
                                                         //  - for selecting images in the Photo Library
+                                                        //  - for allowing to re-upload images
     private var legendLabel = UILabel()                 // Legend presented in the toolbar on iPhone/iOS 14+
     private var legendBarItem: UIBarButtonItem!
 
@@ -1108,10 +1110,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @available(iOS 14, *)
     private func getMenuForDeletingPhotos() -> UIMenu? {
         // Check if there are uploaded photos
-        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects,
-           allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) }).isEmpty {
-            return nil
-        }
+        if !canDeleteUploadedImages() { return nil }
         
         // Propose option for re-uploading photos
         let reUpload = UIAction(title: NSLocalizedString("localImages_reUploadTitle", comment: "Re-upload"),
@@ -1121,8 +1120,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         reUpload.accessibilityIdentifier = "Re-upload"
 
         // Are there uploaded photos to delete (trash icon presented on iPad)?
-        if UIDevice.current.userInterfaceIdiom == .phone,
-           canDeleteUploadedImages() {
+        if UIDevice.current.userInterfaceIdiom == .phone {
             // Proposes to change the Photo Library selection
             let delete = UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
                                   image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
