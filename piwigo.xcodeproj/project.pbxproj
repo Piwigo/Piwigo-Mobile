@@ -1143,7 +1143,7 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		AD77109E22F49A7200E64797 /* Discover */ = {
+		AD77109E22F49A7200E64797 /* Discover Images */ = {
 			isa = PBXGroup;
 			children = (
 				ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */,
@@ -1151,7 +1151,7 @@
 				ADBCFE85235B75F2001D6EE7 /* FavoritesImagesViewController.h */,
 				ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */,
 			);
-			path = Discover;
+			path = "Discover Images";
 			sourceTree = "<group>";
 		};
 		AD778358267E34F800317F36 /* piwigoIntents */ = {
@@ -1730,7 +1730,7 @@
 				D8172E171AB7C06200271DB0 /* Select Album */,
 				AD98FB972843A68F00F6C0C5 /* Search Images */,
 				AD98FB942843A28700F6C0C5 /* Tagged Images */,
-				AD77109E22F49A7200E64797 /* Discover */,
+				AD77109E22F49A7200E64797 /* Discover Images */,
 			);
 			path = Album;
 			sourceTree = "<group>";
