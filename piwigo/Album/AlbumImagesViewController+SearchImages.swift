@@ -8,7 +8,6 @@
 
 import Foundation
 
-// MARK: - UISearchBarDelegate Methods
 extension AlbumImagesViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
@@ -31,7 +30,7 @@ extension AlbumImagesViewController: UISearchBarDelegate
 }
 
 
-// MARK: - UISearchResultsUpdating Methods
+// MARK: -
 extension AlbumImagesViewController: UISearchResultsUpdating
 {
     public func updateSearchResults(for searchController: UISearchController) {

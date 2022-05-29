@@ -29,7 +29,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -72,8 +72,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) CAShapeLayer* progressLayer;
 
 @property (nonatomic, assign) BOOL isSelect;
-@property (nonatomic, assign) NSInteger totalNumberOfImages;
-@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *touchedImageIds;
 
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToEdit;
@@ -3671,59 +3669,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
     }
-}
-
-
-#pragma mark - ShareImageActivityItemProviderDelegate Methods
-
--(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
-{
-    // Show HUD to let the user know the image is being downloaded in the background.
-    NSString *detailsLabel = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
-    [self.presentedViewController showPiwigoHUDWithTitle:title detail:detailsLabel buttonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel") buttonTarget:self buttonSelector:@selector(cancelShareImages) inMode:MBProgressHUDModeAnnularDeterminate];
-}
-
--(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
-{
-    // Update HUD
-    [self.presentedViewController updatePiwigoHUDWithProgress:progress];
-}
-
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
-{
-    // Close HUD
-    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
-    if ([imageActivityItemProvider isCancelled]) {
-        [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-    } else {
-        if ([self.selectedImageIds containsObject:imageIdObject]) {
-            // Remove image from selection
-            [self.selectedImageIds removeObject:imageIdObject];
-            [self updateButtonsInSelectionMode];
-
-            // Close HUD if last image
-            if ([self.selectedImageIds count] == 0) {
-                [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
-                    [self.presentedViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{ }];
-                }];
-            }
-        }
-    }
-}
-
--(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
-{
-    // Cancel remaining shares
-    [self cancelShareImages];
-    
-    // Close HUD if needed
-    [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-    
-    // Display error alert after trying to share image
-    [self.presentedViewController dismissPiwigoErrorWithTitle:title message:message errorMessage:@"" completion:^{
-        // Close ActivityView
-        [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-    }];
 }
 
 

@@ -1462,8 +1462,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
 // MARK: - ShareImageActivityItemProviderDelegate Methods
 extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
 {
-    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String?) {
-        guard let title = title else { return }
+    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
         presentedViewController?.showPiwigoHUD(withTitle: title, detail: "", buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .annularDeterminate)
     }
@@ -1486,10 +1485,9 @@ extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
         }
     }
 
-    func showError(withTitle title: String?, andMessage message: String?) {
-        guard let title = title, let message = message else { return }
+    func showError(withTitle title: String, andMessage message: String?) {
         // Display error alert after trying to share image
-        presentedViewController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: "") { [unowned self] in
+        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [unowned self] in
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }
