@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.10.0_text" = "Versión 2.10\n\n• Añade App Lock, una característica para ocultar tus álbumes detrás de Face ID, Touch ID y un código de acceso\n• Correcciones de errores\n• Modernización de código";
+"v2.11.0_text" = "Version 2.11\n\n• Adds an option for re-uploading photos and videos\n• Code modernization";
+
+"v2.10.0_text" = "Versión 2.10\n20 de mayo de 2022\n\n• Añade App Lock, una característica para ocultar tus álbumes detrás de Face ID, Touch ID y un código de acceso\n• Correcciones de errores\n• Modernización de código";
 
 "v2.9.5_text" = "Versión 2.9.5\n7 de marzo de 2022\n\n• Corrección de errores\n• Modernización del código";
 

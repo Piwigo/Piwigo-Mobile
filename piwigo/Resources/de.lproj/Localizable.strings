@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehen Sie in die Einstellungen und ermöglichen den Zugriff für Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Aus Fotos entfernen";
 "localImages_deleteMessage" = "Möchten Sie die hochgeladenen Fotos oder Videos aus der Kamerarolle löschen? Die gelöschten Fotos oder Videos sind noch 30 Tage lang im iOS-Fotopapierkorb verfügbar.";
 

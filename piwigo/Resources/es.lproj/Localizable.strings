@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "No se puede abrir la biblioteca local de fotos. Por favor, vaya a la aplicación de configuración y habilite el acceso para Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Eliminar del carrete de cámara";
 "localImages_deleteMessage" = "¿Desea eliminar las fotos o vídeos subidos del carrete de la cámara? Las fotos o vídeos eliminados seguirán estando disponibles en la papelera de fotos de iOS durante 30 días.";
 

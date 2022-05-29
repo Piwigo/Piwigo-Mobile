@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Verwijderen uit filmrol";
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 

@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "无法读取本地照片库，请进入设备设置菜单，为Piwigo授予相应权限";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "从相机卷删除";
 "localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频在被彻底删除前会在 iOS 照片回收站中保留 30 天";
 

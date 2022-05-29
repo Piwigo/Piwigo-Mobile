@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossibile aprire la libreria di foto locale. Accedi all'app Impostazioni e attiva l'accesso per Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Rimuovi dal rullo fotocamera";
 "localImages_deleteMessage" = "Vuoi eliminare le foto o i video caricati dal rullino della fotocamera? Le foto o i video eliminati saranno ancora disponibili nel cestino foto iOS per 30 giorni.";
 

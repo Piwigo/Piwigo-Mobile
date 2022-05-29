@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan ikke åbne det lokale fotobibliotek. Gå venligst ind i indstillinger og aktiver adgang for Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Fjern fra kamerarulle";
 "localImages_deleteMessage" = "Ønsker du at slette de uploadede fotos eller videoer fra kamerarullen? De slettede billeder eller videoer vil stadig være tilgængelige i iOS-billeder papirkurven i 30 dage.";
 

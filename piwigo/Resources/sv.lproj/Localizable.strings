@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket. Gå in på appen Inställningar och aktivera åtkomst för Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Ta bort från kamerarullen";
 "localImages_deleteMessage" = "Vill du ta bort uppladdade foton eller videor från kamerarullen? De raderade bilderna eller videoklippen kommer fortfarande att finnas tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
 

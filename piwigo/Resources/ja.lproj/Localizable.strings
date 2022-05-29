@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "カメラロールから削除する";
 "localImages_deleteMessage" = "アップロードした写真や動画をカメラロールから削除しますか？ 削除された写真やビデオは、iOSの写真のゴミ箱で30日間は引き続き利用可能です。";
 

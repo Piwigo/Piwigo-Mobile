@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossible d’ouvrir la photothèque locale. Allez dans l’application Réglages et activez l’accès pour Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-télécharger";
 "localImages_deleteTitle" = "Retirer de la pellicule";
 "localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
