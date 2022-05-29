@@ -23,4 +23,3 @@
 #import "PiwigoTagData.h"
 #import "SearchImagesViewController.h"
 #import "TaggedImagesViewController.h"
-#import "TagsData.h"

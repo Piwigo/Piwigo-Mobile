@@ -1668,7 +1668,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
                     TagsProvider().clearTags()
-                    TagsData.sharedInstance().clearCache()
                 })
                 alert.addAction(clearTagsAction)
                 
