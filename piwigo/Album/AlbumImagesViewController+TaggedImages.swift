@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: TagSelectorViewDelegate Methods
 extension AlbumImagesViewController: TagSelectorViewDelegate
 {
     func pushTaggedImagesView(_ viewController: UIViewController) {

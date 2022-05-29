@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: ShareImageActivityItemProviderDelegate Methods
 extension AlbumImagesViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
