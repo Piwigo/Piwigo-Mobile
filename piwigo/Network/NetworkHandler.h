@@ -25,8 +25,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoCategoriesAdd;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesSetInfo;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesDelete;
 FOUNDATION_EXPORT NSString * const kPiwigoCategoriesMove;
-FOUNDATION_EXPORT NSString * const kPiwigoCategoriesSetRepresentative;
-FOUNDATION_EXPORT NSString * const kPiwigoCategoriesRefreshRepresentative;
+//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesSetRepresentative;
+//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesRefreshRepresentative;
 
 //FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
 //FOUNDATION_EXPORT NSString * const kCommunityImagesUploadCompleted;

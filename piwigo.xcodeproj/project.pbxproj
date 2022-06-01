@@ -102,6 +102,8 @@
 		AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */; };
 		AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */; };
 		AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */; };
+		AD5A31672847F9BD00948FEE /* pwg.images.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A31662847F87000948FEE /* pwg.images.setRepresentative.swift */; };
+		AD5A316B2847FDC900948FEE /* pwg.categories.setRepresentative.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */; };
 		AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */; };
 		AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */; };
 		AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */; };
@@ -514,6 +516,8 @@
 		AD591A3B1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD591A3C1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD591A3D1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD5A31662847F87000948FEE /* pwg.images.setRepresentative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.setRepresentative.swift; sourceTree = "<group>"; };
+		AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.categories.setRepresentative.json; sourceTree = "<group>"; };
 		AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataCell.swift; sourceTree = "<group>"; };
 		AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
 		AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadQueueViewControllerOld.storyboard; sourceTree = "<group>"; };
@@ -917,6 +921,7 @@
 				AD11E46024A930B000C8876F /* piwigoWebAPI.swift */,
 				AD38C04924AF73D900CDC765 /* community */,
 				ADF2329F26D4072A002ACEC9 /* pwg */,
+				AD5A31682847FD8A00948FEE /* pwg.categories */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
 				AD211A8227BAFCDD005D5E4F /* pwg.session */,
 				AD5F64E624C601B500660BE3 /* pwg.tags */,
@@ -1000,6 +1005,7 @@
 				AD9A1BE324E03AAF00D22C86 /* community */,
 				AD211A7B27BAD844005D5E4F /* reflection */,
 				ADF2329C26D40619002ACEC9 /* pwg */,
+				AD5A31652847F85F00948FEE /* pwg.categories */,
 				AD9A1BE424E03AC700D22C86 /* pwg.images */,
 				AD211A8427BAFD51005D5E4F /* pwg.session */,
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
@@ -1070,6 +1076,22 @@
 				AD1B927B2703AAD90089C5F4 /* ImageAnimatedTransitioning.swift */,
 			);
 			path = extensions;
+			sourceTree = "<group>";
+		};
+		AD5A31652847F85F00948FEE /* pwg.categories */ = {
+			isa = PBXGroup;
+			children = (
+				AD5A31662847F87000948FEE /* pwg.images.setRepresentative.swift */,
+			);
+			path = pwg.categories;
+			sourceTree = "<group>";
+		};
+		AD5A31682847FD8A00948FEE /* pwg.categories */ = {
+			isa = PBXGroup;
+			children = (
+				AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */,
+			);
+			path = pwg.categories;
 			sourceTree = "<group>";
 		};
 		AD5C14B7266C2E3E007E8C99 /* Fonts */ = {
@@ -1977,6 +1999,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD5A316B2847FDC900948FEE /* pwg.categories.setRepresentative.json in Resources */,
 				ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */,
 				AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */,
 				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
@@ -2221,6 +2244,7 @@
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
 				AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */,
 				ADF72EA126712CA80027E2CC /* UploadsProvider.swift in Sources */,
+				AD5A31672847F9BD00948FEE /* pwg.images.setRepresentative.swift in Sources */,
 				ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */,
 				ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */,
 				AD62CC8726828DC100CA66C5 /* VideoMetadata.swift in Sources */,

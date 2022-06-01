@@ -1010,30 +1010,24 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
-            AlbumService.setCategoryRepresentativeForCategory(categoryData.albumId,
-                                  forImageId: self.inputImageData.imageId) { _, didSucceed in
-                if didSucceed {
-                    // Update image Id of album
-                    categoryData.albumThumbnailId = self.inputImageData.imageId
+            AlbumUtilities.setRepresentativeOf(category: categoryData.albumId,
+                                               with: self.inputImageData) {
+                // Update image Id of album
+                categoryData.albumThumbnailId = self.inputImageData.imageId
 
-                    // Update image URL of album
-                    categoryData.albumThumbnailUrl = self.inputImageData.thumbPath;
+                // Update image URL of album
+                categoryData.albumThumbnailUrl = self.inputImageData.thumbPath;
 
-                    // Image will be downloaded when displaying list of albums
-                    categoryData.categoryImage = nil
-                    
-                    // Close HUD
-                    self.updatePiwigoHUDwithSuccess() {
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true)
-                        }
+                // Image will be downloaded when displaying list of albums
+                categoryData.categoryImage = nil
+                
+                // Close HUD
+                self.updatePiwigoHUDwithSuccess() {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.dismiss(animated: true)
                     }
-                } else {
-                    // Close HUD and inform user
-                    self.hidePiwigoHUD { self.showError() }
                 }
-            } onFailure: { _, error in
-                // Close HUD and inform user
+            } failure: { [unowned self] error in
                 self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()

@@ -30,8 +30,8 @@ NSString * const kPiwigoCategoriesAdd = @"format=json&method=pwg.categories.add"
 NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.setInfo";
 NSString * const kPiwigoCategoriesDelete = @"format=json&method=pwg.categories.delete";
 NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.move";
-NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
-NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
+//NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
+//NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
 
 //NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo";
 //NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";

@@ -502,32 +502,4 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
             }];
 }
 
-+(NSURLSessionTask*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
-                                              forImageId:(NSInteger)imageId
-                                            OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
-                                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoCategoriesSetRepresentative
-		URLParameters:nil
-		   parameters:@{
-						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"image_id" : [NSString stringWithFormat:@"%@", @(imageId)]
-                        }
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-				  if(completion)
-				  {
-					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-				  }
-            } failure:^(NSURLSessionTask *task, NSError *error) {
-  #if defined(DEBUG_ALBUM)
-                NSLog(@"setCategoryRepresentativeForCategory — Fail: %@", [error description]);
-  #endif
-                if(fail) {
-                    fail(task, error);
-                }
-            }];
-}
-
 @end

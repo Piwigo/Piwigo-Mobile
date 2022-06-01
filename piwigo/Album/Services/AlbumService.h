@@ -47,9 +47,4 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
                                            movedSuccessfully))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)setCategoryRepresentativeForCategory:(NSInteger)categoryId
-                                              forImageId:(NSInteger)imageId
-                                            OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setSuccessfully))completion
-                                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 @end

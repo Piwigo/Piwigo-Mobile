@@ -89,6 +89,34 @@ class piwigoWebAPI: XCTestCase {
     }
 
 
+    // MARK: - pwg.categories…
+    func testPwgCategoriesSetRepresentativeDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.setRepresentative", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesSetRepresentativeJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesSetRepresentativeJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
     // MARK: - pwg.images…
     func testPwgImagesUploadDecoding() {
         
