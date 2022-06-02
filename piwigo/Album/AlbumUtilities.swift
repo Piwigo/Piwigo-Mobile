@@ -170,7 +170,6 @@ class AlbumUtilities: NSObject {
 
                     // Delete category from cache
                     CategoriesData.sharedInstance().deleteCategory(withId: category.albumId)
-
                     completion()
                 }
                 else {
@@ -190,11 +189,11 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func setRepresentativeOfCategory(withId categoryId: Int, with imageData: PiwigoImageData,
+    class func setRepresentativeOfCategory(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
                                            completion: @escaping () -> Void,
                                            failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : categoryId,
+        let paramsDict: [String : Any] = ["category_id" : category.albumId,
                                           "image_id"    : imageData.imageId]
 
         let JSONsession = PwgSession.shared
@@ -217,12 +216,12 @@ class AlbumUtilities: NSObject {
 
                 // Successful?
                 if uploadJSON.success {
-                    // Album thumbnail successfully set ▶ update catagory in cache
-                    if let category = CategoriesData.sharedInstance().getCategoryById(categoryId) {
-                        category.albumThumbnailId = imageData.imageId
-                        category.albumThumbnailUrl = imageData.thumbPath
-                        CategoriesData.sharedInstance().updateCategories([category])
-                    }
+                    // Album thumbnail successfully set ▶ update catagory
+                    category.albumThumbnailId = imageData.imageId
+                    category.albumThumbnailUrl = imageData.thumbPath
+                    
+                    // Update catagory in cache
+                    CategoriesData.sharedInstance().updateCategories([category])
                     completion()
                 }
                 else {

@@ -954,8 +954,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
-            AlbumUtilities.setRepresentativeOfCategory(withId: categoryData.albumId,
-                                                       with: self.inputImageData) {
+            AlbumUtilities.setRepresentativeOfCategory(categoryData, with: self.inputImageData)
+            {
                 // Update image Id of album
                 categoryData.albumThumbnailId = self.inputImageData.imageId
 
