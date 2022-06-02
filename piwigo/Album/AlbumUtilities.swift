@@ -117,9 +117,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func setRepresentativeOf(category categoryId: Int, with imageData: PiwigoImageData,
-                                   completion: @escaping () -> Void,
-                                   failure: @escaping (NSError) -> Void) {
+    class func setRepresentativeOfCategory(withId categoryId: Int, with imageData: PiwigoImageData,
+                                           completion: @escaping () -> Void,
+                                           failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : categoryId,
                                           "image_id"    : imageData.imageId]
