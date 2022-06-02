@@ -90,6 +90,33 @@ class piwigoWebAPI: XCTestCase {
 
 
     // MARK: - pwg.categories…
+    func testPwgCategoriesMoveDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.move", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesMoveJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesMoveJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
     func testPwgCategoriesSetRepresentativeDecoding() {
         
         // Case of a successful request

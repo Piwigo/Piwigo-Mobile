@@ -473,33 +473,4 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
             }];
 }
 
-+(NSURLSessionTask*)moveCategory:(NSInteger)categoryId
-                    intoCategory:(NSInteger)categoryToMoveIntoId
-                    OnCompletion:(void (^)(NSURLSessionTask *task, BOOL movedSuccessfully))completion
-                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoCategoriesMove
-		URLParameters:nil
-		   parameters:@{
-						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"pwg_token" : NetworkVarsObjc.pwgToken,
-						@"parent" : [NSString stringWithFormat:@"%@", @(categoryToMoveIntoId)]
-                        }
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-				  if(completion)
-				  {
-					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-				  }
-            } failure:^(NSURLSessionTask *task, NSError *error) {
-  #if defined(DEBUG_ALBUM)
-                NSLog(@"moveCategory — Fail: %@", [error description]);
-  #endif
-                if(fail) {
-                    fail(task, error);
-                }
-            }];
-}
-
 @end

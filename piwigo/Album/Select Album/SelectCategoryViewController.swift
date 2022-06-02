@@ -921,77 +921,21 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let userInfo = ["categoryId": parentCatData.albumId]
             NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
-            AlbumService.moveCategory(self.inputCategoryId,
-                                      intoCategory: parentCatData.albumId) { task, movedSuccessfully in
-                if movedSuccessfully {
-                    // Update cached old parent categories, except root album
-                    for oldParentStr in self.inputCategoryData.upperCategories {
-                        guard let oldParentID = Int(oldParentStr) else { continue }
-                        // Check that it is not the root album, nor the moved album
-                        if (oldParentID == 0) || (oldParentID == self.inputCategoryData.albumId) { continue }
-
-                        // Remove number of moved sub-categories and images
-                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= self.inputCategoryData.numberOfSubCategories + 1
-                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= self.inputCategoryData.totalNumberOfImages
-                    }
-                    
-                    // Update cached new parent categories, except root album
-                    var newUpperCategories = [String]()
-                    if parentCatData.albumId != 0 {
-                        // Parent category in which we moved the category
-                        newUpperCategories = CategoriesData.sharedInstance().getCategoryById(parentCatData.albumId).upperCategories ?? []
-                        for newParentStr in newUpperCategories {
-                            // Check that it is not the root album, nor the moved album
-                            guard let newParentId = Int(newParentStr) else { continue }
-                            if (newParentId == 0) || (newParentId == self.inputCategoryId) { continue }
-                            
-                            // Add number of moved sub-categories and images
-                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += self.inputCategoryData.numberOfSubCategories + 1;
-                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += self.inputCategoryData.totalNumberOfImages
+            // Move album
+            AlbumUtilities.moveCategory(self.inputCategoryData,
+                                        intoCategoryWithId: parentCatData.albumId) { updatedCategory in
+                // Update moved category data
+                self.inputCategoryData = updatedCategory
+                
+                // Hide HUD, swipe and view then remove category from the album/images collection view
+                self.updatePiwigoHUDwithSuccess() {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.dismiss(animated: true) {
+                            self.albumMovedDelegate?.didMoveCategory()
                         }
                     }
-
-                    // Update upperCategories of moved sub-categories
-                    var upperCatToRemove:[String] = self.inputCategoryData.upperCategories ?? []
-                    upperCatToRemove.removeAll(where: {$0 == String(self.inputCategoryId)})
-                    var catToUpdate = [PiwigoAlbumData]()
-                    
-                    if self.inputCategoryData.numberOfSubCategories > 0 {
-                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(self.inputCategoryId) ?? []
-                        for subCategory in subCategories {
-                            // Replace list of upper categories
-                            var upperCategories = subCategory.upperCategories ?? []
-                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                            upperCategories.append(contentsOf: newUpperCategories)
-                            subCategory.upperCategories = upperCategories
-                            catToUpdate.append(subCategory)
-                        }
-                    }
-
-                    // Replace upper category of moved album
-                    var upperCategories = self.inputCategoryData.upperCategories ?? []
-                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                    upperCategories.append(contentsOf: newUpperCategories)
-                    self.inputCategoryData.upperCategories = upperCategories
-                    self.inputCategoryData.nearestUpperCategory = parentCatData.albumId
-                    self.inputCategoryData.parentAlbumId = parentCatData.albumId
-                    catToUpdate.append(self.inputCategoryData)
-
-                    // Update categories in cache
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
-                    
-                    // Hide HUD, swipe and view then remove category from the album/images collection view
-                    self.updatePiwigoHUDwithSuccess() {
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true) {
-                                self.albumMovedDelegate?.didMoveCategory()
-                            }
-                        }
-                    }
-                } else {
-                    self.hidePiwigoHUD { self.showError() }
                 }
-            } onFailure: { [unowned self] task, error in
+            } failure: { [unowned self] error in
                 self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()

@@ -41,10 +41,4 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
                                              deletedSuccessfully))completion
                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)moveCategory:(NSInteger)categoryId
-                    intoCategory:(NSInteger)categoryToMoveIntoId
-                    OnCompletion:(void (^)(NSURLSessionTask *task, BOOL
-                                           movedSuccessfully))completion
-                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 @end

@@ -14,6 +14,109 @@ class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
     @objc
+    class func moveCategory(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
+                            completion: @escaping (PiwigoAlbumData) -> Void,
+                            failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["category_id" : category.albumId,
+                                          "parent"      : newParentCatId,
+                                          "pwg_token"   : NetworkVars.pwgToken]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoCategoriesMove, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CategoriesMoveJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CategoriesMoveJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Successful?
+                if uploadJSON.success {
+                    // Update cached old parent categories, except root album
+                    for oldParentStr in category.upperCategories {
+                        guard let oldParentID = Int(oldParentStr) else { continue }
+                        // Check that it is not the root album, nor the moved album
+                        if (oldParentID == 0) || (oldParentID == category.albumId) { continue }
+
+                        // Remove number of moved sub-categories and images
+                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= category.numberOfSubCategories + 1
+                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= category.totalNumberOfImages
+                    }
+
+                    // Update cached new parent categories, except root album
+                    var newUpperCategories = [String]()
+                    if newParentCatId != 0 {
+                        // Parent category in which we moved the category
+                        newUpperCategories = CategoriesData.sharedInstance().getCategoryById(newParentCatId).upperCategories ?? []
+                        for newParentStr in newUpperCategories {
+                            // Check that it is not the root album, nor the moved album
+                            guard let newParentId = Int(newParentStr) else { continue }
+                            if (newParentId == 0) || (newParentId == category.albumId) { continue }
+                            
+                            // Add number of moved sub-categories and images
+                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += category.numberOfSubCategories + 1;
+                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += category.totalNumberOfImages
+                        }
+                    }
+
+                    // Update upperCategories of moved sub-categories
+                    var upperCatToRemove:[String] = category.upperCategories ?? []
+                    upperCatToRemove.removeAll(where: {$0 == String(category.albumId)})
+                    var catToUpdate = [PiwigoAlbumData]()
+                    
+                    if category.numberOfSubCategories > 0 {
+                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(category.albumId) ?? []
+                        for subCategory in subCategories {
+                            // Replace list of upper categories
+                            var upperCategories = subCategory.upperCategories ?? []
+                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                            upperCategories.append(contentsOf: newUpperCategories)
+                            subCategory.upperCategories = upperCategories
+                            catToUpdate.append(subCategory)
+                        }
+                    }
+
+                    // Replace upper category of moved album
+                    var upperCategories = category.upperCategories ?? []
+                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                    upperCategories.append(contentsOf: newUpperCategories)
+                    category.upperCategories = upperCategories
+                    category.nearestUpperCategory = newParentCatId
+                    category.parentAlbumId = newParentCatId
+                    catToUpdate.append(category)
+
+                    // Update categories in cache
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+
+                    completion(category)
+                }
+                else {
+                    // Could not delete images
+                    failure(JsonError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
     class func setRepresentativeOf(category categoryId: Int, with imageData: PiwigoImageData,
                                    completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
@@ -34,7 +137,7 @@ class AlbumUtilities: NSObject {
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                    errorMessage: uploadJSON.errorMessage)
+                                                                 errorMessage: uploadJSON.errorMessage)
                     failure(error as NSError)
                     return
                 }
