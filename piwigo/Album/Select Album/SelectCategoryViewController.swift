@@ -922,8 +922,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
             // Move album
-            AlbumUtilities.moveCategory(self.inputCategoryData,
-                                        intoCategoryWithId: parentCatData.albumId) { updatedCategory in
+            AlbumUtilities.move(self.inputCategoryData,
+                                intoCategoryWithId: parentCatData.albumId) { updatedCategory in
                 // Update moved category data
                 self.inputCategoryData = updatedCategory
                 
@@ -954,7 +954,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
-            AlbumUtilities.setRepresentativeOfCategory(categoryData, with: self.inputImageData)
+            AlbumUtilities.setRepresentative(categoryData, with: self.inputImageData)
             {
                 // Update image Id of album
                 categoryData.albumThumbnailId = self.inputImageData.imageId

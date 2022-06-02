@@ -13,10 +13,10 @@ import piwigoKit
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    class func setInfosOfCategory(_ category: PiwigoAlbumData,
-                                  withName name:String, description: String,
-                                  completion: @escaping () -> Void,
-                                  failure: @escaping (NSError) -> Void) {
+    class func setInfos(_ category: PiwigoAlbumData,
+                        withName name:String, description: String,
+                        completion: @escaping () -> Void,
+                        failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
@@ -66,9 +66,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func moveCategory(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
-                            completion: @escaping (PiwigoAlbumData) -> Void,
-                            failure: @escaping (NSError) -> Void) {
+    class func move(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
+                    completion: @escaping (PiwigoAlbumData) -> Void,
+                    failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
                                           "parent"      : newParentCatId,
@@ -169,9 +169,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func deleteCategory(_ category: PiwigoAlbumData, inModde mode: String,
-                              completion: @escaping () -> Void,
-                              failure: @escaping (NSError) -> Void) {
+    class func delete(_ category: PiwigoAlbumData, inModde mode: String,
+                      completion: @escaping () -> Void,
+                      failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : category.albumId,
                                           "photo_deletion_mode" : mode,
@@ -242,9 +242,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func setRepresentativeOfCategory(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
-                                           completion: @escaping () -> Void,
-                                           failure: @escaping (NSError) -> Void) {
+    class func setRepresentative(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
+                                 completion: @escaping () -> Void,
+                                 failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
                                           "image_id"    : imageData.imageId]

@@ -209,7 +209,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Rename album, modify comment
-        AlbumUtilities.setInfosOfCategory(albumData, withName: albumName, description: albumComment) {
+        AlbumUtilities.setInfos(albumData, withName: albumName, description: albumComment) {
             topViewController?.updatePiwigoHUDwithSuccess() { [self] in
                 topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Update album data
@@ -447,7 +447,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let albumData = albumData else { return }
 
         // Delete the category
-        AlbumUtilities.deleteCategory(albumData, inModde: deletionMode) {
+        AlbumUtilities.delete(albumData, inModde: deletionMode) {
             topViewController?.updatePiwigoHUDwithSuccess() { [self] in
                 topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Hide swipe buttons
