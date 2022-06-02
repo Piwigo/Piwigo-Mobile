@@ -431,46 +431,4 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
               }];
 }
 
-+(NSURLSessionTask*)deleteCategory:(NSInteger)categoryId
-                            inMode:(NSString *)deletionMode
-                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL deletedSuccessfully))completion
-                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoCategoriesDelete
-		URLParameters:nil
-		   parameters:@{
-						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-                        @"photo_deletion_mode" : deletionMode,
-						@"pwg_token" : NetworkVarsObjc.pwgToken
-                        }
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject)
-    {
-        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-            // Remove category from list of recent albums
-            NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:categoryId]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgRemoveRecentAlbum
-                                                                object:nil userInfo:userInfo];
-              if(completion)
-              {
-                  completion(task, YES);
-              }
-        } else {
-            if(fail) {
-                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                     path:kPiwigoCategoriesDelete andURLparams:nil];
-                fail(task, error);
-            }
-        }
-    } failure:^(NSURLSessionTask *task, NSError *error) {
-  #if defined(DEBUG_ALBUM)
-                NSLog(@"deleteCategory — Fail: %@", [error description]);
-  #endif
-                if(fail) {
-                    fail(task, error);
-                }
-            }];
-}
-
 @end

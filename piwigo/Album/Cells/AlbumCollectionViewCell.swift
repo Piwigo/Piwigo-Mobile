@@ -456,51 +456,26 @@ class AlbumCollectionViewCell: UICollectionViewCell
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
-        // Stores image data before category deletion
-        var images: [PiwigoImageData]? = []
-        if deletionMode != kCategoryDeletionModeNone {
-            images = albumData.imageList
-        }
-
         // Delete the category
-        AlbumService.deleteCategory(albumData.albumId, inMode: deletionMode,
-            onCompletion: { [self] task, deletedSuccessfully in
-                topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                    topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+        AlbumUtilities.deleteCategory(albumData, inModde: deletionMode) {
+            topViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    // Hide swipe buttons
+                    let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                    cell?.hideSwipe(animated: true)
 
-                        // Delete images from cache
-                        for image in images ?? [] {
-                            // Delete orphans only?
-                            if (deletionMode == kCategoryDeletionModeOrphaned) && image.categoryIds.count > 1 {
-                                // Update categories the images belongs to
-                                CategoriesData.sharedInstance().removeImage(image, fromCategory: String(albumData.albumId))
-                                continue
-                            }
-
-                            // Delete image
-                            CategoriesData.sharedInstance().deleteImage(image)
-                        }
-
-                        // Delete category from cache
-                        CategoriesData.sharedInstance().deleteCategory(withId: albumData.albumId)
-
-                        // Hide swipe buttons
-                        let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                        cell?.hideSwipe(animated: true)
-
-                        // Remove category from the album/images collection
-                        if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.removeCategory(_:))) ?? false {
-                            categoryDelegate?.removeCategory(self)
-                        }
+                    // Remove category from the album/images collection
+                    if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.removeCategory(_:))) ?? false {
+                        categoryDelegate?.removeCategory(self)
                     }
                 }
-            },
-            onFailure: { task, error in
-                topViewController?.hidePiwigoHUD() {
-                    topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail"), message: NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album"), errorMessage: error?.localizedDescription ?? "") {
-                    }
+            }
+        } failure: { error in
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail"), message: NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album"), errorMessage: error.localizedDescription) {
                 }
-            })
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

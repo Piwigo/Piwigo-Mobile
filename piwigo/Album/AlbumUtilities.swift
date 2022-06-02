@@ -13,7 +13,6 @@ import piwigoKit
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    @objc
     class func moveCategory(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
                             completion: @escaping (PiwigoAlbumData) -> Void,
                             failure: @escaping (NSError) -> Void) {
@@ -99,6 +98,80 @@ class AlbumUtilities: NSObject {
                     CategoriesData.sharedInstance().updateCategories(catToUpdate)
 
                     completion(category)
+                }
+                else {
+                    // Could not delete images
+                    failure(JsonError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
+    class func deleteCategory(_ category: PiwigoAlbumData, inModde mode: String,
+                              completion: @escaping () -> Void,
+                              failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["category_id"         : category.albumId,
+                                          "photo_deletion_mode" : mode,
+                                          "pwg_token"           : NetworkVars.pwgToken]
+
+        // Stores image data before category deletion
+        var images: [PiwigoImageData]? = []
+        if mode != kCategoryDeletionModeNone {
+            images = category.imageList
+        }
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoCategoriesDelete, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CategoriesDeleteJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CategoriesDeleteJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Successful?
+                if uploadJSON.success {
+                    // Album successfully deleted ▶ Remove category from list of recent albums
+                    let userInfo = ["categoryId" : NSNumber.init(value: category.albumId)]
+                    NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
+                                                    object: nil, userInfo: userInfo)
+
+                    // Delete images from cache
+                    for image in images ?? [] {
+                        // Delete orphans only?
+                        if (mode == kCategoryDeletionModeOrphaned) && image.categoryIds.count > 1 {
+                            // Update categories the images belongs to
+                            CategoriesData.sharedInstance().removeImage(image, fromCategory: String(category.albumId))
+                            continue
+                        }
+
+                        // Delete image
+                        CategoriesData.sharedInstance().deleteImage(image)
+                    }
+
+                    // Delete category from cache
+                    CategoriesData.sharedInstance().deleteCategory(withId: category.albumId)
+
+                    completion()
                 }
                 else {
                     // Could not delete images
