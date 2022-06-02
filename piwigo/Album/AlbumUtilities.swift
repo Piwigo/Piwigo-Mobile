@@ -13,6 +13,59 @@ import piwigoKit
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
+    class func setInfosOfCategory(_ category: PiwigoAlbumData,
+                                  withName name:String, description: String,
+                                  completion: @escaping () -> Void,
+                                  failure: @escaping (NSError) -> Void) {
+
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["category_id" : category.albumId,
+                                          "name"        : name,
+                                          "comment"     : description]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoCategoriesSetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CategoriesSetInfoJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CategoriesSetInfoJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Successful?
+                if uploadJSON.success {
+                    // Album successfully updated ▶ Update category in cache
+                    category.name = name
+                    category.comment = description
+                    CategoriesData.sharedInstance().updateCategories([category])
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    failure(JsonError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
     class func moveCategory(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
                             completion: @escaping (PiwigoAlbumData) -> Void,
                             failure: @escaping (NSError) -> Void) {

@@ -401,34 +401,4 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         }];
 }
 
-+(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
-                           forName:(NSString *)categoryName
-                       withComment:(NSString *)categoryComment
-                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL renamedSuccessfully))completion
-                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-	return [self post:kPiwigoCategoriesSetInfo
-		URLParameters:nil       // This method requires HTTP POST
-		   parameters:@{
-						@"category_id" : @(categoryId),
-						@"name" : categoryName,
-                        @"comment" : categoryComment
-                        }
-       sessionManager:NetworkVarsObjc.sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-				  if(completion)
-				  {
-					  completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-				  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
-    #if defined(DEBUG_ALBUM)
-                  NSLog(@"renameCategory — Fail: %@", [error description]);
-    #endif
-                  if(fail) {
-                      fail(task, error);
-                  }
-              }];
-}
-
 @end

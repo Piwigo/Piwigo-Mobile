@@ -134,6 +134,8 @@
 		AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */; };
 		AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */; };
 		AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE8284944B200171592 /* pwg.categories.delete.json */; };
+		AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */; };
+		AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */; };
 		AD807F0426E4BB4C00008162 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
 		AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
 		AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
@@ -556,6 +558,8 @@
 		AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setRepresentative.swift; sourceTree = "<group>"; };
 		AD7A8FE8284944B200171592 /* pwg.categories.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.delete.json; sourceTree = "<group>"; };
 		AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.delete.swift; sourceTree = "<group>"; };
+		AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setInfo.swift; sourceTree = "<group>"; };
+		AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.setInfo.json; sourceTree = "<group>"; };
 		AD807F0526E52B8D00008162 /* pwg.getInfos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.getInfos.swift; sourceTree = "<group>"; };
 		AD807F0726E52F6F00008162 /* pwg.images.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.delete.json; sourceTree = "<group>"; };
 		AD807F0926E530ED00008162 /* pwg.images.delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.delete.swift; sourceTree = "<group>"; };
@@ -1089,6 +1093,7 @@
 		AD5A31652847F85F00948FEE /* pwg.categories */ = {
 			isa = PBXGroup;
 			children = (
+				AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */,
 				AD5A31662847F87000948FEE /* pwg.categories.move.swift */,
 				AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */,
 				AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */,
@@ -1099,6 +1104,7 @@
 		AD5A31682847FD8A00948FEE /* pwg.categories */ = {
 			isa = PBXGroup;
 			children = (
+				AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */,
 				AD7A8FE42849252F00171592 /* pwg.categories.move.json */,
 				AD7A8FE8284944B200171592 /* pwg.categories.delete.json */,
 				AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */,
@@ -2016,6 +2022,7 @@
 				ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */,
 				AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */,
 				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
+				AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */,
 				AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
@@ -2268,6 +2275,7 @@
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
 				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
+				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,

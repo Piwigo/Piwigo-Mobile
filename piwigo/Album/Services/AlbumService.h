@@ -28,11 +28,4 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
                                  onFailure:(void (^)(NSURLSessionTask *task,
                                                      NSError *error))fail;
 
-+(NSURLSessionTask*)renameCategory:(NSInteger)categoryId
-                           forName:(NSString *)categoryName
-                       withComment:(NSString *)categoryComment
-                      OnCompletion:(void (^)(NSURLSessionTask *task, BOOL
-                                             renamedSuccessfully))completion
-                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 @end

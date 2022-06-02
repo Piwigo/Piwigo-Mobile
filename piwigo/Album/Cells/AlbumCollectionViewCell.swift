@@ -201,43 +201,33 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
     
     private func renameCategory(withName albumName: String?, comment albumComment: String?, andViewController topViewController: UIViewController?) {
-        guard let albumData = albumData else { return }
+        guard let albumData = albumData,
+              let albumName = albumName,
+              let albumComment = albumComment else { return }
 
         // Display HUD during the update
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
-        // Rename album
-        AlbumService.renameCategory( albumData.albumId, forName: albumName, withComment: albumComment,
-            onCompletion: { [self] task, renamedSuccessfully in
+        // Rename album, modify comment
+        AlbumUtilities.setInfosOfCategory(albumData, withName: albumName, description: albumComment) {
+            topViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    // Update album data
+                    albumData.name = albumName
+                    albumData.comment = albumComment
 
-                if renamedSuccessfully {
-                    topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                            DispatchQueue.main.async(execute: { [self] in
-                                // Update album data
-                                albumData.name = albumName
-                                albumData.comment = albumComment
-
-                                // Update cell and hide swipe buttons
-                                let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                                cell?.config(with: albumData)
-                                cell?.hideSwipe(animated: true)
-                            })
-                        }
-                    }
-                } else {
-                    topViewController?.hidePiwigoHUD() {
-                        topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: "") {
-                        }
-                    }
+                    // Update cell and hide swipe buttons
+                    let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                    cell?.config(with: albumData)
+                    cell?.hideSwipe(animated: true)
                 }
-            },
-            onFailure: { task, error in
-                topViewController?.hidePiwigoHUD() {
-                    topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: error?.localizedDescription ?? "") {
-                    }
+            }
+        } failure: { error in
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: error.localizedDescription) {
                 }
-            })
+            }
+        }
     }
 
     
