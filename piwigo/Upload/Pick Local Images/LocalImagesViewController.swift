@@ -518,6 +518,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // and index 70588 uploads in about the same if there is no upload request already stored.
         // but index 70588 uploads in 69.1 s if there are already 520 stored upload requests
 
+        // Stop sort is already running
+        queue.cancelAllOperations()
+        
         // Sort all images in one loop i.e. O(n)
         let sortOperation = BlockOperation(block: {
             self.indexOfImageSortedByDay = []
