@@ -13,6 +13,63 @@ import piwigoKit
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
+    @objc
+    class func create(withName name:String, description: String, status: String,
+                      inParentWithId parentCategeoryId: Int,
+                      completion: @escaping (Int) -> Void,
+                      failure: @escaping (NSError) -> Void) {
+
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["name"    : name,
+                                          "parent"  : parentCategeoryId,
+                                          "comment" : description,
+                                          "status"  : status]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoCategoriesAdd, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
+                                countOfBytesClientExpectsToReceive: 1040) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CategoriesAddJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CategoriesAddJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Successful?
+                if let catId = uploadJSON.data.id, catId != NSNotFound {
+                    // Album successfully created ▶ Add new album to cache
+                    CategoriesData.sharedInstance().addCategory(catId, withParameters: paramsDict)
+                    
+                    // Add new category to list of recent albums
+                    let userInfo = ["categoryId" : NSNumber.init(value: catId)]
+                    NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+                    completion(catId)
+                }
+                else {
+                    // Could not delete images
+                    failure(JsonError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
     class func setInfos(_ category: PiwigoAlbumData,
                         withName name:String, description: String,
                         completion: @escaping () -> Void,

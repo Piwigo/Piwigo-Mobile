@@ -77,6 +77,8 @@
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
 		AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
+		AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */; };
+		AD35C2142849CD8700FCBDD1 /* pwg.categories.add.json in Resources */ = {isa = PBXBuildFile; fileRef = AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */; };
 		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
@@ -478,6 +480,8 @@
 		AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectorCell.swift; sourceTree = "<group>"; };
 		AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagSelectorViewController.storyboard; sourceTree = "<group>"; };
 		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
+		AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = pwg.categories.add.swift; path = piwigoKit/Network/pwg.categories/pwg.categories.add.swift; sourceTree = SOURCE_ROOT; };
+		AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = pwg.categories.add.json; path = "Supporting Targets/piwigoWebAPI/pwg.categories/pwg.categories.add.json"; sourceTree = SOURCE_ROOT; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.setInfo.swift; sourceTree = "<group>"; };
 		AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.setInfo.json; sourceTree = "<group>"; };
@@ -1093,6 +1097,7 @@
 		AD5A31652847F85F00948FEE /* pwg.categories */ = {
 			isa = PBXGroup;
 			children = (
+				AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */,
 				AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */,
 				AD5A31662847F87000948FEE /* pwg.categories.move.swift */,
 				AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */,
@@ -1104,6 +1109,7 @@
 		AD5A31682847FD8A00948FEE /* pwg.categories */ = {
 			isa = PBXGroup;
 			children = (
+				AD35C2122849CCA100FCBDD1 /* pwg.categories.add.json */,
 				AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */,
 				AD7A8FE42849252F00171592 /* pwg.categories.move.json */,
 				AD7A8FE8284944B200171592 /* pwg.categories.delete.json */,
@@ -2023,6 +2029,7 @@
 				AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */,
 				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
 				AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */,
+				AD35C2142849CD8700FCBDD1 /* pwg.categories.add.json in Resources */,
 				AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
@@ -2282,6 +2289,7 @@
 				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
 				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
 				AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */,
+				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,

@@ -1968,42 +1968,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Create album
-    [AlbumService createCategoryWithName:albumName
-                  withStatus:@"public"
-                  andComment:albumComment
-                    inParent:parentId
-                OnCompletion:^(NSURLSessionTask *task, NSInteger newCatId)
+    [AlbumUtilities createWithName:albumName description:albumComment
+                            status:@"public" inParentWithId:parentId
+                        completion:^(NSInteger newCatId)
      {
-        if (newCatId != NSNotFound) {
-            // Get index of added category
-            NSArray<PiwigoAlbumData *> *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
-            NSInteger indexOfExistingItem = [categories indexOfObjectPassingTest:^BOOL(PiwigoAlbumData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-             return obj.albumId == newCatId;
-            }];
-            if (indexOfExistingItem != NSNotFound) {
-                // Insert cell of new category
+        // Get index of added category
+        NSArray<PiwigoAlbumData *> *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
+        NSInteger indexOfExistingItem = [categories indexOfObjectPassingTest:^BOOL(PiwigoAlbumData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+         return obj.albumId == newCatId;
+        }];
+        if (indexOfExistingItem != NSNotFound) {
+            // Insert cell of new category
+            dispatch_async(dispatch_get_main_queue(), ^{
                 NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
                 [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
-            }
+            });
+        }
 
-            // Hide HUD
-            [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                    // Reset buttons
-                    [self didCancelTapAddButton];
-                }];
+        // Hide HUD
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                // Reset buttons
+                [self didCancelTapAddButton];
             }];
-        }
-        else {
-            // Hide HUD and inform user
-            [self hidePiwigoHUDWithCompletion:^{
-                [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
-                    // Reset buttons
-                    [self didCancelTapAddButton];
-                }];
-            }];
-        }
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        }];
+    } failure:^(NSError *error) {
         // Hide HUD and inform user
         [self hidePiwigoHUDWithCompletion:^{
             [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{

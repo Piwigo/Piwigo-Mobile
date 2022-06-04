@@ -19,13 +19,4 @@ FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
                                    onFailure:(void (^)(NSURLSessionTask *task,
                                                     NSError *error))fail;
 
-+(NSURLSessionTask*)createCategoryWithName:(NSString*)categoryName
-                                withStatus:(NSString*)categoryStatus
-                                andComment:(NSString*)categoryComment
-                                  inParent:(NSInteger)categoryId
-                              OnCompletion:(void (^)(NSURLSessionTask *task,
-                                                     NSInteger newCatId))completion
-                                 onFailure:(void (^)(NSURLSessionTask *task,
-                                                     NSError *error))fail;
-
 @end
