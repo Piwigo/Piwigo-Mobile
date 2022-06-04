@@ -42,9 +42,6 @@ class ImagePreviewViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Display "play" button if video
-        playImage.isHidden = !imageData.isVideo
-
         // Thumbnail image should be available in cache
         let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)
         let thumbnailStr = imageData.getURLFromImageSizeType(thumbnailSize)
@@ -102,6 +99,9 @@ class ImagePreviewViewController: UIViewController
                         weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
                     }
                     
+                    // Display "play" button if video
+                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
+
                     // Store image in cache
                     var cachedResponse: CachedURLResponse? = nil
                     if let response = task.response,
