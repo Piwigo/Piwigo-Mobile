@@ -874,8 +874,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in i*step..<min((i+1)*step,fetchedImages.count) {
                 // Get image identifier
                 let imageId = fetchedImages[index].localIdentifier
-                if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                    let cachedObject = (upload!.0, upload!.1, fetchedImages[index].canPerform(.delete))
+                if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) as? (String, kPiwigoUploadState) {
+                    let cachedObject = (upload.0, upload.1, fetchedImages[index].canPerform(.delete))
                     indexedUploadsInQueue[index] = cachedObject
                 }
             }
