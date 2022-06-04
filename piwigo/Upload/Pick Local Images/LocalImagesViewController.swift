@@ -1886,14 +1886,16 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             
             // Append upload to non-indexed upload queue
             let newUpload = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
-            if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let index = uploadsInQueue.compactMap({$0})
+                .firstIndex(where: { $0.0 == upload.localIdentifier }) {
                 uploadsInQueue[index] = newUpload
             } else {
                 uploadsInQueue.append(newUpload)
             }
             
             // Get index of selected image and deselect it
-            if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+            if let indexOfUploadedImage = selectedImages.compactMap({$0})
+                .firstIndex(where: { $0.localIdentifier == upload.localIdentifier }) {
                 // Deselect image
                 selectedImages[indexOfUploadedImage] = nil
             }
@@ -1923,15 +1925,18 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             guard let upload:Upload = anObject as? Upload else { return }
             
             // Remove upload from non-indexed upload queue
-            if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let index = uploadsInQueue.compactMap({$0})
+                .firstIndex(where: { $0.0 == upload.localIdentifier }) {
                 uploadsInQueue.remove(at: index)
             }
             // Remove image from indexed upload queue
-            if let index = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let index = indexedUploadsInQueue.compactMap({$0})
+                .firstIndex(where: { $0.0 == upload.localIdentifier }) {
                 indexedUploadsInQueue[index] = nil
             }
             // Remove image from selection if needed
-            if let index = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+            if let index = selectedImages.compactMap({$0})
+                .firstIndex(where: { $0.localIdentifier == upload.localIdentifier }) {
                 // Deselect image
                 selectedImages[index] = nil
             }
@@ -1947,11 +1952,13 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             guard let upload:Upload = anObject as? Upload else { return }
             
             // Update upload in non-indexed upload queue
-            if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let indexInQueue = uploadsInQueue.compactMap({$0})
+                firstIndex(where: { $0.0 == upload.localIdentifier }) {
                 uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
             }
             // Update upload in indexed upload queue
-            if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let indexOfUploadedImage = indexedUploadsInQueue.compactMap({$0})
+                .firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                 indexedUploadsInQueue[indexOfUploadedImage]?.1 = kPiwigoUploadState(rawValue: upload.requestState)!
             }
             // Update corresponding cell
