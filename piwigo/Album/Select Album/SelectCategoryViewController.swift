@@ -107,7 +107,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [[String], Int]")
+                fatalError("Input parameter expected to be of type [[NSNumber], Int]")
             }
             // Image IDs of the category ID which will be copied to the selected album
             inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
@@ -118,7 +118,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [[String], Int]")
+                fatalError("Input parameter expected to be of type [[NSNumber], Int]")
             }
             // Image IDs of the category ID which will be moved to the selected album
             inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
