@@ -322,7 +322,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(PiwigoAlbumData*)getCategoryById:(NSInteger)categoryId
 {
-	for(PiwigoAlbumData *existingCategory in self.allCategories)
+    if ((categoryId == 0) || (categoryId == NSNotFound)) return nil;
+    
+    for(PiwigoAlbumData *existingCategory in self.allCategories)
 	{
 		if(existingCategory.albumId == categoryId)
 		{

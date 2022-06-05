@@ -1859,8 +1859,7 @@ extension SettingsViewController: SelectCategoryDelegate {
     func didSelectCategory(withId categoryId: Int) {
         // Do nothing if new default album is unknown or unchanged
         guard categoryId != NSNotFound,
-              categoryId != AlbumVars.shared.defaultCategory,
-              CategoriesData.sharedInstance().getCategoryById(categoryId) != nil else {
+              categoryId != AlbumVars.shared.defaultCategory else {
             return
         }
 

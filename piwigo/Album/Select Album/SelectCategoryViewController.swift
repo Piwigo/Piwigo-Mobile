@@ -60,15 +60,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch action {
         case kPiwigoCategorySelectActionSetDefaultAlbum,
              kPiwigoCategorySelectActionSetAutoUploadAlbum:
-            guard let categoryId = parameter as? Int,
-                  let categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            guard let categoryId = parameter as? Int else {
                 debugPrint("Input parameter expected to be an Int and album data in cache")
                 return false
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
             inputCategoryId = categoryId
-            inputCategoryData = categoryData
+            inputCategoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             
         case kPiwigoCategorySelectActionMoveAlbum:
             guard let categoryData = parameter as? PiwigoAlbumData else {
