@@ -603,7 +603,8 @@ import piwigoKit
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async {
-            ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
+            ImageUtilities.getInfos(forID: imageData.imageId,
+                                    inCategoryId: self.categoryId) { [unowned self] retrievedData in
                 self.imageData = retrievedData
                 // Disable HUD if needed
                 self.hidePiwigoHUD {

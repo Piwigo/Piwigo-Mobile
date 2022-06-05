@@ -325,7 +325,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-        ImageUtilities.getInfos(forID: inputImageIds.last!) { imageData in
+        guard let imageId = inputImageIds.last else {
+            self.hidePiwigoHUD {
+                DispatchQueue.main.async {
+                    self.couldNotRetrieveImageData()
+                }
+            }
+            return
+        }
+        ImageUtilities.getInfos(forID: imageId,
+                                inCategoryId: inputCategoryId) { imageData in
             // Store image data
             self.inputImagesData.append(imageData)
             

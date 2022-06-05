@@ -17,7 +17,7 @@ class ImageUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
     @objc
-    class func getInfos(forID imageId:Int,
+    class func getInfos(forID imageId:Int, inCategoryId categoryId: Int,
                         completion: @escaping (PiwigoImageData) -> Void,
                         failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -50,37 +50,61 @@ class ImageUtilities: NSObject {
                           return
                 }
 
-                let imageData = PiwigoImageData()
+                // Retrieve image data currently in cache
+                let imageData = CategoriesData.sharedInstance()
+                    .getImageForCategory(categoryId, andId: imageId) ?? PiwigoImageData()
+                imageData.imageId = data.imageId ?? imageId
+
+                // Date formatter
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                imageData.imageId = data.imageId ?? imageId
-                if let categoryIds = data.categoryIds {
-                    for categoryId in categoryIds {
-                        if let id = categoryId.id {
+
+                // Upper categoies
+                if let catIds = data.categoryIds, !catIds.isEmpty {
+                    imageData.categoryIds = [NSNumber]()
+                    for catId in catIds {
+                        if let id = catId.id {
                             imageData.categoryIds.append(NSNumber(value: id))
                         }
                     }
                 }
                 if imageData.categoryIds.isEmpty {
-                    imageData.categoryIds = [NSNumber(value: imageId)]
+                    imageData.categoryIds.append(NSNumber(value: categoryId))
                 }
-                imageData.imageTitle = NetworkUtilities.utf8mb4String(from: data.imageTitle ?? "")
-                imageData.comment = NetworkUtilities.utf8mb4String(from: data.comment ?? "")
-                imageData.visits = data.visits ?? 0
-                if let rate = Float(data.ratingScore ?? "0.0") {
+                
+                // Image title and description
+                if let title = data.imageTitle {
+                    imageData.imageTitle = NetworkUtilities.utf8mb4String(from: title)
+                }
+                if let description = data.comment {
+                    imageData.comment = NetworkUtilities.utf8mb4String(from: description)
+                }
+                
+                // Image visits and rate
+                if let visits = data.visits {
+                    imageData.visits = visits
+                }
+                if let score = data.ratingScore, let rate = Float(score) {
                     imageData.ratingScore = rate
                 }
                 
+                // Image file size, name and MD5 checksum
                 imageData.fileSize = data.fileSize ?? NSNotFound
-                imageData.md5checksum = data.md5checksum ?? ""
-                imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? "NoName.jpg")
+                imageData.md5checksum = data.md5checksum ?? imageData.md5checksum ?? ""
+                imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? imageData.fileName ?? "NoName.jpg")
                 let fileExt = URL(fileURLWithPath: imageData.fileName).pathExtension as NSString
                 if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
                     imageData.isVideo = UTTypeConformsTo(uti, kUTTypeMovie)
                 }
-                imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? Date()
-                imageData.dateCreated = dateFormatter.date(from: data.dateCreated ?? "") ?? imageData.datePosted
-                imageData.author = NetworkUtilities.utf8mb4String(from: data.author ?? "NSNotFound")
+                
+                // Image dates
+                imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? imageData.datePosted ?? Date()
+                imageData.dateCreated = dateFormatter.date(from: data.dateCreated ?? "") ?? imageData.dateCreated ?? imageData.datePosted
+                
+                // Author
+                imageData.author = NetworkUtilities.utf8mb4String(from: data.author ?? imageData.author ?? "NSNotFound")
+                
+                // Privacy level
                 if let privacyLevel = Int32(data.privacyLevel ?? String(kPiwigoPrivacyObjcUnknown.rawValue)) {
                     imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: privacyLevel)
                 } else {
@@ -102,33 +126,33 @@ class ImageUtilities: NSObject {
 
                 imageData.fullResWidth = data.fullResWidth ?? 1
                 imageData.fullResHeight = data.fullResHeight ?? 1
-                imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? "")
+                imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? imageData.fullResPath ?? "")
 
-                imageData.squarePath = NetworkUtilities.encodedImageURL(derivatives.squareImage?.url ?? "")
+                imageData.squarePath = NetworkUtilities.encodedImageURL(derivatives.squareImage?.url ?? imageData.squarePath ?? "")
                 imageData.squareWidth = derivatives.squareImage?.width ?? 1
                 imageData.squareHeight = derivatives.squareImage?.height ?? 1
-                imageData.thumbPath = NetworkUtilities.encodedImageURL(derivatives.thumbImage?.url ?? "")
+                imageData.thumbPath = NetworkUtilities.encodedImageURL(derivatives.thumbImage?.url ?? imageData.thumbPath ?? "")
                 imageData.thumbWidth = derivatives.thumbImage?.width ?? 1
                 imageData.thumbHeight = derivatives.thumbImage?.height ?? 1
-                imageData.mediumPath = NetworkUtilities.encodedImageURL(derivatives.mediumImage?.url ?? "")
+                imageData.mediumPath = NetworkUtilities.encodedImageURL(derivatives.mediumImage?.url ?? imageData.mediumPath ?? "")
                 imageData.mediumWidth = derivatives.mediumImage?.width ?? 1
                 imageData.mediumHeight = derivatives.mediumImage?.height ?? 1
-                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(derivatives.xxSmallImage?.url ?? "")
+                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(derivatives.xxSmallImage?.url ?? imageData.xxSmallPath ?? "")
                 imageData.xxSmallWidth = derivatives.xxSmallImage?.width ?? 1
                 imageData.xxSmallHeight = derivatives.xxSmallImage?.height ?? 1
-                imageData.xSmallPath = NetworkUtilities.encodedImageURL(derivatives.xSmallImage?.url ?? "")
+                imageData.xSmallPath = NetworkUtilities.encodedImageURL(derivatives.xSmallImage?.url ?? imageData.xSmallPath ?? "")
                 imageData.xSmallWidth = derivatives.xSmallImage?.width ?? 1
                 imageData.xSmallHeight = derivatives.xSmallImage?.height ?? 1
-                imageData.smallPath = NetworkUtilities.encodedImageURL(derivatives.smallImage?.url ?? "")
+                imageData.smallPath = NetworkUtilities.encodedImageURL(derivatives.smallImage?.url ?? imageData.smallPath ?? "")
                 imageData.smallWidth = derivatives.smallImage?.width ?? 1
                 imageData.smallHeight = derivatives.smallImage?.height ?? 1
-                imageData.largePath = NetworkUtilities.encodedImageURL(derivatives.largeImage?.url ?? "")
+                imageData.largePath = NetworkUtilities.encodedImageURL(derivatives.largeImage?.url ?? imageData.largePath ?? "")
                 imageData.largeWidth = derivatives.largeImage?.width ?? 1
                 imageData.largeHeight = derivatives.largeImage?.height ?? 1
-                imageData.xLargePath = NetworkUtilities.encodedImageURL(derivatives.xLargeImage?.url ?? "")
+                imageData.xLargePath = NetworkUtilities.encodedImageURL(derivatives.xLargeImage?.url ?? imageData.xLargePath ?? "")
                 imageData.xLargeWidth = derivatives.xLargeImage?.width ?? 1
                 imageData.xLargeHeight = derivatives.xLargeImage?.height ?? 1
-                imageData.xxLargePath = NetworkUtilities.encodedImageURL(derivatives.xxLargeImage?.url ?? "")
+                imageData.xxLargePath = NetworkUtilities.encodedImageURL(derivatives.xxLargeImage?.url ?? imageData.xxLargePath ?? "")
                 imageData.xxLargeWidth = derivatives.xxLargeImage?.width ?? 1
                 imageData.xxLargeHeight = derivatives.xxLargeImage?.height ?? 1
 

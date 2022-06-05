@@ -2173,6 +2173,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToEdit lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToEdit insertObject:imageData atIndex:0];
@@ -2274,6 +2275,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Split orphaned and non-orphaned images
             if (imageData.categoryIds.count > 1) {
@@ -2563,6 +2565,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToShare lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToShare insertObject:imageData atIndex:0];
