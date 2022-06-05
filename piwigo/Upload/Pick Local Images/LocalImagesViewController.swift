@@ -1953,7 +1953,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             
             // Update upload in non-indexed upload queue
             if let indexInQueue = uploadsInQueue.compactMap({$0})
-                firstIndex(where: { $0.0 == upload.localIdentifier }) {
+                .firstIndex(where: { $0.0 == upload.localIdentifier }) {
                 uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
             }
             // Update upload in indexed upload queue
