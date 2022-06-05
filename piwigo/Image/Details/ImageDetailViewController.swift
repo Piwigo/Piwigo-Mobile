@@ -1019,12 +1019,13 @@ import piwigoKit
         // Present SelectCategory view
         let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail)
-        setThumbVC.delegate = self
-        if #available(iOS 14.0, *) {
-            pushView(setThumbVC, forButton: actionBarButton)
-        } else {
-            pushView(setThumbVC, forButton: setThumbnailBarButton)
+        if setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail) {
+            setThumbVC.delegate = self
+            if #available(iOS 14.0, *) {
+                pushView(setThumbVC, forButton: actionBarButton)
+            } else {
+                pushView(setThumbVC, forButton: setThumbnailBarButton)
+            }
         }
     }
 
@@ -1032,17 +1033,18 @@ import piwigoKit
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
-        copyVC.setInput(parameter: parameter, for: action)
-        copyVC.delegate = self // To re-enable toolbar
-        if action == kPiwigoCategorySelectActionCopyImage {
-            copyVC.imageCopiedDelegate = self   // To update image data after copy
-        } else {
-            copyVC.imageRemovedDelegate = self  // To remove image after move
-        }
-        if #available(iOS 14.0, *) {
-            pushView(copyVC, forButton: actionBarButton)
-        } else {
-            pushView(copyVC, forButton: moveBarButton)
+        if copyVC.setInput(parameter: parameter, for: action) {
+            copyVC.delegate = self // To re-enable toolbar
+            if action == kPiwigoCategorySelectActionCopyImage {
+                copyVC.imageCopiedDelegate = self   // To update image data after copy
+            } else {
+                copyVC.imageRemovedDelegate = self  // To remove image after move
+            }
+            if #available(iOS 14.0, *) {
+                pushView(copyVC, forButton: actionBarButton)
+            } else {
+                pushView(copyVC, forButton: moveBarButton)
+            }
         }
     }
     

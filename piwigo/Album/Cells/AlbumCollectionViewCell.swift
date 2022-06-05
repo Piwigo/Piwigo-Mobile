@@ -89,10 +89,9 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let albumData = albumData else { return }
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
-        moveVC?.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum)
-        moveVC?.albumMovedDelegate = self
-        if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false {
+        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        if moveVC.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum) {
+            moveVC.albumMovedDelegate = self
             categoryDelegate?.pushCategoryView(moveVC)
         }
     }

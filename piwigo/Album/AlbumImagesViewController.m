@@ -2792,10 +2792,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-    [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-    copyVC.delegate = self;                 // To re-enable toolbar
-    copyVC.imageCopiedDelegate = self;      // To update image data after copy
-    [self pushView:copyVC];
+    if ([copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages]) {
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC];
+    }
 }
 
 -(void)moveImageToAlbum
@@ -2803,9 +2804,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-    [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
-    moveVC.delegate = self;         // To re-enable toolbar
-    [self pushView:moveVC];
+    if ([moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages]) {
+        moveVC.delegate = self;         // To re-enable toolbar
+        [self pushView:moveVC];
+    }
 }
 
 

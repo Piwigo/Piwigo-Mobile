@@ -55,22 +55,25 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var totalNumberOfImages: Float = 0.0
     private var selectedCategoryId = NSNotFound
 
-    @objc func setInput(parameter:Any, for action:kPiwigoCategorySelectAction) {
+    @objc func setInput(parameter:Any, for action:kPiwigoCategorySelectAction) -> Bool {
         wantedAction = action
         switch action {
         case kPiwigoCategorySelectActionSetDefaultAlbum,
              kPiwigoCategorySelectActionSetAutoUploadAlbum:
-            guard let categoryId = parameter as? Int else {
-                fatalError("Input parameter expected to be an Int")
+            guard let categoryId = parameter as? Int,
+                  let categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+                debugPrint("Input parameter expected to be an Int and album data in cache")
+                return false
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
             inputCategoryId = categoryId
-            inputCategoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+            inputCategoryData = categoryData
             
         case kPiwigoCategorySelectActionMoveAlbum:
             guard let categoryData = parameter as? PiwigoAlbumData else {
-                fatalError("Input parameter expected to be of PiwigoAlbumData type")
+                debugPrint("Input parameter expected to be of PiwigoAlbumData type")
+                return false
             }
             // Album which will be moved into the selected one
             inputCategoryId = categoryData.albumId
@@ -78,7 +81,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             guard let imageData = parameter as? PiwigoImageData else {
-                fatalError("Input parameter expected to be of type PiwigoImageData")
+                debugPrint("Input parameter expected to be of type PiwigoImageData")
+                return false
             }
             // Image which will be set thumbnail of the selected album
             inputImageData = imageData
@@ -87,7 +91,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? PiwigoImageData,
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [PiwigoImageData, Int]")
+                debugPrint("Input parameter expected to be of type [PiwigoImageData, Int]")
+                return false
             }
             // Image of the category ID which will be copied to the selected album
             inputImageData = imageData
@@ -97,7 +102,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? PiwigoImageData,
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [PiwigoImageData, Int]")
+                debugPrint("Input parameter expected to be of type [PiwigoImageData, Int]")
+                return false
             }
             // Image of the category ID which will be moved to the selected album
             inputImageData = imageData
@@ -107,27 +113,48 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [[NSNumber], Int]")
+                debugPrint("Input parameter expected to be of type [[NSNumber], Int]")
+                return false
             }
             // Image IDs of the category ID which will be copied to the selected album
             inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
+            if inputImageIds.isEmpty {
+                debugPrint("List of image IDs should not be empty")
+                return false
+            }
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
+            if inputImageData == nil {
+                debugPrint("No available image data in cache")
+                return false
+            }
             inputCategoryId = categoryId
 
         case kPiwigoCategorySelectActionMoveImages:
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
-                fatalError("Input parameter expected to be of type [[NSNumber], Int]")
+                debugPrint("Input parameter expected to be of type [[NSNumber], Int]")
+                return false
             }
             // Image IDs of the category ID which will be moved to the selected album
             inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
+            if inputImageIds.isEmpty {
+                debugPrint("List of image IDs should not be empty")
+                return false
+            }
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
+            if inputImageData == nil {
+                debugPrint("No available image data in cache")
+                return false
+            }
             inputCategoryId = categoryId
 
         default:
-            fatalError("Called setParameter before setting wanted action")
+            debugPrint("Called setParameter before setting wanted action")
+            return false
         }
+        
+        return true
     }
 
     @IBOutlet var categoriesTableView: UITableView!

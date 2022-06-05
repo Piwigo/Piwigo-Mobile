@@ -1543,10 +1543,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
-                                    for: kPiwigoCategorySelectActionSetDefaultAlbum)
-                categoryVC.delegate = self
-                navigationController?.pushViewController(categoryVC, animated: true)
+                if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
+                                       for: kPiwigoCategorySelectActionSetDefaultAlbum) {
+                    categoryVC.delegate = self
+                    navigationController?.pushViewController(categoryVC, animated: true)
+                }
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
