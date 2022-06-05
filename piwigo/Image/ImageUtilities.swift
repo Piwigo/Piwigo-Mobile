@@ -55,10 +55,6 @@ class ImageUtilities: NSObject {
                     .getImageForCategory(categoryId, andId: imageId) ?? PiwigoImageData()
                 imageData.imageId = data.imageId ?? imageId
 
-                // Date formatter
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
                 // Upper categoies
                 if let catIds = data.categoryIds, !catIds.isEmpty {
                     imageData.categoryIds = [NSNumber]()
@@ -98,6 +94,8 @@ class ImageUtilities: NSObject {
                 }
                 
                 // Image dates
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? imageData.datePosted ?? Date()
                 imageData.dateCreated = dateFormatter.date(from: data.dateCreated ?? "") ?? imageData.dateCreated ?? imageData.datePosted
                 
