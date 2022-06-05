@@ -15,7 +15,7 @@ public struct ImagesUploadJSON: Decodable {
 
     public var status: String?
     public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "", name: "")
-    public var category = Category(catId: NSNotFound, catName: "", nbPhotos: NSNotFound)
+    public var category = ImageCategory(catId: NSNotFound, catName: "", nbPhotos: NSNotFound)
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -64,16 +64,16 @@ public struct ImagesUploadJSON: Decodable {
 
                 // Decodes derivatives
                 do {
-                    try category = resultContainer.decode(Category.self, forKey: .category)
+                    try category = resultContainer.decode(ImageCategory.self, forKey: .category)
                 }
                 catch {
                     // Sometimes, nbPhotos is provided as String instead of Int!
-                    var categoryStr = CategoryStr(catId: NSNotFound, catName: "", nbPhotos: "")
-                    try categoryStr = resultContainer.decode(CategoryStr.self, forKey: .category)
+                    var categoryStr = ImageCategoryStr(catId: NSNotFound, catName: "", nbPhotos: "")
+                    try categoryStr = resultContainer.decode(ImageCategoryStr.self, forKey: .category)
                     if let nbPhotosStr = categoryStr.nbPhotos, let nbPhotos = Int(nbPhotosStr) {
-                        category = Category(catId: categoryStr.catId,
-                                            catName: categoryStr.catName,
-                                            nbPhotos: nbPhotos)
+                        category = ImageCategory(catId: categoryStr.catId,
+                                                 catName: categoryStr.catName,
+                                                 nbPhotos: nbPhotos)
                     }
                 }
             }
@@ -116,7 +116,7 @@ public struct ImagesUpload: Decodable
 }
 
 // MARK: - Category
-public struct Category: Decodable {
+public struct ImageCategory: Decodable {
     public let catId: Int?                  // 140
     public let catName: String?             // "Essai"
     public let nbPhotos: Int?               // 7
@@ -128,7 +128,7 @@ public struct Category: Decodable {
     }
 }
 
-public struct CategoryStr: Decodable {
+public struct ImageCategoryStr: Decodable {
     public let catId: Int?                  // 140
     public let catName: String?             // "Essai"
     public let nbPhotos: String?            // "7"
