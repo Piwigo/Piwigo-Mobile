@@ -54,7 +54,16 @@ class ImageUtilities: NSObject {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 imageData.imageId = data.imageId ?? imageId
-                imageData.categoryIds = data.categoryIds?.map({ NSNumber(integerLiteral: $0.id!) })
+                if let categoryIds = data.categoryIds {
+                    for categoryId in categoryIds {
+                        if let id = categoryId.id {
+                            imageData.categoryIds.append(NSNumber(value: id))
+                        }
+                    }
+                }
+                if imageData.categoryIds.isEmpty {
+                    imageData.categoryIds = [NSNumber(value: imageId)]
+                }
                 imageData.imageTitle = NetworkUtilities.utf8mb4String(from: data.imageTitle ?? "")
                 imageData.comment = NetworkUtilities.utf8mb4String(from: data.comment ?? "")
                 imageData.visits = data.visits ?? 0
@@ -125,8 +134,10 @@ class ImageUtilities: NSObject {
 
                 // Update cache
                 for catId in imageData.categoryIds {
-                    CategoriesData.sharedInstance().getCategoryById(catId.intValue)
-                        .updateImages([imageData])
+                    if let _ = CategoriesData.sharedInstance().getCategoryById(catId.intValue) {
+                        CategoriesData.sharedInstance().getCategoryById(catId.intValue)
+                            .updateImages([imageData])
+                    }
                 }
                 completion(imageData)
             }
