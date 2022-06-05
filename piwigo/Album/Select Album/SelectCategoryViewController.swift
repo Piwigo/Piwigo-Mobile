@@ -728,7 +728,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let categoryId = inputImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
         }
-        else if (indexPath.section == 0) && (self.recentCategories.count > 0) {
+        else if (indexPath.section == 0), !recentCategories.isEmpty {
             categoryData = recentCategories[indexPath.row]
         } else {
             categoryData = categories[indexPath.row]
@@ -741,7 +741,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case kPiwigoCategorySelectActionSetDefaultAlbum:
             // Do nothing if this is the current default category
-            if categoryData.albumId == inputCategoryId { return }
+            if (categoryData.albumId == NSNotFound) ||
+               (categoryData.albumId == inputCategoryId) { return }
             
             // Ask user to confirm
             let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
@@ -754,9 +755,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: categoryData, at: indexPath, handler: { _ in
                 // Set new Default Album
-                if categoryData.albumId != AlbumVars.shared.defaultCategory {
-                    self.delegate?.didSelectCategory(withId: categoryData.albumId)
-                }
+                self.delegate?.didSelectCategory(withId: categoryData.albumId)
                 // Return to Settings
                 self.navigationController?.popViewController(animated: true)
             })
