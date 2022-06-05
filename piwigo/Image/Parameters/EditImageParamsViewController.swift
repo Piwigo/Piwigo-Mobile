@@ -466,8 +466,9 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Tags
-        let tagIds = String(imageData.tags.compactMap({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        
+        let tags = imageData.tags?.compactMap({$0}) ?? []
+        let tagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+
         // Privacy level
         let privacyLevel = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
 
