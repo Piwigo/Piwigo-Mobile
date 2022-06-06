@@ -13,6 +13,220 @@ import piwigoKit
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
+    private class func thumbnailSizeArg() -> String {
+        var sizeArg = "thumb"
+        switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
+        case kPiwigoImageSizeSquare:
+            if AlbumVars.shared.hasSquareSizeImages {
+                sizeArg = "square"
+            }
+        case kPiwigoImageSizeXXSmall:
+            if AlbumVars.shared.hasXXSmallSizeImages {
+                sizeArg = "2small"
+            }
+        case kPiwigoImageSizeXSmall:
+            if AlbumVars.shared.hasXSmallSizeImages {
+                sizeArg = "xsmall"
+            }
+        case kPiwigoImageSizeSmall:
+            if AlbumVars.shared.hasSmallSizeImages {
+                sizeArg = "small"
+            }
+        case kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+            if AlbumVars.shared.hasMediumSizeImages {
+                sizeArg = "medium"
+            }
+        case kPiwigoImageSizeLarge:
+            if AlbumVars.shared.hasLargeSizeImages {
+                sizeArg = "large"
+            }
+        case kPiwigoImageSizeXLarge:
+            if AlbumVars.shared.hasXLargeSizeImages {
+                sizeArg = "xlarge"
+            }
+        case kPiwigoImageSizeXXLarge:
+            if AlbumVars.shared.hasXXLargeSizeImages {
+                sizeArg = "xxlarge"
+            }
+        case kPiwigoImageSizeThumb:
+            fallthrough
+        default:
+            sizeArg = "thumb"
+        }
+        return sizeArg
+    }
+    
+    @objc
+    class func getAlbums(completion: @escaping (Bool) -> Void,
+                         failure: @escaping (NSError) -> Void) {
+
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = [
+            "cat_id"            : 0,
+            "recursive"         : true,
+            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? false : true,
+            "thumbnail_size"    : thumbnailSizeArg()
+        ]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoCategoriesGetList, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON object and update the category cache.
+            do {
+                // Decode the JSON into codable type CommunityCategoriesGetListJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Extract albums data from JSON message
+                let albums = parseAlbumJSON(uploadJSON.data)
+
+                // Update Categories Data cache
+                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
+
+                // Check whether the auto-upload category still exists
+                let autoUploadCatId = UploadVars.autoUploadCategoryId
+                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
+                if indexOfAutoUpload == NSNotFound {
+                    UploadManager.shared.disableAutoUpload()
+                }
+                
+                // Check whether the default album still exists
+                let defaultCatId = AlbumVars.shared.defaultCategory
+                if defaultCatId != 0 {
+                    let indexOfDefault = albums.firstIndex(where: {$0.albumId == defaultCatId})
+                    if indexOfDefault == NSNotFound {
+                        AlbumVars.shared.defaultCategory = 0    // Back to root album
+                    }
+                }
+
+                // Update albums if Community extension installed (not needed for admins)
+                if !NetworkVarsObjc.hasAdminRights,
+                   NetworkVarsObjc.usesCommunityPluginV29 {
+                    getCommunityAlbums { comAlbums in
+                        // Loop over Community albums
+                        for comAlbum in comAlbums {
+                            CategoriesData.sharedInstance().addCommunityCategory(withUploadRights: comAlbum)
+                        }
+                        // Return albums
+                        completion(didUpdateCats)
+                        return
+                    } failure: { _ in
+                        // Continue without Community albums
+                    }
+                } else {
+                    completion(didUpdateCats)
+                }
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+    
+    @objc
+    class func getCommunityAlbums(completion: @escaping ([PiwigoAlbumData]) -> Void,
+                                  failure: @escaping (NSError) -> Void) {
+
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["cat_id"    : 0,
+                                          "recursive" : true]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
+                                countOfBytesClientExpectsToReceive: 1040) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CommunityCategoriesGetListJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Return Community albums
+                completion(parseAlbumJSON(uploadJSON.data))
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+    
+    private class func parseAlbumJSON(_ jsonAlbums:[Album]) -> [PiwigoAlbumData] {
+        var albums = [PiwigoAlbumData]()
+        for category in jsonAlbums {
+            if let id = category.id {
+                let albumData = PiwigoAlbumData()
+                albumData.albumId = id
+                albumData.name = NetworkUtilities.utf8mb4String(from: category.name ?? "No Name")
+                albumData.comment = NetworkUtilities.utf8mb4String(from: category.comment ?? "")
+                
+                // When "id_uppercat" is null or not supplied: album at the root
+                if let upperCat = category.upperCat {
+                    albumData.parentAlbumId = Int(upperCat) ?? NSNotFound
+                } else {
+                    albumData.parentAlbumId = 0
+                }
+                if let upperCats = category.uppercats?.components(separatedBy: ",") {
+                    albumData.upperCategories = upperCats
+                } else {
+                    albumData.upperCategories = []
+                }
+                
+                // Rank, number of images and sub-albums
+                albumData.globalRank = CGFloat(Float(category.globalRank ?? "") ?? 0.0)
+                albumData.numberOfImages = category.nbImages ?? 0
+                albumData.totalNumberOfImages = category.totalNbImages ?? 0
+                albumData.numberOfSubCategories = category.nbCategories ?? 0
+                
+                // Thumbnail
+                albumData.albumThumbnailId = Int(category.thumbnailId ?? "") ?? NSNotFound
+                albumData.albumThumbnailUrl = category.thumbnailUrl ?? ""
+                
+                // When "date_last" is null or not supplied: no date
+                /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                albumData.dateLast = dateFormatter.date(from: category.dateLast ?? "")
+
+                // By default, Community users have no upload rights
+                albumData.hasUploadRights = false
+                
+                albums.append(albumData)
+            }
+        }
+        return albums
+    }
+    
     @objc
     class func create(withName name:String, description: String, status: String,
                       inParentWithId parentCategeoryId: Int,
@@ -54,7 +268,7 @@ class AlbumUtilities: NSObject {
                     completion(catId)
                 }
                 else {
-                    // Could not delete images
+                    // Could not create album
                     failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
@@ -107,7 +321,7 @@ class AlbumUtilities: NSObject {
                     completion()
                 }
                 else {
-                    // Could not delete images
+                    // Could not set album data
                     failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
@@ -210,7 +424,7 @@ class AlbumUtilities: NSObject {
                     completion(category)
                 }
                 else {
-                    // Could not delete images
+                    // Could not move album
                     failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
@@ -283,7 +497,7 @@ class AlbumUtilities: NSObject {
                     completion()
                 }
                 else {
-                    // Could not delete images
+                    // Could not delete album
                     failure(JsonError.unexpectedError as NSError)
                 }
             } catch {
@@ -335,7 +549,7 @@ class AlbumUtilities: NSObject {
                     completion()
                 }
                 else {
-                    // Could not delete images
+                    // Could not set album thumbnail
                     failure(JsonError.unexpectedError as NSError)
                 }
             } catch {

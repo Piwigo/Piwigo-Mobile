@@ -15,6 +15,26 @@ import piwigoKit
 class piwigoWebAPI: XCTestCase {
     
     // MARK: - community.…
+    func testCommunityCategoriesGetListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "community.categories.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CommunityCategoriesGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.data.contains(where: { $0.id == 4 }))
+    }
+
     func testCommunityImagesUploadCompletedDecoding() {
         
         // Case of a successful request
@@ -90,6 +110,26 @@ class piwigoWebAPI: XCTestCase {
 
 
     // MARK: - pwg.categories…
+    func testPwgCategoriesGetListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.data.contains(where: { $0.id == 38 }))
+    }
+
     func testPwgCategoriesAddDecoding() {
         
         // Case of a successful request

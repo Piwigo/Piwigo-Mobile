@@ -22,20 +22,6 @@ FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
 
 @class PHPhotoLibrary;
 
-typedef enum NSInteger {
-    kPiwigoImageSizeSquare,
-    kPiwigoImageSizeThumb,
-    kPiwigoImageSizeXXSmall,
-    kPiwigoImageSizeXSmall,
-    kPiwigoImageSizeSmall,
-    kPiwigoImageSizeMedium,
-    kPiwigoImageSizeLarge,
-    kPiwigoImageSizeXLarge,
-    kPiwigoImageSizeXXLarge,
-    kPiwigoImageSizeFullRes,
-    kPiwigoImageSizeEnumCount
-} kPiwigoImageSize;
-
 typedef enum {
     kPiwigoSortObjcNameAscending,               // Photo title, A → Z
     kPiwigoSortObjcNameDescending,              // Photo title, Z → A

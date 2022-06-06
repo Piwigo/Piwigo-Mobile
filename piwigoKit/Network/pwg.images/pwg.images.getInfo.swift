@@ -317,18 +317,3 @@ public struct DerivativeStr: Decodable {
     public let width: String?
     public let height: String?
 }
-
-
-// MARK: - Category
-public struct Album: Decodable
-{
-    public let id: Int?                     // 32
-
-    // The following data is not stored in image cache
-    public let name: String?                // "Insects & Spiders"
-    public let permalink: String?           // null
-    public let uppercats: String?           // "32"
-    public let global_rank: String?         // "1"
-    public let url: String?                 // "https:…"
-    public let page_url: String?            // "https:…"
-}
