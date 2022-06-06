@@ -579,7 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
 // Local images — Explain
-"localImages_reUploadTitle" = "Re-upload";
+"localImages_reUploadTitle" = "Her-upload";
 "localImages_deleteTitle" = "Verwijderen uit filmrol";
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
@@ -720,30 +720,30 @@
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
 "settings_appLock" = "App Lock";
-"settings_appLockEnter" = "Enter Passcode";
-"settings_appLockVerify" = "Verify Passcode";
-"settings_appLockModify" = "Modify Passcode";
-"settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
-"settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+"settings_appLockEnter" = "Voer wachtwoord in";
+"settings_appLockVerify" = "Toegangscode verifiëren";
+"settings_appLockModify" = "Wijzig toegangscode";
+"settings_appLockInfo" = "Met App Lock, is een apparaatspecifieke code vereist voor toegang tot de app. Als je deze code verliest, moet je de app opnieuw installeren.";
+"settings_passcodeInfo" = "De toegangscode staat los van het wachtwoord van je Piwigo-account.";
 
-"settings_biometricsReason" = "Access your Piwigo albums";
+"settings_biometricsReason" = "Toegang tot je Piwigo albums";
 "settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsTouchIDinfo" = "Gebruik Touch ID als alternatief voor uw App Lock toegangscode.";
 "settings_biometricsFaceID" = "Face ID";
-"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceIDinfo" = "Gebruik Face ID als een alternatief voor uw App Lock toegangscode.";
 
-"settings_clearClipboard" = "Clear Clipboard";
-"settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
-"settings_clearClipboard10sUnit" = "After 10 s";
-"settings_clearClipboard10sText" = "After 10 seconds";
-"settings_clearClipboard30sUnit" = "After 30 s";
-"settings_clearClipboard30sText" = "After 30 seconds";
-"settings_clearClipboard1minText" = "After 1 minute";
-"settings_clearClipboard1minUnit" = "After 1 min";
-"settings_clearClipboard2minText" = "After 2 minute";
-"settings_clearClipboard2minUnit" = "After 2 min";
-"settings_clearClipboard5minText" = "After 5 minute";
-"settings_clearClipboard5minUnit" = "After 5 min";
+"settings_clearClipboard" = "Klembord leegmakten";
+"settings_clearClipboardInfo" = "Selecteer de vertraging waarna het klembord zal worden gewist.";
+"settings_clearClipboard10sUnit" = "Na 10 sec";
+"settings_clearClipboard10sText" = "Na 10 seconden";
+"settings_clearClipboard30sUnit" = "Na 30 sec";
+"settings_clearClipboard30sText" = "Na 30 seconden";
+"settings_clearClipboard1minText" = "Na 1 minuut";
+"settings_clearClipboard1minUnit" = "Na 1 min.";
+"settings_clearClipboard2minText" = "Na 2 minuut";
+"settings_clearClipboard2minUnit" = "Na 2 min.";
+"settings_clearClipboard5minText" = "Na 5 minuut";
+"settings_clearClipboard5minUnit" = "Na 5 min.";
 "settings_clearClipboardNever" = "Nooit";
 
 // Settings — Cache

@@ -579,7 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Nem sikerült megnyitni a helyi fotókönyvtárat. Kérlek nézd meg, hogy a Beállításokban van-e a Piwigo appnak hozzáférése a fotókhoz!";
 
 // Local images — Explain
-"localImages_reUploadTitle" = "Re-upload";
+"localImages_reUploadTitle" = "Újra feltöltés";
 "localImages_deleteTitle" = "Eltávolítás a Fotók appból";
 "localImages_deleteMessage" = "Biztos törölni szeretnéd a feltöltött fotókat a Fotók appból? A törölt fotók és videók további 30 napig elérhetőek az iOS Fotók app Nemrég törölt menüpontja alatt.";
 
@@ -718,33 +718,33 @@
 "UploadPhotoSize_original" = "Méretcsökkentés nélkül";
 
 // Settings — Privacy
-"settingsHeader_privacy" = "Privacy";
+"settingsHeader_privacy" = "Adatvédelem";
 "settings_appLock" = "App Lock";
-"settings_appLockEnter" = "Enter Passcode";
-"settings_appLockVerify" = "Verify Passcode";
-"settings_appLockModify" = "Modify Passcode";
-"settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
-"settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+"settings_appLockEnter" = "Írja be a jelszót";
+"settings_appLockVerify" = "Ellenőrizze a jelszót";
+"settings_appLockModify" = "Módosítsa a jelszót";
+"settings_appLockInfo" = "Az App Lock használatával az alkalmazás eléréséhez eszközspecifikus kód szükséges. Ha elveszíti ezt a kódot, újra kell telepítenie az alkalmazást.";
+"settings_passcodeInfo" = "A jelszó eltér a Piwigo-fiók jelszavától.";
 
-"settings_biometricsReason" = "Access your Piwigo albums";
+"settings_biometricsReason" = "Hozzáférés a Piwigo albumokhoz";
 "settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsTouchIDinfo" = "Használja a Touch ID-t az App Lock jelszavának alternatívájaként.";
 "settings_biometricsFaceID" = "Face ID";
-"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceIDinfo" = "Használja a Face ID-t az App Lock jelszó alternatívájaként.";
 
-"settings_clearClipboard" = "Clear Clipboard";
-"settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
-"settings_clearClipboard10sUnit" = "After 10 s";
-"settings_clearClipboard10sText" = "After 10 seconds";
-"settings_clearClipboard30sUnit" = "After 30 s";
-"settings_clearClipboard30sText" = "After 30 seconds";
-"settings_clearClipboard1minText" = "After 1 minute";
-"settings_clearClipboard1minUnit" = "After 1 min";
-"settings_clearClipboard2minText" = "After 2 minute";
-"settings_clearClipboard2minUnit" = "After 2 min";
-"settings_clearClipboard5minText" = "After 5 minute";
-"settings_clearClipboard5minUnit" = "After 5 min";
-"settings_clearClipboardNever" = "Never";
+"settings_clearClipboard" = "Vágólap törlése";
+"settings_clearClipboardInfo" = "Kérjük, válassza ki a késleltetést, amely után a vágólap törlődik.";
+"settings_clearClipboard10sUnit" = "10 s után";
+"settings_clearClipboard10sText" = "10 másodperc után";
+"settings_clearClipboard30sUnit" = "30 mp után";
+"settings_clearClipboard30sText" = "30 másodperc után";
+"settings_clearClipboard1minText" = "1 perc múlva";
+"settings_clearClipboard1minUnit" = "1 perc elteltével";
+"settings_clearClipboard2minText" = "2 perc múlva";
+"settings_clearClipboard2minUnit" = "2 perc múlva";
+"settings_clearClipboard5minText" = "5 perc múlva";
+"settings_clearClipboard5minUnit" = "5 perc múlva";
+"settings_clearClipboardNever" = "Soha";
 
 // Settings — Cache
 "settingsHeader_cache" = "Gyorsítótár beállításai (Felhasznált/Összes)";

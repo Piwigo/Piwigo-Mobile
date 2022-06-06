@@ -7,4 +7,4 @@
 */
 
 "NSPhotoLibraryUsageDescription" = "para que pueda almacenar fotos en la aplicación Fotos y subir fotos a su Piwigo.";
-"NSSiriUsageDescription" = "so that Piwigo will be able to upload images with Siri.";
+"NSSiriUsageDescription" = "para que Piwigo pueda subir imágenes con Siri.";

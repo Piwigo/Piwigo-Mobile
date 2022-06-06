@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.0_text" = "Version 2.11\n\n• Adds an option for re-uploading photos and videos\n• Code modernization";
+"v2.11.0_text" = "Versie 2.11\n\n• Voegt een optie toe voor het opnieuw uploaden van foto's en video's\n• Code modernisering\n• Foutjes verbeterd";
 
-"v2.10.0_text" = "Version 2.10\nMay 20, 2022\n\n• Adds App Lock, a feature for hiding your albums behind Face ID, Touch ID and a passcode\n• Bug fixes\n• Code modernization";
+"v2.10.0_text" = "Versie 2.10\n20 mei 2022\n\n• Voegt App Lock toe, een functie om je albums achter Face ID te verbergen, Touch ID en een toegangscode\n• Foutjes verholpen\n• Code-modernisering";
 
 "v2.9.5_text" = "Versie 2.9.5\n7 maart 2022\n\n• Foutjes verbeterd\n• Codemodernisering";
 

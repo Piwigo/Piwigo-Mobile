@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.0_text" = "Version 2.11\n\n• Adds an option for re-uploading photos and videos\n• Code modernization";
+"v2.11.0_text" = "Wersja 2.11\n\n• Dodaje opcję ponownego przesyłania zdjęć i filmów\n• Modernizacja kodu\n• Poprawki błędów";
 
 "v2.10.0_text" = "Wersja 2.10\n20 maja 2022\n\n• Dodaje App Lock, funkcję ukrycia albumów za Face ID, Touch ID i kodem dostępu\n• Poprawki błędów\n• Modernizacja kodu";
 

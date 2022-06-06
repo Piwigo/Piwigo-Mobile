@@ -1,21 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "${photos} 枚の写真がアップロードキューに追加されました。";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "写真を自動アップロード";
 
-"7zXloB" = "photos";
+"7zXloB" = "写真";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "写真を自動アップロード";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "写真を自動アップロード";
 
-"QlzJjd" = "Appends recent photos to the background upload queue following Auto-Upload settings.";
+"QlzJjd" = "自動アップロードの設定に従って、バックグラウンドアップロードキューに最近の写真を追加します。";
 
-"Vz5KMD" = "Appends recent photos to the background upload queue.";
+"Vz5KMD" = "バックグラウンドアップロードキューに最近の写真を追加します。";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "${photos} 枚の写真がアップロードキューに追加されました。";
 
 "pSuJbF" = "エラー";
