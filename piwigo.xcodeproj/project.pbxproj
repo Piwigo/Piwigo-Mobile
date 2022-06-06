@@ -21,14 +21,14 @@
 		AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD0B6AC726887EC8007DEE70 /* UploadUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AC626887EC8007DEE70 /* UploadUtilitiesObjc.swift */; };
-		AD0B6AC9268A2166007DEE70 /* UploadUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */; };
+		AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */; };
 		AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */; };
 		AD0B6ACD268A218F007DEE70 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACC268A218F007DEE70 /* UploadManager.swift */; };
-		AD0B6ACF268A219B007DEE70 /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACE268A219B007DEE70 /* UploadImage.swift */; };
-		AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD0268A21A4007DEE70 /* UploadVideo.swift */; };
-		AD0B6AD3268A21AD007DEE70 /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD2268A21AD007DEE70 /* UploadTransfer.swift */; };
-		AD0B6AD5268A21B7007DEE70 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD4268A21B7007DEE70 /* UploadFinisher.swift */; };
-		AD0B6AD7268A21C0007DEE70 /* UploadAuto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD6268A21C0007DEE70 /* UploadAuto.swift */; };
+		AD0B6ACF268A219B007DEE70 /* UploadManager+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACE268A219B007DEE70 /* UploadManager+Image.swift */; };
+		AD0B6AD1268A21A5007DEE70 /* UploadManager+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD0268A21A4007DEE70 /* UploadManager+Video.swift */; };
+		AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */; };
+		AD0B6AD5268A21B7007DEE70 /* UploadManager+Finisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */; };
+		AD0B6AD7268A21C0007DEE70 /* UploadManager+Auto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -408,14 +408,14 @@
 		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD084E462659A27100159FE1 /* piwigoKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = piwigoKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD0B6AC626887EC8007DEE70 /* UploadUtilitiesObjc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadUtilitiesObjc.swift; sourceTree = "<group>"; };
-		AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadUtilities.swift; sourceTree = "<group>"; };
+		AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Utilities.swift"; sourceTree = "<group>"; };
 		AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSessions.swift; sourceTree = "<group>"; };
 		AD0B6ACC268A218F007DEE70 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
-		AD0B6ACE268A219B007DEE70 /* UploadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
-		AD0B6AD0268A21A4007DEE70 /* UploadVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadVideo.swift; sourceTree = "<group>"; };
-		AD0B6AD2268A21AD007DEE70 /* UploadTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadTransfer.swift; sourceTree = "<group>"; };
-		AD0B6AD4268A21B7007DEE70 /* UploadFinisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadFinisher.swift; sourceTree = "<group>"; };
-		AD0B6AD6268A21C0007DEE70 /* UploadAuto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadAuto.swift; sourceTree = "<group>"; };
+		AD0B6ACE268A219B007DEE70 /* UploadManager+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Image.swift"; sourceTree = "<group>"; };
+		AD0B6AD0268A21A4007DEE70 /* UploadManager+Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Video.swift"; sourceTree = "<group>"; };
+		AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Transfer.swift"; sourceTree = "<group>"; };
+		AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Finisher.swift"; sourceTree = "<group>"; };
+		AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Auto.swift"; sourceTree = "<group>"; };
 		AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
@@ -1167,12 +1167,12 @@
 				AD3335442666CA46000A1487 /* UploadVars.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
-				AD0B6ACE268A219B007DEE70 /* UploadImage.swift */,
-				AD0B6AD0268A21A4007DEE70 /* UploadVideo.swift */,
-				AD0B6AD2268A21AD007DEE70 /* UploadTransfer.swift */,
-				AD0B6AD4268A21B7007DEE70 /* UploadFinisher.swift */,
-				AD0B6AD6268A21C0007DEE70 /* UploadAuto.swift */,
-				AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */,
+				AD0B6ACE268A219B007DEE70 /* UploadManager+Image.swift */,
+				AD0B6AD0268A21A4007DEE70 /* UploadManager+Video.swift */,
+				AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */,
+				AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */,
+				AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */,
+				AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -2265,18 +2265,18 @@
 				ADF4001F266D705F004352B9 /* TagsProvider.swift in Sources */,
 				ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */,
 				ADF6264926B9ED4A0085A299 /* Tag+CoreDataProperties.swift in Sources */,
-				AD0B6AD7268A21C0007DEE70 /* UploadAuto.swift in Sources */,
+				AD0B6AD7268A21C0007DEE70 /* UploadManager+Auto.swift in Sources */,
 				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
 				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
-				AD0B6AD5268A21B7007DEE70 /* UploadFinisher.swift in Sources */,
-				AD0B6ACF268A219B007DEE70 /* UploadImage.swift in Sources */,
+				AD0B6AD5268A21B7007DEE70 /* UploadManager+Finisher.swift in Sources */,
+				AD0B6ACF268A219B007DEE70 /* UploadManager+Image.swift in Sources */,
 				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
-				AD0B6AD3268A21AD007DEE70 /* UploadTransfer.swift in Sources */,
-				AD0B6AC9268A2166007DEE70 /* UploadUtilities.swift in Sources */,
+				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
+				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
 				AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */,
 				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
-				AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */,
+				AD0B6AD1268A21A5007DEE70 /* UploadManager+Video.swift in Sources */,
 				ADF72EA126712CA80027E2CC /* UploadsProvider.swift in Sources */,
 				AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */,
 				AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */,
