@@ -20,7 +20,7 @@
 //NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 //NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 //NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
-NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
+//NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 //NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
 //NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
@@ -38,10 +38,10 @@ NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categorie
 //NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 NSString * const kPiwigoImageSearch = @"format=json&method=pwg.images.search";
 
-NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
-NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
+//NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
+//NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
 NSString * const kPiwigoTagsGetImages = @"format=json&method=pwg.tags.getImages";
-NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
+//NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
 
 //NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
 //NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";

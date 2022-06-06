@@ -15,7 +15,7 @@ typedef void(^SuccessBlock)(id responseObject);
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
 //FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
-FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
+//FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
 
 //FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
@@ -35,10 +35,10 @@ FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
 //FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
 FOUNDATION_EXPORT NSString * const kPiwigoImageSearch;
 
-FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
-FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
+//FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
+//FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetImages;
-FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
+//FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
 
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
