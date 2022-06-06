@@ -160,9 +160,6 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
-        let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
-        let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-        spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
 
         // Release 2.11.0 — Bundle string
         notesAttributedString.append(releaseNotes("v2.11.0_text", comment: "v2.11.0 Release Notes text"))
@@ -265,7 +262,10 @@ class ReleaseNotesViewController: UIViewController {
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
         vAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: vRange)
         if lineFeed {
-            vAttributedString.append(NSMutableAttributedString(string: "\n\n\n"))
+            let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
+            let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
+            spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
+            vAttributedString.append(spacerAttributedString)
         }
         return vAttributedString
     }
