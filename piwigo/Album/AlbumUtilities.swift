@@ -414,7 +414,6 @@ class AlbumUtilities: NSObject {
                     upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
                     upperCategories.append(contentsOf: newUpperCategories)
                     category.upperCategories = upperCategories
-                    category.nearestUpperCategory = newParentCatId
                     category.parentAlbumId = newParentCatId
                     catToUpdate.append(category)
 

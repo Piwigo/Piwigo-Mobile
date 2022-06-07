@@ -51,7 +51,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
     // Parent album
     albumData.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
-    albumData.nearestUpperCategory = albumData.parentAlbumId;
     PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:albumData.parentAlbumId];
     NSMutableArray *upperCategories = [NSMutableArray new];
     if (parentAlbumData.upperCategories.count != 0) {
@@ -87,9 +86,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
     
     // No parent album
-    albumData.parentAlbumId = kPiwigoSearchCategoryId;
+    albumData.parentAlbumId = 0;
     albumData.upperCategories = [NSArray new];
-    albumData.nearestUpperCategory = 0;
     
     // Empty album at start
     albumData.name = [NSString stringWithString:query];
@@ -120,9 +118,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.query = @"";
     
     // No parent album
-    albumData.parentAlbumId = kPiwigoSearchCategoryId;
+    albumData.parentAlbumId = 0;
     albumData.upperCategories = [NSArray new];
-    albumData.nearestUpperCategory = 0;
     
     // Empty album at start
     if (categoryId == kPiwigoVisitsCategoryId) {
@@ -433,11 +430,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	return self.upperCategories ? [self.upperCategories count] : 0;
 }
 
--(BOOL)containsUpperCategory:(NSInteger)category
-{
-	return self.nearestUpperCategory == category;
-}
-
 -(void)resetData
 {
 	self.isLoadingMoreImages = NO;
@@ -486,7 +478,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     [descriptionArray addObject:[NSString stringWithFormat:@"globalRank             = %ld", (long)self.globalRank]];
     [descriptionArray addObject:[NSString stringWithFormat:@"albumId                = %ld", (long)self.albumId]];
     [descriptionArray addObject:[NSString stringWithFormat:@"parentAlbumId          = %ld", (long)self.parentAlbumId]];
-    [descriptionArray addObject:[NSString stringWithFormat:@"nearestUpperCategory   = %ld", (long)self.nearestUpperCategory]];
     [descriptionArray addObject:[NSString stringWithFormat:@"upperCategories [%ld]  = %@", (long)self.upperCategories.count, self.upperCategories]];
     [descriptionArray addObject:[NSString stringWithFormat:@"numberOfImages         = %ld", (long)self.numberOfImages]];
     [descriptionArray addObject:[NSString stringWithFormat:@"totalNumberOfImages    = %ld", (long)self.totalNumberOfImages]];

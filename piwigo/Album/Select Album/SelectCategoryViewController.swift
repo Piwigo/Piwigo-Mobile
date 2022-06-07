@@ -766,7 +766,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // User must not move album to current parent album or in itself
             if wantedAction == kPiwigoCategorySelectActionMoveAlbum {
                 if categoryData.albumId == 0 {  // upperCategories is nil for root
-                    if inputCategoryData.nearestUpperCategory == 0 { return }
+                    if inputCategoryData.parentAlbumId == 0 { return }
                 } else if (categoryData.albumId == inputCategoryData.parentAlbumId) ||
                     categoryData.upperCategories.contains(String(inputCategoryId)) { return }
             }
@@ -1348,7 +1348,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - Sub-Categories Addition/Removal
     
-    func addSubCaterories(toCategoryID categoryTapped: PiwigoAlbumData) {
+    func addSubCaterories(toCategory categoryTapped: PiwigoAlbumData) {
         // Build list of categories from complete known list
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
 
@@ -1361,7 +1361,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let filteredCat = allCategories
             .filter({ NetworkVars.hasAdminRights ||
                         (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-            .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
+            .filter({ $0.parentAlbumId == categoryTapped.albumId })
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
@@ -1393,7 +1393,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         categoriesTableView.insertRows(at: indexPaths, with: .automatic)
     }
 
-    func removeSubCategories(toCategoryID categoryTapped: PiwigoAlbumData) {
+    func removeSubCategories(toCategory categoryTapped: PiwigoAlbumData) {
         // Proposed list is collected in diff
         var diff: [PiwigoAlbumData] = []
 
@@ -1458,10 +1458,10 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         // Compare number of sub-albums inside category to be closed
         if (subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories) {
             // User wants to hide sub-categories
-            removeSubCategories(toCategoryID: categoryTapped)
+            removeSubCategories(toCategory: categoryTapped)
         } else if subcategories.count > 0 {
             // Sub-categories are already known
-            addSubCaterories(toCategoryID: categoryTapped)
+            addSubCaterories(toCategory: categoryTapped)
         }
     }
 }
