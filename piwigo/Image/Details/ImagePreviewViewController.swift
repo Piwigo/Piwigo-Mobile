@@ -436,19 +436,16 @@ class ImagePreviewViewController: UIViewController
         playerController.view.frame = videoView?.bounds ?? CGRect.zero
 
         // Present the video
-        var currentViewController = UIApplication.shared.keyWindow?.rootViewController
-        while currentViewController?.presentedViewController != nil {
-            currentViewController = currentViewController?.presentedViewController
-        }
         playerController.modalTransitionStyle = .crossDissolve
-        playerController.modalPresentationStyle = .overFullScreen
+        playerController.modalPresentationStyle = .overCurrentContext
+        let currentViewController = UIApplication.shared.keyWindow?.topMostViewController()
         currentViewController?.present(playerController, animated: true)
     }
 
     func assetFailedToPrepare(forPlayback error: Error?) {
         // Determine the present view controller
         if let error = error as NSError?,
-           let topViewController = view.window?.topMostViewController() {
+           let topViewController = UIApplication.shared.keyWindow?.topMostViewController() {
             topViewController.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
                                                  errorMessage: error.localizedFailureReason ?? "",
                                                  completion: { })
