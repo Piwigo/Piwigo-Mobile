@@ -86,7 +86,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
     
     // No parent album
-    albumData.parentAlbumId = 0;
+    albumData.parentAlbumId = NSIntegerMin;
     albumData.upperCategories = [NSArray new];
     
     // Empty album at start
@@ -118,7 +118,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.query = @"";
     
     // No parent album
-    albumData.parentAlbumId = 0;
+    albumData.parentAlbumId = NSIntegerMin;
     albumData.upperCategories = [NSArray new];
     
     // Empty album at start
