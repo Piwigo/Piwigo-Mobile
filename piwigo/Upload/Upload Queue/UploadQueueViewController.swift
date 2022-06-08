@@ -325,8 +325,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Items
         let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        snapshot.appendItems(items.compactMap({$0.objectID}))
-        diffableDataSource.apply(snapshot, animatingDifferences: false)
+        for section in SectionKeys.allValues {
+            let objectIDsInSection = items.filter({$0.requestSectionKey == section.rawValue}).map({$0.objectID})
+            if objectIDsInSection.isEmpty { continue }
+            snapshot.appendItems(objectIDsInSection, toSection: section.rawValue)
+        }
     }
     
 
