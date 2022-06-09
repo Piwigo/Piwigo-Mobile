@@ -1361,8 +1361,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
         if (nberOfUploads > 0) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
-                // Number unchanged -> NOP
+            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame
+                && !self.uploadQueueButton.hidden
+                && !CGRectEqualToRect(self.uploadQueueButton.frame, self.addButton.frame)) {
                 return;
             }
             self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
