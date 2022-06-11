@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Nie można otworzyć lokalnej biblioteki zdjęć. Przejdź do aplikacji Ustawienia i włącz dostęp dla Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Prześlij ponownie";
 "localImages_deleteTitle" = "Usuń z Rolki Aparatu";
 "localImages_deleteMessage" = "Czy chcesz usunąć przesłane zdjęcia lub filmy z rolki aparatu? Usunięte zdjęcia lub filmy będą nadal dostępne w koszu zdjęć iOS przez 30 dni.";
 

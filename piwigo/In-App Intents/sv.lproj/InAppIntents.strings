@@ -1,21 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "${photos} bild(er) lades till i uppladdningskön.";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "Ladda upp foton automatiskt";
 
-"7zXloB" = "photos";
+"7zXloB" = "bilder";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "Ladda upp foton automatiskt";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "Ladda upp foton automatiskt";
 
-"QlzJjd" = "Appends recent photos to the background upload queue following Auto-Upload settings.";
+"QlzJjd" = "Lägger till senaste foton till bakgrunden uppladdningskön efter inställningar för automatisk uppladdning.";
 
-"Vz5KMD" = "Appends recent photos to the background upload queue.";
+"Vz5KMD" = "Lägger till senaste foton till bakgrunden uppladdningskön.";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "${photos} bild(er) lades till i uppladdningskön.";
 
-"pSuJbF" = "Error";
+"pSuJbF" = "Fel";

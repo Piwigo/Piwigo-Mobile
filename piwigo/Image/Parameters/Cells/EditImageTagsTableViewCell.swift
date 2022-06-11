@@ -46,8 +46,15 @@ class EditImageTagsTableViewCell: UITableViewCell {
     }
 
     func config(withList tags: [PiwigoTagData]?, inColor color: UIColor?) {
-        tagsString = TagsData.sharedInstance().getTagsString(fromList: tags)
+        // Set colours
         tagsLabel.textColor = .piwigoColorLeftLabel()
         tagsList.textColor = color
+
+        // Check tag data
+        tagsString = ""
+        guard let tags = tags else { return }
+
+        // Compile list of tags
+        tagsString = String(tags.compactMap({"\($0.tagName ?? "?"), "}).reduce("", +).dropLast(2))
     }
 }

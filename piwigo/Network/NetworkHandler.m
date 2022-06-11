@@ -20,28 +20,28 @@
 //NSString * const kPiwigoSessionLogin = @"format=json&method=pwg.session.login";
 //NSString * const kPiwigoSessionGetStatus = @"format=json&method=pwg.session.getStatus";
 //NSString * const kCommunitySessionGetStatus = @"format=json&method=community.session.getStatus";
-NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
+//NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 //NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
-NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
-NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList";
+//NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
+//NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages";
-NSString * const kPiwigoCategoriesAdd = @"format=json&method=pwg.categories.add";
-NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.setInfo";
-NSString * const kPiwigoCategoriesDelete = @"format=json&method=pwg.categories.delete";
-NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.move";
-NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
-NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
+//NSString * const kPiwigoCategoriesAdd = @"format=json&method=pwg.categories.add";
+//NSString * const kPiwigoCategoriesSetInfo = @"format=json&method=pwg.categories.setInfo";
+//NSString * const kPiwigoCategoriesDelete = @"format=json&method=pwg.categories.delete";
+//NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.move";
+//NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
+//NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
 
 //NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo";
 //NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 //NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
 NSString * const kPiwigoImageSearch = @"format=json&method=pwg.images.search";
 
-NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
-NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
+//NSString * const kPiwigoTagsGetList = @"format=json&method=pwg.tags.getList";
+//NSString * const kPiwigoTagsGetAdminList = @"format=json&method=pwg.tags.getAdminList";
 NSString * const kPiwigoTagsGetImages = @"format=json&method=pwg.tags.getImages";
-NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
+//NSString * const kPiwigoTagsAdd = @"format=json&method=pwg.tags.add";
 
 //NSString * const kPiwigoUserFavoritesAdd = @"format=json&method=pwg.users.favorites.add";
 //NSString * const kPiwigoUserFavoritesRemove = @"format=json&method=pwg.users.favorites.remove";

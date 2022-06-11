@@ -7,7 +7,6 @@
 //
 
 #import "AlbumData.h"
-#import "AlbumService.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "ImagesCollection.h"
@@ -145,10 +144,11 @@
                 UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
                 SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
                 NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-                [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-                copyVC.delegate = self;                 // To re-enable toolbar
-                copyVC.imageCopiedDelegate = self;      // To update image data after copy
-                [self pushView:copyVC];
+                if ([copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages]) {
+                    copyVC.delegate = self;                 // To re-enable toolbar
+                    copyVC.imageCopiedDelegate = self;      // To update image data after copy
+                    [self pushView:copyVC];
+                }
             }];
 
             // Move images to album
@@ -160,9 +160,10 @@
                 UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
                 SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
                 NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-                [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
-                moveVC.delegate = self;         // To re-enable toolbar
-                [self pushView:moveVC];
+                if ([moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages]) {
+                    moveVC.delegate = self;         // To re-enable toolbar
+                    [self pushView:moveVC];
+                }
             }];
 
             // Menu
@@ -270,7 +271,7 @@
     self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
     if (headers.count > 0) {
-        CategoryHeaderReusableView *header = headers.firstObject;
+        AlbumHeaderReusableView *header = headers.firstObject;
         header.commentLabel.textColor = [UIColor piwigoColorHeader];
     }
     for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
@@ -928,6 +929,7 @@
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToEdit lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToEdit insertObject:imageData atIndex:0];
@@ -1024,6 +1026,7 @@
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Collect orphaned and non-orphaned images
             [self.selectedImagesToDelete insertObject:imageData atIndex:0];
@@ -1190,6 +1193,7 @@
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToShare lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToShare insertObject:imageData atIndex:0];
@@ -1369,10 +1373,11 @@
     UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-    [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-    copyVC.delegate = self;                 // To re-enable toolbar
-    copyVC.imageCopiedDelegate = self;      // To update image data after copy
-    [self pushView:copyVC];
+    if ([copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages]) {
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC];
+    }
 }
 
 

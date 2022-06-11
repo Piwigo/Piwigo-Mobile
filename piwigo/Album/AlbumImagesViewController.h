@@ -14,9 +14,15 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShare;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeNone;
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeOrphaned;
+FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
+
 @interface AlbumImagesViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, assign) NSInteger totalNumberOfImages;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIds;
 
 // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -28,5 +34,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 -(void)updateSubCategoryWithId:(NSInteger)albumId;
 -(void)addImageWithId:(NSInteger)imageId;
 -(void)removeImageWithId:(NSInteger)imageId;
+
+-(void)updateButtonsInSelectionMode;
+-(void)cancelShareImages;
 
 @end

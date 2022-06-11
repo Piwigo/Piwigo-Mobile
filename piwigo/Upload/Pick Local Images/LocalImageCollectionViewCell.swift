@@ -10,6 +10,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class LocalImageCollectionViewCell: UICollectionViewCell {
@@ -24,88 +25,13 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    private var _cellSelected = false
-    @objc var cellSelected: Bool {
+    private var _md5sum = ""
+    @objc var md5sum: String {
         get {
-            _cellSelected
+            _md5sum
         }
-        set(cellSelected) {
-            _cellSelected = cellSelected
-            selectedImage?.isHidden = !cellSelected
-            darkenView?.isHidden = !cellSelected
-            waitingActivity?.isHidden = true
-            uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(0, animated: false)
-            uploadedImage?.isHidden = true
-            failedUploadImage?.isHidden = true
-        }
-    }
-
-    private var _cellWaiting = false
-    @objc var cellWaiting: Bool {
-        get {
-            _cellWaiting
-        }
-        set(waiting) {
-            _cellUploading = waiting
-            darkenView?.isHidden = false
-            waitingActivity?.isHidden = false
-            uploadingProgress?.isHidden = false
-            uploadingProgress?.setProgress(0, animated: false)
-            uploadedImage?.isHidden = true
-            failedUploadImage?.isHidden = true
-        }
-    }
-
-    private var _cellUploading = false
-    @objc var cellUploading: Bool {
-        get {
-            _cellUploading
-        }
-        set(uploading) {
-            _cellUploading = uploading
-            darkenView?.isHidden = false
-            waitingActivity?.isHidden = true
-            uploadingProgress?.isHidden = false
-            if uploading {
-                uploadingProgress?.setProgress(_progress, animated: false)
-            } else {
-                uploadingProgress?.setProgress(1.0, animated: false)
-            }
-            uploadedImage?.isHidden = true
-            failedUploadImage?.isHidden = true
-        }
-    }
-
-    private var _cellUploaded = false
-    @objc var cellUploaded: Bool {
-        get {
-            _cellUploaded
-        }
-        set(uploaded) {
-            _cellUploaded = uploaded
-            darkenView?.isHidden = !uploaded
-            uploadingProgress?.isHidden = uploaded
-            uploadingProgress?.setProgress(1, animated: false)
-            uploadedImage?.isHidden = !uploaded
-            failedUploadImage?.isHidden = true
-            waitingActivity?.isHidden = uploaded
-        }
-    }
-
-    private var _cellFailed = false
-    @objc var cellFailed: Bool {
-        get {
-            _cellFailed
-        }
-        set(failed) {
-            _cellUploaded = false
-            darkenView?.isHidden = !failed
-            uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(_progress, animated: false)
-            uploadedImage?.isHidden = true
-            failedUploadImage?.isHidden = !failed
-            waitingActivity?.isHidden = true
+        set(md5sum) {
+            _md5sum = md5sum
         }
     }
 
@@ -146,14 +72,11 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var failedUploadImage: UIImageView!
     
-    @objc
-    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
-        
+    private func configureIcons() {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
         waitingActivity.color = UIColor.white
         uploadingProgress.trackTintColor = UIColor.white
-        localIdentifier = imageAsset.localIdentifier
 
         // Selected icon: match size to cell size
         let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
@@ -175,7 +98,15 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         // Uploaded icon: match size to cell size
         uploadedImgWidth.constant = frame.size.width * uploadedScale + (scale - 1)
         uploadedImgHeight.constant = uploadedImgWidth.constant * uploadedRatio
+    }
+
+    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
+        // Configure icons
+        configureIcons()
         
+        // Store local identifier
+        localIdentifier = imageAsset.localIdentifier
+
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
         let retinaSquare = CGSize(width: thumbnailSize * CGFloat(retinaScale), height: thumbnailSize * CGFloat(retinaScale))
@@ -206,6 +137,74 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         })
     }
     
+    func configure(with image: UIImage, identifier: String, thumbnailSize: CGFloat) {
+        // Configure icons
+        configureIcons()
+        
+        // Store local identifier
+        localIdentifier = identifier
+        
+        // Image: retrieve data of right size and crop image
+        self.cellImage.image = image
+        if identifier.contains("mov") {
+            self.playBckg?.isHidden = false
+            self.playImg.isHidden = false
+        }
+    }
+    
+    func update(selected: Bool, state: kPiwigoUploadState? = nil) {
+        // Selection mode
+        selectedImage?.isHidden = !selected
+        darkenView?.isHidden = !selected
+
+        // Upload state
+        guard let state = state else {
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = true
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
+            return
+        }
+        switch state {
+        case .waiting, .preparing, .prepared, .deleted:
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = false
+            uploadingProgress?.isHidden = false
+            uploadingProgress?.setProgress(0, animated: false)
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
+        case .uploading:
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = false
+            uploadingProgress?.setProgress(_progress, animated: false)
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
+        case .uploaded, .finishing:
+            darkenView?.isHidden = false
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = false
+            uploadingProgress?.setProgress(1.0, animated: false)
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
+        case .finished, .moderated:
+            darkenView?.isHidden = false
+            uploadingProgress?.isHidden = true
+            uploadingProgress?.setProgress(1, animated: false)
+            uploadedImage?.isHidden = false
+            failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = true
+        case .preparingFail, .preparingError, .formatError,
+             .uploadingError, .uploadingFail, .finishingError, .finishingFail:
+            darkenView?.isHidden = true
+            uploadingProgress?.isHidden = true
+            uploadingProgress?.setProgress(_progress, animated: false)
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = false
+            waitingActivity?.isHidden = true
+        }
+    }
+
     func setProgress(_ progressFraction: Float, withAnimation animate: Bool) {
         let progress = max(uploadingProgress.progress, progressFraction)
         uploadingProgress?.setProgress(progress, animated: animate)
@@ -215,10 +214,5 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         cellImage.image = UIImage(named: "placeholder")
         playBckg.isHidden = true
         playImg.isHidden = true
-        cellSelected = false
-        uploadingProgress?.isHidden = true
-        uploadingProgress?.setProgress(0, animated: false)
-        failedUploadImage.isHidden = true
-        waitingActivity?.isHidden = true
     }
 }

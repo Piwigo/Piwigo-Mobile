@@ -69,8 +69,7 @@ class ClearCache: NSObject {
         // Locations with place names
         LocationsProvider().clearLocations()
 
-        // Data
-        TagsData.sharedInstance().clearCache()
+        // Album data
         if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
 
         // URL requests

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.10.0_text" = "Version 2.10\n\n• Ajoute le verrouillage de l'application, une fonctionnalité pour cacher vos albums derrière Face ID, Touch ID et/ou un code d'accès\n• Corrections de bugs\n• Modernisation du code";
+"v2.11.0_text" = "Version 2.11\n\n• Ajoute une option pour re-télécharger des photos et des vidéos\n• Modernisation du code\n• Corrections de bugs";
+
+"v2.10.0_text" = "Version 2.10\n20 mai 2022\n\n• Ajoute le verrouillage de l'application, une fonctionnalité pour cacher vos albums derrière Face ID, Touch ID et/ou un code d'accès\n• Corrections de bugs\n• Modernisation du code";
 
 "v2.9.5_text" = "Version 2.9.5\n7 mars 2022\n\n• Correction de bugs\n• Modernisation du code";
 

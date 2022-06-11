@@ -89,10 +89,9 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let albumData = albumData else { return }
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
-        moveVC?.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum)
-        moveVC?.albumMovedDelegate = self
-        if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false {
+        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        if moveVC.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum) {
+            moveVC.albumMovedDelegate = self
             categoryDelegate?.pushCategoryView(moveVC)
         }
     }
@@ -201,43 +200,33 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
     
     private func renameCategory(withName albumName: String?, comment albumComment: String?, andViewController topViewController: UIViewController?) {
-        guard let albumData = albumData else { return }
+        guard let albumData = albumData,
+              let albumName = albumName,
+              let albumComment = albumComment else { return }
 
         // Display HUD during the update
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
-        // Rename album
-        AlbumService.renameCategory( albumData.albumId, forName: albumName, withComment: albumComment,
-            onCompletion: { [self] task, renamedSuccessfully in
+        // Rename album, modify comment
+        AlbumUtilities.setInfos(albumData, withName: albumName, description: albumComment) {
+            topViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    // Update album data
+                    albumData.name = albumName
+                    albumData.comment = albumComment
 
-                if renamedSuccessfully {
-                    topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                            DispatchQueue.main.async(execute: { [self] in
-                                // Update album data
-                                albumData.name = albumName
-                                albumData.comment = albumComment
-
-                                // Update cell and hide swipe buttons
-                                let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                                cell?.config(with: albumData)
-                                cell?.hideSwipe(animated: true)
-                            })
-                        }
-                    }
-                } else {
-                    topViewController?.hidePiwigoHUD() {
-                        topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: "") {
-                        }
-                    }
+                    // Update cell and hide swipe buttons
+                    let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                    cell?.config(with: albumData)
+                    cell?.hideSwipe(animated: true)
                 }
-            },
-            onFailure: { task, error in
-                topViewController?.hidePiwigoHUD() {
-                    topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: error?.localizedDescription ?? "") {
-                    }
+            }
+        } failure: { error in
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: error.localizedDescription) {
                 }
-            })
+            }
+        }
     }
 
     
@@ -456,51 +445,26 @@ class AlbumCollectionViewCell: UICollectionViewCell
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
-        // Stores image data before category deletion
-        var images: [PiwigoImageData]? = []
-        if deletionMode != kCategoryDeletionModeNone {
-            images = albumData.imageList
-        }
-
         // Delete the category
-        AlbumService.deleteCategory(albumData.albumId, inMode: deletionMode,
-            onCompletion: { [self] task, deletedSuccessfully in
-                topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                    topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+        AlbumUtilities.delete(albumData, inModde: deletionMode) {
+            topViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    // Hide swipe buttons
+                    let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                    cell?.hideSwipe(animated: true)
 
-                        // Delete images from cache
-                        for image in images ?? [] {
-                            // Delete orphans only?
-                            if (deletionMode == kCategoryDeletionModeOrphaned) && image.categoryIds.count > 1 {
-                                // Update categories the images belongs to
-                                CategoriesData.sharedInstance().removeImage(image, fromCategory: String(albumData.albumId))
-                                continue
-                            }
-
-                            // Delete image
-                            CategoriesData.sharedInstance().deleteImage(image)
-                        }
-
-                        // Delete category from cache
-                        CategoriesData.sharedInstance().deleteCategory(withId: albumData.albumId)
-
-                        // Hide swipe buttons
-                        let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                        cell?.hideSwipe(animated: true)
-
-                        // Remove category from the album/images collection
-                        if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.removeCategory(_:))) ?? false {
-                            categoryDelegate?.removeCategory(self)
-                        }
+                    // Remove category from the album/images collection
+                    if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.removeCategory(_:))) ?? false {
+                        categoryDelegate?.removeCategory(self)
                     }
                 }
-            },
-            onFailure: { task, error in
-                topViewController?.hidePiwigoHUD() {
-                    topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail"), message: NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album"), errorMessage: error?.localizedDescription ?? "") {
-                    }
+            }
+        } failure: { error in
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail"), message: NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album"), errorMessage: error.localizedDescription) {
                 }
-            })
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

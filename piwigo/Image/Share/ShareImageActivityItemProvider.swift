@@ -15,6 +15,17 @@ import UIKit
 import piwigoKit
 
 @objc
+protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
+    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
+                                                        withTitle title: String)
+    func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
+                                   preprocessingProgressDidUpdate progress: Float)
+    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
+                                                      withImageId imageId: Int)
+    func showError(withTitle title: String, andMessage message: String?)
+}
+
+@objc
 class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     // MARK: - Initialisation
@@ -409,16 +420,4 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                 
         return linkMetaData
     }
-}
-
-
-// MARK: - ShareImageActivityItemProvider Delegate
-@objc protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
-    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                        withTitle title: String?)
-    func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                   preprocessingProgressDidUpdate progress: Float)
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageId imageId: Int)
-    func showError(withTitle title: String?, andMessage message: String?)
 }

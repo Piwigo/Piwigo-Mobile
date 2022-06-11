@@ -20,7 +20,6 @@ public struct ImagesSetInfoJSON: Decodable {
 
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
-        case result
         case errorCode = "err"
         case errorMessage = "message"
     }

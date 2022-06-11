@@ -11,7 +11,6 @@
 
 #import "AlbumData.h"
 #import "AlbumImagesViewController.h"
-#import "AlbumService.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"
@@ -29,7 +28,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+NSString * const kCategoryDeletionModeNone = @"no_delete";
+NSString * const kCategoryDeletionModeOrphaned = @"delete_orphans";
+NSString * const kCategoryDeletionModeAll = @"force_delete";
+
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -72,8 +75,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) CAShapeLayer* progressLayer;
 
 @property (nonatomic, assign) BOOL isSelect;
-@property (nonatomic, assign) NSInteger totalNumberOfImages;
-@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIds;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *touchedImageIds;
 
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToEdit;
@@ -223,7 +224,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
         [self.imagesCollection registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[AlbumCollectionViewCell class] forCellWithReuseIdentifier:@"AlbumCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
+        [self.imagesCollection registerClass:[AlbumHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
         [self.view addSubview:self.imagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
@@ -340,7 +341,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
     UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-    searchController.delegate = self;
     searchController.hidesNavigationBarDuringPresentation = YES;
     searchController.searchResultsUpdater = self;
     
@@ -517,7 +517,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     NSArray *headers = [self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionHeader];
     if (headers.count > 0) {
-        CategoryHeaderReusableView *header = headers.firstObject;
+        AlbumHeaderReusableView *header = headers.firstObject;
         header.commentLabel.textColor = [UIColor piwigoColorHeader];
         header.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.75];
     }
@@ -823,10 +823,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               inMode:MBProgressHUDModeIndeterminate];
     
     // Load category data in recursive mode
-    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
+    [AlbumUtilities getAlbumsWithCompletion:^(BOOL didUpdateCats) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Check data source and reload collection if needed
-            [self checkDataSourceWithChangedCategories:didChange onCompletion:^{
+            [self checkDataSourceWithChangedCategories:didUpdateCats onCompletion:^{
                 // End refreshing
                 if (@available(iOS 10.0, *)) {
                     if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
@@ -838,11 +838,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
             }];
         });
-    }
-        onFailure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-            NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
-#endif
+    } failure:^(NSError * _Nonnull error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // Set navigation bar buttons
             [self initButtonsInSelectionMode];
@@ -853,6 +849,37 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }];
         });
     }];
+    
+//    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            // Check data source and reload collection if needed
+//            [self checkDataSourceWithChangedCategories:didChange onCompletion:^{
+//                // End refreshing
+//                if (@available(iOS 10.0, *)) {
+//                    if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
+//                } else {
+//                    if (self.refreshControl) [self.refreshControl endRefreshing];
+//                }
+//
+//                // Hide HUD
+//                [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+//            }];
+//        });
+//    }
+//        onFailure:^(NSURLSessionTask *task, NSError *error) {
+//#if defined(DEBUG)
+//            NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
+//#endif
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            // Set navigation bar buttons
+//            [self initButtonsInSelectionMode];
+//            // Hide HUD if needed
+//            [self.navigationController hidePiwigoHUDWithCompletion:^{
+//                [self dismissPiwigoErrorWithTitle:@"" message:error.localizedDescription
+//                                     errorMessage:@"" completion:^{ }];
+//            }];
+//        });
+//    }];
 }
 
 -(void)checkDataSourceWithChangedCategories:(BOOL)didChange onCompletion:(void (^)(void))completion
@@ -1334,8 +1361,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (nberOfUploads > 0) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
-                // Number unchanged -> NOP
+            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame
+                && !self.uploadQueueButton.hidden
+                && !CGRectEqualToRect(self.uploadQueueButton.frame, self.addButton.frame)) {
                 return;
             }
             self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
@@ -1971,42 +1999,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Create album
-    [AlbumService createCategoryWithName:albumName
-                  withStatus:@"public"
-                  andComment:albumComment
-                    inParent:parentId
-                OnCompletion:^(NSURLSessionTask *task, NSInteger newCatId)
+    [AlbumUtilities createWithName:albumName description:albumComment
+                            status:@"public" inParentWithId:parentId
+                        completion:^(NSInteger newCatId)
      {
-        if (newCatId != NSNotFound) {
-            // Get index of added category
-            NSArray<PiwigoAlbumData *> *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
-            NSInteger indexOfExistingItem = [categories indexOfObjectPassingTest:^BOOL(PiwigoAlbumData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-             return obj.albumId == newCatId;
-            }];
-            if (indexOfExistingItem != NSNotFound) {
-                // Insert cell of new category
+        // Get index of added category
+        NSArray<PiwigoAlbumData *> *categories = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId];
+        NSInteger indexOfExistingItem = [categories indexOfObjectPassingTest:^BOOL(PiwigoAlbumData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+         return obj.albumId == newCatId;
+        }];
+        if (indexOfExistingItem != NSNotFound) {
+            // Insert cell of new category
+            dispatch_async(dispatch_get_main_queue(), ^{
                 NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
                 [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
-            }
+            });
+        }
 
-            // Hide HUD
-            [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                    // Reset buttons
-                    [self didCancelTapAddButton];
-                }];
+        // Hide HUD
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                // Reset buttons
+                [self didCancelTapAddButton];
             }];
-        }
-        else {
-            // Hide HUD and inform user
-            [self hidePiwigoHUDWithCompletion:^{
-                [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
-                    // Reset buttons
-                    [self didCancelTapAddButton];
-                }];
-            }];
-        }
-    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        }];
+    } failure:^(NSError *error) {
         // Hide HUD and inform user
         [self hidePiwigoHUDWithCompletion:^{
             [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{
@@ -2187,6 +2204,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToEdit lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToEdit insertObject:imageData atIndex:0];
@@ -2288,6 +2306,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToDelete lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Split orphaned and non-orphaned images
             if (imageData.categoryIds.count > 1) {
@@ -2577,6 +2596,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageUtilities getInfosForID:[[self.selectedImageIdsToShare lastObject] integerValue]
+                    inCategoryId:self.categoryId
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToShare insertObject:imageData atIndex:0];
@@ -2803,10 +2823,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-    [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-    copyVC.delegate = self;                 // To re-enable toolbar
-    copyVC.imageCopiedDelegate = self;      // To update image data after copy
-    [self pushView:copyVC];
+    if ([copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages]) {
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC];
+    }
 }
 
 -(void)moveImageToAlbum
@@ -2814,9 +2835,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-    [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
-    moveVC.delegate = self;         // To re-enable toolbar
-    [self pushView:moveVC];
+    if ([moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages]) {
+        moveVC.delegate = self;         // To re-enable toolbar
+        [self pushView:moveVC];
+    }
 }
 
 
@@ -2991,7 +3013,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     switch (indexPath.section) {
         case 0:     // Section 0 — Album collection
         {
-            CategoryHeaderReusableView *header = nil;
+            AlbumHeaderReusableView *header = nil;
             
             if (kind == UICollectionElementKindSectionHeader) {
                 header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader" forIndexPath:indexPath];
@@ -3675,59 +3697,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 }
 
 
-#pragma mark - ShareImageActivityItemProviderDelegate Methods
-
--(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
-{
-    // Show HUD to let the user know the image is being downloaded in the background.
-    NSString *detailsLabel = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
-    [self.presentedViewController showPiwigoHUDWithTitle:title detail:detailsLabel buttonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel") buttonTarget:self buttonSelector:@selector(cancelShareImages) inMode:MBProgressHUDModeAnnularDeterminate];
-}
-
--(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
-{
-    // Update HUD
-    [self.presentedViewController updatePiwigoHUDWithProgress:progress];
-}
-
--(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
-{
-    // Close HUD
-    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
-    if ([imageActivityItemProvider isCancelled]) {
-        [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-    } else {
-        if ([self.selectedImageIds containsObject:imageIdObject]) {
-            // Remove image from selection
-            [self.selectedImageIds removeObject:imageIdObject];
-            [self updateButtonsInSelectionMode];
-
-            // Close HUD if last image
-            if ([self.selectedImageIds count] == 0) {
-                [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
-                    [self.presentedViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{ }];
-                }];
-            }
-        }
-    }
-}
-
--(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
-{
-    // Cancel remaining shares
-    [self cancelShareImages];
-    
-    // Close HUD if needed
-    [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-    
-    // Display error alert after trying to share image
-    [self.presentedViewController dismissPiwigoErrorWithTitle:title message:message errorMessage:@"" completion:^{
-        // Close ActivityView
-        [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-    }];
-}
-
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
@@ -3757,82 +3726,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
         }
     }
-}
-
-
-#pragma mark - UISearchBarDelegate
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
-{
-    // Animates Cancel button appearance
-    [searchBar setShowsCancelButton:YES animated:YES];
-    return YES;
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
-    // Title forgotten when searching immediately after launch
-    if (self.categoryId == 0) {
-        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
-    } else {
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-    }
-    
-    // Animates Cancel button disappearance
-    [searchBar setShowsCancelButton:NO animated:YES];
-}
-
-
-#pragma mark - UISearchControllerDelegate
-
-- (void)willPresentSearchController:(UISearchController *)searchController
-{
-    // NOP
-}
-
-- (void)didDismissSearchController:(UISearchController *)searchController
-{
-    // NOP
-}
-
-
-#pragma mark - UISearchResultsUpdating
-
--(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    
-    // Query string
-    NSString *searchString = [searchController.searchBar text];
-    
-    // Resfresh image collection for new query only
-    if ([searchController.searchResultsController isKindOfClass:[SearchImagesViewController class]]) {
-        SearchImagesViewController *resultsController = (SearchImagesViewController *)searchController.searchResultsController;
-        
-        if (![resultsController.searchQuery isEqualToString:searchString] || !searchString.length) {
-            
-            // Cancel active image downloads if any
-            NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-            for (NSURLSessionTask *task in downloadTasks) {
-                [task cancel];
-            }
-            
-            // Initialise search cache
-            PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
-            [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
-            
-            // Resfresh image collection
-            resultsController.searchQuery = searchString;
-            [resultsController searchAndLoadImages];
-        }
-    }
-}
-
-
-#pragma mark - TagSelectViewDelegate Methods
-
--(void)pushTaggedImagesView:(UIViewController *)viewController
-{
-    // Push sub-album view
-    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

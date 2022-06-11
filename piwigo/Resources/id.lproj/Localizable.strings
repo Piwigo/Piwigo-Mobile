@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi dan izinkan akses untuk Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Remove from Camera Roll";
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
@@ -739,9 +740,9 @@
 "settings_clearClipboard30sText" = "After 30 seconds";
 "settings_clearClipboard1minText" = "After 1 minute";
 "settings_clearClipboard1minUnit" = "After 1 min";
-"settings_clearClipboard2minText" = "After 2 minute";
+"settings_clearClipboard2minText" = "After 2 minutes";
 "settings_clearClipboard2minUnit" = "After 2 min";
-"settings_clearClipboard5minText" = "After 5 minute";
+"settings_clearClipboard5minText" = "After 5 minutes";
 "settings_clearClipboard5minUnit" = "After 5 min";
 "settings_clearClipboardNever" = "Never";
 

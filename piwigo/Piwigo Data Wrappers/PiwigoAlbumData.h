@@ -31,7 +31,6 @@ typedef enum {
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) NSInteger parentAlbumId;
 @property (nonatomic, strong) NSArray<NSString*> *upperCategories;
-@property (nonatomic, assign) NSInteger nearestUpperCategory;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *comment;
 @property (nonatomic, assign) CGFloat globalRank;
@@ -68,7 +67,6 @@ typedef enum {
 -(void)removeAllImages;
 -(void)removeImages:(NSArray<PiwigoImageData*> *)images;
 -(NSInteger)getDepthOfCategory;
--(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;
 -(void)incrementImageSizeByOne;
 -(void)deincrementImageSizeByOne;

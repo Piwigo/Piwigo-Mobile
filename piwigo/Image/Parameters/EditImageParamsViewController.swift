@@ -144,7 +144,7 @@ class EditImageParamsViewController: UIViewController
 
         // Common tags?
         shouldUpdateTags = false
-        commonParameters.tags = images[0].tags
+        commonParameters.tags = images[0].tags ?? []
         var commonTags = commonParameters.tags
         for index in 1..<images.count {
             // Get tags of next image
@@ -466,8 +466,9 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Tags
-        let tagIds = String(imageData.tags.compactMap({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        
+        let tags = imageData.tags?.compactMap({$0}) ?? []
+        let tagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+
         // Privacy level
         let privacyLevel = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
 
@@ -725,7 +726,7 @@ extension EditImageParamsViewController: UITableViewDelegate
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
-            let tagList: [Int32] = commonParameters.tags.compactMap { Int32($0.tagId) }
+            let tagList: [Int32] = (commonParameters.tags ?? []).compactMap { Int32($0.tagId) }
             tagsVC.setPreselectedTagIds(tagList)
             tagsVC.setTagCreationRights(hasTagCreationRights)
             navigationController?.pushViewController(tagsVC, animated: true)

@@ -15,6 +15,26 @@ import piwigoKit
 class piwigoWebAPI: XCTestCase {
     
     // MARK: - community.…
+    func testCommunityCategoriesGetListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "community.categories.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CommunityCategoriesGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.data.contains(where: { $0.id == 4 }))
+    }
+
     func testCommunityImagesUploadCompletedDecoding() {
         
         // Case of a successful request
@@ -89,6 +109,162 @@ class piwigoWebAPI: XCTestCase {
     }
 
 
+    // MARK: - pwg.categories…
+    func testPwgCategoriesGetListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.data.contains(where: { $0.id == 38 }))
+    }
+
+    func testPwgCategoriesAddDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.add", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesAddJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesAddJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data.id, 587)
+    }
+    
+    func testPwgCategoriesSetInfoDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.setInfo", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesSetInfoJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesSetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
+    func testPwgCategoriesMoveDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.move", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesMoveJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesMoveJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
+    func testPwgCategoriesDeleteDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.delete", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesDeleteJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesDeleteJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
+    func testPwgCategoriesSetRepresentativeDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.setRepresentative", withExtension: "json"),
+            var data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        // Clean returned data
+        if !data.isPiwigoResponseValid(for: CategoriesSetRepresentativeJSON.self) {
+            XCTFail()
+            return
+        }
+        
+        // Is this a valid JSON object?
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesSetRepresentativeJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
+    }
+    
     // MARK: - pwg.images…
     func testPwgImagesUploadDecoding() {
         

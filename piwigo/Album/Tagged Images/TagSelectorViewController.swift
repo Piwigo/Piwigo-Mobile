@@ -14,7 +14,7 @@ import piwigoKit
 
 @objc
 protocol TagSelectorViewDelegate {
-    func pushTaggedImagesView(_ viewController: UIViewController?)
+    func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
 @objc
@@ -214,8 +214,8 @@ extension TagSelectorViewController {
         // Dismiss tag select
         dismiss(animated: true) {
             // Push tagged images view with AlbumImagesViewController
-            if let tag = self.dataProvider.fetchedResultsController.fetchedObjects?[indexPath.row] {
-                let taggedImagesVC = TaggedImagesViewController(tagId: Int(tag.tagId), andTagName: tag.tagName)
+            if let tag = self.dataProvider.fetchedResultsController.fetchedObjects?[indexPath.row],
+               let taggedImagesVC = TaggedImagesViewController(tagId: Int(tag.tagId), andTagName: tag.tagName) {
                 self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
             }
         }

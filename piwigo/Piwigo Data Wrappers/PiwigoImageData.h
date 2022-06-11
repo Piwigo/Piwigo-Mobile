@@ -11,6 +11,20 @@
 #import "Model.h"
 #import "PiwigoTagData.h"
 
+typedef enum NSInteger {
+    kPiwigoImageSizeSquare,
+    kPiwigoImageSizeThumb,
+    kPiwigoImageSizeXXSmall,
+    kPiwigoImageSizeXSmall,
+    kPiwigoImageSizeSmall,
+    kPiwigoImageSizeMedium,
+    kPiwigoImageSizeLarge,
+    kPiwigoImageSizeXLarge,
+    kPiwigoImageSizeXXLarge,
+    kPiwigoImageSizeFullRes,
+    kPiwigoImageSizeEnumCount
+} kPiwigoImageSize;
+
 @interface PiwigoImageData : NSObject
 
 // API pwg.categories.getList returns:

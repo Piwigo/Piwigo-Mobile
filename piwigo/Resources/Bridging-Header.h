@@ -10,7 +10,6 @@
 #import <UIImageView+AFNetworking.h>
 
 #import "AlbumImagesViewController.h"
-#import "AlbumService.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"
@@ -21,5 +20,5 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "PiwigoTagData.h"
+#import "SearchImagesViewController.h"
 #import "TaggedImagesViewController.h"
-#import "TagsData.h"

@@ -42,9 +42,6 @@ class ImagePreviewViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Display "play" button if video
-        playImage.isHidden = !imageData.isVideo
-
         // Thumbnail image should be available in cache
         let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)
         let thumbnailStr = imageData.getURLFromImageSizeType(thumbnailSize)
@@ -102,6 +99,9 @@ class ImagePreviewViewController: UIViewController
                         weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
                     }
                     
+                    // Display "play" button if video
+                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
+
                     // Store image in cache
                     var cachedResponse: CachedURLResponse? = nil
                     if let response = task.response,
@@ -436,19 +436,16 @@ class ImagePreviewViewController: UIViewController
         playerController.view.frame = videoView?.bounds ?? CGRect.zero
 
         // Present the video
-        var currentViewController = UIApplication.shared.keyWindow?.rootViewController
-        while currentViewController?.presentedViewController != nil {
-            currentViewController = currentViewController?.presentedViewController
-        }
         playerController.modalTransitionStyle = .crossDissolve
-        playerController.modalPresentationStyle = .overFullScreen
+        playerController.modalPresentationStyle = .overCurrentContext
+        let currentViewController = UIApplication.shared.keyWindow?.topMostViewController()
         currentViewController?.present(playerController, animated: true)
     }
 
     func assetFailedToPrepare(forPlayback error: Error?) {
         // Determine the present view controller
         if let error = error as NSError?,
-           let topViewController = view.window?.topMostViewController() {
+           let topViewController = UIApplication.shared.keyWindow?.topMostViewController() {
             topViewController.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
                                                  errorMessage: error.localizedFailureReason ?? "",
                                                  completion: { })

@@ -1543,10 +1543,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
-                                    for: kPiwigoCategorySelectActionSetDefaultAlbum)
-                categoryVC.delegate = self
-                navigationController?.pushViewController(categoryVC, animated: true)
+                if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
+                                       for: kPiwigoCategorySelectActionSetDefaultAlbum) {
+                    categoryVC.delegate = self
+                    navigationController?.pushViewController(categoryVC, animated: true)
+                }
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
@@ -1668,7 +1669,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
                     TagsProvider().clearTags()
-                    TagsData.sharedInstance().clearCache()
                 })
                 alert.addAction(clearTagsAction)
                 
@@ -1858,9 +1858,10 @@ extension SettingsViewController: UITextFieldDelegate {
 extension SettingsViewController: SelectCategoryDelegate {
     func didSelectCategory(withId categoryId: Int) {
         // Do nothing if new default album is unknown or unchanged
-        if categoryId == NSNotFound ||
-            categoryId == AlbumVars.shared.defaultCategory
-        { return }
+        guard categoryId != NSNotFound,
+              categoryId != AlbumVars.shared.defaultCategory else {
+            return
+        }
 
         // Save new choice
         AlbumVars.shared.defaultCategory = categoryId
@@ -1890,11 +1891,11 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-        if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory).name {
+        if let albumData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory),
+           let albumName = albumData.name {
             return albumName
         } else {
-            AlbumVars.shared.defaultCategory = 0
-            return rootName
+            return NSLocalizedString("categorySelection_title", comment: "Album")
         }
     }
 }

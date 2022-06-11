@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "No se puede abrir la biblioteca local de fotos. Por favor, vaya a la aplicación de configuración y habilite el acceso para Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Volver a cargar";
 "localImages_deleteTitle" = "Eliminar del carrete de cámara";
 "localImages_deleteMessage" = "¿Desea eliminar las fotos o vídeos subidos del carrete de la cámara? Las fotos o vídeos eliminados seguirán estando disponibles en la papelera de fotos de iOS durante 30 días.";
 
@@ -717,33 +718,33 @@
 "UploadPhotoSize_original" = "Sin reducción";
 
 // Settings — Privacy
-"settingsHeader_privacy" = "Privacy";
-"settings_appLock" = "App Lock";
-"settings_appLockEnter" = "Enter Passcode";
-"settings_appLockVerify" = "Verify Passcode";
-"settings_appLockModify" = "Modify Passcode";
-"settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
-"settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+"settingsHeader_privacy" = "Privacidad";
+"settings_appLock" = "Bloqueo App";
+"settings_appLockEnter" = "Introducir contraseña";
+"settings_appLockVerify" = "Verificar contraseña";
+"settings_appLockModify" = "Modificar contraseña";
+"settings_appLockInfo" = "Con Bloqueo Lock, se requiere un código específico del dispositivo para acceder a la aplicación. Si pierdes este código, tendrás que reinstalar la aplicación.";
+"settings_passcodeInfo" = "El código de acceso está separado de la contraseña de su cuenta Piwigo.";
 
-"settings_biometricsReason" = "Access your Piwigo albums";
-"settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsReason" = "Accede a tus álbumes de Piwigo";
+"settings_biometricsTouchID" = "Tocar ID";
+"settings_biometricsTouchIDinfo" = "Usa Touch ID como alternativa a tu código de bloqueo de aplicaciones.";
 "settings_biometricsFaceID" = "Face ID";
-"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceIDinfo" = "Usa Face ID como alternativa a tu código de acceso de bloqueo de aplicaciones.";
 
-"settings_clearClipboard" = "Clear Clipboard";
-"settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
-"settings_clearClipboard10sUnit" = "After 10 s";
-"settings_clearClipboard10sText" = "After 10 seconds";
-"settings_clearClipboard30sUnit" = "After 30 s";
-"settings_clearClipboard30sText" = "After 30 seconds";
-"settings_clearClipboard1minText" = "After 1 minute";
-"settings_clearClipboard1minUnit" = "After 1 min";
-"settings_clearClipboard2minText" = "After 2 minute";
-"settings_clearClipboard2minUnit" = "After 2 min";
-"settings_clearClipboard5minText" = "After 5 minute";
-"settings_clearClipboard5minUnit" = "After 5 min";
-"settings_clearClipboardNever" = "Never";
+"settings_clearClipboard" = "Limpiar portapapeles";
+"settings_clearClipboardInfo" = "Por favor, seleccione el retraso tras el cual se borrará el portapapeles.";
+"settings_clearClipboard10sUnit" = "Después de 10 s";
+"settings_clearClipboard10sText" = "Después de 10 segundos";
+"settings_clearClipboard30sUnit" = "Después de 30 s";
+"settings_clearClipboard30sText" = "Después de 30 segundos";
+"settings_clearClipboard1minText" = "Después de 1 minuto";
+"settings_clearClipboard1minUnit" = "Después de 1 min";
+"settings_clearClipboard2minText" = "Después de 2 minutos";
+"settings_clearClipboard2minUnit" = "Después de 2 min";
+"settings_clearClipboard5minText" = "Después de 5 minutos";
+"settings_clearClipboard5minUnit" = "Después de 5 min";
+"settings_clearClipboardNever" = "Nunca";
 
 // Settings — Cache
 "settingsHeader_cache" = "Configuración de caché (Usado/Total)";

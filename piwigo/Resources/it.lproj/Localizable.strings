@@ -579,6 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossibile aprire la libreria di foto locale. Accedi all'app Impostazioni e attiva l'accesso per Piwigo.";
 
 // Local images — Explain
+"localImages_reUploadTitle" = "Ricarica";
 "localImages_deleteTitle" = "Rimuovi dal rullo fotocamera";
 "localImages_deleteMessage" = "Vuoi eliminare le foto o i video caricati dal rullino della fotocamera? Le foto o i video eliminati saranno ancora disponibili nel cestino foto iOS per 30 giorni.";
 
@@ -718,32 +719,32 @@
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
-"settings_appLock" = "App Lock";
-"settings_appLockEnter" = "Enter Passcode";
-"settings_appLockVerify" = "Verify Passcode";
-"settings_appLockModify" = "Modify Passcode";
-"settings_appLockInfo" = "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app.";
-"settings_passcodeInfo" = "The passcode is separate from your Piwigo account password.";
+"settings_appLock" = "Blocco App";
+"settings_appLockEnter" = "Inserisci Codice";
+"settings_appLockVerify" = "Verifica Codice";
+"settings_appLockModify" = "Modifica Codice";
+"settings_appLockInfo" = "Con Blocco Lock, è necessario un codice specifico per il dispositivo per accedere all'app. Se si perde questo codice, si dovrà reinstallare l'app.";
+"settings_passcodeInfo" = "Il codice di accesso è separato dalla password dell'account Piwigo.";
 
-"settings_biometricsReason" = "Access your Piwigo albums";
+"settings_biometricsReason" = "Accedi ai tuoi album Piwigo";
 "settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
+"settings_biometricsTouchIDinfo" = "Usa Touch ID come alternativa al tuo codice di accesso App Lock.";
 "settings_biometricsFaceID" = "Face ID";
-"settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsFaceIDinfo" = "Usa Face ID come alternativa al tuo codice di accesso App Lock.";
 
-"settings_clearClipboard" = "Clear Clipboard";
-"settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
-"settings_clearClipboard10sUnit" = "After 10 s";
-"settings_clearClipboard10sText" = "After 10 seconds";
-"settings_clearClipboard30sUnit" = "After 30 s";
-"settings_clearClipboard30sText" = "After 30 seconds";
-"settings_clearClipboard1minText" = "After 1 minute";
-"settings_clearClipboard1minUnit" = "After 1 min";
-"settings_clearClipboard2minText" = "After 2 minute";
-"settings_clearClipboard2minUnit" = "After 2 min";
-"settings_clearClipboard5minText" = "After 5 minute";
-"settings_clearClipboard5minUnit" = "After 5 min";
-"settings_clearClipboardNever" = "Never";
+"settings_clearClipboard" = "Cancella Appunti";
+"settings_clearClipboardInfo" = "Seleziona il ritardo dopo il quale gli appunti saranno cancellati.";
+"settings_clearClipboard10sUnit" = "Dopo 10 s";
+"settings_clearClipboard10sText" = "Dopo 10 secondi";
+"settings_clearClipboard30sUnit" = "Dopo 30 s";
+"settings_clearClipboard30sText" = "Dopo 30 secondi";
+"settings_clearClipboard1minText" = "Dopo 1 minuto";
+"settings_clearClipboard1minUnit" = "Dopo 1 min";
+"settings_clearClipboard2minText" = "Dopo 2 minuti";
+"settings_clearClipboard2minUnit" = "Dopo 2 min";
+"settings_clearClipboard5minText" = "Dopo 5 minuti";
+"settings_clearClipboard5minUnit" = "Dopo 5 min";
+"settings_clearClipboardNever" = "Mai";
 
 // Settings — Cache
 "settingsHeader_cache" = "Impostazioni della cache (usata/totale)";

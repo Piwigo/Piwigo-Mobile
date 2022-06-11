@@ -1,0 +1,19 @@
+{
+    "stat": "ok",
+    "result": {
+        "categories": [{
+            "id": 4,
+            "name": "Community",
+            "permalink": "community",
+            "uppercats": "4",
+            "global_rank": "21",
+            "comment": "",
+            "nb_images": 6,
+            "total_nb_images": 6,
+            "date_last": "2021-08-14 20:32:41",
+            "max_date_last": "2021-08-14 20:32:41",
+            "nb_categories": 0,
+            "url": "https:…/index.php?/category/community"
+        }]
+    }
+}

@@ -603,7 +603,8 @@ import piwigoKit
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async {
-            ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
+            ImageUtilities.getInfos(forID: imageData.imageId,
+                                    inCategoryId: self.categoryId) { [unowned self] retrievedData in
                 self.imageData = retrievedData
                 // Disable HUD if needed
                 self.hidePiwigoHUD {
@@ -1018,12 +1019,13 @@ import piwigoKit
         // Present SelectCategory view
         let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail)
-        setThumbVC.delegate = self
-        if #available(iOS 14.0, *) {
-            pushView(setThumbVC, forButton: actionBarButton)
-        } else {
-            pushView(setThumbVC, forButton: setThumbnailBarButton)
+        if setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail) {
+            setThumbVC.delegate = self
+            if #available(iOS 14.0, *) {
+                pushView(setThumbVC, forButton: actionBarButton)
+            } else {
+                pushView(setThumbVC, forButton: setThumbnailBarButton)
+            }
         }
     }
 
@@ -1031,17 +1033,18 @@ import piwigoKit
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
-        copyVC.setInput(parameter: parameter, for: action)
-        copyVC.delegate = self // To re-enable toolbar
-        if action == kPiwigoCategorySelectActionCopyImage {
-            copyVC.imageCopiedDelegate = self   // To update image data after copy
-        } else {
-            copyVC.imageRemovedDelegate = self  // To remove image after move
-        }
-        if #available(iOS 14.0, *) {
-            pushView(copyVC, forButton: actionBarButton)
-        } else {
-            pushView(copyVC, forButton: moveBarButton)
+        if copyVC.setInput(parameter: parameter, for: action) {
+            copyVC.delegate = self // To re-enable toolbar
+            if action == kPiwigoCategorySelectActionCopyImage {
+                copyVC.imageCopiedDelegate = self   // To update image data after copy
+            } else {
+                copyVC.imageRemovedDelegate = self  // To remove image after move
+            }
+            if #available(iOS 14.0, *) {
+                pushView(copyVC, forButton: actionBarButton)
+            } else {
+                pushView(copyVC, forButton: moveBarButton)
+            }
         }
     }
     
@@ -1462,8 +1465,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
 // MARK: - ShareImageActivityItemProviderDelegate Methods
 extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
 {
-    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String?) {
-        guard let title = title else { return }
+    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
         presentedViewController?.showPiwigoHUD(withTitle: title, detail: "", buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .annularDeterminate)
     }
@@ -1486,10 +1488,9 @@ extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
         }
     }
 
-    func showError(withTitle title: String?, andMessage message: String?) {
-        guard let title = title, let message = message else { return }
+    func showError(withTitle title: String, andMessage message: String?) {
         // Display error alert after trying to share image
-        presentedViewController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: "") { [unowned self] in
+        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [unowned self] in
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }
