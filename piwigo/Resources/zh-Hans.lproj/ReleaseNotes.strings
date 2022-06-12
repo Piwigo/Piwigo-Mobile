@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.1_text" = "版本 2.11.1\n\n• 错误修复";
+
 "v2.11.0_text" = "版本 2.11\n\n• 添加重新上传照片和视频的选项\n• 代码现代化\n• 错误修复";
 
 "v2.10.0_text" = "版本 2.10\n2022 年 5 月 20 日\n\n• 添加 App Lock，这是一项将您的相册隐藏在 Face ID、Touch ID 和密码后面的功能\n• Bug修复\n• 代码现代化";

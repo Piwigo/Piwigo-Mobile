@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.1_text" = "Version 2.11.1\n\n• Fejlrettelser";
+
 "v2.11.0_text" = "Version 2.11\n\n• Tilføjer en mulighed for at genuploade fotos og videoer\n• Modernisering af kode\n• Fejlrettelser";
 
 "v2.10.0_text" = "Version 2.10\n20 maj 2022\n\n• Tilføjer App Lock, en funktion til at skjule dine albummer bag Face ID, Touch ID og en adgangskode\n• Fejlrettelser\n• Kode modernisering";

@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.1_text" = "Version 2.11.1\n\n• Fehlerbehebungen";
+
 "v2.11.0_text" = "Version 2.11\n\n• Fügt eine Option zum erneuten Hochladen von Fotos und Videos hinzu\n• Code-Modernisierung\n• Fehlerbehebungen";
 
 "v2.10.0_text" = "Version 2.10\n20. Mai 2022\n\n• Fügt eine App-Sperre hinzu, eine Funktion zum Verstecken deiner Alben hinter Face ID, Touch ID und Zugangscode\n• Fehlerbehebungen\n• Code Modernisierung";
