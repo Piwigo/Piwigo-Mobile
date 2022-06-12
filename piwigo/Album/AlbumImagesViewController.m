@@ -849,37 +849,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
             }];
         });
     }];
-    
-//    [AlbumService getAlbumDataOnCompletion:^(NSURLSessionTask *task, BOOL didChange) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            // Check data source and reload collection if needed
-//            [self checkDataSourceWithChangedCategories:didChange onCompletion:^{
-//                // End refreshing
-//                if (@available(iOS 10.0, *)) {
-//                    if (self.imagesCollection.refreshControl) [self.imagesCollection.refreshControl endRefreshing];
-//                } else {
-//                    if (self.refreshControl) [self.refreshControl endRefreshing];
-//                }
-//
-//                // Hide HUD
-//                [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
-//            }];
-//        });
-//    }
-//        onFailure:^(NSURLSessionTask *task, NSError *error) {
-//#if defined(DEBUG)
-//            NSLog(@"getAlbumData error %ld: %@", (long)error.code, error.localizedDescription);
-//#endif
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            // Set navigation bar buttons
-//            [self initButtonsInSelectionMode];
-//            // Hide HUD if needed
-//            [self.navigationController hidePiwigoHUDWithCompletion:^{
-//                [self dismissPiwigoErrorWithTitle:@"" message:error.localizedDescription
-//                                     errorMessage:@"" completion:^{ }];
-//            }];
-//        });
-//    }];
 }
 
 -(void)checkDataSourceWithChangedCategories:(BOOL)didChange onCompletion:(void (^)(void))completion

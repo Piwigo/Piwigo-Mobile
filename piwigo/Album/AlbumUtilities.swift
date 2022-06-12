@@ -210,7 +210,7 @@ class AlbumUtilities: NSObject {
                 
                 // Thumbnail
                 albumData.albumThumbnailId = Int(category.thumbnailId ?? "") ?? NSNotFound
-                albumData.albumThumbnailUrl = category.thumbnailUrl ?? ""
+                albumData.albumThumbnailUrl = NetworkUtilities.encodedImageURL(category.thumbnailUrl ?? "")
                 
                 // When "date_last" is null or not supplied: no date
                 /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
