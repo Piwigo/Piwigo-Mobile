@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+TaggedImages.swift
+//  AlbumImagesViewController+Tagged.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 29/05/2022.

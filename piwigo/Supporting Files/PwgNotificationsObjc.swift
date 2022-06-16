@@ -16,6 +16,13 @@ class PwgNotificationsObjc: NSObject {
     @objc public static let pwgPaletteChanged = Notification.Name.pwgPaletteChanged.rawValue
     
     
+    // MARK: - Albums & Images
+    /// - Share completed
+    @objc public static let pwgDidShare = Notification.Name.pwgDidShare.rawValue
+    /// - Cancel download of object to share
+    @objc public static let pwgCancelDownload = Notification.Name.pwgCancelDownload.rawValue
+
+
     // MARK: - Recent albums
     /// - Add category ID to the top of the list of recent albums
     @objc public static let pwgAddRecentAlbum = Notification.Name.pwgAddRecentAlbum.rawValue

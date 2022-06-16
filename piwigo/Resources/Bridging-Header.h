@@ -9,7 +9,7 @@
 #import <MGSwipeTableCell.h>
 #import <UIImageView+AFNetworking.h>
 
-#import "AlbumImagesViewController.h"
+#import "AlbumData.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "FavoritesImagesViewController.h"

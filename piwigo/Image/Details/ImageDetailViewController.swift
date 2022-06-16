@@ -13,7 +13,6 @@ import piwigoKit
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
     func didUpdateImage(withData imageData: PiwigoImageData)
-    func didDeleteImage(_ image: PiwigoImageData?, atIndex index: Int)
     func needToLoadMoreImages()
 }
 
@@ -983,8 +982,7 @@ import piwigoKit
             setEnableStateOfButtons(true)
 
             // Remove observers
-            let name = Notification.Name(kPiwigoNotificationDidShare)
-            NotificationCenter.default.post(name: name, object: nil)
+            NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
             if !completed {
                 if activityType == nil {
@@ -992,8 +990,7 @@ import piwigoKit
                 } else {
                     debugPrint("Activity was not performed.")
                     // Cancel download task
-                    let name = Notification.Name(kPiwigoNotificationCancelDownload)
-                    NotificationCenter.default.post(name: name, object: nil)
+                    NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
                 }
             }
         }
@@ -1005,8 +1002,7 @@ import piwigoKit
 
     @objc func cancelShareImage() {
         // Cancel file donwload
-        let name = Notification.Name(kPiwigoNotificationCancelDownload)
-        NotificationCenter.default.post(name: name, object: nil)
+        NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
     }
 
     

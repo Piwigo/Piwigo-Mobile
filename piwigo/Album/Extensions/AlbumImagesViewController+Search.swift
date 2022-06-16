@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+SearchImages.swift
+//  AlbumImagesViewController+Search.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 29/05/2022.
@@ -7,6 +7,33 @@
 //
 
 import Foundation
+
+// MARK: - Search Images
+extension AlbumImagesViewController
+{
+    @available(iOS 11.0, *)
+    func initSearchBar() {
+        let resultsCollectionController = SearchImagesViewController()
+        let searchController = UISearchController(searchResultsController: resultsCollectionController)
+        searchController.delegate = self
+        searchController.hidesNavigationBarDuringPresentation = true
+        searchController.searchResultsUpdater = self
+
+        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.isTranslucent = false
+        searchController.searchBar.showsCancelButton = false
+        searchController.searchBar.showsSearchResultsButton = false
+        searchController.searchBar.tintColor = UIColor.piwigoColorOrange()
+        searchController.searchBar.delegate = self // Monitor when the search button is tapped.
+        definesPresentationContext = true
+
+        // Place the search bar in the navigation bar.
+        navigationItem.searchController = searchController
+
+        // Hide the search bar when scrolling
+        navigationItem.hidesSearchBarWhenScrolling = true
+    }
+}
 
 // MARK: UISearchBarDelegate Methods
 extension AlbumImagesViewController: UISearchBarDelegate

@@ -525,7 +525,7 @@
             [self.actionBarButton setAccessibilityIdentifier:@"actions"];
 
             self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
-            self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
+            self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(copyMoveSelection)];
 
             if (UIInterfaceOrientationIsPortrait(orientation) &&
                 (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
@@ -1273,7 +1273,7 @@
         if (completed) {
 //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             // Delete shared file & remove observers
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgDidShare object:nil];
             
             // Close HUD with success
             [self updatePiwigoHUDwithSuccessWithCompletion:^{
@@ -1299,10 +1299,10 @@
                 }
 
                 // Cancel download tasks
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgCancelDownload object:nil];
                 
                 // Delete shared files & remove observers
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgDidShare object:nil];
 
                 // Close ActivityView
                 [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
@@ -1318,13 +1318,13 @@
 -(void)cancelShareImages
 {
     // Cancel image file download and remaining activity shares if any
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:PwgNotificationsObjc.pwgCancelDownload object:nil];
 }
 
 
 #pragma mark - Move/Copy images to Category
 
--(void)addImagesToCategory
+-(void)copyMoveSelection
 {
     // Disable buttons
     [self setEnableStateOfButtons:NO];
