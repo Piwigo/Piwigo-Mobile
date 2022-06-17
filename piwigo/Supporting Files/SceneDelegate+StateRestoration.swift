@@ -41,11 +41,6 @@ extension SceneDelegate {
             tagName = taggedVC.tagName
         }
         
-        // Favorite album presented?
-        if let _ = viewControllers.last as? FavoritesImagesViewController {
-            catIDs.append(kPiwigoFavoritesCategoryId)
-        }
-        
         // Create user info
         let info: [String: Any] = ["catIDs"     : catIDs,
                                    "tagID"      : tagID, "tagName" : tagName]
@@ -73,7 +68,7 @@ extension SceneDelegate {
         if catIDs.count > 1 {
             for catID in catIDs[1...] {
                 switch catID {
-                case 1...Int.max:                   // Standard album
+                case 1...Int.max, kPiwigoFavoritesCategoryId:                   // Standard album
                     subAlbumVC = AlbumImagesViewController(albumId: catID)
                     
                 case kPiwigoVisitsCategoryId,       // Most visited photos
@@ -87,9 +82,6 @@ extension SceneDelegate {
                         subAlbumVC = TaggedImagesViewController(tagId: tagID, andTagName: tagName)
                     }
                     
-                case kPiwigoFavoritesCategoryId:    // Favorite photos
-                    subAlbumVC = FavoritesImagesViewController()
-                
                 default:
                     debugPrint("••> SUB-ALBUM CANNOT BE RESTORED")
                 }

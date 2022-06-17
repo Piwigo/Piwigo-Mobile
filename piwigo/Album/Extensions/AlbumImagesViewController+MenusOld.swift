@@ -100,9 +100,7 @@ extension AlbumImagesViewController
 
     func discoverFavoritesImages() {
         // Push favorites view
-//        let favoritesController = AlbumImagesViewController.init(albumId: kPiwigoFavoritesCategoryId)
-//        pushView(favoritesController)
-        let discoverController = FavoritesImagesViewController()
-        pushView(discoverController)
+        let favoritesController = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
+        navigationController?.pushViewController(favoritesController, animated: true)
     }
 }

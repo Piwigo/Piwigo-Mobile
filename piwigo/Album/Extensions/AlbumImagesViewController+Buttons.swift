@@ -154,10 +154,39 @@ extension AlbumImagesViewController
             title = CategoriesData.sharedInstance().getCategoryById(categoryId)?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
         }
 
+        // Left side of navigation bar
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            // Button for accessing settings
+            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
+            navigationItem.hidesBackButton = true
+        } else {
+            // Back button to parent album
+            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.hidesBackButton = false
+        }
+
+        // Right side of navigation bar
+        if categoryId == 0 {
+            // Root album => Discover menu button
+            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+        } else if CategoriesData.sharedInstance().getCategoryById(categoryId)?.numberOfImages ?? 0 > 0 {
+            // Button for activating the selection mode
+            navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+            selectBarButton?.isEnabled = (albumData?.images.count ?? 0) > 0
+        } else {
+            // No button
+            navigationItem.setRightBarButtonItems([], animated: true)
+
+            // Following 2 lines fixes situation where the Edit button remains visible
+            navigationController?.navigationBar.setNeedsLayout()
+            navigationController?.navigationBar.layoutIfNeeded()
+        }
+        
         // User can upload images/videos if he/she has:
         // — admin rights
         // — normal rights and upload access to the current category
-        if NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
+        let hasAdminOrUploadRights = NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false)
+        if categoryId >= 0, hasAdminOrUploadRights {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Unhide transparent Add button
@@ -193,34 +222,6 @@ extension AlbumImagesViewController
             if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
                 showHomeAlbumButtonIfNeeded()
             }
-        }
-
-        // Left side of navigation bar
-        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-            // Button for accessing settings
-            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
-            navigationItem.hidesBackButton = true
-        } else {
-            // Back button to parent album
-            navigationItem.setLeftBarButtonItems([], animated: true)
-            navigationItem.hidesBackButton = false
-        }
-
-        // Right side of navigation bar
-        if categoryId == 0 {
-            // Root album => Discover menu button
-            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if CategoriesData.sharedInstance().getCategoryById(categoryId)?.numberOfImages ?? 0 > 0 {
-            // Button for activating the selection mode
-            navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton?.isEnabled = (albumData?.images.count ?? 0) > 0
-        } else {
-            // No button
-            navigationItem.setRightBarButtonItems([], animated: true)
-
-            // Following 2 lines fixes situation where the Edit button remains visible
-            navigationController?.navigationBar.setNeedsLayout()
-            navigationController?.navigationBar.layoutIfNeeded()
         }
     }
 
@@ -306,7 +307,8 @@ extension AlbumImagesViewController
                 // Position of Home Album button depends on user's rights
                 // — admin rights
                 // — normal rights and upload access to the current category
-                if NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
+                if categoryId > 0,
+                   NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
                     let xPos = addButton.frame.origin.x
                     let yPos = addButton.frame.origin.y
                     homeAlbumButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos, width: 2 * kRadius, height: 2 * kRadius)

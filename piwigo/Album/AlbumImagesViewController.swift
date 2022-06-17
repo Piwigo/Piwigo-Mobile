@@ -362,8 +362,21 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: kPiwigoNotificationChangedCurrentCategory), object: nil, userInfo: userInfo)
 
         // Display the album/images collection
-        // Images will be loaded if needed after displaying cells
-        imagesCollection?.reloadData()
+        if categoryId < 0 { // i.e. smart albums
+            // Load, sort images and reload collection
+            let oldImageList = albumData?.images ?? []
+            albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
+                // Reset navigation bar buttons after image load
+                updateButtonsInPreviewMode()
+                reloadImagesCollection(from: oldImageList)
+            }, onFailure: { [self] _, error in
+                dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
+            })
+        }
+        else {
+            // Images will be loaded if needed after displaying cells
+            imagesCollection?.reloadData()
+        }
 
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
@@ -611,8 +624,8 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
                      categoryId, didChange ? "YES" : "NO"))
 
         // Does this album still exist?
-        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-        if categoryId != 0, albumData == nil {
+        let album = CategoriesData.sharedInstance().getCategoryById(categoryId)
+        if categoryId > 0, albumData == nil {
             // This album does not exist anymore
             let VCs = navigationController?.children
             var index = (VCs?.count ?? 0) - 1
@@ -643,9 +656,9 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
             completion()
             return
         }
-
+        
         // Other album -> Reload albums
-        if didChange {
+        if didChange, categoryId >= 0 {
             // Reload album collection
             imagesCollection?.reloadSections(IndexSet(integer: 0))
             // Set navigation bar buttons
@@ -653,10 +666,22 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         }
 
         // Other album —> If the number of images in cache is null, reload collection
-        if albumData?.imageList?.count == 0 {
+        if album == nil || album?.imageList?.count == 0 {
             // Something did change… reset album data
-            self.albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            imagesCollection?.reloadData()
+            albumData = AlbumData(categoryId: categoryId, andQuery: "")
+            // Reload collection
+            if categoryId < 0 {
+                // Load, sort images and reload collection
+                albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
+                    // Reset navigation bar buttons after image load
+                    updateButtonsInPreviewMode()
+                    imagesCollection?.reloadData()
+                }, onFailure: { [self] _, error in
+                    dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
+                })
+            } else {
+                imagesCollection?.reloadData()
+            }
             // Cancel selection
             cancelSelect()
         }
@@ -1375,8 +1400,7 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         }
 
         // Push sub-album, Discover or Favorites album
-        if (viewController is DiscoverImagesViewController) ||
-            (viewController is FavoritesImagesViewController) {
+        if (viewController is DiscoverImagesViewController) {
             // Push sub-album view
             navigationController?.pushViewController(viewController, animated: true)
         }

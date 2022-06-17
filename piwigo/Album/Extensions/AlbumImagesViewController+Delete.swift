@@ -17,9 +17,15 @@ extension AlbumImagesViewController
 
     func askDeleteConfirmation() {
         // Split orphaned and non-orphaned images
-        let toRemove = selectedImageData.filter({$0.categoryIds.count > 1})
+        var toRemove = selectedImageData.filter({$0.categoryIds.count > 1})
         var toDelete = selectedImageData.filter({$0.categoryIds.count == 1})
         let totalNberToDelete = toDelete.count + toRemove.count
+
+        // We cannot propose to remove images from a smart albums
+        if categoryId < 0 {
+            toDelete.append(contentsOf: toRemove)
+            toRemove = []
+        }
         
         // Alert message
         var messageString: String?

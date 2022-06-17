@@ -216,7 +216,6 @@
 		ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */; };
 		ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */ = {isa = PBXBuildFile; fileRef = AD11E46824A9319C00C8876F /* pwg.images.upload.json */; };
 		ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */ = {isa = PBXBuildFile; fileRef = ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */; };
-		ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */; };
 		ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBDD9362441AB3800F19DFC /* LabelTableViewCell.swift */; };
 		ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBDD9382441AFCF00F19DFC /* ButtonTableViewCell.swift */; };
 		ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE45262449969C00AE0001 /* PhotosFetch.swift */; };
@@ -703,8 +702,6 @@
 		ADBABA352847F4FF00EF39B0 /* AlbumImagesViewController+Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+Search.swift"; sourceTree = "<group>"; };
 		ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NberImagesFooterCollectionReusableView.swift; sourceTree = "<group>"; };
 		ADBC08CF2446060700BF82E8 /* AlbumHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumHeaderReusableView.swift; sourceTree = "<group>"; };
-		ADBCFE85235B75F2001D6EE7 /* FavoritesImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoritesImagesViewController.h; sourceTree = "<group>"; };
-		ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoritesImagesViewController.m; sourceTree = "<group>"; };
 		ADBDD9362441AB3800F19DFC /* LabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelTableViewCell.swift; sourceTree = "<group>"; };
 		ADBDD9382441AFCF00F19DFC /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
 		ADBE45262449969C00AE0001 /* PhotosFetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosFetch.swift; sourceTree = "<group>"; };
@@ -1238,8 +1235,6 @@
 			children = (
 				ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */,
 				ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */,
-				ADBCFE85235B75F2001D6EE7 /* FavoritesImagesViewController.h */,
-				ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */,
 			);
 			path = "Discover Images";
 			sourceTree = "<group>";
@@ -2385,7 +2380,6 @@
 				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
-				ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,

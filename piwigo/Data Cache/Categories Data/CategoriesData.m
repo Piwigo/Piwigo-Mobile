@@ -9,7 +9,6 @@
 #import "AlbumData.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
-#import "FavoritesImagesViewController.h"
 #import "SearchImagesViewController.h"
 #import "TaggedImagesViewController.h"
 
@@ -643,9 +642,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
             }
         } else if ([viewController isKindOfClass:[TaggedImagesViewController class]]) {
             TaggedImagesViewController *vc = (TaggedImagesViewController *)viewController;
-            [vc removeImageWithId:image.imageId];
-        } else if ([viewController isKindOfClass:[FavoritesImagesViewController class]]) {
-            FavoritesImagesViewController *vc = (FavoritesImagesViewController *)viewController;
             [vc removeImageWithId:image.imageId];
         }
     });
