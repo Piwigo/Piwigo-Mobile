@@ -71,33 +71,36 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         
         // Store album ID
         categoryId = albumId
+        if albumId == 0 {
+            // Navigation bar buttons
+            settingsBarButton = getSettingsBarButton()
+            
+            // Discover menu
+            if #available(iOS 14.0, *) {
+                // Menu
+                discoverBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+            } else {
+                // Fallback on earlier versions
+                discoverBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
+                discoverBarButton?.accessibilityIdentifier = "discover"
+            }
+
+            // For iOS 11 and later: place search bar in navigation bar for root album
+            if #available(iOS 11.0, *) {
+                // Initialise search controller when displaying root album
+                initSearchBar()
+            }
+        }
         
         // Initialise selection mode
         isSelect = false
 
-        // For iOS 11 and later: place search bar in navigation bar for root album
-        if #available(iOS 11.0, *) {
-            // Initialise search controller when displaying root album
-            if albumId == 0 { initSearchBar() }
-        }
-
         // Navigation bar and toolbar buttons
-        settingsBarButton = getSettingsBarButton()
         selectBarButton = getSelectBarButton()
         cancelBarButton = getCancelBarButton()
 
         // Hide toolbar
         navigationController?.isToolbarHidden = true
-
-        // Discover menu
-        if #available(iOS 14.0, *) {
-            // Menu
-            discoverBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
-        } else {
-            // Fallback on earlier versions
-            discoverBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
-            discoverBarButton?.accessibilityIdentifier = "discover"
-        }
 
         // Collection of images
         imagesCollection = UICollectionView(frame: view.frame, collectionViewLayout: UICollectionViewFlowLayout())
@@ -332,7 +335,9 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         print(String(format: "viewWillAppear    => ID:%ld", categoryId))
 
         // Initialise data source
-        albumData = AlbumData(categoryId: categoryId, andQuery: "")
+        if categoryId != 0 {
+            albumData = AlbumData(categoryId: categoryId, andQuery: "")
+        }
         
         // Set colors, fonts, etc.
         applyColorPalette()

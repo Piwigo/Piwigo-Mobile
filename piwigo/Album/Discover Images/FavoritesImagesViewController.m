@@ -285,7 +285,7 @@
     
     // Initialise favorite album in cache if needed
     if ([[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] == nil) {
-        PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+        PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initWithId:kPiwigoFavoritesCategoryId andQuery:nil];
         [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
     }
 
@@ -672,12 +672,14 @@
 
 -(void)reloadImagesOnCompletion:(void (^)(void))completion
 {
-    // Load, sort images and reload collection
+    // Store images
     NSArray *oldImageList = self.albumData.images;
+    
+    // Reset album in cache
     [[CategoriesData sharedInstance] deleteCategoryWithId:kPiwigoFavoritesCategoryId];
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
     self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoFavoritesCategoryId andQuery:@""];
+
+    // Load, sort images and reload collection
     [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];

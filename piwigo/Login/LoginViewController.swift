@@ -586,7 +586,7 @@ class LoginViewController: UIViewController {
                     if !NetworkVars.hasGuestRights,
                        ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
                         // Initialise favorites album
-                        if let favoritesAlbum = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId) {
+                        if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
                             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
                         }
 

@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) NSInteger tagId;
 @property (nonatomic, strong) NSString *tagName;
+@property (nonatomic, assign) NSInteger categoryId;
 
 -(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName;
 -(void)removeImageWithId:(NSInteger)imageId;

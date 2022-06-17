@@ -74,7 +74,7 @@ extension AlbumImagesViewController: UISearchResultsUpdating
             })
 
             // Initialise search cache
-            let searchAlbum = PiwigoAlbumData.init(searchAlbumForQuery: searchString)!
+            let searchAlbum = PiwigoAlbumData(id: kPiwigoSearchCategoryId, andQuery: searchString)!
             CategoriesData.sharedInstance().updateCategories([searchAlbum])
 
             // Resfresh image collection

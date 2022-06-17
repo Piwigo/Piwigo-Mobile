@@ -17,7 +17,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 @interface CategoriesData()
 
-@property (nonatomic, strong) NSIndexSet *categoryIds;
 @property (nonatomic, strong) NSArray<PiwigoAlbumData *> *allCategories;
 @property (nonatomic, strong) NSArray<PiwigoAlbumData *> *communityCategoriesForUploadOnly;
 
@@ -32,7 +31,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	dispatch_once(&onceToken, ^{
 		instance = [[self alloc] init];
 		
-        instance.categoryIds = [NSIndexSet new];
 		instance.allCategories = [NSArray new];
         instance.communityCategoriesForUploadOnly = [NSArray new];
 		
@@ -45,7 +43,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)clearCache
 {
-    self.categoryIds = [NSIndexSet new];
     self.allCategories = [NSArray new];
     self.communityCategoriesForUploadOnly = [NSArray new];
 }
@@ -56,13 +53,29 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 -(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters
 {
     // Create category in cache
-    PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andParameters:parameters];
+    PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:nil];
     
+    // Parent album
+    newCategory.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
+    PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:newCategory.parentAlbumId];
+    NSMutableArray *upperCategories = [NSMutableArray new];
+    if (parentAlbumData.upperCategories.count != 0) {
+        [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
+    }
+    [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
+    newCategory.upperCategories = [NSArray arrayWithArray:upperCategories];
+
+    // Name, description, upload rights, number of images
+    newCategory.name = [parameters objectForKey:@"name"];
+    newCategory.comment = [parameters objectForKey:@"comment"];
+    newCategory.hasUploadRights = parentAlbumData.hasUploadRights;
+    newCategory.numberOfImages = 0;
+    newCategory.totalNumberOfImages = 0;
+
     // Add new category to cache
     [[CategoriesData sharedInstance] updateCategories:@[newCategory]];
     
     // Get list of parent categories
-    NSMutableArray *upperCategories = [newCategory.upperCategories mutableCopy];
     NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)newCategory.albumId];
     if ([upperCategories containsObject:categoryIdStr]) {
         [upperCategories removeObject:categoryIdStr];
@@ -115,11 +128,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     }
 
     // Create new list of categories
-    NSMutableIndexSet *newCategoryIds = [[NSMutableIndexSet alloc] initWithIndexSet:self.categoryIds];
     NSMutableArray<PiwigoAlbumData*> *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
 
     // Remove deleted category
-    [newCategoryIds removeIndex:catagoryToDelete.albumId];
     [newCategories removeObjectAtIndex:index];
 
     // Look for parent categories and update them
@@ -149,7 +160,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     }
     
     // Update cache
-    self.categoryIds = newCategoryIds;
     self.allCategories = newCategories;
 }
 
@@ -159,27 +169,19 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 -(BOOL)replaceAllCategories:(NSArray<PiwigoAlbumData *>*)categories
 {
     // Create new list of categories
+    BOOL didChange = NO;
     NSMutableArray *newCategories = [[NSMutableArray alloc] init];
 
-    // Did we load favorites at start or did user request a refresh?
-    if (!NetworkVarsObjc.hasGuestRights &&
-        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
-    {
-        // Keep cached favorites
-        NSInteger indexOfFavorites = [self indexOfCategoryWithId:kPiwigoFavoritesCategoryId
-                                                         inArray:self.allCategories];
-        if (indexOfFavorites != NSNotFound) {
-            [newCategories addObject:[self.allCategories objectAtIndex:indexOfFavorites]];
-        }
-    }
-
-    // Initialise new list of category IDs
-    // NB: does not take smart albums into account, only those downloaded.
-    NSMutableIndexSet *newCategoryIds = [NSMutableIndexSet new];
-
     // Loop on freshly retrieved categories
-    for(PiwigoAlbumData *categoryData in categories)
+    for (PiwigoAlbumData *categoryData in categories)
     {
+        // Is this a smart album?
+        if (categoryData.albumId < 0) {
+            // Keep smart albums in cache (favorites loaded at start or refresh requested)
+            [newCategories addObject:categoryData];
+            continue;
+        }
+        
         // Is this a known category?
         NSInteger index = [self indexOfCategoryWithId:categoryData.albumId
                                               inArray:self.allCategories];
@@ -203,19 +205,21 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
                 [categoryData addImages:existingData.imageList];
             }
         }
-
-        // Append category to new list
-        if (categoryData.albumId > 0) {
-            [newCategoryIds addIndex:categoryData.albumId];
+        else {
+            // Category added
+            didChange = YES;
         }
+        
+        // Append category to new list
         [newCategories addObject:categoryData];
     }
         
-    // Did the category list changed?
-    BOOL didChange = ![self.categoryIds isEqualToIndexSet:newCategoryIds];
+    // Some categories may have only been suppressed
+    if (!didChange && (newCategories.count < self.allCategories.count)) {
+        didChange = YES;
+    }
 
     // Update list of displayed categories
-    self.categoryIds = newCategoryIds;
     self.allCategories = newCategories;
     return didChange;
 }
@@ -227,15 +231,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // New categories will be added to the top of the list
     NSMutableArray *newCategories = [categories mutableCopy];
-
-    // Initialise new list of category IDs
-    // NB: does not take smart albums into account, only those downloaded.
-    NSMutableIndexSet *newCategoryIds = [NSMutableIndexSet new];
-    for (PiwigoAlbumData *albumData in categories) {
-        if (albumData.albumId > 0) {
-            [newCategoryIds addIndex:albumData.albumId];
-        }
-    }
 
     // Loop over all known categories
     for (PiwigoAlbumData *category in self.allCategories)
@@ -263,9 +258,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         }
         else
         {
-            if (category.albumId > 0) {
-                [newCategoryIds addIndex:category.albumId];
-            }
             [updatedCategories addObject:category];
         }
     }
@@ -274,7 +266,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [newCategories addObjectsFromArray:updatedCategories];
     
     // Update list of displayed categories
-    self.categoryIds = newCategoryIds;
     self.allCategories = newCategories;
 }
 

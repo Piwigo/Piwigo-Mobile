@@ -70,12 +70,6 @@
         self.categoryId = categoryId;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        // Initialise discover album in cache if needed
-        if ([[CategoriesData sharedInstance] getCategoryById:self.categoryId] == nil) {
-            PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:categoryId];
-            [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-        }
-
         // Sort option depends on album type
         self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
@@ -710,12 +704,14 @@
 
 -(void)reloadImagesOnCompletion:(void (^)(void))completion
 {
-    // Load, sort images and reload collection
+    // Store images
     NSArray *oldImageList = self.albumData.images;
+
+    // Reset album in cache
     [[CategoriesData sharedInstance] deleteCategoryWithId:self.categoryId];
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
     self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+
+    // Load, sort images and reload collection
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];

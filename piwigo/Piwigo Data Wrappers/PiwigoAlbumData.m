@@ -15,8 +15,8 @@ NSInteger const kPiwigoSearchCategoryId     = -1;           // Search
 NSInteger const kPiwigoVisitsCategoryId     = -2;           // Most visited
 NSInteger const kPiwigoBestCategoryId       = -3;           // Best rated
 NSInteger const kPiwigoRecentCategoryId     = -4;           // Recent photos
-NSInteger const kPiwigoTagsCategoryId       = -5;           // Tag images
 NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
+NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offset)
 
 @interface PiwigoAlbumData()
 
@@ -43,42 +43,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	return self;
 }
 
-// Create album data in cache after album creation
--(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andParameters:(NSDictionary *)parameters
+// Smart data are stored in a virtual album with special IDs
+-(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andQuery:(NSString *)query
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
     albumData.albumId = categoryId;
-
-    // Parent album
-    albumData.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
-    PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:albumData.parentAlbumId];
-    NSMutableArray *upperCategories = [NSMutableArray new];
-    if (parentAlbumData.upperCategories.count != 0) {
-        [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
-    }
-    [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
-    albumData.upperCategories = [NSArray arrayWithArray:upperCategories];
-
-    // Empty album at start
-    albumData.name = [parameters objectForKey:@"name"];
-    albumData.comment = [parameters objectForKey:@"comment"];
-    albumData.globalRank = 0.0;
-    albumData.numberOfImages = 0;
-    albumData.totalNumberOfImages = 0;
-    albumData.numberOfSubCategories = 0;
-    albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
-    
-    // No upload rights
-    albumData.hasUploadRights = parentAlbumData.hasUploadRights;
-    
-    return albumData;
-}
-
-// Search data are stored in a virtual album with Id = kPiwigoSearchCategoryId
--(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query
-{
-    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
-    albumData.albumId = kPiwigoSearchCategoryId;
     if (query == nil) {
         albumData.query = @"";
     } else {
@@ -86,43 +55,9 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
     
     // No parent album
-    albumData.parentAlbumId = NSIntegerMin;
-    albumData.upperCategories = [NSArray new];
-    
-    // Empty album at start
-    albumData.name = [NSString stringWithString:query];
-    albumData.comment = @"";
-    albumData.globalRank = 0.0;
-    albumData.numberOfSubCategories = 0;
-    albumData.numberOfImages = NSNotFound;
-    albumData.totalNumberOfImages = NSNotFound;
-
-    // No album image
-    albumData.albumThumbnailId = 0;
-    albumData.albumThumbnailUrl = @"";
-    
-    // Date of creation
-    albumData.dateLast = [NSDate date];
-    
-    // No upload rights
-    albumData.hasUploadRights = NO;
-    
-    return albumData;
-}
-
-// Discover images are stored in a virtual album with Id = kPiwigoSearchCategoryId
--(PiwigoAlbumData *)initDiscoverAlbumForCategory:(NSInteger)categoryId
-{
-    PiwigoAlbumData *albumData = [PiwigoAlbumData new];
-    albumData.albumId = categoryId;
-    albumData.query = @"";
-    
-    // No parent album
-    albumData.parentAlbumId = NSIntegerMin;
-    albumData.upperCategories = [NSArray new];
-    
-    // Empty album at start
-    if (categoryId == kPiwigoVisitsCategoryId) {
+    if (categoryId == kPiwigoSearchCategoryId) {
+        albumData.name = [NSString stringWithString:query];
+    } else if (categoryId == kPiwigoVisitsCategoryId) {
         albumData.name = NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited");
     } else if (categoryId == kPiwigoBestCategoryId) {
         albumData.name = NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated");
@@ -135,6 +70,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     } else {
         albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
     }
+    albumData.parentAlbumId = NSIntegerMin;
+    albumData.upperCategories = [NSArray new];
+    
+    // Empty album at start
     albumData.comment = @"";
     albumData.globalRank = 0.0;
     albumData.numberOfSubCategories = 0;

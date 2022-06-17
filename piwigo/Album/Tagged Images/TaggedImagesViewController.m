@@ -70,14 +70,9 @@
         // Initialisation
         self.tagId = tagId;
         self.tagName = tagName;
+        self.categoryId = kPiwigoTagsCategoryId - tagId;   // Unique category ID used in cache
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         self.displayImageTitles = AlbumVars.shared.displayImageTitles;
-
-        // Initialise album in cache
-        NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
-        PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
-        [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-        discoverAlbum.query = query;
 
         // Initialise selection mode
         self.isSelect = NO;
@@ -281,11 +276,10 @@
 {
     [super viewWillAppear:animated];
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"viewWillAppear    => ID:%ld with tagID:%ld", (long)kPiwigoTagsCategoryId, (long)self.tagId);
+    NSLog(@"viewWillAppear    => ID:%ld with tagID:%ld", (long)self.categoryId, (long)self.tagId);
 #endif
     // Initialise data source
-    NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
-    self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:query];
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
 
     // Set navigation bar buttons
     [self updateButtonsInPreviewMode];
@@ -699,14 +693,14 @@
 
 -(void)reloadImagesOnCompletion:(void (^)(void))completion
 {
-    // Load, sort images and reload collection
+    // Store images
     NSArray *oldImageList = self.albumData.images;
-    [[CategoriesData sharedInstance] deleteCategoryWithId:kPiwigoTagsCategoryId];
-    NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-    discoverAlbum.query = query;
-    self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:query];
+
+    // Reset album in cache
+    [[CategoriesData sharedInstance] deleteCategoryWithId:self.categoryId];
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+
+    // Load, sort images and reload collection
     [self.albumData updateImageSort:(kPiwigoSortObjc)AlbumVars.shared.defaultSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
@@ -1678,7 +1672,7 @@
         UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
         self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
         self.imageDetailView.imageIndex = indexPath.row;
-        self.imageDetailView.categoryId = kPiwigoTagsCategoryId;
+        self.imageDetailView.categoryId = kPiwigoTagsCategoryId - self.tagId;
         self.imageDetailView.images = [self.albumData.images copy];
         self.imageDetailView.hidesBottomBarWhenPushed = YES;
         self.imageDetailView.imgDetailDelegate = self;
