@@ -1320,14 +1320,14 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		AD98FB942843A28700F6C0C5 /* Tagged Images */ = {
+		AD98FB942843A28700F6C0C5 /* TagSelector */ = {
 			isa = PBXGroup;
 			children = (
 				AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */,
 				AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */,
 				AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */,
 			);
-			path = "Tagged Images";
+			path = TagSelector;
 			sourceTree = "<group>";
 		};
 		AD98FB972843A68F00F6C0C5 /* Search Images */ = {
@@ -1773,7 +1773,7 @@
 				AD7B4C2120E0E0AC003E403A /* Headers & Footers */,
 				D8172E171AB7C06200271DB0 /* Select Album */,
 				AD98FB972843A68F00F6C0C5 /* Search Images */,
-				AD98FB942843A28700F6C0C5 /* Tagged Images */,
+				AD98FB942843A28700F6C0C5 /* TagSelector */,
 			);
 			path = Album;
 			sourceTree = "<group>";
