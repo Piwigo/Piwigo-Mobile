@@ -25,20 +25,11 @@ extension SceneDelegate {
 
         // Create array of album and sub-album IDs
         let viewControllers = navigationController.viewControllers
-        var catIDs = viewControllers
+        let catIDs = viewControllers
             .compactMap({$0 as? AlbumImagesViewController}).map({$0.categoryId})
-        
-        // Album of tagged images presented?
-        var tagID = 0, tagName = ""
-        if let taggedVC = viewControllers.last as? TaggedImagesViewController {
-            catIDs.append(kPiwigoTagsCategoryId)
-            tagID = taggedVC.tagId
-            tagName = taggedVC.tagName
-        }
-        
+                
         // Create user info
-        let info: [String: Any] = ["catIDs"     : catIDs,
-                                   "tagID"      : tagID, "tagName" : tagName]
+        let info: [String: Any] = ["catIDs" : catIDs]
         stateActivity.addUserInfoEntries(from: info)
 
         return stateActivity
@@ -59,31 +50,10 @@ extension SceneDelegate {
         albumVC.categoryId = catIDs[0]
         
         // Restore sub-albums
-        var subAlbumVC: UIViewController?
         if catIDs.count > 1 {
             for catID in catIDs[1...] {
-                switch catID {
-//                case 1...Int.max, kPiwigoFavoritesCategoryId:                   // Standard album
-//                    subAlbumVC = AlbumImagesViewController(albumId: catID)
-                    
-//                case kPiwigoVisitsCategoryId,       // Most visited photos
-//                    kPiwigoBestCategoryId,          // Best rated photos
-//                    kPiwigoRecentCategoryId:        // Recent photos
-//                    subAlbumVC = DiscoverImagesViewController(categoryId: catID)
-                
-                case kPiwigoTagsCategoryId:         // Tagged photos
-                    if let tagID = userInfo["tagID"] as? Int,
-                       let tagName = userInfo["tagName"] as? String {
-                        subAlbumVC = TaggedImagesViewController(tagId: tagID, andTagName: tagName)
-                    }
-                    
-                default:
-                    subAlbumVC = AlbumImagesViewController(albumId: catID)
-//                    debugPrint("••> SUB-ALBUM CANNOT BE RESTORED")
-                }
-                if subAlbumVC != nil {
-                    navigationController.pushViewController(subAlbumVC!, animated: false)
-                }
+                let subAlbumVC = AlbumImagesViewController(albumId: catID)
+                navigationController.pushViewController(subAlbumVC, animated: false)
             }
         }
     }

@@ -19,4 +19,3 @@
 #import "PiwigoImageData.h"
 #import "PiwigoTagData.h"
 #import "SearchImagesViewController.h"
-#import "TaggedImagesViewController.h"

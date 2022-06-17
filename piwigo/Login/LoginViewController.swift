@@ -710,16 +710,6 @@ class LoginViewController: UIViewController {
                                 }
                             }
                         }
-                        else if let vc = viewController as? TaggedImagesViewController {
-                            // Refresh collection if needed
-                            vc.reloadImages() {
-                                // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD {
-                                   // Resume uploads
-                                   appDelegate?.resumeAll()
-                               }
-                            }
-                        }
                     }
                     
                     // Load favorites in the background if necessary

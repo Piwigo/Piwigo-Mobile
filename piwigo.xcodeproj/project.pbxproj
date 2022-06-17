@@ -129,7 +129,6 @@
 		AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* PhoneTableViewCell.swift */; };
 		AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */; };
-		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE42849252F00171592 /* pwg.categories.move.json */; };
@@ -561,8 +560,6 @@
 		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
 		AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilitiesObjc.swift; sourceTree = "<group>"; };
 		AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParamsViewController.storyboard; sourceTree = "<group>"; };
-		AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaggedImagesViewController.h; sourceTree = "<group>"; };
-		AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TaggedImagesViewController.m; sourceTree = "<group>"; };
 		AD778356267E34F800317F36 /* piwigoIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = piwigoIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD778359267E34F800317F36 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsDebug.entitlements; sourceTree = "<group>"; };
@@ -1329,8 +1326,6 @@
 				AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */,
 				AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */,
 				AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */,
-				AD77109B22F49A5300E64797 /* TaggedImagesViewController.h */,
-				AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */,
 			);
 			path = "Tagged Images";
 			sourceTree = "<group>";
@@ -2364,7 +2359,6 @@
 				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
-				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
