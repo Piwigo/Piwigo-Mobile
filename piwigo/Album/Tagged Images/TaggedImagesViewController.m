@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "CategoriesData.h"
-#import "DiscoverImagesViewController.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "TaggedImagesViewController.h"

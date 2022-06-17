@@ -28,11 +28,6 @@ extension SceneDelegate {
         var catIDs = viewControllers
             .compactMap({$0 as? AlbumImagesViewController}).map({$0.categoryId})
         
-        // Discover album presented?
-        if let discoverVC = viewControllers.last as? DiscoverImagesViewController {
-            catIDs.append(discoverVC.categoryId)
-        }
-        
         // Album of tagged images presented?
         var tagID = 0, tagName = ""
         if let taggedVC = viewControllers.last as? TaggedImagesViewController {
@@ -68,13 +63,13 @@ extension SceneDelegate {
         if catIDs.count > 1 {
             for catID in catIDs[1...] {
                 switch catID {
-                case 1...Int.max, kPiwigoFavoritesCategoryId:                   // Standard album
-                    subAlbumVC = AlbumImagesViewController(albumId: catID)
+//                case 1...Int.max, kPiwigoFavoritesCategoryId:                   // Standard album
+//                    subAlbumVC = AlbumImagesViewController(albumId: catID)
                     
-                case kPiwigoVisitsCategoryId,       // Most visited photos
-                    kPiwigoBestCategoryId,          // Best rated photos
-                    kPiwigoRecentCategoryId:        // Recent photos
-                    subAlbumVC = DiscoverImagesViewController(categoryId: catID)
+//                case kPiwigoVisitsCategoryId,       // Most visited photos
+//                    kPiwigoBestCategoryId,          // Best rated photos
+//                    kPiwigoRecentCategoryId:        // Recent photos
+//                    subAlbumVC = DiscoverImagesViewController(categoryId: catID)
                 
                 case kPiwigoTagsCategoryId:         // Tagged photos
                     if let tagID = userInfo["tagID"] as? Int,
@@ -83,7 +78,8 @@ extension SceneDelegate {
                     }
                     
                 default:
-                    debugPrint("••> SUB-ALBUM CANNOT BE RESTORED")
+                    subAlbumVC = AlbumImagesViewController(albumId: catID)
+//                    debugPrint("••> SUB-ALBUM CANNOT BE RESTORED")
                 }
                 if subAlbumVC != nil {
                     navigationController.pushViewController(subAlbumVC!, animated: false)

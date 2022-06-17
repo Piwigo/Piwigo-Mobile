@@ -94,7 +94,8 @@ extension AlbumImagesViewController
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Present favorite images
-            discoverFavoritesImages()
+            let favoritesVC = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
+            navigationController?.pushViewController(favoritesVC, animated: true)
         })
         return action
     }

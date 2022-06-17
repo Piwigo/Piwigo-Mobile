@@ -29,7 +29,9 @@ extension AlbumImagesViewController
         let favoritesSelectorAction = UIAlertAction(
             title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
             style: .default, handler: { [self] action in
-                discoverFavoritesImages()
+                // Present favorite images
+                let favoritesVC = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
+                navigationController?.pushViewController(favoritesVC, animated: true)
             })
 
         let tagSelectorAction = UIAlertAction(
@@ -84,8 +86,8 @@ extension AlbumImagesViewController
     // MARK: - Discover Images
     func discoverImages(inCategoryId categoryId: Int) {
         // Create Discover view
-        let discoverController = DiscoverImagesViewController(categoryId: categoryId)
-        pushView(discoverController)
+        let discoverVC = AlbumImagesViewController(albumId: categoryId)
+        navigationController?.pushViewController(discoverVC, animated: true)
     }
 
     func discoverImagesByTag() {
@@ -96,11 +98,5 @@ extension AlbumImagesViewController
         }
         tagSelectorVC.tagSelectedDelegate = self
         pushView(tagSelectorVC)
-    }
-
-    func discoverFavoritesImages() {
-        // Push favorites view
-        let favoritesController = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
-        navigationController?.pushViewController(favoritesController, animated: true)
     }
 }

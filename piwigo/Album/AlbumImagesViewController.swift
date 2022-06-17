@@ -1399,44 +1399,37 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
             return
         }
 
-        // Push sub-album, Discover or Favorites album
-        if (viewController is DiscoverImagesViewController) {
-            // Push sub-album view
-            navigationController?.pushViewController(viewController, animated: true)
-        }
-        else {
-            // Push album list or tag list
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                viewController.modalPresentationStyle = .popover
-                if viewController is SelectCategoryViewController {
-                    if #available(iOS 14.0, *) {
-                        viewController.popoverPresentationController?.barButtonItem = actionBarButton
-                    } else {
-                        viewController.popoverPresentationController?.barButtonItem = moveBarButton
-                    }
-                    viewController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(viewController, animated: true)
+        // Push album list or tag list
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            viewController.modalPresentationStyle = .popover
+            if viewController is SelectCategoryViewController {
+                if #available(iOS 14.0, *) {
+                    viewController.popoverPresentationController?.barButtonItem = actionBarButton
+                } else {
+                    viewController.popoverPresentationController?.barButtonItem = moveBarButton
                 }
-                else if viewController is TagSelectorViewController {
-                    viewController.popoverPresentationController?.barButtonItem = discoverBarButton
-                    viewController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(viewController, animated: true)
-                }
-                else if viewController is EditImageParamsViewController {
-                    // Push Edit view embedded in navigation controller
-                    let navController = UINavigationController(rootViewController: viewController)
-                    navController.modalPresentationStyle = .popover
-                    navController.popoverPresentationController?.barButtonItem = actionBarButton
-                    navController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(navController, animated: true)
-                }
-            } else {
+                viewController.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(viewController, animated: true)
+            }
+            else if viewController is TagSelectorViewController {
+                viewController.popoverPresentationController?.barButtonItem = discoverBarButton
+                viewController.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(viewController, animated: true)
+            }
+            else if viewController is EditImageParamsViewController {
+                // Push Edit view embedded in navigation controller
                 let navController = UINavigationController(rootViewController: viewController)
                 navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.sourceView = view
-                navController.modalTransitionStyle = .coverVertical
+                navController.popoverPresentationController?.barButtonItem = actionBarButton
+                navController.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(navController, animated: true)
             }
+        } else {
+            let navController = UINavigationController(rootViewController: viewController)
+            navController.modalPresentationStyle = .popover
+            navController.popoverPresentationController?.sourceView = view
+            navController.modalTransitionStyle = .coverVertical
+            navigationController?.present(navController, animated: true)
         }
     }
 

@@ -37,12 +37,8 @@ extension AlbumImagesViewController
                     // Deselect images
                     cancelSelect()
                     
-                    // Show favorite icons
-                    for cell in imagesCollection?.visibleCells ?? [] {
-                        if let imageCell = cell as? ImageCollectionViewCell {
-                            imageCell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageCell.imageData?.imageId ?? 0)])
-                        }
-                    }
+                    // Update favorite icons
+                    refreshFavorites()
                 }
             }
             return
@@ -93,6 +89,22 @@ extension AlbumImagesViewController
             })
         }
     }
+    
+    private func refreshFavorites() {
+        // Loop over the visible cells
+        let visibleCells = imagesCollection?.visibleCells ?? []
+        visibleCells.forEach { cell in
+            if let imageCell = cell as? ImageCollectionViewCell,
+               let imageId = imageCell.imageData?.imageId {
+                let Ids = [NSNumber(value: imageId)]
+                let isFavorite = CategoriesData.sharedInstance()
+                    .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: Ids)
+                imageCell.isFavorite = isFavorite
+                imageCell.setNeedsLayout()
+                imageCell.layoutIfNeeded()
+            }
+        }
+    }
 
     
     // MARK: - Remove images from favorites
@@ -113,11 +125,7 @@ extension AlbumImagesViewController
                     cancelSelect()
                     
                     // Hide favorite icons
-                    for cell in imagesCollection?.visibleCells ?? [] {
-                        if let imageCell = cell as? ImageCollectionViewCell {
-                            imageCell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageCell.imageData?.imageId ?? 0)])
-                        }
-                    }
+                    refreshFavorites()
                 }
             }
             return
