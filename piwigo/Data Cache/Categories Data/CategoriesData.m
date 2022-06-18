@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "CategoriesData.h"
-#import "SearchImagesViewController.h"
 
 NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
 
@@ -630,9 +629,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
             if (vc.categoryId == category.integerValue) {
                 [vc removeImageWithId:image.imageId];
             }
-        } else if ([viewController isKindOfClass:[SearchImagesViewController class]]) {
-            SearchImagesViewController *vc = (SearchImagesViewController *)viewController;
-            [vc removeImageWithId:image.imageId];
         }
     });
 }

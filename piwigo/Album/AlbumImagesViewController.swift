@@ -22,7 +22,7 @@ enum pwgImageAction {
 }
 
 @objc
-class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
+class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
     @objc var categoryId = 0
     var totalNumberOfImages = 0
@@ -349,14 +349,6 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                name: .pwgUploadProgress, object: nil)
 
-        // Called before displaying SearchImagesViewController?
-        let presentedViewController = self.presentedViewController
-        if presentedViewController is UISearchController {
-            // Hide toolbar
-            navigationController?.setToolbarHidden(true, animated: true)
-            return
-        }
-
         // Inform Upload view controllers that user selected this category
         let userInfo = ["currentCategoryId": NSNumber(value: categoryId)]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: kPiwigoNotificationChangedCurrentCategory), object: nil, userInfo: userInfo)
@@ -393,18 +385,6 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         // Update title of current scene (iPad only)
         if #available(iOS 13.0, *) {
             view?.window?.windowScene?.title = self.title
-        }
-
-        // Called after displaying SearchImagesViewController?
-        if #available(iOS 11.0, *) {
-            let presentedViewController = self.presentedViewController
-            if presentedViewController is UISearchController {
-                // Scroll to image of interest if needed
-                if let resultsController = navigationItem.searchController?.searchResultsController as? SearchImagesViewController {
-                    resultsController.scrollToHighlightedCell()
-                }
-                return
-            }
         }
 
         if #available(iOS 10.0, *) {

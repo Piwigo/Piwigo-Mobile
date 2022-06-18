@@ -217,9 +217,11 @@ extension AlbumImagesViewController
                 }
             }
         } else {
-            // Show Home button if not in root or default album
+            // Show Home button if:
+            /// - not in root or default album
+            /// - not searching for images
             addButton.isHidden = true
-            if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            if ![0, AlbumVars.shared.defaultCategory, kPiwigoSearchCategoryId].contains(categoryId) {
                 showHomeAlbumButtonIfNeeded()
             }
         }
@@ -294,8 +296,16 @@ extension AlbumImagesViewController
     }
 
     func showHomeAlbumButtonIfNeeded() {
+        // Don't present the Home button in search mode
+        if categoryId == kPiwigoSearchCategoryId { return }
+        
         // Present Home Album button if needed
-        if (homeAlbumButton?.isHidden ?? false || homeAlbumButton?.frame.contains(addButton.frame.origin) ?? false) && (uploadImagesButton?.isHidden ?? false || uploadImagesButton?.frame.contains(addButton.frame.origin) ?? false) && (createAlbumButton?.isHidden ?? false || createAlbumButton?.frame.contains(addButton.frame.origin) ?? false) {
+        if (homeAlbumButton?.isHidden ?? false ||
+            homeAlbumButton?.frame.contains(addButton.frame.origin) ?? false),
+           (uploadImagesButton?.isHidden ?? false ||
+            uploadImagesButton?.frame.contains(addButton.frame.origin) ?? false),
+           (createAlbumButton?.isHidden ?? false ||
+            createAlbumButton?.frame.contains(addButton.frame.origin) ?? false) {
             // Unhide transparent Home Album button
             homeAlbumButton?.isHidden = false
 
