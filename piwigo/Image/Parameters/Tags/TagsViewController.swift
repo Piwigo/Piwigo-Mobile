@@ -394,7 +394,7 @@ extension TagsViewController {
 extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Stores tags index paths before the update
+        // Stores tag IDs before the update
         selectedTagIdsBeforeUpdate = selectedTags.map({$0.tagId})
         nonSelectedTagIdsBeforeUpdate = nonSelectedTags.map({$0.tagId})
         
@@ -491,6 +491,10 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
         self.tableView.reloadSectionIndexTitles()
         
         // Sort tags using a case-insensitive, localized, comparison
+        selectedTags.sort { (tag1,tag2) in
+            tag1.tagName.localizedCaseInsensitiveCompare(tag2.tagName) == .orderedAscending
+        }
+        tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         nonSelectedTags.sort { (tag1,tag2) in
             tag1.tagName.localizedCaseInsensitiveCompare(tag2.tagName) == .orderedAscending
         }
