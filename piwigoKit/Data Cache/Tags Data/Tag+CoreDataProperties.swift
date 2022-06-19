@@ -23,3 +23,13 @@ extension Tag {
     @NSManaged public var tagName: String
 
 }
+
+extension Array where Element == Tag {
+    public func filterTags(for query: String) -> [Tag] {
+        // Return whole list if query is empty
+        if query.isEmpty { return self }
+        
+        // Return filtered list
+        return self.filter { $0.tagName.lowercased().contains(query.lowercased())}
+    }
+}

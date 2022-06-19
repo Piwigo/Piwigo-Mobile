@@ -48,10 +48,12 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
 {
     PiwigoAlbumData *albumData = [PiwigoAlbumData new];
     albumData.albumId = categoryId;
-    if (query == nil) {
-        albumData.query = @"";
-    } else {
-        albumData.query = [NSString stringWithString:query];
+    if (categoryId > kPiwigoTagsCategoryId) {
+        if (query == nil) {
+            albumData.query = @"";
+        } else {
+            albumData.query = [NSString stringWithString:query];
+        }
     }
     
     // No parent album
@@ -63,10 +65,14 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
         albumData.name = NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated");
     } else if (categoryId == kPiwigoRecentCategoryId) {
         albumData.name = NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos");
-    } else if (categoryId == kPiwigoTagsCategoryId) {
-        albumData.name = NSLocalizedString(@"categoryDiscoverTagged_title", @"Tagged");
     } else if (categoryId == kPiwigoFavoritesCategoryId) {
         albumData.name = NSLocalizedString(@"categoryDiscoverFavorites_title", @"My Favorites");
+    } else if (categoryId < kPiwigoTagsCategoryId) {
+        if ((query == nil) || (query.length == 0)) {
+            albumData.name = NSLocalizedString(@"categoryDiscoverTagged_title", @"Tagged");
+        } else {
+            albumData.name = [NSString stringWithString:query];
+        }
     } else {
         albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
     }

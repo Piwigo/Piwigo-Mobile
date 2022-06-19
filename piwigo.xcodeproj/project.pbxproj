@@ -234,6 +234,7 @@
 		ADC69F1F285B6D9C009BF9AF /* AlbumImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F1E285B6D9C009BF9AF /* AlbumImagesViewController+Select.swift */; };
 		ADC69F21285B6F68009BF9AF /* AlbumImagesViewController+CopyMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F20285B6F68009BF9AF /* AlbumImagesViewController+CopyMove.swift */; };
 		ADC69F23285B7C40009BF9AF /* AlbumImagesViewController+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F22285B7C40009BF9AF /* AlbumImagesViewController+Buttons.swift */; };
+		ADC69F25285DF50C009BF9AF /* TagSelectorViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F24285DF50C009BF9AF /* TagSelectorViewController+Search.swift */; };
 		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
 		ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */; };
 		ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */; };
@@ -717,6 +718,7 @@
 		ADC69F1E285B6D9C009BF9AF /* AlbumImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+Select.swift"; sourceTree = "<group>"; };
 		ADC69F20285B6F68009BF9AF /* AlbumImagesViewController+CopyMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+CopyMove.swift"; sourceTree = "<group>"; };
 		ADC69F22285B7C40009BF9AF /* AlbumImagesViewController+Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImagesViewController+Buttons.swift"; sourceTree = "<group>"; };
+		ADC69F24285DF50C009BF9AF /* TagSelectorViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagSelectorViewController+Search.swift"; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObjcUtilities.swift; sourceTree = "<group>"; };
 		ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help05ViewController.swift; sourceTree = "<group>"; };
@@ -1323,6 +1325,7 @@
 				AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */,
 				AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */,
 				AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */,
+				ADC69F24285DF50C009BF9AF /* TagSelectorViewController+Search.swift */,
 			);
 			path = TagSelector;
 			sourceTree = "<group>";
@@ -2464,6 +2467,7 @@
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADBABA362847F4FF00EF39B0 /* AlbumImagesViewController+Search.swift in Sources */,
 				AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */,
+				ADC69F25285DF50C009BF9AF /* TagSelectorViewController+Search.swift in Sources */,
 				ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
 				AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */,
