@@ -13,7 +13,7 @@
 //    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 //        // B2 - 16
 //        guard let firstViewController = presenting as? AlbumViewController,
-//            let secondViewController = presented as? ImageDetailViewController,
+//            let secondViewController = presented as? ImageViewController,
 //            let selectedCellImageViewSnapshot = selectedCellImageViewSnapshot
 //            else { return nil }
 //

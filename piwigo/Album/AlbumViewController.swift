@@ -59,7 +59,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var nberOfUploadsLabel: UILabel!
 
     private var refreshControl: UIRefreshControl? // iOS 9.x only
-    private var imageDetailView: ImageDetailViewController?
+    private var imageDetailView: ImageViewController?
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -1161,8 +1161,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
                 // Selection mode not active => display full screen image
-                let imageDetailSB = UIStoryboard(name: "ImageDetailViewController", bundle: nil)
-                imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
+                let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
+                imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
                 imageDetailView?.imageIndex = indexPath.row
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = albumData?.images ?? []

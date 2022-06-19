@@ -1,5 +1,5 @@
 //
-//  ImageDetailViewController.swift
+//  ImageViewController.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 22/09/2021.
@@ -16,7 +16,7 @@ import piwigoKit
     func needToLoadMoreImages()
 }
 
-@objc class ImageDetailViewController: UIViewController {
+@objc class ImageViewController: UIViewController {
     
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
@@ -328,7 +328,7 @@ import piwigoKit
     }
 
     deinit {
-        debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
+        debugPrint("••> ImageViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
@@ -407,7 +407,7 @@ import piwigoKit
     
     private func updateNavBar() {
         // Button displayed in all circumstances
-        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageDetailViewController.shareImage))
+        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageViewController.shareImage))
 
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
@@ -1191,7 +1191,7 @@ import piwigoKit
 
 
 // MARK: - UIPageViewControllerDelegate
-extension ImageDetailViewController: UIPageViewControllerDelegate
+extension ImageViewController: UIPageViewControllerDelegate
 {
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
@@ -1243,7 +1243,7 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
 
 
 // MARK: - UIPageViewControllerDataSource
-extension ImageDetailViewController: UIPageViewControllerDataSource
+extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
     private func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
@@ -1290,7 +1290,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
 
 
 // MARK: - ImagePreviewDelegate Methods
-extension ImageDetailViewController: ImagePreviewDelegate
+extension ImageViewController: ImagePreviewDelegate
 {
     func downloadProgress(_ progress: CGFloat) {
         if (progress < 1.0) {
@@ -1303,7 +1303,7 @@ extension ImageDetailViewController: ImagePreviewDelegate
 
 
 // MARK: - EditImageParamsDelegate Methods
-extension ImageDetailViewController: EditImageParamsDelegate
+extension ImageViewController: EditImageParamsDelegate
 {
     func didDeselectImage(withId imageId: Int) {
         // Should never be called when the properties of a single image are edited
@@ -1362,7 +1362,7 @@ extension ImageDetailViewController: EditImageParamsDelegate
 
 
 // MARK: - SelectCategoryDelegate Methods
-extension ImageDetailViewController: SelectCategoryDelegate
+extension ImageViewController: SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int) {
         setEnableStateOfButtons(true)
@@ -1371,7 +1371,7 @@ extension ImageDetailViewController: SelectCategoryDelegate
 
 
 // MARK: - SelectCategoryOfImageDelegate Methods
-extension ImageDetailViewController: SelectCategoryImageCopiedDelegate
+extension ImageViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage(withData imageData: PiwigoImageData) {
         // Update image data
@@ -1384,7 +1384,7 @@ extension ImageDetailViewController: SelectCategoryImageCopiedDelegate
 
 
 // MARK: - SelectCategoryImageRemovedDelegate Methods
-extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
+extension ImageViewController: SelectCategoryImageRemovedDelegate
 {
     func didRemoveImage(withId imageID: Int) {
         // Determine index of the removed image
@@ -1459,7 +1459,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
 
 
 // MARK: - ShareImageActivityItemProviderDelegate Methods
-extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
+extension ImageViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.

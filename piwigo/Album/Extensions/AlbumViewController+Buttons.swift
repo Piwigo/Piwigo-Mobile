@@ -143,7 +143,7 @@ extension AlbumViewController
     func updateButtonsInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
-           !(displayedVC is ImageDetailViewController) {
+           !(displayedVC is ImageViewController) {
             navigationController?.setToolbarHidden(true, animated: true)
         }
 

@@ -15,13 +15,13 @@
 //
 //    private let type: PresentationType
 //    private let firstViewController: AlbumViewController
-//    private let secondViewController: ImageDetailViewController
+//    private let secondViewController: ImageViewController
 //    private let selectedCellImageViewSnapshot: UIView
 //    private let cellImageViewRect: CGRect
 //
 //    init?(type: PresentationType,
 //          firstViewController: AlbumViewController,
-//          secondViewController: ImageDetailViewController,
+//          secondViewController: ImageViewController,
 //          selectedCellImageViewSnapshot: UIView)
 //    {
 //        self.type = type
