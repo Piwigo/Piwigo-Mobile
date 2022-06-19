@@ -1,8 +1,8 @@
 //
-//  TagSelectorViewController+Search.swift
+//  TagsViewController+Search.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 18/06/2022.
+//  Created by Eddy Lelièvre-Berna on 19/06/2022.
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Search Images
 @available(iOS 11.0, *)
-extension TagSelectorViewController
+extension TagsViewController
 {
     func initSearchBar() {
         searchController.searchBar.searchBarStyle = .minimal
@@ -31,7 +31,7 @@ extension TagSelectorViewController
 
 // MARK: - UISearchResultsUpdating Methods
 @available(iOS 11.0, *)
-extension TagSelectorViewController: UISearchResultsUpdating
+extension TagsViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController) {
         if let query = searchController.searchBar.text {
@@ -50,7 +50,7 @@ extension TagSelectorViewController: UISearchResultsUpdating
 
 // MARK: - UISearchBarDelegate Methods
 @available(iOS 11.0, *)
-extension TagSelectorViewController: UISearchBarDelegate
+extension TagsViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // Animates Cancel button appearance

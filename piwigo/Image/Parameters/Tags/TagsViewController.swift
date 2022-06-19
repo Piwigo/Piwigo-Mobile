@@ -78,6 +78,14 @@ class TagsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Add search bar and prepare data source
+        if #available(iOS 11.0, *) {
+            initSearchBar()
+        } else {
+            // Rebuild ABC index
+            rebuildABCindex()
+        }
+        
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         tagsProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
@@ -129,14 +137,12 @@ class TagsViewController: UITableViewController {
         // Set colors, fonts, etc.
         applyColorPalette()
 
+        // Refresh table
+        tagsTableView.reloadData()
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
-        // Build ABC index
-        rebuildABCindex()
-        
-        // Refresh table
-        tagsTableView.reloadData()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -153,7 +159,7 @@ class TagsViewController: UITableViewController {
 
     
     // MARK: - UITableView ABC Index
-    private func rebuildABCindex() {
+    func rebuildABCindex() {
         // Build section index
         let firstCharacters = NSMutableSet(capacity: 0)
         for tag in nonSelectedTags {
@@ -164,7 +170,11 @@ class TagsViewController: UITableViewController {
     
     // Returns the titles for the sections
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return letterIndex
+        if #available(iOS 11.0, *) {
+            return nil
+        } else {
+            return letterIndex
+        }
     }
 
     // Returns the section that the table view should scroll to
@@ -274,9 +284,13 @@ class TagsViewController: UITableViewController {
             fatalError("Unknown tableView section!")
         }
 
-        // Update section index
-        rebuildABCindex()
-        self.tableView.reloadSectionIndexTitles()
+        if #available(iOS 11, *) {
+            // Use search bar
+        } else {
+            // Update section index
+            rebuildABCindex()
+            self.tableView.reloadSectionIndexTitles()
+        }
     }
 }
 
@@ -363,8 +377,12 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
 
-        // Update section index
-        rebuildABCindex()
-        tableView.reloadSectionIndexTitles()
+        if #available(iOS 11, *) {
+            // Use search bar
+        } else {
+            // Update section index
+            rebuildABCindex()
+            self.tableView.reloadSectionIndexTitles()
+        }
     }
 }

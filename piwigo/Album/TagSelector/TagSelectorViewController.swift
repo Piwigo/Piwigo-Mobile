@@ -55,11 +55,12 @@ class TagSelectorViewController: UITableViewController {
 
         // Add search bar and prepare data source
         if #available(iOS 11.0, *) {
+            // Initialise search bar
             initSearchBar()
+        } else {
+            // Rebuild ABC index
+            rebuildABCindex()
         }
-        
-        // Rebuild ABC index
-        rebuildABCindex()
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
@@ -125,7 +126,7 @@ class TagSelectorViewController: UITableViewController {
     }
 
 
-    // MARK: - UITableView ABC Index
+    // MARK: - UITableView ABC Index (before iOS 11)
     func rebuildABCindex() {
         // Rebuild ABC index
         let firstCharacters = NSMutableSet(capacity: 0)
@@ -137,7 +138,11 @@ class TagSelectorViewController: UITableViewController {
     
     // Returns the titles for the sections
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return letterIndex
+        if #available(iOS 11.0, *) {
+            return nil
+        } else {
+            return letterIndex
+        }
     }
 
     // Returns the section that the table view should scroll to
@@ -297,8 +302,12 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tagsTableView.endUpdates()
         
-        // Rebuild ABC index
-        rebuildABCindex()
-        tagsTableView.reloadSectionIndexTitles()
+        if #available(iOS 11, *) {
+            // Use search bar
+        } else {
+            // Rebuild ABC index
+            rebuildABCindex()
+            tagsTableView.reloadSectionIndexTitles()
+        }
     }
 }
