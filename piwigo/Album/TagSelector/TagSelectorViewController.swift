@@ -34,7 +34,7 @@ class TagSelectorViewController: UITableViewController {
     }()
     
     
-    // MARK: View Cycle
+    // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
@@ -172,11 +172,11 @@ class TagSelectorViewController: UITableViewController {
             print("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
             return TagSelectorCell()
         }
-        let tag = filteredTags[indexPath.row]
-        cell.configure(with: tag)
+        cell.configure(with: filteredTags[indexPath.row])
         return cell
     }
 
+    
     // MARK: - UITableView Footers
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
@@ -269,7 +269,7 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             // Should we add this tag to the filtered list?
             guard let tag: Tag = anObject as? Tag else { return }
-            if let index = tagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
+            if let index = filteredTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let addAtIndexPath = IndexPath(row: index, section: 0)
                 print(".insert =>", addAtIndexPath.debugDescription)
                 tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
