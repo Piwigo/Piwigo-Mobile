@@ -36,12 +36,12 @@ class TagSelectorViewController: UITableViewController {
     
     // MARK: View Cycle
     @IBOutlet var tagsTableView: UITableView!
-    let searchController = UISearchController(searchResultsController: nil)
-    var tagIdsBeforeUpdate = [Int32]()
-    var letterIndex: [String] = []
+    private var tagIdsBeforeUpdate = [Int32]()
+    private var letterIndex: [String] = []
 
+    let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
-    var filteredTags: [Tag] {
+    private var filteredTags: [Tag] {
         let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
         if #available(iOS 11.0, *) {
             return allTags.filterTags(for: searchQuery)
