@@ -280,6 +280,14 @@
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
 		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
+		ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */; };
+		ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */; };
+		ADEA269E285F909F00B6C9A0 /* ImageViewController+Edit.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */; };
+		ADEA26A0285F962800B6C9A0 /* ImageViewController+Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */; };
+		ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */; };
+		ADEA26A4285FA0E800B6C9A0 /* ImageViewController+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */; };
+		ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */; };
+		ADEA26A8285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */; };
 		ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEAFB8C25F8182C00EEDB1D /* ColorPaletteViewController.swift */; };
 		ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADEAFB8E25F8198800EEDB1D /* ColorPaletteViewController.storyboard */; };
 		ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */; };
@@ -775,6 +783,14 @@
 		ADE4C22525754B420060A203 /* Help03ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help03ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23D25756BC80060A203 /* Help02ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help02ViewController.swift; sourceTree = "<group>"; };
+		ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Share.swift"; sourceTree = "<group>"; };
+		ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Favorites.swift"; sourceTree = "<group>"; };
+		ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Edit.swift"; sourceTree = "<group>"; };
+		ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Menus.swift"; sourceTree = "<group>"; };
+		ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+CopyMove.swift"; sourceTree = "<group>"; };
+		ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Buttons.swift"; sourceTree = "<group>"; };
+		ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Delete.swift"; sourceTree = "<group>"; };
+		ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+AlbumThumnail.swift"; sourceTree = "<group>"; };
 		ADEAFB8C25F8182C00EEDB1D /* ColorPaletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewController.swift; sourceTree = "<group>"; };
 		ADEAFB8E25F8198800EEDB1D /* ColorPaletteViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorPaletteViewController.storyboard; sourceTree = "<group>"; };
 		ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsProvider.swift; sourceTree = "<group>"; };
@@ -1499,7 +1515,11 @@
 			children = (
 				ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */,
 				AD8D214B26B0A4450008E907 /* ImageUtilities.swift */,
-				D818EA031A74D32100733991 /* Details */,
+				ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */,
+				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
+				AD3DB4122773958200017542 /* ImagePreviewViewController.swift */,
+				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
+				D818EA031A74D32100733991 /* Extensions */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
 			);
@@ -1597,15 +1617,19 @@
 			path = "Piwigo Data Wrappers";
 			sourceTree = "<group>";
 		};
-		D818EA031A74D32100733991 /* Details */ = {
+		D818EA031A74D32100733991 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */,
-				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
-				AD3DB4122773958200017542 /* ImagePreviewViewController.swift */,
-				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
+				ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */,
+				ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */,
+				ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */,
+				ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */,
+				ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */,
+				ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */,
+				ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */,
+				ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */,
 			);
-			path = Details;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		D81C993E1B02DA190081C976 /* Albums */ = {
@@ -2375,6 +2399,7 @@
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
+				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
 				ADC69F23285B7C40009BF9AF /* AlbumViewController+Buttons.swift in Sources */,
@@ -2393,6 +2418,7 @@
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
 				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
+				ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
@@ -2410,11 +2436,13 @@
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
 				ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */,
 				ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */,
+				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */,
 				ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */,
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */,
+				ADEA26A0285F962800B6C9A0 /* ImageViewController+Menus.swift in Sources */,
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
 				AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */,
 				ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */,
@@ -2438,7 +2466,9 @@
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
 				AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */,
 				AD9112742811FBF7002FB78F /* UIWindowScene+AppTools.swift in Sources */,
+				ADEA269E285F909F00B6C9A0 /* ImageViewController+Edit.swift in Sources */,
 				AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */,
+				ADEA26A8285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift in Sources */,
 				ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */,
 				AD3FF5F82683B5C700D2F52A /* PwgNotificationsObjc.swift in Sources */,
 				ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */,
@@ -2452,6 +2482,7 @@
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
+				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
@@ -2489,6 +2520,7 @@
 				AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */,
 				AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */,
 				ADD511A6285F7D0700AD3FEC /* TagsViewController+Search.swift in Sources */,
+				ADEA26A4285FA0E800B6C9A0 /* ImageViewController+Buttons.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
 				AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */,
