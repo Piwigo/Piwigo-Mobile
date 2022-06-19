@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Search.swift
+//  AlbumViewController+Search.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 29/05/2022.
@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Search Images
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     @available(iOS 11.0, *)
     func initSearchBar() {
@@ -34,7 +34,7 @@ extension AlbumImagesViewController
     }
 }
 
-extension AlbumImagesViewController: UISearchControllerDelegate
+extension AlbumViewController: UISearchControllerDelegate
 {
 //    func presentSearchController(_ searchController: UISearchController) {
 //        debugPrint("presentSearchController…")
@@ -84,7 +84,7 @@ extension AlbumImagesViewController: UISearchControllerDelegate
 
 
 // MARK: UISearchBarDelegate Methods
-extension AlbumImagesViewController: UISearchBarDelegate
+extension AlbumViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // Animates Cancel button appearance
@@ -100,7 +100,7 @@ extension AlbumImagesViewController: UISearchBarDelegate
 
 
 // MARK: - UISearchResultsUpdating Methods
-extension AlbumImagesViewController: UISearchResultsUpdating
+extension AlbumViewController: UISearchResultsUpdating
 {
     public func updateSearchResults(for searchController: UISearchController) {
         // Query string

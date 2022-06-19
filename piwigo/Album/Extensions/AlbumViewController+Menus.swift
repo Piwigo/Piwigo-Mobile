@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Menus.swift
+//  AlbumViewController+Menus.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/06/2022.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 @available(iOS 14.0, *)
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: Album Menu
     /// - for copying images to another album
@@ -94,7 +94,7 @@ extension AlbumImagesViewController
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Present favorite images
-            let favoritesVC = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
+            let favoritesVC = AlbumViewController(albumId: kPiwigoFavoritesCategoryId)
             navigationController?.pushViewController(favoritesVC, animated: true)
         })
         return action

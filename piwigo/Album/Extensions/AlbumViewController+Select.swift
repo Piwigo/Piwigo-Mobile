@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Select.swift
+//  AlbumViewController+Select.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/06/2022.
@@ -9,7 +9,7 @@
 import Foundation
 import piwigoKit
 
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: - Buttons in Selection Mode
     func getSelectBarButton() -> UIBarButtonItem {

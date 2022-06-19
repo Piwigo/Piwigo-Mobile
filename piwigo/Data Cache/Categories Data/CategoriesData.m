@@ -504,8 +504,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Add image to album/images collection
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
-        if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
-            AlbumImagesViewController *vc = (AlbumImagesViewController *)viewController;
+        if ([viewController isKindOfClass:[AlbumViewController class]]) {
+            AlbumViewController *vc = (AlbumViewController *)viewController;
             if (vc.categoryId == category.integerValue) {
                 // Add image to category into which then image was uploaded
                 [vc addImageWithId:image.imageId];
@@ -624,8 +624,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Remove image from album/images collection
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController.childViewControllers.lastObject;
-        if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
-            AlbumImagesViewController *vc = (AlbumImagesViewController *)viewController;
+        if ([viewController isKindOfClass:[AlbumViewController class]]) {
+            AlbumViewController *vc = (AlbumViewController *)viewController;
             if (vc.categoryId == category.integerValue) {
                 [vc removeImageWithId:image.imageId];
             }

@@ -14,13 +14,13 @@
 //    static let duration: TimeInterval = 1.25
 //
 //    private let type: PresentationType
-//    private let firstViewController: AlbumImagesViewController
+//    private let firstViewController: AlbumViewController
 //    private let secondViewController: ImageDetailViewController
 //    private let selectedCellImageViewSnapshot: UIView
 //    private let cellImageViewRect: CGRect
 //
 //    init?(type: PresentationType,
-//          firstViewController: AlbumImagesViewController,
+//          firstViewController: AlbumViewController,
 //          secondViewController: ImageDetailViewController,
 //          selectedCellImageViewSnapshot: UIView)
 //    {

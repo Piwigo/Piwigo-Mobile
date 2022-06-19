@@ -700,7 +700,7 @@ class LoginViewController: UIViewController {
                     // Get top view controllers and update collection views
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
                     for viewController in viewControllers {
-                        if let vc = viewController as? AlbumImagesViewController {
+                        if let vc = viewController as? AlbumViewController {
                             // Check data source and reload collection if needed
                             vc.checkDataSource(withChangedCategories: didUpdateCats) {
                                 // Close HUD if needed

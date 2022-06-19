@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Add.swift
+//  AlbumViewController+Add.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/06/2022.
@@ -9,7 +9,7 @@
 import Foundation
 
 
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: - Create Sub-Album
     @objc func addAlbum() {
@@ -119,7 +119,7 @@ extension AlbumImagesViewController
 
 
 // MARK: - UITextField Delegate Methods
-extension AlbumImagesViewController: UITextFieldDelegate
+extension AlbumViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Disable Add Category action

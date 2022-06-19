@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+TransitioningDelegate.swift
+//  AlbumViewController+TransitioningDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 28/09/2021.
@@ -8,11 +8,11 @@
 
 //import Foundation
 //
-//extension AlbumImagesViewController: UIViewControllerTransitioningDelegate {
+//extension AlbumViewController: UIViewControllerTransitioningDelegate {
 //
 //    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 //        // B2 - 16
-//        guard let firstViewController = presenting as? AlbumImagesViewController,
+//        guard let firstViewController = presenting as? AlbumViewController,
 //            let secondViewController = presented as? ImageDetailViewController,
 //            let selectedCellImageViewSnapshot = selectedCellImageViewSnapshot
 //            else { return nil }

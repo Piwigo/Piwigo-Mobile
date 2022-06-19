@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Share.swift
+//  AlbumViewController+Share.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 29/05/2022.
@@ -10,7 +10,7 @@ import Foundation
 import Photos
 
 // MARK: Share Images
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     @objc func shareSelection() {
         initSelection(beforeAction: .share)
@@ -147,7 +147,7 @@ extension AlbumImagesViewController
 
 
 // MARK: ShareImageActivityItemProviderDelegate Methods
-extension AlbumImagesViewController: ShareImageActivityItemProviderDelegate
+extension AlbumViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String) {

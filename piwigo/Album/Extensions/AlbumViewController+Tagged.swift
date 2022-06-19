@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Tagged.swift
+//  AlbumViewController+Tagged.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 29/05/2022.
@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: TagSelectorViewDelegate Methods
-extension AlbumImagesViewController: TagSelectorViewDelegate
+extension AlbumViewController: TagSelectorViewDelegate
 {
     func pushTaggedImagesView(_ viewController: UIViewController) {
         // Push sub-album view

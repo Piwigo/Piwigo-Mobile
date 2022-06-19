@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Favorites.swift
+//  AlbumViewController+Favorites.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/06/2022.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: Favorites Bar Button
     func getFavoriteBarButton() -> UIBarButtonItem? {

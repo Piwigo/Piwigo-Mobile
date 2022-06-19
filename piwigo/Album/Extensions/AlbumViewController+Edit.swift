@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Edit.swift
+//  AlbumViewController+Edit.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/06/2022.
@@ -10,7 +10,7 @@ import Foundation
 import piwigoKit
 
 // MARK: Edit Images Parameters
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     @objc func editSelection() {
         initSelection(beforeAction: .edit)
@@ -43,7 +43,7 @@ extension AlbumImagesViewController
 
 // MARK: - EditImageParamsDelegate Methods
 @objc
-extension AlbumImagesViewController: EditImageParamsDelegate
+extension AlbumViewController: EditImageParamsDelegate
 {
     @objc func didDeselectImage(withId imageId: Int) {
         // Deselect image

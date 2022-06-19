@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+MenusOld.swift
+//  AlbumViewController+MenusOld.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/06/2022.
@@ -9,7 +9,7 @@
 import Foundation
 
 @objc
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: Discover Menu (iOS 9.3 to 13.x)
     @objc func discoverMenuOld() {
@@ -30,7 +30,7 @@ extension AlbumImagesViewController
             title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
             style: .default, handler: { [self] action in
                 // Present favorite images
-                let favoritesVC = AlbumImagesViewController(albumId: kPiwigoFavoritesCategoryId)
+                let favoritesVC = AlbumViewController(albumId: kPiwigoFavoritesCategoryId)
                 navigationController?.pushViewController(favoritesVC, animated: true)
             })
 
@@ -86,7 +86,7 @@ extension AlbumImagesViewController
     // MARK: - Discover Images
     func discoverImages(inCategoryId categoryId: Int) {
         // Create Discover view
-        let discoverVC = AlbumImagesViewController(albumId: categoryId)
+        let discoverVC = AlbumViewController(albumId: categoryId)
         navigationController?.pushViewController(discoverVC, animated: true)
     }
 

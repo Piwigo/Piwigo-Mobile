@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+CopyMove.swift
+//  AlbumViewController+CopyMove.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/06/2022.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: - Copy/Move Images to Album
     @objc func copyMoveSelection() {    // Alert displayed on iOS 9.x to 13.x
@@ -77,7 +77,7 @@ extension AlbumImagesViewController
 
 
 // MARK: - SelectCategoryImageCopiedDelegate Methods
-extension AlbumImagesViewController: SelectCategoryImageCopiedDelegate
+extension AlbumViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage(withData imageData: PiwigoImageData) {
         // Determine index of updated image

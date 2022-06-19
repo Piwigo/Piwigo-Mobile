@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Buttons.swift
+//  AlbumViewController+Buttons.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/06/2022.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     // MARK: - "Settings" Button
     func getSettingsBarButton() -> UIBarButtonItem {

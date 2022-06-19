@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController+Delete.swift
+//  AlbumViewController+Delete.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/06/2022.
@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: Delete Images
-extension AlbumImagesViewController
+extension AlbumViewController
 {
     @objc func deleteSelection() {
         initSelection(beforeAction: .delete)

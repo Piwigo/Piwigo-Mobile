@@ -1,5 +1,5 @@
 //
-//  AlbumImagesViewController.swift
+//  AlbumViewController.swift
 //  piwigo
 //
 //  Created by Spencer Baker on 1/27/15.
@@ -22,7 +22,7 @@ enum pwgImageAction {
 }
 
 @objc
-class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
+class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
     @objc var categoryId = 0
     var totalNumberOfImages = 0
@@ -610,7 +610,7 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
             let VCs = navigationController?.children
             var index = (VCs?.count ?? 0) - 1
             while index >= 0 {
-                if let vc = VCs?[index] as? AlbumImagesViewController {
+                if let vc = VCs?[index] as? AlbumViewController {
                     if vc.categoryId == 0 || CategoriesData.sharedInstance().getCategoryById(vc.categoryId) != nil {
                         // Present the album
                         navigationController?.popToViewController(vc, animated: true)
@@ -762,11 +762,11 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
     @objc func returnToDefaultCategory() {
         // Does the default album view controller already exists?
         var cur = 0, index = 0
-        var rootAlbumViewController: AlbumImagesViewController? = nil
+        var rootAlbumViewController: AlbumViewController? = nil
         for viewController in navigationController?.viewControllers ?? []
         {
             // Look for AlbumImagesViewControllers
-            if let thisViewController = viewController as? AlbumImagesViewController
+            if let thisViewController = viewController as? AlbumViewController
             {
                 // Is this the view controller of the default album?
                 if thisViewController.categoryId == AlbumVars.shared.defaultCategory {
@@ -785,7 +785,7 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
 
         // The view controller of the default album does not exist yet
         if rootAlbumViewController == nil {
-            rootAlbumViewController = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory)
+            rootAlbumViewController = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
             
             if let rootAlbumViewController = rootAlbumViewController,
                var arrayOfVC = navigationController?.viewControllers {
@@ -1352,7 +1352,7 @@ class AlbumImagesViewController: UIViewController, UICollectionViewDelegate, UIC
         }
 
         // Push sub-album, Discover or Favorites album
-        if viewController is AlbumImagesViewController {
+        if viewController is AlbumViewController {
             // Push sub-album view
             navigationController?.pushViewController(viewController, animated: true)
         }

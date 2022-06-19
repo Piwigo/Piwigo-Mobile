@@ -514,7 +514,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Push new album view
         if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false,
             let albumData = albumData {
-            let albumView = AlbumImagesViewController(albumId: albumData.albumId)
+            let albumView = AlbumViewController(albumId: albumData.albumId)
             categoryDelegate?.pushCategoryView(albumView)
         }
     }
