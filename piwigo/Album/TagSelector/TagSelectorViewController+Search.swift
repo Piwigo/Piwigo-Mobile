@@ -52,6 +52,7 @@ extension TagSelectorViewController: UISearchResultsUpdating
 
 
 // MARK: - UISearchBarDelegate Methods
+@available(iOS 11.0, *)
 extension TagSelectorViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
