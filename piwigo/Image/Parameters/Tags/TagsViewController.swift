@@ -37,7 +37,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
      The TagsProvider that fetches tag data, saves it to Core Data,
      and serves it to this table view.
      */
-    private lazy var dataProvider: TagsProvider = {
+    private lazy var tagsProvider: TagsProvider = {
         let provider : TagsProvider = TagsProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
@@ -61,7 +61,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        dataProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
+        tagsProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
             guard let error = error else { return }     // Done if no error
 
             // Show an alert if there was an error.
@@ -115,9 +115,9 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
                                                name: .pwgPaletteChanged, object: nil)
         
         // Prepare data source
-        self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+        self.selectedTags = tagsProvider.fetchedResultsController.fetchedObjects?
                                 .filter({selectedTagIds.contains($0.tagId)}) ?? [Tag]()
-        self.nonSelectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+        self.nonSelectedTags = tagsProvider.fetchedResultsController.fetchedObjects?
                                 .filter({!selectedTagIds.contains($0.tagId)}) ?? [Tag]()
         // Build ABC index
         self.updateSectionIndex()
@@ -338,7 +338,7 @@ extension TagsViewController {
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
-            self.dataProvider.addTag(with: tagName, completionHandler: { error in
+            self.tagsProvider.addTag(with: tagName, completionHandler: { error in
                 guard let error = error else {
                     self.updatePiwigoHUDwithSuccess {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
