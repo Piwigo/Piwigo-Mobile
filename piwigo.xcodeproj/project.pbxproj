@@ -250,6 +250,7 @@
 		ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
+		ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD511A3285F79C700AD3FEC /* TagsViewController+Add.swift */; };
 		ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */; };
 		ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */; };
 		ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */; };
@@ -741,6 +742,7 @@
 		ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
 		ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
+		ADD511A3285F79C700AD3FEC /* TagsViewController+Add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagsViewController+Add.swift"; sourceTree = "<group>"; };
 		ADD6AE9F22E25DA800347BC8 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADD6AEA022E25DA800347BC8 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/About.strings; sourceTree = "<group>"; };
 		ADD6AEA122E25DA800347BC8 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -1455,6 +1457,7 @@
 				ADF26FBD24C200040036E778 /* TagTableViewCell.swift */,
 				ADF26FBE24C200040036E778 /* TagsViewController.swift */,
 				AD4902E224C2142800A96066 /* TagsViewController.storyboard */,
+				ADD511A3285F79C700AD3FEC /* TagsViewController+Add.swift */,
 			);
 			path = Tags;
 			sourceTree = "<group>";
@@ -2367,6 +2370,7 @@
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
+				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
