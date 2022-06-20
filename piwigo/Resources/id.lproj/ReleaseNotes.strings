@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.2_text" = "Version 2.11.2\n\n• Fixes a compatibility issue with the Community plugin";
+
 "v2.11.1_text" = "Versi 2.11.1\n\n• Perbaikan bug";
 
 "v2.11.0_text" = "Version 2.11\nJune 11, 2022\n\n• Adds an option for re-uploading photos and videos\n• Code modernization\n• Bug fixes";

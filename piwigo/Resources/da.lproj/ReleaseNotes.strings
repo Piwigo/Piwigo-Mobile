@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.2_text" = "Version 2.11.2\n\n• Retter et kompatibilitetsproblem med Community-pluginnet";
+
 "v2.11.1_text" = "Version 2.11.1\n12 juni 2022\n\n• Fejlrettelser";
 
 "v2.11.0_text" = "Version 2.11\n11 juni 2022\n\n• Tilføjer en mulighed for at genuploade fotos og videoer\n• Modernisering af kode\n• Fejlrettelser";

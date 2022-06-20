@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.2_text" = "Wersja 2.11.2\n\n• Rozwiązuje problem ze zgodnością ze wtyczką Community";
+
 "v2.11.1_text" = "Wersja 2.11.1\n12 czerwca 2022\n\n• Poprawki błędów";
 
 "v2.11.0_text" = "Wersja 2.11\n11 czerwca 2022\n\n• Dodaje opcję ponownego przesyłania zdjęć i filmów\n• Modernizacja kodu\n• Poprawki błędów";

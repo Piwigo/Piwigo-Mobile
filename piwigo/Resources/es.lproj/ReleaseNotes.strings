@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.11.2_text" = "Versión 2.11.2\n\n• Soluciona un problema de compatibilidad con el complemento Community";
+
 "v2.11.1_text" = "Versión 2.11.1\n12 de junio de 2022\n\n• Corrección de errores";
 
 "v2.11.0_text" = "Versión 2.11\n11 de junio de 2022\n\n• Añadida una opción para volver a subir fotos y vídeos\n• Modernización de código\n• Correcciones de errores";
