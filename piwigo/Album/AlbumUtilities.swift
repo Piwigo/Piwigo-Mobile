@@ -63,7 +63,7 @@ class AlbumUtilities: NSObject {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = [
             "cat_id"            : 0,
-            "recursive"         : "true",
+            "recursive"         : true,
             "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
             "thumbnail_size"    : thumbnailSizeArg()
         ]
