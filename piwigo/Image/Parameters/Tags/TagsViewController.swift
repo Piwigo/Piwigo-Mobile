@@ -55,11 +55,7 @@ class TagsViewController: UITableViewController {
     private var selectedTags: [Tag] {
         let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
         let selectedTags = allTags.filter({selectedTagIds.contains($0.tagId)})
-        if #available(iOS 11.0, *) {
-            return selectedTags.filterTags(for: searchQuery)
-        } else {
-            return selectedTags
-        }
+        return selectedTags
     }
     private var nonSelectedTags: [Tag] {
         let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
