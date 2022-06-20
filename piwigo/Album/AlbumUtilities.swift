@@ -77,7 +77,7 @@ class AlbumUtilities: NSObject {
         let paramsDict: [String : Any] = [
             "cat_id"            : 0,
             "recursive"         : true,
-            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? false : true,
+            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
             "thumbnail_size"    : thumbnailSizeArg()
         ]
 
@@ -87,7 +87,7 @@ class AlbumUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update the category cache.
             do {
-                // Decode the JSON into codable type CommunityCategoriesGetListJSON.
+                // Decode the JSON into codable type CategoriesGetListJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
 
