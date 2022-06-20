@@ -42,7 +42,6 @@ import piwigoKit
     var setThumbnailBarButton: UIBarButtonItem?
     var moveBarButton: UIBarButtonItem?
     var deleteBarButton: UIBarButtonItem?
-    private var spaceBetweenButtons: UIBarButtonItem?
     
     
     // MARK: - View Lifecycle
@@ -347,12 +346,11 @@ import piwigoKit
                     navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
                     // Remaining buttons in navigation toolbar
-                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
-                    var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
+                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(), deleteBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
+                        toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()], at: 2)
                     }
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -384,10 +382,9 @@ import piwigoKit
                     navigationItem.rightBarButtonItems = []
 
                     // Remaining buttons in navigation toolbar
-                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
                                      favoriteBarButton].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 }
@@ -426,14 +423,13 @@ import piwigoKit
                 deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
                 moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
                 setThumbnailBarButton = UIBarButtonItem.setThumbnailButton(self, action: #selector(setAsAlbumImage))
-                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
-                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
-                                    spaceBetweenButtons, setThumbnailBarButton,
-                                    spaceBetweenButtons, deleteBarButton].compactMap { $0 }
+                var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton,
+                                    UIBarButtonItem.space(), setThumbnailBarButton,
+                                    UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 4)
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 }, at: 4)
                 }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -453,12 +449,11 @@ import piwigoKit
                 // Navigation toolbar
                 deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
                 moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
-                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
-                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton].compactMap { $0 }
+                var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 2)
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 }, at: 2)
                 }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -474,10 +469,9 @@ import piwigoKit
                     navigationItem.rightBarButtonItems = []
 
                     // Remaining buttons in navigation toolbar
-                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
                                      favoriteBarButton].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 } else {

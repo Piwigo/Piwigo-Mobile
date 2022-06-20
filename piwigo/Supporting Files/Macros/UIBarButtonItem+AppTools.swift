@@ -12,7 +12,7 @@ import UIKit
 extension UIBarButtonItem {
     
     // MARK: - System Based Bar Button Items
-    class func spaceBetweenButtons() -> UIBarButtonItem {
+    class func space() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                      target: nil, action: nil)
         return button

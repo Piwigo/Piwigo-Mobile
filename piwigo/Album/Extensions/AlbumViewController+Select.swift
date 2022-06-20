@@ -67,12 +67,12 @@ extension AlbumViewController
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
                     var toolBarItems = [shareBarButton,
-                                        UIBarButtonItem.spaceBetweenButtons(),
+                                        UIBarButtonItem.space(),
                                         deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 2, length: 2)).enumerated() {toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.spaceBetweenButtons()].compactMap { $0 })[objectIndex], at: insertionIndex) }
+                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 2, length: 2)).enumerated() {toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = toolBarItems
@@ -107,7 +107,7 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = [shareBarButton,
-                                    UIBarButtonItem.spaceBetweenButtons(),
+                                    UIBarButtonItem.space(),
                                     favoriteBarButton].compactMap { $0 }
                 } else {
                     // Left side of navigation bar
@@ -157,11 +157,11 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
-                    var toolBarItems = [shareBarButton, UIBarButtonItem.spaceBetweenButtons(), moveBarButton, UIBarButtonItem.spaceBetweenButtons(), deleteBarButton].compactMap { $0 }
+                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton, UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 4, length: 2)).enumerated() { toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.spaceBetweenButtons()].compactMap { $0 })[objectIndex], at: insertionIndex) }
+                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 4, length: 2)).enumerated() { toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = toolBarItems
@@ -195,7 +195,7 @@ extension AlbumViewController
 
                     // Remaining buttons in navigation toolbar
                     navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton, UIBarButtonItem.spaceBetweenButtons(), favoriteBarButton].compactMap { $0 }
+                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
                 } else {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
