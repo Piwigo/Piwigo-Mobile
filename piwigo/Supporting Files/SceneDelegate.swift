@@ -116,7 +116,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Check the user activity type to know which part of the app to restore.
         if activity.activityType == ActivityType.album.rawValue {
-            // The activity type is for restoring AlbumImagesViewController.
+            // The activity type is for restoring AlbumViewController.
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
             appDelegate.loadNavigation(in: window)
             

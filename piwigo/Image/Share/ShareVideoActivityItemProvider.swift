@@ -73,8 +73,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
 
         // Register image share methods to perform on completion
-        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo), name: Notification.Name(kPiwigoNotificationDidShare), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadVideoTask), name: Notification.Name(kPiwigoNotificationCancelDownload), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo),
+                                               name: .pwgDidShare, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadVideoTask),
+                                               name: .pwgCancelDownload, object: nil)
     }
 
     // MARK: - Download & Prepare Video
@@ -388,8 +390,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
     @objc func didFinishSharingVideo() {
         // Remove image share observers
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(kPiwigoNotificationDidShare), object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(kPiwigoNotificationCancelDownload), object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgDidShare, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgCancelDownload, object: nil)
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {

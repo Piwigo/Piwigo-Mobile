@@ -13,6 +13,13 @@ public extension Notification.Name {
     /// - Change palette colour
     static let pwgPaletteChanged = Notification.Name("kPiwigoNotificationPaletteChanged")
 
+    // MARK: - Share images & videos
+    /// - Share completed
+    static let pwgDidShare = Notification.Name("kPiwigoNotificationDidShare")
+    /// - Cancel download of object to share
+    static let pwgCancelDownload = Notification.Name("kPiwigoNotificationCancelDownload")
+    
+
     // MARK: - Recent albums
     /// - Add category ID to the top of the list of recent albums
     static let pwgAddRecentAlbum = Notification.Name("kPiwigoNotificationAddRecentAlbum")

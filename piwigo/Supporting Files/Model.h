@@ -23,33 +23,6 @@ FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
 @class PHPhotoLibrary;
 
 typedef enum {
-    kPiwigoSortObjcNameAscending,               // Photo title, A → Z
-    kPiwigoSortObjcNameDescending,              // Photo title, Z → A
-    
-    kPiwigoSortObjcDateCreatedDescending,       // Date created, new → old
-    kPiwigoSortObjcDateCreatedAscending,        // Date created, old → new
-    
-    kPiwigoSortObjcDatePostedDescending,        // Date posted, new → old
-    kPiwigoSortObjcDatePostedAscending,         // Date posted, old → new
-    
-    kPiwigoSortObjcFileNameAscending,           // File name, A → Z
-    kPiwigoSortObjcFileNameDescending,          // File name, Z → A
-    
-    kPiwigoSortObjcRatingScoreDescending,       // Rating score, high → low
-    kPiwigoSortObjcRatingScoreAscending,        // Rating score, low → high
-
-    kPiwigoSortObjcVisitsDescending,            // Visits, high → low
-    kPiwigoSortObjcVisitsAscending,             // Visits, low → high
-
-    kPiwigoSortObjcManual,                      // Manual order
-    kPiwigoSortObjcRandom,                      // Random order
-//    kPiwigoSortObjcVideoOnly,
-//    kPiwigoSortObjcImageOnly,
-    
-    kPiwigoSortObjcCount
-} kPiwigoSortObjc;
-
-typedef enum {
 	kPiwigoPrivacyObjcEverybody = 0,
 	kPiwigoPrivacyObjcAdminsFamilyFriendsContacts = 1,
 	kPiwigoPrivacyObjcAdminsFamilyFriends = 2,

@@ -583,70 +583,14 @@ class LoginViewController: UIViewController {
                     }
 
                     // Load favorites in the background if necessary
-                    if !NetworkVars.hasGuestRights,
-                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
-                        // Initialise favorites album
-                        if let favoritesAlbum = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId) {
-                            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-                        }
+                    self.loadFavorites()
 
-                        // Load favorites data in the background with dedicated URL session
-                        DispatchQueue.global(qos: .default).async {
-                            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
-                                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)),
-                                forProgress: nil,
-                                onCompletion: nil,
-                                onFailure: nil)
-                        }
-                    }
                 } failure: { error in
                     DispatchQueue.main.async { [self] in
                         // Inform user that we could not load album data
                         logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
                     }
                 }
-//                AlbumService.getAlbumData(onCompletion: { [self] task, didChange in
-//                    // Reinitialise flag
-//                    NetworkVars.userCancelledCommunication = false
-//
-//                    // Hide HUD and present root album
-//                    if let hudViewController = hudViewController {
-//                        hudViewController.hidePiwigoHUD() {
-//                            // Present Album/Images view and resume uploads
-//                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//                            appDelegate?.loadNavigation(in: self.view.window)
-//                        }
-//                    } else {
-//                        hidePiwigoHUD() {
-//                            // Present Album/Images view and resume uploads
-//                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//                            appDelegate?.loadNavigation(in: self.view.window)
-//                        }
-//                    }
-//
-//                    // Load favorites in the background if necessary
-//                    if !NetworkVars.hasGuestRights,
-//                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
-//                        // Initialise favorites album
-//                        if let favoritesAlbum = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId) {
-//                            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-//                        }
-//
-//                        // Load favorites data in the background with dedicated URL session
-//                        DispatchQueue.global(qos: .default).async {
-//                            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
-//                                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)),
-//                                forProgress: nil,
-//                                onCompletion: nil,
-//                                onFailure: nil)
-//                        }
-//                    }
-//                }, onFailure: { [self] task, error in
-//                    DispatchQueue.main.async { [self] in
-//                        // Inform user that we could not load album data
-//                        logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-//                    }
-//                })
             }
         } else {
             // Hide HUD if needed
@@ -756,10 +700,9 @@ class LoginViewController: UIViewController {
                     // Get top view controllers and update collection views
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
                     for viewController in viewControllers {
-                        if viewController is AlbumImagesViewController {
+                        if let vc = viewController as? AlbumViewController {
                             // Check data source and reload collection if needed
-                            let vc = viewController as? AlbumImagesViewController
-                            vc?.checkDataSource(withChangedCategories: didUpdateCats) {
+                            vc.checkDataSource(withChangedCategories: didUpdateCats) {
                                 // Close HUD if needed
                                 self.hudViewController?.hidePiwigoHUD {
                                     // Resume uploads
@@ -767,41 +710,10 @@ class LoginViewController: UIViewController {
                                 }
                             }
                         }
-                        else if viewController is DiscoverImagesViewController {
-                            // Refresh collection if needed
-                            let vc = viewController as? DiscoverImagesViewController
-                            vc?.reloadImages() {
-                                // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD {
-                                   // Resume uploads
-                                   appDelegate?.resumeAll()
-                               }
-                            }
-                        }
-                        else if viewController is TaggedImagesViewController {
-                            // Refresh collection if needed
-                            let vc = viewController as? TaggedImagesViewController
-                            vc?.reloadImages() {
-                                // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD {
-                                   // Resume uploads
-                                   appDelegate?.resumeAll()
-                               }
-                            }
-                        }
-                        else if viewController is FavoritesImagesViewController, !NetworkVars.hasGuestRights,
-                                ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
-                            // Refresh collection if needed
-                            let vc = viewController as? FavoritesImagesViewController
-                            vc?.reloadImages() {
-                                // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD {
-                                   // Resume uploads
-                                   appDelegate?.resumeAll()
-                               }
-                            }
-                        }
                     }
+                    
+                    // Load favorites in the background if necessary
+                    self.loadFavorites()
                 }
             } failure: { error in
                 DispatchQueue.main.async(execute: { [self] in
@@ -812,75 +724,31 @@ class LoginViewController: UIViewController {
                     }
                 })
             }
+        }
+    }
+    
+    private func loadFavorites() {
+        // Should we load favorites?
+        if NetworkVars.hasGuestRights { return }
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) == .orderedDescending  { return }
+        
+        // Initialise favorites album
+        if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
+            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
+        }
 
-//            AlbumService.getAlbumData(onCompletion: { task, didChange in
-//                // Back to main queue
-//                DispatchQueue.main.async {
-//                    // Get top view controllers and update collection views
-//                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//                    for viewController in viewControllers {
-//                        if viewController is AlbumImagesViewController {
-//                            // Check data source and reload collection if needed
-//                            let vc = viewController as? AlbumImagesViewController
-//                            vc?.checkDataSource(withChangedCategories: didChange) {
-//                                // Close HUD if needed
-//                                self.hudViewController?.hidePiwigoHUD {
-//                                    // Resume uploads
-//                                    appDelegate?.resumeAll()
-//                                }
-//                            }
-//                        }
-//                        else if viewController is DiscoverImagesViewController {
-//                            // Refresh collection if needed
-//                            let vc = viewController as? DiscoverImagesViewController
-//                            vc?.reloadImages() {
-//                                // Close HUD if needed
-//                                self.hudViewController?.hidePiwigoHUD {
-//                                   // Resume uploads
-//                                   appDelegate?.resumeAll()
-//                               }
-//                            }
-//                        }
-//                        else if viewController is TaggedImagesViewController {
-//                            // Refresh collection if needed
-//                            let vc = viewController as? TaggedImagesViewController
-//                            vc?.reloadImages() {
-//                                // Close HUD if needed
-//                                self.hudViewController?.hidePiwigoHUD {
-//                                   // Resume uploads
-//                                   appDelegate?.resumeAll()
-//                               }
-//                            }
-//                        }
-//                        else if viewController is FavoritesImagesViewController, !NetworkVars.hasGuestRights,
-//                                ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
-//                            // Refresh collection if needed
-//                            let vc = viewController as? FavoritesImagesViewController
-//                            vc?.reloadImages() {
-//                                // Close HUD if needed
-//                                self.hudViewController?.hidePiwigoHUD {
-//                                   // Resume uploads
-//                                   appDelegate?.resumeAll()
-//                               }
-//                            }
-//                        }
-//                    }
-//                }
-//            },
-//            onFailure: { [self] task, error in
-//                DispatchQueue.main.async(execute: { [self] in
-//                    // Close HUD if needed
-//                    self.hudViewController?.hidePiwigoHUD {
-//                        // Inform user that we could not load album data
-//                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-//                    }
-//                })
-//            })
+        // Load favorites data in the background with dedicated URL session
+        DispatchQueue.global(qos: .default).async {
+            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
+                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)),
+                forProgress: nil,
+                onCompletion: nil,
+                onFailure: nil)
         }
     }
 
+    
     // MARK: - HUD methods
-
     @objc func cancelLoggingIn() {
         // Propagate user's request
         NetworkVars.userCancelledCommunication = true
@@ -944,7 +812,6 @@ class LoginViewController: UIViewController {
 
 
     // MARK: - Utilities
-
     func saveServerAddress(_ serverString: String?, andUsername username: String?) -> Bool {
         guard var serverString = serverString else { return false }
         if serverString.isEmpty {

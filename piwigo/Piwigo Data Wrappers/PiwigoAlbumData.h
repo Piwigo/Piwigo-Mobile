@@ -46,9 +46,7 @@ typedef enum {
 @property (nonatomic, readonly) NSArray<PiwigoImageData *> *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
 
--(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andParameters:(NSDictionary *)parameters;
--(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
--(PiwigoAlbumData *)initDiscoverAlbumForCategory:(NSInteger)categoryId;
+-(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andQuery:(NSString *)query;
 
 -(void)loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)sort
                             forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress

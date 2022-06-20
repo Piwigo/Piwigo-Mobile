@@ -9,10 +9,8 @@
 #import <MGSwipeTableCell.h>
 #import <UIImageView+AFNetworking.h>
 
-#import "AlbumImagesViewController.h"
+#import "AlbumData.h"
 #import "CategoriesData.h"
-#import "DiscoverImagesViewController.h"
-#import "FavoritesImagesViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
 #import "Model.h"
@@ -20,5 +18,3 @@
 #import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "PiwigoTagData.h"
-#import "SearchImagesViewController.h"
-#import "TaggedImagesViewController.h"

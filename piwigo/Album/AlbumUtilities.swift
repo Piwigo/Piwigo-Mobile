@@ -9,7 +9,21 @@
 import Foundation
 import piwigoKit
 
-@objc
+enum kPwgCategoryDeletionMode {
+    case none, orphaned, all
+    
+    var pwgArg: String {
+        switch self {
+        case .none:
+            return "no_delete"
+        case .orphaned:
+            return "delete_orphans"
+        case .all:
+            return "force_delete"
+        }
+    }
+}
+
 class AlbumUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
@@ -56,7 +70,6 @@ class AlbumUtilities: NSObject {
         return sizeArg
     }
     
-    @objc
     class func getAlbums(completion: @escaping (Bool) -> Void,
                          failure: @escaping (NSError) -> Void) {
 
@@ -139,7 +152,6 @@ class AlbumUtilities: NSObject {
         }
     }
     
-    @objc
     class func getCommunityAlbums(completion: @escaping ([PiwigoAlbumData]) -> Void,
                                   failure: @escaping (NSError) -> Void) {
 
@@ -227,7 +239,6 @@ class AlbumUtilities: NSObject {
         return albums
     }
     
-    @objc
     class func create(withName name:String, description: String, status: String,
                       inParentWithId parentCategeoryId: Int,
                       completion: @escaping (Int) -> Void,
@@ -439,17 +450,18 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func delete(_ category: PiwigoAlbumData, inModde mode: String,
+    class func delete(_ category: PiwigoAlbumData,
+                      inModde mode: kPwgCategoryDeletionMode,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : category.albumId,
-                                          "photo_deletion_mode" : mode,
+                                          "photo_deletion_mode" : mode.pwgArg,
                                           "pwg_token"           : NetworkVars.pwgToken]
 
         // Stores image data before category deletion
         var images: [PiwigoImageData]? = []
-        if mode != kCategoryDeletionModeNone {
+        if mode != .none {
             images = category.imageList
         }
 
@@ -481,7 +493,7 @@ class AlbumUtilities: NSObject {
                     // Delete images from cache
                     for image in images ?? [] {
                         // Delete orphans only?
-                        if (mode == kCategoryDeletionModeOrphaned) && image.categoryIds.count > 1 {
+                        if (mode == .orphaned) && image.categoryIds.count > 1 {
                             // Update categories the images belongs to
                             CategoriesData.sharedInstance().removeImage(image, fromCategory: String(category.albumId))
                             continue

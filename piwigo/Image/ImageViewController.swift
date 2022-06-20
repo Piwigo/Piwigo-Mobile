@@ -1,5 +1,5 @@
 //
-//  ImageDetailViewController.swift
+//  ImageViewController.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 22/09/2021.
@@ -13,121 +13,37 @@ import piwigoKit
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
     func didUpdateImage(withData imageData: PiwigoImageData)
-    func didDeleteImage(_ image: PiwigoImageData?, atIndex index: Int)
     func needToLoadMoreImages()
 }
 
-@objc class ImageDetailViewController: UIViewController {
+@objc class ImageViewController: UIViewController {
     
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
     @objc var categoryId = 0
     @objc var imageIndex = 0
     
-    private var imageData = PiwigoImageData()
+    var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
-    private var pageViewController: UIPageViewController?
-    private lazy var userHasUploadRights = false
+    var pageViewController: UIPageViewController?
+    lazy var userHasUploadRights = false
+
     
     // MARK: - Navigation Bar & Toolbar Buttons
-    private var actionBarButton: UIBarButtonItem?       // iPhone & iPad until iOS 13:
+    var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
                                                         // - for editing image properties
                                                         // iPhone & iPad as from iOS 14:
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    private var favoriteBarButton: UIBarButtonItem?
-    private var shareBarButton: UIBarButtonItem?
-    private var setThumbnailBarButton: UIBarButtonItem?
-    private var moveBarButton: UIBarButtonItem?
-    private var deleteBarButton: UIBarButtonItem?
+    var favoriteBarButton: UIBarButtonItem?
+    var shareBarButton: UIBarButtonItem?
+    var setThumbnailBarButton: UIBarButtonItem?
+    var moveBarButton: UIBarButtonItem?
+    var deleteBarButton: UIBarButtonItem?
     private var spaceBetweenButtons: UIBarButtonItem?
     
-    
-    // MARK: - Albums related Actions & Menus
-    @available(iOS 13.0, *)
-    private lazy var copyAction: UIAction = {
-        // Copy image to album
-        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
-                              handler: { [unowned self] _ in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-            // Present album selector for copying image
-            self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
-        })
-        action.accessibilityIdentifier = "Copy"
-        return action
-    }()
-    
-    @available(iOS 13.0, *)
-    private lazy var moveAction: UIAction = {
-        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-                              image: UIImage(systemName: "arrowshape.turn.up.right"),
-                              handler: { [unowned self] _ in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-
-            // Present album selector for moving image
-            self.selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
-        })
-        action.accessibilityIdentifier = "Move"
-        return action
-    }()
-    
-    @available(iOS 13.0, *)
-    private lazy var setAsThumbnailAction: UIAction = {
-        let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
-                                                       comment:"Set as Album Thumbnail"),
-                              image: UIImage(systemName: "rectangle.and.paperclip"),
-                              handler: { [unowned self] _ in
-            // Present album selector for setting album thumbnail
-            self.setAsAlbumImage()
-        })
-        action.accessibilityIdentifier = "SetThumbnail"
-        return action
-    }()
-    
-    @available(iOS 13.0, *)
-    private lazy var albumMenu: UIMenu = {
-        if NetworkVars.hasAdminRights {
-            return UIMenu(title: "", image: nil,
-                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
-                          options: .displayInline,
-                          children: [copyAction, moveAction, setAsThumbnailAction])
-        } else {
-            return UIMenu(title: "", image: nil,
-                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
-                          options: .displayInline,
-                          children: [copyAction, moveAction])
-        }
-    }()
-    
-
-    // MARK: - Images related Actions & Menus
-    @available(iOS 13.0, *)
-    private lazy var editParamsAction: UIAction = {
-        // Edit image parameters
-        let action = UIAction(title: NSLocalizedString("imageOptions_properties",
-                                                       comment: "Modify Information"),
-                              image: UIImage(systemName: "pencil"),
-                              handler: { _ in
-            // Edit image informations
-            self.editImage()
-        })
-        action.accessibilityIdentifier = "Edit Parameters"
-        return action
-    }()
-
-    @available(iOS 13.0, *)
-    private lazy var editMenu: UIMenu = {
-        return UIMenu(title: "", image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.piwigoImage.edit"),
-                      options: .displayInline,
-                      children: [editParamsAction])
-    }()
-
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -171,7 +87,7 @@ import piwigoKit
             
             // Unknown list -> initialise album and download list
             let nberImagesPerPage = ImagesCollection.numberOfImagesToDownloadPerPage()
-            let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
+            let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "")
             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
@@ -329,7 +245,7 @@ import piwigoKit
     }
 
     deinit {
-        debugPrint("••> ImageDetailViewController of image \(imageData.imageId) is being deinitialized.")
+        debugPrint("••> ImageViewController of image \(imageData.imageId) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
@@ -406,9 +322,9 @@ import piwigoKit
         }
     }
     
-    private func updateNavBar() {
+    func updateNavBar() {
         // Button displayed in all circumstances
-        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageDetailViewController.shareImage))
+        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageViewController.shareImage))
 
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
@@ -421,7 +337,7 @@ import piwigoKit
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
                 /// - to edit image parameters,
-                let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
+                let menu = UIMenu(title: "", children: [albumMenu(), editMenu()].compactMap({$0}))
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
                 deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
@@ -584,7 +500,7 @@ import piwigoKit
     
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
-    private func setEnableStateOfButtons(_ state: Bool) {
+    func setEnableStateOfButtons(_ state: Bool) {
         actionBarButton?.isEnabled = state
         shareBarButton?.isEnabled = state
         moveBarButton?.isEnabled = state
@@ -651,7 +567,6 @@ import piwigoKit
 
     
     // MARK: - User Interaction
-
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -715,456 +630,9 @@ import piwigoKit
         return navigationController?.isNavigationBarHidden ?? false
     }
 
-
-    // MARK: - Edit, Remove, Delete Image
-
-    @objc func editImage() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        // Present EditImageDetails view
-        let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
-        guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
-        editImageVC.images = [imageData]
-        editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights ||
-                                           (NetworkVars.hasNormalRights && userHasUploadRights)
-        editImageVC.delegate = self
-        pushView(editImageVC, forButton: actionBarButton)
-    }
-
-    @objc func deleteImage() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        let alert = UIAlertController(title: "",
-            message: NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
-            preferredStyle: .actionSheet)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
-
-        let removeAction = UIAlertAction(
-            title: NSLocalizedString("removeSingleImage_title", comment: "Remove from Album"),
-            style: .default, handler: { [self] action in
-                removeImageFromCategory()
-            })
-
-        let deleteAction = UIAlertAction(
-            title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
-            style: .destructive, handler: { [self] action in
-                deleteImageFromDatabase()
-            })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(deleteAction)
-        if let categoryIds = imageData.categoryIds, categoryIds.count > 1,
-           categoryId > 0 {
-            // This image is used in another album
-            // Proposes to remove it from the current album, unless it was selected from a smart album
-            alert.addAction(removeAction)
-        }
-
-        // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = deleteBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
-        }
-    }
-
-    func removeImageFromCategory() {
-        // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Update image category list
-        guard var categoryIds = imageData.categoryIds else {
-            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
-                // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
-                }
-            }
-            return
-        }
-        categoryIds.removeAll { $0 as AnyObject === NSNumber(value: categoryId) as AnyObject }
-
-        // Prepare parameters for removing the image/video from the selected category
-        let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
-                                          "categories"          : newImageCategories,
-                                          "multiple_value_mode" : "replace"]
-        
-        // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [unowned self] in
-            // Update image data
-            self.imageData.categoryIds = categoryIds
-
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
-                    // Remove image from cache and update UI in main thread
-                    CategoriesData.sharedInstance()
-                        .removeImage(self.imageData, fromCategory: String(self.categoryId))
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage(withId: self.imageData.imageId)
-                }
-            }
-        } failure: { [unowned self] error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
-                // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
-                }
-            }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                        self.removeImageFromCategory()
-                    }
-                } else {
-                    self.removeImageFromCategory()
-                }
-            })
-        }
-    }
-
-    func deleteImageFromDatabase() {
-        // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Send request to Piwigo server
-        ImageUtilities.delete([imageData]) { [unowned self] in
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage(withId: imageData.imageId)
-                }
-            }
-        } failure: { [unowned self] error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
-                // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
-                }
-            }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                        self.deleteImageFromDatabase()
-                    }
-                } else {
-                    self.deleteImageFromDatabase()
-                }
-            })
-        }
-    }
-
-    
-    // MARK: - Share Image
-
-    @objc func shareImage() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        // Check autorisation to access Photo Library (camera roll)
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
-                onAccess: { [unowned self] in
-                    // User allowed to save image in camera roll
-                    presentShareImageViewController(withCameraRollAccess: true)
-                },
-                onDeniedAccess: { [unowned self] in
-                    // User not allowed to save image in camera roll
-                    if Thread.isMainThread {
-                        presentShareImageViewController(withCameraRollAccess: false)
-                    } else {
-                        DispatchQueue.main.async(execute: { [self] in
-                            presentShareImageViewController(withCameraRollAccess: false)
-                        })
-                    }
-                })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil,
-                onAuthorizedAccess: { [unowned self] in
-                    // User allowed to save image in camera roll
-                    presentShareImageViewController(withCameraRollAccess: true)
-                },
-                onDeniedAccess: { [unowned self] in
-                    // User not allowed to save image in camera roll
-                    if Thread.isMainThread {
-                        presentShareImageViewController(withCameraRollAccess: false)
-                    } else {
-                        DispatchQueue.main.async(execute: { [self] in
-                            presentShareImageViewController(withCameraRollAccess: false)
-                        })
-                    }
-                })
-        }
-    }
-
-    func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
-        // To exclude some activity types
-        var excludedActivityTypes = [UIActivity.ActivityType]()
-
-        // Create new activity provider item to pass to the activity view controller
-        var itemsToShare: [AnyHashable] = []
-        if imageData.isVideo {
-            // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
-
-            // Use delegation to monitor the progress of the item method
-            videoItemProvider.delegate = self
-
-            // Add to list of items to share
-            itemsToShare.append(videoItemProvider)
-
-            // Exclude "assign to contact" activity
-            excludedActivityTypes.append(.assignToContact)
-        }
-        else {
-            // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
-
-            // Use delegation to monitor the progress of the item method
-            imageItemProvider.delegate = self
-
-            // Add to list of items to share
-            itemsToShare.append(imageItemProvider)
-        }
-
-        // Create an activity view controller with the activity provider item.
-        // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
-        let activityViewController = UIActivityViewController(activityItems: itemsToShare,
-                                                              applicationActivities: nil)
-
-        // Exclude some activity types if needed
-        if !hasCameraRollAccess {
-            // Exclude "camera roll" activity when the Photo Library is not accessible
-            excludedActivityTypes.append(.saveToCameraRoll)
-        }
-        activityViewController.excludedActivityTypes = Array(excludedActivityTypes)
-
-        // Delete image/video file and remove observers after dismissing activity view controller
-        activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
-//            debugPrint("Activity Type selected: \(activityType)")
-
-            // If needed, sets items so that they will be deleted after a delay
-            if #available(iOS 10.0, *) {
-                let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
-                if delay > 0, activityType == .copyToPasteboard {
-                    let items = UIPasteboard.general.items
-                    let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
-                    let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
-                    UIPasteboard.general.setItems(items, options: options)
-                }
-            }
-            
-            // Enable buttons after action
-            setEnableStateOfButtons(true)
-
-            // Remove observers
-            let name = Notification.Name(kPiwigoNotificationDidShare)
-            NotificationCenter.default.post(name: name, object: nil)
-
-            if !completed {
-                if activityType == nil {
-                    debugPrint("User dismissed the view controller without making a selection.");
-                } else {
-                    debugPrint("Activity was not performed.")
-                    // Cancel download task
-                    let name = Notification.Name(kPiwigoNotificationCancelDownload)
-                    NotificationCenter.default.post(name: name, object: nil)
-                }
-            }
-        }
-
-        // Present share image activity view controller
-        activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
-        present(activityViewController, animated: true)
-    }
-
-    @objc func cancelShareImage() {
-        // Cancel file donwload
-        let name = Notification.Name(kPiwigoNotificationCancelDownload)
-        NotificationCenter.default.post(name: name, object: nil)
-    }
-
-    
-    // MARK: - Album Methods
-
-    @objc func setAsAlbumImage() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        // Present SelectCategory view
-        let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail) {
-            setThumbVC.delegate = self
-            if #available(iOS 14.0, *) {
-                pushView(setThumbVC, forButton: actionBarButton)
-            } else {
-                pushView(setThumbVC, forButton: setThumbnailBarButton)
-            }
-        }
-    }
-
-    private func selectCategory(withAction action: kPiwigoCategorySelectAction) {
-        let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        let parameter = [imageData, NSNumber(value: categoryId)]
-        if copyVC.setInput(parameter: parameter, for: action) {
-            copyVC.delegate = self // To re-enable toolbar
-            if action == kPiwigoCategorySelectActionCopyImage {
-                copyVC.imageCopiedDelegate = self   // To update image data after copy
-            } else {
-                copyVC.imageRemovedDelegate = self  // To remove image after move
-            }
-            if #available(iOS 14.0, *) {
-                pushView(copyVC, forButton: actionBarButton)
-            } else {
-                pushView(copyVC, forButton: moveBarButton)
-            }
-        }
-    }
-    
-    @objc func addImageToCategory() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        // If image selected from Search, immediatley propose to copy it
-        if categoryId == kPiwigoSearchCategoryId {
-            // Present album selector for copying image
-            self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
-            return
-        }
-
-        // Image selected from album collection
-        let alert = UIAlertController(title: nil, message: nil,
-            preferredStyle: .actionSheet)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
-
-        let copyAction = UIAlertAction(
-            title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-            style: .default, handler: { [self] action in
-                // Present album selector for copying image
-                self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
-            })
-
-        let moveAction = UIAlertAction(
-            title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-            style: .default, handler: { [self] action in
-                // Present album selector for moving image
-                self.selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
-            })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(copyAction)
-        alert.addAction(moveAction)
-
-        // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = moveBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
-        }
-    }
-
-    
-    // MARK: - Add/remove image from favorites
-
-    private func getFavoriteBarButton() -> UIBarButtonItem {
-        let isFavorite = CategoriesData.sharedInstance()
-            .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
-        let button = UIBarButtonItem.favoriteImageButton(isFavorite, target: self)
-        button.action = isFavorite ? #selector(removeFromFavorites) : #selector(addToFavorites)
-        button.isEnabled = true
-        return button
-    }
-    
-    @objc func addToFavorites() {
-        // Disable button during action
-        favoriteBarButton?.isEnabled = false
-
-        // Send request to Piwigo server
-        ImageUtilities.addToFavorites(imageData) { [unowned self] in
-            DispatchQueue.main.async {
-                self.favoriteBarButton?.setFavoriteImage(for: true)
-                self.favoriteBarButton?.action = #selector(self.removeFromFavorites)
-                self.favoriteBarButton?.isEnabled = true
-            }
-        } failure: { error in
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites."), errorMessage: error.localizedDescription) {
-                    self.favoriteBarButton?.isEnabled = true
-                }
-            }
-        }
-    }
-
-    @objc func removeFromFavorites() {
-        // Disable button during action
-        favoriteBarButton?.isEnabled = false
-
-        // Send request to Piwigo server
-        ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
-            DispatchQueue.main.async {
-                if self.categoryId == kPiwigoFavoritesCategoryId {
-                    // Remove image from the album of favorites
-                    self.didRemoveImage(withId: self.imageData.imageId)
-                } else {
-                    // Update favorite button
-                    self.favoriteBarButton?.setFavoriteImage(for: false)
-                    self.favoriteBarButton?.action = #selector(self.addToFavorites)
-                    self.favoriteBarButton?.isEnabled = true
-                }
-            }
-        } failure: { error in
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites."), errorMessage: error.localizedDescription) {
-                    self.favoriteBarButton?.isEnabled = true
-                }
-            }
-        }
-    }
-
     
     // MARK: - Push Views
-
-    private func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
+    func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
         if UIDevice.current.userInterfaceIdiom == .pad
         {
             if let vc = viewController as? SelectCategoryViewController {
@@ -1195,7 +663,7 @@ import piwigoKit
 
 
 // MARK: - UIPageViewControllerDelegate
-extension ImageDetailViewController: UIPageViewControllerDelegate
+extension ImageViewController: UIPageViewControllerDelegate
 {
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
@@ -1247,10 +715,10 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
 
 
 // MARK: - UIPageViewControllerDataSource
-extension ImageDetailViewController: UIPageViewControllerDataSource
+extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
-    private func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
+    func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
         imagePage.imageIndex = index
         imagePage.imageData = images[index]
@@ -1294,7 +762,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
 
 
 // MARK: - ImagePreviewDelegate Methods
-extension ImageDetailViewController: ImagePreviewDelegate
+extension ImageViewController: ImagePreviewDelegate
 {
     func downloadProgress(_ progress: CGFloat) {
         if (progress < 1.0) {
@@ -1306,193 +774,10 @@ extension ImageDetailViewController: ImagePreviewDelegate
 }
 
 
-// MARK: - EditImageParamsDelegate Methods
-extension ImageDetailViewController: EditImageParamsDelegate
-{
-    func didDeselectImage(withId imageId: Int) {
-        // Should never be called when the properties of a single image are edited
-    }
-
-    func didChangeImageParameters(_ params: PiwigoImageData) {
-        // Determine index of updated image
-        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
-        
-        // Update list and currently viewed image
-        imageData = params
-        images[indexOfUpdatedImage] = params
-
-        // Update title view
-        setTitleViewFromImageData()
-        
-        // Update image metadata
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.updateImageMetadata(with: imageData)
-        }
-
-        // Update cached image data
-        /// Note: the current category might be a smart album.
-        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
-        for catId in mergedCatIds {
-            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
-        }
-        
-        // If the current category presents tagged images and the user
-        // removed the associated tag, delete the image from the smart album.
-        if categoryId == kPiwigoTagsCategoryId,
-           let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
-           let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
-            // Delete this image from the category and the parent collection
-            CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
-            // … and delete it from this data source
-            didRemoveImage(withId: params.imageId)
-            return
-        }
-
-        // Update banner of item in collection view (in case of empty title)
-        if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didUpdateImage(withData:))) ?? false {
-            imgDetailDelegate?.didUpdateImage(withData: imageData)
-        }
-    }
-
-    func didFinishEditingParameters() {
-        // Enable buttons after action
-        setEnableStateOfButtons(true)
-
-        // Reload tab bar
-        updateNavBar()
-    }
-}
-
-
 // MARK: - SelectCategoryDelegate Methods
-extension ImageDetailViewController: SelectCategoryDelegate
+extension ImageViewController: SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int) {
         setEnableStateOfButtons(true)
-    }
-}
-
-
-// MARK: - SelectCategoryOfImageDelegate Methods
-extension ImageDetailViewController: SelectCategoryImageCopiedDelegate
-{
-    func didCopyImage(withData imageData: PiwigoImageData) {
-        // Update image data
-        self.imageData = imageData
-
-        // Re-enable buttons
-        setEnableStateOfButtons(true)
-    }
-}
-
-
-// MARK: - SelectCategoryImageRemovedDelegate Methods
-extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
-{
-    func didRemoveImage(withId imageID: Int) {
-        // Determine index of the removed image
-        guard let indexOfRemovedImage = images.firstIndex(where: { $0.imageId == imageID }) else { return }
-
-        // Remove the image from the datasource
-        images.remove(at: indexOfRemovedImage)
-
-        // Return to the album view if the album is empty
-        if images.isEmpty {
-            // Return to the Album/Images collection view
-            navigationController?.popViewController(animated: true)
-            return
-        }
-
-        // Can we present the next image?
-        if indexOfRemovedImage < images.count {
-            // Retrieve data of next image (may be incomplete)
-            let imageData = images[indexOfRemovedImage]
-
-            // Create view controller for presenting next image
-            guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
-            nextImage.imagePreviewDelegate = self
-            imageIndex = indexOfRemovedImage
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = self.images[indexOfRemovedImage]
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
-            }
-            return
-        }
-
-        // Can we present the preceding image?
-        if indexOfRemovedImage > 0 {
-            // Retrieve data of next image (may be incomplete)
-            let imageData = images[indexOfRemovedImage - 1]
-
-            // Create view controller for presenting next image
-            guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
-            prevImage.imagePreviewDelegate = self
-            imageIndex = indexOfRemovedImage - 1
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
-            }
-            return
-        }
-    }
-}
-
-
-// MARK: - ShareImageActivityItemProviderDelegate Methods
-extension ImageDetailViewController: ShareImageActivityItemProviderDelegate
-{
-    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
-        // Show HUD to let the user know the image is being downloaded in the background.
-        presentedViewController?.showPiwigoHUD(withTitle: title, detail: "", buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .annularDeterminate)
-    }
-
-    func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?, preprocessingProgressDidUpdate progress: Float) {
-        // Update HUD
-        presentedViewController?.updatePiwigoHUD(withProgress: progress)
-    }
-
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int) {
-        // Close HUD
-        if imageActivityItemProvider?.isCancelled ?? false {
-            presentedViewController?.hidePiwigoHUD(completion: {
-            })
-        } else {
-            presentedViewController?.updatePiwigoHUDwithSuccess(completion: { [self] in
-                presentedViewController?.hidePiwigoHUD(completion: {
-                })
-            })
-        }
-    }
-
-    func showError(withTitle title: String, andMessage message: String?) {
-        // Display error alert after trying to share image
-        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [unowned self] in
-            // Closes ActivityView
-            presentedViewController?.dismiss(animated: true)
-        }
     }
 }
