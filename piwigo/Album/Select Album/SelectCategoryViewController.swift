@@ -552,12 +552,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // No button if the user does not have upload rights
-        var buttonState = kPiwigoCategoryTableCellButtonStateNone
+        var buttonState: pwgCategoryCellButtonState = .none
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
         let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
                                                 (NetworkVars.hasNormalRights && $0.hasUploadRights) })
         if filteredCat.count > 0 {
-            buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
+            buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? .hideSubAlbum : .showSubAlbum
         }
 
         // How should we present the category
@@ -566,12 +566,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setDefaultAlbum:
             // The current default category is not selectable
             if categoryData.albumId == inputCategoryId {
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
-                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 } else {
                     cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
                 }
@@ -580,7 +580,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // User cannot move album to current parent album or in itself
             if categoryData.albumId == 0 {  // Special case: upperCategories is nil for root
                 // Root album => No button
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 // Is the root album parent of the input album?
                 if inputCategoryData.parentAlbumId == 0 {
                     // Yes => Change text colour
@@ -589,7 +589,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             else if (recentCategories.count > 0) && (indexPath.section == 0) {
                 // Don't present sub-albums in Recent Albums section
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
             }
             else if categoryData.albumId == inputCategoryData.parentAlbumId {
                 // This album is the parent of the input album => Change text colour
@@ -598,7 +598,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             else if categoryData.upperCategories.contains(String(inputCategoryId)) {
                 // This album is a sub-album of the input album => No button
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Not a parent of a sub-album of the input album
@@ -607,7 +607,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setAlbumThumbnail:
             // The root album is not available
             if indexPath.section == 0 {
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
             } else {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
@@ -617,12 +617,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 {
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
-                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 } else {
                     cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
                 }
@@ -630,12 +630,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .copyImage, .copyImages, .moveImage, .moveImages:
             // User cannot copy/move the image to the root album or in albums it already belongs to
             if categoryData.albumId == 0 {  // Should not be presented but in case…
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
-                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: .none)
                 } else {
                     cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
                 }

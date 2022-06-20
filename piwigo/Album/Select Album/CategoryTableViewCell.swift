@@ -8,11 +8,11 @@
 
 import UIKit
 
-//enum kPiwigoCategoryTableCellButtonState : Int {
-//    case none
-//    case showSubAlbum
-//    case hideSubAlbum
-//}
+enum pwgCategoryCellButtonState : Int {
+    case none
+    case showSubAlbum
+    case hideSubAlbum
+}
 
 @objc
 protocol CategoryCellDelegate: NSObjectProtocol {
@@ -30,10 +30,10 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
     
     private var categoryData:PiwigoAlbumData!
-    private var buttonState = kPiwigoCategoryTableCellButtonStateNone
+    private var buttonState: pwgCategoryCellButtonState = .none
     
-    @objc func configure(with category:PiwigoAlbumData, atDepth depth:Int,
-                         andButtonState buttonState:kPiwigoCategoryTableCellButtonState) {
+    func configure(with category:PiwigoAlbumData, atDepth depth:Int,
+                   andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
@@ -54,7 +54,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         }
         
         // Show open/close button (# sub-albums) if there are sub-categories
-        if (category.numberOfSubCategories <= 0) || buttonState == kPiwigoCategoryTableCellButtonStateNone {
+        if (category.numberOfSubCategories <= 0) || buttonState == .none {
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
@@ -74,7 +74,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
                 // Fallback on earlier versions
                 showHideSubCategoriesImage.image = UIImage(named: "openClose")
             }
-            if buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
+            if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
             } else {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform.identity
@@ -87,14 +87,14 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     
     @objc func tappedLoadView() {
         // Rotate icon
-        let sign = buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum ? +1.0 : -1.0
+        let sign = buttonState == .showSubAlbum ? +1.0 : -1.0
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [unowned self] in
             // Rotate the chevron
             self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
-            if self.buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
-                self.buttonState = kPiwigoCategoryTableCellButtonStateShowSubAlbum
+            if self.buttonState == .hideSubAlbum {
+                self.buttonState = .showSubAlbum
             } else {
-                self.buttonState = kPiwigoCategoryTableCellButtonStateHideSubAlbum
+                self.buttonState = .hideSubAlbum
             }
             
             // Add/remove sub-categories
