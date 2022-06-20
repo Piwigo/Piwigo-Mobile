@@ -39,7 +39,7 @@ extension ImageViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for copying image
-            selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
+            selectCategory(withAction: .copyImage)
         })
         action.accessibilityIdentifier = "Copy"
         return action
@@ -53,7 +53,7 @@ extension ImageViewController
             setEnableStateOfButtons(false)
 
             // Present album selector for moving image
-            selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
+            selectCategory(withAction: .moveImage)
         })
         action.accessibilityIdentifier = "Move"
         return action

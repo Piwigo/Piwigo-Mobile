@@ -18,7 +18,7 @@ extension ImageViewController
         // Present SelectCategory view
         let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail) {
+        if setThumbVC.setInput(parameter:imageData, for: .setAlbumThumbnail) {
             setThumbVC.delegate = self
             if #available(iOS 14.0, *) {
                 pushView(setThumbVC, forButton: actionBarButton)

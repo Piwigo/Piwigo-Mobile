@@ -1544,7 +1544,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
-                                       for: kPiwigoCategorySelectActionSetDefaultAlbum) {
+                                       for: .setDefaultAlbum) {
                     categoryVC.delegate = self
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }

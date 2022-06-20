@@ -91,7 +91,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if moveVC.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum) {
+        if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
             moveVC.albumMovedDelegate = self
             categoryDelegate?.pushCategoryView(moveVC)
         }

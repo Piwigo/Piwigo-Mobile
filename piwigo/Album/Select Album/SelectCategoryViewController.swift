@@ -12,11 +12,11 @@ import UIKit
 import piwigoKit
 import CoreMedia
 
-//enum kPiwigoCategorySelectAction {
-//    case none
-//    case setDefaultAlbum, moveAlbum, setAlbumThumbnail, setAutoUploadAlbum
-//    case copyImage, moveImage, copyImages, moveImages
-//}
+enum pwgCategorySelectAction {
+    case none
+    case setDefaultAlbum, moveAlbum, setAlbumThumbnail, setAutoUploadAlbum
+    case copyImage, moveImage, copyImages, moveImages
+}
 
 @objc
 protocol SelectCategoryDelegate: NSObjectProtocol {
@@ -46,7 +46,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
-    private var wantedAction = kPiwigoCategorySelectActionNone  // Action to perform after category selection
+    private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var inputCategoryId: Int = NSNotFound
     private var inputCategoryData: PiwigoAlbumData!
     private var inputImageData: PiwigoImageData!
@@ -55,11 +55,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var totalNumberOfImages: Float = 0.0
     private var selectedCategoryId = NSNotFound
 
-    @objc func setInput(parameter:Any, for action:kPiwigoCategorySelectAction) -> Bool {
+    func setInput(parameter:Any, for action:pwgCategorySelectAction) -> Bool {
         wantedAction = action
         switch action {
-        case kPiwigoCategorySelectActionSetDefaultAlbum,
-             kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setDefaultAlbum, .setAutoUploadAlbum:
             guard let categoryId = parameter as? Int else {
                 debugPrint("Input parameter expected to be an Int and album data in cache")
                 return false
@@ -69,7 +68,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             inputCategoryId = categoryId
             inputCategoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             guard let categoryData = parameter as? PiwigoAlbumData else {
                 debugPrint("Input parameter expected to be of PiwigoAlbumData type")
                 return false
@@ -78,7 +77,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             inputCategoryId = categoryData.albumId
             inputCategoryData = categoryData
             
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             guard let imageData = parameter as? PiwigoImageData else {
                 debugPrint("Input parameter expected to be of type PiwigoImageData")
                 return false
@@ -86,7 +85,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Image which will be set thumbnail of the selected album
             inputImageData = imageData
             
-        case kPiwigoCategorySelectActionCopyImage:
+        case .copyImage:
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? PiwigoImageData,
                   let categoryId = array[1] as? Int else {
@@ -97,7 +96,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             inputImageData = imageData
             inputCategoryId = categoryId
 
-        case kPiwigoCategorySelectActionMoveImage:
+        case .moveImage:
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? PiwigoImageData,
                   let categoryId = array[1] as? Int else {
@@ -108,7 +107,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             inputImageData = imageData
             inputCategoryId = categoryId
 
-        case kPiwigoCategorySelectActionCopyImages:
+        case .copyImages:
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
@@ -128,7 +127,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             inputCategoryId = categoryId
 
-        case kPiwigoCategorySelectActionMoveImages:
+        case .moveImages:
             guard let array = parameter as? [Any],
                   let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
@@ -183,24 +182,22 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Set title and buttons
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
+        case .setDefaultAlbum:
             title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
         
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             title = NSLocalizedString("moveCategory", comment:"Move Album")
         
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
 
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setAutoUploadAlbum:
             title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
             
-        case kPiwigoCategorySelectActionCopyImage,
-             kPiwigoCategorySelectActionCopyImages:
+        case .copyImage, .copyImages:
             title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             
-        case kPiwigoCategorySelectActionMoveImage,
-             kPiwigoCategorySelectActionMoveImages:
+        case .moveImage, .moveImages:
             title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             
         default:
@@ -260,8 +257,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                                name: .pwgPaletteChanged, object: nil)
         
         // Retrieve image data if needed
-        if [kPiwigoCategorySelectActionCopyImages,
-            kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
+        if [.copyImages, .moveImages].contains(wantedAction) {
             totalNumberOfImages = Float(inputImageIds.count)
             if totalNumberOfImages > 1 {
                 showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
@@ -286,8 +282,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                                                         y: mainScreenBounds.midY,
                                                                         width: 0, height: 0)
                 switch self.wantedAction {
-                case kPiwigoCategorySelectActionSetDefaultAlbum,
-                     kPiwigoCategorySelectActionSetAutoUploadAlbum:
+                case .setDefaultAlbum, .setAutoUploadAlbum:
                     self.preferredContentSize = CGSize(width: kPiwigoPadSettingsWidth,
                                                        height: ceil(mainScreenBounds.height*2/3));
                 default:
@@ -306,11 +301,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewWillDisappear(animated)
         
         // Re-enable toolbar items in image preview mode
-        if [kPiwigoCategorySelectActionSetAlbumThumbnail,
-            kPiwigoCategorySelectActionCopyImage,
-            kPiwigoCategorySelectActionCopyImages,
-            kPiwigoCategorySelectActionMoveImage,
-            kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
+        if [.setAlbumThumbnail,
+            .copyImage, .copyImages,
+            .moveImage, .moveImages].contains(wantedAction) {
             self.delegate?.didSelectCategory(withId: selectedCategoryId)
         }
     }
@@ -323,8 +316,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc
     func cancelSelect() -> Void {
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum,
-             kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setDefaultAlbum, .setAutoUploadAlbum:
             // Return to Settings
             navigationController?.popViewController(animated: true)
 
@@ -421,35 +413,35 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func setTableViewMainHeader() {
         let headerView = SelectCategoryHeaderView(frame: .zero)
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
+        case .setDefaultAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSettingsWidth),
                                  text: NSLocalizedString("setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
 
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputCategoryData.name))
 
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), inputImageData.imageTitle.count > 0 ? inputImageData.imageTitle : inputImageData.fileName))
 
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSettingsWidth),
                                  text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             
-        case kPiwigoCategorySelectActionCopyImage:
+        case .copyImage:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), inputImageData.imageTitle.count > 0 ? inputImageData.imageTitle : inputImageData.fileName))
 
-        case kPiwigoCategorySelectActionMoveImage:
+        case .moveImage:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), inputImageData.imageTitle.count > 0 ? inputImageData.imageTitle : inputImageData.fileName))
 
-        case kPiwigoCategorySelectActionCopyImages:
+        case .copyImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: NSLocalizedString("copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
-        case kPiwigoCategorySelectActionMoveImages:
+        case .moveImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
                                  text: NSLocalizedString("moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
@@ -462,7 +454,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
         var title = "", text = ""
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             // 1st section —> Albums containing image
             if section == 0 {
                 // Title
@@ -506,7 +498,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     func numberOfSections(in tableView: UITableView) -> Int {
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             return 2
         default:    // Present recent albums if any
             return 1 + (recentCategories.count > 0 ? 1 : 0)
@@ -515,7 +507,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             if section == 0 {
                 return inputImageData.categoryIds.count
             } else {
@@ -543,7 +535,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         var depth = 0
         let categoryData:PiwigoAlbumData
-        if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
+        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
             let categoryId = inputImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
         }
@@ -571,7 +563,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // How should we present the category
         cell.delegate = self
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
+        case .setDefaultAlbum:
             // The current default category is not selectable
             if categoryData.albumId == inputCategoryId {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
@@ -584,7 +576,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
                 }
             }
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             // User cannot move album to current parent album or in itself
             if categoryData.albumId == 0 {  // Special case: upperCategories is nil for root
                 // Root album => No button
@@ -612,7 +604,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Not a parent of a sub-album of the input album
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             // The root album is not available
             if indexPath.section == 0 {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
@@ -622,7 +614,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if categoryData.albumId == 0 {
                 cell.categoryLabel.textColor = .piwigoColorRightLabel()
             }
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
@@ -635,10 +627,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
                 }
             }
-        case kPiwigoCategorySelectActionCopyImage,
-             kPiwigoCategorySelectActionCopyImages,
-             kPiwigoCategorySelectActionMoveImage,
-             kPiwigoCategorySelectActionMoveImages:
+        case .copyImage, .copyImages, .moveImage, .moveImages:
             // User cannot copy/move the image to the root album or in albums it already belongs to
             if categoryData.albumId == 0 {  // Should not be presented but in case…
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
@@ -667,7 +656,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Retrieve album data
         let categoryData:PiwigoAlbumData
-        if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
+        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
             let categoryId = inputImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
         }
@@ -678,11 +667,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
+        case .setDefaultAlbum:
             // The current default category is not selectable
             if categoryData.albumId == inputCategoryId { return false }
             
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             // Do nothing if this is the input category
             if categoryData.albumId == inputCategoryId { return false }
             // User cannot move album to current parent album or in itself
@@ -691,18 +680,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             } else if (categoryData.albumId == inputCategoryData.parentAlbumId) ||
                         categoryData.upperCategories.contains(String(inputCategoryId)) { return false }
             
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 { return false }
 
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 { return false }
 
-        case kPiwigoCategorySelectActionCopyImage,
-             kPiwigoCategorySelectActionCopyImages,
-             kPiwigoCategorySelectActionMoveImage,
-             kPiwigoCategorySelectActionMoveImages:
+        case .copyImage, .copyImages, .moveImage, .moveImages:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 { return false }
             // Albums containing all the images are not selectable
@@ -723,7 +709,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Get selected category
         let categoryData:PiwigoAlbumData
-        if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
+        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
             let categoryId = inputImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
         }
@@ -738,7 +724,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // What should we do with this selection?
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
+        case .setDefaultAlbum:
             // Do nothing if this is the current default category
             if (categoryData.albumId == NSNotFound) ||
                (categoryData.albumId == inputCategoryId) { return }
@@ -759,12 +745,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.navigationController?.popViewController(animated: true)
             })
 
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             // Do nothing if this is the current default category
             if categoryData.albumId == inputCategoryId { return }
 
             // User must not move album to current parent album or in itself
-            if wantedAction == kPiwigoCategorySelectActionMoveAlbum {
+            if wantedAction == .moveAlbum {
                 if categoryData.albumId == 0 {  // upperCategories is nil for root
                     if inputCategoryData.parentAlbumId == 0 { return }
                 } else if (categoryData.albumId == inputCategoryData.parentAlbumId) ||
@@ -780,7 +766,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.moveCategory(intoCategory: categoryData)
             })
 
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             // Ask user to confirm
             let title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
             let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), categoryData.name)
@@ -790,7 +776,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.setRepresentative(for: categoryData)
             })
 
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case .setAutoUploadAlbum:
             // Do nothing if this is the root album
             if categoryData.albumId == 0 { return }
             
@@ -798,7 +784,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             delegate?.didSelectCategory(withId: categoryData.albumId)
             navigationController?.popViewController(animated: true)
             
-        case kPiwigoCategorySelectActionCopyImage:
+        case .copyImage:
             // Do nothing if this is the root album
             if categoryData.albumId == 0 { return }
             // Do nothing if the image already belongs to the selected album
@@ -813,7 +799,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.copySingleImage(toCategory: categoryData)
             })
 
-        case kPiwigoCategorySelectActionMoveImage:
+        case .moveImage:
             // Do nothing if this is the root album
             if categoryData.albumId == 0 { return }
             // Do nothing if the image already belongs to the selected album
@@ -828,7 +814,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.moveSingleImage(toCategory: categoryData)
             }
 
-        case kPiwigoCategorySelectActionCopyImages:
+        case .copyImages:
             // Do nothing if this is the root album
             if categoryData.albumId == 0 { return }
             // Do nothing if the images already belong to the selected album
@@ -850,7 +836,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 }
             })
 
-        case kPiwigoCategorySelectActionMoveImages:
+        case .moveImages:
             // Do nothing if this is the root album
             if categoryData.albumId == 0 { return }
             // Do nothing if the images already belong to the selected album
@@ -913,22 +899,22 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let title:String
         var message:String
         switch wantedAction {
-        case kPiwigoCategorySelectActionMoveAlbum:
+        case .moveAlbum:
             title = NSLocalizedString("moveCategoryError_title", comment:"Move Fail")
             message = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             title = NSLocalizedString("categoryImageSetError_title", comment:"Image Set Error")
             message = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
-        case kPiwigoCategorySelectActionCopyImage:
+        case .copyImage:
             title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
             message = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
-        case kPiwigoCategorySelectActionCopyImages:
+        case .copyImages:
             title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
             message = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
-        case kPiwigoCategorySelectActionMoveImage:
+        case .moveImage:
             title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
             message = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
-        case kPiwigoCategorySelectActionMoveImages:
+        case .moveImages:
             title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
             message = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
@@ -1305,8 +1291,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Add root album if needed
-        if [kPiwigoCategorySelectActionSetDefaultAlbum,
-            kPiwigoCategorySelectActionMoveAlbum].contains(wantedAction) {
+        if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
             let rootAlbum = PiwigoAlbumData()
             rootAlbum.albumId = 0
             rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
@@ -1333,7 +1318,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let categoryData = CategoriesData.sharedInstance()?.getCategoryById(catId) else { continue }
             
             // User cannot move album to current parent album or in itself
-            if wantedAction == kPiwigoCategorySelectActionMoveAlbum,
+            if wantedAction == .moveAlbum,
                (categoryData.albumId == inputCategoryData.parentAlbumId) ||
                 categoryData.upperCategories.contains(String(inputCategoryId)) { continue }
             
@@ -1379,7 +1364,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Get section in which sub-categories will be inserted
         var section = 0
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             section = 1
         default:    // Present recent albums if any
             section = (recentCategories.count > 0 ? 1 : 0)
@@ -1409,7 +1394,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Get section in which sub-categories will be inserted
         var section = 0
         switch wantedAction {
-        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+        case .setAlbumThumbnail:
             section = 1
         default:    // Present recent albums if any
             section = (recentCategories.count > 0 ? 1 : 0)

@@ -57,7 +57,7 @@ extension AlbumViewController
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
-        if copyVC.setInput(parameter: parameter, for: kPiwigoCategorySelectActionCopyImages) {
+        if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self // To re-enable toolbar
             copyVC.imageCopiedDelegate = self // To update image data after copy
             pushView(copyVC)
@@ -68,7 +68,7 @@ extension AlbumViewController
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
-        if moveVC.setInput(parameter: parameter, for: kPiwigoCategorySelectActionMoveImages) {
+        if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self // To re-enable toolbar
             pushView(moveVC)
         }

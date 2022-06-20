@@ -10,13 +10,13 @@ import Foundation
 
 extension ImageViewController
 {
-    func selectCategory(withAction action: kPiwigoCategorySelectAction) {
+    func selectCategory(withAction action: pwgCategorySelectAction) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
         if copyVC.setInput(parameter: parameter, for: action) {
             copyVC.delegate = self // To re-enable toolbar
-            if action == kPiwigoCategorySelectActionCopyImage {
+            if action == .copyImage {
                 copyVC.imageCopiedDelegate = self   // To update image data after copy
             } else {
                 copyVC.imageRemovedDelegate = self  // To remove image after move
@@ -36,7 +36,7 @@ extension ImageViewController
         // If image selected from Search, immediatley propose to copy it
         if categoryId == kPiwigoSearchCategoryId {
             // Present album selector for copying image
-            self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
+            self.selectCategory(withAction: .copyImage)
             return
         }
 
@@ -55,14 +55,14 @@ extension ImageViewController
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
                 // Present album selector for copying image
-                self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
+                self.selectCategory(withAction: .copyImage)
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
                 // Present album selector for moving image
-                self.selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
+                self.selectCategory(withAction: .moveImage)
             })
 
         // Add actions
