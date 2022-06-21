@@ -544,14 +544,9 @@ import piwigoKit
             } failure: { error in
                 self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
                 }, retry: { [unowned self] in
-                    // Try relogin if unauthorized
-                    if error.code == 401 {
-                        // Try relogin
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                            self.retrieveCompleteImageDataOfImage(self.imageData)
-                        }
-                    } else {
+                    // Try relogin
+                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
                         self.retrieveCompleteImageDataOfImage(self.imageData)
                     }
                 })

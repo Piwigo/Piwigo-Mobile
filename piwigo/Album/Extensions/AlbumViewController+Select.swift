@@ -488,13 +488,9 @@ extension AlbumViewController
                     updateButtonsInSelectionMode()
                 }
             }, retry: { [self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
-                        retrieveImageData(beforeAction: action)
-                    }
-                } else {
+                // Try relogin
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
                     retrieveImageData(beforeAction: action)
                 }
             })

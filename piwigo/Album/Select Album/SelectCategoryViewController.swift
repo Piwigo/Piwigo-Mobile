@@ -165,7 +165,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -345,8 +344,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
         guard let imageId = inputImageIds.last else {
             self.hidePiwigoHUD {
-                DispatchQueue.main.async {
-                    self.couldNotRetrieveImageData()
+                self.dismissPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")) {
+                    self.dismiss(animated: true) { }
                 }
             }
             return
@@ -372,44 +371,19 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             self.retrieveImageData()
             
         } failure: { error in
-            DispatchQueue.main.async {
-                self.couldNotRetrieveImageData(with: error.localizedDescription)
-            }
-        }
-    }
-
-    private func couldNotRetrieveImageData(with message:String = "") {
-        // Failed — Ask user if he/she wishes to retry
-        let title = NSLocalizedString("imageDetailsFetchError_title", comment:"Image Details Fetch Failed")
-        var mainMessage = NSLocalizedString("imageDetailsFetchError_retryMessage", comment:"Fetching the image data failed\nTry again?")
-        if message.count > 0 { mainMessage.append("\n\(message)") }
-
-        let alert = UIAlertController(title: title, message: mainMessage, preferredStyle: .alert)
-        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
-                                        style: .default, handler: { _ in self.retrieveImageData() })
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in
-            self.hidePiwigoHUD {
-                self.dismiss(animated: true) { }
-            }
-        }
-        alert.addAction(retryAction)
-        alert.addAction(dismissAction)
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+            }, retry: { [unowned self] in
+                // Try relogin
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
+                    self.retrieveImageData()
+                }
+            })
         }
     }
     
 
     // MARK: - UITableView - Header
-    
     private func setTableViewMainHeader() {
         let headerView = SelectCategoryHeaderView(frame: .zero)
         switch wantedAction {
@@ -495,7 +469,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     
     // MARK: - UITableView - Rows
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         switch wantedAction {
         case .setAlbumThumbnail:
@@ -702,7 +675,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     
     // MARK: - UITableViewDelegate Methods
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
