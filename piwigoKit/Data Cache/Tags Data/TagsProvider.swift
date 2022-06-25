@@ -61,7 +61,7 @@ public class TagsProvider {
                     }
 
                     // Import the tagJSON into Core Data.
-                    try self.importTags(from: tagJSON.data)
+                    try self.importTags(from: tagJSON.data, asAdmin: asAdmin)
 
                 } catch {
                     // Alert the user if data cannot be digested.
@@ -84,7 +84,7 @@ public class TagsProvider {
      processing the record in batches to avoid a high memory footprint.
     */
     private let batchSize = 256
-    private func importTags(from tagPropertiesArray: [TagProperties]) throws {
+    private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
         
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -120,6 +120,10 @@ public class TagsProvider {
             }
         }
 
+        // Should we remove non-downloaded tags?
+        if NetworkVars.hasAdminRights, !asAdmin { return }
+        if NetworkVars.hasNormalRights, NetworkVars.hasNormalAndUploadRights, !asAdmin { return }
+            
         // Delete cached tags not in server
         deleteTagsNotOnServer(tagPropertiesArray, taskContext: taskContext)
     }
@@ -141,8 +145,11 @@ public class TagsProvider {
         // so it won’t block the main thread.
         taskContext.performAndWait {
             
-            // Retrieve existing tags
+            // Retrieve existing tags to avoid duplicates
             // Create a fetch request for the Tag entity sorted by Id
+            /// - Unique Constraints must be strings and tagId is an Int32
+            /// - When you try to save a context with more than one object with the same value for a Unique Constraint, the first one you created is the one that gets saved
+            /// - If you have parent/child contexts, you need to set the merge policy on each one of them
             let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
             
@@ -163,10 +170,21 @@ public class TagsProvider {
             for tagData in tagsBatch {
             
                 // Index of this new tag in cache
-                let index = cachedTags.firstIndex { $0.tagId == tagData.id! }
-                
-                // Is this tag already cached?
-                if (index == nil) {
+                guard let ID = tagData.id else { continue }
+                if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
+                    // Update the tag's properties using the raw data
+                    do {
+                        try cachedTags[index].update(with: tagData)
+                    }
+                    catch TagError.missingData {
+                        // Could not perform the update
+                        print(TagError.missingData.localizedDescription)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                else {
                     // Create a Tag managed object on the private queue context.
                     guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
                         print(TagError.creationError.localizedDescription)
@@ -186,22 +204,8 @@ public class TagsProvider {
                         print(error.localizedDescription)
                     }
                 }
-                else {
-                    // Update the tag's properties using the raw data
-                    do {
-                        try cachedTags[index!].update(with: tagData)
-                    }
-                    catch TagError.missingData {
-                        // Could not perform the update
-                        print(TagError.missingData.localizedDescription)
-                    }
-                    catch {
-                        print(error.localizedDescription)
-                    }
-
-                }
             }
-                        
+                                    
             // Save all insertions and deletions from the context to the store.
             if taskContext.hasChanges {
                 do {
@@ -258,7 +262,7 @@ public class TagsProvider {
                 cachedTag.didAccessValue(forKey: nil)
             }
             if !allTags.contains(where: { $0.id == cachedTag.tagId }) {
-//                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
+                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
                 taskContext.delete(cachedTag)
             }
         }
@@ -467,7 +471,7 @@ public class TagsProvider {
     
     /**
      A fetched results controller delegate to give consumers a chance to update
-     the user interface when content changes.
+     the TagsViewController user interface when content changes.
      */
     public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
@@ -486,6 +490,42 @@ public class TagsProvider {
                                             managedObjectContext: self.managedObjectContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = fetchedResultsControllerDelegate
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        
+        return controller
+    }()
+
+    /**
+     A fetched results controller delegate to give consumers a chance to update
+     the TagsSelectorViewController user interface when content changes.
+     */
+    public weak var fetchedNonAdminResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    
+    /**
+     A fetched results controller to fetch Tag records sorted by name except tags with unknown number of images.
+     */
+    public lazy var fetchedNonAdminResultsController: NSFetchedResultsController<Tag> = {
+        
+        // Create a fetch request for the Tag entity sorted by name.
+        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        // AND subpredicates
+        var andSubpredicates:[NSPredicate] = [NSPredicate(format: "numberOfImagesUnderTag != %ld", 0)]
+        andSubpredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
+
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: self.managedObjectContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        controller.delegate = fetchedNonAdminResultsControllerDelegate
         
         // Perform the fetch.
         do {

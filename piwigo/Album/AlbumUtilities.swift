@@ -177,8 +177,14 @@ class AlbumUtilities: NSObject {
                     return
                 }
 
+                // Extract albums data from JSON message
+                let communityAlbums = parseAlbumJSON(uploadJSON.data)
+                if !communityAlbums.isEmpty {
+                    NetworkVars.hasNormalAndUploadRights = true
+                }
+                
                 // Return Community albums
-                completion(parseAlbumJSON(uploadJSON.data))
+                completion(communityAlbums)
             }
             catch {
                 // Data cannot be digested

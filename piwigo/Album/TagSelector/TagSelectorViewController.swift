@@ -29,7 +29,7 @@ class TagSelectorViewController: UITableViewController {
      */
     private lazy var tagsProvider: TagsProvider = {
         let provider : TagsProvider = TagsProvider()
-        provider.fetchedResultsControllerDelegate = self
+        provider.fetchedNonAdminResultsControllerDelegate = self
         return provider
     }()
     
@@ -42,7 +42,7 @@ class TagSelectorViewController: UITableViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
     private var filteredTags: [Tag] {
-        let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
+        let allTags = tagsProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
         if #available(iOS 11.0, *) {
             return allTags.filterTags(for: searchQuery)
         } else {

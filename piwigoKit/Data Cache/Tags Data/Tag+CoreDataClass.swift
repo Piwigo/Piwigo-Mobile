@@ -26,15 +26,17 @@ public class Tag: NSManagedObject {
         tagId = newId
         tagName = NetworkUtilities.utf8mb4String(from: newName)
 
-        // In the absence of date, use today
+        // In the absence of date, keep 1st January 1900 at 00:00:00 (see DataModel)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        lastModified = dateFormatter.date(from: tagProperties.lastmodified ?? "") ?? Date()
+        if let newDate = dateFormatter.date(from: tagProperties.lastmodified ?? "") {
+            lastModified = newDate
+        }
 
         // In the absence of count, use max integer
-        if let newCount = tagProperties.counter {
+        if let newCount = tagProperties.counter, newCount != Int64.max {
             numberOfImagesUnderTag = newCount
-        } else {
+        } else if numberOfImagesUnderTag == 0  {
             numberOfImagesUnderTag = Int64.max
         }
     }
