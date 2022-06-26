@@ -1376,7 +1376,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Update state of Select button if needed
             updateSelectButton(ofSection: indexPath.section, completion: {
-                self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+                let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+                if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
+                    self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+                }
             })
         }
     }
@@ -1472,7 +1475,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
                 
             // Update section if available data
-            updateSelectButton(ofSection: indexPath.section, completion: {})
+            updateSelectButton(ofSection: indexPath.section) {}
             
             // Determine place names from first images
             var imageAssets: [PHAsset] = []
@@ -1659,9 +1662,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.reloadInputViews()
 
         // Update state of Select button if needed
-        updateSelectButton(ofSection: indexPath.section, completion: {
-            self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
-        })
+        updateSelectButton(ofSection: indexPath.section) {
+            let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+            if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
+                self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+            }
+        }
     }
 
 
@@ -1990,9 +1996,12 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     cell.update(selected: false, state: upload.state)
                     cell.reloadInputViews()
                     // The section will be refreshed only if the button content needs to be changed
-                    self.updateSelectButton(ofSection: indexPath.section, completion: {
-                        self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
-                    })
+                    self.updateSelectButton(ofSection: indexPath.section) {
+                        let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+                        if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
+                            self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+                        }
+                    }
                     return
                 }
             }
