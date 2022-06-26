@@ -76,9 +76,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     private var uploadsInQueue = [(String,kPiwigoUploadState)?]()         // Array of uploads in queue at start
     private var indexedUploadsInQueue = [(String,kPiwigoUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
-    private var selectedImages = [UploadProperties?]()                         // Array of images to upload
-    private var selectedSections = [SelectButtonState]()                       // State of Select buttons
-    private var imagesBeingTouched = [IndexPath]()                             // Array of indexPaths of touched images
+    private var selectedImages = [UploadProperties?]()          // Array of images to upload
+    private var selectedSections = [SelectButtonState]()        // State of Select buttons
+    private var imagesBeingTouched = [IndexPath]()              // Array of indexPaths of touched images
     
     private var uploadIDsToDelete = [NSManagedObjectID]()
     private var imagesToDelete = [String]()
@@ -692,7 +692,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func sortByMonthWeekDayAndUpdateSelection(images: PHFetchResult<PHAsset>) -> (Void)  {
 
         // Store current selection and re-select images after data source change
-        let oldSelection = selectedImages.compactMap({$0})
+        let oldSelection = selectedImages
         selectedImages = .init(repeating: nil, count: fetchedImages.count)
 
         // Initialisation
@@ -726,7 +726,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in i*step..<min((i+1)*step,images.count) {
                 // Get localIdentifier of current image
                 let imageID = images[index].localIdentifier
-                if let indexOfSelection = oldSelection.firstIndex(where: {$0.localIdentifier == imageID}) {
+                if let indexOfSelection = oldSelection.firstIndex(where: {$0?.localIdentifier == imageID}) {
                     selectedImages[index] = oldSelection[indexOfSelection]
                 }
                 
@@ -1410,15 +1410,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Number of selected images
         let nberOfSelectedImagesInSection = selectedImages.count > lastIndex ?
             selectedImages[firstIndex...lastIndex].compactMap{ $0 }.count : 0
-        if nberOfImagesInSection == nberOfSelectedImagesInSection {
-            // All images are selected
-            if section < selectedSections.count,
-               selectedSections[section] != .deselect {
-                selectedSections[section] = .deselect
-                completion()
-            }
-            return
-        }
 
         // Can we calculate the number of images already in the upload queue?
         if queue.operationCount != 0 {
@@ -1717,62 +1708,61 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters and upload settings
         for index in 0..<selectedImages.count {
-            if let request = selectedImages[index] {
-                var updatedRequest = request
-                
-                // Image parameters
-                if let imageTitle = imageParameters["title"] as? String {
-                    updatedRequest.imageTitle = imageTitle
-                }
-                if let author = imageParameters["author"] as? String {
-                    updatedRequest.author = author
-                }
-                if let privacy = imageParameters["privacy"] as? kPiwigoPrivacy {
-                    updatedRequest.privacyLevel = privacy
-                }
-                if let tagIds = imageParameters["tagIds"] as? String {
-                    updatedRequest.tagIds = tagIds
-                }
-                if let comment = imageParameters["comment"] as? String {
-                    updatedRequest.comment = comment
-                }
-                
-                // Upload settings
-                if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
-                    updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-                }
-                if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
-                    updatedRequest.resizeImageOnUpload = resizeImageOnUpload
-                    if resizeImageOnUpload {
-                        if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
-                            updatedRequest.photoMaxSize = photoMaxSize
-                        }
-                        if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
-                            updatedRequest.videoMaxSize = videoMaxSize
-                        }
-                    } else {    // No downsizing
-                        updatedRequest.photoMaxSize = 0
-                        updatedRequest.videoMaxSize = 0
-                    }
-                }
-                if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
-                    updatedRequest.compressImageOnUpload = compressImageOnUpload
-                }
-                if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
-                    updatedRequest.photoQuality = photoQuality
-                }
-                if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
-                    updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-                }
-                if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
-                    updatedRequest.defaultPrefix = defaultPrefix
-                }
-                if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
-                    updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
-                }
-
-                selectedImages[index] = updatedRequest
+            guard let request = selectedImages[index] else { continue }
+            var updatedRequest = request
+            
+            // Image parameters
+            if let imageTitle = imageParameters["title"] as? String {
+                updatedRequest.imageTitle = imageTitle
             }
+            if let author = imageParameters["author"] as? String {
+                updatedRequest.author = author
+            }
+            if let privacy = imageParameters["privacy"] as? kPiwigoPrivacy {
+                updatedRequest.privacyLevel = privacy
+            }
+            if let tagIds = imageParameters["tagIds"] as? String {
+                updatedRequest.tagIds = tagIds
+            }
+            if let comment = imageParameters["comment"] as? String {
+                updatedRequest.comment = comment
+            }
+            
+            // Upload settings
+            if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
+                updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
+            }
+            if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
+                updatedRequest.resizeImageOnUpload = resizeImageOnUpload
+                if resizeImageOnUpload {
+                    if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
+                        updatedRequest.photoMaxSize = photoMaxSize
+                    }
+                    if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
+                        updatedRequest.videoMaxSize = videoMaxSize
+                    }
+                } else {    // No downsizing
+                    updatedRequest.photoMaxSize = 0
+                    updatedRequest.videoMaxSize = 0
+                }
+            }
+            if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
+                updatedRequest.compressImageOnUpload = compressImageOnUpload
+            }
+            if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
+                updatedRequest.photoQuality = photoQuality
+            }
+            if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
+                updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
+            }
+            if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
+                updatedRequest.defaultPrefix = defaultPrefix
+            }
+            if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
+                updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
+            }
+
+            selectedImages[index] = updatedRequest
         }
         
         // Add selected images to upload queue
@@ -1900,8 +1890,8 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             }
             
             // Get index of selected image and deselect it
-            if let indexOfUploadedImage = selectedImages.compactMap({$0})
-                .firstIndex(where: { $0.localIdentifier == upload.localIdentifier }) {
+            if let indexOfUploadedImage = selectedImages
+                .firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                 // Deselect image
                 selectedImages[indexOfUploadedImage] = nil
             }
@@ -1941,8 +1931,8 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 indexedUploadsInQueue[index] = nil
             }
             // Remove image from selection if needed
-            if let index = selectedImages.compactMap({$0})
-                .firstIndex(where: { $0.localIdentifier == upload.localIdentifier }) {
+            if let index = selectedImages
+                .firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                 // Deselect image
                 selectedImages[index] = nil
             }
