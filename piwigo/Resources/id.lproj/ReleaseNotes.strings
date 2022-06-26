@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.2_text" = "Version 2.11.2\n\n• Fixes a compatibility issue with the Community plugin";
+"v2.12.0_text" = "Version 2.12\n\n• Select a tag faster with the search bar\n• Code modernization\n• Bug fixes";
+
+"v2.11.2_text" = "Version 2.11.2\nJune 21, 2022\n\n• Fixes a compatibility issue with the Community plugin";
 
 "v2.11.1_text" = "Versi 2.11.1\n\n• Perbaikan bug";
 

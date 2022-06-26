@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.2_text" = "Versie 2.11.2\n\n• Lost een compatibiliteitsprobleem op met de Community-plug-in";
+"v2.12.0_text" = "Versie 2.12\n\n• Selecteer een tag sneller met de zoekbalk\n• Codemodernisering\n• Foutjes verbeterd";
+
+"v2.11.2_text" = "Versie 2.11.2\n21 juni 2022\n\n• Lost een compatibiliteitsprobleem op met de Community-plug-in";
 
 "v2.11.1_text" = "Versie 2.11.1\n12 juni 2022\n\n• Foutjes verbeterd";
 

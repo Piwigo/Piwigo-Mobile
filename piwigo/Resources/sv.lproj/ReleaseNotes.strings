@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.2_text" = "Version 2.11.2\n\n• Åtgärdar ett kompatibilitetsproblem med Community-plugin";
+"v2.12.0_text" = "Version 2.12\n\n• Välj en tagg snabbare med sökfältet\n• Uppdatering av kod\n• Buggfixar";
+
+"v2.11.2_text" = "Version 2.11.2\n21 juni 2022\n\n• Åtgärdar ett kompatibilitetsproblem med Community-plugin";
 
 "v2.11.1_text" = "Version 2.11.1\n12 juni 2022\n\n• Buggfixar";
 

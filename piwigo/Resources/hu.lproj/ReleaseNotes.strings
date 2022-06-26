@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.2_text" = "2.11.2 verzió\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal";
+"v2.12.0_text" = "2.12-es verzió\n\n• Gyorsabban válasszon címkét a keresősávval\n• Kódmodernizáció\n• Hibajavítások";
+
+"v2.11.2_text" = "2.11.2 verzió\n2022. június 21\n\n• Kijavít egy kompatibilitási problémát a Community beépülő modullal";
 
 "v2.11.1_text" = "2.11.1-es verzió\n2022. június 12\n\n• Hibajavítások";
 

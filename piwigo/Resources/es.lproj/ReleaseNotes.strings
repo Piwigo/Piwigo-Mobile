@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.11.2_text" = "Versión 2.11.2\n\n• Soluciona un problema de compatibilidad con el complemento Community";
+"v2.12.0_text" = "Versión 2.12\n\n• Selecciona una etiqueta más rápido con la barra de búsqueda\n• Modernización del código\n• Corrección de errores";
+
+"v2.11.2_text" = "Versión 2.11.2\n21 de junio de 2022\n\n• Soluciona un problema de compatibilidad con el complemento Community";
 
 "v2.11.1_text" = "Versión 2.11.1\n12 de junio de 2022\n\n• Corrección de errores";
 
