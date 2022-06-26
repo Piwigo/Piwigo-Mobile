@@ -31,9 +31,8 @@
 		self.sortType = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
                 
         // Create empty album in cache if necessary
-        PiwigoAlbumData *albumData = [PiwigoAlbumData new];
         if ([[CategoriesData sharedInstance] getCategoryById:categoryId] == nil) {
-            albumData = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:query];
+            PiwigoAlbumData *albumData = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:query];
             [[CategoriesData sharedInstance] updateCategories:@[albumData]];
         }
         
