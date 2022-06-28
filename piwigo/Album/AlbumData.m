@@ -29,24 +29,33 @@
         self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
 		self.sortType = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
+                
+        // Create empty album in cache if necessary
+        if ([[CategoriesData sharedInstance] getCategoryById:categoryId] == nil) {
+            PiwigoAlbumData *albumData = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:query];
+            [[CategoriesData sharedInstance] updateCategories:@[albumData]];
+        }
         
         // Is image data already in cache?
         NSMutableArray<PiwigoImageData *> *imageList = [NSMutableArray<PiwigoImageData *> new];
         PiwigoAlbumData *album = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-        if ((categoryId > 0) && (album != nil)) {
-            // Do we have images in cache?
-            if (album.imageList != nil) {
-                // Retrieve images in cache
-                [imageList addObjectsFromArray:album.imageList];
-            }
-            
-            // Complete image list if necessary
+
+        // Do we have images in cache?
+        if (album.imageList != nil) {
+            // Retrieve images in cache
+            [imageList addObjectsFromArray:album.imageList];
+        }
+        
+        // Complete image list if necessary
+        if (album.numberOfImages < NSNotFound) {
             for (NSInteger i = album.imageList.count; i < album.numberOfImages; i++) {
                 PiwigoImageData *imageData = [PiwigoImageData new];
                 imageData.imageId = NSNotFound;
                 [imageList addObject:imageData];
             }
         }
+        
+        // Store images (both dummy and real)
         self.images = [NSArray<PiwigoImageData *> arrayWithArray:imageList];
 	}
 	return self;

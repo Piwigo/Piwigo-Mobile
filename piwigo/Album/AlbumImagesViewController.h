@@ -14,9 +14,9 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShare;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 
-FOUNDATION_EXPORT NSString * const kCategoryDeletionModeNone;
-FOUNDATION_EXPORT NSString * const kCategoryDeletionModeOrphaned;
-FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
+//FOUNDATION_EXPORT NSString * const kCategoryDeletionModeNone;
+//FOUNDATION_EXPORT NSString * const kCategoryDeletionModeOrphaned;
+//FOUNDATION_EXPORT NSString * const kCategoryDeletionModeAll;
 
 @interface AlbumImagesViewController : UIViewController
 

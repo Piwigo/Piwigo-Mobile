@@ -671,7 +671,7 @@ import piwigoKit
         guard let window = window else { return }
         
         // Display default album
-        guard let defaultAlbum = AlbumImagesViewController(albumId: AlbumVars.shared.defaultCategory) else { return }
+        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
         window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,

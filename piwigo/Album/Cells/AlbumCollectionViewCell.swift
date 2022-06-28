@@ -14,14 +14,14 @@ import piwigoKit
 @objc
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushCategoryView(_ viewController: UIViewController?)
-    func removeCategory(_ albumCell: UICollectionViewCell?)
+    func removeCategory(_ albumCell: AlbumCollectionViewCell?)
 }
 
 @objc
 class AlbumCollectionViewCell: UICollectionViewCell
 {
-    @objc weak var categoryDelegate: AlbumCollectionViewCellDelegate?
-    @objc var albumData: PiwigoAlbumData?
+    weak var categoryDelegate: AlbumCollectionViewCellDelegate?
+    var albumData: PiwigoAlbumData?
     
     private var tableView: UITableView?
     private var renameAlert: UIAlertController?
@@ -84,13 +84,14 @@ class AlbumCollectionViewCell: UICollectionViewCell
         NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
     }
 
+    
     // MARK: - Move Category
     private func moveCategory() {
         guard let albumData = albumData else { return }
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if moveVC.setInput(parameter: albumData, for: kPiwigoCategorySelectActionMoveAlbum) {
+        if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
             moveVC.albumMovedDelegate = self
             categoryDelegate?.pushCategoryView(moveVC)
         }
@@ -257,7 +258,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                 topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
                 // Delete empty album
-                deleteCategory(withDeletionMode: kCategoryDeletionModeNone,
+                deleteCategory(withDeletionMode: .none,
                                andViewController: topViewController)
             })
 
@@ -265,7 +266,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
             style: .default, handler: { [self] action in
                 confirmCategoryDeletion(withNumberOfImages: albumData.totalNumberOfImages,
-                                        deletionMode: kCategoryDeletionModeNone,
+                                        deletionMode: .none,
                                         andViewController: topViewController)
             })
 
@@ -274,7 +275,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             style: .destructive,
             handler: { [self] action in
                 confirmCategoryDeletion(withNumberOfImages: albumData.totalNumberOfImages,
-                                        deletionMode: kCategoryDeletionModeOrphaned,
+                                        deletionMode: .orphaned,
                                         andViewController: topViewController)
             })
 
@@ -283,7 +284,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             style: .destructive,
             handler: { [self] action in
                 confirmCategoryDeletion(withNumberOfImages: albumData.totalNumberOfImages,
-                                        deletionMode: kCategoryDeletionModeAll,
+                                        deletionMode: .all,
                                         andViewController: topViewController)
             })
         allImagesAction.accessibilityIdentifier = "DeleteAll"
@@ -317,7 +318,9 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    private func confirmCategoryDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
+    private func confirmCategoryDeletion(withNumberOfImages number: Int,
+                                         deletionMode: kPwgCategoryDeletionMode,
+                                         andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Are you sure?
@@ -368,7 +371,9 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    private func prepareDeletion(withNumberOfImages number: Int, deletionMode: String, andViewController topViewController: UIViewController?) {
+    private func prepareDeletion(withNumberOfImages number: Int,
+                                 deletionMode: kPwgCategoryDeletionMode,
+                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
         // Check provided number of iamges
@@ -387,7 +392,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
 
         // Should we retrieve images before deleting the category?
-        if deletionMode == kCategoryDeletionModeNone {
+        if deletionMode == .none {
             // No => Delete category
             deleteCategory(withDeletionMode: deletionMode, andViewController: topViewController)
             return
@@ -403,7 +408,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    private func getMissingImages(beforeDeletingInMode deletionMode: String,
+    private func getMissingImages(beforeDeletingInMode deletionMode: kPwgCategoryDeletionMode,
                                   with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -441,7 +446,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             })
     }
 
-    private func deleteCategory(withDeletionMode deletionMode: String,
+    private func deleteCategory(withDeletionMode deletionMode: kPwgCategoryDeletionMode,
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -509,7 +514,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Push new album view
         if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false,
             let albumData = albumData {
-            let albumView = AlbumImagesViewController(albumId: albumData.albumId)
+            let albumView = AlbumViewController(albumId: albumData.albumId)
             categoryDelegate?.pushCategoryView(albumView)
         }
     }

@@ -235,7 +235,7 @@ class ImagePreviewViewController: UIViewController
         
         // Determine if the toolbar is presented
         var isToolbarRequired = false
-        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageDetailViewController.self)}), let vc = viewControllers.first as? ImageDetailViewController {
+        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageViewController.self)}), let vc = viewControllers.first as? ImageViewController {
             isToolbarRequired = vc.isToolbarRequired
         }
 

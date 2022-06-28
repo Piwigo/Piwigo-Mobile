@@ -23,33 +23,6 @@ FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
 @class PHPhotoLibrary;
 
 typedef enum {
-    kPiwigoSortObjcNameAscending,               // Photo title, A → Z
-    kPiwigoSortObjcNameDescending,              // Photo title, Z → A
-    
-    kPiwigoSortObjcDateCreatedDescending,       // Date created, new → old
-    kPiwigoSortObjcDateCreatedAscending,        // Date created, old → new
-    
-    kPiwigoSortObjcDatePostedDescending,        // Date posted, new → old
-    kPiwigoSortObjcDatePostedAscending,         // Date posted, old → new
-    
-    kPiwigoSortObjcFileNameAscending,           // File name, A → Z
-    kPiwigoSortObjcFileNameDescending,          // File name, Z → A
-    
-    kPiwigoSortObjcRatingScoreDescending,       // Rating score, high → low
-    kPiwigoSortObjcRatingScoreAscending,        // Rating score, low → high
-
-    kPiwigoSortObjcVisitsDescending,            // Visits, high → low
-    kPiwigoSortObjcVisitsAscending,             // Visits, low → high
-
-    kPiwigoSortObjcManual,                      // Manual order
-    kPiwigoSortObjcRandom,                      // Random order
-//    kPiwigoSortObjcVideoOnly,
-//    kPiwigoSortObjcImageOnly,
-    
-    kPiwigoSortObjcCount
-} kPiwigoSortObjc;
-
-typedef enum {
 	kPiwigoPrivacyObjcEverybody = 0,
 	kPiwigoPrivacyObjcAdminsFamilyFriendsContacts = 1,
 	kPiwigoPrivacyObjcAdminsFamilyFriends = 2,
@@ -60,24 +33,6 @@ typedef enum {
 } kPiwigoPrivacyObjc;
 
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
-
-typedef enum {
-    kPiwigoCategorySelectActionNone,
-    kPiwigoCategorySelectActionSetDefaultAlbum,
-    kPiwigoCategorySelectActionMoveAlbum,
-    kPiwigoCategorySelectActionSetAlbumThumbnail,
-    kPiwigoCategorySelectActionSetAutoUploadAlbum,
-    kPiwigoCategorySelectActionCopyImage,
-    kPiwigoCategorySelectActionMoveImage,
-    kPiwigoCategorySelectActionCopyImages,
-    kPiwigoCategorySelectActionMoveImages
-} kPiwigoCategorySelectAction;
-
-typedef enum {
-    kPiwigoCategoryTableCellButtonStateNone = 0,
-    kPiwigoCategoryTableCellButtonStateShowSubAlbum = 1,
-    kPiwigoCategoryTableCellButtonStateHideSubAlbum = 2
-} kPiwigoCategoryTableCellButtonState;
 
 @interface Model : NSObject
 
