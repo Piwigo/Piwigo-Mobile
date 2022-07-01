@@ -55,7 +55,7 @@ public class UploadManager: NSObject {
     /// Uploads directory into which image/video files are temporarily stored
     public let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
-        let anURL = DataController.appGroupDirectory.appendingPathComponent("Uploads")
+        let anURL = DataController.shared.appGroupDirectory.appendingPathComponent("Uploads")
 
         // Create the Piwigo/Uploads directory if needed
         if !fm.fileExists(atPath: anURL.path) {
@@ -376,7 +376,7 @@ public class UploadManager: NSObject {
     
     public func resumeTransfers() -> Void {
         // Get active upload tasks and initialise isUploading
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         let frgdSession: URLSession = UploadSessions.shared.frgdSession
         let bckgSession: URLSession = UploadSessions.shared.bckgSession
 
@@ -483,7 +483,7 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1026,7 +1026,7 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1163,7 +1163,7 @@ public class UploadManager: NSObject {
         
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1224,7 +1224,7 @@ public class UploadManager: NSObject {
 //        requests.forEach { (uploadID) in
 //            // Retrieve upload request properties
 //            var uploadProperties: UploadProperties!
-//            let taskContext = DataController.privateManagedObjectContext
+//            let taskContext = DataController.shared.privateManagedObjectContext
 //            do {
 //                let upload = try taskContext.existingObject(with: uploadID)
 //                if upload.isFault {
@@ -1282,7 +1282,7 @@ public class UploadManager: NSObject {
         completedRequests.forEach { (uploadID) in
             // Retrieve upload request properties
             var uploadProperties: UploadProperties!
-            let taskContext = DataController.privateManagedObjectContext
+            let taskContext = DataController.shared.backgroundContext
             do {
                 let upload = try taskContext.existingObject(with: uploadID)
                 if upload.isFault {
@@ -1369,7 +1369,7 @@ public class UploadManager: NSObject {
         isUploading = Set<NSManagedObjectID>()
         
         // Get active upload tasks
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         let uploadSession: URLSession = UploadSessions.shared.bckgSession
         uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
@@ -1448,7 +1448,7 @@ public class UploadManager: NSObject {
         var uploadsToUpdate = [UploadProperties]()
         
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
 
         // Loop over the failed uploads
         for failedUploadID in failedUploads {

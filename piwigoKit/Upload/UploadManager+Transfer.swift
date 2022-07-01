@@ -167,7 +167,7 @@ extension UploadManager {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
                 return
             }
-            let taskContext = DataController.privateManagedObjectContext
+            let taskContext = DataController.shared.backgroundContext
             guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
                 return
@@ -240,7 +240,7 @@ extension UploadManager {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
             return
         }
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
             return
@@ -539,7 +539,7 @@ extension UploadManager {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
                 return
             }
-            let taskContext = DataController.privateManagedObjectContext
+            let taskContext = DataController.shared.backgroundContext
             guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
                 return
@@ -618,7 +618,7 @@ extension UploadManager {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
             return
         }
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
             return

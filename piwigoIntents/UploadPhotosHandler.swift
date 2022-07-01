@@ -169,8 +169,10 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
                     debugPrint("  > Task completed with success.")
-                    // Save cached data
-                    DataController.saveContext()
+                    // Save cached data in the main thread
+                    DispatchQueue.main.async {
+                        try? DataController.shared.mainContext.save()
+                    }
                 }
 
                 // Start the operations

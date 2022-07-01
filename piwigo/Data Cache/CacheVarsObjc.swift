@@ -36,10 +36,4 @@ class CacheVarsObjc: NSObject {
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - none
-
-
-    // MARK: - Functions
-    @objc class func saveContextObjc() {
-        DataController.saveContext()
-    }
 }

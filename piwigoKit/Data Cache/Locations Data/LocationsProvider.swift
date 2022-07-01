@@ -32,8 +32,8 @@ public class LocationsProvider: NSObject {
     
     // MARK: - Core Data object context
     
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.managedObjectContext
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
@@ -156,7 +156,7 @@ public class LocationsProvider: NSObject {
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
-                        let taskContext = DataController.privateManagedObjectContext
+                        let taskContext = DataController.shared.backgroundContext
                                 
                         // Add new location to CoreData store
                         let newLocation = LocationProperties(coordinate: location.coordinate,
@@ -245,7 +245,7 @@ public class LocationsProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? managedObjectContext.executeAndMergeChanges(using: batchDeleteRequest)
+        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 
 
@@ -278,7 +278,7 @@ public class LocationsProvider: NSObject {
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         
         // Perform the fetch.
@@ -374,7 +374,7 @@ public class LocationsProvider: NSObject {
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         
         // Perform the fetch.

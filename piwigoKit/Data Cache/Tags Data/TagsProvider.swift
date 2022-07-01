@@ -19,8 +19,8 @@ public class TagsProvider {
     
     
     // MARK: - Core Data object context
-    public lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.managedObjectContext
+    public lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
@@ -87,7 +87,7 @@ public class TagsProvider {
     private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
         
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
                 
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
@@ -213,10 +213,10 @@ public class TagsProvider {
 
                     // Performs a task in the main queue and wait until this tasks finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -274,10 +274,10 @@ public class TagsProvider {
 
                 // Performs a task in the main queue and wait until this tasks finishes
                 DispatchQueue.main.async {
-                    self.managedObjectContext.performAndWait {
+                    self.mainContext.performAndWait {
                         do {
                             // Saves the data from the child to the main context to be stored properly
-                            try self.managedObjectContext.save()
+                            try self.mainContext.save()
                         } catch {
                             fatalError("Failure to save context: \(error)")
                         }
@@ -324,7 +324,7 @@ public class TagsProvider {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                let taskContext = DataController.privateManagedObjectContext
+                let taskContext = DataController.shared.backgroundContext
                 if self.importOneTag(newTag, taskContext: taskContext) {
                     completionHandler(nil)
                 } else {
@@ -426,10 +426,10 @@ public class TagsProvider {
 
                     // Performs a task in the main queue and wait until this tasks finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -463,7 +463,7 @@ public class TagsProvider {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? managedObjectContext.executeAndMergeChanges(using: batchDeleteRequest)
+        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
 
@@ -487,7 +487,7 @@ public class TagsProvider {
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = fetchedResultsControllerDelegate
         
@@ -523,7 +523,7 @@ public class TagsProvider {
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = fetchedNonAdminResultsControllerDelegate
         

@@ -43,19 +43,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // No scene to restore —> Present login only if this is the first created scene
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             if existingScenes.isEmpty {
-                // Create login view
-                appDelegate.loadLoginView(in: window)
+                // Migrate the Core Data store to the new version if needed
+                DataController.shared.migrateStoreIfNeeded { [self] in
+                    // Create login view
+                    appDelegate.loadLoginView(in: window)
 
-                // Blur views if the App Lock is enabled
-                /// The passcode window is not presented so that the app
-                /// does not request the passcode until it is put into the background.
-                if AppVars.shared.isAppLockActive {
-                    // Protect presented login view
-                    addPrivacyProtection()
-                }
-                else {
-                    // User is allowed to access albums
-                    AppVars.shared.isAppUnlocked = true
+                    // Blur views if the App Lock is enabled
+                    /// The passcode window is not presented so that the app
+                    /// does not request the passcode until it is put into the background.
+                    if AppVars.shared.isAppLockActive {
+                        // Protect presented login view
+                        addPrivacyProtection()
+                    }
+                    else {
+                        // User is allowed to access albums
+                        AppVars.shared.isAppUnlocked = true
+                    }
                 }
             }
             else {
@@ -257,7 +260,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
 
         // Save changes in the app's managed object context when the app transitions to the background.
-        DataController.saveContext()
+        try? DataController.shared.mainContext.save()
         
         // Disable network activity indicator
         AFNetworkActivityIndicatorManager.shared().isEnabled = false

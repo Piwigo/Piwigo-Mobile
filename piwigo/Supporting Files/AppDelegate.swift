@@ -84,23 +84,26 @@ import piwigoKit
             // Delegate to SceneDelegate
             /// - Present login view and if needed passcode view
         } else {
-            // Create login view
-            window = UIWindow(frame: UIScreen.main.bounds)
-            loadLoginView(in: window)
-            window?.makeKeyAndVisible()
-            
-            // Blur views if the App Lock is enabled
-            /// The passcode window is not presented  so that the app
-            /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
-                // User is not allowed to access albums yet
-                AppVars.shared.isAppUnlocked = false
-                // Protect presented login view
-                addPrivacyProtection(to: window)
-            }
-            else {
-                // User is allowed to access albums
-                AppVars.shared.isAppUnlocked = true
+            // Migrate the Core Data store to the new version if needed
+            DataController.shared.migrateStoreIfNeeded { [self] in
+                // Create login view
+                window = UIWindow(frame: UIScreen.main.bounds)
+                loadLoginView(in: window)
+                window?.makeKeyAndVisible()
+                
+                // Blur views if the App Lock is enabled
+                /// The passcode window is not presented  so that the app
+                /// does not request the passcode until it is put into the background.
+                if AppVars.shared.isAppLockActive {
+                    // User is not allowed to access albums yet
+                    AppVars.shared.isAppUnlocked = false
+                    // Protect presented login view
+                    addPrivacyProtection(to: window)
+                }
+                else {
+                    // User is allowed to access albums
+                    AppVars.shared.isAppUnlocked = true
+                }
             }
         }
         
@@ -243,8 +246,8 @@ import piwigoKit
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        // Save cached data
-        DataController.saveContext()
+        // Save cached data in the main thread
+        try? DataController.shared.mainContext.save()
 
         // Disable network activity indicator
         AFNetworkActivityIndicatorManager.shared().isEnabled = false
@@ -261,8 +264,8 @@ import piwigoKit
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
-        // Save cached data
-        DataController.saveContext()
+        // Save cached data in the main thread
+        try? DataController.shared.mainContext.save()
 
         // Cancel tasks and close sessions
         NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
@@ -401,9 +404,9 @@ import piwigoKit
         lastOperation.completionBlock = {
             print("    > Task completed with success.")
             task.setTaskCompleted(success: true)
-            // Save cached data
+            // Save cached data in the main thread
             DispatchQueue.main.async {
-                DataController.saveContext()
+                try? DataController.shared.mainContext.save()
             }
         }
 

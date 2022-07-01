@@ -14,8 +14,8 @@ public class UploadsProvider: NSObject {
 
     // MARK: - Core Data object context
     
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.managedObjectContext
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
@@ -34,7 +34,7 @@ public class UploadsProvider: NSObject {
         }
         
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
@@ -142,10 +142,10 @@ public class UploadsProvider: NSObject {
 
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -177,7 +177,7 @@ public class UploadsProvider: NSObject {
 //        print("••> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
                 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -205,10 +205,10 @@ public class UploadsProvider: NSObject {
                     
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -232,7 +232,7 @@ public class UploadsProvider: NSObject {
         print("••> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
 
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
                 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -262,10 +262,10 @@ public class UploadsProvider: NSObject {
                     
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -291,7 +291,7 @@ public class UploadsProvider: NSObject {
 //        print("••> didDeleteImageWithId()", queueName())
 
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
                 
         // taskContext.performAndWait
         taskContext.performAndWait {
@@ -327,10 +327,10 @@ public class UploadsProvider: NSObject {
                         
                         // Performs a task in the main queue and wait until this tasks finishes
                         DispatchQueue.main.async {
-                            self.managedObjectContext.performAndWait {
+                            self.mainContext.performAndWait {
                                 do {
                                     // Saves the data from the child to the main context to be stored properly
-                                    try self.managedObjectContext.save()
+                                    try self.mainContext.save()
                                 } catch {
                                     fatalError("Failure to save context: \(error)")
                                 }
@@ -361,9 +361,9 @@ public class UploadsProvider: NSObject {
         // Create the queue context.
         var taskContext: NSManagedObjectContext
         if Thread.isMainThread {
-            taskContext = DataController.managedObjectContext
+            taskContext = DataController.shared.mainContext
         } else {
-            taskContext = DataController.privateManagedObjectContext
+            taskContext = DataController.shared.backgroundContext
         }
                 
         // Process records in batches to avoid a high memory footprint.
@@ -461,7 +461,7 @@ public class UploadsProvider: NSObject {
         var uploadIDs = [NSManagedObjectID]()
 
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
 
         // Perform the fetch
         taskContext.performAndWait {
@@ -527,10 +527,10 @@ public class UploadsProvider: NSObject {
                     
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.mainContext.performAndWait {
                             do {
                                 // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
+                                try self.mainContext.save()
                             } catch {
                                 fatalError("Failure to save context: \(error)")
                             }
@@ -562,7 +562,7 @@ public class UploadsProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? managedObjectContext.executeAndMergeChanges(using: batchDeleteRequest)
+        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     /**
      Remove from cache completed requests whose images do not exist in Photo Library.
@@ -573,7 +573,7 @@ public class UploadsProvider: NSObject {
         let (localIds, uploadIds) = getRequests(inStates: [.finished, .moderated])
 
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        let taskContext = DataController.shared.backgroundContext
         
         // Which one should be deleted?
         var uploadsToDelete = [NSManagedObjectID]()
@@ -626,7 +626,7 @@ public class UploadsProvider: NSObject {
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: nil,
                                                        cacheName: "allUploads")
         controller.delegate = fetchedResultsControllerDelegate
@@ -676,7 +676,7 @@ public class UploadsProvider: NSObject {
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.managedObjectContext,
+                                            managedObjectContext: self.mainContext,
                                               sectionNameKeyPath: "requestSectionKey",
                                                        cacheName: "nonCompletedUploads")
         controller.delegate = fetchedNonCompletedResultsControllerDelegate

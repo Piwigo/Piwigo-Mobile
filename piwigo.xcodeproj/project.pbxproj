@@ -56,6 +56,11 @@
 		AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A9227C15827005D5E4F /* community.session.getStatus.swift */; };
 		AD211A9427C15827005D5E4F /* community.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A9227C15827005D5E4F /* community.session.getStatus.swift */; };
 		AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A9027C15712005D5E4F /* community.session.getStatus.json */; };
+		AD25CA76286B891300D574C7 /* DataMigrationVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */; };
+		AD25CA78286B90E200D574C7 /* DataMigrationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */; };
+		AD25CA7A286B932000D574C7 /* NSManagedObjectModel+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25CA79286B932000D574C7 /* NSManagedObjectModel+AppTools.swift */; };
+		AD25CA7C286B938100D574C7 /* DataMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25CA7B286B938100D574C7 /* DataMigrator.swift */; };
+		AD25CA7E286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25CA7D286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
@@ -464,6 +469,11 @@
 		AD211A9227C15827005D5E4F /* community.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = community.session.getStatus.swift; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
+		AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationVersion.swift; sourceTree = "<group>"; };
+		AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationStep.swift; sourceTree = "<group>"; };
+		AD25CA79286B932000D574C7 /* NSManagedObjectModel+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectModel+AppTools.swift"; sourceTree = "<group>"; };
+		AD25CA7B286B938100D574C7 /* DataMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrator.swift; sourceTree = "<group>"; };
+		AD25CA7D286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentStoreCoordinator+AppTools.swift"; sourceTree = "<group>"; };
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
 		AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareImageActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD27B87225A7A91800528F5F /* ShareUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareUtilities.swift; sourceTree = "<group>"; };
@@ -1317,6 +1327,9 @@
 			children = (
 				AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
+				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
+				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
+				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
 				ADF4001C266D6FBA004352B9 /* Tags Data */,
@@ -1332,6 +1345,8 @@
 				AD2FEA5725AFA1470072596A /* VideoMetadata.swift */,
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
 				ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */,
+				AD25CA79286B932000D574C7 /* NSManagedObjectModel+AppTools.swift */,
+				AD25CA7D286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift */,
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
 				AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */,
@@ -2267,6 +2282,7 @@
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
 				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
 				AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */,
+				AD25CA7C286B938100D574C7 /* DataMigrator.swift in Sources */,
 				AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */,
 				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
 				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
@@ -2298,6 +2314,7 @@
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
 				AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */,
 				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
+				AD25CA76286B891300D574C7 /* DataMigrationVersion.swift in Sources */,
 				AD0B6AD1268A21A5007DEE70 /* UploadManager+Video.swift in Sources */,
 				ADF72EA126712CA80027E2CC /* UploadsProvider.swift in Sources */,
 				AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */,
@@ -2313,8 +2330,11 @@
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
+				AD25CA78286B90E200D574C7 /* DataMigrationStep.swift in Sources */,
 				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
 				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
+				AD25CA7E286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift in Sources */,
+				AD25CA7A286B932000D574C7 /* NSManagedObjectModel+AppTools.swift in Sources */,
 				AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */,
 				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,

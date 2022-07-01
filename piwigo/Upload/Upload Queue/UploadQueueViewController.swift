@@ -19,8 +19,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
      The managedObjectContext that manages Core Data objects in the main queue.
      The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
      */
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.managedObjectContext
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
@@ -307,7 +307,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
                 return UploadImageTableViewCell()
             }
-            let upload = self.managedObjectContext.object(with: objectID) as! Upload
+            let upload = self.mainContext.object(with: objectID) as! Upload
             cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
             return cell
         }
