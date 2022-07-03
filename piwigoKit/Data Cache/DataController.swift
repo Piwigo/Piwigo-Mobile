@@ -275,35 +275,44 @@ public class DataController: NSObject {
     
     public func migrateStoreIfNeeded(completion: @escaping () -> Void) {
         // URL of the store in the App Group directory
-        let storeURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+        let newStoreURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
 
         // The directory the application used to store the Core Data store file long ago.
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let applicationDocumentsDirectory = urls[urls.count-1]
+        var oldStoreURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
+        print("••> Very Old App Directory: \(oldStoreURL)")
 
         // Move the very old store to the new folder if needed
-        var oldURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
-        NSPersistentStoreCoordinator.moveStore(from: oldURL, to: storeURL)
-
-        // Move the old store to the new folder if needed
-        oldURL = appSupportDirectory.appendingPathComponent("DataModel.sqlite")
-        NSPersistentStoreCoordinator.moveStore(from: oldURL, to: storeURL)
-
-        // Move Upload folder to container if needed
-        moveFilesToUpload()
-
-        // The database is now stored in the App group directory
-        if migrator.requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
+        if migrator.requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             DispatchQueue.global(qos: .userInitiated).async {
                 // Perform the migration (version after version)
-                self.migrator.migrateStore(at: storeURL, toVersion: DataMigrationVersion.current)
+                self.migrator.migrateStore(at: oldStoreURL,
+                                           toVersion: DataMigrationVersion.current, at: newStoreURL)
                 DispatchQueue.main.async {
                     completion()
                 }
             }
-        } else {
-            completion()
+            return
         }
+        
+        // Move the old store to the new folder if needed
+        oldStoreURL = appSupportDirectory.appendingPathComponent("DataModel.sqlite")
+        if migrator.requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Perform the migration (version after version)
+                self.migrator.migrateStore(at: oldStoreURL,
+                                           toVersion: DataMigrationVersion.current, at: newStoreURL)
+                // Move Upload folder to container if needed
+                self.moveFilesToUpload()
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+            return
+        }
+        // No migration required
+        completion()
     }
     
 //    private func deleteOldStoreAtUrl(url: URL) {

@@ -21,16 +21,34 @@ extension NSPersistentStoreCoordinator {
     }
     
     static func moveStore(from sourceURL: URL, to targetURL: URL) {
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
-        if let sourceStore = psc.persistentStore(for: sourceURL) {
-            do {
-                try psc.migratePersistentStore(sourceStore, to: targetURL,
-                                               options: nil, withType: NSSQLiteStoreType)
-                destroyStore(at: sourceURL)
-            } catch let error {
-                fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
+        // Create the coordinator
+        do {
+            let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
+            try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
+                                       at: sourceURL, options: nil)
+            if let sourceStore = psc.persistentStore(for: sourceURL) {
+                do {
+                    try psc.migratePersistentStore(sourceStore, to: targetURL,
+                                                   options: nil, withType: NSSQLiteStoreType)
+                    destroyStore(at: sourceURL)
+                } catch let error {
+                    fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
+                }
             }
+        } catch let error {
+            fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
         }
+        
+//        let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
+//        if let sourceStore = psc.persistentStore(for: sourceURL) {
+//            do {
+//                try psc.migratePersistentStore(sourceStore, to: targetURL,
+//                                               options: nil, withType: NSSQLiteStoreType)
+//                destroyStore(at: sourceURL)
+//            } catch let error {
+//                fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
+//            }
+//        }
     }
     
     static func replaceStore(at targetURL: URL, withStoreAt sourceURL: URL) {

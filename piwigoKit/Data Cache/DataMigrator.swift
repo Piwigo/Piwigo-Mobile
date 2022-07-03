@@ -14,7 +14,7 @@ import CoreData
 protocol DataMigratorProtocol {
     func forceWALCheckpointingForStore(at storeURL: URL)
     func requiresMigration(at storeURL: URL, toVersion version: DataMigrationVersion) -> Bool
-    func migrateStore(at storeURL: URL, toVersion version: DataMigrationVersion)
+    func migrateStore(at storeURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL)
 }
 
 /**
@@ -46,36 +46,54 @@ class DataMigrator: DataMigratorProtocol {
     
     
     // MARK: - Migration
-    func migrateStore(at storeURL: URL, toVersion version: DataMigrationVersion) {
-        forceWALCheckpointingForStore(at: storeURL)
+    func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) {
+        // Force WAL checkpoint
+        forceWALCheckpointingForStore(at: oldStoreURL)
         
-        var currentURL = storeURL
-        let migrationSteps = self.migrationStepsForStore(at: storeURL, toVersion: version)
+        // Initialisation
+        var currentURL = oldStoreURL
+        let migrationSteps = self.migrationStepsForStore(at: oldStoreURL, toVersion: version)
+        if migrationSteps.isEmpty { return }
         
-        for migrationStep in migrationSteps {
+        // Loop over the migration steps
+        for (index, migrationStep) in migrationSteps.enumerated()
+        {
             let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
                                              destinationModel: migrationStep.destinationModel)
-            let destinationURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+            var tempStoreURL: URL
+            if newStoreURL != oldStoreURL, index + 1 == migrationSteps.count {
+                tempStoreURL = newStoreURL
+            } else {
+                tempStoreURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+            }
             
+            // Perform a migration
             do {
-                try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType, options: nil, with: migrationStep.mappingModel, toDestinationURL: destinationURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
+                try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType,
+                                         options: nil, with: migrationStep.mappingModel,
+                                         toDestinationURL: tempStoreURL,
+                                         destinationType: NSSQLiteStoreType, destinationOptions: nil)
             } catch let error {
                 // Move store to directory of incompatible stores
-                moveIncompatibleStore(storeURL: currentURL)
+//                moveIncompatibleStore(storeURL: currentURL)
                 fatalError("failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
             }
             
-            if currentURL != storeURL {
-                // Destroy intermediate step's store
+            // Destroy intermediate step's store
+            if ![oldStoreURL, newStoreURL].contains(currentURL) {
                 NSPersistentStoreCoordinator.destroyStore(at: currentURL)
             }
             
-            currentURL = destinationURL
+            // Use URL of migrated store for next step
+            currentURL = tempStoreURL
         }
         
-        NSPersistentStoreCoordinator.replaceStore(at: storeURL, withStoreAt: currentURL)
+        // Replace original store with new store if old andd new URLs are identical
+        if newStoreURL == oldStoreURL {
+            NSPersistentStoreCoordinator.replaceStore(at: oldStoreURL, withStoreAt: currentURL)
+        }
         
-        if (currentURL != storeURL) {
+        if (currentURL != oldStoreURL) {
             NSPersistentStoreCoordinator.destroyStore(at: currentURL)
         }
     }
@@ -83,7 +101,7 @@ class DataMigrator: DataMigratorProtocol {
     private func migrationStepsForStore(at storeURL: URL, toVersion destinationVersion: DataMigrationVersion) -> [DataMigrationStep] {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL),
               let sourceVersion = DataMigrationVersion.compatibleVersionForStoreMetadata(metadata) else {
-            fatalError("unknown store version at URL \(storeURL)")
+            return [DataMigrationStep]()
         }
         
         return migrationSteps(fromSourceVersion: sourceVersion, toDestinationVersion: destinationVersion)
@@ -160,8 +178,8 @@ class DataMigrator: DataMigratorProtocol {
 }
 
 
+// MARK: - Compatible
 private extension DataMigrationVersion {
-    // MARK: - Compatible
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
             let model = NSManagedObjectModel.managedObjectModel(forResource: $0.rawValue)

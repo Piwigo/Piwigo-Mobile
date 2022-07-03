@@ -13,14 +13,14 @@ extension NSManagedObjectModel {
     
     // MARK: - Resource
     static func managedObjectModel(forResource resource: String) -> NSManagedObjectModel {
-        let mainBundle = Bundle.main
-        let subdirectory = "CoreDataMigration_Example.momd"
+        let bundle = Bundle.init(for: DataController.self)
+        let subdirectory = "DataModel.momd"
         
         var omoURL: URL?
         if #available(iOS 11, *) {
-            omoURL = mainBundle.url(forResource: resource, withExtension: "omo", subdirectory: subdirectory) // optimized model file
+            omoURL = bundle.url(forResource: resource, withExtension: "omo", subdirectory: subdirectory) // optimized model file
         }
-        let momURL = mainBundle.url(forResource: resource, withExtension: "mom", subdirectory: subdirectory)
+        let momURL = bundle.url(forResource: resource, withExtension: "mom", subdirectory: subdirectory)
         
         guard let url = omoURL ?? momURL else {
             fatalError("unable to find model in bundle")
