@@ -180,7 +180,6 @@
 		AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
-		AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */; };
 		AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */; };
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
 		AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */; };
@@ -262,6 +261,7 @@
 		ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */; };
 		ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
+		ADD981FF28737EFD007213AE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
 		ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
 		ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
@@ -485,7 +485,6 @@
 		AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAlbumThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySortViewController.swift; sourceTree = "<group>"; };
 		AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CategorySortViewController.storyboard; sourceTree = "<group>"; };
-		AD2BC90625E9721B00EF335F /* DataModel 4 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 4 (Upload).xcdatamodel"; sourceTree = "<group>"; };
 		AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
 		AD2FEA5725AFA1470072596A /* VideoMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMetadata.swift; sourceTree = "<group>"; };
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -532,9 +531,6 @@
 		AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsViewController.swift; sourceTree = "<group>"; };
 		AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalAlbumsViewController.storyboard; sourceTree = "<group>"; };
 		AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalImageCollectionViewCell.swift; path = "piwigo/Upload/Pick Local Images/LocalImageCollectionViewCell.swift"; sourceTree = SOURCE_ROOT; };
-		AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 2 (+Location).xcdatamodel"; sourceTree = "<group>"; };
-		AD435823246FF21C00AC7D9C /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
-		AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 3 (+Upload).xcdatamodel"; sourceTree = "<group>"; };
 		AD439E4325E14C3600333A91 /* PasteboardObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardObject.swift; sourceTree = "<group>"; };
 		AD45949B1F36765200CF9438 /* pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD45949C1F36765200CF9438 /* pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/About.strings; sourceTree = "<group>"; };
@@ -773,6 +769,15 @@
 		ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVars.swift; sourceTree = "<group>"; };
 		ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.images.upload.swift; sourceTree = "<group>"; };
 		ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload2.json; sourceTree = "<group>"; };
+		ADD981F628737EFD007213AE /* DataModel 06 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 06 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 09 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981F828737EFD007213AE /* DataModel 08 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 08 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981F928737EFD007213AE /* DataModel 07 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 07 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 02 (+Location).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981FB28737EFD007213AE /* DataModel 03 (+Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 03 (+Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981FC28737EFD007213AE /* DataModel 04 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 04 (Upload).xcdatamodel"; sourceTree = "<group>"; };
+		ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 01.xcdatamodel"; sourceTree = "<group>"; };
+		ADD981FE28737EFD007213AE /* DataModel 05 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 05 (Upload).xcdatamodel"; sourceTree = "<group>"; };
 		ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageShiftPickerTableViewCell.xib; sourceTree = "<group>"; };
 		ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.users.favorites.addRemove.json; sourceTree = "<group>"; };
 		ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.users.favorites.addRemove.swift; sourceTree = "<group>"; };
@@ -1330,7 +1335,7 @@
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
-				AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */,
+				ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
 				ADF4001C266D6FBA004352B9 /* Tags Data */,
 				AD23A1EF2427C94000F662AB /* Uploads Data */,
@@ -2283,7 +2288,6 @@
 				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
 				AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */,
 				AD25CA7C286B938100D574C7 /* DataMigrator.swift in Sources */,
-				AD94F63C266D61B300EFC6A9 /* DataModel.xcdatamodeld in Sources */,
 				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
 				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
 				AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */,
@@ -2309,6 +2313,7 @@
 				AD0B6AD5268A21B7007DEE70 /* UploadManager+Finisher.swift in Sources */,
 				AD0B6ACF268A219B007DEE70 /* UploadManager+Image.swift in Sources */,
 				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
+				ADD981FF28737EFD007213AE /* DataModel.xcdatamodeld in Sources */,
 				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
 				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
@@ -3373,15 +3378,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */ = {
+		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				AD2BC90625E9721B00EF335F /* DataModel 4 (Upload).xcdatamodel */,
-				AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */,
-				AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */,
-				AD435823246FF21C00AC7D9C /* DataModel.xcdatamodel */,
+				ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */,
+				ADD981F828737EFD007213AE /* DataModel 08 (Upload).xcdatamodel */,
+				ADD981F928737EFD007213AE /* DataModel 07 (Upload).xcdatamodel */,
+				ADD981F628737EFD007213AE /* DataModel 06 (Upload).xcdatamodel */,
+				ADD981FE28737EFD007213AE /* DataModel 05 (Upload).xcdatamodel */,
+				ADD981FC28737EFD007213AE /* DataModel 04 (Upload).xcdatamodel */,
+				ADD981FB28737EFD007213AE /* DataModel 03 (+Upload).xcdatamodel */,
+				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
+				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = AD2BC90625E9721B00EF335F /* DataModel 4 (Upload).xcdatamodel */;
+			currentVersion = ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

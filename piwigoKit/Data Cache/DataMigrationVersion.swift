@@ -12,10 +12,15 @@ import CoreData
 // MARK: - Core Data Migration Version
 /// See: https://williamboles.com/progressive-core-data-migration/
 enum DataMigrationVersion: String, CaseIterable {
-    case version1 = "DataModel"
-    case version2 = "DataModel 2 (+Location)"
-    case version3 = "DataModel 3 (+Upload)"
-    case version4 = "DataModel 4 (Upload)"
+    case version01 = "DataModel 01"                 // from v2.4.8  on 25 March 2020
+    case version02 = "DataModel 02 (+Location)"     // from v2.5    on 27 August 2020 (added on 1 May 2020)
+    case version03 = "DataModel 03 (+Upload)"       // from v2.5    on 27 August 2020
+    case version04 = "DataModel 04 (Upload)"        // from v2.5.2  on 3 December 2020
+    case version05 = "DataModel 05 (Upload)"        // from v2.6    on 3 March 2021
+    case version06 = "DataModel 06 (Upload)"        // from v2.6    on 3 March 2021
+    case version07 = "DataModel 07 (Upload)"        // from v2.6.2  on 3 May 2021
+    case version08 = "DataModel 08 (Upload)"        // from v2.7    on 12 August 2021 (=> PiwigoKit)
+    case version09 = "DataModel 09 (Upload)"        // from v2.12   on
 
     static var current: DataMigrationVersion {
         guard let current = allCases.last else {
@@ -26,14 +31,35 @@ enum DataMigrationVersion: String, CaseIterable {
 
     func nextVersion() -> DataMigrationVersion? {
         switch self {
-        case .version1:
-            return .version2
-        case .version2:
-            return .version3
-        case .version3:
-            return .version4
-        case .version4:
+        case .version01:
+            return .version02
+        case .version02:
+            return .version03
+        case .version03:
+            return .version04
+        case .version04:
+            return .version05
+        case .version05:
+            return .version06
+        case .version06:
+            return .version07
+        case .version07:
+            return .version08
+        case .version08:
+            return .version09
+        case .version09:
             return nil
+        }
+    }
+    
+    func directory() -> URL {
+        switch self {
+        case .version01, .version02:
+            return DataController.shared.appDocumentsDirectory
+        case .version03, .version04, .version05, .version06, .version07:
+            return DataController.shared.appSupportDirectory
+        case .version08, .version09:
+            return DataController.shared.appGroupDirectory
         }
     }
 }

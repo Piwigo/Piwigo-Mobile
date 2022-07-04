@@ -12,15 +12,17 @@ import CoreData
 extension NSManagedObjectModel {
     
     // MARK: - Resource
-    static func managedObjectModel(forResource resource: String) -> NSManagedObjectModel {
-        let bundle = Bundle.init(for: DataController.self)
+    static func managedObjectModel(forVersion version: DataMigrationVersion) -> NSManagedObjectModel {
+        let mainBundle = Bundle(for: DataController.self)
         let subdirectory = "DataModel.momd"
         
         var omoURL: URL?
         if #available(iOS 11, *) {
-            omoURL = bundle.url(forResource: resource, withExtension: "omo", subdirectory: subdirectory) // optimized model file
+            omoURL = mainBundle.url(forResource: version.rawValue, withExtension: "omo",
+                                    subdirectory: subdirectory) // optimized model file
         }
-        let momURL = bundle.url(forResource: resource, withExtension: "mom", subdirectory: subdirectory)
+        let momURL = mainBundle.url(forResource: version.rawValue, withExtension: "mom",
+                                    subdirectory: subdirectory)
         
         guard let url = omoURL ?? momURL else {
             fatalError("unable to find model in bundle")
@@ -36,7 +38,7 @@ extension NSManagedObjectModel {
 
     // MARK: - Compatible
     static func compatibleModelForStoreMetadata(_ metadata: [String : Any]) -> NSManagedObjectModel? {
-        let mainBundle = Bundle.main
+        let mainBundle = Bundle(for: DataController.self)
         return NSManagedObjectModel.mergedModel(from: [mainBundle], forStoreMetadata: metadata)
     }
 }

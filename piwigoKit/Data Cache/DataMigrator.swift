@@ -182,7 +182,21 @@ class DataMigrator: DataMigratorProtocol {
 private extension DataMigrationVersion {
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
-            let model = NSManagedObjectModel.managedObjectModel(forResource: $0.rawValue)
+            let model = NSManagedObjectModel.managedObjectModel(forVersion: $0)
+            
+            // For debugging
+            let modelEntities = model.entityVersionHashesByName.mapValues({ $0 })
+            print("\($0.rawValue)")
+            print("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
+            print("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
+            print("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
+
+            let metadataEntities = metadata[NSStoreModelVersionHashesKey] as! [String : Data]
+            let metaEntities = metadataEntities.mapValues({ $0 })
+            print("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
+            print("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
+            print("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
+            print("……")
             
             return model.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }

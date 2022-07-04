@@ -93,6 +93,16 @@ public class DataController: NSObject {
         return piwigoURL!
     }()
 
+    // "Documents" inside the Data Container of the Sandbox.
+    /// - This is the directory where the application used to store the Core Data store files long ago.
+    lazy var appDocumentsDirectory: URL = {
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let appDocumentsDirectory = urls[urls.count-1]
+
+        print("••> appDocumentsDirectory: \(appDocumentsDirectory)")
+        return appDocumentsDirectory
+    }()
+
 
     // MARK: - Core Data Stack
     public lazy var mainContext: NSManagedObjectContext = {
@@ -277,13 +287,8 @@ public class DataController: NSObject {
         // URL of the store in the App Group directory
         let newStoreURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
 
-        // The directory the application used to store the Core Data store file long ago.
-        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let applicationDocumentsDirectory = urls[urls.count-1]
-        var oldStoreURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
-        print("••> Very Old App Directory: \(oldStoreURL)")
-
         // Move the very old store to the new folder if needed
+        var oldStoreURL = appDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
         if migrator.requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             DispatchQueue.global(qos: .userInitiated).async {
                 // Perform the migration (version after version)

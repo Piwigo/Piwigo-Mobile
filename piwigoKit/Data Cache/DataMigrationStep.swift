@@ -20,8 +20,8 @@ struct DataMigrationStep {
 
     // MARK: - Initialisation
     init(sourceVersion: DataMigrationVersion, destinationVersion: DataMigrationVersion) {
-        let sourceModel = NSManagedObjectModel.managedObjectModel(forResource: sourceVersion.rawValue)
-        let destinationModel = NSManagedObjectModel.managedObjectModel(forResource: destinationVersion.rawValue)
+        let sourceModel = NSManagedObjectModel.managedObjectModel(forVersion: sourceVersion)
+        let destinationModel = NSManagedObjectModel.managedObjectModel(forVersion: destinationVersion)
         
         guard let mappingModel = DataMigrationStep.mappingModel(fromSourceModel: sourceModel,
                                                                 toDestinationModel: destinationModel) else {
