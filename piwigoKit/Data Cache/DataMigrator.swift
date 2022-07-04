@@ -75,7 +75,7 @@ class DataMigrator: DataMigratorProtocol {
                                          destinationType: NSSQLiteStoreType, destinationOptions: nil)
             } catch let error {
                 // Move store to directory of incompatible stores
-//                moveIncompatibleStore(storeURL: currentURL)
+                moveIncompatibleStore(storeURL: currentURL)
                 fatalError("failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
             }
             
@@ -88,13 +88,14 @@ class DataMigrator: DataMigratorProtocol {
             currentURL = tempStoreURL
         }
         
-        // Replace original store with new store if old andd new URLs are identical
+        // Replace original store with new store if old and new URLs are identical
         if newStoreURL == oldStoreURL {
             NSPersistentStoreCoordinator.replaceStore(at: oldStoreURL, withStoreAt: currentURL)
-        }
-        
-        if (currentURL != oldStoreURL) {
-            NSPersistentStoreCoordinator.destroyStore(at: currentURL)
+            if (currentURL != oldStoreURL) {
+                NSPersistentStoreCoordinator.destroyStore(at: currentURL)
+            }
+        } else {
+            NSPersistentStoreCoordinator.destroyStore(at: oldStoreURL)
         }
     }
     
