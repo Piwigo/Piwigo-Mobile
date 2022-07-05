@@ -13,42 +13,28 @@ extension NSPersistentStoreCoordinator {
 
     static func destroyStore(at storeURL: URL) {
         do {
+            // Reset Core Data store
             let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
             try psc.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+
+            // Delete Core Data store files
+            let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+            fileCoordinator.coordinate(writingItemAt: storeURL, options: .forDeleting,
+                                       error: nil, byAccessor: { (fileUrl) -> Void in
+                do {
+                    try FileManager.default.removeItem(at: fileUrl)
+                    try FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
+                        .appendingPathExtension("sqlite-shm"))
+                    try FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
+                        .appendingPathExtension("sqlite-wal"))
+                }
+                catch let error {
+                    print("Failed to remove item with error: \(error.localizedDescription)")
+                }
+            })
         } catch let error {
             fatalError("failed to destroy persistent store at \(storeURL), error: \(error)")
         }
-    }
-    
-    static func moveStore(from sourceURL: URL, to targetURL: URL) {
-        // Create the coordinator
-        do {
-            let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
-            try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
-                                       at: sourceURL, options: nil)
-            if let sourceStore = psc.persistentStore(for: sourceURL) {
-                do {
-                    try psc.migratePersistentStore(sourceStore, to: targetURL,
-                                                   options: nil, withType: NSSQLiteStoreType)
-                    destroyStore(at: sourceURL)
-                } catch let error {
-                    fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
-                }
-            }
-        } catch let error {
-            fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
-        }
-        
-//        let psc = NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
-//        if let sourceStore = psc.persistentStore(for: sourceURL) {
-//            do {
-//                try psc.migratePersistentStore(sourceStore, to: targetURL,
-//                                               options: nil, withType: NSSQLiteStoreType)
-//                destroyStore(at: sourceURL)
-//            } catch let error {
-//                fatalError("failed to move from: \(sourceURL) to \(targetURL), error: \(error)")
-//            }
-//        }
     }
     
     static func replaceStore(at targetURL: URL, withStoreAt sourceURL: URL) {

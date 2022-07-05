@@ -115,14 +115,14 @@ public class DataController: NSObject {
 
         var managedObjectModel: NSManagedObjectModel = {
             // This resource has the same name as your xcdatamodeld contained in your project
-            let bundle = Bundle.init(for: DataController.self)
+            let bundle = Bundle(for: DataController.self)
             guard var modelURL = bundle.url(forResource: "DataModel", withExtension: "momd") else {
                 fatalError("Error loading model from bundle")
             }
             
+            // Avoid warning "Failed to load optimized model at path…" for iOS
             // Retrieve the model version string (from the .plist file located in the .momd package)
             // in order to avoid having to update the code each time there is a new model version.
-            // Avoids the warning "Failed to load optimized model at path…" for iOS
             if #available(iOS 13.0, *) { } else {
                 let versionInfoURL = modelURL.appendingPathComponent("VersionInfo.plist")
                 if let versionInfoNSDictionary = NSDictionary(contentsOf: versionInfoURL),
@@ -143,117 +143,26 @@ public class DataController: NSObject {
             // Create the coordinator
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
             
-            // Move the very old store to the new folder if needed
-//            let storeURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
-//            var oldURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
-//            NSPersistentStoreCoordinator.moveStore(from: oldURL, to: storeURL)
-
-            // Move the old store to the new folder if needed
-//            oldURL = appSupportDirectory.appendingPathComponent("DataModel.sqlite")
-//            NSPersistentStoreCoordinator.moveStore(from: oldURL, to: storeURL)
-
-            // Move Upload folder to container if needed
-//            moveFilesToUpload()
-
-            // The database is now stored in the App group directory
-//            if migrator.requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
-//                DispatchQueue.global(qos: .userInitiated).async {
-//                    // Perform the migration(s)
-//                    self.migrator.migrateStore(at: storeURL, toVersion: DataMigrationVersion.current)
-//
-//                    // Add presistent store to coordinator
-//                    do {
-//                        try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
-//                                                           at: storeURL, options: nil)
-//                    } catch let error {
-//                        // Move Incompatible Store
-//                        self.moveIncompatibleStore(storeURL: storeURL)
-//
-//                        // Will inform user at restart
-//                        CacheVars.couldNotMigrateCoreDataStore = true
-//
-//                        // Crash!
-//                        abort()
-//                    }
-//                }
-//            } else {
-//
-//            }
-
-
-            
-            // The database is now stored in the App group directory
+            // The database is stored in the App group directory since v2.7
             let storeURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
-//            if needMigrate {
-//                do {
-//                    try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
-//                                                       at: oldURL, options: options)
-//                    if let store = coordinator.persistentStore(for: oldURL)
-//                    {
-//                        do {
-//                            try coordinator.migratePersistentStore(store, to: storeURL,
-//                                                                   options: options, withType: NSSQLiteStoreType)
-//                            // Delete old Core Data store files
-//                            self.deleteOldStoreAtUrl(url: oldURL)
-//                            self.deleteOldStoreAtUrl(url: oldURL.deletingPathExtension()
-//                                                        .appendingPathExtension("sqlite-shm"))
-//                            self.deleteOldStoreAtUrl(url: oldURL.deletingPathExtension()
-//                                                        .appendingPathExtension("sqlite-wal"))
-//                            // Move Upload folder to container if needed
-//                            moveFilesToUpload()
-//                        }
-//                        catch let error {
-//                            // Log error
-//                            let error = NSError(domain: "Piwigo", code: 9990,
-//                                                userInfo: [NSLocalizedDescriptionKey : "Failed to move Core Data store."])
-//                            print("Unresolved error \(error.localizedDescription)")
-//
-//                            // Move Incompatible Store
-//                            self.moveIncompatibleStore(storeURL: oldURL)
-//
-//                            // Will inform user at restart
-//                            CacheVars.couldNotMigrateCoreDataStore = true
-//
-//                            // Crash!
-//                            abort()
-//                        }
-//                    }
-//                } catch {
-//                    // Log error
-//                    let error = NSError(domain: "Piwigo", code: 9990,
-//                                        userInfo: [NSLocalizedDescriptionKey : "Failed to migrate Core Data store."])
-//                    print("Unresolved error \(error.localizedDescription)")
-//
-//                    // Move Incompatible Store
-//                    self.moveIncompatibleStore(storeURL: oldURL)
-//
-//                    // Will inform user at restart
-//                    CacheVars.couldNotMigrateCoreDataStore = true
-//
-//                    // Crash!
-//                    abort()
-//                }
-//            } else {
-                do {
-                    try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
-                                                       at: storeURL, options: nil)
-                } catch {
-                    // Log error
-                    let error = NSError(domain: "Piwigo", code: 9990,
-                                        userInfo: [NSLocalizedDescriptionKey : "Failed to migrate Core Data store."])
-                    print("Unresolved error \(error.localizedDescription)")
+            do {
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
+                                                   at: storeURL, options: nil)
+            } catch {
+                // Log error
+                let error = NSError(domain: "Piwigo", code: 9990,
+                                    userInfo: [NSLocalizedDescriptionKey : "Failed to migrate Core Data store."])
+                print("Unresolved error \(error.localizedDescription)")
 
-                    // Move Incompatible Store
-                    moveIncompatibleStore(storeURL: storeURL)
-                    
-                    // Will inform user at restart
-                    CacheVars.couldNotMigrateCoreDataStore = true
+                // Move Incompatible Store
+                moveIncompatibleStore(storeURL: storeURL)
+                
+                // Will inform user at restart
+                CacheVars.couldNotMigrateCoreDataStore = true
 
-                    // Crash!
-                    abort()
-                }
-//            }
-            
+                // Crash!
+                abort()
+            }
             return coordinator
         }()
 
@@ -285,7 +194,7 @@ public class DataController: NSObject {
     
     public func migrateStoreIfNeeded(completion: @escaping () -> Void) {
         // URL of the store in the App Group directory
-        let newStoreURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+        let storeURL = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
 
         // Move the very old store to the new folder if needed
         var oldStoreURL = appDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
@@ -293,7 +202,7 @@ public class DataController: NSObject {
             DispatchQueue.global(qos: .userInitiated).async {
                 // Perform the migration (version after version)
                 self.migrator.migrateStore(at: oldStoreURL,
-                                           toVersion: DataMigrationVersion.current, at: newStoreURL)
+                                           toVersion: DataMigrationVersion.current, at: storeURL)
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -307,7 +216,7 @@ public class DataController: NSObject {
             DispatchQueue.global(qos: .userInitiated).async {
                 // Perform the migration (version after version)
                 self.migrator.migrateStore(at: oldStoreURL,
-                                           toVersion: DataMigrationVersion.current, at: newStoreURL)
+                                           toVersion: DataMigrationVersion.current, at: storeURL)
                 // Move Upload folder to container if needed
                 self.moveFilesToUpload()
                 DispatchQueue.main.async {
@@ -316,22 +225,23 @@ public class DataController: NSObject {
             }
             return
         }
-        // No migration required
-        completion()
+
+        // Migrate store to new data model if needed
+        if migrator.requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Perform the migration (version after version)
+                self.migrator.migrateStore(at: storeURL,
+                                           toVersion: DataMigrationVersion.current, at: storeURL)
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+        } else {
+            // No migration required
+            completion()
+        }
     }
     
-//    private func deleteOldStoreAtUrl(url: URL) {
-//        let fileCoordinator = NSFileCoordinator(filePresenter: nil)
-//        fileCoordinator.coordinate(writingItemAt: url, options: .forDeleting, error: nil, byAccessor: {
-//            (urlForModifying) -> Void in
-//            do {
-//                try FileManager.default.removeItem(at: urlForModifying)
-//            }catch let error {
-//                print("Failed to remove item with error: \(error.localizedDescription)")
-//            }
-//        })
-//    }
-
     private func moveIncompatibleStore(storeURL: URL) {
         let fm = FileManager.default
         let applicationIncompatibleStoresDirectory = self.appSupportDirectory.appendingPathComponent("Incompatible")
