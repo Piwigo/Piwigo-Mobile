@@ -35,7 +35,7 @@ extension AlbumViewController
             })
 
         let tagSelectorAction = UIAlertAction(
-            title: NSLocalizedString("tags", comment: "Tags"),
+            title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
             style: .default, handler: { [self] action in
                 discoverImagesByTag()
             })
