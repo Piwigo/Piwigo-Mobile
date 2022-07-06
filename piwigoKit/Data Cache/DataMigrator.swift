@@ -184,22 +184,53 @@ private extension DataMigrationVersion {
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
             let model = NSManagedObjectModel.managedObjectModel(forVersion: $0)
-            
-            // For debugging
-            let modelEntities = model.entityVersionHashesByName.mapValues({ $0 })
-            print("\($0.rawValue)")
-            print("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
-            print("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
-            print("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
 
-            let metadataEntities = metadata[NSStoreModelVersionHashesKey] as! [String : Data]
-            let metaEntities = metadataEntities.mapValues({ $0 })
-            print("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
-            print("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
-            print("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
-            print("……")
-            
+            // For debugging
+//            let modelEntities = model.entityVersionHashesByName.mapValues({ $0 })
+//            print("\($0.rawValue)")
+//            print("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
+//            print("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
+//            print("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
+
+//            let metadataEntities = metadata[NSStoreModelVersionHashesKey] as! [String : Data]
+//            let metaEntities = metadataEntities.mapValues({ $0 })
+//            print("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
+//            print("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
+//            print("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
+//            print("……")
+
             return model.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
+        }
+        
+        // In case where the data model is not found, try to guess the current data model…
+        if compatibleVersion == nil {
+            if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                if appVersion.compare("2.5", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.5")
+                    return .version01
+                }
+                else if appVersion.compare("2.5.2", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.5.2")
+                    return .version03
+                }
+                else if appVersion.compare("2.6", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.6")
+                    return .version04
+                }
+                else if appVersion.compare("2.6.2", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.6.2")
+                    return .version06
+                }
+                else if appVersion.compare("2.7", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.7")
+                    return .version07
+                }
+                else if appVersion.compare("2.12", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 2.12")
+                    return .version08
+                }
+                return .version09
+            }
         }
         return compatibleVersion
     }
