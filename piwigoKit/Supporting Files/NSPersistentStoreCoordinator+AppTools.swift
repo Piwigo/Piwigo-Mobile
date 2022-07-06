@@ -21,16 +21,11 @@ extension NSPersistentStoreCoordinator {
             let fileCoordinator = NSFileCoordinator(filePresenter: nil)
             fileCoordinator.coordinate(writingItemAt: storeURL, options: .forDeleting,
                                        error: nil, byAccessor: { (fileUrl) -> Void in
-                do {
-                    try FileManager.default.removeItem(at: fileUrl)
-                    try FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
-                        .appendingPathExtension("sqlite-shm"))
-                    try FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
-                        .appendingPathExtension("sqlite-wal"))
-                }
-                catch let error {
-                    print("Failed to remove item with error: \(error.localizedDescription)")
-                }
+                try? FileManager.default.removeItem(at: fileUrl)
+                try? FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
+                    .appendingPathExtension("sqlite-shm"))
+                try? FileManager.default.removeItem(at: fileUrl.deletingPathExtension()
+                    .appendingPathExtension("sqlite-wal"))
             })
         } catch let error {
             fatalError("failed to destroy persistent store at \(storeURL), error: \(error)")
