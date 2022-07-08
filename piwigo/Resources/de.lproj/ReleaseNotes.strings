@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "Version 2.12.1\n\n• Behebt einen Absturz auf iOS 9-13 beim Ändern von Tags, die Fotos zugeordnet sind";
+"v2.12.1_text" = "Version 2.12.1\n\n• Behebt einen Absturz auf iOS 9-13 beim Ändern von Schlagwörtern, die Fotos zugeordnet sind";
 
 "v2.12.0_text" = "Version 2.12\n3. Juli 2022\n\n• Wählen Sie eine Schlagwort schneller mit der Suchleiste\n• Code-Modernisierung\n• Fehlerbehebungen";
 
