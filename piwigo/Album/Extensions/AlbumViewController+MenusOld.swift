@@ -60,7 +60,7 @@ extension AlbumViewController
 
         // Add actions
         alert.addAction(cancelAction)
-        if "2.10.0".compare(NetworkVarsObjc.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+        if "2.10.0".compare(NetworkVarsObjc.pwgVersion, options: .numeric) != .orderedDescending {
             alert.addAction(favoritesSelectorAction)
         }
         alert.addAction(tagSelectorAction)

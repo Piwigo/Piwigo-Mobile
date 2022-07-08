@@ -1108,7 +1108,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
                 }
 
