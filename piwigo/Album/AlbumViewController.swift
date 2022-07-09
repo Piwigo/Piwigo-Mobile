@@ -1032,14 +1032,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         default /* Images */:
             let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             if collectionView.numberOfItems(inSection: section) == 0 {
-                return UIEdgeInsets(top: 0, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
-                                    bottom: 0, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
+                return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
             } else if albumData?.comment?.count == 0 {
-                return UIEdgeInsets(top: 4, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
-                                    bottom: 4, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
+                return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             } else {
-                return UIEdgeInsets(top: 10, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
-                                    bottom: 4, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
+                return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             }
         }
     }
@@ -1057,10 +1057,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0 /* Albums */:
-            return CGFloat(AlbumUtilities.kAlbumCellSpacing)
+            return AlbumUtilities.kAlbumCellSpacing
         
         default /* Images */:
-            return CGFloat(AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full))
+            return AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full)
         }
     }
 

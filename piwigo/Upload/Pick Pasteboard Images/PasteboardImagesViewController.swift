@@ -871,8 +871,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
-                            bottom: 10, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
+        return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
+                            bottom: 10, right: AlbumUtilities.kImageMarginsSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
