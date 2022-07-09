@@ -79,15 +79,16 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // Avoid unwanted spaces
-        return UIEdgeInsets(top: 0, left: kImageDetailsMarginsSpacing, bottom: 0, right: kImageDetailsMarginsSpacing)
+        return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageDetailsMarginsSpacing,
+                            bottom: 0, right: AlbumUtilities.kImageDetailsMarginsSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(kImageDetailsCellSpacing)
+        return CGFloat(AlbumUtilities.kImageDetailsCellSpacing)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: ImagesCollection.imageDetailsSize(for: self), height: 152.0)
+        return CGSize(width: AlbumUtilities.imageDetailsSize(forView: self), height: 152.0)
     }
 }
 
@@ -137,7 +138,7 @@ extension EditImageThumbTableViewCell: UIScrollViewDelegate
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     {
-        let cellWidth: CGFloat = collectionView(editImageThumbCollectionView, layout: editImageThumbCollectionView.collectionViewLayout, sizeForItemAt: IndexPath(row: 0, section: 0)).width + kImageDetailsMarginsSpacing / 2.0
+        let cellWidth: CGFloat = collectionView(editImageThumbCollectionView, layout: editImageThumbCollectionView.collectionViewLayout, sizeForItemAt: IndexPath(row: 0, section: 0)).width + AlbumUtilities.kImageDetailsMarginsSpacing / 2.0
         let offset:CGFloat = scrollView.contentOffset.x + scrollView.contentInset.left
         let proposedPage: CGFloat = offset / fmax(1.0, cellWidth)
         let snapPoint: CGFloat = 0.1

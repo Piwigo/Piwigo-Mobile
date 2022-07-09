@@ -1518,15 +1518,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: kImageMarginsSpacing, bottom: 10, right: kImageMarginsSpacing)
+        return UIEdgeInsets(top: 10, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
+                            bottom: 10, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(ImagesCollection.imageCellVerticalSpacing(for: kImageCollectionPopup))
+        return CGFloat(AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .popup))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(ImagesCollection.imageCellHorizontalSpacing(for: kImageCollectionPopup))
+        return CGFloat(AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .popup))
     }
 
     
@@ -1569,7 +1570,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup))
 
         return CGSize(width: size, height: size)
     }
@@ -1587,7 +1588,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let uploadState = getUploadStateOfImage(at: index, for: cell)
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
+        cell.configure(with: imageAsset, thumbnailSize: AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup))
         cell.update(selected: selectedImages[index] != nil, state: uploadState)
 
         // Add pan gesture recognition

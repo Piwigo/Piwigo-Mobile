@@ -1015,24 +1015,31 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Albums */:
             if collectionView.numberOfItems(inSection: section) == 0 {
-                return UIEdgeInsets(top: 0, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                    bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
             } else if categoryId == 0 {
                 if #available(iOS 13.0, *) {
-                    return UIEdgeInsets(top: 0, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                    return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                        bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
                 } else {
-                    return UIEdgeInsets(top: 10, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                    return UIEdgeInsets(top: 10, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                        bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
                 }
             } else {
-                return UIEdgeInsets(top: 10, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 10, left: AlbumUtilities.kAlbumMarginsSpacing, bottom: 0,
+                                    right: AlbumUtilities.kAlbumMarginsSpacing)
             }
         default /* Images */:
             let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             if collectionView.numberOfItems(inSection: section) == 0 {
-                return UIEdgeInsets(top: 0, left: kImageMarginsSpacing, bottom: 0, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 0, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
+                                    bottom: 0, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
             } else if albumData?.comment?.count == 0 {
-                return UIEdgeInsets(top: 4, left: kImageMarginsSpacing, bottom: 4, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 4, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
+                                    bottom: 4, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
             } else {
-                return UIEdgeInsets(top: 10, left: kImageMarginsSpacing, bottom: 4, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 10, left: CGFloat(AlbumUtilities.kImageMarginsSpacing),
+                                    bottom: 4, right: CGFloat(AlbumUtilities.kImageMarginsSpacing))
             }
         }
     }
@@ -1043,30 +1050,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             return 0.0
         
         default /* Images */:
-            return CGFloat(ImagesCollection.imageCellVerticalSpacing(for: kImageCollectionFull))
+            return CGFloat(AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .full))
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0 /* Albums */:
-            return CGFloat(kAlbumCellSpacing)
+            return CGFloat(AlbumUtilities.kAlbumCellSpacing)
         
         default /* Images */:
-            return CGFloat(ImagesCollection.imageCellHorizontalSpacing(for: kImageCollectionFull))
+            return CGFloat(AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full))
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            let nberAlbumsPerRow = ImagesCollection.numberOfAlbumsPerRowForView(inPortrait: collectionView, withMaxWidth: 384.0)
-            let size = CGFloat(ImagesCollection.albumSize(for: collectionView, andNberOfAlbumsPerRowInPortrait: nberAlbumsPerRow))
+            let nberAlbumsPerRow = AlbumUtilities.numberOfAlbumsPerRowInPortrait(forView: collectionView, maxWidth: 384.0)
+            let size = AlbumUtilities.albumSize(forView: collectionView,
+                                                nberOfAlbumsPerRowInPortrait: nberAlbumsPerRow)
             return CGSize(width: size, height: 156.5)
         
         default /* Images */:
             // Calculates size of image cells
-            let size = ImagesCollection.imageSize(for: imagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
+            let size = AlbumUtilities.imageSize(forView: imagesCollection,
+                                                imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
             return CGSize(width: size, height: size)
         }
     }

@@ -11,7 +11,6 @@
 
 #import "AlbumData.h"
 #import "CategoriesData.h"
-#import "ImagesCollection.h"
 #import "ImageService.h"
 #import "Model.h"
 #import "NetworkHandler.h"

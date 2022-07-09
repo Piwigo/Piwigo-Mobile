@@ -319,7 +319,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func confirmCategoryDeletion(withNumberOfImages number: Int,
-                                         deletionMode: kPwgCategoryDeletionMode,
+                                         deletionMode: pwgCategoryDeletionMode,
                                          andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -372,7 +372,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func prepareDeletion(withNumberOfImages number: Int,
-                                 deletionMode: kPwgCategoryDeletionMode,
+                                 deletionMode: pwgCategoryDeletionMode,
                                  andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -408,7 +408,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    private func getMissingImages(beforeDeletingInMode deletionMode: kPwgCategoryDeletionMode,
+    private func getMissingImages(beforeDeletingInMode deletionMode: pwgCategoryDeletionMode,
                                   with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -446,7 +446,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             })
     }
 
-    private func deleteCategory(withDeletionMode deletionMode: kPwgCategoryDeletionMode,
+    private func deleteCategory(withDeletionMode deletionMode: pwgCategoryDeletionMode,
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
