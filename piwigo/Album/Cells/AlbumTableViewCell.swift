@@ -85,11 +85,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
         numberOfImages.font = numberOfImages.font.withSize(UIFont.fontSizeFor(label: numberOfImages, nberLines: 1))
 
-        // Display placeholder when album data are unavailable
-//        guard let albumData = albumData else {
-//            return
-//        }
-        
         // Add renaming, moving and deleting capabilities when user has admin rights
         if let _ = albumData, NetworkVars.hasAdminRights {
             handleButton.isHidden = false
