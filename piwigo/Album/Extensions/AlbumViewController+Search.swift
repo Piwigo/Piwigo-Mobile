@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 // MARK: - Search Images
 extension AlbumViewController

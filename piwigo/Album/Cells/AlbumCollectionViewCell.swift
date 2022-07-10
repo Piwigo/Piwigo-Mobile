@@ -71,7 +71,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     @objc
     func autoUploadUpdated(_ notification: Notification?) {
         // Is this cell concerned?
-        if albumData?.albumId != UploadVarsObjc.autoUploadCategoryId { return }
+        if albumData?.albumId != UploadVars.autoUploadCategoryId { return }
 
         // Disallow user to delete the active auto-upload destination album
         let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
@@ -387,8 +387,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Remove this album from the auto-upload destination
-        if UploadVarsObjc.autoUploadCategoryId == albumData.albumId {
-            UploadVarsObjc.autoUploadCategoryId = NSNotFound
+        if UploadVars.autoUploadCategoryId == albumData.albumId {
+            UploadVars.autoUploadCategoryId = NSNotFound
         }
 
         // Should we retrieve images before deleting the category?
@@ -535,7 +535,7 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
     func swipeTableCell(_ cell: MGSwipeTableCell, swipeButtonsFor direction: MGSwipeDirection, swipeSettings: MGSwipeSettings, expansionSettings: MGSwipeExpansionSettings) -> [UIView]?
     {
         // Only admins can rename, move and delete albums
-        if !NetworkVarsObjc.hasAdminRights { return nil }
+        if !NetworkVars.hasAdminRights { return nil }
 
         // Settings
         cell.swipeBackgroundColor = UIColor.piwigoColorOrange()
@@ -560,8 +560,8 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
                 })
 
             // Disallow user to delete the active auto-upload destination album
-            if (albumData?.albumId == UploadVarsObjc.autoUploadCategoryId),
-                UploadVarsObjc.isAutoUploadActive {
+            if (albumData?.albumId == UploadVars.autoUploadCategoryId),
+                UploadVars.isAutoUploadActive {
                 return [move, rename]
             } else {
                 expansionSettings.buttonIndex = 0

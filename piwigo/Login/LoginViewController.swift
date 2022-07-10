@@ -774,7 +774,7 @@ class LoginViewController: UIViewController {
 
     func logging(inConnectionError error: Error?) {
         // Do not present error message when executing background task
-        if UploadVarsObjc.isExecutingBackgroundUploadTask {
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
             hideLoading()
             return
         }

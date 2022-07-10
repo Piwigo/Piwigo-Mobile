@@ -451,13 +451,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         //#endif
 
         // Inform user why the app crashed at start
-        if CacheVarsObjc.couldNotMigrateCoreDataStore {
+        if CacheVars.couldNotMigrateCoreDataStore {
             dismissPiwigoError(
                 withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
                 message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
                 errorMessage: "") {
                 // Reset flag
-                CacheVarsObjc.couldNotMigrateCoreDataStore = false
+                CacheVars.couldNotMigrateCoreDataStore = false
             }
         }
     }

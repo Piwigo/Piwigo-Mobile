@@ -473,7 +473,7 @@ extension ImagePreviewViewController: AVAssetResourceLoaderDelegate
         else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             // HTTP basic authentification credentials
             let user = NetworkVars.httpUsername
-            let password = KeychainUtilities.password(forService: "\(NetworkVarsObjc.serverProtocol)\(NetworkVarsObjc.serverPath)", account: user)
+            let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: user)
             authenticationChallenge.sender?.use(
                 URLCredential(user: user, password: password, persistence: .synchronizable),
                               for: authenticationChallenge)

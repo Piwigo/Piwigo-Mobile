@@ -144,8 +144,8 @@ class AlbumUtilities: NSObject {
                 }
 
                 // Update albums if Community extension installed (not needed for admins)
-                if !NetworkVarsObjc.hasAdminRights,
-                   NetworkVarsObjc.usesCommunityPluginV29 {
+                if !NetworkVars.hasAdminRights,
+                   NetworkVars.usesCommunityPluginV29 {
                     getCommunityAlbums { comAlbums in
                         // Loop over Community albums
                         for comAlbum in comAlbums {

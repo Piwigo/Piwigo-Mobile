@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 extension AlbumViewController
@@ -60,7 +61,7 @@ extension AlbumViewController
 
         // Add actions
         alert.addAction(cancelAction)
-        if "2.10.0".compare(NetworkVarsObjc.pwgVersion, options: .numeric) != .orderedDescending {
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
             alert.addAction(favoritesSelectorAction)
         }
         alert.addAction(tagSelectorAction)

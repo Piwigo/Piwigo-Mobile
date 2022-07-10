@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 @objc
 class AlbumTableViewCell: MGSwipeTableCell {
@@ -42,7 +43,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
             albumComment.textColor = UIColor.piwigoColorText()
         }
         else {  // No comment
-            if NetworkVarsObjc.hasAdminRights {
+            if NetworkVars.hasAdminRights {
                 albumComment.text = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
                 albumComment.textColor = UIColor.piwigoColorRightLabel()
             } else {
@@ -90,7 +91,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
 //        }
         
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if let _ = albumData, NetworkVarsObjc.hasAdminRights {
+        if let _ = albumData, NetworkVars.hasAdminRights {
             handleButton.isHidden = false
         }
 

@@ -508,7 +508,7 @@ extension EditImageParamsViewController: UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = EditImageParamsOrder.count.rawValue
         nberOfRows -= hasDatePicker ? 0 : 1
-        nberOfRows -= NetworkVarsObjc.hasAdminRights ? 0 : 1
+        nberOfRows -= NetworkVars.hasAdminRights ? 0 : 1
         return nberOfRows
     }
 
@@ -516,7 +516,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var height: CGFloat = 44.0
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
             case .thumbnails:
                 height = 188.0
@@ -544,7 +544,7 @@ extension EditImageParamsViewController: UITableViewDataSource
 
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
         case .thumbnails:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EditImageThumbTableViewCell", for: indexPath) as? EditImageThumbTableViewCell else {
@@ -699,7 +699,7 @@ extension EditImageParamsViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
         case .privacy:
             // Deselect row
@@ -740,7 +740,7 @@ extension EditImageParamsViewController: UITableViewDelegate
         var result: Bool
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName, .author, .date, .datePicker, .desc:
                 result = false
@@ -1080,7 +1080,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
             // Refresh table row
             var row: Int = EditImageParamsOrder.tags.rawValue
             row -= !hasDatePicker ? 1 : 0
-            row -= !NetworkVarsObjc.hasAdminRights ? 1 : 0
+            row -= !NetworkVars.hasAdminRights ? 1 : 0
             let indexPath = IndexPath(row: row, section: 0)
             editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
         }
