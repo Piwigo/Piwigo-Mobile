@@ -58,7 +58,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     @objc
-    func config(withAlbumData albumData: PiwigoAlbumData?) {
+    func config(withAlbumData albumData: PiwigoAlbumData? = nil) {
         self.albumData = albumData
         tableView?.reloadData()
     }
@@ -218,7 +218,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
                     // Update cell and hide swipe buttons
                     let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                    cell?.config(with: albumData)
+                    cell?.config(withAlbumData: albumData)
                     cell?.hideSwipe(animated: true)
                 }
             }
@@ -490,12 +490,15 @@ extension AlbumCollectionViewCell: UITableViewDataSource
             print("Error: tableView.dequeueReusableCell does not return a AlbumTableViewCell!")
             return AlbumTableViewCell()
         }
-        cell.delegate = self
-        if let albumData = albumData {
-            cell.config(with: albumData)
+        
+        // Configure cell
+        cell.config(withAlbumData: albumData)
+        
+        // Album modifications are possible only if data are known
+        if albumData != nil {
+            cell.delegate = self
+            cell.isAccessibilityElement = true
         }
-
-        cell.isAccessibilityElement = true
         return cell
     }
 }

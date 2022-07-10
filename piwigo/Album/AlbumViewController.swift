@@ -1088,7 +1088,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
             cell.categoryDelegate = self
 
-            let albumData = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId)[indexPath.row]
+            // Check album data
+            guard let parentAlbums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
+                  indexPath.item < parentAlbums.count else {
+                cell.config()
+                return cell
+            }
+
+            // Configure cell with album data
+            let albumData = parentAlbums[indexPath.item]
             cell.config(withAlbumData: albumData)
 
             // Disable category cells in Image selection mode

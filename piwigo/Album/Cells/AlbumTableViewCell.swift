@@ -24,7 +24,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var recentImage: UIImageView!
 
     @objc
-    func config(with albumData: PiwigoAlbumData) {
+    func config(withAlbumData albumData: PiwigoAlbumData?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -33,11 +33,11 @@ class AlbumTableViewCell: MGSwipeTableCell {
         bottomCut.backgroundColor = UIColor.piwigoColorBackground()
 
         // Album name
-        albumName.text = albumData.name ?? "—?—"
+        albumName.text = albumData?.name ?? "—?—"
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
         // Album comment
-        if let comment = albumData.comment, comment.isEmpty == false {
+        if let comment = albumData?.comment, comment.isEmpty == false {
             albumComment.text = comment
             albumComment.textColor = UIColor.piwigoColorText()
         }
@@ -55,42 +55,50 @@ class AlbumTableViewCell: MGSwipeTableCell {
         numberOfImages.textColor = UIColor.piwigoColorText()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        if albumData.numberOfSubCategories == 0 {
+        if albumData?.numberOfSubCategories ?? 0 == 0 {
             // There are no sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData.numberOfImages))
-            numberOfImages.text = (albumData.numberOfImages > 1)
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.numberOfImages ?? 0))
+            numberOfImages.text = (albumData?.numberOfImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
         }
-        else if albumData.totalNumberOfImages == 0 {
+        else if albumData?.totalNumberOfImages ?? 0 == 0 {
             // There are no images but sub-albums
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.numberOfSubCategories))
-            numberOfImages.text = (albumData.numberOfSubCategories > 1)
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
+            numberOfImages.text = (albumData?.numberOfSubCategories ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData.totalNumberOfImages))
-            var nberOfImages = (albumData.totalNumberOfImages > 1)
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNumberOfImages ?? 0))
+            var nberOfImages = (albumData?.totalNumberOfImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
             nberOfImages += ", "
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.numberOfSubCategories))
-            nberOfImages += (albumData.numberOfSubCategories > 1)
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
+            nberOfImages += (albumData?.numberOfSubCategories ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
             numberOfImages.text = nberOfImages
         }
         numberOfImages.font = numberOfImages.font.withSize(UIFont.fontSizeFor(label: numberOfImages, nberLines: 1))
 
+        // Display placeholder when album data are unavailable
+//        guard let albumData = albumData else {
+//            return
+//        }
+        
         // Add renaming, moving and deleting capabilities when user has admin rights
-        handleButton.isHidden = !NetworkVarsObjc.hasAdminRights
+        if let _ = albumData, NetworkVarsObjc.hasAdminRights {
+            handleButton.isHidden = false
+        }
 
         // Display recent icon when images have been uploaded recently
         DispatchQueue.global(qos: .userInteractive).async {
-            guard let dateLast = CategoriesData.sharedInstance()
-                    .getDateLastOfCategories(inCategory: albumData.albumId) else { return }
+            guard let catId = albumData?.albumId,
+                  let dateLast = CategoriesData.sharedInstance()
+                                    .getDateLastOfCategories(inCategory: catId) else { return }
             let timeSinceLastUpload: TimeInterval = dateLast.timeIntervalSinceNow
             var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
             indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
@@ -110,20 +118,20 @@ class AlbumTableViewCell: MGSwipeTableCell {
         let placeHolder = UIImage(named: "placeholder")
 
         // Do we have a correct URL?
-        guard let thumbUrlStr: String = albumData.albumThumbnailUrl,
+        guard let thumbUrlStr: String = albumData?.albumThumbnailUrl,
               let thumbURL = URL(string: thumbUrlStr) else {
             // No album thumbnail URL
-            albumData.categoryImage = placeHolder
+            albumData?.categoryImage = placeHolder
             backgroundImage.image = placeHolder
             return
         }
 
         // Do we have the thumbnail in cache?
-        if let cachedImage: UIImage = albumData.categoryImage,
+        if let cachedImage: UIImage = albumData?.categoryImage,
            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           (albumData.categoryImage != placeHolder) {
+           (albumData?.categoryImage != placeHolder) {
             // Album thumbnail in memory
-            backgroundImage.image = albumData.categoryImage
+            backgroundImage.image = albumData?.categoryImage
             return
         }
 
@@ -148,19 +156,19 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
                     let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
                     DispatchQueue.main.async {
-                        albumData.categoryImage = albumImage
+                        albumData?.categoryImage = albumImage
                         self.backgroundImage.image = albumImage
                     }
                 } else {
                     DispatchQueue.main.async {
-                        albumData.categoryImage = finalImage
+                        albumData?.categoryImage = finalImage
                         self.backgroundImage.image = finalImage
                     }
                 }
             }
         } failure: { _, _, error in
             #if DEBUG
-            debugPrint("setupWithAlbumData — Fail to get album image at \(albumData.albumThumbnailUrl ?? "—?—")")
+            debugPrint("setupWithAlbumData — Fail to get album image at \(albumData?.albumThumbnailUrl ?? "—?—")")
             #endif
         }
     }
@@ -174,5 +182,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
         numberOfImages.text = ""
         recentBckg.isHidden = true
         recentImage.isHidden = true
+        handleButton.isHidden = true
     }
 }
