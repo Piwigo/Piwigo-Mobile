@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.0_text" = "Version 2.12\n\n• Välj en tagg snabbare med sökfältet\n• Uppdatering av kod\n• Buggfixar";
+"v2.12.1_text" = "Version 2.12.1\n\n• Fixar en krasch som inträffar på iOS 9-13 vid ändring av taggar som tilldelats foton";
+
+"v2.12.0_text" = "Version 2.12\n3 juli 2022\n\n• Välj en tagg snabbare med sökfältet\n• Uppdatering av kod\n• Buggfixar";
 
 "v2.11.2_text" = "Version 2.11.2\n21 juni 2022\n\n• Åtgärdar ett kompatibilitetsproblem med Community-plugin";
 

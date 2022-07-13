@@ -85,7 +85,7 @@ import piwigoKit
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
             
             // Unknown list -> initialise album and download list
-            let nberImagesPerPage = ImagesCollection.numberOfImagesToDownloadPerPage()
+            let nberImagesPerPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "")
             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()

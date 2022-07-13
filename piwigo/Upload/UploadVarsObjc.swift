@@ -11,11 +11,6 @@ import piwigoKit
 
 class UploadVarsObjc: NSObject {
     
-    @objc static var isExecutingBackgroundUploadTask: Bool {
-        get { return UploadManager.shared.isExecutingBackgroundUploadTask }
-        set (value) { UploadManager.shared.isExecutingBackgroundUploadTask = value }
-    }
-
     // MARK: - Vars in UserDefaults / Standard
     // Upload variables stored in UserDefaults / Standard
     /// - None

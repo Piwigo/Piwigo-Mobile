@@ -9,7 +9,6 @@
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
 #import "CategoriesData.h"
-#import "ImagesCollection.h"
 
 NSInteger const kPiwigoSearchCategoryId     = -1;           // Search
 NSInteger const kPiwigoVisitsCategoryId     = -2;           // Most visited
@@ -176,7 +175,7 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
 
         // Should we increment onPage?
         NSInteger numOfImgs = [[CategoriesData sharedInstance] getCategoryById:self.albumId].numberOfImages;
-        NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+        NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
         if (count >= imagesPerPage) { self.onPage++; }
         self.isLoadingMoreImages = NO;
 

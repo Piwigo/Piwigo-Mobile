@@ -11,7 +11,6 @@
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
-#import "ImagesCollection.h"
 
 NSString * const kGetImageOrderId = @"id";
 NSString * const kGetImageOrderFileName = @"file";
@@ -43,7 +42,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {    
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+    NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
 
     // Compile parameters
     NSDictionary *parameters = @{
@@ -114,7 +113,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //                            "xxlarge":{"url":"https:…-xx.jpg","width":1656,"height":1102}}
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+    NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
     
     // Compile parameters
     NSDictionary *parameters = @{
@@ -196,7 +195,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+    NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
     
     // Compile parameters
     NSDictionary *parameters = [NSDictionary new];
@@ -307,7 +306,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //            "file":…
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+    NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
     
     // Compile parameters
     NSDictionary *parameters = @{@"tag_id"         : @(tagId),
@@ -389,7 +388,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //          {"id":…
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+    NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
     
     // Compile parameters
     NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage),
@@ -485,7 +484,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
-                                          NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+                                          NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
                                           NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                           if (completion) {
@@ -518,7 +517,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
-                                          NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+                                          NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
                                           NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                           if (completion) {
@@ -548,7 +547,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                             NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
-                                            NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+                                            NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
                                             NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                             if (completion) {
@@ -579,7 +578,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
-                                          NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+                                          NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
                                           NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                           if (completion) {
@@ -610,7 +609,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                               PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                               NSInteger count = [albumData addImages:albumImages];
 #if defined(DEBUG_LOAD)
-                                              NSInteger imagesPerPage = [ImagesCollection numberOfImagesToDownloadPerPage];
+                                              NSInteger imagesPerPage = [AlbumUtilities numberOfImagesToDownloadPerPage];
                                               NSLog(@"loadImageChunkFor…: +%ld img in cat: %ld (%ld/%ld : %ld)", (long)count, (long)categoryId, (long)albumData.imageList.count, (long)albumData.numberOfImages, (long)(albumData.imageList.count % imagesPerPage));
 #endif
                                               if (completion) {

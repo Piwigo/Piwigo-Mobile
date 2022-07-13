@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 extension AlbumViewController
@@ -35,7 +36,7 @@ extension AlbumViewController
             })
 
         let tagSelectorAction = UIAlertAction(
-            title: NSLocalizedString("tags", comment: "Tags"),
+            title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
             style: .default, handler: { [self] action in
                 discoverImagesByTag()
             })
@@ -60,7 +61,7 @@ extension AlbumViewController
 
         // Add actions
         alert.addAction(cancelAction)
-        if "2.10.0".compare(NetworkVarsObjc.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
             alert.addAction(favoritesSelectorAction)
         }
         alert.addAction(tagSelectorAction)

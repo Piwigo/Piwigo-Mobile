@@ -70,7 +70,7 @@ extension AlbumViewController
                                         UIBarButtonItem.space(),
                                         deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 2, length: 2)).enumerated() {toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
@@ -83,7 +83,7 @@ extension AlbumViewController
                     // Right side of navigation bar
                     var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
@@ -93,7 +93,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             } else if !NetworkVars.hasGuestRights,
-                      ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending) {
+                      ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending) {
                 favoriteBarButton = getFavoriteBarButton()
 
                 if orientation?.isPortrait ?? false,
@@ -159,7 +159,7 @@ extension AlbumViewController
                     /// They also disappear when coming back to portrait orientation.
                     var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton, UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 4, length: 2)).enumerated() { toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
@@ -172,7 +172,7 @@ extension AlbumViewController
                     // Right side of navigation bar
                     var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
@@ -182,7 +182,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             } else if !NetworkVars.hasGuestRights,
-                      "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                      "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 
                 if orientation.isPortrait,
@@ -235,7 +235,7 @@ extension AlbumViewController
             shareBarButton?.isEnabled = hasImagesSelected
             deleteBarButton?.isEnabled = hasImagesSelected
             // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
                 let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
                 favoriteBarButton?.setFavoriteImage(for: areFavorites)
@@ -255,7 +255,7 @@ extension AlbumViewController
             /// — non-guest users can set favorites in addition
             shareBarButton?.isEnabled = hasImagesSelected
             if !NetworkVars.hasGuestRights,
-               "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+               "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
                 let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
                 favoriteBarButton?.setFavoriteImage(for: areFavorites)
@@ -273,7 +273,7 @@ extension AlbumViewController
         moveBarButton?.isEnabled = state
         shareBarButton?.isEnabled = state
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
             favoriteBarButton?.isEnabled = state
         }
     }

@@ -195,12 +195,12 @@ class ObjectPreparation : Operation {
                 pbObject.image = AVURLAsset(url: fileURL)
                     .extractedImage()
                     .crop(width: 1.0, height: 1.0)?
-                    .resize(to: kThumbnailFileSize * UIScreen.main.scale, opaque: true)
+                    .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
             } else {
                 pbObject.image = (UIImage(data: data) ?? UIImage(named: "placeholder")!)
                     .fixOrientation()
                     .crop(width: 1.0, height: 1.0)?
-                    .resize(to: kThumbnailFileSize * UIScreen.main.scale, opaque: true)
+                    .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
             }
         }
         catch let error as NSError {

@@ -63,7 +63,7 @@ class TagsViewController: UITableViewController {
         if #available(iOS 11.0, *) {
             return nonSelectedTags.filterTags(for: searchQuery)
         } else {
-            return allTags
+            return nonSelectedTags
         }
     }
 

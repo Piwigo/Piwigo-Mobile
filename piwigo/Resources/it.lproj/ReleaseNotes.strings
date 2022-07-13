@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.0_text" = "Versione 2.12\n\n• Seleziona un tag più velocemente con la barra di ricerca\n• Modernizzazione del codice\n• Correzioni di bug";
+"v2.12.1_text" = "Versione 2.12.1\n\n• Risolve un arresto anomalo che si verificava su iOS 9-13 durante la modifica dei tag assegnati alle foto";
+
+"v2.12.0_text" = "Versione 2.12\n3 luglio 2022\n\n• Seleziona un tag più velocemente con la barra di ricerca\n• Modernizzazione del codice\n• Correzioni di bug";
 
 "v2.11.2_text" = "Versione 2.11.2\n21 giugno 2022\n\n• Risolve un problema di compatibilità con il plugin Community";
 
