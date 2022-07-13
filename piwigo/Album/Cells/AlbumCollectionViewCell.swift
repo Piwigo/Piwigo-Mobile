@@ -58,7 +58,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     @objc
-    func config(withAlbumData albumData: PiwigoAlbumData?) {
+    func config(withAlbumData albumData: PiwigoAlbumData? = nil) {
         self.albumData = albumData
         tableView?.reloadData()
     }
@@ -71,7 +71,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     @objc
     func autoUploadUpdated(_ notification: Notification?) {
         // Is this cell concerned?
-        if albumData?.albumId != UploadVarsObjc.autoUploadCategoryId { return }
+        if albumData?.albumId != UploadVars.autoUploadCategoryId { return }
 
         // Disallow user to delete the active auto-upload destination album
         let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
@@ -218,7 +218,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
                     // Update cell and hide swipe buttons
                     let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                    cell?.config(with: albumData)
+                    cell?.config(withAlbumData: albumData)
                     cell?.hideSwipe(animated: true)
                 }
             }
@@ -319,7 +319,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func confirmCategoryDeletion(withNumberOfImages number: Int,
-                                         deletionMode: kPwgCategoryDeletionMode,
+                                         deletionMode: pwgCategoryDeletionMode,
                                          andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -372,7 +372,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func prepareDeletion(withNumberOfImages number: Int,
-                                 deletionMode: kPwgCategoryDeletionMode,
+                                 deletionMode: pwgCategoryDeletionMode,
                                  andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -387,8 +387,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Remove this album from the auto-upload destination
-        if UploadVarsObjc.autoUploadCategoryId == albumData.albumId {
-            UploadVarsObjc.autoUploadCategoryId = NSNotFound
+        if UploadVars.autoUploadCategoryId == albumData.albumId {
+            UploadVars.autoUploadCategoryId = NSNotFound
         }
 
         // Should we retrieve images before deleting the category?
@@ -408,7 +408,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
     }
 
-    private func getMissingImages(beforeDeletingInMode deletionMode: kPwgCategoryDeletionMode,
+    private func getMissingImages(beforeDeletingInMode deletionMode: pwgCategoryDeletionMode,
                                   with topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -446,7 +446,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             })
     }
 
-    private func deleteCategory(withDeletionMode deletionMode: kPwgCategoryDeletionMode,
+    private func deleteCategory(withDeletionMode deletionMode: pwgCategoryDeletionMode,
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -490,12 +490,15 @@ extension AlbumCollectionViewCell: UITableViewDataSource
             print("Error: tableView.dequeueReusableCell does not return a AlbumTableViewCell!")
             return AlbumTableViewCell()
         }
-        cell.delegate = self
-        if let albumData = albumData {
-            cell.config(with: albumData)
+        
+        // Configure cell
+        cell.config(withAlbumData: albumData)
+        
+        // Album modifications are possible only if data are known
+        if albumData != nil {
+            cell.delegate = self
+            cell.isAccessibilityElement = true
         }
-
-        cell.isAccessibilityElement = true
         return cell
     }
 }
@@ -532,7 +535,7 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
     func swipeTableCell(_ cell: MGSwipeTableCell, swipeButtonsFor direction: MGSwipeDirection, swipeSettings: MGSwipeSettings, expansionSettings: MGSwipeExpansionSettings) -> [UIView]?
     {
         // Only admins can rename, move and delete albums
-        if !NetworkVarsObjc.hasAdminRights { return nil }
+        if !NetworkVars.hasAdminRights { return nil }
 
         // Settings
         cell.swipeBackgroundColor = UIColor.piwigoColorOrange()
@@ -557,8 +560,8 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
                 })
 
             // Disallow user to delete the active auto-upload destination album
-            if (albumData?.albumId == UploadVarsObjc.autoUploadCategoryId),
-                UploadVarsObjc.isAutoUploadActive {
+            if (albumData?.albumId == UploadVars.autoUploadCategoryId),
+                UploadVars.isAutoUploadActive {
                 return [move, rename]
             } else {
                 expansionSettings.buttonIndex = 0

@@ -503,7 +503,7 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             LoginUtilities.sessionGetStatus(completion: { [self] in
-                if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedAscending {
+                if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                     // They need to update, ask user what to do
                     // Reinitialise flag
                     NetworkVars.userCancelledCommunication = false
@@ -730,7 +730,7 @@ class LoginViewController: UIViewController {
     private func loadFavorites() {
         // Should we load favorites?
         if NetworkVars.hasGuestRights { return }
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) == .orderedDescending  { return }
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending  { return }
         
         // Initialise favorites album
         if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
@@ -774,7 +774,7 @@ class LoginViewController: UIViewController {
 
     func logging(inConnectionError error: Error?) {
         // Do not present error message when executing background task
-        if UploadVarsObjc.isExecutingBackgroundUploadTask {
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
             hideLoading()
             return
         }

@@ -71,12 +71,12 @@ public class NetworkUtilities: NSObject {
             if okURL.hasPrefix("https://") { leftURL.removeFirst(8) }
             
             // Retrieve authority
-            guard let range1 = leftURL.range(of: "/") else {
+            guard let endAuthority = leftURL.firstIndex(of: "/") else {
                 // No path, incomplete URL —> return image.jpg but should never happen
                 return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
             }
-            let authority = String(leftURL.prefix(upTo: range1.upperBound))
-            leftURL.removeFirst(authority.count - 1)
+            let authority = String(leftURL.prefix(upTo: endAuthority))
+            leftURL.removeFirst(authority.count)
 
             // The Piwigo server may not be in the root e.g. example.com/piwigo/…
             // So we remove the path to avoid a duplicate if necessary
@@ -86,23 +86,23 @@ public class NetworkUtilities: NSObject {
             }
 
             // Retrieve path
-            if let range2 = leftURL.range(of: "?") {
-                // URL seems to contain a query
-                let path = String(leftURL.prefix(upTo: range2.upperBound)) + "?"
-                guard let finalPath = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
+            if let endQuery = leftURL.firstIndex(of: "?") {
+                // URL contains a query
+                let query = (String(leftURL.prefix(upTo: endQuery)) + "?").replacingOccurrences(of: "??", with: "?")
+                guard let newQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                     // Could not apply percent encoding —> return image.jpg but should never happen
                     return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
                 }
-                leftURL.removeFirst(path.count)
-                guard let leftURL = leftURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                leftURL.removeFirst(query.count)
+                guard let newPath = leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
                     // Could not apply percent encoding —> return image.jpg but should never happen
                     return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
                 }
-                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(finalPath)\(leftURL)")
+                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(newQuery)\(newPath)")
             } else {
                 // No query -> remaining string is a path
-                let finalPath = String(leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)
-                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(finalPath)")
+                let newPath = String(leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)
+                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(newPath)")
             }
             
             // Last check

@@ -451,13 +451,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         //#endif
 
         // Inform user why the app crashed at start
-        if CacheVarsObjc.couldNotMigrateCoreDataStore {
+        if CacheVars.couldNotMigrateCoreDataStore {
             dismissPiwigoError(
                 withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
                 message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
                 errorMessage: "") {
                 // Reset flag
-                CacheVarsObjc.couldNotMigrateCoreDataStore = false
+                CacheVars.couldNotMigrateCoreDataStore = false
             }
         }
     }
@@ -1015,24 +1015,31 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Albums */:
             if collectionView.numberOfItems(inSection: section) == 0 {
-                return UIEdgeInsets(top: 0, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                    bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
             } else if categoryId == 0 {
                 if #available(iOS 13.0, *) {
-                    return UIEdgeInsets(top: 0, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                    return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                        bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
                 } else {
-                    return UIEdgeInsets(top: 10, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                    return UIEdgeInsets(top: 10, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                        bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
                 }
             } else {
-                return UIEdgeInsets(top: 10, left: kAlbumMarginsSpacing, bottom: 0, right: kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 10, left: AlbumUtilities.kAlbumMarginsSpacing, bottom: 0,
+                                    right: AlbumUtilities.kAlbumMarginsSpacing)
             }
         default /* Images */:
             let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             if collectionView.numberOfItems(inSection: section) == 0 {
-                return UIEdgeInsets(top: 0, left: kImageMarginsSpacing, bottom: 0, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
             } else if albumData?.comment?.count == 0 {
-                return UIEdgeInsets(top: 4, left: kImageMarginsSpacing, bottom: 4, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             } else {
-                return UIEdgeInsets(top: 10, left: kImageMarginsSpacing, bottom: 4, right: kImageMarginsSpacing)
+                return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
+                                    bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             }
         }
     }
@@ -1043,30 +1050,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             return 0.0
         
         default /* Images */:
-            return CGFloat(ImagesCollection.imageCellVerticalSpacing(for: kImageCollectionFull))
+            return CGFloat(AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .full))
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0 /* Albums */:
-            return CGFloat(kAlbumCellSpacing)
+            return AlbumUtilities.kAlbumCellSpacing
         
         default /* Images */:
-            return CGFloat(ImagesCollection.imageCellHorizontalSpacing(for: kImageCollectionFull))
+            return AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full)
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            let nberAlbumsPerRow = ImagesCollection.numberOfAlbumsPerRowForView(inPortrait: collectionView, withMaxWidth: 384.0)
-            let size = CGFloat(ImagesCollection.albumSize(for: collectionView, andNberOfAlbumsPerRowInPortrait: nberAlbumsPerRow))
+            let nberAlbumsPerRow = AlbumUtilities.numberOfAlbumsPerRowInPortrait(forView: collectionView, maxWidth: 384.0)
+            let size = AlbumUtilities.albumSize(forView: collectionView,
+                                                nberOfAlbumsPerRowInPortrait: nberAlbumsPerRow)
             return CGSize(width: size, height: 156.5)
         
         default /* Images */:
             // Calculates size of image cells
-            let size = ImagesCollection.imageSize(for: imagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
+            let size = AlbumUtilities.imageSize(forView: imagesCollection,
+                                                imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
             return CGSize(width: size, height: size)
         }
     }
@@ -1079,7 +1088,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
             cell.categoryDelegate = self
 
-            let albumData = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId)[indexPath.row]
+            // Check album data
+            guard let parentAlbums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
+                  indexPath.item < parentAlbums.count else {
+                cell.config()
+                return cell
+            }
+
+            // Configure cell with album data
+            let albumData = parentAlbums[indexPath.item]
             cell.config(withAlbumData: albumData)
 
             // Disable category cells in Image selection mode
@@ -1108,7 +1125,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric, range: nil, locale: .current) != .orderedDescending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
                 }
 

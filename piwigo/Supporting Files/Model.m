@@ -10,7 +10,6 @@
 
 #import "Model.h"
 #import "PiwigoImageData.h"
-#import "ImagesCollection.h"
 
 
 NSInteger const kPiwigoMemoryCacheInc = 8;      // Slider increment
@@ -509,12 +508,12 @@ NSInteger const kDelayPiwigoHUD = 500;
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
         } else {
-            NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+            NSInteger minNberOfImages = [AlbumUtilities minNberOfImagesPerRow];
             self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, [[savedData objectAtIndex:23] integerValue]);
         }
     } else {
         // Default values (will be cross-checked at login)
-        NSInteger minNberOfImages = [ImagesCollection minNberOfImagesPerRow];
+        NSInteger minNberOfImages = [AlbumUtilities minNberOfImagesPerRow];
         self.thumbnailsPerRowInPortrait = MAX(minNberOfImages, nberOfImages);
     }
     // Chek that default number fits inside selected range

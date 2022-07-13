@@ -8,8 +8,13 @@
 
 import Foundation
 import piwigoKit
+import UIKit
 
-enum kPwgCategoryDeletionMode {
+enum pwgImageCollectionType {
+    case popup, full
+}
+
+enum pwgCategoryDeletionMode {
     case none, orphaned, all
     
     var pwgArg: String {
@@ -24,10 +29,27 @@ enum kPwgCategoryDeletionMode {
     }
 }
 
+@objc
 class AlbumUtilities: NSObject {
     
+    // MARK: - Constants
+    static let kAlbumCellSpacing = CGFloat(8)               // Spacing between albums (horizontally and vertically)
+    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
+
+    static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
+    static let kImageCellHorSpacing4iPad = CGFloat(8)
+    static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
+    static let kImageCellVertSpacing4iPad = CGFloat(8)
+    static let kImageCellVertSpacing4iPadPopup = CGFloat(1)
+    static let kImageMarginsSpacing = CGFloat(4)            // Left and right margins for images
+    static let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
+
+    static let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
+    static let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
+
+    
     // MARK: - Piwigo Server Methods
-    private class func thumbnailSizeArg() -> String {
+    private static func thumbnailSizeArg() -> String {
         var sizeArg = "thumb"
         switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
         case kPiwigoImageSizeSquare:
@@ -70,8 +92,8 @@ class AlbumUtilities: NSObject {
         return sizeArg
     }
     
-    class func getAlbums(completion: @escaping (Bool) -> Void,
-                         failure: @escaping (NSError) -> Void) {
+    static func getAlbums(completion: @escaping (Bool) -> Void,
+                          failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = [
@@ -122,8 +144,8 @@ class AlbumUtilities: NSObject {
                 }
 
                 // Update albums if Community extension installed (not needed for admins)
-                if !NetworkVarsObjc.hasAdminRights,
-                   NetworkVarsObjc.usesCommunityPluginV29 {
+                if !NetworkVars.hasAdminRights,
+                   NetworkVars.usesCommunityPluginV29 {
                     getCommunityAlbums { comAlbums in
                         // Loop over Community albums
                         for comAlbum in comAlbums {
@@ -152,8 +174,8 @@ class AlbumUtilities: NSObject {
         }
     }
     
-    class func getCommunityAlbums(completion: @escaping ([PiwigoAlbumData]) -> Void,
-                                  failure: @escaping (NSError) -> Void) {
+    static func getCommunityAlbums(completion: @escaping ([PiwigoAlbumData]) -> Void,
+                                   failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["cat_id"    : 0,
@@ -199,7 +221,7 @@ class AlbumUtilities: NSObject {
         }
     }
     
-    private class func parseAlbumJSON(_ jsonAlbums:[Album]) -> [PiwigoAlbumData] {
+    private static func parseAlbumJSON(_ jsonAlbums:[Album]) -> [PiwigoAlbumData] {
         var albums = [PiwigoAlbumData]()
         for category in jsonAlbums {
             if let id = category.id {
@@ -245,10 +267,10 @@ class AlbumUtilities: NSObject {
         return albums
     }
     
-    class func create(withName name:String, description: String, status: String,
-                      inParentWithId parentCategeoryId: Int,
-                      completion: @escaping (Int) -> Void,
-                      failure: @escaping (NSError) -> Void) {
+    static func create(withName name:String, description: String, status: String,
+                       inParentWithId parentCategeoryId: Int,
+                       completion: @escaping (Int) -> Void,
+                       failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
@@ -301,10 +323,10 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func setInfos(_ category: PiwigoAlbumData,
-                        withName name:String, description: String,
-                        completion: @escaping () -> Void,
-                        failure: @escaping (NSError) -> Void) {
+    static func setInfos(_ category: PiwigoAlbumData,
+                         withName name:String, description: String,
+                         completion: @escaping () -> Void,
+                         failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
@@ -354,9 +376,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func move(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
-                    completion: @escaping (PiwigoAlbumData) -> Void,
-                    failure: @escaping (NSError) -> Void) {
+    static func move(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
+                     completion: @escaping (PiwigoAlbumData) -> Void,
+                     failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
                                           "parent"      : newParentCatId,
@@ -456,10 +478,10 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func delete(_ category: PiwigoAlbumData,
-                      inModde mode: kPwgCategoryDeletionMode,
-                      completion: @escaping () -> Void,
-                      failure: @escaping (NSError) -> Void) {
+    static func delete(_ category: PiwigoAlbumData,
+                       inModde mode: pwgCategoryDeletionMode,
+                       completion: @escaping () -> Void,
+                       failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : category.albumId,
                                           "photo_deletion_mode" : mode.pwgArg,
@@ -530,9 +552,9 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    class func setRepresentative(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
-                                 completion: @escaping () -> Void,
-                                 failure: @escaping (NSError) -> Void) {
+    static func setRepresentative(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
+                                  completion: @escaping () -> Void,
+                                  failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : category.albumId,
                                           "image_id"    : imageData.imageId]
@@ -583,9 +605,192 @@ class AlbumUtilities: NSObject {
     }
 
 
-    // MARK: - Album Collections
+    // MARK: - Album/Images Collections | Common Methods
+    static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
+        var pageSize: CGSize = view?.frame.size ?? UIScreen.main.bounds.size
+        if #available(iOS 11.0, *) {
+            pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
+            pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
+        }
+        return pageSize
+    }
+    
     @objc
-    class func footerLegend(for nberOfImages: Int) -> String {
+    static func minNberOfImagesPerRow() -> Int {   // => 3 on iPhone, 5 on iPad
+        return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
+    }
+    
+
+    // MARK: - Album/Images Collections | Image Thumbnails
+    static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
+        var imageCellHorizontalSpacing = CGFloat.zero
+        switch type {
+        case .popup:
+            imageCellHorizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup
+        case .full:
+            imageCellHorizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad
+        }
+        return imageCellHorizontalSpacing
+    }
+    
+    static func imageCellVerticalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
+        var imageCellVerticalSpacing = CGFloat.zero
+        switch type {
+        case .popup:
+            imageCellVerticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup
+        case .full:
+            imageCellVerticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad
+        }
+        return imageCellVerticalSpacing
+    }
+    
+    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat,
+                                       collectionType type: pwgImageCollectionType) -> Int {
+        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
+        let pageSize = sizeOfPage(forView: view)
+        let viewWidth = min(pageSize.width, pageSize.height)
+        let horSpacing = imageCellHorizontalSpacing(forCollectionType: type)
+        let numerator = viewWidth - 2 * kImageMarginsSpacing + horSpacing
+        let denominator = horSpacing + maxWidth
+        let nberOfImagePerRow = Int(round(numerator / denominator))
+        return max(minNberOfImagesPerRow(), nberOfImagePerRow)
+    }
+
+    @objc
+    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
+        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
+        return imagesPerRowInPortrait(forView: view, maxWidth: maxWidth, collectionType: .full)
+    }
+    
+    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int,
+                          collectionType type: pwgImageCollectionType) -> CGFloat {
+        // CGFloat version of imagesPerRowInPortrait
+        let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
+
+        // Size of view or screen
+        let screenSize = sizeOfPage()
+        let pageSize = sizeOfPage(forView: view)
+
+        // Image horizontal cell spacing
+        let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: type)
+
+        // Size of images determined for the portrait mode in full screen
+        let minWidth = min(screenSize.width, screenSize.height)
+        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        
+        // Images per row in whichever mode we are displaying them
+        let numerator = screenSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing
+        let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
+        let nberOfImages = Int(round(numerator / denominator))
+        var imagesPerRow = Double(max(minNberOfImagesPerRow(), nberOfImages))
+
+        // Images per row for the current size class
+        imagesPerRow *= pageSize.width / screenSize.width
+        imagesPerRow = max(1.0, round(imagesPerRow))
+
+        // Size of squared images for that number
+        let usedWidth = pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
+        return CGFloat(floor(usedWidth / imagesPerRow))
+    }
+
+    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int) -> CGFloat {
+        return imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait,
+                         collectionType: .full)
+    }
+
+    @objc
+    static func numberOfImagesToDownloadPerPage() -> Int {
+        // CGFloat version of imagesPerRowInPortrait
+        let nberOfImagesInPortrait = CGFloat(AlbumVars.shared.thumbnailsPerRowInPortrait)
+        
+        // Size of screen
+        let pageSize = sizeOfPage()
+
+        // Image horizontal cell spacing
+        let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
+        let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: .full)
+
+        // Size of images determined for the portrait mode
+        let minWidth = min(pageSize.width, pageSize.height)
+        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        
+        // Images per row in portrait and landscape modes
+        let spacing = 2.0 * kImageMarginsSpacing - imageCellHorizontalSpacing
+        var numerator = pageSize.width - spacing
+        let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
+        let imagesPerRowInPortrait = Double(max(minNberOfImagesPerRow(), Int(round(numerator / denominator))))
+        numerator = pageSize.height - spacing
+        let imagesPerRowInLandscape = Double(max(minNberOfImagesPerRow(), Int(round(numerator / denominator))))
+
+        // Minimum size of squared images
+        let portrait = 2.0 * kImageMarginsSpacing + (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
+        let sizeInPortrait = floor((pageSize.width - portrait) / imagesPerRowInPortrait)
+        let landscape = 2.0 * kImageMarginsSpacing + (imagesPerRowInLandscape - 1.0) * imageCellVerticalSpacing
+        let sizeInLandscape = floor((pageSize.height - landscape) / imagesPerRowInLandscape)
+        let size = min(sizeInPortrait, sizeInLandscape)
+        
+        // Number of images to download per page, independently of the orientation
+        let cellArea = (size + imageCellVerticalSpacing) * (size + imageCellHorizontalSpacing)
+        let viewArea = pageSize.width * pageSize.height
+        return Int(ceil(viewArea / cellArea))
+    }
+
+    static func numberOfImagesPerPage(forView view: UIView, imagesPerRowInPortrait: Int,
+                                      collectionType type: pwgImageCollectionType) -> Int {
+        // Size of view or screen
+        let pageSize = sizeOfPage(forView: view)
+
+        // Size of squared images for that number
+        let size = imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait)
+        
+        // Image horizontal & vertical cell spacings
+        let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: type)
+        let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: type)
+
+        // Number of images par page
+        let cellArea = (size + imageCellVerticalSpacing) * (size + imageCellHorizontalSpacing)
+        let viewArea = pageSize.width * pageSize.height
+        return Int(ceil(viewArea / cellArea))
+    }
+    
+
+    // MARK: - Album/Images Collections | Album Thumbnails
+    static func imageDetailsSize(forView view: UIView) -> CGFloat {
+        // Size of view or screen
+        let cellSize = sizeOfPage(forView:view)
+        return CGFloat(min(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0))
+    }
+
+    static func numberOfAlbumsPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
+        // Size of view or screen
+        let pageSize = sizeOfPage(forView: view)
+        let viewWidth = min(pageSize.width, pageSize.height)
+        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
+        let denominator = kAlbumCellSpacing + maxWidth
+        return Int(round(numerator / denominator))
+    }
+    
+    static func albumSize(forView view: UIView?,
+                          nberOfAlbumsPerRowInPortrait albumsPerRowInPortrait: Int) -> CGFloat {
+        // Size of view or screen
+        let pageSize = sizeOfPage(forView: view)
+        
+        // Size of album cells determined for the portrait mode
+        let minWidth = min(pageSize.width, pageSize.height)
+        let portrait = 2.0 * kAlbumMarginsSpacing + (CGFloat(albumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
+        let albumsSizeInPortrait = floor((minWidth - portrait) / CGFloat(albumsPerRowInPortrait))
+
+        // Album cells per row in whichever mode we are displaying them
+        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
+        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumsSizeInPortrait))
+
+        // Width of albums for that number
+        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+    }
+
+    
+    // MARK: - Album/Images Collections | Footers
+    static func footerLegend(for nberOfImages: Int) -> String {
         var legend = ""
         if nberOfImages == NSNotFound {
             // Is loading…
