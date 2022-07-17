@@ -82,8 +82,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             } else {
                 // Fallback on earlier versions
                 discoverBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
-                discoverBarButton?.accessibilityIdentifier = "discover"
             }
+            discoverBarButton?.accessibilityIdentifier = "discover"
 
             // For iOS 11 and later: place search bar in navigation bar for root album
             if #available(iOS 11.0, *) {
