@@ -73,9 +73,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         doneBarButton?.accessibilityIdentifier = "Done"
 
         // Button for displaying help pages
-        let helpButton = UIButton(type: .infoLight)
-        helpButton.addTarget(self, action: #selector(displayHelp), for: .touchUpInside)
-        helpBarButton = UIBarButtonItem(customView: helpButton)
+        if #available(iOS 15.0, *) {
+            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"),
+                                            style: .plain, target: self, action: #selector(displayHelp))
+        } else {
+            helpBarButton = UIBarButtonItem(image: UIImage(named: "help"), landscapeImagePhone: UIImage(named: "helpCompact"), style: .plain, target: self, action: #selector(displayHelp))
+        }
         helpBarButton?.accessibilityIdentifier = "Help"
 
         // Table view identifier
