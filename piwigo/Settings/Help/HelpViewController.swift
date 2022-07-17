@@ -14,7 +14,7 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
     
-    @objc var displayHelpPagesWithIndex: [Int] = []
+    @objc var displayHelpPagesWithID: [UInt16] = []
     private var pages = [UIViewController]()
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
@@ -32,9 +32,9 @@ class HelpViewController: UIViewController {
         super.viewDidLoad()
         
         // Initialise pages
-        for i in displayHelpPagesWithIndex {
+        for i in displayHelpPagesWithID {
             // Loop over the storyboards
-            let pageIDstr = String(format: "help%02ld", i+1)
+            let pageIDstr = String(format: "help%02ld", i)
             if let page = storyboard?.instantiateViewController(withIdentifier: pageIDstr) {
                 pages.append(page)
             }

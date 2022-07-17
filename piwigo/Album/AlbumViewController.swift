@@ -415,30 +415,30 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Determine which help pages should be presented
-        var displayHelpPagesWithIndex = [Int]()
+        var displayHelpPagesWithID = [UInt16]()
         if categoryId != 0, (albumData?.images.count ?? 0) > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
-            displayHelpPagesWithIndex.append(0) // i.e. multiple selection of images
+            displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
         if categoryId != 0,
            let albums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
            albums.count > 2, NetworkVars.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
-            displayHelpPagesWithIndex.append(2) // i.e. management of albums
+            displayHelpPagesWithID.append(3) // i.e. management of albums
         }
         if categoryId != 0,
            let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
            let parents = album.upperCategories, parents.count > 2,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
-            displayHelpPagesWithIndex.append(7) // i.e. back to parent album
+            displayHelpPagesWithID.append(8) // i.e. back to parent album
         }
-        if displayHelpPagesWithIndex.count > 0 {
+        if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
             guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController else {
                 fatalError("No HelpViewController available!")
             }
-            helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex
+            helpVC.displayHelpPagesWithID = displayHelpPagesWithID
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)
