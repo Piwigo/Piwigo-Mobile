@@ -902,13 +902,7 @@ import piwigoKit
 
     
     // MARK: - Upload Methods advertised to Obj-C and Old Cache
-    
-    @objc func resumeAll() {
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
-        }
-    }
-    
+        
     @objc func didDeletePiwigoImage(withID imageId: Int) {
         UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.didDeletePiwigoImage(withID: imageId)

@@ -698,7 +698,6 @@ class LoginViewController: UIViewController {
                 // Back to main queue
                 DispatchQueue.main.async {
                     // Get top view controllers and update collection views
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
                     for viewController in viewControllers {
                         if let vc = viewController as? AlbumViewController {
                             // Check data source and reload collection if needed
@@ -706,7 +705,9 @@ class LoginViewController: UIViewController {
                                 // Close HUD if needed
                                 self.hudViewController?.hidePiwigoHUD {
                                     // Resume uploads
-                                    appDelegate?.resumeAll()
+                                    UploadManager.shared.backgroundQueue.async {
+                                        UploadManager.shared.resumeAll()
+                                    }
                                 }
                             }
                         }
