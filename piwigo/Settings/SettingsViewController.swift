@@ -250,7 +250,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
             if #available(iOS 14, *) {
-                helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,6,2]
+                helpVC.displayHelpPagesWithIndex = [7,0,4,5,1,3,6,2]
             } else if #available(iOS 13, *) {
                 helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
             } else {

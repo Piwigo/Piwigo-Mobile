@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="v2A-0U-1lw">
-                                <rect key="frame" x="136.66666666666669" y="867" width="154.66666666666669" height="25"/>
+                                <rect key="frame" x="157.66666666666666" y="867" width="112.66666666666666" height="25"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="pageIndicatorTintColor" systemColor="systemGray5Color"/>
                                 <color key="currentPageIndicatorTintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -469,6 +469,75 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T60-Xe-VOB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4451" y="-612"/>
+        </scene>
+        <!--Help08 View Controller-->
+        <scene sceneID="blC-Ky-13A">
+            <objects>
+                <viewController storyboardIdentifier="help08" useStoryboardIdentifierAsRestorationIdentifier="YES" id="g6w-Yv-fKa" customClass="Help08ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="c4u-XD-7JN">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUD-ax-eft">
+                                <rect key="frame" x="20" y="0.0" width="388" height="23.333333333333332"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="legend top">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name="OpenSans"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ryg-bf-lTP">
+                                <rect key="frame" x="7.3333333333333428" y="39.333333333333343" width="413.33333333333326" height="391.66666666666663"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Ryg-bf-lTP" secondAttribute="height" multiplier="1020:967" id="WoH-cl-Iiw"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2ih-HK-Pek">
+                                <rect key="frame" x="7.3333333333333428" y="470.33333333333326" width="413.33333333333326" height="391.66666666666674"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="2ih-HK-Pek" secondAttribute="height" multiplier="1020:967" id="4SF-CF-UVf"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilb-9b-REI">
+                                <rect key="frame" x="20" y="439" width="388" height="23.333333333333314"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="5Vq-zR-idw"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ilb-9b-REI" firstAttribute="leading" secondItem="tUD-ax-eft" secondAttribute="leading" id="4ea-uI-jbx"/>
+                            <constraint firstAttribute="trailing" secondItem="tUD-ax-eft" secondAttribute="trailing" constant="20" id="8XF-Su-SV7"/>
+                            <constraint firstItem="Ryg-bf-lTP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="c4u-XD-7JN" secondAttribute="leading" id="FR2-5L-KFe"/>
+                            <constraint firstItem="tUD-ax-eft" firstAttribute="top" secondItem="c4u-XD-7JN" secondAttribute="top" id="HRe-mb-wh1"/>
+                            <constraint firstItem="Ryg-bf-lTP" firstAttribute="top" secondItem="tUD-ax-eft" secondAttribute="bottom" constant="16" id="I2B-dI-9E4"/>
+                            <constraint firstItem="2ih-HK-Pek" firstAttribute="top" secondItem="ilb-9b-REI" secondAttribute="bottom" constant="8" symbolic="YES" id="LmC-EO-ohD"/>
+                            <constraint firstItem="2ih-HK-Pek" firstAttribute="leading" secondItem="Ryg-bf-lTP" secondAttribute="leading" id="RT1-a4-WOA"/>
+                            <constraint firstItem="tUD-ax-eft" firstAttribute="leading" secondItem="c4u-XD-7JN" secondAttribute="leading" constant="20" id="YvR-cw-kyc"/>
+                            <constraint firstItem="ilb-9b-REI" firstAttribute="trailing" secondItem="tUD-ax-eft" secondAttribute="trailing" id="ZIV-w0-HQD"/>
+                            <constraint firstItem="ilb-9b-REI" firstAttribute="top" secondItem="Ryg-bf-lTP" secondAttribute="bottom" constant="8" symbolic="YES" id="jWy-Zi-qVu"/>
+                            <constraint firstItem="Ryg-bf-lTP" firstAttribute="centerX" secondItem="c4u-XD-7JN" secondAttribute="centerX" id="own-8P-edq"/>
+                            <constraint firstItem="2ih-HK-Pek" firstAttribute="trailing" secondItem="Ryg-bf-lTP" secondAttribute="trailing" id="w59-sC-CH8"/>
+                            <constraint firstAttribute="bottom" secondItem="2ih-HK-Pek" secondAttribute="bottom" constant="10" id="z9G-cb-ueD"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="imageViewBot" destination="2ih-HK-Pek" id="v2y-OJ-xyf"/>
+                        <outlet property="imageViewTop" destination="Ryg-bf-lTP" id="tUi-2Y-CFc"/>
+                        <outlet property="legendBot" destination="ilb-9b-REI" id="901-6C-PdD"/>
+                        <outlet property="legendTop" destination="tUD-ax-eft" id="u4g-fd-gQZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YwJ-ED-OfI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5089" y="-612"/>
         </scene>
     </scenes>
     <resources>

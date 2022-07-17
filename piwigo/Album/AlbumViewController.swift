@@ -417,13 +417,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Determine which help pages should be presented
         var displayHelpPagesWithIndex = [Int]()
         if categoryId != 0, (albumData?.images.count ?? 0) > 5,
-           (AppVars.shared.didWatchHelpViews & 0b0000000000000001) == 0 {
+           (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithIndex.append(0) // i.e. multiple selection of images
         }
-        let numberOfAlbums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId).count
-        if categoryId != 0, numberOfAlbums > 2, NetworkVars.hasAdminRights,
-           (AppVars.shared.didWatchHelpViews & 0b0000000000000100) == 0 {
+        if categoryId != 0,
+           let albums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
+           albums.count > 2, NetworkVars.hasAdminRights,
+           (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithIndex.append(2) // i.e. management of albums
+        }
+        if categoryId != 0,
+           let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
+           let parents = album.upperCategories, parents.count > 2,
+           (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
+            displayHelpPagesWithIndex.append(7) // i.e. back to parent album
         }
         if displayHelpPagesWithIndex.count > 0 {
             // Present unseen help views
