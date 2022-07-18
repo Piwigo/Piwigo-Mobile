@@ -661,7 +661,13 @@ import piwigoKit
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry(afterRestoringScene: false) { }
+            reloginAndRetry(afterRestoringScene: false) {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAll()
+                }
+            }
         }
     }
 
@@ -683,6 +689,12 @@ import piwigoKit
             // Fallback on earlier versions
             loginVC.removeFromParent()
 //            _loginVC = nil
+
+            // Resume upload operations in background queue
+            // and update badge, upload button of album navigator
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
         }
         
         // Observe the UIScreenBrightnessDidChangeNotification
@@ -702,12 +714,6 @@ import piwigoKit
         let name = Notification.Name.NSProcessInfoPowerStateDidChange
         NotificationCenter.default.addObserver(self, selector: #selector(checkSessionWhenLeavingLowPowerMode),
                                                name: name, object: nil)
-
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
-        }
     }
 
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
