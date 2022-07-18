@@ -804,3 +804,6 @@
 "help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";
 "help07_header" = "Téléchargement auto";
 "help07_text" = "Sélectionnez les albums source et destination dans Piwigo, créez des automatisations dans Raccourcis.";
+"help08_header" = "Albums parents";
+"help08_text" = "Appuyez longuement sur le bouton retour pour afficher la liste des albums parents.";
+"help08_text2" = "Tapez sur l'album parent de votre choix pour y retourner.";

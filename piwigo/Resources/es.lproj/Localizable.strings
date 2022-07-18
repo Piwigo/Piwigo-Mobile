@@ -804,3 +804,6 @@
 "help06_text" = "Supervise, cancele y reanude las solicitudes de subida de forma global o individual.";
 "help07_header" = "Autocargando";
 "help07_text" = "Seleccione álbumes de origen y destino en Piwigo, cree automatizaciones en los atajos.";
+"help08_header" = "Álbumes Padre";
+"help08_text" = "Pulsación larga en el botón atrás para mostrar la lista de álbumes padres.";
+"help08_text2" = "Toca el álbum padre de tu elección para volver a él.";

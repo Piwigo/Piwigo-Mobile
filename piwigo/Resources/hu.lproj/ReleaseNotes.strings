@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "2.12.1 verzió\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket";
+"v2.12.2_text" = "Version 2.12.2\n\n• Fixes a crash occurring on iOS 9-12 when displaying the upload request queue\n• Minor bug fixes and improvements of the interface";
+
+"v2.12.1_text" = "2.12.1 verzió\n2022 Július 10\n\n• Kijavítja az iOS 9–13 rendszeren előforduló összeomlást, amikor módosítja a fényképekhez rendelt címkéket";
 
 "v2.12.0_text" = "2.12-es verzió\n2022 Július 3\n\n• Gyorsabban válasszon címkét a keresősávval\n• Kódmodernizáció\n• Hibajavítások";
 

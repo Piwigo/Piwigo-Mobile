@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "Version 2.12.1\n\n• Corrige un crash survenant sur iOS 9-13 lors de la modification des balises attribuées aux photos";
+"v2.12.2_text" = "Version 2.12.2\n\n• Corrige un crash survenant sur iOS 9-12 lors de l'affichage de la file d'attente des demandes de téléchargement\n• Corrections de bugs mineurs et améliorations de l'interface";
+
+"v2.12.1_text" = "Version 2.12.1\n10 juillet 2022\n\n• Corrige un crash survenant sur iOS 9-13 lors de la modification des balises attribuées aux photos";
 
 "v2.12.0_text" = "Version 2.12\n3 juillet 2022\n\n• Sélectionnez un tag plus rapidement avec la barre de recherche\n• Modernisation du code\n• Corrections de bugs";
 

@@ -804,3 +804,6 @@
 "help06_text" = "Monitora, cancella e riprendi le richieste di upload a livello globale o individuale.";
 "help07_header" = "Caricamento Automatico";
 "help07_text" = "Seleziona gli album di origine e destinazione in Piwigo, crea automazioni nelle scorciatoie.";
+"help08_header" = "Album Genitori";
+"help08_text" = "Premere a lungo sul pulsante indietro per visualizzare l'elenco degli album genitori.";
+"help08_text2" = "Tocca l'album genitore di tua scelta per tornare ad esso.";
