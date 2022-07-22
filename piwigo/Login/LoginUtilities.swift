@@ -81,6 +81,7 @@ class LoginUtilities: NSObject {
 
                 // Login successful
                 NetworkVars.username = username
+                NetworkVars.dateOfLastLogin = Date()
                 completion()
             }
             catch {

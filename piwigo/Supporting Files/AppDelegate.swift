@@ -642,28 +642,22 @@ import piwigoKit
         }
     }
 
-    @objc func reloginAndRetry(afterRestoringScene: Bool,
-                               completion: @escaping () -> Void) {
+    func reloginAndRetry(completion: @escaping () -> Void) {
         let server = NetworkVars.serverPath
         let user = NetworkVars.username
-        
-        DispatchQueue.main.async {
-            if (server.isEmpty == false) && (user.isEmpty == false) {
-                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) {
-                    completion()
-                }
-            } else if afterRestoringScene {
+        if (server.isEmpty == false) && (user.isEmpty == false) {
+            self.loginVC.performRelogin() {
                 completion()
-            } else {
-                // Return to login view
-                ClearCache.closeSessionAndClearCache() { }
             }
+        } else {
+            // Return to login view
+            ClearCache.closeSessionAndClearCache() { }
         }
     }
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry(afterRestoringScene: false) {
+            reloginAndRetry() {
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
                 UploadManager.shared.backgroundQueue.async {
@@ -675,12 +669,11 @@ import piwigoKit
 
     
     // MARK: - Album Navigator
-    @objc func loadNavigation(in window: UIWindow?, withFreshData: Bool) {
+    @objc func loadNavigation(in window: UIWindow?) {
         guard let window = window else { return }
         
         // Display default album
-        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory,
-                                               withFreshData: withFreshData)
+        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
         window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
@@ -994,7 +987,6 @@ import piwigoKit
 // MARK: - AppLockDelegate Methods
 extension AppDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
-        print("••> loginOrReloginAndResumeUploads() in AppDelegate.")
         // Release memory
         privacyView?.removeFromSuperview()
 
@@ -1024,6 +1016,7 @@ extension AppDelegate: AppLockDelegate {
 
             // Login?
             if service.count > 0 || (username.count > 0 && password.count > 0) {
+                print("••> Call launchLogin() from AppDelegate.")
                 loginVC.launchLogin()
             }
             return

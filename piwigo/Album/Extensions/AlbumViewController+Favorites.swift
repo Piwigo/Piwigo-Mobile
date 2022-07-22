@@ -80,7 +80,7 @@ extension AlbumViewController
                 // Try relogin if unauthorized
                 if error.code == 401 {
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
+                    appDelegate?.reloginAndRetry() { [self] in
                         addImageToFavorites()
                     }
                 } else {
@@ -167,7 +167,7 @@ extension AlbumViewController
                 // Try relogin if unauthorized
                 if error.code == 401 {
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
+                    appDelegate?.reloginAndRetry() { [self] in
                         removeImageFromFavorites()
                     }
                 } else {

@@ -548,10 +548,10 @@ class LoginViewController: UIViewController {
     func launchApp(atFirstLogin isFirstLogin: Bool,
                    withReloginCompletion reloginCompletion: @escaping () -> Void) {
         isAlreadyTryingToLogin = false
-        NetworkVars.dateOfLastLogin = Date()
 
         // Load navigation if needed
         if isFirstLogin {
+            print("••> Load album data in LoginViewController.")
             // Update HUD during login
             hudViewController?.showPiwigoHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
@@ -562,41 +562,25 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Load category data in recursive mode
-            DispatchQueue.global(qos: .default).async { [self] in
+            DispatchQueue.global(qos: .userInitiated).async { [self] in
                 AlbumUtilities.getAlbums { didUpdateCats in
                     // Reinitialise flag
                     NetworkVars.userCancelledCommunication = false
-
-                    // Determine for how long the session is opened
-                    /// Piwigo 11 session duration defaults to an hour.
-                    var hasFreshData = true
-                    let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-                    if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                        /// - Perform relogin
-                        /// - Resume upload operations in background queue
-                        ///   and update badge, upload button of album navigator
-                        NetworkVars.dateOfLastLogin = Date()
-                        hasFreshData = false
-                    }
 
                     // Hide HUD and present root album
                     if let hudViewController = self.hudViewController {
                         hudViewController.hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation(in: self.view.window, withFreshData: hasFreshData)
+                            appDelegate?.loadNavigation(in: self.view.window)
                         }
                     } else {
                         self.hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation(in: self.view.window, withFreshData: hasFreshData)
+                            appDelegate?.loadNavigation(in: self.view.window)
                         }
                     }
-
-                    // Load favorites in the background if necessary
-                    AlbumUtilities.loadFavoritesInBckg()
-
                 } failure: { error in
                     DispatchQueue.main.async { [self] in
                         // Inform user that we could not load album data
@@ -618,8 +602,7 @@ class LoginViewController: UIViewController {
         }
     }
 
-    func performRelogin(afterRestoringScene: Bool,
-                        withCompletion reloginCompletion: @escaping () -> Void) {
+    func performRelogin(withCompletion reloginCompletion: @escaping () -> Void) {
         #if DEBUG_LOGIN
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
@@ -631,32 +614,13 @@ class LoginViewController: UIViewController {
             return
         }
 
-        // Do not present HUD during re-login unless when restoring scenes
-        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
-        hudViewController?.showPiwigoHUD(
-            withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-            detail: NSLocalizedString("login_connecting", comment: "Connecting"),
-            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self,
-            buttonSelector: #selector(cancelLoggingIn),
-            inMode: .indeterminate)
+        // Do not present HUD during re-login
+        hudViewController =  nil
 
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 10
         LoginUtilities.getMethods {
-            // Back to default timeout
-            NetworkVarsObjc.sessionManager!.session.configuration.timeoutIntervalForRequest = 30
-
-            // Update HUD during login
-            self.hudViewController?.showPiwigoHUD(
-                withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                detail: NSLocalizedString("login_newSession", comment: "Opening Session"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                buttonTarget: self,
-                buttonSelector: #selector(self.cancelLoggingIn),
-                inMode: .indeterminate)
-
             // Known methods, perform re-login
             let username = NetworkVars.username
             let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
@@ -688,57 +652,6 @@ class LoginViewController: UIViewController {
             }
         }
     }
-
-//    func reloadCatagoryDataInBckgMode(afterRestoringScene: Bool) {
-//        // Get current top view controllers
-//        let viewControllers = UIApplication.shared.topViewControllers()
-//
-//        // Do not present HUD during re-login unless when restoring scenes
-//        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
-//
-//        // Update HUD during login
-//        self.hudViewController?.showPiwigoHUD(
-//            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-//            detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-//            buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-//            inMode: .indeterminate)
-//
-//        // Load category data in recursive mode in the background
-//        DispatchQueue.global(qos: .userInteractive).async { [self] in
-//            // Reload album data
-//            AlbumUtilities.getAlbums { didUpdateCats in
-//                // Back to main queue
-//                DispatchQueue.main.async {
-//                    // Get top view controllers and update collection views
-//                    for viewController in viewControllers {
-//                        if let vc = viewController as? AlbumViewController {
-//                            // Check data source and reload collection if needed
-//                            vc.checkDataSource(withChangedCategories: didUpdateCats) {
-//                                // Close HUD if needed
-//                                self.hudViewController?.hidePiwigoHUD {
-//                                    // Resume uploads
-//                                    UploadManager.shared.backgroundQueue.async {
-//                                        UploadManager.shared.resumeAll()
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    // Load favorites in the background if necessary
-//                    AlbumUtilities.loadFavoritesInBckg()
-//                }
-//            } failure: { error in
-//                DispatchQueue.main.async(execute: { [self] in
-//                    // Close HUD if needed
-//                    self.hudViewController?.hidePiwigoHUD {
-//                        // Inform user that we could not load album data
-//                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-//                    }
-//                })
-//            }
-//        }
-//    }
     
     
     // MARK: - HUD methods

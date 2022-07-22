@@ -490,7 +490,7 @@ extension AlbumViewController
             }, retry: { [self] in
                 // Try relogin
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
+                appDelegate?.reloginAndRetry() { [self] in
                     retrieveImageData(beforeAction: action)
                 }
             })

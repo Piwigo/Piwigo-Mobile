@@ -374,7 +374,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }, retry: { [unowned self] in
                 // Try relogin
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
+                appDelegate?.reloginAndRetry() { [unowned self] in
                     self.retrieveImageData()
                 }
             })

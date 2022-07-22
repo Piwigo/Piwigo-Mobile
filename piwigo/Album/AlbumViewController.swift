@@ -58,7 +58,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var progressLayer: CAShapeLayer!
     var nberOfUploadsLabel: UILabel!
 
-    private var hasFreshData = true
     private var albumDescription = NSAttributedString()
     private var refreshControl: UIRefreshControl? // iOS 9.x only
     private var imageDetailView: ImageViewController?
@@ -68,12 +67,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
     
-    init(albumId: Int, withFreshData: Bool = true) {
+    init(albumId: Int) {
         super.init(nibName: nil, bundle: nil)
         
         // Store album ID
         categoryId = albumId
-        hasFreshData = withFreshData
         if albumId == 0 {
             // Navigation bar buttons
             settingsBarButton = getSettingsBarButton()
@@ -346,6 +344,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Set colors, fonts, etc.
         applyColorPalette()
 
+        // Always open this view with a navigation bar
+        // (might have been hidden during Image Previewing)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+
+        // Set navigation bar buttons
+        updateButtonsInPreviewMode()
+
         // Register upload manager changes
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
                                                name: .pwgLeftUploads, object: nil)
@@ -357,8 +362,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let userInfo = ["currentCategoryId": NSNumber(value: categoryId)]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: kPiwigoNotificationChangedCurrentCategory), object: nil, userInfo: userInfo)
 
-        // Display the album/images collection
-        if categoryId < 0 { // i.e. smart albums
+        // If displaying smart album —> reload images
+        if categoryId < 0 {
             // Load, sort images and reload collection
             let oldImageList = albumData?.images ?? []
             albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
@@ -368,43 +373,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }, onFailure: { [self] _, error in
                 dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
             })
+        } else {
+            // Images will be loaded if needed after displaying cells
+            imagesCollection?.reloadData()
         }
-        else {
-            if hasFreshData {
-                // Images will be loaded if needed after displaying cells
-                imagesCollection?.reloadData()
-            } else {
-                // Show HUD during data load
-//                navigationController?.showPiwigoHUD(
-//                    withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-//                    detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-//                    buttonTitle: "",
-//                    buttonTarget: nil,
-//                    buttonSelector: nil,
-//                    inMode: .indeterminate)
-                // Only reload album data from default album
-                if categoryId != AlbumVars.shared.defaultCategory { return }
-
-                // Relogin before reloading album data
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.reloginAndRetry(afterRestoringScene: true) { [self] in
-                    reloadAlbumData {
-                        // Resume upload operations in background queue
-                        // and update badge, upload button of album navigator
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.resumeAll()
-                        }
-                    }
-                }
-            }
-        }
-
-        // Always open this view with a navigation bar
-        // (might have been hidden during Image Previewing)
-        navigationController?.setNavigationBarHidden(false, animated: true)
-
-        // Set navigation bar buttons
-        updateButtonsInPreviewMode()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -422,6 +394,59 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             if let refreshControl = refreshControl {
                 imagesCollection?.addSubview(refreshControl)
                 imagesCollection?.alwaysBounceVertical = true
+            }
+        }
+
+        // Determine for how long the session was open
+        /// Piwigo 11 session duration defaults to an hour.
+        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+        if NetworkVars.serverPath.isEmpty == false,
+           NetworkVars.username.isEmpty == false,
+           timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+            // Check if session is active in the background
+            print("••> Check session status in AlbumViewController.")
+            DispatchQueue.global(qos: .background).async {
+                let pwgToken = NetworkVars.pwgToken
+                LoginUtilities.sessionGetStatus { [self] in
+                    if NetworkVars.pwgToken == pwgToken {
+                        // Session still active - done
+                        return
+                    }
+                    
+                    /// - Pause upload operations
+                    /// - Perform relogin
+                    /// - Reload album data
+                    /// - Resume upload operations in background queue
+                    ///   and update badge, upload button of album navigator
+                    print("••> Call reloginAndRetry() from AlbumViewController.")
+                    UploadManager.shared.isPaused = true
+                    DispatchQueue.main.async {
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.reloginAndRetry() { [self] in
+                            reloadAlbumData {
+                                // Resume upload operations in background queue
+                                // and update badge, upload button of album navigator
+                                UploadManager.shared.backgroundQueue.async {
+                                    UploadManager.shared.resumeAll()
+                                }
+                            }
+                        }
+                    }
+                } failure: { error in
+                    // To be managed…
+                }
+            }
+        } else if NetworkVars.serverPath.isEmpty == false,
+                  CategoriesData.sharedInstance().allCategories.filter({$0.numberOfImages != NSNotFound}).isEmpty {
+            // Apparently this is the first time we load album data as Guest
+            /// - Reload album data
+            print("••> Call reloginAndRetry() from AlbumViewController.")
+            reloadAlbumData { }
+        } else {
+            // Resume upload operations in background queue
+            // and update badge, upload button of album navigator
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
             }
         }
 
@@ -611,16 +636,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     // Update other album views
                     if #available(iOS 13.0, *) {
                         // Refresh other album views if any
-                        DispatchQueue.main.async {
-                            // Loop over all active scenes
+                        DispatchQueue.main.async { [self] in
+                            // Loop over all other active scenes
+                            let sessionID = view.window?.windowScene?.session.persistentIdentifier ?? ""
                             let connectedScenes = UIApplication.shared.connectedScenes
                                 .filter({[.foregroundActive].contains($0.activationState)})
+                                .filter({$0.session.persistentIdentifier != sessionID})
                             for scene in connectedScenes {
                                 if let windowScene = scene as? UIWindowScene,
                                    let albumVC = windowScene.topMostViewController() as? AlbumViewController {
-                                    if albumVC.categoryId != AlbumVars.shared.defaultCategory {
-                                        albumVC.checkDataSource(withChangedCategories: didUpdateCats) { }
-                                    }
+                                    albumVC.checkDataSource(withChangedCategories: didUpdateCats) { }
                                 }
                             }
                         }
@@ -683,9 +708,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             completion()
             return
         }
-
-        // Remember that we have fresh data
-        hasFreshData = true
 
         // Root album -> reload collection
         if categoryId == 0 {
@@ -849,8 +871,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // The view controller of the default album does not exist yet
         if rootAlbumViewController == nil {
-            rootAlbumViewController = AlbumViewController(albumId: AlbumVars.shared.defaultCategory,
-                                                          withFreshData: true)
+            rootAlbumViewController = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
             
             if let rootAlbumViewController = rootAlbumViewController,
                var arrayOfVC = navigationController?.viewControllers {

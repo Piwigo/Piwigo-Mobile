@@ -113,7 +113,7 @@ extension ImageViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.removeImageFromCategory()
                     }
                 } else {
@@ -148,7 +148,7 @@ extension ImageViewController
                 if error.code == 401 {
                     // Try relogin
                     let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
+                    appDelegate?.reloginAndRetry() { [unowned self] in
                         self.deleteImageFromDatabase()
                     }
                 } else {

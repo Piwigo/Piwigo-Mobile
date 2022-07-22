@@ -46,6 +46,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Create login view
                 appDelegate.loadLoginView(in: window)
 
+                // We will load album data
+                NetworkVars.dateOfLastLogin = .distantPast
+
                 // Blur views if the App Lock is enabled
                 /// The passcode window is not presented so that the app
                 /// does not request the passcode until it is put into the background.
@@ -60,7 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             else {
                 // Create additional scene => default album
-                appDelegate.loadNavigation(in: window, withFreshData: false)
+                appDelegate.loadNavigation(in: window)
 
                 // Blur views if the App is locked
                 if AppVars.shared.isAppUnlocked == false {
@@ -116,21 +119,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Check the user activity type to know which part of the app to restore.
         if activity.activityType == ActivityType.album.rawValue {
-            // Determine for how long the session is opened
-            /// Piwigo 11 session duration defaults to an hour.
-            var hasFreshData = true
-            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                /// - Perform relogin
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                NetworkVars.dateOfLastLogin = Date()
-                hasFreshData = false
-            }
-
             // The activity type is for restoring AlbumViewController.
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-            appDelegate.loadNavigation(in: window, withFreshData: hasFreshData)
+            appDelegate.loadNavigation(in: window)
             
             // Hold and present window
             self.window = window
@@ -318,7 +309,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 @available(iOS 13.0, *)
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
-        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin and resume uploads.")
+        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin if needed and resume uploads.")
         // Remove privacy view
         privacyView?.removeFromSuperview()
         
