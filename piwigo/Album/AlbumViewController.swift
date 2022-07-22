@@ -1160,7 +1160,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Configure cell with album data
             let albumData = parentAlbums[indexPath.item]
-            cell.config(withAlbumData: albumData)
+            cell.config(withAlbumData: albumData, description: albumDescription)
 
             // Disable category cells in Image selection mode
             if isSelect {

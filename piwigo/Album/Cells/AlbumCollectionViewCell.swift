@@ -22,6 +22,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     weak var categoryDelegate: AlbumCollectionViewCellDelegate?
     var albumData: PiwigoAlbumData?
     
+    private var albumDescription = NSAttributedString()
     private var tableView: UITableView?
     private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
@@ -56,7 +57,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
         tableView?.reloadData()
     }
 
-    func config(withAlbumData albumData: PiwigoAlbumData? = nil) {
+    func config(withAlbumData albumData: PiwigoAlbumData? = nil,
+                description: NSAttributedString = NSAttributedString()) {
         self.albumData = albumData
         tableView?.reloadData()
     }
@@ -216,7 +218,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
                     // Update cell and hide swipe buttons
                     let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                    cell?.config(withAlbumData: albumData)
+                    cell?.config(withAlbumData: albumData, description: albumDescription)
                     cell?.hideSwipe(animated: true)
                 }
             }
@@ -490,7 +492,7 @@ extension AlbumCollectionViewCell: UITableViewDataSource
         }
         
         // Configure cell
-        cell.config(withAlbumData: albumData)
+        cell.config(withAlbumData: albumData, description: albumDescription)
         
         // Album modifications are possible only if data are known
         if albumData != nil {
