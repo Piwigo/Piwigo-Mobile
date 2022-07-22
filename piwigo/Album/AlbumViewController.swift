@@ -587,10 +587,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Unregister upload progress
         NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
-
-        // Clear memory
-        imagesCollection = nil
-        albumData = nil
     }
 
     
