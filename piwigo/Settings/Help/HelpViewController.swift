@@ -14,7 +14,7 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
     
-    @objc var displayHelpPagesWithID: [UInt16] = []
+    var displayHelpPagesWithID: [UInt16] = []
     private var pages = [UIViewController]()
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?

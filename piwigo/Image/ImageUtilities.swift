@@ -12,11 +12,9 @@ import MobileCoreServices
 import piwigoKit
 import UIKit
 
-@objc
 class ImageUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    @objc
     class func getInfos(forID imageId:Int, inCategoryId categoryId: Int,
                         completion: @escaping (PiwigoImageData) -> Void,
                         failure: @escaping (NSError) -> Void) {
@@ -176,7 +174,6 @@ class ImageUtilities: NSObject {
         }
     }
     
-    @objc
     class func setInfos(with paramsDict: [String: Any],
                         completion: @escaping () -> Void,
                         failure: @escaping (NSError) -> Void) {
@@ -220,7 +217,6 @@ class ImageUtilities: NSObject {
         }
     }
     
-    @objc
     class func delete(_ images:[PiwigoImageData],
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
@@ -280,7 +276,6 @@ class ImageUtilities: NSObject {
         }
     }
 
-    @objc
     class func addToFavorites(_ imageData: PiwigoImageData,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
@@ -332,7 +327,6 @@ class ImageUtilities: NSObject {
         }
     }
 
-    @objc
     class func removeFromFavorites(_ imageData: PiwigoImageData,
                                    completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
@@ -400,7 +394,6 @@ class ImageUtilities: NSObject {
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
 
-    @objc
     class func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,

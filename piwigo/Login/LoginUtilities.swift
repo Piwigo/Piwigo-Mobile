@@ -9,11 +9,9 @@
 import Foundation
 import piwigoKit
 
-@objc
 class LoginUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    @objc
     class func getMethods(completion: @escaping () -> Void,
                           failure: @escaping (NSError) -> Void) {
         // Launch request
@@ -56,7 +54,6 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
     class func sessionLogin(withUsername username:String, password:String,
                             completion: @escaping () -> Void,
                             failure: @escaping (NSError) -> Void) {
@@ -99,7 +96,6 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
     class func communityGetStatus(completion: @escaping () -> Void,
                                   failure: @escaping (NSError) -> Void) {
         // Launch request
@@ -149,7 +145,6 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
     class func sessionGetStatus(completion: @escaping () -> Void,
                                 failure: @escaping (NSError) -> Void) {
         // Launch request
@@ -457,7 +452,6 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
     class func sessionLogout(completion: @escaping () -> Void,
                              failure: @escaping (NSError) -> Void) {
         // Launch request

@@ -17,12 +17,11 @@ import piwigoKit
     func didFinishEditingParameters()
 }
 
-@objc
 class EditImageParamsViewController: UIViewController
 {
-    @objc var images = [PiwigoImageData]()
-    @objc var hasTagCreationRights = false
-    @objc weak var delegate: EditImageParamsDelegate?
+    var images = [PiwigoImageData]()
+    var hasTagCreationRights = false
+    weak var delegate: EditImageParamsDelegate?
 
     @IBOutlet private weak var editImageParamsTableView: UITableView!
 
@@ -57,7 +56,6 @@ class EditImageParamsViewController: UIViewController
 
     
     // MARK: - View Lifecycle
-
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

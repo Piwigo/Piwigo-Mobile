@@ -17,7 +17,6 @@ protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func removeCategory(_ albumCell: AlbumCollectionViewCell?)
 }
 
-@objc
 class AlbumCollectionViewCell: UICollectionViewCell
 {
     weak var categoryDelegate: AlbumCollectionViewCellDelegate?
@@ -57,7 +56,6 @@ class AlbumCollectionViewCell: UICollectionViewCell
         tableView?.reloadData()
     }
 
-    @objc
     func config(withAlbumData albumData: PiwigoAlbumData? = nil) {
         self.albumData = albumData
         tableView?.reloadData()

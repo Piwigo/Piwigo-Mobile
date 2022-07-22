@@ -14,11 +14,10 @@ import MobileCoreServices
 import UIKit
 import piwigoKit
 
-@objc
 class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
     // MARK: - Initialisation
-    @objc weak var delegate: ShareImageActivityItemProviderDelegate?
+    weak var delegate: ShareImageActivityItemProviderDelegate?
 
     private var imageData: PiwigoImageData              // Piwigo image data
     private var task: URLSessionDownloadTask?           // Download task
@@ -47,7 +46,6 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     
     
     // MARK: - Placeholder Image
-    @objc
     init(placeholderImage imageData: PiwigoImageData) {
         // Store Piwigo image data for future use
         self.imageData = imageData

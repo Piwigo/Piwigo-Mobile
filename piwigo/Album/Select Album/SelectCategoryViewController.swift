@@ -38,7 +38,6 @@ protocol SelectCategoryImageRemovedDelegate {
     func didRemoveImage(withId imageId: Int)
 }
 
-@objc
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var delegate: SelectCategoryDelegate?

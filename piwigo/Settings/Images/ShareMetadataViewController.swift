@@ -18,7 +18,6 @@ let kPiwigoActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.t
 let kPiwigoActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
 let kPiwigoActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
 
-@objc
 class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet var shareMetadataTableView: UITableView!

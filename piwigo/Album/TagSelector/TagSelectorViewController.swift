@@ -17,10 +17,9 @@ protocol TagSelectorViewDelegate {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
-@objc
 class TagSelectorViewController: UITableViewController {
     
-    @objc weak var tagSelectedDelegate: TagSelectorViewDelegate?
+    weak var tagSelectedDelegate: TagSelectorViewDelegate?
 
     // MARK: - Core Data
     /**

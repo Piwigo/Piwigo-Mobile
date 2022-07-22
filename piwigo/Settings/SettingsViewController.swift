@@ -40,10 +40,9 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
     func didChangeRecentPeriod()
 }
 
-@objc
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @objc weak var settingsDelegate: ChangedSettingsDelegate?
+    weak var settingsDelegate: ChangedSettingsDelegate?
 
     @IBOutlet var settingsTableView: UITableView!
     

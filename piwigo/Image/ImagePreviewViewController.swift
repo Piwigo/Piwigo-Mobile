@@ -18,7 +18,7 @@ import piwigoKit
 
 class ImagePreviewViewController: UIViewController
 {
-    @objc weak var imagePreviewDelegate: ImagePreviewDelegate?
+    weak var imagePreviewDelegate: ImagePreviewDelegate?
 
     var imageIndex = 0
     var imageLoaded = false

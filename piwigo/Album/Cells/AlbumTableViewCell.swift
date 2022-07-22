@@ -11,7 +11,6 @@
 import UIKit
 import piwigoKit
 
-@objc
 class AlbumTableViewCell: MGSwipeTableCell {
     
     @IBOutlet weak var backgroundImage: UIImageView!
@@ -24,7 +23,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
 
-    @objc
     func config(withAlbumData albumData: PiwigoAlbumData?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()

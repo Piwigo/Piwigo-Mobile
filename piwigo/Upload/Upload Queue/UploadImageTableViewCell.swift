@@ -10,7 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class UploadImageTableViewCell: MGSwipeTableCell {
     
     // MARK: - Core Data
@@ -27,7 +26,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     // MARK: - Variables
     private let imagePlaceholder = UIImage(named: "placeholder")!
     private var _localIdentifier = ""
-    @objc var localIdentifier: String {
+    var localIdentifier: String {
         get {
             _localIdentifier
         }

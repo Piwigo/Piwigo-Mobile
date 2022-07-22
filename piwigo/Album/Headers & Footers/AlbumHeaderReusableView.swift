@@ -11,7 +11,7 @@
 import UIKit
 
 class AlbumHeaderReusableView: UICollectionReusableView {
-    @objc var commentLabel: UILabel?
+    var commentLabel: UILabel?
 
     override init(frame: CGRect) {
         super.init(frame: frame)

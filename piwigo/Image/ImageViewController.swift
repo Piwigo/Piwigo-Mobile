@@ -16,12 +16,12 @@ import piwigoKit
     func needToLoadMoreImages()
 }
 
-@objc class ImageViewController: UIViewController {
+class ImageViewController: UIViewController {
     
-    @objc weak var imgDetailDelegate: ImageDetailDelegate?
-    @objc var images = [PiwigoImageData]()
-    @objc var categoryId = 0
-    @objc var imageIndex = 0
+    weak var imgDetailDelegate: ImageDetailDelegate?
+    var images = [PiwigoImageData]()
+    var categoryId = 0
+    var imageIndex = 0
     
     var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()

@@ -10,7 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate, TagsViewControllerDelegate, UITextViewDelegate {
 
     @IBOutlet var autoUploadTableView: UITableView!
