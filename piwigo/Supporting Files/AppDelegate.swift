@@ -649,9 +649,11 @@ import piwigoKit
         
         DispatchQueue.main.async {
             if (server.isEmpty == false) && (user.isEmpty == false) {
-                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) { completion() }
+                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) {
+                    completion()
+                }
             } else if afterRestoringScene {
-                self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
+                completion()
             } else {
                 // Return to login view
                 ClearCache.closeSessionAndClearCache() { }
@@ -673,11 +675,12 @@ import piwigoKit
 
     
     // MARK: - Album Navigator
-    @objc func loadNavigation(in window: UIWindow?) {
+    @objc func loadNavigation(in window: UIWindow?, withFreshData: Bool) {
         guard let window = window else { return }
         
         // Display default album
-        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
+        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory,
+                                               withFreshData: withFreshData)
         window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
@@ -1024,31 +1027,6 @@ extension AppDelegate: AppLockDelegate {
                 loginVC.launchLogin()
             }
             return
-        }
-
-        // Determine for how long the session is opened
-        /// Piwigo 11 session duration defaults to an hour.
-        if let rootVC = window?.rootViewController, let child = rootVC.children.first,
-           !(child is LoginViewController) {
-            // Determine for how long the session is opened
-            /// Piwigo 11 session duration defaults to an hour.
-            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                /// - Perform relogin
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                NetworkVars.dateOfLastLogin = Date()
-                reloginAndRetry(afterRestoringScene: false) {
-                    // Reload category data from server in background mode
-                    self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: false)
-                }
-            } else {
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.resumeAll()
-                }
-            }
         }
     }
 }

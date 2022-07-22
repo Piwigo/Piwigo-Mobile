@@ -567,23 +567,35 @@ class LoginViewController: UIViewController {
                     // Reinitialise flag
                     NetworkVars.userCancelledCommunication = false
 
+                    // Determine for how long the session is opened
+                    /// Piwigo 11 session duration defaults to an hour.
+                    var hasFreshData = true
+                    let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+                    if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+                        /// - Perform relogin
+                        /// - Resume upload operations in background queue
+                        ///   and update badge, upload button of album navigator
+                        NetworkVars.dateOfLastLogin = Date()
+                        hasFreshData = false
+                    }
+
                     // Hide HUD and present root album
                     if let hudViewController = self.hudViewController {
                         hudViewController.hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation(in: self.view.window)
+                            appDelegate?.loadNavigation(in: self.view.window, withFreshData: hasFreshData)
                         }
                     } else {
                         self.hidePiwigoHUD() {
                             // Present Album/Images view and resume uploads
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.loadNavigation(in: self.view.window)
+                            appDelegate?.loadNavigation(in: self.view.window, withFreshData: hasFreshData)
                         }
                     }
 
                     // Load favorites in the background if necessary
-                    self.loadFavorites()
+                    AlbumUtilities.loadFavoritesInBckg()
 
                 } failure: { error in
                     DispatchQueue.main.async { [self] in
@@ -677,77 +689,57 @@ class LoginViewController: UIViewController {
         }
     }
 
-    func reloadCatagoryDataInBckgMode(afterRestoringScene: Bool) {
-        // Get current top view controllers
-        let viewControllers = UIApplication.shared.topViewControllers()
-        
-        // Do not present HUD during re-login unless when restoring scenes
-        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
-
-        // Update HUD during login
-        self.hudViewController?.showPiwigoHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-            buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-            inMode: .indeterminate)
-
-        // Load category data in recursive mode in the background
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
-            // Reload album data
-            AlbumUtilities.getAlbums { didUpdateCats in
-                // Back to main queue
-                DispatchQueue.main.async {
-                    // Get top view controllers and update collection views
-                    for viewController in viewControllers {
-                        if let vc = viewController as? AlbumViewController {
-                            // Check data source and reload collection if needed
-                            vc.checkDataSource(withChangedCategories: didUpdateCats) {
-                                // Close HUD if needed
-                                self.hudViewController?.hidePiwigoHUD {
-                                    // Resume uploads
-                                    UploadManager.shared.backgroundQueue.async {
-                                        UploadManager.shared.resumeAll()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Load favorites in the background if necessary
-                    self.loadFavorites()
-                }
-            } failure: { error in
-                DispatchQueue.main.async(execute: { [self] in
-                    // Close HUD if needed
-                    self.hudViewController?.hidePiwigoHUD {
-                        // Inform user that we could not load album data
-                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-                    }
-                })
-            }
-        }
-    }
+//    func reloadCatagoryDataInBckgMode(afterRestoringScene: Bool) {
+//        // Get current top view controllers
+//        let viewControllers = UIApplication.shared.topViewControllers()
+//
+//        // Do not present HUD during re-login unless when restoring scenes
+//        hudViewController = afterRestoringScene ? UIApplication.shared.topViewControllers().first : nil
+//
+//        // Update HUD during login
+//        self.hudViewController?.showPiwigoHUD(
+//            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+//            detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
+//            buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+//            inMode: .indeterminate)
+//
+//        // Load category data in recursive mode in the background
+//        DispatchQueue.global(qos: .userInteractive).async { [self] in
+//            // Reload album data
+//            AlbumUtilities.getAlbums { didUpdateCats in
+//                // Back to main queue
+//                DispatchQueue.main.async {
+//                    // Get top view controllers and update collection views
+//                    for viewController in viewControllers {
+//                        if let vc = viewController as? AlbumViewController {
+//                            // Check data source and reload collection if needed
+//                            vc.checkDataSource(withChangedCategories: didUpdateCats) {
+//                                // Close HUD if needed
+//                                self.hudViewController?.hidePiwigoHUD {
+//                                    // Resume uploads
+//                                    UploadManager.shared.backgroundQueue.async {
+//                                        UploadManager.shared.resumeAll()
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    // Load favorites in the background if necessary
+//                    AlbumUtilities.loadFavoritesInBckg()
+//                }
+//            } failure: { error in
+//                DispatchQueue.main.async(execute: { [self] in
+//                    // Close HUD if needed
+//                    self.hudViewController?.hidePiwigoHUD {
+//                        // Inform user that we could not load album data
+//                        self.logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+//                    }
+//                })
+//            }
+//        }
+//    }
     
-    private func loadFavorites() {
-        // Should we load favorites?
-        if NetworkVars.hasGuestRights { return }
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending  { return }
-        
-        // Initialise favorites album
-        if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
-            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-        }
-
-        // Load favorites data in the background with dedicated URL session
-        DispatchQueue.global(qos: .default).async {
-            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
-                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)),
-                forProgress: nil,
-                onCompletion: nil,
-                onFailure: nil)
-        }
-    }
-
     
     // MARK: - HUD methods
     @objc func cancelLoggingIn() {

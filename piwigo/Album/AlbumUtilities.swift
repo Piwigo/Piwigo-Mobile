@@ -789,7 +789,16 @@ class AlbumUtilities: NSObject {
     }
 
     
-    // MARK: - Album/Images Collections | Footers
+    // MARK: - Album/Images Collections | Headers & Footers
+    static func headerLegend(for categoryId: Int) -> NSAttributedString {
+        if let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
+           let comment = album.comment, comment.isEmpty == false {
+            return comment.htmlToAttributedString
+        } else {
+            return NSAttributedString()
+        }
+    }
+
     static func footerLegend(for nberOfImages: Int) -> String {
         var legend = ""
         if nberOfImages == NSNotFound {
@@ -813,5 +822,27 @@ class AlbumUtilities: NSObject {
             }
         }
         return legend
+    }
+    
+    
+    // MARK: - Favorites
+    static func loadFavoritesInBckg() {
+        DispatchQueue.global(qos: .default).async {
+            // Should we load favorites?
+            if NetworkVars.hasGuestRights { return }
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending  { return }
+            
+            // Initialise favorites album
+            if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
+                CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
+            }
+
+            // Load favorites data in the background with dedicated URL session
+            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
+                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)),
+                forProgress: nil,
+                onCompletion: nil,
+                onFailure: nil)
+        }
     }
 }

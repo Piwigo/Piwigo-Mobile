@@ -58,6 +58,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var progressLayer: CAShapeLayer!
     var nberOfUploadsLabel: UILabel!
 
+    private var hasFreshData = true
+    private var albumDescription = NSAttributedString()
     private var refreshControl: UIRefreshControl? // iOS 9.x only
     private var imageDetailView: ImageViewController?
 
@@ -66,11 +68,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
     
-    init(albumId: Int) {
+    init(albumId: Int, withFreshData: Bool = true) {
         super.init(nibName: nil, bundle: nil)
         
         // Store album ID
         categoryId = albumId
+        hasFreshData = withFreshData
         if albumId == 0 {
             // Navigation bar buttons
             settingsBarButton = getSettingsBarButton()
@@ -337,6 +340,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Initialise data source
         if categoryId != 0 {
             albumData = AlbumData(categoryId: categoryId, andQuery: "")
+            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
         }
         
         // Set colors, fonts, etc.
@@ -366,8 +370,33 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             })
         }
         else {
-            // Images will be loaded if needed after displaying cells
-            imagesCollection?.reloadData()
+            if hasFreshData {
+                // Images will be loaded if needed after displaying cells
+                imagesCollection?.reloadData()
+            } else {
+                // Show HUD during data load
+//                navigationController?.showPiwigoHUD(
+//                    withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+//                    detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
+//                    buttonTitle: "",
+//                    buttonTarget: nil,
+//                    buttonSelector: nil,
+//                    inMode: .indeterminate)
+                // Only reload album data from default album
+                if categoryId != AlbumVars.shared.defaultCategory { return }
+
+                // Relogin before reloading album data
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.reloginAndRetry(afterRestoringScene: true) { [self] in
+                    reloadAlbumData {
+                        // Resume upload operations in background queue
+                        // and update badge, upload button of album navigator
+                        UploadManager.shared.backgroundQueue.async {
+                            UploadManager.shared.resumeAll()
+                        }
+                    }
+                }
+            }
         }
 
         // Always open this view with a navigation bar
@@ -566,7 +595,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Category Data
-    @objc func refresh(_ refreshControl: UIRefreshControl?) {
+    func reloadAlbumData(completion: @escaping () -> Void) {
         // Display HUD while downloading albums data recursively
         navigationController?.showPiwigoHUD(
             withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
@@ -575,22 +604,34 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Load category data in recursive mode
         AlbumUtilities.getAlbums { didUpdateCats in
-            DispatchQueue.main.async { [self] in 
+            DispatchQueue.main.async { [self] in
                 // Check data source and reload collection if needed
                 checkDataSource(withChangedCategories: didUpdateCats) { [self] in
-                    // End refreshing
-                    if #available(iOS 10.0, *) {
-                        if imagesCollection?.refreshControl != nil {
-                            imagesCollection?.refreshControl?.endRefreshing()
-                        }
-                    } else {
-                        if self.refreshControl != nil {
-                            self.refreshControl?.endRefreshing()
-                        }
+                    // Hide HUD
+                    navigationController?.hidePiwigoHUD() {
+                        completion()
                     }
 
-                    // Hide HUD
-                    navigationController?.hidePiwigoHUD() { }
+                    // Update other album views
+                    if #available(iOS 13.0, *) {
+                        // Refresh other album views if any
+                        DispatchQueue.main.async {
+                            // Loop over all active scenes
+                            let connectedScenes = UIApplication.shared.connectedScenes
+                                .filter({[.foregroundActive].contains($0.activationState)})
+                            for scene in connectedScenes {
+                                if let windowScene = scene as? UIWindowScene,
+                                   let albumVC = windowScene.topMostViewController() as? AlbumViewController {
+                                    if albumVC.categoryId != AlbumVars.shared.defaultCategory {
+                                        albumVC.checkDataSource(withChangedCategories: didUpdateCats) { }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Load favorites in the background if necessary
+                    AlbumUtilities.loadFavoritesInBckg()
                 }
             }
         } failure: { error in
@@ -600,6 +641,21 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 // Hide HUD if needed
                 navigationController?.hidePiwigoHUD() { [self] in
                     dismissPiwigoError(withTitle: "", message: error.localizedDescription) { }
+                }
+            }
+        }
+    }
+    
+    @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        reloadAlbumData { [self] in
+            // End refreshing
+            if #available(iOS 10.0, *) {
+                if imagesCollection?.refreshControl != nil {
+                    imagesCollection?.refreshControl?.endRefreshing()
+                }
+            } else {
+                if refreshControl != nil {
+                    refreshControl?.endRefreshing()
                 }
             }
         }
@@ -632,6 +688,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             return
         }
 
+        // Remember that we have fresh data
+        hasFreshData = true
+
         // Root album -> reload collection
         if categoryId == 0 {
             if didChange {
@@ -646,6 +705,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Other album -> Reload albums
         if didChange, categoryId >= 0 {
+            // Update header
+            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
             // Reload album collection
             imagesCollection?.reloadSections(IndexSet(integer: 0))
             // Set navigation bar buttons
@@ -667,7 +728,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
                 })
             } else {
-                imagesCollection?.reloadData()
+                imagesCollection?.reloadSections(IndexSet(integer: 1))
             }
             // Cancel selection
             cancelSelect()
@@ -792,7 +853,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // The view controller of the default album does not exist yet
         if rootAlbumViewController == nil {
-            rootAlbumViewController = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
+            rootAlbumViewController = AlbumViewController(albumId: AlbumVars.shared.defaultCategory,
+                                                          withFreshData: true)
             
             if let rootAlbumViewController = rootAlbumViewController,
                var arrayOfVC = navigationController?.viewControllers {
@@ -880,10 +942,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                if let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
-                   albumData.comment.count > 0 {
-                    header?.commentLabel?.text = albumData.comment
-                }
+                header?.commentLabel?.attributedText = albumDescription
                 header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
                 return header!
             }
@@ -937,17 +996,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             guard let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
                 return CGSize.zero
             }
-            if let desc = albumData.comment, !desc.isEmpty,
+            if let desc = albumData.comment, desc.isEmpty == false,
                collectionView.frame.size.width - 30.0 > 0 {
-                let header = albumData.comment ?? ""
-                let attributes = [NSAttributedString.Key.font: UIFont.piwigoFontNormal()]
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
-                let headerRect = header.boundingRect(
+                let headerRect = albumDescription.boundingRect(
                     with: CGSize(width: collectionView.frame.size.width - 30.0,
                                  height: CGFloat.greatestFiniteMagnitude),
-                    options: .usesLineFragmentOrigin,
-                    attributes: attributes, context: context)
+                    options: .usesLineFragmentOrigin, context: context)
                 return CGSize(width: collectionView.frame.size.width - 30.0,
                               height: ceil(headerRect.size.height))
             }

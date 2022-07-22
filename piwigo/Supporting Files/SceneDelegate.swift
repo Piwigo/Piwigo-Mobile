@@ -60,7 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             else {
                 // Create additional scene => default album
-                appDelegate.loadNavigation(in: window)
+                appDelegate.loadNavigation(in: window, withFreshData: false)
 
                 // Blur views if the App is locked
                 if AppVars.shared.isAppUnlocked == false {
@@ -116,11 +116,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Check the user activity type to know which part of the app to restore.
         if activity.activityType == ActivityType.album.rawValue {
+            // Determine for how long the session is opened
+            /// Piwigo 11 session duration defaults to an hour.
+            var hasFreshData = true
+            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+                /// - Perform relogin
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                NetworkVars.dateOfLastLogin = Date()
+                hasFreshData = false
+            }
+
             // The activity type is for restoring AlbumViewController.
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-            appDelegate.loadNavigation(in: window)
+            appDelegate.loadNavigation(in: window, withFreshData: hasFreshData)
             
-            // Hold and present login window
+            // Hold and present window
             self.window = window
             window?.makeKeyAndVisible()
     
@@ -360,28 +372,6 @@ extension SceneDelegate: AppLockDelegate {
                 appDelegate.loginVC.launchLogin()
             }
             return
-        }
-
-        // Determine for how long the session is opened
-        /// Piwigo 11 session duration defaults to an hour.
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-            /// - Perform relogin
-            /// - Reload images in albums
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            NetworkVars.dateOfLastLogin = Date()
-            appDelegate?.reloginAndRetry(afterRestoringScene: true) {
-                // Reload category data from server in background mode
-                appDelegate?.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
-            }
-        } else {
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
         }
     }
 }

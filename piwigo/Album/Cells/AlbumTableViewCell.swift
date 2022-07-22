@@ -39,7 +39,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
 
         // Album comment
         if let comment = albumData?.comment, comment.isEmpty == false {
-            albumComment.text = comment
+            albumComment.attributedText = comment.htmlToAttributedString
             albumComment.textColor = UIColor.piwigoColorText()
         }
         else {  // No comment
