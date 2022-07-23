@@ -402,9 +402,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
         if NetworkVars.serverPath.isEmpty == false,
            NetworkVars.username.isEmpty == false,
-           timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
+           timeSinceLastLogin < TimeInterval(-1800) {    // i.e. 30 minutes
             // Check if session is active in the background
-            print("••> Check session status in AlbumViewController.")
+            print("••> Check session status…")
             DispatchQueue.global(qos: .background).async {
                 let pwgToken = NetworkVars.pwgToken
                 LoginUtilities.sessionGetStatus { [self] in
@@ -418,11 +418,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     /// - Reload album data
                     /// - Resume upload operations in background queue
                     ///   and update badge, upload button of album navigator
-                    print("••> Call reloginAndRetry() from AlbumViewController.")
+                    print("••> Re-login…")
                     UploadManager.shared.isPaused = true
                     DispatchQueue.main.async {
                         let appDelegate = UIApplication.shared.delegate as? AppDelegate
                         appDelegate?.reloginAndRetry() { [self] in
+                            print("••> Reload album data…")
                             reloadAlbumData {
                                 // Resume upload operations in background queue
                                 // and update badge, upload button of album navigator
@@ -433,6 +434,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                         }
                     }
                 } failure: { error in
+                    print("••> Failed to check session status…")
                     // To be managed…
                 }
             }
@@ -440,11 +442,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                   CategoriesData.sharedInstance().allCategories.filter({$0.numberOfImages != NSNotFound}).isEmpty {
             // Apparently this is the first time we load album data as Guest
             /// - Reload album data
-            print("••> Call reloginAndRetry() from AlbumViewController.")
+            print("••> Reload album data…")
             reloadAlbumData { }
         } else {
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
+            print("••> Resume upload operations…")
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.resumeAll()
             }
@@ -1352,11 +1355,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     imagesCollection?.reloadItems(at: indexPaths)
 
                     // Display HUD if it will take more than a second to load image data
+                    let didProgress = (newDownloadedImageCount != downloadedImageCount)
                     let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
                     let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
                     let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
                     print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
-                    if left > 1000.0 {
+                    if left > 1000.0, didProgress {
                         if view.viewWithTag(loadingViewTag) == nil {
                             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .annularDeterminate)
                         } else {
@@ -1369,7 +1373,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     }
                     // Should we continue loading images?
                     print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if didScrollToImageIndex >= newDownloadedImageCount {
+                    if didScrollToImageIndex >= newDownloadedImageCount, didProgress {
                         needToLoadMoreImages()
                     }
                 })
