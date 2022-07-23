@@ -408,30 +408,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             DispatchQueue.global(qos: .background).async {
                 let pwgToken = NetworkVars.pwgToken
                 LoginUtilities.sessionGetStatus { [self] in
-                    if NetworkVars.pwgToken == pwgToken {
-                        // Session still active - done
-                        return
-                    }
-                    
-                    /// - Pause upload operations
-                    /// - Perform relogin
-                    /// - Reload album data
-                    /// - Resume upload operations in background queue
-                    ///   and update badge, upload button of album navigator
-                    print("••> Re-login…")
-                    UploadManager.shared.isPaused = true
-                    DispatchQueue.main.async {
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry() { [self] in
-                            print("••> Reload album data…")
-                            reloadAlbumData {
-                                // Resume upload operations in background queue
-                                // and update badge, upload button of album navigator
-                                UploadManager.shared.backgroundQueue.async {
-                                    UploadManager.shared.resumeAll()
-                                }
-                            }
-                        }
+                    if NetworkVars.pwgToken != pwgToken {
+                        reloginAndReloadAlbumData { }
                     }
                 } failure: { error in
                     print("••> Failed to check session status…")
@@ -619,7 +597,31 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Category Data
-    func reloadAlbumData(completion: @escaping () -> Void) {
+    private func reloginAndReloadAlbumData(completion: @escaping () -> Void) {
+        /// - Pause upload operations
+        /// - Perform relogin
+        /// - Reload album data
+        /// - Resume upload operations in background queue
+        ///   and update badge, upload button of album navigator
+        print("••> Re-login…")
+        UploadManager.shared.isPaused = true
+        DispatchQueue.main.async {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.reloginAndRetry() { [self] in
+                print("••> Reload album data…")
+                reloadAlbumData {
+                    // Resume upload operations in background queue
+                    // and update badge, upload button of album navigator
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeAll()
+                    }
+                    completion()
+                }
+            }
+        }
+    }
+    
+    private func reloadAlbumData(completion: @escaping () -> Void) {
         // Display HUD while downloading albums data recursively
         navigationController?.showPiwigoHUD(
             withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
@@ -671,7 +673,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
-        reloadAlbumData { [self] in
+        reloginAndReloadAlbumData { [self] in
             // End refreshing
             if #available(iOS 10.0, *) {
                 if imagesCollection?.refreshControl != nil {
