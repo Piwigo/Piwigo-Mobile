@@ -805,5 +805,5 @@
 "help07_header" = "Automatyczne przesyłanie";
 "help07_text" = "Wybierz albumy źródłowe i docelowe w Piwigo, utwórz automaty w Skrótach.";
 "help08_header" = "Albumy nadrzędne";
-"help08_text" = "Długie naciśnięcie przycisku wstecz, aby wyświetlić listę albumów nadrzędnych.";
-"help08_text2" = "Dotknij wybranego albumu nadrzędnego, aby wrócić do niego.";
+"help08_text" = "Przytrzymaj przycisk wstecz, aby wyświetlić listę albumów nadrzędnych.";
+"help08_text2" = "Dotknij wybranego albumu nadrzędnego, aby do niego wrócić.";

@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.2_text" = "Wersja 2.12.2\n\n• Naprawia awarię w iOS 9-12 podczas wyświetlania kolejki żądań wysyłania\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.12.2_text" = "Wersja 2.12.2\n\n• Naprawia awarię w iOS 9-12 podczas wyświetlania kolejki żądań przesyłania\n• Drobne poprawki błędów i ulepszenia interfejsu";
 
 "v2.12.1_text" = "Wersja 2.12.1\n10 lipca 2022\n\n• Naprawia awarię w iOS 9-13 występującą podczas zmiany tagów przypisanych do zdjęć";
 

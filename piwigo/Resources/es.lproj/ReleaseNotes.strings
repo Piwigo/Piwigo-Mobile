@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.2_text" = "Versión 2.12.2\n\n• Corregir un error ocurriendo en iOS 9-12 al mostrar la cola de peticiones de subida\n• Corrección de errores menores y mejoras en la interfaz";
+"v2.12.2_text" = "Versión 2.12.2\n\n• Corrige un error que ocurría en iOS 9-12 al mostrar la cola de peticiones de subida\n• Corrección de errores menores y mejoras en la interfaz";
 
 "v2.12.1_text" = "Versión 2.12.1\n10 de julio de 2022\n\n• Corrige un bloqueo en iOS 9-13 al cambiar las etiquetas asignadas a las fotos";
 
