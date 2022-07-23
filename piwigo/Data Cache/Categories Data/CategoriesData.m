@@ -171,13 +171,6 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Loop on freshly retrieved categories
     for (PiwigoAlbumData *categoryData in categories)
     {
-        // Is this a smart album?
-        if (categoryData.albumId < 0) {
-            // Keep smart albums in cache (favorites loaded at start or refresh requested)
-            [newCategories addObject:categoryData];
-            continue;
-        }
-        
         // Is this a known category?
         NSInteger index = [self indexOfCategoryWithId:categoryData.albumId
                                               inArray:self.allCategories];
@@ -210,8 +203,17 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         [newCategories addObject:categoryData];
     }
         
+    // Count known smart albums
+    NSInteger nberOfSmartAlbums = 0;
+    for (PiwigoAlbumData *categoryData in self.allCategories) {
+        // Is this a smart album?
+        if (categoryData.albumId < 0) {
+            nberOfSmartAlbums++;
+        }
+    }
+    
     // Some categories may have only been suppressed
-    if (!didChange && (newCategories.count < self.allCategories.count)) {
+    if (!didChange && (newCategories.count < self.allCategories.count - nberOfSmartAlbums)) {
         didChange = YES;
     }
 
