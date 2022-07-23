@@ -1375,8 +1375,19 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     }
                     // Should we continue loading images?
                     print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if didScrollToImageIndex >= newDownloadedImageCount, didProgress {
-                        needToLoadMoreImages()
+                    if didScrollToImageIndex >= newDownloadedImageCount {
+                        if didProgress {
+                            // Continue loadding images
+                            needToLoadMoreImages()
+                        } else {
+                            // Re-login before continuing to load images
+                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                            appDelegate?.reloginAndRetry() { [self] in
+                                DispatchQueue.main.async { [self] in
+                                    needToLoadMoreImages()
+                                }
+                            }
+                        }
                     }
                 })
             }, onFailure: nil)
