@@ -645,10 +645,12 @@ import piwigoKit
     func reloginAndRetry(completion: @escaping () -> Void) {
         let server = NetworkVars.serverPath
         let user = NetworkVars.username
-        if (server.isEmpty == false) && (user.isEmpty == false) {
+        if server.isEmpty == false, user.isEmpty == false {
             self.loginVC.performRelogin() {
                 completion()
             }
+        } else if server.isEmpty == false {
+            completion()
         } else {
             // Return to login view
             ClearCache.closeSessionAndClearCache() { }
