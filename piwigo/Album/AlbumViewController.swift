@@ -668,6 +668,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 navigationController?.hidePiwigoHUD() { [self] in
                     dismissPiwigoError(withTitle: "", message: error.localizedDescription) { }
                 }
+                completion()
             }
         }
     }
