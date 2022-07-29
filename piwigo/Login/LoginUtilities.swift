@@ -12,8 +12,8 @@ import piwigoKit
 class LoginUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    class func getMethods(completion: @escaping () -> Void,
-                          failure: @escaping (NSError) -> Void) {
+    static func getMethods(completion: @escaping () -> Void,
+                           failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
@@ -54,9 +54,9 @@ class LoginUtilities: NSObject {
         }
     }
 
-    class func sessionLogin(withUsername username:String, password:String,
-                            completion: @escaping () -> Void,
-                            failure: @escaping (NSError) -> Void) {
+    static func sessionLogin(withUsername username:String, password:String,
+                             completion: @escaping () -> Void,
+                             failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
@@ -97,8 +97,8 @@ class LoginUtilities: NSObject {
         }
     }
 
-    class func communityGetStatus(completion: @escaping () -> Void,
-                                  failure: @escaping (NSError) -> Void) {
+    static func communityGetStatus(completion: @escaping () -> Void,
+                                   failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
@@ -146,8 +146,8 @@ class LoginUtilities: NSObject {
         }
     }
 
-    class func sessionGetStatus(completion: @escaping () -> Void,
-                                failure: @escaping (NSError) -> Void) {
+    static func sessionGetStatus(completion: @escaping () -> Void,
+                                 failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoSessionGetStatus, paramDict: [:],
@@ -453,8 +453,8 @@ class LoginUtilities: NSObject {
         }
     }
 
-    class func sessionLogout(completion: @escaping () -> Void,
-                             failure: @escaping (NSError) -> Void) {
+    static func sessionLogout(completion: @escaping () -> Void,
+                              failure: @escaping (NSError) -> Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoSessionLogout, paramDict: [:],
