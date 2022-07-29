@@ -28,8 +28,8 @@ extension AlbumViewController
     // MARK: - "Add" button above collection view and other buttons
     func getAddButton() -> UIButton {
         let button = UIButton(type: .system)
-        let xPos = UIScreen.main.bounds.size.width - 3 * kRadius
-        let yPos = UIScreen.main.bounds.size.height - 3 * kRadius
+        let xPos = view.bounds.size.width - 3 * kRadius
+        let yPos = view.bounds.size.height - 3 * kRadius
         button.frame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
         button.layer.cornerRadius = kRadius
         button.layer.masksToBounds = false
@@ -321,7 +321,8 @@ extension AlbumViewController
                    NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
                     let xPos = addButton.frame.origin.x
                     let yPos = addButton.frame.origin.y
-                    homeAlbumButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
+                    homeAlbumButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos,
+                                                    width: 2 * kRadius, height: 2 * kRadius)
                 } else {
                     homeAlbumButton?.frame = addButton.frame
                 }
@@ -352,7 +353,8 @@ extension AlbumViewController
             let width = (nberOfUploadsLabel?.bounds.size.width ?? 0.0) + 20
             let height = nberOfUploadsLabel?.bounds.size.height ?? 0.0
             let extraWidth = CGFloat(fmax(0, Float((width - 2 * kRadius))))
-            nberOfUploadsLabel?.frame = CGRect(x: kRadius + (extraWidth / 2.0) - width / 2.0, y: kRadius - height / 2.0, width: width, height: height)
+            nberOfUploadsLabel?.frame = CGRect(x: kRadius + (extraWidth / 2.0) - width / 2.0,
+                                               y: kRadius - height / 2.0, width: width, height: height)
 
             progressLayer?.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
             let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
@@ -375,9 +377,11 @@ extension AlbumViewController
                 let xPos = (addButton.frame.origin.x) - extraWidth
                 let yPos = addButton.frame.origin.y
                 if addButton.isHidden {
-                    uploadQueueButton?.frame = CGRect(x: xPos, y: yPos, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
+                    uploadQueueButton?.frame = CGRect(x: xPos, y: yPos,
+                                                      width: 2 * kRadius + extraWidth, height: 2 * kRadius)
                 } else {
-                    uploadQueueButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
+                    uploadQueueButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos,
+                                                      width: 2 * kRadius + extraWidth, height: 2 * kRadius)
                 }
                 uploadQueueButton?.setNeedsLayout()
             })
