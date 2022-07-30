@@ -347,6 +347,12 @@ extension SceneDelegate: AppLockDelegate {
         // Should we log in?
         if let rootVC = window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
+            // Is user logging out?
+            if AppVars.shared.isLoggingOut {
+                AppVars.shared.isLoggingOut = true
+                return
+            }
+            
             // Look for credentials if server address provided
             let username = NetworkVars.username
             let service = NetworkVars.serverPath
