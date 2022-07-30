@@ -132,6 +132,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if #available(iOS 11.0, *) {
             imagesCollection?.contentInsetAdjustmentBehavior = .always
         }
+
+        // "Add" button above collection view and other buttons
+        addButton = getAddButton()
+        if let imagesCollection = imagesCollection {
+            view.insertSubview(addButton, aboveSubview: imagesCollection)
+        }
+
+        // "Upload Queue" button above collection view
+        uploadQueueButton = getUploadQueueButton()
+        progressLayer = getProgressLayer()
+        uploadQueueButton?.layer.addSublayer(progressLayer)
+        nberOfUploadsLabel = getNberOfUploadsLabel()
+        uploadQueueButton?.addSubview(nberOfUploadsLabel)
+        view.insertSubview(uploadQueueButton, belowSubview: addButton)
+
+        // "Home" album button above collection view
+        homeAlbumButton = getHomeButton()
+        view.insertSubview(homeAlbumButton, belowSubview: addButton)
+
+        // "Create Album" button above collection view
+        createAlbumButton = getCreateAlbumButton()
+        view.insertSubview(createAlbumButton, belowSubview: addButton)
+
+        // "Upload Images" button above collection view
+        uploadImagesButton = getUploadImagesButton()
+        view.insertSubview(uploadImagesButton, belowSubview: addButton)
     }
 
     
@@ -317,32 +343,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             albumDescription = AlbumUtilities.headerLegend(for: categoryId)
         }
 
-        // "Add" button above collection view and other buttons
-        addButton = getAddButton()
-        if let imagesCollection = imagesCollection {
-            view.insertSubview(addButton, aboveSubview: imagesCollection)
-        }
-
-        // "Upload Queue" button above collection view
-        uploadQueueButton = getUploadQueueButton()
-        progressLayer = getProgressLayer()
-        uploadQueueButton?.layer.addSublayer(progressLayer)
-        nberOfUploadsLabel = getNberOfUploadsLabel()
-        uploadQueueButton?.addSubview(nberOfUploadsLabel)
-        view.insertSubview(uploadQueueButton, belowSubview: addButton)
-
-        // "Home" album button above collection view
-        homeAlbumButton = getHomeButton()
-        view.insertSubview(homeAlbumButton, belowSubview: addButton)
-
-        // "Create Album" button above collection view
-        createAlbumButton = getCreateAlbumButton()
-        view.insertSubview(createAlbumButton, belowSubview: addButton)
-
-        // "Upload Images" button above collection view
-        uploadImagesButton = getUploadImagesButton()
-        view.insertSubview(uploadImagesButton, belowSubview: addButton)
-
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -351,6 +351,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         navigationController?.setNavigationBarHidden(false, animated: true)
 
         // Set navigation bar buttons
+        initButtonsInPreviewMode()
         updateButtonsInPreviewMode()
 
         // Register upload manager changes
