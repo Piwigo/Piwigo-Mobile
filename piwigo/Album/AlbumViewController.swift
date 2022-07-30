@@ -520,8 +520,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 initButtonsInSelectionMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
-                let xPos = UIScreen.main.bounds.size.width - 3 * kRadius
-                let yPos = UIScreen.main.bounds.size.height - 3 * kRadius
+                let xPos = view.bounds.size.width - 3 * kRadius
+                let yPos = view.bounds.size.height - 3 * kRadius
                 addButton.frame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
                 if addButton.isHidden {
                     homeAlbumButton.frame = addButton.frame
