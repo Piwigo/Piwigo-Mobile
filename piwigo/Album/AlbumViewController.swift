@@ -545,8 +545,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 addButton?.frame = getAddButtonFrame()
                 homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton?.isHidden ?? true)
                 uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton?.isHidden ?? true)
-                createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton?.isHidden ?? true)
+                uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton?.isHidden ?? true)
             }
         })
     }
