@@ -1367,7 +1367,8 @@ public class UploadManager: NSObject {
         isPreparing = false; isFinishing = false
         isExecutingBackgroundUploadTask = false
         isUploading = Set<NSManagedObjectID>()
-        
+        print("••> Resume upload operations…")
+
         // Get active upload tasks
         let taskContext = DataController.privateManagedObjectContext
         let uploadSession: URLSession = UploadSessions.shared.bckgSession
