@@ -370,5 +370,11 @@ extension SceneDelegate: AppLockDelegate {
             }
             return
         }
+
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.resumeAll()
+        }
     }
 }
