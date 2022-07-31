@@ -542,12 +542,18 @@ class ImageViewController: UIViewController {
                     self.setEnableStateOfButtons(true)
                 }
             } failure: { error in
-                self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+                self.dismissRetryPiwigoError(withTitle: title, message: message,
+                                             errorMessage: error.localizedDescription, dismiss: {
                 }, retry: { [unowned self] in
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
-                        self.retrieveCompleteImageDataOfImage(self.imageData)
+                    // Relogin and retry
+                    LoginUtilities.reloginAndRetry() { [unowned self] in
+                        retrieveCompleteImageDataOfImage(self.imageData)
+                    } failure: { [self] error in
+                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                        dismissPiwigoError(withTitle: title, message: message,
+                                           errorMessage: error?.localizedDescription ?? "") { }
                     }
                 })
             }

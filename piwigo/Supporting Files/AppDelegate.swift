@@ -642,30 +642,15 @@ import piwigoKit
         }
     }
 
-    func reloginAndRetry(completion: @escaping () -> Void) {
-        let server = NetworkVars.serverPath
-        let user = NetworkVars.username
-        if server.isEmpty == false, user.isEmpty == false {
-            self.loginVC.performRelogin() {
-                completion()
-            }
-        } else if server.isEmpty == false {
-            completion()
-        } else {
-            // Return to login view
-            ClearCache.closeSessionAndClearCache() { }
-        }
-    }
-
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry() {
+            LoginUtilities.reloginAndRetry() {
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
                 UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.resumeAll()
                 }
-            }
+            } failure: { _ in }
         }
     }
 

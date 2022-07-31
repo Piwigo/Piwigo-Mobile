@@ -32,6 +32,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var imagesCollection: UICollectionView?
     var albumData: AlbumData?
+    var albumDescription = NSAttributedString()
     var userHasUploadRights = false
     private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
@@ -58,7 +59,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var progressLayer: CAShapeLayer!
     var nberOfUploadsLabel: UILabel!
 
-    private var albumDescription = NSAttributedString()
     private var refreshControl: UIRefreshControl? // iOS 9.x only
     private var imageDetailView: ImageViewController?
 
@@ -108,6 +108,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         imagesCollection?.translatesAutoresizingMaskIntoConstraints = false
         imagesCollection?.alwaysBounceVertical = true
         imagesCollection?.showsVerticalScrollIndicator = true
+        imagesCollection?.backgroundColor = UIColor.clear
         imagesCollection?.dataSource = self
         imagesCollection?.delegate = self
 
@@ -308,7 +309,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Collection view
-        imagesCollection?.backgroundColor = UIColor.clear
         imagesCollection?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         let headers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         if (headers?.count ?? 0) > 0 {
@@ -400,35 +400,57 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
         }
 
+        // Stop here if app is reloading album data
+        if AppVars.shared.isReloadingData {
+            return
+        }
+        
         // Determine for how long the session was open
         /// Piwigo 11 session duration defaults to an hour.
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if NetworkVars.serverPath.isEmpty == false,
-           NetworkVars.username.isEmpty == false,
-           timeSinceLastLogin < TimeInterval(-1800) {    // i.e. 30 minutes
-            // Check if session is active in the background
-            print("••> Check session status…")
-            DispatchQueue.global(qos: .background).async {
+        let allAlbums = CategoriesData.sharedInstance().allCategories?.filter({ $0.numberOfImages != NSNotFound})
+        AppVars.shared.nberOfAlbumsInCache = allAlbums?.count ?? 0
+        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == false,
+           ((timeSinceLastLogin < TimeInterval(-1800)) || AppVars.shared.nberOfAlbumsInCache == 0) {
+            // Check if we have album data
+            AppVars.shared.isReloadingData = true
+            if AppVars.shared.nberOfAlbumsInCache == 0 {
+                reloginAndReloadAlbumData {
+                    AppVars.shared.isReloadingData = false
+                }
+            } else {
+                // Check if session is active in the background
                 let pwgToken = NetworkVars.pwgToken
-                LoginUtilities.sessionGetStatus { [self] in
+                LoginUtilities.sessionGetStatus { [unowned self] in
                     if NetworkVars.pwgToken != pwgToken {
-                        reloginAndReloadAlbumData { }
+                        reloginAndReloadAlbumData {
+                            AppVars.shared.isReloadingData = false
+                        }
                     }
-                } failure: { error in
+                } failure: { _ in
                     print("••> Failed to check session status…")
-                    // To be managed…
+                    AppVars.shared.isReloadingData = false
+                    // Will re-check later…
                 }
             }
-        } else if NetworkVars.serverPath.isEmpty == false,
-                  CategoriesData.sharedInstance().allCategories.filter({$0.numberOfImages != NSNotFound}).isEmpty {
+            return
+        }
+        
+        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == true,
+           AppVars.shared.nberOfAlbumsInCache == 0 {
             // Apparently this is the first time we load album data as Guest
             /// - Reload album data
             print("••> Reload album data…")
-            reloadAlbumData { }
-        } else {
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            print("••> Resume upload operations…")
+            AppVars.shared.isReloadingData = true
+            reloadAlbumData {
+                AppVars.shared.isReloadingData = false
+            }
+            return
+        }
+        
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        if UploadManager.shared.isPaused {
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.resumeAll()
             }
@@ -581,82 +603,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Category Data
-    private func reloginAndReloadAlbumData(completion: @escaping () -> Void) {
-        /// - Pause upload operations
-        /// - Perform relogin
-        /// - Reload album data
-        /// - Resume upload operations in background queue
-        ///   and update badge, upload button of album navigator
-        print("••> Re-login…")
-        UploadManager.shared.isPaused = true
-        DispatchQueue.main.async {
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.reloginAndRetry() { [self] in
-                print("••> Reload album data…")
-                reloadAlbumData {
-                    // Resume upload operations in background queue
-                    // and update badge, upload button of album navigator
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeAll()
-                    }
-                    completion()
-                }
-            }
-        }
-    }
-    
-    private func reloadAlbumData(completion: @escaping () -> Void) {
-        // Display HUD while downloading albums data recursively
-        navigationController?.showPiwigoHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-            buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Load category data in recursive mode
-        AlbumUtilities.getAlbums { didUpdateCats in
-            DispatchQueue.main.async { [self] in
-                // Check data source and reload collection if needed
-                checkDataSource(withChangedCategories: didUpdateCats) { [self] in
-                    // Hide HUD
-                    navigationController?.hidePiwigoHUD() {
-                        completion()
-                    }
-
-                    // Update other album views
-                    if #available(iOS 13.0, *) {
-                        // Refresh other album views if any
-                        DispatchQueue.main.async { [self] in
-                            // Loop over all other active scenes
-                            let sessionID = view.window?.windowScene?.session.persistentIdentifier ?? ""
-                            let connectedScenes = UIApplication.shared.connectedScenes
-                                .filter({[.foregroundActive].contains($0.activationState)})
-                                .filter({$0.session.persistentIdentifier != sessionID})
-                            for scene in connectedScenes {
-                                if let windowScene = scene as? UIWindowScene,
-                                   let albumVC = windowScene.topMostViewController() as? AlbumViewController {
-                                    albumVC.checkDataSource(withChangedCategories: didUpdateCats) { }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Load favorites in the background if necessary
-                    AlbumUtilities.loadFavoritesInBckg()
-                }
-            }
-        } failure: { error in
-            DispatchQueue.main.async { [self] in
-                // Set navigation bar buttons
-                initButtonsInSelectionMode()
-                // Hide HUD if needed
-                navigationController?.hidePiwigoHUD() { [self] in
-                    dismissPiwigoError(withTitle: "", message: error.localizedDescription) { }
-                }
-                completion()
-            }
-        }
-    }
-    
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         reloginAndReloadAlbumData { [self] in
             // End refreshing
@@ -672,79 +618,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
     }
 
-    func checkDataSource(withChangedCategories didChange: Bool,
-                         completion: @escaping () -> Void) {
-        print(String(format: "checkDataSource...=> ID:%ld - Categories did change:%@",
-                     categoryId, didChange ? "YES" : "NO"))
-
-        // Does this album still exist?
-        let album = CategoriesData.sharedInstance().getCategoryById(categoryId)
-        if categoryId > 0, albumData == nil {
-            // This album does not exist anymore
-            let VCs = navigationController?.children
-            var index = (VCs?.count ?? 0) - 1
-            while index >= 0 {
-                if let vc = VCs?[index] as? AlbumViewController {
-                    if vc.categoryId == 0 || CategoriesData.sharedInstance().getCategoryById(vc.categoryId) != nil {
-                        // Present the album
-                        navigationController?.popToViewController(vc, animated: true)
-                        completion()
-                        return
-                    }
-                }
-                index -= 1
-            }
-            // We did not find a parent album — should never happen…
-            completion()
-            return
-        }
-
-        // Root album -> reload collection
-        if categoryId == 0 {
-            if didChange {
-                // Reload album collection
-                imagesCollection?.reloadData()
-                // Set navigation bar buttons
-                updateButtonsInPreviewMode()
-            }
-            completion()
-            return
-        }
-        
-        // Other album -> Reload albums
-        if didChange, categoryId >= 0 {
-            // Update header
-            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
-            // Reload album collection
-            imagesCollection?.reloadSections(IndexSet(integer: 0))
-            // Set navigation bar buttons
-            updateButtonsInPreviewMode()
-        }
-
-        // Other album —> If the number of images in cache is null, reload collection
-        if album == nil || album?.imageList?.count == 0 {
-            // Something did change… reset album data
-            albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            // Reload collection
-            if categoryId < 0 {
-                // Load, sort images and reload collection
-                albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
-                    // Reset navigation bar buttons after image load
-                    updateButtonsInPreviewMode()
-                    imagesCollection?.reloadData()
-                }, onFailure: { [self] _, error in
-                    dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
-                })
-            } else {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-            // Cancel selection
-            cancelSelect()
-        }
-        completion()
-    }
-
-    func reloadImagesCollection(from oldImages: [PiwigoImageData]) {
+    private func reloadImagesCollection(from oldImages: [PiwigoImageData]) {
         if oldImages.count != albumData?.images?.count ?? NSNotFound {
             // List of images has changed
             imagesCollection?.reloadData()
@@ -1366,11 +1240,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                             needToLoadMoreImages()
                         } else {
                             // Re-login before continuing to load images
-                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.reloginAndRetry() { [self] in
+                            LoginUtilities.reloginAndRetry() { [self] in
                                 DispatchQueue.main.async { [self] in
                                     needToLoadMoreImages()
                                 }
+                            } failure: { [self] error in
+                                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                                dismissPiwigoError(withTitle: title, completion: {})
                             }
                         }
                     }

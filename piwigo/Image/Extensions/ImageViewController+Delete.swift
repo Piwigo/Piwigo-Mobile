@@ -102,22 +102,28 @@ extension ImageViewController
                 }
             }
         } failure: { [unowned self] error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            self.dismissRetryPiwigoError(withTitle: title, message: message,
+                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
                 // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
+                hidePiwigoHUD { [unowned self] in
                     // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+                    setEnableStateOfButtons(true)
                 }
             }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
-                        self.removeImageFromCategory()
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
+                    removeImageFromCategory()
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
+                        hidePiwigoHUD { [unowned self] in
+                            // Re-enable buttons
+                            setEnableStateOfButtons(true)
+                        }
                     }
-                } else {
-                    self.removeImageFromCategory()
                 }
             })
         }
@@ -137,22 +143,28 @@ extension ImageViewController
                 }
             }
         } failure: { [unowned self] error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed"), message: NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted"), errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            self.dismissRetryPiwigoError(withTitle: title, message: message,
+                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
                 // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
+                hidePiwigoHUD { [unowned self] in
                     // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+                    setEnableStateOfButtons(true)
                 }
             }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry() { [unowned self] in
-                        self.deleteImageFromDatabase()
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
+                    deleteImageFromDatabase()
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
+                        hidePiwigoHUD { [unowned self] in
+                            // Re-enable buttons
+                            setEnableStateOfButtons(true)
+                        }
                     }
-                } else {
-                    self.deleteImageFromDatabase()
                 }
             })
         }
