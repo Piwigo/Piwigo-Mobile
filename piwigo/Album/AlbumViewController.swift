@@ -520,30 +520,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 initButtonsInSelectionMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
-                let xPos = view.bounds.size.width - 3 * kRadius
-                let yPos = view.bounds.size.height - 3 * kRadius
-                addButton.frame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
-                if addButton.isHidden {
-                    homeAlbumButton.frame = addButton.frame
-                } else {
-                    homeAlbumButton?.frame = CGRect(x: xPos - 3 * kRadius, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
-                }
-                if uploadQueueButton?.isHidden ?? false {
-                    uploadQueueButton?.frame = addButton.frame
-                } else {
-                    // Elongate the button if needed
-                    var botFrame = uploadQueueButton?.frame
-                    botFrame?.origin.x = xPos - 3 * kRadius - ((uploadQueueButton?.frame.size.width ?? 0.0) - 2 * kRadius)
-                    botFrame?.origin.y = yPos
-                    uploadQueueButton?.frame = botFrame ?? CGRect.zero
-                }
-                if createAlbumButton?.isHidden ?? false {
-                    createAlbumButton?.frame = addButton.frame
-                    uploadImagesButton?.frame = addButton.frame
-                } else {
-                    createAlbumButton?.frame = CGRect(x: xPos - 3 * kRadius * cos(15 * kDeg2Rad), y: yPos - 3 * kRadius * sin(15 * kDeg2Rad), width: 1.72 * kRadius, height: 1.72 * kRadius)
-                    uploadImagesButton?.frame = CGRect(x: xPos - 3 * kRadius * cos(75 * kDeg2Rad), y: yPos - 3 * kRadius * sin(75 * kDeg2Rad), width: 1.72 * kRadius, height: 1.72 * kRadius)
-                }
+                addButton?.frame = getAddButtonFrame()
+                homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton?.isHidden ?? true)
+                uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton?.isHidden ?? true)
+                createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
             }
         })
     }

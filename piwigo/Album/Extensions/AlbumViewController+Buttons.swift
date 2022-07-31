@@ -47,7 +47,7 @@ extension AlbumViewController
         return button
     }
     
-    private func getAddButtonFrame() -> CGRect {
+    func getAddButtonFrame() -> CGRect {
         let xPos = view.bounds.size.width - 3 * kRadius
         let yPos = view.bounds.size.height - 3 * kRadius
         return CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
@@ -68,7 +68,7 @@ extension AlbumViewController
         return button
     }
     
-    private func getUploadQueueButtonFrame(isHidden: Bool) -> CGRect {
+    func getUploadQueueButtonFrame(isHidden: Bool) -> CGRect {
         if isHidden {
             return addButton.frame
         }
@@ -121,7 +121,7 @@ extension AlbumViewController
         return button
     }
     
-    private func getHomeAlbumButtonFrame(isHidden: Bool) -> CGRect {
+    func getHomeAlbumButtonFrame(isHidden: Bool) -> CGRect {
         if isHidden {
             return addButton.frame
         }
@@ -158,7 +158,7 @@ extension AlbumViewController
         return button
     }
     
-    private func getCreateAlbumButtonFrame(isHidden: Bool) -> CGRect {
+    func getCreateAlbumButtonFrame(isHidden: Bool) -> CGRect {
         var xPos = addButton.frame.origin.x
         var yPos = addButton.frame.origin.y
         if isHidden == false {
@@ -188,7 +188,7 @@ extension AlbumViewController
         return button
     }
 
-    private func getUploadImagesButtonFrame(isHidden: Bool) -> CGRect {
+    func getUploadImagesButtonFrame(isHidden: Bool) -> CGRect {
         var xPos = addButton.frame.origin.x
         var yPos = addButton.frame.origin.y
         if isHidden == false {
@@ -213,8 +213,8 @@ extension AlbumViewController
                 var newFrame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
                 
                 // Relocate the "Add" button if needed
-                if addButton.frame.equalTo(newFrame) == false {
-                    addButton.frame = newFrame
+                if addButton?.frame.equalTo(newFrame) == false {
+                    addButton?.frame = newFrame
                 }
                 
                 // Relocate the "Upload Queue" button if needed
@@ -231,14 +231,14 @@ extension AlbumViewController
                 
                 // Relocate "Create Album" button if needed
                 newFrame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                if createAlbumButton.frame.equalTo(newFrame) == false {
-                    createAlbumButton.frame = newFrame
+                if createAlbumButton?.frame.equalTo(newFrame) == false {
+                    createAlbumButton?.frame = newFrame
                 }
                 
                 // Relocate "Upload Images" button if needed
                 newFrame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-                if uploadImagesButton.frame.equalTo(newFrame) == false {
-                    uploadImagesButton.frame = newFrame
+                if uploadImagesButton?.frame.equalTo(newFrame) == false {
+                    uploadImagesButton?.frame = newFrame
                 }
             }
         }
