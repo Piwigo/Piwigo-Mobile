@@ -350,7 +350,7 @@ public class UploadsProvider: NSObject {
 
     // MARK: - Delete Upload Requests
     /**
-     Delete a batch of upload requests from the Core Data store on a private queue,
+     Delete a batch of upload requests from the Core Data store on a private or background queue,
      processing the record in batches to avoid a high memory footprint.
     */
     public func delete(uploadRequests: [NSManagedObjectID],
