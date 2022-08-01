@@ -1262,7 +1262,7 @@ public class UploadManager: NSObject {
 //                categoryImages.forEach { (uploadRequest) in
 //                    // Update upload requests to remember that the moderation was requested
 //                    self.uploadsProvider.updateStatusOfUpload(with: uploadRequest.0,
-//                                                              to: .finished, error: "") { _ in
+//                                                              to: .finished, error: "") { [unowned self] _ in
 //                        // Did we update all requests?
 //                        count += 1
 //                        if count == categoryImages.count {
@@ -1312,7 +1312,7 @@ public class UploadManager: NSObject {
                 .reduce("", +).dropLast())
             
             // Moderate uploaded images
-            moderateImages(withIds: imageIds, inCategory: categoryId) { (success, _) in
+            self.moderateImages(withIds: imageIds, inCategory: categoryId) { [unowned self] (success, _) in
                 if !success { return }    // Will retry later
 
                 // Update state of upload requests
@@ -1320,7 +1320,7 @@ public class UploadManager: NSObject {
                 categoryImages.forEach { (moderatedUpload) in
                     // Update upload requests to remember that the moderation was requested
                     self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0,
-                                                              to: .moderated, error: "") { _ in
+                                                              to: .moderated, error: "") { [unowned self] _ in
                         // Did we update all requests?
                         count += 1
                         if count == categoryImages.count {
@@ -1344,7 +1344,7 @@ public class UploadManager: NSObject {
             PHPhotoLibrary.shared().performChanges({
                 // Delete images from the library
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
-            }, completionHandler: { success, error in
+            }, completionHandler: { [unowned self] success, error in
                 if success == true {
                     // Delete upload requests in the main thread
                     self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
@@ -1402,7 +1402,7 @@ public class UploadManager: NSObject {
                 let failedUploads = self.uploadsProvider.getRequests(inStates: states).1
                 if failedUploads.count > 0 {
                     // Resume failed uploads
-                    self.resume(failedUploads: failedUploads) { (_) in
+                    self.resume(failedUploads: failedUploads) { [unowned self] (_) in
                         // Resume operations
                         self.resumeOperations()
                     }
