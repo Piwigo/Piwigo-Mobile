@@ -102,7 +102,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
-        case .preparingFail, .formatError, .uploadingFail, .finishingFail,.finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
@@ -177,19 +177,18 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             var fullResImageData: Data = Data()
             do {
                 try fullResImageData = NSData (contentsOf: fileURL) as Data
+
+                // Retrieve UIImage from imageData
+                image = UIImage(data: fullResImageData) ?? imagePlaceholder
+
+                // Fix orientation if needed
+                image = image.fixOrientation()
             }
             catch let error as NSError {
                 // Could not find the file to upload!
                 print(error.localizedDescription)
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                return
+                image = imagePlaceholder
             }
-
-            // Retrieve UIImage from imageData
-            image = UIImage(data: fullResImageData) ?? imagePlaceholder
-
-            // Fix orientation if needed
-            image = image.fixOrientation()
         }
         else if fileURL.lastPathComponent.contains("mov") {
             // Case of a movie
@@ -219,6 +218,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             imageInfoLabel.text = errorDescription(for: upload)
+        } else if image == imagePlaceholder {
+            imageInfoLabel.text = ""
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
