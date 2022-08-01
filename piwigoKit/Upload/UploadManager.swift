@@ -1439,8 +1439,36 @@ public class UploadManager: NSObject {
             }
         }
 
-        // Pursue the work
-        self.findNextImageToUpload()
+        // Remove upload requests of assets that have become unavailable
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploadingFail]
+        let imagesToUpload = uploadsProvider.getRequests(inStates: states)
+        var assetIDsToDelete: [String] = imagesToUpload.0
+        var objectIDsToDelete: [NSManagedObjectID] = imagesToUpload.1
+        
+        // Remove upload requests of files from intent and clipboard
+        for (index, imageID) in imagesToUpload.0.enumerated() {
+            if imageID.hasPrefix(kIntentPrefix) || imageID.hasPrefix(kClipboardPrefix) {
+                assetIDsToDelete.remove(at: index)
+                objectIDsToDelete.remove(at: index)
+            }
+        }
+        
+        // Fetch available assets
+        let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: nil)
+        
+        // Build list of missing assets
+        availableAssets.enumerateObjects { asset, index, _ in
+            if assetIDsToDelete.contains(asset.localIdentifier) {
+                objectIDsToDelete.remove(at: index)
+            }
+        }
+        
+        // Delete upload requests of assets that have become unavailable
+        uploadsProvider.delete(uploadRequests: objectIDsToDelete) { [unowned self] _ in
+            self.findNextImageToUpload()
+        }
     }
 
     public func resume(failedUploads: [NSManagedObjectID], completionHandler: @escaping (Error?) -> Void) -> Void {
