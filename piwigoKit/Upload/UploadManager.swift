@@ -788,13 +788,9 @@ public class UploadManager: NSObject {
             uploadProperties.creationDate = Date().timeIntervalSinceReferenceDate
         }
         
-        // URL of image file to be stored into Piwigo/Uploads directory
-        let uploadFileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-            .appending(kOriginalSuffix)
-        let uploadFileURL = self.applicationUploadsDirectory.appendingPathComponent(uploadFileName)
-
-        // Deletes temporary image file if exists (incomplete previous attempt?)
-        do { try FileManager.default.removeItem(at: uploadFileURL) } catch { }
+        // Get URL of image file to be stored into Piwigo/Uploads directory
+        // and deletes temporary image file if exists (incomplete previous attempt?)
+        let fileURL = getUploadFileURL(from: uploadProperties, withSuffix: kOriginalSuffix, deleted: true)
 
         // Retrieve asset resources
         var resources = PHAssetResource.assetResources(for: originalAsset)
@@ -808,7 +804,7 @@ public class UploadManager: NSObject {
         // Priority to original media data
         if let res = resource {
             // Store original data in file
-            PHAssetResourceManager.default().writeData(for: res, toFile: uploadFileURL,
+            PHAssetResourceManager.default().writeData(for: res, toFile: fileURL,
                                                        options: options) { error in
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: originalFilename)
@@ -838,7 +834,7 @@ public class UploadManager: NSObject {
                 }
                 
                 uploadProperties.fileName = utf8mb3Filename
-                self.dispatchImage(asset: originalAsset, atURL:uploadFileURL,
+                self.dispatchImage(asset: originalAsset, atURL:fileURL,
                                    for: uploadID, with: uploadProperties)
             }
         }
