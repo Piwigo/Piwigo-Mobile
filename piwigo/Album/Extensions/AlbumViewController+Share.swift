@@ -146,7 +146,7 @@ extension AlbumViewController
 }
 
 
-// MARK: ShareImageActivityItemProviderDelegate Methods
+// MARK: - ShareImageActivityItemProviderDelegate Methods
 extension AlbumViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,

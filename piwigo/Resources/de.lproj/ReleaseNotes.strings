@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "Version 2.12.1\n\n• Behebt einen Absturz auf iOS 9-13 beim Ändern von Schlagwörtern, die Fotos zugeordnet sind";
+"v2.12.2_text" = "Version 2.12.2\n\n• Behebt einen Absturz, der bei iOS 9.12 auftritt, wenn die Warteschlange für Upload-Anfragen angezeigt wird\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
+
+"v2.12.1_text" = "Version 2.12.1\n10. Juli 2022\n\n• Behebt einen Absturz auf iOS 9-13 beim Ändern von Schlagwörtern, die Fotos zugeordnet sind";
 
 "v2.12.0_text" = "Version 2.12\n3. Juli 2022\n\n• Wählen Sie eine Schlagwort schneller mit der Suchleiste\n• Code-Modernisierung\n• Fehlerbehebungen";
 

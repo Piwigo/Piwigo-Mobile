@@ -142,7 +142,7 @@ public class UploadsProvider: NSObject {
 
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.managedObjectContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.managedObjectContext.save()
@@ -205,7 +205,7 @@ public class UploadsProvider: NSObject {
                     
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.managedObjectContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.managedObjectContext.save()
@@ -261,8 +261,8 @@ public class UploadsProvider: NSObject {
                     try taskContext.save()
                     
                     // Performs a task in the main queue and wait until this task finishes
-                    DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                    DispatchQueue.main.async { [unowned self] in
+                        self.managedObjectContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.managedObjectContext.save()
@@ -326,8 +326,8 @@ public class UploadsProvider: NSObject {
                         try taskContext.save()
                         
                         // Performs a task in the main queue and wait until this tasks finishes
-                        DispatchQueue.main.async {
-                            self.managedObjectContext.performAndWait {
+                        DispatchQueue.main.async { [unowned self] in
+                            self.managedObjectContext.performAndWait { [unowned self] in
                                 do {
                                     // Saves the data from the child to the main context to be stored properly
                                     try self.managedObjectContext.save()
@@ -350,7 +350,7 @@ public class UploadsProvider: NSObject {
 
     // MARK: - Delete Upload Requests
     /**
-     Delete a batch of upload requests from the Core Data store on a private queue,
+     Delete a batch of upload requests from the Core Data store on a private or background queue,
      processing the record in batches to avoid a high memory footprint.
     */
     public func delete(uploadRequests: [NSManagedObjectID],
@@ -527,7 +527,7 @@ public class UploadsProvider: NSObject {
                     
                     // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
+                        self.managedObjectContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.managedObjectContext.save()

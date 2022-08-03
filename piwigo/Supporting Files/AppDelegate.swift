@@ -642,26 +642,15 @@ import piwigoKit
         }
     }
 
-    @objc func reloginAndRetry(afterRestoringScene: Bool,
-                               completion: @escaping () -> Void) {
-        let server = NetworkVars.serverPath
-        let user = NetworkVars.username
-        
-        DispatchQueue.main.async {
-            if (server.isEmpty == false) && (user.isEmpty == false) {
-                self.loginVC.performRelogin(afterRestoringScene: afterRestoringScene) { completion() }
-            } else if afterRestoringScene {
-                self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
-            } else {
-                // Return to login view
-                ClearCache.closeSessionAndClearCache() { }
-            }
-        }
-    }
-
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            reloginAndRetry(afterRestoringScene: false) { }
+            LoginUtilities.reloginAndRetry() {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAll()
+                }
+            } failure: { _ in }
         }
     }
 
@@ -683,6 +672,12 @@ import piwigoKit
             // Fallback on earlier versions
             loginVC.removeFromParent()
 //            _loginVC = nil
+
+            // Resume upload operations in background queue
+            // and update badge, upload button of album navigator
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
         }
         
         // Observe the UIScreenBrightnessDidChangeNotification
@@ -702,12 +697,6 @@ import piwigoKit
         let name = Notification.Name.NSProcessInfoPowerStateDidChange
         NotificationCenter.default.addObserver(self, selector: #selector(checkSessionWhenLeavingLowPowerMode),
                                                name: name, object: nil)
-
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
-        }
     }
 
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -902,13 +891,7 @@ import piwigoKit
 
     
     // MARK: - Upload Methods advertised to Obj-C and Old Cache
-    
-    @objc func resumeAll() {
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
-        }
-    }
-    
+        
     @objc func didDeletePiwigoImage(withID imageId: Int) {
         UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.didDeletePiwigoImage(withID: imageId)
@@ -991,7 +974,6 @@ import piwigoKit
 // MARK: - AppLockDelegate Methods
 extension AppDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
-        print("••> loginOrReloginAndResumeUploads() in AppDelegate.")
         // Release memory
         privacyView?.removeFromSuperview()
 
@@ -1021,34 +1003,10 @@ extension AppDelegate: AppLockDelegate {
 
             // Login?
             if service.count > 0 || (username.count > 0 && password.count > 0) {
+                print("••> Call launchLogin() from AppDelegate.")
                 loginVC.launchLogin()
             }
             return
-        }
-
-        // Determine for how long the session is opened
-        /// Piwigo 11 session duration defaults to an hour.
-        if let rootVC = window?.rootViewController, let child = rootVC.children.first,
-           !(child is LoginViewController) {
-            // Determine for how long the session is opened
-            /// Piwigo 11 session duration defaults to an hour.
-            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-                /// - Perform relogin
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                NetworkVars.dateOfLastLogin = Date()
-                reloginAndRetry(afterRestoringScene: false) {
-                    // Reload category data from server in background mode
-                    self.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: false)
-                }
-            } else {
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.resumeAll()
-                }
-            }
         }
     }
 }

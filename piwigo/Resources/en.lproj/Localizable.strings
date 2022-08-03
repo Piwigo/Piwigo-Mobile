@@ -804,3 +804,6 @@
 "help06_text" = "Monitor, cancel and resume upload requests globally or individually.";
 "help07_header" = "Auto-Uploading";
 "help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+"help08_header" = "Parent Albums";
+"help08_text" = "Long-press on the back button to display the list of parent albums.";
+"help08_text2" = "Tap the parent album of your choice to jump back to it.";

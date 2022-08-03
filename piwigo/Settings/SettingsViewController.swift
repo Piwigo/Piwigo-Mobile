@@ -40,10 +40,9 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
     func didChangeRecentPeriod()
 }
 
-@objc
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @objc weak var settingsDelegate: ChangedSettingsDelegate?
+    weak var settingsDelegate: ChangedSettingsDelegate?
 
     @IBOutlet var settingsTableView: UITableView!
     
@@ -73,9 +72,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         doneBarButton?.accessibilityIdentifier = "Done"
 
         // Button for displaying help pages
-        let helpButton = UIButton(type: .infoLight)
-        helpButton.addTarget(self, action: #selector(displayHelp), for: .touchUpInside)
-        helpBarButton = UIBarButtonItem(customView: helpButton)
+        if #available(iOS 15.0, *) {
+            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"),
+                                            style: .plain, target: self, action: #selector(displayHelp))
+        } else {
+            helpBarButton = UIBarButtonItem(image: UIImage(named: "help"), landscapeImagePhone: UIImage(named: "helpCompact"), style: .plain, target: self, action: #selector(displayHelp))
+        }
         helpBarButton?.accessibilityIdentifier = "Help"
 
         // Table view identifier
@@ -247,11 +249,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
             if #available(iOS 14, *) {
-                helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,6,2]
+                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3]
             } else if #available(iOS 13, *) {
-                helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
+                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3]
             } else {
-                helpVC.displayHelpPagesWithIndex = [0,4,5,3,2]
+                helpVC.displayHelpPagesWithID = [1,5,6,4,1]
             }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up

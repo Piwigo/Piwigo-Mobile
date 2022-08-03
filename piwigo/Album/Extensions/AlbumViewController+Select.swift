@@ -481,17 +481,27 @@ extension AlbumViewController
             // Next image
             retrieveImageData(beforeAction: action)
             
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             // Failed — Ask user if he/she wishes to retry
-            dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: { [self] in
-                hidePiwigoHUD() { [self] in
+            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+            dismissRetryPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+                hidePiwigoHUD() { [unowned self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [self] in
-                // Try relogin
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
+            }, retry: { [unowned self] in
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
                     retrieveImageData(beforeAction: action)
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
+                        hidePiwigoHUD() { [unowned self] in
+                            updateButtonsInSelectionMode()
+                        }
+                    }
                 }
             })
         }

@@ -16,12 +16,12 @@ import piwigoKit
     func needToLoadMoreImages()
 }
 
-@objc class ImageViewController: UIViewController {
+class ImageViewController: UIViewController {
     
-    @objc weak var imgDetailDelegate: ImageDetailDelegate?
-    @objc var images = [PiwigoImageData]()
-    @objc var categoryId = 0
-    @objc var imageIndex = 0
+    weak var imgDetailDelegate: ImageDetailDelegate?
+    var images = [PiwigoImageData]()
+    var categoryId = 0
+    var imageIndex = 0
     
     var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
@@ -542,12 +542,18 @@ import piwigoKit
                     self.setEnableStateOfButtons(true)
                 }
             } failure: { error in
-                self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+                self.dismissRetryPiwigoError(withTitle: title, message: message,
+                                             errorMessage: error.localizedDescription, dismiss: {
                 }, retry: { [unowned self] in
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                        self.retrieveCompleteImageDataOfImage(self.imageData)
+                    // Relogin and retry
+                    LoginUtilities.reloginAndRetry() { [unowned self] in
+                        retrieveCompleteImageDataOfImage(self.imageData)
+                    } failure: { [self] error in
+                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                        dismissPiwigoError(withTitle: title, message: message,
+                                           errorMessage: error?.localizedDescription ?? "") { }
                     }
                 })
             }

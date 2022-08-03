@@ -38,7 +38,6 @@ protocol SelectCategoryImageRemovedDelegate {
     func didRemoveImage(withId imageId: Int)
 }
 
-@objc
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var delegate: SelectCategoryDelegate?
@@ -370,13 +369,19 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Next image
             self.retrieveImageData()
             
-        } failure: { error in
-            self.dismissRetryPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed"), message: NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?"), errorMessage: error.localizedDescription, dismiss: {
+        } failure: { [unowned self] error in
+            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+            dismissRetryPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription, dismiss: {
             }, retry: { [unowned self] in
-                // Try relogin
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                    self.retrieveImageData()
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
+                    retrieveImageData()
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { }
                 }
             })
         }

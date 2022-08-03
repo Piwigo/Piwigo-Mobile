@@ -11,7 +11,6 @@ import UIKit
 import piwigoKit
 
 @available(iOS 13.0, *)
-@objc
 class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Core Data

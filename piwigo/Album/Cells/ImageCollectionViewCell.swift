@@ -10,10 +10,9 @@
 
 import UIKit
 
-@objc
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    @objc var imageData: PiwigoImageData?
+    var imageData: PiwigoImageData?
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -100,7 +99,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         favImg?.tintColor = UIColor.white
     }
 
-    @objc func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int) {
+    func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int) {
         // Do we have any info on that image ?
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         guard let imageData = imageData else { return }
@@ -321,7 +320,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         noDataLabel?.isHidden = true
     }
 
-    @objc func highlight(onCompletion completion: @escaping () -> Void) {
+    func highlight(onCompletion completion: @escaping () -> Void) {
         // Select cell of image of interest and apply effect
         backgroundColor = UIColor.piwigoColorBackground()
         contentMode = .scaleAspectFit

@@ -11,7 +11,7 @@
 import UIKit
 
 class NberImagesFooterCollectionReusableView: UICollectionReusableView {
-    @objc var noImagesLabel: UILabel?
+    var noImagesLabel: UILabel?
 
     override init(frame: CGRect) {
         super.init(frame: frame)

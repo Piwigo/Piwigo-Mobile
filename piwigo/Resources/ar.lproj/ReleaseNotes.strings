@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "Version 2.12.1\n\n• Fixes a crash occurring on iOS 9-13 when changing tags allocated to photos";
+"v2.12.2_text" = "Version 2.12.2\n\n• Fixes a crash occurring on iOS 9-12 when displaying the upload request queue\n• Minor bug fixes and improvements of the interface";
+
+"v2.12.1_text" = "Version 2.12.1\nJuly 10, 2022\n\n• Fixes a crash occurring on iOS 9-13 when changing tags allocated to photos";
 
 "v2.12.0_text" = "Version 2.12\nJuly 3, 2022\n\n• Select a tag faster with the search bar\n• Code modernization\n• Bug fixes";
 

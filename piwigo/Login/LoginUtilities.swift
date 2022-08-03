@@ -9,13 +9,18 @@
 import Foundation
 import piwigoKit
 
-@objc
+enum pwgLoginContext {
+    case nonTrustedCertificate
+    case nonSecuredAccess
+    case incorrectURL
+}
+
 class LoginUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    @objc
-    class func getMethods(completion: @escaping () -> Void,
-                          failure: @escaping (NSError) -> Void) {
+    static func getMethods(completion: @escaping () -> Void,
+                           failure: @escaping (NSError) -> Void) {
+        print("••> Get methods…")
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
@@ -56,10 +61,10 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
-    class func sessionLogin(withUsername username:String, password:String,
-                            completion: @escaping () -> Void,
-                            failure: @escaping (NSError) -> Void) {
+    static func sessionLogin(withUsername username:String, password:String,
+                             completion: @escaping () -> Void,
+                             failure: @escaping (NSError) -> Void) {
+        print("••> Session login…")
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
@@ -84,6 +89,7 @@ class LoginUtilities: NSObject {
 
                 // Login successful
                 NetworkVars.username = username
+                NetworkVars.dateOfLastLogin = Date()
                 completion()
             }
             catch {
@@ -99,9 +105,9 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
-    class func communityGetStatus(completion: @escaping () -> Void,
-                                  failure: @escaping (NSError) -> Void) {
+    static func communityGetStatus(completion: @escaping () -> Void,
+                                   failure: @escaping (NSError) -> Void) {
+        print("••> Get community status…")
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
@@ -149,9 +155,9 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
-    class func sessionGetStatus(completion: @escaping () -> Void,
-                                failure: @escaping (NSError) -> Void) {
+    static func sessionGetStatus(completion: @escaping () -> Void,
+                                 failure: @escaping (NSError) -> Void) {
+        print("••> Get session status…")
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoSessionGetStatus, paramDict: [:],
@@ -457,9 +463,9 @@ class LoginUtilities: NSObject {
         }
     }
 
-    @objc
-    class func sessionLogout(completion: @escaping () -> Void,
-                             failure: @escaping (NSError) -> Void) {
+    static func sessionLogout(completion: @escaping () -> Void,
+                              failure: @escaping (NSError) -> Void) {
+        print("••> Session logout…")
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoSessionLogout, paramDict: [:],
@@ -491,6 +497,208 @@ class LoginUtilities: NSObject {
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
+
+    // MARK: - Login business
+    static func requestServerMethods(completion: @escaping () -> Void,
+                                     didRejectCertificate: @escaping (NSError) -> Void,
+                                     didFailHTTPauthentication: @escaping (NSError) -> Void,
+                                     didFailSecureConnection: @escaping (NSError) -> Void,
+                                     failure: @escaping (NSError?) -> Void) {
+        // Collect list of methods supplied by Piwigo server
+        // => Determine if Community extension 2.9a or later is installed and active
+        LoginUtilities.getMethods {
+            // Known methods, pursue logging in…
+            DispatchQueue.main.async {
+                completion()
+            }
+        } failure: { error in
+            DispatchQueue.main.async {
+                // If Piwigo uses a non-trusted certificate, ask permission
+                if NetworkVars.didRejectCertificate {
+                    // The SSL certificate is not trusted
+                    didRejectCertificate(error)
+                    return
+                }
+
+                // HTTP Basic authentication required?
+                if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.didFailHTTPauthentication {
+                    // Without prior knowledge, the app already tried Piwigo credentials
+                    // but unsuccessfully, so we request HTTP credentials
+                    didFailHTTPauthentication(error)
+                    return
+                }
+
+                switch (error as NSError).code {
+                case NSURLErrorUserAuthenticationRequired:
+                    // Without prior knowledge, the app already tried Piwigo credentials
+                    // but unsuccessfully, so must now request HTTP credentials
+                    didFailHTTPauthentication(error)
+                    return
+                case NSURLErrorUserCancelledAuthentication:
+                    failure(nil)
+                    return
+                case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive, NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData, NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired, NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed, NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation, NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL, NSURLErrorZeroByteResource:
+                    failure(NetworkVars.userCancelledCommunication ? nil : error)
+                    return
+                case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
+                    NSURLErrorSecureConnectionFailed:
+                    // HTTPS request failed ?
+                    if (NetworkVars.serverProtocol == "https://") && !NetworkVars.userCancelledCommunication {
+                        // Suggest HTTP connection if HTTPS attempt failed
+                        didFailSecureConnection(error)
+                        return
+                    }
+                    return
+                case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid, NSURLErrorServerCertificateUntrusted:
+                    // The SSL certificate is not trusted
+                    didRejectCertificate(error)
+                    return
+                default:
+                    break
+                }
+
+                // Display error message
+                failure(NetworkVars.userCancelledCommunication ? nil : error)
+            }
+        }
+    }
+        
+    static func getHttpCredentialsAlert(textFieldDelegate: UITextFieldDelegate?,
+                                        username: String, password: String,
+                                        cancelAction: @escaping ((UIAlertAction) -> Void),
+                                        loginAction: @escaping ((UIAlertAction) -> Void)) -> UIAlertController {
+        let alert = UIAlertController(
+            title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
+            message: NSLocalizedString("loginHTTP_message", comment: "HTTP basic authentification is required by the Piwigo server:"),
+            preferredStyle: .alert)
+        
+        alert.addTextField(configurationHandler: { textField in
+            textField.placeholder = NSLocalizedString("loginHTTPuser_placeholder", comment: "username")
+            textField.text = (username.count > 0) ? username : ""
+            textField.clearButtonMode = .always
+            textField.keyboardType = .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.returnKeyType = .continue
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+            textField.delegate = textFieldDelegate
+        })
+        alert.addTextField(configurationHandler: { textField in
+            textField.placeholder = NSLocalizedString("loginHTTPpwd_placeholder", comment: "password")
+            textField.text = (password.count > 0) ? password : ""
+            textField.clearButtonMode = .always
+            textField.keyboardType = .default
+            textField.isSecureTextEntry = true
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+            textField.returnKeyType = .continue
+            textField.delegate = textFieldDelegate
+        })
+
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            style: .cancel, handler: cancelAction)
+        alert.addAction(cancelAction)
+
+        let loginAction = UIAlertAction(
+            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            style: .default, handler: loginAction)
+        alert.addAction(loginAction)
+
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
+        return alert
+    }
+    
+    // Used for retrying failing operations
+    static func reloginAndRetry(completion: @escaping () -> Void,
+                                failure: @escaping (NSError?) -> Void) {
+        let server = NetworkVars.serverPath
+        let user = NetworkVars.username
+        if server.isEmpty == false, user.isEmpty == false {
+            // Re-login before retrying
+            performRelogin() {
+                completion()
+            } failure: { error in
+                failure(error)
+            }
+        } else if server.isEmpty == false {
+            // Only retry
+            completion()
+        } else {
+            // Return to login view (all scenes in foreground)
+            ClearCache.closeSessionAndClearCache() { }
+        }
+    }
+    
+    static func performRelogin(completion: @escaping () -> Void,
+                               failure: @escaping (NSError?) -> Void) {
+        print("••> perform re-login before retrying…")
+
+        // Collect list of methods supplied by Piwigo server
+        // => Determine if Community extension 2.9a or later is installed and active
+        requestServerMethods { [self] in
+            // Known methods, perform re-login
+            let username = NetworkVars.username
+            if username.isEmpty {
+                // Check Piwigo version, get token, available sizes, etc.
+                if NetworkVars.usesCommunityPluginV29 {
+                    communityGetStatus {
+                        sessionGetStatus {
+                            completion()
+                        } failure: { error in
+                            failure(error)
+                        }
+                    } failure: { error in
+                        failure(error)
+                    }
+                } else {
+                    sessionGetStatus {
+                        completion()
+                    } failure: { error in
+                        failure(error)
+                    }
+                }
+            } else {
+                // Perform login
+                let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
+                sessionLogin(withUsername: username, password: password) {
+                    // Session now opened
+                    if NetworkVars.usesCommunityPluginV29 {
+                        communityGetStatus {
+                            sessionGetStatus {
+                                completion()
+                            } failure: { error in
+                                failure(error)
+                            }
+                        } failure: { error in
+                            failure(error)
+                        }
+                    } else {
+                        sessionGetStatus {
+                            completion()
+                        } failure: { error in
+                            failure(error)
+                        }
+                    }
+                } failure: { error in
+                    failure(error)
+                }
+            }
+        } didRejectCertificate: { error in
+            failure(error)
+        } didFailHTTPauthentication: { error in
+            failure(error)
+        } didFailSecureConnection: { error in
+            failure(error)
+        } failure: { error in
             failure(error)
         }
     }

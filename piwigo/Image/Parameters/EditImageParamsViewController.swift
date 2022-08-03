@@ -17,12 +17,11 @@ import piwigoKit
     func didFinishEditingParameters()
 }
 
-@objc
 class EditImageParamsViewController: UIViewController
 {
-    @objc var images = [PiwigoImageData]()
-    @objc var hasTagCreationRights = false
-    @objc weak var delegate: EditImageParamsDelegate?
+    var images = [PiwigoImageData]()
+    var hasTagCreationRights = false
+    weak var delegate: EditImageParamsDelegate?
 
     @IBOutlet private weak var editImageParamsTableView: UITableView!
 
@@ -57,7 +56,6 @@ class EditImageParamsViewController: UIViewController
 
     
     // MARK: - View Lifecycle
-
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
@@ -389,37 +387,37 @@ class EditImageParamsViewController: UIViewController
 
     private func showUpdatePropertiesError(_ error: NSError) {
         // If there are images left, propose in addition to bypass the one creating problems
+        let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
+        var message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?")
         if imagesToUpdate.count > 1 {
-            cancelDismissRetryPiwigoError(withTitle: NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update"), message: NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?"), errorMessage: error.localizedDescription, cancel: {
+            cancelDismissRetryPiwigoError(withTitle: title, message: message,
+                                          errorMessage: error.localizedDescription, cancel: {
             }, dismiss: { [unowned self] in
                 // Bypass this image
                 imagesToUpdate.removeLast()
                 // Next image
                 if imagesToUpdate.count != 0 { updateImageProperties() }
             }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                        self.updateImageProperties()
-                    }
-                } else {
-                    self.updateImageProperties()
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
+                    updateImageProperties()
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { }
                 }
             })
         } else {
-            dismissRetryPiwigoError(withTitle: NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update"), message: NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?"), errorMessage: error.localizedDescription, dismiss: {
+            dismissRetryPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription, dismiss: {
             }, retry: { [unowned self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    // Try relogin
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [unowned self] in
-                        self.updateImageProperties()
-                    }
-                } else {
-                    self.updateImageProperties()
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
+                    updateImageProperties()
+                } failure: { [unowned self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { }
                 }
             })
         }

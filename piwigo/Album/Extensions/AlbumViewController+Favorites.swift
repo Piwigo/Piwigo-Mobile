@@ -72,19 +72,25 @@ extension AlbumViewController
 
         } failure: { [self] error in
             // Failed — Ask user if he/she wishes to retry
-            dismissRetryPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites."), errorMessage: error.localizedDescription, dismiss: { [self] in
+            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+            var message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+            dismissRetryPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription, dismiss: { [self] in
                 hidePiwigoHUD() { [self] in
                     updateButtonsInSelectionMode()
                 }
             }, retry: { [self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
-                        addImageToFavorites()
-                    }
-                } else {
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
                     addImageToFavorites()
+                } failure: { [self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { [self] in
+                        hidePiwigoHUD() { [self] in
+                            updateButtonsInSelectionMode()
+                        }
+                    }
                 }
             })
         }
@@ -157,21 +163,27 @@ extension AlbumViewController
             // Next image
             removeImageFromFavorites()
 
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             // Failed — Ask user if he/she wishes to retry
-            dismissRetryPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites."), errorMessage: error.localizedDescription, dismiss: { [self] in
-                hidePiwigoHUD() { [self] in
+            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+            var message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+            dismissRetryPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+                hidePiwigoHUD() { [unowned self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [self] in
-                // Try relogin if unauthorized
-                if error.code == 401 {
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.reloginAndRetry(afterRestoringScene: false) { [self] in
-                        removeImageFromFavorites()
-                    }
-                } else {
+            }, retry: { [unowned self] in
+                // Relogin and retry
+                LoginUtilities.reloginAndRetry() { [unowned self] in
                     removeImageFromFavorites()
+                } failure: { [self] error in
+                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                    dismissPiwigoError(withTitle: title, message: message,
+                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
+                        hidePiwigoHUD() { [unowned self] in
+                            updateButtonsInSelectionMode()
+                        }
+                    }
                 }
             })
         }
