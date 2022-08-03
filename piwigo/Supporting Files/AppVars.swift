@@ -91,4 +91,13 @@ class AppVars: NSObject {
 
     /// - App Lock status
     var isAppUnlocked: Bool = false
+    
+    /// - Flag telling whether the app is already loading album data (case de several scenes)
+    var isReloadingData: Bool = false
+    
+    /// - Number of albums in cache (excepted smart albums) calculated before connecting other scenes
+    var nberOfAlbumsInCache: Int = 0
+    
+    /// - Flag informing the scene delegate that the user asked to logout
+    var isLoggingOut: Bool = false
 }

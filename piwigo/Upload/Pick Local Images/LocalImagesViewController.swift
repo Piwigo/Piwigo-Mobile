@@ -1792,30 +1792,30 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         updateNavBar()
         
         // Determine which help pages should be presented
-        var displayHelpPagesWithIndex: [Int] = []
+        var displayHelpPagesWithID: [UInt16] = []
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00010000) == 0 {
-            displayHelpPagesWithIndex.append(4)     // i.e. submit upload requests and let it go
+            displayHelpPagesWithID.append(5)     // i.e. submit upload requests and let it go
         }
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00001000) == 0 {
-            displayHelpPagesWithIndex.append(3)     // i.e. remove images from camera roll
+            displayHelpPagesWithID.append(4)     // i.e. remove images from camera roll
         }
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
-            displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
+            displayHelpPagesWithID.append(6)     // i.e. manage upload requests in queue
         }
         if #available(iOS 13, *),
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
-            displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
+            displayHelpPagesWithID.append(2)     // i.e. use background uploading
         }
         if #available(iOS 14, *),
            (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
-            displayHelpPagesWithIndex.append(6)     // i.e. use auto-uploading
+            displayHelpPagesWithID.append(7)     // i.e. use auto-uploading
         }
-        if displayHelpPagesWithIndex.count > 0 {
+        if displayHelpPagesWithID.count > 0 {
             // Present unseen upload management help views
             let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
             let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
             if let helpVC = helpVC {
-                helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex
+                helpVC.displayHelpPagesWithID = displayHelpPagesWithID
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     helpVC.popoverPresentationController?.permittedArrowDirections = .up
                     navigationController?.present(helpVC, animated:true)

@@ -804,3 +804,6 @@
 "help06_text" = "Upload-Anfragen global oder einzeln überwachen, abbrechen und fortsetzen.";
 "help07_header" = "Automatisches Hochladen";
 "help07_text" = "Wählen Sie Quell- und Zielalben in Piwigo, erstellen Sie Automatisierungen in Verknüpfungen.";
+"help08_header" = "Übergeordnete Alben";
+"help08_text" = "Drücken Sie lange auf die Zurück-Schaltfläche, um die Liste der übergeordneten Alben anzuzeigen.";
+"help08_text2" = "Tippe auf das übergeordnete Album deiner Wahl, um zu ihm zurückzuspringen.";

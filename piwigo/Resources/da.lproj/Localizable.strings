@@ -804,3 +804,6 @@
 "help06_text" = "Overvåg, annullere og genoptage upload anmodninger globalt eller individuelt.";
 "help07_header" = "Auto-Upload";
 "help07_text" = "Vælg kilde- og destinationsalbummer i Piwigo, opret automatisering i Genveje.";
+"help08_header" = "Overordnede Albums";
+"help08_text" = "Langt tryk på tilbage-knappen for at vise listen over overordnede albummer.";
+"help08_text2" = "Tryk på det overordnede album efter eget valg for at hoppe tilbage til det.";

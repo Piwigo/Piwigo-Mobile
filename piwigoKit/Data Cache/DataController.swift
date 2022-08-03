@@ -336,14 +336,22 @@ public class DataController: NSObject {
 // MARK: - Core Data Batch Deletion
 extension NSManagedObjectContext {
     /// Executes the given `NSBatchDeleteRequest` and directly merges the changes to bring the given managed object context up to date.
-    /// See https://www.avanderlee.com/swift/nsbatchdeleterequest-core-data/
-    /// - Parameter batchDeleteRequest: The `NSBatchDeleteRequest` to execute.
-    /// - Throws: An error if anything went wrong executing the batch deletion.
     public func executeAndMergeChanges(using batchDeleteRequest: NSBatchDeleteRequest) throws {
         batchDeleteRequest.resultType = .resultTypeObjectIDs
-        let result = try execute(batchDeleteRequest) as? NSBatchDeleteResult
-        let objectIDArray = result?.result as? [NSManagedObjectID]
-        let changes = [NSDeletedObjectsKey : objectIDArray]
-        NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes as [AnyHashable : Any], into: [self])
+        do {
+            // Execute the request.
+            let deleteResult = try execute(batchDeleteRequest) as? NSBatchDeleteResult
+            
+            // Extract the IDs of the deleted managed objectss from the request's result.
+            if let objectIDs = deleteResult?.result as? [NSManagedObjectID] {
+                // Merge the deletions into the app's managed object context.
+                NSManagedObjectContext.mergeChanges(
+                    fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
+                    into: [self]
+                )
+            }
+        } catch {
+            // Handle any thrown errors.
+        }
     }
 }

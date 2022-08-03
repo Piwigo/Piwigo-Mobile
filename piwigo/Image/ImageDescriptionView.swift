@@ -23,7 +23,7 @@ class ImageDescriptionView: UIVisualEffectView {
     func configDescription(with imageComment:String?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
-        guard var comment = imageComment, comment.isEmpty == false else {
+        guard let comment = imageComment, comment.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
@@ -32,15 +32,15 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         
         // Remove any white space or newline located at the beginning or end of the description
-        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
-            comment.removeFirst()
-        }
-        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
-            comment.removeLast()
-        }
+//        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
+//            comment.removeFirst()
+//        }
+//        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
+//            comment.removeLast()
+//        }
         
         // Configure the description view
-        descTextView.text = comment
+        descTextView.attributedText = comment.htmlToAttributedString
         self.isHidden = parentContainerViewController()?.navigationController?.isNavigationBarHidden ?? false
 
         // Calculate the available width

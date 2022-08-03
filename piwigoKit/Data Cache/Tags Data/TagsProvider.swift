@@ -213,7 +213,7 @@ public class TagsProvider {
 
                     // Performs a task in the main queue and wait until this tasks finishes
                     DispatchQueue.main.async {
-                        self.mainContext.performAndWait {
+                        self.mainContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.mainContext.save()
@@ -274,7 +274,7 @@ public class TagsProvider {
 
                 // Performs a task in the main queue and wait until this tasks finishes
                 DispatchQueue.main.async {
-                    self.mainContext.performAndWait {
+                    self.mainContext.performAndWait { [unowned self] in
                         do {
                             // Saves the data from the child to the main context to be stored properly
                             try self.mainContext.save()
@@ -426,7 +426,7 @@ public class TagsProvider {
 
                     // Performs a task in the main queue and wait until this tasks finishes
                     DispatchQueue.main.async {
-                        self.mainContext.performAndWait {
+                        self.mainContext.performAndWait { [unowned self] in
                             do {
                                 // Saves the data from the child to the main context to be stored properly
                                 try self.mainContext.save()

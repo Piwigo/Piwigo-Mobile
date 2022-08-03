@@ -73,7 +73,7 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
             albumData.name = [NSString stringWithString:query];
         }
     } else {
-        albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
+        albumData.name = @"—";
     }
     albumData.parentAlbumId = NSIntegerMin;
     albumData.upperCategories = [NSArray new];

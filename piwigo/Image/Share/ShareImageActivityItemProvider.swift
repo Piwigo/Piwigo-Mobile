@@ -25,11 +25,10 @@ protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
     func showError(withTitle title: String, andMessage message: String?)
 }
 
-@objc
 class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     // MARK: - Initialisation
-    @objc weak var delegate: ShareImageActivityItemProviderDelegate?
+    weak var delegate: ShareImageActivityItemProviderDelegate?
 
     private var imageData: PiwigoImageData              // Piwigo image data
     private var task: URLSessionDownloadTask?           // Download task
@@ -57,7 +56,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     
     // MARK: - Placeholder Image
-    @objc
     init(placeholderImage imageData: PiwigoImageData) {
         // Store Piwigo image data for future use
         self.imageData = imageData

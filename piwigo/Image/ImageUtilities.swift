@@ -12,12 +12,10 @@ import MobileCoreServices
 import piwigoKit
 import UIKit
 
-@objc
 class ImageUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    @objc
-    class func getInfos(forID imageId:Int, inCategoryId categoryId: Int,
+    static func getInfos(forID imageId:Int, inCategoryId categoryId: Int,
                         completion: @escaping (PiwigoImageData) -> Void,
                         failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -176,8 +174,7 @@ class ImageUtilities: NSObject {
         }
     }
     
-    @objc
-    class func setInfos(with paramsDict: [String: Any],
+    static func setInfos(with paramsDict: [String: Any],
                         completion: @escaping () -> Void,
                         failure: @escaping (NSError) -> Void) {
         let JSONsession = PwgSession.shared
@@ -220,8 +217,7 @@ class ImageUtilities: NSObject {
         }
     }
     
-    @objc
-    class func delete(_ images:[PiwigoImageData],
+    static func delete(_ images:[PiwigoImageData],
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         // Create string containing pipe separated list of image ids
@@ -280,8 +276,7 @@ class ImageUtilities: NSObject {
         }
     }
 
-    @objc
-    class func addToFavorites(_ imageData: PiwigoImageData,
+    static func addToFavorites(_ imageData: PiwigoImageData,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -332,8 +327,7 @@ class ImageUtilities: NSObject {
         }
     }
 
-    @objc
-    class func removeFromFavorites(_ imageData: PiwigoImageData,
+    static func removeFromFavorites(_ imageData: PiwigoImageData,
                                    completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -387,7 +381,7 @@ class ImageUtilities: NSObject {
     
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size (WWDC 2018 - Session 219)
-    class func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+    static func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
@@ -400,8 +394,7 @@ class ImageUtilities: NSObject {
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
 
-    @objc
-    class func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+    static func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageData = image.jpegData(compressionQuality: 1.0),
@@ -411,7 +404,7 @@ class ImageUtilities: NSObject {
         return downsampledImage(from: imageSource, to: pointSize, scale: scale)
     }
     
-    class func downsampledImage(from imageSource:CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+    static func downsampledImage(from imageSource:CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         // The default display scale for a trait collection is 0.0 (indicating unspecified).
         // We therefore adopt a scale of 1.0 when the display scale is unspecified.
         let maxDimensionInPixels = max(pointSize.width, pointSize.height) * max(scale, 1.0)

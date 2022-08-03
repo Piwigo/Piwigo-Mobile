@@ -506,7 +506,7 @@ extension UploadManager {
             }
         }
 
-        // All tasks are now resumed -> Add delay for next upload request, update upload request status
+        // All tasks are now resumed -> Update upload request status
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
         
         // Release memory
@@ -857,7 +857,7 @@ extension UploadManager {
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation())")
-        uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
+        uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { [unowned self] (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
             let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,

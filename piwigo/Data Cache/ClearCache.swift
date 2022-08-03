@@ -44,14 +44,20 @@ class ClearCache: NSObject {
                     UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
                 }
                 
-                // Present login view in the remaining scene
-                guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
-                    return
+                // Disconnect supplementary active scenes
+                var connectedScenes = UIApplication.shared.connectedScenes
+                while connectedScenes.count > 1 {
+                    if let scene = connectedScenes.first {
+                        UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                        connectedScenes.removeFirst()
+                    }
                 }
-                appDelegate?.loadLoginView(in: window)
-                UIView.transition(with: window, duration: 0.5,
-                                  options: .transitionCrossDissolve,
-                                  animations: nil, completion: { _ in completion() })
+                
+                // Present login view in the remaining scene
+                if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window {
+                    AppVars.shared.isLoggingOut = true
+                    appDelegate?.loadLoginView(in: window)
+                }
             } else {
                 // Fallback on earlier versions
                 let window = UIApplication.shared.keyWindow

@@ -804,3 +804,6 @@
 "help06_text" = "Övervaka, avbryta och återuppta uppladdningsförfrågningar globalt eller individuellt.";
 "help07_header" = "Automatisk uppladdning";
 "help07_text" = "Välj källa och destination album i Piwigo, skapa automatisering i genvägar.";
+"help08_header" = "Överordnat album";
+"help08_text" = "Långtryck på bakåtknappen för att visa listan över överordnade album.";
+"help08_text2" = "Tryck på det överordnade albumet du väljer för att hoppa tillbaka till det.";

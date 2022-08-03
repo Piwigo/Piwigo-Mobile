@@ -804,3 +804,6 @@
 "help06_text" = "Monitoren, annuleren en hervatten upload verzoeken globaal of individueel.";
 "help07_header" = "Automatisch uploaden";
 "help07_text" = "Selecteer bron en bestemming albums in Piwigo, maak automatisering in Snelkoppelingen.";
+"help08_header" = "Bovenliggende albums";
+"help08_text" = "Druk lang op de terugknop om de lijst van bovenliggende albums weer te geven.";
+"help08_text2" = "Tik op het bovenliggende album van je keuze om er naar terug te springen.";

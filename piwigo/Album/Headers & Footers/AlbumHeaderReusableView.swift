@@ -11,7 +11,7 @@
 import UIKit
 
 class AlbumHeaderReusableView: UICollectionReusableView {
-    @objc var commentLabel: UILabel?
+    var commentLabel: UILabel?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,7 +25,7 @@ class AlbumHeaderReusableView: UICollectionReusableView {
         commentLabel?.lineBreakMode = .byWordWrapping
         commentLabel?.textAlignment = .center
         commentLabel?.font = .piwigoFontNormal()
-        commentLabel?.text = ""
+        commentLabel?.attributedText = NSAttributedString()
 
         if let commentLabel = commentLabel {
             addSubview(commentLabel)
@@ -48,6 +48,6 @@ class AlbumHeaderReusableView: UICollectionReusableView {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        commentLabel?.text = ""
+        commentLabel?.attributedText = NSAttributedString()
     }
 }

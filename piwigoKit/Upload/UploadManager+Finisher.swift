@@ -93,7 +93,7 @@ extension UploadManager {
         print("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
         
         processImages(withIds: "\(uploadProperties.imageId)",
-                      inCategory: uploadProperties.category) { error in
+                      inCategory: uploadProperties.category) { [unowned self] error in
             self.didFinishTransfer(for: uploadID, error: error)
         }
     }

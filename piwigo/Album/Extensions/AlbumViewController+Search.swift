@@ -84,7 +84,7 @@ extension AlbumViewController: UISearchControllerDelegate
 }
 
 
-// MARK: UISearchBarDelegate Methods
+// MARK: - UISearchBarDelegate Methods
 extension AlbumViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

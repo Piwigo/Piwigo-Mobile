@@ -25,4 +25,35 @@ extension String {
         let decoded = String(((key - Int64(3141592657)) / Int64(7777)) - Int64(2323))
         return String(repeating: "0", count: max(0, 6 - decoded.count)) + decoded
     }
+    
+    // MARK: - HTML conversion
+    var htmlToAttributedString: NSAttributedString {
+
+        // Remove any white space or newline located at the beginning or end of the description
+        var comment = self
+        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
+            comment.removeFirst()
+        }
+        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
+            comment.removeLast()
+        }
+
+        // Convert HTML code
+        guard let data = comment.data(using: .utf8) else { return NSAttributedString(string: "") }
+        do {
+            let attributedStr = try NSMutableAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+            let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
+            attributedStr.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: wholeRange)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+            return attributedStr
+        } catch {
+            return NSAttributedString(string: self)
+        }
+    }
+    
+    var htmlToString: String {
+        return htmlToAttributedString.string
+    }
 }

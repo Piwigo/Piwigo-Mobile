@@ -10,7 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     // MARK: - Core Data
@@ -409,7 +408,7 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         print("    > sectionInfo:", sectionInfo)
-        
+
         switch type {
         case .insert:
             print("insert section… at", sectionIndex)
@@ -425,25 +424,18 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
-        let oldIndexPath = indexPath ?? IndexPath(row: 0, section: 0)
+        
         switch type {
         case .insert:
-            print("insert…")
             guard let newIndexPath = newIndexPath else { return }
+            print("insert… at", newIndexPath)
             queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .delete:
+            guard let oldIndexPath = indexPath else { return }
             print("delete… at", oldIndexPath)
-            // Delete row
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
-            // If all upload requests are done, delete all temporary files (in case some would not be deleted)
-            if uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
-                // Delete remaining files from Upload directory (if any)
-                UploadManager.shared.deleteFilesInUploadsDirectory()
-                // Close the view when there is no more upload request to display
-                self.dismiss(animated: true, completion: nil)
-            }
         case .move:
+            guard let oldIndexPath = indexPath else { return }
             guard let newIndexPath = newIndexPath else { return }
             print("move… from", oldIndexPath, "to", newIndexPath)
             queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
@@ -451,6 +443,7 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
             guard let upload:Upload = anObject as? Upload else { return }
             updateCell(at: newIndexPath, with: upload)
         case .update:
+            guard let oldIndexPath = indexPath else { return }
             print("update… at", oldIndexPath)
             if newIndexPath == nil {        // Regular update
                 guard let upload:Upload = anObject as? Upload else { break }
@@ -492,25 +485,18 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // To prevent crash occurring when the last row of a section is removed
-        var willDeleteSection = false
-        if queueTableView.numberOfSections > 1 {
-            for section in 1..<queueTableView.numberOfSections {
-                if queueTableView.numberOfRows(inSection: section) == 1 {
-                    willDeleteSection = true
-                }
-            }
-        }
-        
-        if willDeleteSection {
-            let dispatchTime = DispatchTime.now() + 0.5
-            DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
-                self.queueTableView.reloadData()
-            }
+        // Perform tableView updates
+        queueTableView.endUpdates()
+        queueTableView.layoutIfNeeded()
+
+        // If all upload requests are done, delete all temporary files (in case some would not be deleted)
+        if uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
+            // Delete remaining files from Upload directory (if any)
+            UploadManager.shared.deleteFilesInUploadsDirectory()
+            // Close the view when there is no more upload request to display
+            self.dismiss(animated: true, completion: nil)
         } else {
-            queueTableView.endUpdates()
-            queueTableView.layoutIfNeeded()
+            updateNavBar()
         }
-        updateNavBar()
     }
 }

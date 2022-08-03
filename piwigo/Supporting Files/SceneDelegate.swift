@@ -48,18 +48,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // Create login view
                     appDelegate.loadLoginView(in: window)
 
-                    // Blur views if the App Lock is enabled
-                    /// The passcode window is not presented so that the app
-                    /// does not request the passcode until it is put into the background.
-                    if AppVars.shared.isAppLockActive {
-                        // Protect presented login view
-                        addPrivacyProtection()
-                    }
-                    else {
-                        // User is allowed to access albums
-                        AppVars.shared.isAppUnlocked = true
-                    }
-                }
+					// We will load album data
+					NetworkVars.dateOfLastLogin = .distantPast
+
+					// Blur views if the App Lock is enabled
+					/// The passcode window is not presented so that the app
+					/// does not request the passcode until it is put into the background.
+					if AppVars.shared.isAppLockActive {
+						// Protect presented login view
+						addPrivacyProtection()
+					}
+					else {
+						// User is allowed to access albums
+						AppVars.shared.isAppUnlocked = true
+					}
+				}
             }
             else {
                 // Create additional scene => default album
@@ -123,7 +126,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
             appDelegate.loadNavigation(in: window)
             
-            // Hold and present login window
+            // Hold and present window
             self.window = window
             window?.makeKeyAndVisible()
     
@@ -309,7 +312,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 @available(iOS 13.0, *)
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
-        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin and resume uploads.")
+        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin if needed and resume uploads.")
         // Remove privacy view
         privacyView?.removeFromSuperview()
         
@@ -347,6 +350,12 @@ extension SceneDelegate: AppLockDelegate {
         // Should we log in?
         if let rootVC = window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
+            // Is user logging out?
+            if AppVars.shared.isLoggingOut {
+                AppVars.shared.isLoggingOut = true
+                return
+            }
+            
             // Look for credentials if server address provided
             let username = NetworkVars.username
             let service = NetworkVars.serverPath
@@ -365,26 +374,10 @@ extension SceneDelegate: AppLockDelegate {
             return
         }
 
-        // Determine for how long the session is opened
-        /// Piwigo 11 session duration defaults to an hour.
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if timeSinceLastLogin < TimeInterval(-300) {    // i.e. 5 minutes
-            /// - Perform relogin
-            /// - Reload images in albums
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            NetworkVars.dateOfLastLogin = Date()
-            appDelegate?.reloginAndRetry(afterRestoringScene: true) {
-                // Reload category data from server in background mode
-                appDelegate?.loginVC.reloadCatagoryDataInBckgMode(afterRestoringScene: true)
-            }
-        } else {
-            /// - Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.resumeAll()
         }
     }
 }

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.1_text" = "Versie 2.12.1\n\n• Corrigeert een crash die optreedt op iOS 9-13 bij het veranderen van tags toegewezen aan foto's";
+"v2.12.2_text" = "Versie 2.12.2\n\n• Los een crash op die optreedt op iOS 9-12 wanneer de wachtrij voor de upload aanvraag wordt weergegeven\n• Kleine foutjes hersteld en verbetering van de interface";
+
+"v2.12.1_text" = "Versie 2.12.1\n10 juli 2022\n\n• Corrigeert een crash die optreedt op iOS 9-13 bij het veranderen van tags toegewezen aan foto's";
 
 "v2.12.0_text" = "Versie 2.12\n3 juli 2022\n\n• Selecteer een tag sneller met de zoekbalk\n• Codemodernisering\n• Foutjes verbeterd";
 

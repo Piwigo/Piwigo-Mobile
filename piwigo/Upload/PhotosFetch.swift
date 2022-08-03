@@ -13,16 +13,14 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class PhotosFetch: NSObject {
     
     // Singleton
-    @objc static let shared = PhotosFetch()
+    static let shared = PhotosFetch()
     
     // MARK: - Photo Library Access
     /// Called before saving photos to the Photo Library or uploading photo of the Library
     @available(iOS 14, *)
-    @objc
     func checkPhotoLibraryAuthorizationStatus(for accessLevel: PHAccessLevel,
                                               for viewController: UIViewController?,
                                               onAccess doWithAccess: @escaping () -> Void,
@@ -134,7 +132,6 @@ class PhotosFetch: NSObject {
     }
 
     /// Used up to iOS 13
-    @objc
     func checkPhotoLibraryAccessForViewController(_ viewController: UIViewController?,
                                                   onAuthorizedAccess doWithAccess: @escaping () -> Void,
                                                   onDeniedAccess doWithoutAccess: @escaping () -> Void) {

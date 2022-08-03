@@ -804,3 +804,6 @@
 "help06_text" = "Nyomonkövetheted, megszakíthatod, vagy folytathatod a feltöltéseket akár egyenként is.";
 "help07_header" = "Automata feltöltés";
 "help07_text" = "Válassz forrás- és célalbumot a Piwigoban, automatizálj a Parancsok appal!";
+"help08_header" = "Parent Albums";
+"help08_text" = "Long-press on the back button to display the list of parent albums.";
+"help08_text2" = "Tap the parent album of your choice to jump back to it.";
