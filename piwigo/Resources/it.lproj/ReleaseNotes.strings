@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.2_text" = "Versione 2.12.2\n\n• Corregge un arresto anomalo che si verifica su iOS 9-12 quando si visualizza la coda di richiesta di caricamento\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+"v2.12.3_text" = "Versione 2.12.3\n\n• Correzioni di bug";
+
+"v2.12.2_text" = "Versione 2.12.2\n2 agosto 2022\n\n• Corregge un arresto anomalo che si verifica su iOS 9-12 quando si visualizza la coda di richiesta di caricamento\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.12.1_text" = "Versione 2.12.1\n10 luglio 2022\n\n• Risolve un arresto anomalo che si verificava su iOS 9-13 durante la modifica dei tag assegnati alle foto";
 

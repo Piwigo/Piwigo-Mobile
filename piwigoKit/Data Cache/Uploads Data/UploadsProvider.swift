@@ -356,7 +356,10 @@ public class UploadsProvider: NSObject {
     public func delete(uploadRequests: [NSManagedObjectID],
                        completionHandler: @escaping (Error?) -> Void) {
         
-        guard uploadRequests.isEmpty == false else { return }
+        guard uploadRequests.isEmpty == false else {
+            completionHandler(nil)
+            return
+        }
         
         // Create the queue context.
         var taskContext: NSManagedObjectContext

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.2_text" = "Version 2.12.2\n\n• Fixar en krasch som inträffar på iOS 9-12 när du visar uppladdningskön\n• Mindre bugfixar och förbättringar av gränssnittet";
+"v2.12.3_text" = "Version 2.12.3\n\n• Buggfixar";
+
+"v2.12.2_text" = "Version 2.12.2\n2 augusti 2022\n\n• Fixar en krasch som inträffar på iOS 9-12 när du visar uppladdningskön\n• Mindre bugfixar och förbättringar av gränssnittet";
 
 "v2.12.1_text" = "Version 2.12.1\n10 juli 2022\n\n• Fixar en krasch som inträffar på iOS 9-13 vid ändring av taggar som tilldelats foton";
 

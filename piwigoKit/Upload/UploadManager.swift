@@ -1338,7 +1338,7 @@ public class UploadManager: NSObject {
         if assetsToDelete.count == 0 { return }
         
         // Delete images from Photo Library
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.main.async {
             PHPhotoLibrary.shared().performChanges({
                 // Delete images from the library
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
@@ -1348,7 +1348,7 @@ public class UploadManager: NSObject {
                     self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
                 }
             })
-        })
+        }
     }
     
     public func didDeletePiwigoImage(withID imageId: Int) {
@@ -1446,19 +1446,18 @@ public class UploadManager: NSObject {
         var objectIDsToDelete: [NSManagedObjectID] = imagesToUpload.1
         
         // Remove upload requests of files from intent and clipboard
-        for (index, imageID) in imagesToUpload.0.enumerated() {
-            if imageID.hasPrefix(kIntentPrefix) || imageID.hasPrefix(kClipboardPrefix) {
-                assetIDsToDelete.remove(at: index)
-                objectIDsToDelete.remove(at: index)
-            }
+        while let index = assetIDsToDelete.firstIndex(where: { $0.hasPrefix(kIntentPrefix) || $0.hasPrefix(kClipboardPrefix)}) {
+            assetIDsToDelete.remove(at: index)
+            objectIDsToDelete.remove(at: index)
         }
         
         // Fetch available assets
         let availableAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetIDsToDelete, options: nil)
         
-        // Build list of missing assets
-        availableAssets.enumerateObjects { asset, index, _ in
-            if assetIDsToDelete.contains(asset.localIdentifier) {
+        // Remove available assets
+        availableAssets.enumerateObjects { asset, _, _ in
+            if let index = assetIDsToDelete.firstIndex(where: { $0 == asset.localIdentifier }) {
+                assetIDsToDelete.remove(at: index)
                 objectIDsToDelete.remove(at: index)
             }
         }
