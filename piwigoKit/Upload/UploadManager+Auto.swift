@@ -142,29 +142,27 @@ extension UploadManager {
         let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        if objectIDs.isEmpty == false {
-            uploadsProvider.delete(uploadRequests: objectIDs) { error in
-                // Job done in background task
-                if self.isExecutingBackgroundUploadTask { return }
+        uploadsProvider.delete(uploadRequests: objectIDs) { [unowned self] error in
+            // Job done in background task
+            if self.isExecutingBackgroundUploadTask { return }
 
-                // Error encountered?
-                guard let error = error else {
-                    // Restart UploadManager activities
-                    if UploadManager.shared.isPaused {
-                        UploadManager.shared.isPaused = false
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.findNextImageToUpload()
-                        }
+            // Error encountered?
+            guard let error = error else {
+                // Restart UploadManager activities
+                if UploadManager.shared.isPaused {
+                    UploadManager.shared.isPaused = false
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.findNextImageToUpload()
                     }
-                    return
                 }
-                
-                // Error encountered, inform user
-                DispatchQueue.main.async {
-                    let userInfo: [String : Any] = ["message" : error.localizedDescription];
-                    NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
-                                                    object: nil, userInfo: userInfo)
-                }
+                return
+            }
+            
+            // Error encountered, inform user
+            DispatchQueue.main.async {
+                let userInfo: [String : Any] = ["message" : error.localizedDescription];
+                NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
+                                                object: nil, userInfo: userInfo)
             }
         }
     }
