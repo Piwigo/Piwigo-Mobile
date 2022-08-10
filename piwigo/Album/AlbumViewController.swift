@@ -1084,8 +1084,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Load more image data if possible (page after page…)
-            if !CategoriesData.sharedInstance().getCategoryById(categoryId).hasAllImagesInCache() {
-                needToLoadMoreImages()
+            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
+               !currentAlbumData.hasAllImagesInCache() {
+                self.needToLoadMoreImages()
             }
 
             return cell
@@ -1179,10 +1180,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     func needToLoadMoreImages() {
-        let downloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId).imageList.count
-        DispatchQueue.global(qos: .default).async(execute: { [self] in
+        // Check that album data exists
+        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            return
+        }
+        
+        // Get number of downloaded images
+        let downloadedImageCount = currentAlbumData.imageList.count
+
+        // Load more images
+        DispatchQueue.global(qos: .default).async { [unowned self] in
             let start = CFAbsoluteTimeGetCurrent()
-            albumData?.loadMoreImages(onCompletion: { [self] hasNewImages in
+            self.albumData?.loadMoreImages(onCompletion: { [unowned self] hasNewImages in
                 // Did we collect more images?
                 if !hasNewImages { return }
 
@@ -1194,18 +1203,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
 
                 // Back to main thread…
-                DispatchQueue.main.async(execute: { [self] in
+                DispatchQueue.main.async { [unowned self] in
                     // Update detail view if needed
-                    if let imageDetailView = imageDetailView {
-                        imageDetailView.images = albumData?.images ?? []
+                    if let imageDetailView = self.imageDetailView {
+                        imageDetailView.images = self.albumData?.images ?? []
                     }
 
                     // Add indexPaths of cell presented with placeholder
                     let placeHolderImage = UIImage(named: "placeholderImage")
-                    for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
+                    for indexPath in self.imagesCollection?.indexPathsForVisibleItems ?? [] {
                         if indexPath.section == 0 { continue }
                         if indexPaths.contains(indexPath) { continue }
-                        let cell = imagesCollection?.cellForItem(at: indexPath)
+                        let cell = self.imagesCollection?.cellForItem(at: indexPath)
                         if let imageCell = cell as? ImageCollectionViewCell,
                            imageCell.cellImage.image == placeHolderImage {
                             indexPaths.append(indexPath)
@@ -1213,7 +1222,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     }
 
                     // Reload cells
-                    imagesCollection?.reloadItems(at: indexPaths)
+                    self.imagesCollection?.reloadItems(at: indexPaths)
 
                     // Display HUD if it will take more than a second to load image data
                     let didProgress = (newDownloadedImageCount != downloadedImageCount)
@@ -1223,36 +1232,36 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
                     if left > 1000.0, didProgress {
                         if view.viewWithTag(loadingViewTag) == nil {
-                            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .annularDeterminate)
+                            self.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), inMode: .annularDeterminate)
                         } else {
                             let fraction = Float(newDownloadedImageCount) / Float(didScrollToImageIndex)
-                            updatePiwigoHUD(withProgress: fraction)
+                            self.updatePiwigoHUD(withProgress: fraction)
                         }
                     } else {
-                        hidePiwigoHUD() {
-                        }
+                        self.hidePiwigoHUD() { }
                     }
+                    
                     // Should we continue loading images?
                     print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if didScrollToImageIndex >= newDownloadedImageCount {
+                    if self.didScrollToImageIndex >= newDownloadedImageCount {
                         if didProgress {
                             // Continue loadding images
-                            needToLoadMoreImages()
+                            self.needToLoadMoreImages()
                         } else {
                             // Re-login before continuing to load images
-                            LoginUtilities.reloginAndRetry() { [self] in
-                                DispatchQueue.main.async { [self] in
-                                    needToLoadMoreImages()
+                            LoginUtilities.reloginAndRetry() { [unowned self] in
+                                DispatchQueue.main.async { [unowned self] in
+                                    self.needToLoadMoreImages()
                                 }
-                            } failure: { [self] error in
+                            } failure: { [unowned self] error in
                                 let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                                dismissPiwigoError(withTitle: title, completion: {})
+                                self.dismissPiwigoError(withTitle: title, completion: {})
                             }
                         }
                     }
-                })
+                }
             }, onFailure: nil)
-        })
+        }
     }
 
     // MARK: - SelectCategoryDelegate Methods
