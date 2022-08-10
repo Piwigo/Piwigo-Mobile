@@ -46,7 +46,7 @@ typedef enum {
 
 -(void)reloadAlbumOnCompletion:(void (^)(void))completion
                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
--(void)loadMoreImagesOnCompletion:(void (^)(BOOL hasNewImages))completion
+-(void)loadMoreImagesOnCompletion:(void (^)(BOOL done))completion
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

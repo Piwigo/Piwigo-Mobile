@@ -104,7 +104,7 @@
     }];
 }
 
--(void)loadMoreImagesOnCompletion:(void (^)(BOOL hasNewImages))completion
+-(void)loadMoreImagesOnCompletion:(void (^)(BOOL done))completion
                         onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;

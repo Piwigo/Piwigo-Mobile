@@ -1189,21 +1189,40 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let downloadedImageCount = currentAlbumData.imageList.count
 
         // Load more images
-        DispatchQueue.global(qos: .default).async { [unowned self] in
+        DispatchQueue.global(qos: .default).async { [self] in
             let start = CFAbsoluteTimeGetCurrent()
-            self.albumData?.loadMoreImages(onCompletion: { [unowned self] hasNewImages in
-                // Did we collect more images?
-                if !hasNewImages { return }
+            self.albumData?.loadMoreImages(onCompletion: { [self] done in
+                // Did we try to collect more images?
+                if !done { return }
+
+                // Should we retry loading more images?
+                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
+                let didProgress = (newDownloadedImageCount > downloadedImageCount)
+                if !didProgress {
+                    // Did try loading more images but unsuccessfully
+                    if self.didScrollToImageIndex >= newDownloadedImageCount {
+                        // Re-login before continuing to load images
+                        LoginUtilities.reloginAndRetry() { [self] in
+                            DispatchQueue.main.async { [self] in
+                                self.needToLoadMoreImages()
+                            }
+                        } failure: { [self] error in
+                            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                            self.dismissPiwigoError(withTitle: title, completion: {})
+                        }
+                    } else {
+                        return
+                    }
+                }
 
                 // Prepare indexPaths of cells to reload
-                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId).imageList.count
                 var indexPaths: [IndexPath] = []
                 for i in downloadedImageCount..<newDownloadedImageCount {
                     indexPaths.append(IndexPath(item: i, section: 1))
                 }
 
                 // Back to main thread…
-                DispatchQueue.main.async { [unowned self] in
+                DispatchQueue.main.async { [self] in
                     // Update detail view if needed
                     if let imageDetailView = self.imageDetailView {
                         imageDetailView.images = self.albumData?.images ?? []
@@ -1225,7 +1244,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     self.imagesCollection?.reloadItems(at: indexPaths)
 
                     // Display HUD if it will take more than a second to load image data
-                    let didProgress = (newDownloadedImageCount != downloadedImageCount)
                     let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
                     let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
                     let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
