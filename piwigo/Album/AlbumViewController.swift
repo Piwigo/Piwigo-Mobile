@@ -1085,7 +1085,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Load more image data if possible (page after page…)
             if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
-               !currentAlbumData.hasAllImagesInCache() {
+               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
                 self.needToLoadMoreImages()
             }
 
@@ -1182,6 +1182,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func needToLoadMoreImages() {
         // Check that album data exists
         guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
             return
         }
         
@@ -1193,13 +1194,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             let start = CFAbsoluteTimeGetCurrent()
             self.albumData?.loadMoreImages(onCompletion: { [self] done in
                 // Did we try to collect more images?
-                if !done { return }
+                if !done {
+                    debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... nothing done")
+                    return
+                }
 
                 // Should we retry loading more images?
                 let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
                 let didProgress = (newDownloadedImageCount > downloadedImageCount)
                 if !didProgress {
                     // Did try loading more images but unsuccessfully
+                    debugPrint("••••••>> needToLoadMoreImagesfor catID \(self.categoryId)... unsuccessful!")
                     if self.didScrollToImageIndex >= newDownloadedImageCount {
                         // Re-login before continuing to load images
                         LoginUtilities.reloginAndRetry() { [self] in
