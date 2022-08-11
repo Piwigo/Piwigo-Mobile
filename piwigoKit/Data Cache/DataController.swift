@@ -347,7 +347,7 @@ extension NSManagedObjectContext {
                 // Merge the deletions into the app's managed object context.
                 NSManagedObjectContext.mergeChanges(
                     fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
-                    into: [DataController.managedObjectContext]
+                    into: [DataController.shared.mainContext]
                 )
             }
         } catch {
