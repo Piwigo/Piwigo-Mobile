@@ -35,7 +35,6 @@ class ImagePreviewViewController: UIViewController
     private var downloadTask: URLSessionDataTask?
     private var userdidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
-    private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
 
     // MARK: - View Lifecycle
@@ -127,14 +126,6 @@ class ImagePreviewViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
-        
-        // Store status bar height (is null when not displayed)
-        if #available(iOS 11.0, *) {
-            statusBarHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? UIApplication.shared.statusBarFrame.size.height
-        } else {
-            // Fallback on earlier versions
-            statusBarHeight = UIApplication.shared.statusBarFrame.size.height
-        }
     }
     
     @objc func applyColorPalette() {
