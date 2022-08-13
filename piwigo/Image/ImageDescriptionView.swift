@@ -31,14 +31,6 @@ class ImageDescriptionView: UIVisualEffectView {
             return
         }
         
-        // Remove any white space or newline located at the beginning or end of the description
-//        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
-//            comment.removeFirst()
-//        }
-//        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
-//            comment.removeLast()
-//        }
-        
         // Configure the description view
         descTextView.attributedText = comment.htmlToAttributedString
         self.isHidden = parentContainerViewController()?.navigationController?.isNavigationBarHidden ?? false
@@ -51,14 +43,13 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         
         // Calculate the required number of lines, corners'width deducted
-        let attributes = [
-            NSAttributedString.Key.font: descTextView.font ?? UIFont.piwigoFontSmall()
-        ] as [NSAttributedString.Key : Any]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
-        let rect = comment.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+        let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
+                                                                         height: CGFloat.greatestFiniteMagnitude),
+                                                            options: .usesLineFragmentOrigin, context: context)
         let textHeight = rect.height
         let nberOfLines = textHeight / lineHeight
         
