@@ -36,8 +36,9 @@ class AlbumTableViewCell: MGSwipeTableCell {
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
         // Album description
-        if let description = albumData?.comment, description.isEmpty == false {
-            albumComment.attributedText = description.htmlToAttributedString
+        if let description = albumData?.comment, description.isEmpty == false,
+           let catID = albumData?.albumId {
+            albumComment.attributedText = AlbumUtilities.headerLegend(for: catID)
             albumComment.textColor = UIColor.piwigoColorText()
         }
         else {  // No comment

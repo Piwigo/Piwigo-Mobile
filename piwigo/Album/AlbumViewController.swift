@@ -32,7 +32,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var imagesCollection: UICollectionView?
     var albumData: AlbumData?
-    var albumDescription = NSAttributedString()
     var userHasUploadRights = false
     private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
@@ -340,7 +339,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Initialise data source
         if categoryId != 0 {
             albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
+            AlbumUtilities.updateDescriptionOfAlbum(withId: categoryId)
         }
 
         // Set colors, fonts, etc.
@@ -823,7 +822,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                header?.commentLabel?.attributedText = albumDescription
+                header?.commentLabel?.attributedText = AlbumUtilities.headerLegend(for: categoryId)
                 header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
                 return header!
             }
@@ -879,9 +878,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
             if let desc = albumData.comment, desc.isEmpty == false,
                collectionView.frame.size.width - 30.0 > 0 {
+                let description = AlbumUtilities.headerLegend(for: categoryId)
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
-                let headerRect = albumDescription.boundingRect(
+                let headerRect = description.boundingRect(
                     with: CGSize(width: collectionView.frame.size.width - 30.0,
                                  height: CGFloat.greatestFiniteMagnitude),
                     options: .usesLineFragmentOrigin, context: context)

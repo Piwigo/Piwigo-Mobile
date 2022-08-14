@@ -26,7 +26,6 @@ class AlbumCollectionViewCell: UICollectionViewCell
     private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
     private var deleteAction: UIAlertAction?
-    private var albumDescription = String()
     private enum textFieldTag: Int {
         case albumName = 1000, albumDescription, nberOfImages
     }
