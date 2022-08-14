@@ -33,13 +33,16 @@ class ImageDescriptionView: UIVisualEffectView {
         
         // Configure the description view
         descTextView.attributedText = comment.htmlToAttributedString
-        self.isHidden = parentContainerViewController()?.navigationController?.isNavigationBarHidden ?? false
+        let navController = topMostController()?.navigationController
+        self.isHidden = navController?.isNavigationBarHidden ?? false
 
         // Calculate the available width
-        guard let root = UIApplication.shared.keyWindow?.rootViewController else { return }
-        var safeAreaWidth: CGFloat = root.view.frame.size.width
-        if #available(iOS 11.0, *) {
-            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
+        var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
+        if let root = navController?.topViewController {
+            safeAreaWidth = root.view.frame.size.width
+            if #available(iOS 11.0, *) {
+                safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
+            }
         }
         
         // Calculate the required number of lines, corners'width deducted
