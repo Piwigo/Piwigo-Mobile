@@ -29,7 +29,8 @@ class ImageViewController: UIViewController {
     var pageViewController: UIPageViewController?
     lazy var userHasUploadRights = false
 
-    
+    @IBOutlet weak var videoView: UIView!
+
     // MARK: - Navigation Bar & Toolbar Buttons
     var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
                                                         // - for editing image properties
@@ -570,8 +571,7 @@ class ImageViewController: UIViewController {
         // Should we do something else?
         if imageData.isVideo {
             // User wants to play/replay the video
-            let playVideo = ImagePreviewViewController()
-            playVideo.startVideoPlayerView(with: imageData)
+            startVideoPlayerView(with: imageData)
         }
         else {
             // Display/hide the navigation bar

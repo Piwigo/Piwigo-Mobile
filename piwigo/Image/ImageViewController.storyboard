@@ -22,6 +22,11 @@
                                     <segue destination="QTe-RH-Ag2" kind="embed" id="JLK-6S-sot"/>
                                 </connections>
                             </containerView>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F8y-rM-MYi">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GcK-Ph-rQm"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -33,6 +38,9 @@
                             <constraint firstItem="B62-5V-S6J" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="yee-cb-9TD"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="videoView" destination="F8y-rM-MYi" id="EKR-Sf-BK1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -84,10 +92,6 @@
                                     <constraint firstAttribute="height" constant="50" id="kMn-5z-hYB"/>
                                 </constraints>
                             </imageView>
-                            <view hidden="YES" contentMode="scaleAspectFit" restorationIdentifier="videoView" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rui-kE-FAb">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="87" y="774" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
@@ -135,16 +139,12 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="rui-kE-FAb" firstAttribute="leading" secondItem="cl6-aa-PKH" secondAttribute="leading" id="100-dT-Xsl"/>
                             <constraint firstItem="cl6-aa-PKH" firstAttribute="bottom" secondItem="Ydg-dw-Gdx" secondAttribute="bottom" id="5W9-hW-wav"/>
                             <constraint firstItem="Ydg-dw-Gdx" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="6ET-fg-111"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="trailing" secondItem="CkJ-ky-Kbn" secondAttribute="trailing" id="7m2-DR-v9c"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="9R7-ma-jIc"/>
-                            <constraint firstItem="rui-kE-FAb" firstAttribute="bottom" secondItem="cl6-aa-PKH" secondAttribute="bottom" id="C8U-pi-3oj"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerY" secondItem="cl6-aa-PKH" secondAttribute="centerY" id="VZt-KI-TUJ"/>
-                            <constraint firstItem="rui-kE-FAb" firstAttribute="top" secondItem="cl6-aa-PKH" secondAttribute="top" id="h0J-W2-mki"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="n2C-oc-2eJ"/>
-                            <constraint firstItem="rui-kE-FAb" firstAttribute="trailing" secondItem="cl6-aa-PKH" secondAttribute="trailing" id="qYz-ST-ieY"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="rXV-ju-e4i"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="bottom" secondItem="CkJ-ky-Kbn" secondAttribute="bottom" id="sXf-85-dZO"/>
                         </constraints>
@@ -157,7 +157,6 @@
                         <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
                         <outlet property="playImage" destination="NAw-1Y-mdv" id="NIe-8s-wTm"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>
-                        <outlet property="videoView" destination="rui-kE-FAb" id="M2S-Gt-pch"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPj-N2-xH5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

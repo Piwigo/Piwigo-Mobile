@@ -180,6 +180,7 @@
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
 		AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */; };
 		AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
+		AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */; };
 		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
@@ -646,6 +647,7 @@
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
+		AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
 		AD97CFB3265A50EE00719ED5 /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
 		AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppGroups.swift"; sourceTree = "<group>"; };
@@ -1524,6 +1526,7 @@
 				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
 				AD3DB4122773958200017542 /* ImagePreviewViewController.swift */,
 				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
+				AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */,
 				D818EA031A74D32100733991 /* Extensions */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
@@ -2402,6 +2405,7 @@
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
+				AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
