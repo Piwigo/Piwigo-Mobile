@@ -20,6 +20,15 @@ class ImageDescriptionView: UIVisualEffectView {
         super.awakeFromNib()
     }
 
+    func setDescriptionColor() {
+        if #available(iOS 13.0, *) {
+            descTextView.textColor = .piwigoColorText()
+        } else {
+            backgroundColor = .piwigoColorBackground()
+            descTextView.textColor = .piwigoColorText()
+        }
+    }
+    
     func configDescription(with imageComment:String?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
