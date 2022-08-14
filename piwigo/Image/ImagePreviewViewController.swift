@@ -240,7 +240,7 @@ class ImagePreviewViewController: UIViewController
         }
         if #available(iOS 11.0, *) {
             // Takes into account the safe area insets
-            if let root = UIApplication.shared.keyWindow?.rootViewController {
+            if let root = topMostViewController()?.view?.window?.topMostViewController() {
                 spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
                 spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
                 spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
