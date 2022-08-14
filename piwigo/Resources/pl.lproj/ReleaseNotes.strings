@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.3_text" = "Wersja 2.12.3\n\n• Poprawki błędów";
+"v2.12.4_text" = "Wersja 2.12.4\n\n• Poprawki błędów";
+
+"v2.12.3_text" = "Wersja 2.12.3\n7 sierpnia 2022\n\n• Poprawki błędów";
 
 "v2.12.2_text" = "Wersja 2.12.2\n2 sierpnia 2022\n\n• Naprawia awarię w iOS 9-12 podczas wyświetlania kolejki żądań przesyłania\n• Drobne poprawki błędów i ulepszenia interfejsu";
 

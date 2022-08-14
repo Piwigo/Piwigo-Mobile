@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.3_text" = "2.12.3 verzió\n\n• Hibajavítások";
+"v2.12.4_text" = "2.12.4 verzió\n\n• Hibajavítások";
+
+"v2.12.3_text" = "2.12.3 verzió\n2022 Augusztus 7\n\n• Hibajavítások";
 
 "v2.12.2_text" = "2.12.2 verzió\n2022 Augusztus 2\n\n• Kijavítja az iOS 9–12 rendszeren előforduló összeomlást a feltöltési kéréssor megjelenítésekor\n• Kisebb hibajavítások és fejlesztések a felületen";
 

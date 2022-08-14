@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.3_text" = "Version 2.12.3\n\n• Fehlerbehebungen";
+"v2.12.4_text" = "Version 2.12.4\n\n• Fehlerbehebungen";
+
+"v2.12.3_text" = "Version 2.12.3\n7. August 2022\n\n• Fehlerbehebungen";
 
 "v2.12.2_text" = "Version 2.12.2\n2. August 2022\n\n• Behebt einen Absturz, der bei iOS 9.12 auftritt, wenn die Warteschlange für Upload-Anfragen angezeigt wird\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
 
