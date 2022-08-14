@@ -57,20 +57,19 @@ extension ImageViewController
             playerItem = AVPlayerItem(asset: asset)
         }
         let videoPlayer = AVPlayer(playerItem: playerItem) // Intialise video controller
+        
+        // AVPlayerController
         let playerController = AVPlayerViewController()
         playerController.player = videoPlayer
         playerController.videoGravity = .resizeAspect
-
-        // Playback controls
         playerController.showsPlaybackControls = true
-//    [self.videoPlayer addObserver:self.imageView forKeyPath:@"rate" options:0 context:nil];
-
+        
         // Start playing automatically
         playerController.player?.play()
 
         // Present the video
-        videoView?.addSubview(playerController.view)
-        playerController.view.frame = videoView?.bounds ?? CGRect.zero
+        view?.addSubview(playerController.view)
+        view?.addConstraints(NSLayoutConstraint.constraintFillSize(playerController.view)!)
         present(playerController, animated: true)
     }
 
