@@ -180,6 +180,7 @@
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
 		AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */; };
 		AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
+		AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */; };
 		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
@@ -646,6 +647,7 @@
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
+		AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
 		AD97CFB3265A50EE00719ED5 /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
 		AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppGroups.swift"; sourceTree = "<group>"; };
@@ -1524,6 +1526,7 @@
 				AD3DB4102773957A00017542 /* ImageViewController.storyboard */,
 				AD3DB4122773958200017542 /* ImagePreviewViewController.swift */,
 				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
+				AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */,
 				D818EA031A74D32100733991 /* Extensions */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
@@ -2402,6 +2405,7 @@
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
+				AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
@@ -2560,21 +2564,21 @@
 		AD294B291F2CE87200CD3769 /* AppStore.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD294B2A1F2CE87400CD3769 /* fr */,
-				AD3FDDEB1F2E23F700F71C81 /* da */,
-				AD45949E1F36765200CF9438 /* pl */,
-				AD591A3C1F9116FA008D02B6 /* de */,
-				AD0822741FA06B0A0005AA12 /* sv */,
-				AD8338621FE677970072104F /* id */,
-				AD8549341FE98CE300155BA1 /* nl */,
-				AD8452621FEC70740035047B /* ar */,
-				ADF3B312207F1EEE0082C384 /* ja */,
-				ADA6F18D21CA924C006C9DD5 /* it */,
 				ADD6AEA322E25DA800347BC8 /* en */,
-				ADAF3B7323DDAC2F007B0ABA /* es */,
-				ADAF3B7923DDAC55007B0ABA /* ru */,
 				ADAF3B7F23DDAC6D007B0ABA /* zh-Hans */,
+				AD3FDDEB1F2E23F700F71C81 /* da */,
+				AD8549341FE98CE300155BA1 /* nl */,
+				AD294B2A1F2CE87400CD3769 /* fr */,
+				AD591A3C1F9116FA008D02B6 /* de */,
 				ADCA95D026B3434300F27123 /* hu */,
+				ADA6F18D21CA924C006C9DD5 /* it */,
+				ADF3B312207F1EEE0082C384 /* ja */,
+				AD45949E1F36765200CF9438 /* pl */,
+				ADAF3B7923DDAC55007B0ABA /* ru */,
+				ADAF3B7323DDAC2F007B0ABA /* es */,
+				AD0822741FA06B0A0005AA12 /* sv */,
+				AD8452621FEC70740035047B /* ar */,
+				AD8338621FE677970072104F /* id */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -2582,21 +2586,21 @@
 		AD3203662184738F00BAD372 /* PrivacyPolicy.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD3203672184739200BAD372 /* fr */,
-				AD3203682184739300BAD372 /* da */,
-				AD3203692184739300BAD372 /* pl */,
-				AD32036A2184739400BAD372 /* de */,
-				AD32036B2184739500BAD372 /* sv */,
-				AD32036C2184739600BAD372 /* id */,
-				AD32036D2184739600BAD372 /* nl */,
-				AD32036E2184739800BAD372 /* ar */,
-				AD32036F2184739800BAD372 /* ja */,
-				ADA6F18F21CA924D006C9DD5 /* it */,
 				ADD6AE9F22E25DA800347BC8 /* en */,
-				ADAF3B7523DDAC2F007B0ABA /* es */,
-				ADAF3B7B23DDAC55007B0ABA /* ru */,
 				ADAF3B8123DDAC6D007B0ABA /* zh-Hans */,
+				AD3203682184739300BAD372 /* da */,
+				AD32036D2184739600BAD372 /* nl */,
+				AD3203672184739200BAD372 /* fr */,
+				AD32036A2184739400BAD372 /* de */,
 				ADCA95D326B3434400F27123 /* hu */,
+				ADA6F18F21CA924D006C9DD5 /* it */,
+				AD32036F2184739800BAD372 /* ja */,
+				AD3203692184739300BAD372 /* pl */,
+				ADAF3B7B23DDAC55007B0ABA /* ru */,
+				ADAF3B7523DDAC2F007B0ABA /* es */,
+				AD32036B2184739500BAD372 /* sv */,
+				AD32036E2184739800BAD372 /* ar */,
+				AD32036C2184739600BAD372 /* id */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -2604,21 +2608,21 @@
 		AD6B2E751F0930B40040EAD9 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD6B2E791F0930FD0040EAD9 /* fr */,
-				AD3FDDE81F2E23F700F71C81 /* da */,
-				AD45949B1F36765200CF9438 /* pl */,
-				AD591A391F9116F9008D02B6 /* de */,
-				AD0822711FA06B090005AA12 /* sv */,
-				AD83385F1FE677970072104F /* id */,
-				AD8549311FE98CE200155BA1 /* nl */,
-				AD84525F1FEC70740035047B /* ar */,
-				ADF3B30F207F1EEE0082C384 /* ja */,
-				ADA6F18A21CA924C006C9DD5 /* it */,
 				ADD6AEA222E25DA800347BC8 /* en */,
-				ADAF3B7023DDAC2F007B0ABA /* es */,
-				ADAF3B7623DDAC55007B0ABA /* ru */,
 				ADAF3B7C23DDAC6D007B0ABA /* zh-Hans */,
+				AD3FDDE81F2E23F700F71C81 /* da */,
+				AD8549311FE98CE200155BA1 /* nl */,
+				AD6B2E791F0930FD0040EAD9 /* fr */,
+				AD591A391F9116F9008D02B6 /* de */,
 				ADCA95D226B3434400F27123 /* hu */,
+				ADA6F18A21CA924C006C9DD5 /* it */,
+				ADF3B30F207F1EEE0082C384 /* ja */,
+				AD45949B1F36765200CF9438 /* pl */,
+				ADAF3B7623DDAC55007B0ABA /* ru */,
+				ADAF3B7023DDAC2F007B0ABA /* es */,
+				AD0822711FA06B090005AA12 /* sv */,
+				AD84525F1FEC70740035047B /* ar */,
+				AD83385F1FE677970072104F /* id */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2626,21 +2630,21 @@
 		AD6B2E781F0930CE0040EAD9 /* About.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD6B2E7A1F0930FD0040EAD9 /* fr */,
-				AD3FDDE91F2E23F700F71C81 /* da */,
-				AD45949C1F36765200CF9438 /* pl */,
-				AD591A3A1F9116FA008D02B6 /* de */,
-				AD0822721FA06B090005AA12 /* sv */,
-				AD8338601FE677970072104F /* id */,
-				AD8549321FE98CE300155BA1 /* nl */,
-				AD8452601FEC70740035047B /* ar */,
-				ADF3B310207F1EEE0082C384 /* ja */,
-				ADA6F18B21CA924C006C9DD5 /* it */,
 				ADD6AEA022E25DA800347BC8 /* en */,
-				ADAF3B7123DDAC2F007B0ABA /* es */,
-				ADAF3B7723DDAC55007B0ABA /* ru */,
 				ADAF3B7D23DDAC6D007B0ABA /* zh-Hans */,
+				AD3FDDE91F2E23F700F71C81 /* da */,
+				AD8549321FE98CE300155BA1 /* nl */,
+				AD6B2E7A1F0930FD0040EAD9 /* fr */,
+				AD591A3A1F9116FA008D02B6 /* de */,
 				ADCA95CF26B3434300F27123 /* hu */,
+				ADA6F18B21CA924C006C9DD5 /* it */,
+				ADF3B310207F1EEE0082C384 /* ja */,
+				AD45949C1F36765200CF9438 /* pl */,
+				ADAF3B7723DDAC55007B0ABA /* ru */,
+				ADAF3B7123DDAC2F007B0ABA /* es */,
+				AD0822721FA06B090005AA12 /* sv */,
+				AD8452601FEC70740035047B /* ar */,
+				AD8338601FE677970072104F /* id */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -2658,20 +2662,20 @@
 			children = (
 				AD8D212726ACC15F0008E907 /* Base */,
 				AD8D212A26ACC1660008E907 /* en */,
-				AD8D212E26ACC1700008E907 /* ar */,
 				AD8D213026ACC1710008E907 /* zh-Hans */,
 				AD8D213226ACC1720008E907 /* da */,
 				AD8D213426ACC1720008E907 /* nl */,
 				AD8D213626ACC1730008E907 /* fr */,
 				AD8D213826ACC1740008E907 /* de */,
-				AD8D213A26ACC1740008E907 /* id */,
+				ADCA95CD26B3434300F27123 /* hu */,
 				AD8D213C26ACC1750008E907 /* it */,
 				AD8D213E26ACC1750008E907 /* ja */,
 				AD8D214026ACC1760008E907 /* pl */,
 				AD8D214226ACC1760008E907 /* ru */,
 				AD8D214426ACC1770008E907 /* es */,
 				AD8D214626ACC1790008E907 /* sv */,
-				ADCA95CD26B3434300F27123 /* hu */,
+				AD8D212E26ACC1700008E907 /* ar */,
+				AD8D213A26ACC1740008E907 /* id */,
 			);
 			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";
@@ -2679,21 +2683,21 @@
 		AD92B9001F200083006E5B63 /* ReleaseNotes.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				AD92B9011F200092006E5B63 /* fr */,
-				AD3FDDEA1F2E23F700F71C81 /* da */,
-				AD45949D1F36765200CF9438 /* pl */,
-				AD591A3B1F9116FA008D02B6 /* de */,
-				AD0822731FA06B0A0005AA12 /* sv */,
-				AD8338611FE677970072104F /* id */,
-				AD8549331FE98CE300155BA1 /* nl */,
-				AD8452611FEC70740035047B /* ar */,
-				ADF3B311207F1EEE0082C384 /* ja */,
-				ADA6F18C21CA924C006C9DD5 /* it */,
 				ADD6AEA122E25DA800347BC8 /* en */,
-				ADAF3B7223DDAC2F007B0ABA /* es */,
-				ADAF3B7823DDAC55007B0ABA /* ru */,
 				ADAF3B7E23DDAC6D007B0ABA /* zh-Hans */,
+				AD3FDDEA1F2E23F700F71C81 /* da */,
+				AD8549331FE98CE300155BA1 /* nl */,
+				AD92B9011F200092006E5B63 /* fr */,
+				AD591A3B1F9116FA008D02B6 /* de */,
 				ADCA95D426B3434400F27123 /* hu */,
+				ADA6F18C21CA924C006C9DD5 /* it */,
+				ADF3B311207F1EEE0082C384 /* ja */,
+				AD45949D1F36765200CF9438 /* pl */,
+				ADAF3B7823DDAC55007B0ABA /* ru */,
+				ADAF3B7223DDAC2F007B0ABA /* es */,
+				AD0822731FA06B0A0005AA12 /* sv */,
+				AD8452611FEC70740035047B /* ar */,
+				AD8338611FE677970072104F /* id */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -2709,21 +2713,21 @@
 		ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				ADC06AE21F40B1ED0081B4FA /* fr */,
-				ADC06AE31F40B2BB0081B4FA /* da */,
-				ADC06AE41F40B2BC0081B4FA /* pl */,
-				AD591A3D1F9116FA008D02B6 /* de */,
-				AD0822751FA06B0A0005AA12 /* sv */,
-				AD8338631FE677970072104F /* id */,
-				AD8549351FE98CE300155BA1 /* nl */,
-				AD8452631FEC70750035047B /* ar */,
-				ADF3B313207F1EEE0082C384 /* ja */,
-				ADA6F18E21CA924D006C9DD5 /* it */,
 				AD5FCE2122EC629D00F37B1E /* en */,
-				ADAF3B7423DDAC2F007B0ABA /* es */,
-				ADAF3B7A23DDAC55007B0ABA /* ru */,
 				ADAF3B8023DDAC6D007B0ABA /* zh-Hans */,
+				ADC06AE31F40B2BB0081B4FA /* da */,
+				AD8549351FE98CE300155BA1 /* nl */,
+				ADC06AE21F40B1ED0081B4FA /* fr */,
+				AD591A3D1F9116FA008D02B6 /* de */,
 				ADCA95D126B3434400F27123 /* hu */,
+				ADA6F18E21CA924D006C9DD5 /* it */,
+				ADF3B313207F1EEE0082C384 /* ja */,
+				ADC06AE41F40B2BC0081B4FA /* pl */,
+				ADAF3B7A23DDAC55007B0ABA /* ru */,
+				ADAF3B7423DDAC2F007B0ABA /* es */,
+				AD0822751FA06B0A0005AA12 /* sv */,
+				AD8452631FEC70750035047B /* ar */,
+				AD8338631FE677970072104F /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -3197,7 +3201,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.12.3;
+				MARKETING_VERSION = 2.12.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -3259,7 +3263,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.12.3;
+				MARKETING_VERSION = 2.12.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

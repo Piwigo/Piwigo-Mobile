@@ -290,8 +290,6 @@ extension AlbumViewController
         
         // Other album -> Reload albums
         if didChange, categoryId >= 0 {
-            // Update header
-            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
             // Reload album collection
             imagesCollection?.reloadSections(IndexSet(integer: 0))
             // Set navigation bar buttons
