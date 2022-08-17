@@ -23,7 +23,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
 
-    func config(withAlbumData albumData: PiwigoAlbumData?, description: NSAttributedString) {
+    func config(withAlbumData albumData: PiwigoAlbumData?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -35,9 +35,10 @@ class AlbumTableViewCell: MGSwipeTableCell {
         albumName.text = albumData?.name ?? "—?—"
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
-        // Album comment
-        if description.isEqual(to: NSAttributedString()) == false {
-            albumComment.attributedText = description
+        // Album description
+        if let description = albumData?.comment, description.isEmpty == false,
+           let catID = albumData?.albumId {
+            albumComment.attributedText = AlbumUtilities.headerLegend(for: catID)
             albumComment.textColor = UIColor.piwigoColorText()
         }
         else {  // No comment

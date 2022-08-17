@@ -262,10 +262,10 @@ class KeychainUtilities : NSObject {
         if #available(iOS 10.3, *) {
             var emailAddresses: CFArray!
             let status: OSStatus = SecCertificateCopyEmailAddresses(certificate, &emailAddresses)
-            if status == errSecSuccess, CFArrayGetCount(emailAddresses) > 0 {
-                if let address = (emailAddresses as Array).first {
-                    certString.append(", " + address.string)
-                }
+            if status == errSecSuccess, emailAddresses != nil,
+               CFArrayGetCount(emailAddresses) > 0,
+               let address = (emailAddresses as Array).first {
+                certString.append(", " + address.string)
             }
         }
         certString.append(")")

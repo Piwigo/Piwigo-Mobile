@@ -47,6 +47,12 @@ extension String {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+            
+            // Removes superfluous line feed
+            while !attributedStr.string.isEmpty
+                    && CharacterSet.newlines.contains(attributedStr.string.unicodeScalars.last!) {
+                attributedStr.deleteCharacters(in: NSRange(location: attributedStr.length - 1, length: 1))
+            }
             return attributedStr
         } catch {
             return NSAttributedString(string: self)

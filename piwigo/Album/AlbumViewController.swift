@@ -32,7 +32,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var imagesCollection: UICollectionView?
     var albumData: AlbumData?
-    var albumDescription = NSAttributedString()
     var userHasUploadRights = false
     private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
@@ -340,7 +339,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Initialise data source
         if categoryId != 0 {
             albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            albumDescription = AlbumUtilities.headerLegend(for: categoryId)
+            AlbumUtilities.updateDescriptionOfAlbum(withId: categoryId)
         }
 
         // Set colors, fonts, etc.
@@ -823,7 +822,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                header?.commentLabel?.attributedText = albumDescription
+                header?.commentLabel?.attributedText = AlbumUtilities.headerLegend(for: categoryId)
                 header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
                 return header!
             }
@@ -879,9 +878,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
             if let desc = albumData.comment, desc.isEmpty == false,
                collectionView.frame.size.width - 30.0 > 0 {
+                let description = AlbumUtilities.headerLegend(for: categoryId)
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
-                let headerRect = albumDescription.boundingRect(
+                let headerRect = description.boundingRect(
                     with: CGSize(width: collectionView.frame.size.width - 30.0,
                                  height: CGFloat.greatestFiniteMagnitude),
                     options: .usesLineFragmentOrigin, context: context)
@@ -1041,7 +1041,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Configure cell with album data
             let albumData = parentAlbums[indexPath.item]
-            cell.config(withAlbumData: albumData, description: albumDescription)
+            cell.config(withAlbumData: albumData)
 
             // Disable category cells in Image selection mode
             if isSelect {
@@ -1084,8 +1084,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Load more image data if possible (page after page…)
-            if !CategoriesData.sharedInstance().getCategoryById(categoryId).hasAllImagesInCache() {
-                needToLoadMoreImages()
+            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
+               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
+                self.needToLoadMoreImages()
             }
 
             return cell
@@ -1179,33 +1180,65 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     func needToLoadMoreImages() {
-        let downloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId).imageList.count
-        DispatchQueue.global(qos: .default).async(execute: { [self] in
+        // Check that album data exists
+        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
+            return
+        }
+        
+        // Get number of downloaded images
+        let downloadedImageCount = currentAlbumData.imageList.count
+
+        // Load more images
+        DispatchQueue.global(qos: .default).async { [self] in
             let start = CFAbsoluteTimeGetCurrent()
-            albumData?.loadMoreImages(onCompletion: { [self] hasNewImages in
-                // Did we collect more images?
-                if !hasNewImages { return }
+            self.albumData?.loadMoreImages(onCompletion: { [self] done in
+                // Did we try to collect more images?
+                if !done {
+                    debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... nothing done")
+                    return
+                }
+
+                // Should we retry loading more images?
+                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
+                let didProgress = (newDownloadedImageCount > downloadedImageCount)
+                if !didProgress {
+                    // Did try loading more images but unsuccessfully
+                    debugPrint("••••••>> needToLoadMoreImagesfor catID \(self.categoryId)... unsuccessful!")
+                    if self.didScrollToImageIndex >= newDownloadedImageCount {
+                        // Re-login before continuing to load images
+                        LoginUtilities.reloginAndRetry() { [self] in
+                            DispatchQueue.main.async { [self] in
+                                self.needToLoadMoreImages()
+                            }
+                        } failure: { [self] error in
+                            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                            self.dismissPiwigoError(withTitle: title, completion: {})
+                        }
+                    } else {
+                        return
+                    }
+                }
 
                 // Prepare indexPaths of cells to reload
-                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId).imageList.count
                 var indexPaths: [IndexPath] = []
                 for i in downloadedImageCount..<newDownloadedImageCount {
                     indexPaths.append(IndexPath(item: i, section: 1))
                 }
 
                 // Back to main thread…
-                DispatchQueue.main.async(execute: { [self] in
+                DispatchQueue.main.async { [self] in
                     // Update detail view if needed
-                    if let imageDetailView = imageDetailView {
-                        imageDetailView.images = albumData?.images ?? []
+                    if let imageDetailView = self.imageDetailView {
+                        imageDetailView.images = self.albumData?.images ?? []
                     }
 
                     // Add indexPaths of cell presented with placeholder
                     let placeHolderImage = UIImage(named: "placeholderImage")
-                    for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
+                    for indexPath in self.imagesCollection?.indexPathsForVisibleItems ?? [] {
                         if indexPath.section == 0 { continue }
                         if indexPaths.contains(indexPath) { continue }
-                        let cell = imagesCollection?.cellForItem(at: indexPath)
+                        let cell = self.imagesCollection?.cellForItem(at: indexPath)
                         if let imageCell = cell as? ImageCollectionViewCell,
                            imageCell.cellImage.image == placeHolderImage {
                             indexPaths.append(indexPath)
@@ -1213,46 +1246,45 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     }
 
                     // Reload cells
-                    imagesCollection?.reloadItems(at: indexPaths)
+                    self.imagesCollection?.reloadItems(at: indexPaths)
 
                     // Display HUD if it will take more than a second to load image data
-                    let didProgress = (newDownloadedImageCount != downloadedImageCount)
                     let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
                     let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
                     let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
                     print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
                     if left > 1000.0, didProgress {
                         if view.viewWithTag(loadingViewTag) == nil {
-                            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .annularDeterminate)
+                            self.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), inMode: .annularDeterminate)
                         } else {
                             let fraction = Float(newDownloadedImageCount) / Float(didScrollToImageIndex)
-                            updatePiwigoHUD(withProgress: fraction)
+                            self.updatePiwigoHUD(withProgress: fraction)
                         }
                     } else {
-                        hidePiwigoHUD() {
-                        }
+                        self.hidePiwigoHUD() { }
                     }
+                    
                     // Should we continue loading images?
                     print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if didScrollToImageIndex >= newDownloadedImageCount {
+                    if self.didScrollToImageIndex >= newDownloadedImageCount {
                         if didProgress {
                             // Continue loadding images
-                            needToLoadMoreImages()
+                            self.needToLoadMoreImages()
                         } else {
                             // Re-login before continuing to load images
-                            LoginUtilities.reloginAndRetry() { [self] in
-                                DispatchQueue.main.async { [self] in
-                                    needToLoadMoreImages()
+                            LoginUtilities.reloginAndRetry() { [unowned self] in
+                                DispatchQueue.main.async { [unowned self] in
+                                    self.needToLoadMoreImages()
                                 }
-                            } failure: { [self] error in
+                            } failure: { [unowned self] error in
                                 let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                                dismissPiwigoError(withTitle: title, completion: {})
+                                self.dismissPiwigoError(withTitle: title, completion: {})
                             }
                         }
                     }
-                })
+                }
             }, onFailure: nil)
-        })
+        }
     }
 
     // MARK: - SelectCategoryDelegate Methods

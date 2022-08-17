@@ -357,6 +357,7 @@ class AlbumUtilities: NSObject {
                     category.name = name
                     category.comment = description
                     CategoriesData.sharedInstance().updateCategories([category])
+                    updateDescriptionOfAlbum(withId: category.albumId)
                     completion()
                 }
                 else {
@@ -790,13 +791,29 @@ class AlbumUtilities: NSObject {
 
     
     // MARK: - Album/Images Collections | Headers & Footers
-    static func headerLegend(for categoryId: Int) -> NSAttributedString {
+    static var descriptions = [Int : NSAttributedString]()
+    
+    static func updateDescriptionOfAlbum(withId categoryId: Int) {
+        // No description by default
+        var description = NSAttributedString()
+        
+        // Update description is necessary
         if let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
            let comment = album.comment, comment.isEmpty == false {
-            return comment.htmlToAttributedString
-        } else {
-            return NSAttributedString()
+            description = comment.htmlToAttributedString
         }
+        
+        // Update description in cache
+        descriptions.updateValue(description, forKey: categoryId)
+    }
+    
+    static func headerLegend(for categoryId: Int) -> NSAttributedString {
+        guard let description = descriptions[categoryId] else {
+            // No description in cache ► Compile it
+            updateDescriptionOfAlbum(withId: categoryId)
+            return descriptions[categoryId] ?? NSAttributedString()
+        }
+        return description
     }
 
     static func footerLegend(for nberOfImages: Int) -> String {

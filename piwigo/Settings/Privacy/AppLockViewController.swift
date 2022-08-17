@@ -283,10 +283,8 @@ class AppLockViewController: UIViewController {
         var safeAreaWidth = view.bounds.size.width
         var safeAreaHeight = view.bounds.size.height
         if #available(iOS 11.0, *) {
-            if let root = UIApplication.shared.keyWindow?.rootViewController {
-                safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-                safeAreaHeight -= root.view.safeAreaInsets.top + root.view.safeAreaInsets.bottom
-            }
+            safeAreaWidth -= view.safeAreaInsets.left + view.safeAreaInsets.right
+            safeAreaHeight -= view.safeAreaInsets.top + view.safeAreaInsets.bottom
         } else {
             vertOffset += UIApplication.shared.statusBarFrame.size.height
             safeAreaHeight -= vertOffset

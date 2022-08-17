@@ -45,6 +45,7 @@ typedef enum {
 
 @property (nonatomic, readonly) NSArray<PiwigoImageData *> *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
+@property (nonatomic, assign) BOOL isLoadingMoreImages;
 
 -(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andQuery:(NSString *)query;
 

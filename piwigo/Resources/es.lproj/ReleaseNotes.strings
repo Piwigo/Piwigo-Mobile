@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.3_text" = "Versión 2.12.3\n\n• Corrección de errores";
+"v2.12.4_text" = "Versión 2.12.4\n\n• Corrección de errores";
+
+"v2.12.3_text" = "Versión 2.12.3\n7 de agosto de 2022\n\n• Corrección de errores";
 
 "v2.12.2_text" = "Versión 2.12.2\n2 de agosto de 2022\n\n• Corrige un error que ocurría en iOS 9-12 al mostrar la cola de peticiones de subida\n• Corrección de errores menores y mejoras en la interfaz";
 

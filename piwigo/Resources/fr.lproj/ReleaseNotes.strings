@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.3_text" = "Version 2.12.3\n\n• Correction de bugs";
+"v2.12.4_text" = "Version 2.12.4\n\n• Correction de bugs";
+
+"v2.12.3_text" = "Version 2.12.3\n7 août 2022\n\n• Correction de bugs";
 
 "v2.12.2_text" = "Version 2.12.2\n2 août 2022\n\n• Corrige un crash survenant sur iOS 9-12 lors de l'affichage de la file d'attente des demandes de téléchargement\n• Corrections de bugs mineurs et améliorations de l'interface";
 

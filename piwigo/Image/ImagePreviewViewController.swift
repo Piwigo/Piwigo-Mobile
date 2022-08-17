@@ -29,13 +29,11 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
-    @IBOutlet weak var videoView: UIView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
     private var downloadTask: URLSessionDataTask?
     private var userdidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
-    private var statusBarHeight: CGFloat = 0        // To remmeber the height of the status bar
 
 
     // MARK: - View Lifecycle
@@ -127,24 +125,11 @@ class ImagePreviewViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
-        
-        // Store status bar height (is null when not displayed)
-        if #available(iOS 11.0, *) {
-            statusBarHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? UIApplication.shared.statusBarFrame.size.height
-        } else {
-            // Fallback on earlier versions
-            statusBarHeight = UIApplication.shared.statusBarFrame.size.height
-        }
     }
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        if #available(iOS 13.0, *) {
-            descContainer.descTextView.textColor = .piwigoColorText()
-        } else {
-            descContainer.backgroundColor = .piwigoColorBackground()
-            descContainer.descTextView.textColor = .piwigoColorText()
-        }
+        descContainer.setDescriptionColor()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -249,7 +234,7 @@ class ImagePreviewViewController: UIViewController
         }
         if #available(iOS 11.0, *) {
             // Takes into account the safe area insets
-            if let root = UIApplication.shared.keyWindow?.rootViewController {
+            if let root = topMostViewController()?.view?.window?.topMostViewController() {
                 spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
                 spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
                 spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
@@ -356,7 +341,8 @@ class ImagePreviewViewController: UIViewController
         if descContainer.descTextView.text.isEmpty {
             self.view.layoutIfNeeded()
         } else {
-            descContainer.configDescription(with: imageData.comment) {
+            descContainer.configDescription(with: imageData.comment) { [unowned self] in
+                self.descContainer.setDescriptionColor()
                 self.view.layoutIfNeeded()
             }
         }
@@ -372,118 +358,6 @@ class ImagePreviewViewController: UIViewController
                 self.view.layoutIfNeeded()
             }
         }
-    }
-        
-    
-    // MARK: - Video Player
-    @objc
-    func startVideoPlayerView(with imageData: PiwigoImageData?) {
-        // Set URL
-        let videoURL = URL(string: imageData?.fullResPath ?? "")
-
-        // AVURLAsset + Loader
-        var asset: AVURLAsset? = nil
-        if let videoURL = videoURL {
-            asset = AVURLAsset(url: videoURL, options: nil)
-        }
-        let loader = asset?.resourceLoader
-        loader?.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
-
-        // Load the asset's "playable" key
-        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
-            DispatchQueue.main.async(
-                execute: { [self] in
-                    // IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem.
-                    var error: NSError? = nil
-                    let keyStatus = asset?.statusOfValue(forKey: "playable", error: &error)
-                    switch keyStatus {
-                        case .loaded:
-                            // Sucessfully loaded, continue processing
-                            playVideoAsset(asset)
-                        case .failed:
-                            // Display the error.
-                            assetFailedToPrepare(forPlayback: error)
-                        case .cancelled:
-                            // Loading cancelled
-                            break
-                        default:
-                            // Handle all other cases
-                            break
-                    }
-                })
-        })
-    }
-
-    func playVideoAsset(_ asset: AVAsset?) {
-        // AVPlayer
-        var playerItem: AVPlayerItem? = nil
-        if let asset = asset {
-            playerItem = AVPlayerItem(asset: asset)
-        }
-        let videoPlayer = AVPlayer(playerItem: playerItem) // Intialise video controller
-        let playerController = AVPlayerViewController()
-        playerController.player = videoPlayer
-        playerController.videoGravity = .resizeAspect
-
-        // Playback controls
-        playerController.showsPlaybackControls = true
-//    [self.videoPlayer addObserver:self.imageView forKeyPath:@"rate" options:0 context:nil];
-
-        // Start playing automatically…
-        playerController.player?.play()
-
-        videoView?.addSubview(playerController.view)
-        playerController.view.frame = videoView?.bounds ?? CGRect.zero
-
-        // Present the video
-        playerController.modalTransitionStyle = .crossDissolve
-        playerController.modalPresentationStyle = .overCurrentContext
-        let currentViewController = UIApplication.shared.keyWindow?.topMostViewController()
-        currentViewController?.present(playerController, animated: true)
-    }
-
-    func assetFailedToPrepare(forPlayback error: Error?) {
-        // Determine the present view controller
-        if let error = error as NSError?,
-           let topViewController = UIApplication.shared.keyWindow?.topMostViewController() {
-            topViewController.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
-                                                 errorMessage: error.localizedFailureReason ?? "",
-                                                 completion: { })
-        }
-    }
-}
-
-
-// MARK: - AVAssetResourceLoader Methods
-extension ImagePreviewViewController: AVAssetResourceLoaderDelegate
-{
-    func resourceLoader(_ resourceLoader: AVAssetResourceLoader,
-                        shouldWaitForResponseTo authenticationChallenge: URLAuthenticationChallenge
-    ) -> Bool {
-        let protectionSpace = authenticationChallenge.protectionSpace
-        if protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
-        {
-            // Self-signed certificate…
-            if let certificate = protectionSpace.serverTrust {
-                let credential = URLCredential(trust: certificate)
-                authenticationChallenge.sender?.use(credential, for: authenticationChallenge)
-            }
-            authenticationChallenge.sender?.continueWithoutCredential(for: authenticationChallenge)
-        }
-        else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
-            // HTTP basic authentification credentials
-            let user = NetworkVars.httpUsername
-            let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: user)
-            authenticationChallenge.sender?.use(
-                URLCredential(user: user, password: password, persistence: .synchronizable),
-                              for: authenticationChallenge)
-            authenticationChallenge.sender?.continueWithoutCredential(for: authenticationChallenge)
-        }
-        else {
-            // Other type: username password, client trust...
-            print("Other type: username password, client trust...")
-        }
-        return true
     }
 }
 

@@ -22,7 +22,6 @@ class AlbumCollectionViewCell: UICollectionViewCell
     weak var categoryDelegate: AlbumCollectionViewCellDelegate?
     var albumData: PiwigoAlbumData?
     
-    private var albumDescription = NSAttributedString()
     private var tableView: UITableView?
     private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
@@ -57,8 +56,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         tableView?.reloadData()
     }
 
-    func config(withAlbumData albumData: PiwigoAlbumData? = nil,
-                description: NSAttributedString = NSAttributedString()) {
+    func config(withAlbumData albumData: PiwigoAlbumData? = nil) {
         self.albumData = albumData
         tableView?.reloadData()
     }
@@ -125,7 +123,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
-            textField.text = albumData.comment ?? ""
+            textField.text = albumData.comment.htmlToString
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
@@ -218,7 +216,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
                     // Update cell and hide swipe buttons
                     let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                    cell?.config(withAlbumData: albumData, description: albumDescription)
+                    cell?.config(withAlbumData: albumData)
                     cell?.hideSwipe(animated: true)
                 }
             }
@@ -492,7 +490,7 @@ extension AlbumCollectionViewCell: UITableViewDataSource
         }
         
         // Configure cell
-        cell.config(withAlbumData: albumData, description: albumDescription)
+        cell.config(withAlbumData: albumData)
         
         // Album modifications are possible only if data are known
         if albumData != nil {

@@ -21,7 +21,6 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
 
 @property (nonatomic, strong) NSArray<PiwigoImageData*> *imageList;
 
-@property (nonatomic, assign) BOOL isLoadingMoreImages;
 @property (nonatomic, assign) NSInteger lastImageBulkCount;
 @property (nonatomic, assign) NSInteger onPage;
 
