@@ -39,17 +39,14 @@ extension SceneDelegate {
         // Look for the instance of AlbumViewController
         guard
           let navigationController = window?.rootViewController as? UINavigationController,
-          let albumVC = navigationController.viewControllers.first as? AlbumViewController,
+          let _ = navigationController.viewControllers.first as? AlbumViewController,
           let userInfo = stateRestorationActivity.userInfo
         else {
           return
         }
 
-        // Restore default album
-        let catIDs = (userInfo["catIDs"] as? [Int]) ?? [AlbumVars.shared.defaultCategory]
-        albumVC.categoryId = catIDs[0]
-        
         // Restore sub-albums
+        let catIDs = (userInfo["catIDs"] as? [Int]) ?? [AlbumVars.shared.defaultCategory]
         if catIDs.count > 1 {
             for catID in catIDs[1...] {
                 let subAlbumVC = AlbumViewController(albumId: catID)
