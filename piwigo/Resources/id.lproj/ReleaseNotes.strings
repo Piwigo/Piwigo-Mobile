@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.4_text" = "Versi 2.12.4\n\n• Perbaikan bug";
+"v2.12.5_text" = "Versi 2.12.5\n\n• Perbaikan bug";
+
+"v2.12.4_text" = "Versi 2.12.4\n16 Agustus, 2022\n\n• Perbaikan bug";
 
 "v2.12.3_text" = "Versi 2.12.3\n7 Agustus, 2022\n\n• Perbaikan bug";
 
