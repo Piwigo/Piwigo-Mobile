@@ -8,12 +8,12 @@
 
 "description" = "Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v2.8 o superior):\n\n• Explore sus álbumes,\n• Crear, eliminar, mover y renombrar álbumes,\n• Buscar, editar, descargar y eliminar fotos y videos,\n• Copie y mueva fotos y videos entre álbumes,\n• Añadir y eliminar fotos y vídeos de los favoritos,\n• Establecer una foto como imagen del álbum,\n• Subir fotos:\n - de tamaño y calidad modificables,\n - con descripción, autor, etiquetas, metadatos EXIF,\n - Con o sin metadatos GPS.\n• Subir videos,\n• Compartir fotos y videos.\n\nPiwigo te permite crear tu propia galería de fotos en la web. Incluye muchas funciones potentes como álbumes, etiquetas, geolocalización, muchos niveles de personalización, carga por visitantes, privacidad, calendario o estadísticas.\n\nPiwigo es gratis y de código abierto.";
 
-"compatibility" = "Piwigo también es compatible con las siguientes extensiones:\n- Community: permite a los usuarios que no son administradores agregar fotos\n- piwigo-videojs: agrega soporte de video";
+"compatibility" = "Piwigo también es compatible con las siguientes extensiones:\n- Community: permite a los usuarios que no son administradores agregar fotos\n- Piwigo-videojs: agrega soporte de video";
 
-"feedback" = "Comentarios o preguntas?\nPiwigo ofrece soporte gratuito en %@ y nos encantaría saber de usted.";
+"feedback" = "¿Comentarios o preguntas?\nPiwigo ofrece soporte gratuito en %@ y nos encantaría saber de usted.";
 
-"promotional_text" = "¡Tu biblioteca gratuita de fotos en la nube de Piwigo a mano!";
+"promotional_text" = "¡Tu biblioteca de fotos gratuita en la nube de Piwigo en tu mano!";
 
-"subtitle" = "Tus fotos en tu cloud";
+"subtitle" = "Tus fotos en tu nube de Internet";
 
-"keywords" = "Piwigo, Cloud, álbum, foto, video, imagen, subir, descargar";
+"keywords" = "Piwigo, nube de Internet, álbum, foto, video, imagen, subir, descargar";

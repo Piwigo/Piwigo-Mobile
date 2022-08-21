@@ -71,10 +71,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Store album ID
         categoryId = albumId
-        if albumId == 0 {
+        
+        // Will present Settings icon if root or default album
+        if [0, AlbumVars.shared.defaultCategory].contains(albumId) {
             // Navigation bar buttons
             settingsBarButton = getSettingsBarButton()
-            
+        }
+        
+        // Will present Discover menu and Search bar if root
+        if albumId == 0 {
             // Discover menu
             if #available(iOS 14.0, *) {
                 // Menu
