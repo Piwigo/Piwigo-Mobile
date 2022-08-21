@@ -822,6 +822,7 @@
 		ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectCategoryViewController.storyboard; sourceTree = "<group>"; };
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
+		ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0A (+Server).xcdatamodel"; sourceTree = "<group>"; };
 		ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearClipboardViewController.swift; sourceTree = "<group>"; };
 		ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClearClipboardViewController.storyboard; sourceTree = "<group>"; };
@@ -3387,6 +3388,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */,
 				ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */,
 				ADD981F828737EFD007213AE /* DataModel 08 (Upload).xcdatamodel */,
 				ADD981F928737EFD007213AE /* DataModel 07 (Upload).xcdatamodel */,

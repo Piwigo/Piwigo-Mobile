@@ -23,6 +23,7 @@ enum DataMigrationVersion: String, CaseIterable {
     case version07 = "DataModel 07 (Upload)"        // from v2.6.2  on 3 May 2021
     case version08 = "DataModel 08 (Upload)"        // from v2.7    on 12 August 2021 (=> PiwigoKit)
     case version09 = "DataModel 09 (Upload)"        // from v2.12   on 3 July 2022
+    case version0A = "DataModel 0A (+Server)"       // from v3.00   on … (added on 21 August 2022)
 
     static var current: DataMigrationVersion {
         guard let current = allCases.last else {
@@ -50,6 +51,8 @@ enum DataMigrationVersion: String, CaseIterable {
         case .version08:
             return .version09
         case .version09:
+            return .version0A
+        case .version0A:
             return nil
         }
     }
@@ -60,7 +63,7 @@ enum DataMigrationVersion: String, CaseIterable {
             return DataController.shared.appDocumentsDirectory
         case .version03, .version04, .version05, .version06, .version07:
             return DataController.shared.appSupportDirectory
-        case .version08, .version09:
+        case .version08, .version09, .version0A:
             return DataController.shared.appGroupDirectory
         }
     }
