@@ -185,7 +185,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
                         if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                            UIApplication.shared.openURL(url)
+                            UIApplication.shared.open(url)
                         }
                     })
 
@@ -1729,7 +1729,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Open @piwigo on Twitter */:
                 if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 1 /* Prepare draft email */:
                 if MFMailComposeViewController.canSendMail() {
@@ -1768,16 +1768,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
             case 2 /* Open Piwigo support forum webpage with default browser */:
                 if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 3 /* Open Piwigo App Store page for rating */:
                 // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
                 if let url = URL(string: "itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review") {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 4 /* Open Piwigo Crowdin page for translating */:
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 5 /* Open Release Notes page */:
                 let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)

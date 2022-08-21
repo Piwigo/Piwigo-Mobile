@@ -262,7 +262,6 @@
 		ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */; };
 		ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
-		ADD981FF28737EFD007213AE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
 		ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
 		ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
@@ -309,6 +308,7 @@
 		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
+		ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */; };
 		ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */; };
 		ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */; };
@@ -2320,7 +2320,7 @@
 				AD0B6AD5268A21B7007DEE70 /* UploadManager+Finisher.swift in Sources */,
 				AD0B6ACF268A219B007DEE70 /* UploadManager+Image.swift in Sources */,
 				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
-				ADD981FF28737EFD007213AE /* DataModel.xcdatamodeld in Sources */,
+				ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */,
 				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
 				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,

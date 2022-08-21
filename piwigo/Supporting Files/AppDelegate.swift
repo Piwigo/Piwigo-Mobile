@@ -35,14 +35,8 @@ import piwigoKit
         Model.sharedInstance().readFromDisk()
 
         // Register notifications for displaying number of uploads to perform in app badge
-        if #available(iOS 9.0, *) {
-            let settings = UIUserNotificationSettings.init(types: .badge, categories: nil)
-            UIApplication.shared.registerUserNotificationSettings(settings)
-        }
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
+        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
-            }
         }
 
         // IQKeyboardManager

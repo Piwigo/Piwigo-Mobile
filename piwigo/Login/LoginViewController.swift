@@ -595,7 +595,7 @@ class LoginViewController: UIViewController {
 
     @IBAction func openPiwigoURL(_ sender: UIButton) {
         if let url = URL(string: "https://piwigo.org") {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         }
     }
     

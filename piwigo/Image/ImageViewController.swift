@@ -206,11 +206,7 @@ class ImageViewController: UIViewController {
         if #available(iOS 12, *) {
             // Safe area already excluded in storyboard
         } else {
-            // The view controller should automatically adjust its scroll view insets
-            if self.responds(to: Selector(("automaticallyAdjustsScrollViewInsets"))) {
-                automaticallyAdjustsScrollViewInsets = false
-                edgesForExtendedLayout = []
-            }
+            edgesForExtendedLayout = []
         }
     }
 

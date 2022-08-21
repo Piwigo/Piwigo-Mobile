@@ -52,12 +52,6 @@ class UploadSwitchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Remove space between navigation bar and first cell
-        if #available(iOS 12.0, *) {
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
         // Bar buttons
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"

@@ -226,7 +226,7 @@ class PhotosFetch: NSObject {
         let prefsAction = UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"), style: .default, handler: { action in
                 // Redirect user to Settings app
                 if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             })
 
