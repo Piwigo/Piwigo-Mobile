@@ -288,8 +288,21 @@ extension AlbumViewController
             return
         }
         
-        // Other album -> Reload albums
+        // Non root or smart album
         if didChange, categoryId >= 0 {
+            // Loop over all displayed albums to set titles and therefore back buttons
+            for parentAlbumVC in navigationController?.children ?? [] {
+                if let parentVC = parentAlbumVC as? AlbumViewController,
+                   parentVC.categoryId != categoryId {
+                    print("••> Update buttons in album #\(parentVC.categoryId) from album #\(categoryId)")
+                    if parentVC.categoryId == 0 {
+                        parentVC.title = NSLocalizedString("tabBar_albums", comment: "Albums")
+                    } else {
+                        parentVC.title = CategoriesData.sharedInstance().getCategoryById(parentVC.categoryId)?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
+                    }
+                }
+            }
+
             // Reload album collection
             imagesCollection?.reloadSections(IndexSet(integer: 0))
             // Set navigation bar buttons
