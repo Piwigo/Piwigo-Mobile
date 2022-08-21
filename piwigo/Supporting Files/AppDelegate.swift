@@ -69,17 +69,17 @@ import piwigoKit
             AppVars.shared.isAppUnlocked = true
         }
         
-        // What follows depends on iOS version
-        if #available(iOS 13.0, *) {
-            // Register launch handlers for tasks if using iOS 13
-            /// Will have to check if pwg.images.uploadAsync is available
-            registerBgTasks()
+        // Migrate the Core Data store to the new version if needed
+        DataController.shared.setup { [self] in
+            // What follows depends on iOS version
+            if #available(iOS 13.0, *) {
+                // Register launch handlers for tasks if using iOS 13
+                /// Will have to check if pwg.images.uploadAsync is available
+                registerBgTasks()
 
-            // Delegate to SceneDelegate
-            /// - Present login view and if needed passcode view
-        } else {
-            // Migrate the Core Data store to the new version if needed
-            DataController.shared.migrateStoreIfNeeded { [self] in
+                // Delegate to SceneDelegate
+                /// - Present login view and if needed passcode view
+            } else {
                 // Create login view
                 window = UIWindow(frame: UIScreen.main.bounds)
                 loadLoginView(in: window)

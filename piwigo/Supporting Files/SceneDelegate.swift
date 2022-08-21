@@ -43,26 +43,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // No scene to restore —> Present login only if this is the first created scene
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             if existingScenes.isEmpty {
-                // Migrate the Core Data store to the new version if needed
-                DataController.shared.migrateStoreIfNeeded { [self] in
-                    // Create login view
-                    appDelegate.loadLoginView(in: window)
+                // Create login view
+                appDelegate.loadLoginView(in: window)
 
-					// We will load album data
-					NetworkVars.dateOfLastLogin = .distantPast
+                // We will load album data
+                NetworkVars.dateOfLastLogin = .distantPast
 
-					// Blur views if the App Lock is enabled
-					/// The passcode window is not presented so that the app
-					/// does not request the passcode until it is put into the background.
-					if AppVars.shared.isAppLockActive {
-						// Protect presented login view
-						addPrivacyProtection()
-					}
-					else {
-						// User is allowed to access albums
-						AppVars.shared.isAppUnlocked = true
-					}
-				}
+                // Blur views if the App Lock is enabled
+                /// The passcode window is not presented so that the app
+                /// does not request the passcode until it is put into the background.
+                if AppVars.shared.isAppLockActive {
+                    // Protect presented login view
+                    addPrivacyProtection()
+                }
+                else {
+                    // User is allowed to access albums
+                    AppVars.shared.isAppUnlocked = true
+                }
             }
             else {
                 // Create additional scene => default album
