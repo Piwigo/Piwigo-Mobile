@@ -1277,8 +1277,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                             self.needToLoadMoreImages()
                         } else {
                             // Re-login before continuing to load images
-                            LoginUtilities.reloginAndRetry() { [unowned self] in
-                                DispatchQueue.main.async { [unowned self] in
+                            LoginUtilities.reloginAndRetry() { [self] in
+                                DispatchQueue.main.async { [self] in
                                     self.needToLoadMoreImages()
                                 }
                             } failure: { [unowned self] error in
