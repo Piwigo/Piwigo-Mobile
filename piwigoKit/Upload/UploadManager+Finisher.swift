@@ -46,7 +46,7 @@ extension UploadManager {
             print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
             // Decode the JSON object
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type ImagesSetInfoJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 

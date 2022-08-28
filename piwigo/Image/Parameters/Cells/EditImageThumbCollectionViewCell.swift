@@ -297,7 +297,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update image filename if successful.
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type ImagesSetInfoJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 

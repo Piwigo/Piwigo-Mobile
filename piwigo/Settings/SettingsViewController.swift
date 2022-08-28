@@ -1437,7 +1437,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and retrieve statistics.
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type GetInfosJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
