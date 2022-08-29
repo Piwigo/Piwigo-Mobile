@@ -63,7 +63,7 @@ public class DataController: NSObject {
 
     private func loadPersistentStore(completion: @escaping () -> Void) {
         migrateStoreIfNeeded { [self] in
-            self.persistentContainer.loadPersistentStores { description, error in
+            self.persistentContainer.loadPersistentStores { _, error in
                 guard let error = error else {
                     completion()
                     return
