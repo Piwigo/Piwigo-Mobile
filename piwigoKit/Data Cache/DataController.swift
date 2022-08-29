@@ -30,6 +30,8 @@ public class DataController: NSObject {
         let model = NSManagedObjectModel.managedObjectModel(forVersion: DataMigrationVersion.current)
         let persistentContainer = NSPersistentContainer(name: "DataModel", managedObjectModel: model)
         let description = persistentContainer.persistentStoreDescriptions.first
+        description?.url = appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+        description?.shouldAddStoreAsynchronously = false
         description?.shouldInferMappingModelAutomatically = false
         description?.shouldMigrateStoreAutomatically = false
         description?.type = storeType
