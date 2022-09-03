@@ -173,14 +173,14 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z134"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z131">
-        <attribute name="migrationpolicyclassname" type="string">piwigoKit.TagToTagMigrationPolicy_09_to_0A</attribute>
+        <attribute name="migrationpolicyclassname" type="string">TagToTagMigrationPolicy_09_to_0A</attribute>
         <attribute name="sourcename" type="string">Tag</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
-        <attribute name="mappingnumber" type="int16">1</attribute>
+        <attribute name="mappingnumber" type="int16">2</attribute>
         <attribute name="destinationname" type="string">Tag</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z149 z150 z142 z146"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z146 z142 z149 z150"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z132">
@@ -193,14 +193,14 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z115"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z134">
-        <attribute name="migrationpolicyclassname" type="string">piwigoKit.UploadToUploadMigrationPolicy_09_to_0A</attribute>
+        <attribute name="migrationpolicyclassname" type="string">UploadToUploadMigrationPolicy_09_to_0A</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
-        <attribute name="mappingnumber" type="int16">2</attribute>
+        <attribute name="mappingnumber" type="int16">3</attribute>
         <attribute name="destinationname" type="string">Upload</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z125 z140 z154 z127 z106 z123 z108 z144 z119 z104 z111 z130 z121 z128 z135 z114 z136 z120 z126 z141 z103 z105 z118 z112 z116 z110"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z110 z105 z116 z114 z126 z130 z128 z140 z106 z127 z108 z118 z144 z135 z136 z121 z104 z123 z103 z112 z119 z120 z111 z125 z141 z154"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z135">
@@ -222,11 +222,11 @@
     <object type="XDDEVENTITYMAPPING" id="z139">
         <attribute name="sourcename" type="string">Location</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
-        <attribute name="mappingnumber" type="int16">3</attribute>
+        <attribute name="mappingnumber" type="int16">1</attribute>
         <attribute name="destinationname" type="string">Location</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z102 z107 z153 z148 z143"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z102 z143 z107 z148 z153"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z140">
