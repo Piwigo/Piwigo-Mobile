@@ -12,13 +12,9 @@ import piwigoKit
 
 class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         provider.fetchedNonCompletedResultsControllerDelegate = self
         return provider
     }()
@@ -175,17 +171,17 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     func updateNavBar() {
         // Title
-        let nberOfImagesInQueue = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count ?? 0
+        let nberOfImagesInQueue = uploadProvider.fetchedNonCompletedResultsController.fetchedObjects?.count ?? 0
         title = nberOfImagesInQueue > 1 ?
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
         let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads:Int = uploadsProvider.fetchedNonCompletedResultsController
+        let impossibleUploads:Int = uploadProvider.fetchedNonCompletedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads:Int = uploadsProvider.fetchedResultsController
+        let failedUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
 
         if impossibleUploads + failedUploads > 0 {
@@ -204,13 +200,13 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads:Int = uploadsProvider.fetchedResultsController
+        let failedUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
             if failedUploads > 0 {
 			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
 			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
 				// Collect list of failed uploads
-				if let uploadIds = self.uploadsProvider.fetchedResultsController
+				if let uploadIds = self.uploadProvider.fetchedResultsController
                     .fetchedObjects?.filter({resumable.contains($0.state)}).map({$0.objectID}) {
 					// Resume failed uploads
 					UploadManager.shared.backgroundQueue.async {
@@ -244,19 +240,19 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
         let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads:Int = uploadsProvider.fetchedResultsController
+        let impossibleUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
     	if impossibleUploads > 0 {
 	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
 			let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
 			   // Get completed uploads
-				guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+				guard let allUploads = self.uploadProvider.fetchedResultsController.fetchedObjects else {
 					return
 				}
 				// Get uploads to delete
 				let uploadIds = allUploads.filter({impossible.contains($0.state)}).map({$0.objectID})
 				// Delete failed uploads in the main thread
-                self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                self.uploadProvider.delete(uploadRequests: uploadIds) { error in
                     // Error encountered?
                     if let error = error {
                         DispatchQueue.main.async {
@@ -318,7 +314,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
                 self.queueTableView.tableHeaderView = nil
                 let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
                                                             .uploading, .uploaded, .finishing]
-                let uploadsToPerform:Int = self.uploadsProvider.fetchedResultsController
+                let uploadsToPerform:Int = self.uploadProvider.fetchedResultsController
                     .fetchedObjects?.map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
                 if uploadsToPerform > 0 {
                     UIApplication.shared.isIdleTimerDisabled = true
@@ -330,7 +326,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         var sectionName = SectionKeys.Section4.name
-        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+        if let sectionInfo = uploadProvider.fetchedNonCompletedResultsController.sections?[section] {
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
@@ -343,7 +339,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
-        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+        if let sectionInfo = uploadProvider.fetchedNonCompletedResultsController.sections?[section] {
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             header.config(with: sectionKey)
         } else {
@@ -355,14 +351,14 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        if let sections = uploadsProvider.fetchedNonCompletedResultsController.sections {
+        if let sections = uploadProvider.fetchedNonCompletedResultsController.sections {
             return sections.count
         }
         return 0
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = uploadsProvider.fetchedNonCompletedResultsController.sections else {
+        guard let sections = uploadProvider.fetchedNonCompletedResultsController.sections else {
             fatalError("No sections in fetchedResultsController")
         }
         let sectionInfo = sections[section]
@@ -374,7 +370,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
             return UploadImageTableViewCell()
         }
-        let upload = uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
+        let upload = uploadProvider.fetchedNonCompletedResultsController.object(at: indexPath)
         cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
         return cell
     }
@@ -490,7 +486,7 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         queueTableView.layoutIfNeeded()
 
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
-        if uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
+        if uploadProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
             // Delete remaining files from Upload directory (if any)
             UploadManager.shared.deleteFilesInUploadsDirectory()
             // Close the view when there is no more upload request to display

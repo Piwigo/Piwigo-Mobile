@@ -12,13 +12,9 @@ import piwigoKit
 
 class UploadImageTableViewCell: MGSwipeTableCell {
     
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         return provider
     }()
 
@@ -93,19 +89,19 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         case .waiting, .deleted:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         }

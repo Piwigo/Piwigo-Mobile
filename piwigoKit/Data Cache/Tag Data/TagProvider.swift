@@ -1,36 +1,40 @@
 //
-//  TagsProvider.swift
+//  TagProvider.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 19/01/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
-//  A class to fetch data from the remote server and save it to the Core Data store.
 
 import CoreData
 import CoreMedia
 
-public class TagsProvider {
-
-    public init() { }
-    
-    // MARK: - Piwigo API methods
-    public let kPiwigoTagsGetImages = "format=json&method=pwg.tags.getImages"
-    
-    
-    // MARK: - Core Data object context
-    public lazy var mainContext: NSManagedObjectContext = {
+public class TagProvider: NSObject {
+        
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
+    private lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.backgroundContext
+        return context
+    }()
+
     
+    // MARK: - Core Data Providers
+    private lazy var serverProvider: ServerProvider = {
+        let provider : ServerProvider = ServerProvider()
+        return provider
+    }()
+
+
     // MARK: - Fetch Tags
     /**
      Fetches the tag feed from the remote Piwigo server, and imports it into Core Data.
      The API method for admin pwg.tags.getAdminList does not return the number of tagged photos,
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
-     Because we wish to keep the tag list up-to-date, calling pwg.tags.getList leads to the deletions of unused tags in the store.
     */
     public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
@@ -55,7 +59,7 @@ public class TagsProvider {
                     // Piwigo error?
                     if tagJSON.errorCode != 0 {
                         let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
-                                                                        errorMessage: tagJSON.errorMessage)
+                                                                     errorMessage: tagJSON.errorMessage)
                         completionHandler(error)
                         return
                     }
@@ -85,14 +89,15 @@ public class TagsProvider {
     */
     private let batchSize = 256
     private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
+        // Get current server object
+        guard let server = serverProvider.getServerObject(with: bckgContext) else {
+            fatalError("Unresolved error!")
+        }
         
-        // Create a private queue context.
-        let taskContext = DataController.shared.backgroundContext
-                
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
         guard tagPropertiesArray.isEmpty == false else {
-            _ = importOneBatch([TagProperties](), taskContext: taskContext)
+            _ = importOneBatch([TagProperties](), from: server, asAdmin: asAdmin)
             return
         }
         
@@ -115,17 +120,10 @@ public class TagsProvider {
             let tagsBatch = Array(tagPropertiesArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(tagsBatch, taskContext: taskContext) {
+            if !importOneBatch(tagsBatch, from: server, asAdmin: asAdmin) {
                 return
             }
         }
-
-        // Should we remove non-downloaded tags?
-        if NetworkVars.hasAdminRights, !asAdmin { return }
-        if NetworkVars.hasNormalRights, NetworkVars.hasNormalAndUploadRights, !asAdmin { return }
-            
-        // Delete cached tags not in server
-        deleteTagsNotOnServer(tagPropertiesArray, taskContext: taskContext)
     }
     
     /**
@@ -137,25 +135,31 @@ public class TagsProvider {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ tagsBatch: [TagProperties], taskContext: NSManagedObjectContext) -> Bool {
+    private func importOneBatch(_ tagsBatch: [TagProperties], from server: Server, asAdmin: Bool) -> Bool {
         
         var success = false
 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
-        taskContext.performAndWait {
+        bckgContext.performAndWait {
             
-            // Retrieve existing tags to avoid duplicates
-            // Create a fetch request for the Tag entity sorted by Id
-            /// - Unique Constraints must be strings and tagId is an Int32
-            /// - When you try to save a context with more than one object with the same value for a Unique Constraint, the first one you created is the one that gets saved
-            /// - If you have parent/child contexts, you need to set the merge policy on each one of them
-            let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+            // Retrieve tags in persistent store
+            let fetchRequest = Tag.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
             
+            // Look for tags belonging to the currently active server
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "server.path == %@", server.path))
+            if asAdmin == false {
+                // Look for non-orphaned tags if method called by non-admin user
+                andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
+                andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
+            }
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
+                                                managedObjectContext: bckgContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
             
             // Perform the fetch.
@@ -174,7 +178,7 @@ public class TagsProvider {
                 if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
                     // Update the tag's properties using the raw data
                     do {
-                        try cachedTags[index].update(with: tagData)
+                        try cachedTags[index].update(with: tagData, server: server)
                     }
                     catch TagError.missingData {
                         // Could not perform the update
@@ -186,41 +190,41 @@ public class TagsProvider {
                 }
                 else {
                     // Create a Tag managed object on the private queue context.
-                    guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
+                    guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag",
+                                                                        into: bckgContext) as? Tag else {
                         print(TagError.creationError.localizedDescription)
                         return
                     }
                     
                     // Populate the Tag's properties using the raw data.
                     do {
-                        try tag.update(with: tagData)
+                        try tag.update(with: tagData, server: server)
                     }
                     catch TagError.missingData {
                         // Delete invalid Tag from the private queue context.
                         print(TagError.missingData.localizedDescription)
-                        taskContext.delete(tag)
+                        bckgContext.delete(tag)
                     }
                     catch {
                         print(error.localizedDescription)
                     }
                 }
             }
-                                    
-            // Save all insertions and deletions from the context to the store.
-            if taskContext.hasChanges {
+            
+            // Remove deleted tags
+            let newTagIds = tagsBatch.compactMap({$0.id}).map({$0})
+            let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
+            cachedTagsToDelete.forEach { cachedTag in
+                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
+                bckgContext.delete(cachedTag)
+            }
+            
+            // Save all insertions from the context to the store.
+            if bckgContext.hasChanges {
                 do {
-                    try taskContext.save()
-
-                    // Performs a task in the main queue and wait until this tasks finishes
+                    try bckgContext.save()
                     DispatchQueue.main.async {
-                        self.mainContext.performAndWait { [unowned self] in
-                            do {
-                                // Saves the data from the child to the main context to be stored properly
-                                try self.mainContext.save()
-                            } catch {
-                                fatalError("Failure to save context: \(error)")
-                            }
-                        }
+                        DataController.shared.saveMainContext()
                     }
                 }
                 catch {
@@ -228,7 +232,7 @@ public class TagsProvider {
                     return
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
+                bckgContext.reset()
             }
 
             success = true
@@ -236,70 +240,14 @@ public class TagsProvider {
         return success
     }
     
-    private func deleteTagsNotOnServer(_ allTags: [TagProperties], taskContext: NSManagedObjectContext) {
-        // Retrieve existing tags
-        // Create a fetch request for the Tag entity sorted by Id
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
-        
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: taskContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error \(error)")
-        }
-        let cachedTags:[Tag] = controller.fetchedObjects ?? []
-
-        // Loop over tags in cache
-        cachedTags.forEach { cachedTag in
-            if cachedTag.isFault {
-                cachedTag.willAccessValue(forKey: nil)
-                cachedTag.didAccessValue(forKey: nil)
-            }
-            if !allTags.contains(where: { $0.id == cachedTag.tagId }) {
-                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
-                taskContext.delete(cachedTag)
-            }
-        }
-        
-        // Save all deletions from the context to the store.
-        if taskContext.hasChanges {
-            do {
-                try taskContext.save()
-
-                // Performs a task in the main queue and wait until this tasks finishes
-                DispatchQueue.main.async {
-                    self.mainContext.performAndWait { [unowned self] in
-                        do {
-                            // Saves the data from the child to the main context to be stored properly
-                            try self.mainContext.save()
-                        } catch {
-                            fatalError("Failure to save context: \(error)")
-                        }
-                    }
-                }
-            }
-            catch {
-                print("Error: \(error)\nCould not save Core Data context.")
-                return
-            }
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            taskContext.reset()
-        }
-    }
-
     
     // MARK: - Add Tags
     /**
-     Adds the tag to the remote Piwigo server, and imports it into Core Data (in the foreground).
+     Adds a tag to the remote Piwigo server, and imports it into Core Data.
     */
     public func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
-        
+                
+        // Add tag on server
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
@@ -324,8 +272,8 @@ public class TagsProvider {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                let taskContext = DataController.shared.backgroundContext
-                if self.importOneTag(newTag, taskContext: taskContext) {
+                if let server = self.serverProvider.getServerObject(with: self.bckgContext),
+                   self.importOneBatch([newTag], from: server, asAdmin: true) {
                     completionHandler(nil)
                 } else {
                     completionHandler(TagError.creationError)
@@ -344,32 +292,27 @@ public class TagsProvider {
             completionHandler(error)
         }
     }
-
+    
+    
+    // MARK: - Get Tags with set of IDs
     /**
-     Imports one tag, creating managed object from the new data,
-     and saving it to the persistent store, on a private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-     
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
+     Get all Tag instances of the current server matching the list of tag IDs
     */
-    private func importOneTag(_ tagData: TagProperties, taskContext: NSManagedObjectContext) -> Bool {
+    func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> [Tag] {
+        // Initialisation
+        var tagList = [Tag]()
         
-        var success = false
-
-        // taskContext.performAndWait runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
         taskContext.performAndWait {
-            
-            // Retrieve existing tags
-            // Create a fetch request for the Tag entity sorted by Id
-            let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+            // Retrieve tags in persistent store
+            let fetchRequest = Tag.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
             
+            // Look for tags belonging to the currently active server
+            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
+                                                managedObjectContext: bckgContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
             
             // Perform the fetch.
@@ -378,86 +321,28 @@ public class TagsProvider {
             } catch {
                 fatalError("Unresolved error \(error)")
             }
+            
+            // Tag selection
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
-
-            // Index of this new tag in cache
-            let index = cachedTags.firstIndex { $0.tagId == tagData.id! }
-            
-            // Is this tag already cached?
-            if (index == nil) {
-                // Create a Tag managed object on the private queue context.
-                guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
-                    print(TagError.creationError.localizedDescription)
-                    return
-                }
-                
-                // Populate the Tag's properties using the raw data.
-                do {
-                    try tag.update(with: tagData)
-                }
-                catch TagError.missingData {
-                    // Delete invalid Tag from the private queue context.
-                    print(TagError.missingData.localizedDescription)
-                    taskContext.delete(tag)
-                }
-                catch {
-                    print(error.localizedDescription)
-                }
-            }
-            else {
-                // Update the tag's properties using the raw data
-                do {
-                    try cachedTags[index!].update(with: tagData)
-                }
-                catch TagError.missingData {
-                    // Could not perform the update
-                    print(TagError.missingData.localizedDescription)
-                }
-                catch {
-                    print(error.localizedDescription)
-                }
-
-            }
-            
-            // Save all insertions and deletions from the context to the store.
-            if taskContext.hasChanges {
-                do {
-                    try taskContext.save()
-
-                    // Performs a task in the main queue and wait until this tasks finishes
-                    DispatchQueue.main.async {
-                        self.mainContext.performAndWait { [unowned self] in
-                            do {
-                                // Saves the data from the child to the main context to be stored properly
-                                try self.mainContext.save()
-                            } catch {
-                                fatalError("Failure to save context: \(error)")
-                            }
-                        }
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
-            }
-
-            success = true
+            let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
+            tagList = cachedTags.filter({ listOfIds.contains($0.tagId)})
         }
-        return success
+
+        return tagList
     }
     
     
     // MARK: - Clear Tags
     /**
-     Clear cached Core Data tag entry
+     Clears all Core Data tag entries of the current server.
     */
     public func clearTags() {
         
         // Create a fetch request for the Tag entity
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        let fetchRequest = Tag.fetchRequest()
+
+        // Select tags of the current server only
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
@@ -476,18 +361,21 @@ public class TagsProvider {
     public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
-     A fetched results controller to fetch Tag records sorted by name.
+     A fetched results controller to fetch Tag records of the current server, sorted by name.
      */
     public lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
         
         // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         
+        // Select tags of the current server only
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.mainContext,
+                                            managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = fetchedResultsControllerDelegate
         
@@ -508,22 +396,24 @@ public class TagsProvider {
     public weak var fetchedNonAdminResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
-     A fetched results controller to fetch Tag records sorted by name except tags with unknown number of images.
+     A fetched results controller to fetch non-orphaned Tag records of the current server, sorted by name.
      */
     public lazy var fetchedNonAdminResultsController: NSFetchedResultsController<Tag> = {
         
         // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         // AND subpredicates
-        var andSubpredicates:[NSPredicate] = [NSPredicate(format: "numberOfImagesUnderTag != %ld", 0)]
-        andSubpredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.mainContext,
+                                            managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         controller.delegate = fetchedNonAdminResultsControllerDelegate
         

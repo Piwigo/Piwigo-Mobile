@@ -16,7 +16,7 @@ public class Upload: NSManagedObject {
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
-    func update(with uploadProperties: UploadProperties) throws {
+    func update(with uploadProperties: UploadProperties, tags: [Tag], forUser user: User) throws {
         
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
@@ -28,12 +28,6 @@ public class Upload: NSManagedObject {
         
         // Category to upload the image to
         category = Int64(uploadProperties.category)
-        
-        // Server path to which the image is to be uploaded
-        serverPath = uploadProperties.serverPath
-        
-        // File formats accepted by the above server
-        serverFileTypes = uploadProperties.serverFileTypes
         
         // Date of upload request defaults to now
         requestDate = uploadProperties.requestDate
@@ -63,8 +57,10 @@ public class Upload: NSManagedObject {
         // Other image properties
         imageName = uploadProperties.imageTitle
         comment = uploadProperties.comment
-        tagIds = uploadProperties.tagIds
         imageId = Int64(uploadProperties.imageId)
+        if tags.isEmpty == false {
+            self.tags = Set(tags)
+        }
         
         // Upload settings
         stripGPSdataOnUpload = uploadProperties.stripGPSdataOnUpload
@@ -77,8 +73,14 @@ public class Upload: NSManagedObject {
         defaultPrefix = uploadProperties.defaultPrefix
         deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
         markedForAutoUpload = uploadProperties.markedForAutoUpload
+        
+        // User account
+        self.user = user
     }
     
+    /**
+     Updates the status of an Upload instance.
+     */
     func updateStatus(with state: kPiwigoUploadState?, error: String?) throws {
         // Update the upload request only if a new state has a value.
         guard let newStatus = state else {
@@ -162,11 +164,14 @@ extension Upload {
     }
 
     public func getProperties() -> UploadProperties {
+        let tags = self.tags?.compactMap({$0}) ?? []
+        let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
             // Server parameters
-            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
+            serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -175,7 +180,7 @@ extension Upload {
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
-            tagIds: self.tagIds, imageId: Int(self.imageId),
+            tagIds: newTagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,
@@ -187,11 +192,14 @@ extension Upload {
     }
 
     public func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
+        let tags = self.tags?.compactMap({$0}) ?? []
+        let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
             // Server parameters
-            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
+            serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
@@ -200,7 +208,7 @@ extension Upload {
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
-            tagIds: self.tagIds, imageId: Int(self.imageId),
+            tagIds: newTagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,

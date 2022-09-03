@@ -32,13 +32,9 @@ class TagsViewController: UITableViewController {
     }
     
 
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+    // MARK: - Core Data Providers
+    lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
@@ -53,12 +49,12 @@ class TagsViewController: UITableViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
     private var selectedTags: [Tag] {
-        let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
+        let allTags = tagProvider.fetchedResultsController.fetchedObjects ?? []
         let selectedTags = allTags.filter({selectedTagIds.contains($0.tagId)})
         return selectedTags
     }
     private var nonSelectedTags: [Tag] {
-        let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
+        let allTags = tagProvider.fetchedResultsController.fetchedObjects ?? []
         let nonSelectedTags = allTags.filter({!selectedTagIds.contains($0.tagId)})
         if #available(iOS 11.0, *) {
             return nonSelectedTags.filterTags(for: searchQuery)
@@ -84,7 +80,7 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        tagsProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
+        tagProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
             guard let error = error else { return }     // Done if no error
 
             // Show an alert if there was an error.

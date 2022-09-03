@@ -88,8 +88,8 @@ public class UploadManager: NSObject {
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
-    var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    var uploadsProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         return provider
     }()
 

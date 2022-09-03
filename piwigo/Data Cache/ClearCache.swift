@@ -10,11 +10,9 @@ import Foundation
 import piwigoKit
 import UIKit
 
-@objc
 class ClearCache: NSObject {
     
-    @objc
-    class func closeSessionAndClearCache(completion: @escaping () -> Void) {
+    static func closeSessionAndClearCache(completion: @escaping () -> Void) {
         // Session closed
         NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
         NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
@@ -66,14 +64,14 @@ class ClearCache: NSObject {
         }
     }
 
-    class func clearAllCache(exceptCategories: Bool,
+    static func clearAllCache(exceptCategories: Bool,
                              completion: @escaping () -> Void) {
         
         // Tags
-        TagsProvider().clearTags()
+        TagProvider().clearTags()
 
         // Locations with place names
-        LocationsProvider().clearLocations()
+        LocationProvider.shared.clearLocations()
 
         // Album data
         if !exceptCategories { CategoriesData.sharedInstance().clearCache() }

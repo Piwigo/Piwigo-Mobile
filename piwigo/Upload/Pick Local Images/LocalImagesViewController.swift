@@ -22,13 +22,9 @@ enum SectionType: Int {
 @objc
 class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, LocalImagesHeaderDelegate, UploadSwitchDelegate {
     
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
@@ -133,7 +129,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection
-        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {
+        if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
             uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
         }
                                                                                         
@@ -300,7 +296,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Prevent device from sleeping if uploads are in progress
         let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
                                                     .uploading, .uploaded, .finishing]
-        let uploadsToPerform:Int = uploadsProvider.fetchedResultsController
+        let uploadsToPerform:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
@@ -1184,7 +1180,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Check if there are uploaded photos to delete
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+        if let allUploads = self.uploadProvider.fetchedResultsController.fetchedObjects {
             let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
             for index in 0..<indexedUploads.count {
                 if let _ = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
@@ -1200,7 +1196,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Delete uploaded images (fetched on the main queue)
         uploadIDsToDelete = [NSManagedObjectID](); imagesToDelete = [String]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+        if let allUploads = self.uploadProvider.fetchedResultsController.fetchedObjects {
             let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
             for index in 0..<indexedUploads.count {
                 if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
@@ -1768,7 +1764,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Add selected images to upload queue
         DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
+            self.uploadProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Restart UploadManager activities

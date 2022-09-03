@@ -13,13 +13,9 @@ import piwigoKit
 @available(iOS 14.0, *)
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         return provider
     }()
 
@@ -80,14 +76,14 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 .compactMap{ $0 }
             
             // Append auto-upload requests to database
-            self.uploadsProvider.importUploads(from: uploadRequestsToAppend) { error in
+            self.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
                 // Update app badge and Upload button in root/default album
                 // Considers only uploads to the server to which the user is logged in
                 let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                                     .preparingFail, .formatError, .prepared,
                                                     .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                     .finishing, .finishingError]
-                UploadManager.shared.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
+                UploadManager.shared.nberOfUploadsToComplete = self.uploadProvider.getRequests(inStates: states).0.count
 
                 // Show an alert if there was an error.
                 guard let error = error else {

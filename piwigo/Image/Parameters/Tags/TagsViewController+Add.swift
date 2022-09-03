@@ -62,7 +62,7 @@ extension TagsViewController
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
-            self.tagsProvider.addTag(with: tagName, completionHandler: { error in
+            self.tagProvider.addTag(with: tagName, completionHandler: { error in
                 guard let error = error else {
                     self.updatePiwigoHUDwithSuccess {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
@@ -93,7 +93,7 @@ extension TagsViewController: UITextFieldDelegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Enable Add/Delete Tag action if text field not empty
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
+        let allTags = tagProvider.fetchedResultsController.fetchedObjects ?? []
         let existTagWithName = (allTags.first(where: {$0.tagName == finalString}) != nil)
         addAction?.isEnabled = (((finalString?.count ?? 0) >= 1) && !existTagWithName)
         return true

@@ -16,7 +16,7 @@ public class Tag: NSManagedObject {
     /**
      Updates a Tag instance with the values from a TagProperties.
      */
-    func update(with tagProperties: TagProperties) throws {
+    func update(with tagProperties: TagProperties, server: Server) throws {
         
         // Update the tag only if the Id and Name properties have values.
         guard let newId = tagProperties.id,
@@ -39,5 +39,8 @@ public class Tag: NSManagedObject {
         } else if numberOfImagesUnderTag == 0  {
             numberOfImagesUnderTag = Int64.max
         }
+        
+        // This tag belongs to the provided server
+        self.server = server
     }
 }

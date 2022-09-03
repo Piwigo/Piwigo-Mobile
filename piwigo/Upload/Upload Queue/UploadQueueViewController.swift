@@ -13,18 +13,16 @@ import piwigoKit
 @available(iOS 13.0, *)
 class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
-    // MARK: - Core Data
-    /**
-     The managedObjectContext that manages Core Data objects in the main queue.
-     The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-     */
+    // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider()
         provider.fetchedNonCompletedResultsControllerDelegate = self
         return provider
     }()
@@ -261,7 +259,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                         // Get IDs of upload requests which won't be possible to perform
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
                         // Delete failed uploads in the main thread
-                        self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                        self.uploadProvider.delete(uploadRequests: uploadIds) { error in
                             // Error encountered?
                             if let error = error {
                                 DispatchQueue.main.async {
@@ -317,13 +315,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
         
         // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
+        let sectionInfos = uploadProvider.fetchedNonCompletedResultsController.sections
         let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
         snapshot.appendSections(sections)
         diffableDataSource.apply(snapshot, animatingDifferences: false)
         
         // Items
-        let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
+        let items = uploadProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
         for section in SectionKeys.allValues {
             let objectIDsInSection = items.filter({$0.requestSectionKey == section.rawValue}).map({$0.objectID})
             if objectIDsInSection.isEmpty { continue }

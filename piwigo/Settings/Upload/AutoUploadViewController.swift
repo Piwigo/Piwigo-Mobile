@@ -14,13 +14,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+    // MARK: - Core Data Providers
+    lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider()
         return provider
     }()
     
@@ -275,7 +271,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     return EditImageTagsTableViewCell()
                 }
                 // Retrieve tags and switch to old cache data format
-                let tags = tagsProvider.fetchedResultsController.fetchedObjects
+                let tags = tagProvider.fetchedResultsController.fetchedObjects
                 let tagIds = UploadVars.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) })
                 var tagList = [PiwigoTagData]()
                 tagIds.forEach({ tagId in

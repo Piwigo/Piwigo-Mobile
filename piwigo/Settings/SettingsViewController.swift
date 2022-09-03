@@ -1670,7 +1670,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearTagsAction = UIAlertAction(title: "Clear All Tags",
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
-                    TagsProvider().clearTags()
+                    TagProvider().clearTags()
                 })
                 alert.addAction(clearTagsAction)
                 
@@ -1685,7 +1685,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
                                                        style: .default, handler: { action in
                     // Delete all upload requests in the main thread
-                    UploadsProvider().clearUploads()
+                    UploadProvider().clearUploads()
                 })
                 alert.addAction(clearUploadsAction)
                 #endif

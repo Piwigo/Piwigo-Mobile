@@ -21,14 +21,10 @@ class TagSelectorViewController: UITableViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
 
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
-        provider.fetchedNonAdminResultsControllerDelegate = self
+    // MARK: - Core Data Providers
+    private lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider()
+        provider.fetchedResultsControllerDelegate = self
         return provider
     }()
     
@@ -41,7 +37,7 @@ class TagSelectorViewController: UITableViewController {
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
     private var filteredTags: [Tag] {
-        let allTags = tagsProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
+        let allTags = tagProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
         if #available(iOS 11.0, *) {
             return allTags.filterTags(for: searchQuery)
         } else {
@@ -63,7 +59,7 @@ class TagSelectorViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        tagsProvider.fetchTags(asAdmin: false) { error in
+        tagProvider.fetchTags(asAdmin: false) { error in
             DispatchQueue.main.async { [self] in
                 guard let error = error else { return }
 

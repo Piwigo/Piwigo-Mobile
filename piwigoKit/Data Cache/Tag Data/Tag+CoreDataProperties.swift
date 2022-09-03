@@ -13,7 +13,7 @@ import CoreData
 
 extension Tag {
 
-    public class func fetchRequest() -> NSFetchRequest<Tag> {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Tag> {
         return NSFetchRequest<Tag>(entityName: "Tag")
     }
 
@@ -21,6 +21,25 @@ extension Tag {
     @NSManaged public var numberOfImagesUnderTag: Int64
     @NSManaged public var tagId: Int32
     @NSManaged public var tagName: String
+    @NSManaged public var server: Server?
+    @NSManaged public var uploads: NSSet?
+
+}
+
+// MARK: Generated accessors for uploads
+extension Tag {
+
+    @objc(addUploadsObject:)
+    @NSManaged public func addToUploads(_ value: Upload)
+
+    @objc(removeUploadsObject:)
+    @NSManaged public func removeFromUploads(_ value: Upload)
+
+    @objc(addUploads:)
+    @NSManaged public func addToUploads(_ values: NSSet)
+
+    @objc(removeUploads:)
+    @NSManaged public func removeFromUploads(_ values: NSSet)
 
 }
 

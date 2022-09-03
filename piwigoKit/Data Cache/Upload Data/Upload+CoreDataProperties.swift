@@ -2,10 +2,8 @@
 //  Upload+CoreDataProperties.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 26/02/2021.
-//  Copyright © 2021 Piwigo.org. All rights reserved.
-//
-//  Properties of the Upload entity.
+//  Created by Eddy Lelièvre-Berna on 03/09/2022.
+//  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
 import Foundation
@@ -13,7 +11,7 @@ import CoreData
 
 extension Upload {
 
-    public class func fetchRequest() -> NSFetchRequest<Upload> {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Upload> {
         return NSFetchRequest<Upload>(entityName: "Upload")
     }
 
@@ -41,9 +39,26 @@ extension Upload {
     @NSManaged public var requestSectionKey: String
     @NSManaged public var requestState: Int16
     @NSManaged public var resizeImageOnUpload: Bool
-    @NSManaged public var serverFileTypes: String
-    @NSManaged public var serverPath: String
     @NSManaged public var stripGPSdataOnUpload: Bool
-    @NSManaged public var tagIds: String
     @NSManaged public var markedForAutoUpload: Bool
+    @NSManaged public var tags: Set<Tag>?
+    @NSManaged public var user: User?
+
+}
+
+// MARK: Generated accessors for tags
+extension Upload {
+
+    @objc(addTagsObject:)
+    @NSManaged public func addToTags(_ value: Tag)
+
+    @objc(removeTagsObject:)
+    @NSManaged public func removeFromTags(_ value: Tag)
+
+    @objc(addTags:)
+    @NSManaged public func addToTags(_ values: NSSet)
+
+    @objc(removeTags:)
+    @NSManaged public func removeFromTags(_ values: NSSet)
+
 }
