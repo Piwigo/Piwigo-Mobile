@@ -1678,7 +1678,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearLocationsAction = UIAlertAction(title: titleClearLocations,
                                                          style: .default, handler: { action in
                     // Delete all locations in background queue
-                    LocationsProvider().clearLocations()
+                    LocationProvider.shared.clearLocations()
                 })
                 alert.addAction(clearLocationsAction)
                 

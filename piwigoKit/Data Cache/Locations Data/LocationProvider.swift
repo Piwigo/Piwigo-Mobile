@@ -1,11 +1,11 @@
 //
-//  LocationsProvider.swift
+//  LocationProvider.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 17/04/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
-//  A class to fetch data from the remote server and save it to the Core Data store.
+
 
 import CoreData
 import CoreLocation
@@ -14,8 +14,13 @@ let kPiwigoMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
-public class LocationsProvider: NSObject {
+public class LocationProvider: NSObject {
     
+    // MARK: - Singleton
+    public static let shared = LocationProvider()
+    
+    
+    // MARK: - Initialisation
     public override init() {
         // Prepare list of operations
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
@@ -24,7 +29,6 @@ public class LocationsProvider: NSObject {
         queuedLocations = []
     }
     
-    // Initialisation
     private var geocoder = CLGeocoder()
     private var queue = OperationQueue()
     private var queuedLocations: [LocationProperties]
@@ -239,7 +243,7 @@ public class LocationsProvider: NSObject {
     public func clearLocations() {
         
         // Create a fetch request for the Tag entity
-        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+        let fetchRequest = Location.fetchRequest()
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
@@ -263,7 +267,7 @@ public class LocationsProvider: NSObject {
         }
 
         // Create a fetch request for the location
-        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+        let fetchRequest = Location.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
                                         NSSortDescriptor(key: "longitude", ascending: true)]
         let deltaLatitude = getDeltaLatitude(for: location.coordinate.latitude, radius: location.horizontalAccuracy)
@@ -278,7 +282,7 @@ public class LocationsProvider: NSObject {
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.mainContext,
+                                            managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         
         // Perform the fetch.
@@ -359,13 +363,13 @@ public class LocationsProvider: NSObject {
     public lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
         
         // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+        let fetchRequest = Location.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
                                         NSSortDescriptor(key: "longitude", ascending: true)]
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: self.mainContext,
+                                            managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         
         // Perform the fetch.

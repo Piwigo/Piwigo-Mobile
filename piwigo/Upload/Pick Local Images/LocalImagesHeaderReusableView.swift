@@ -111,7 +111,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationsProvider().getPlaceName(for: location) else {
+        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
             return
