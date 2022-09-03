@@ -77,7 +77,7 @@
     <object type="XDDEVRELATIONSHIPMAPPING" id="z109">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">user</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z134"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z110">
         <attribute name="name" type="string">photoQuality</attribute>
@@ -94,7 +94,7 @@
     <object type="XDDEVRELATIONSHIPMAPPING" id="z113">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">uploads</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z131"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z114">
         <attribute name="name" type="string">imageId</attribute>
@@ -137,7 +137,7 @@
     <object type="XDDEVRELATIONSHIPMAPPING" id="z122">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">tags</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z134"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z123">
         <attribute name="name" type="string">requestError</attribute>
@@ -180,8 +180,8 @@
         <attribute name="destinationname" type="string">Tag</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z149 z142 z146 z150"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z113 z151"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z149 z150 z142 z146"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z132">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
@@ -200,8 +200,8 @@
         <attribute name="destinationname" type="string">Upload</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z147"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z141 z114 z116 z144 z106 z128 z118 z112 z108 z136 z110 z104 z119 z120 z125 z111 z126 z140 z135 z154 z123 z130 z103 z127 z121 z105"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z109 z122"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z125 z140 z154 z127 z106 z123 z108 z144 z119 z104 z111 z130 z121 z128 z135 z114 z136 z120 z126 z141 z103 z105 z118 z112 z116 z110"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z135">
         <attribute name="name" type="string">resizeImageOnUpload</attribute>
@@ -283,7 +283,7 @@ cxIAAYagXxAPTlNLZXllZEFyY2hpdmVy0QAIAAlUcm9vdIABrxEFWgALAAwAGwA3ADgAOQBJAEoASwBM
     <object type="XDDEVRELATIONSHIPMAPPING" id="z151">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">server</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z131"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z152">
         <attribute name="autogenerateexpression" type="bool">1</attribute>

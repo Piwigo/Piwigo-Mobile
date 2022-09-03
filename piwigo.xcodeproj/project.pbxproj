@@ -1028,9 +1028,9 @@
 		AD129E6328C34F4E007A2A52 /* Migration Tools */ = {
 			isa = PBXGroup;
 			children = (
+				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD98E52D28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
