@@ -212,6 +212,19 @@ public class DataController: NSObject {
         }
     }
 
+    
+    // MARK: - Core Data Saving
+    public func saveMainContext() {
+        // Anything to save?
+        guard mainContext.hasChanges else { return }
+
+        do {
+            try mainContext.save()
+        } catch let error as NSError {
+            fatalError("Unresolved error \(error), \(error.userInfo)")
+        }
+    }
+
 
     //MARK: - Core Data Directories
     // "Library/Application Support/Piwigo" inside the group container.

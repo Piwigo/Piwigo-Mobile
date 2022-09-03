@@ -260,7 +260,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
 
         // Save changes in the app's managed object context when the app transitions to the background.
-        try? DataController.shared.mainContext.save()
+        DataController.shared.saveMainContext()
         
         // Disable network activity indicator
         AFNetworkActivityIndicatorManager.shared().isEnabled = false

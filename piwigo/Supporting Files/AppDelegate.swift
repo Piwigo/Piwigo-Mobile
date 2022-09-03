@@ -241,7 +241,7 @@ import piwigoKit
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
         // Save cached data in the main thread
-        try? DataController.shared.mainContext.save()
+        DataController.shared.saveMainContext()
 
         // Disable network activity indicator
         AFNetworkActivityIndicatorManager.shared().isEnabled = false
@@ -259,7 +259,7 @@ import piwigoKit
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
         // Save cached data in the main thread
-        try? DataController.shared.mainContext.save()
+        DataController.shared.saveMainContext()
 
         // Cancel tasks and close sessions
         NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
@@ -400,7 +400,7 @@ import piwigoKit
             task.setTaskCompleted(success: true)
             // Save cached data in the main thread
             DispatchQueue.main.async {
-                try? DataController.shared.mainContext.save()
+                DataController.shared.saveMainContext()
             }
         }
 

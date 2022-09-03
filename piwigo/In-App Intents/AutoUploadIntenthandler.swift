@@ -147,7 +147,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         lastOperation.completionBlock = {
             // Save cached data in the main thread
             DispatchQueue.main.async {
-                try? DataController.shared.mainContext.save()
+                DataController.shared.saveMainContext()
             }
             debugPrint("    > In-app intent completed with success.")
         }

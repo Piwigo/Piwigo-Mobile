@@ -171,7 +171,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                     debugPrint("  > Task completed with success.")
                     // Save cached data in the main thread
                     DispatchQueue.main.async {
-                        try? DataController.shared.mainContext.save()
+                        DataController.shared.saveMainContext()
                     }
                 }
 
