@@ -229,21 +229,21 @@ class AlbumUtilities: NSObject {
                 albumData.albumId = id
                 albumData.name = NetworkUtilities.utf8mb4String(from: category.name ?? "No Name")
                 albumData.comment = NetworkUtilities.utf8mb4String(from: category.comment ?? "")
-                
+                albumData.globalRank = CGFloat(Float(category.globalRank ?? "") ?? 0.0)
+
                 // When "id_uppercat" is null or not supplied: album at the root
                 if let upperCat = category.upperCat {
                     albumData.parentAlbumId = Int(upperCat) ?? NSNotFound
                 } else {
                     albumData.parentAlbumId = 0
                 }
-                if let upperCats = category.uppercats?.components(separatedBy: ",") {
+                if let upperCats = category.upperCats?.components(separatedBy: ",") {
                     albumData.upperCategories = upperCats
                 } else {
                     albumData.upperCategories = []
                 }
                 
-                // Rank, number of images and sub-albums
-                albumData.globalRank = CGFloat(Float(category.globalRank ?? "") ?? 0.0)
+                // Number of images and sub-albums
                 albumData.numberOfImages = category.nbImages ?? 0
                 albumData.totalNumberOfImages = category.totalNbImages ?? 0
                 albumData.numberOfSubCategories = category.nbCategories ?? 0

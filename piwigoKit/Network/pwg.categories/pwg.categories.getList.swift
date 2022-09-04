@@ -82,42 +82,64 @@ public struct CategoriesGetListJSON: Decodable {
 // MARK: - Category
 public struct Album: Decodable
 {
+    // The following data is returned by pwg.categories.getList
     public let id: Int?                     // 32
-
-    // The following data is returned by pwg.images.getInfo
     public let name: String?                // "Insects & Spiders"
-    public let uppercats: String?           // "32"
-    public let globalRank: String?          // "1"
-    public let url: String?                 // "https:…"
-    public let pageUrl: String?             // "https:…"
-    public let permalink: String?           // null
-
-    // The following additional data is returned by community.categories.getList
     public let comment: String?             // "…"
+//    public let status: String?              // "public"
+    public let globalRank: String?          // "1"
+
+    public let upperCat: String?            // "41"
+    public let upperCats: String?           // "32"
+
     public let nbImages: Int?               // 6
     public let totalNbImages: Int?          // 6
-    public let dateLast: String?            // "yyyy-MM-dd HH:mm:ss"
-    public let maxDateLast: String?         // "yyyy-MM-dd HH:mm:ss"
     public let nbCategories: Int?           // 0
 
-    // The following additional data is returned by pwg.categories.getList
-    public let upperCat: String?            // "41"
+//    public let permalink: String?           // "insects-spiders"
+//    public let pageUrl: String?             // "https:…"
     public let thumbnailId: String?         // "236"
     public let thumbnailUrl: String?        // "https:…"
 
+    public let dateLast: String?            // "yyyy-MM-dd HH:mm:ss"
+//    public let maxDateLast: String?         // "yyyy-MM-dd HH:mm:ss"
+
+    // The following data is returned by community.categories.getList
+//    public let id: Int?                     // 32
+//    public let name: String?                // "Insects & Spiders"
+//    public let comment: String?             // "…"
+//    public let globalRank: String?          // "1"
+
+//    public let uppercats: String?           // "32"
+
+//    public let nbImages: Int?               // 6
+//    public let totalNbImages: Int?          // 6
+//    public let nbCategories: Int?           // 0
+
+//    public let permalink: String?           // null
+
+//    public let dateLast: String?            // "yyyy-MM-dd HH:mm:ss"
+//    public let maxDateLast: String?         // "yyyy-MM-dd HH:mm:ss"
+
+    // The following additional data is returned by pwg.categories.getList
+
     public enum CodingKeys: String, CodingKey {
-        case id, name, permalink, uppercats
+        case id, name, comment //, status
         case globalRank = "global_rank"
-        case url
-        case pageUrl = "page_url"
-        case comment
+        
+        case upperCat = "id_uppercat"
+        case upperCats = "uppercats"
+        
         case nbImages = "nb_images"
         case totalNbImages = "total_nb_images"
-        case dateLast = "date_last"
-        case maxDateLast = "max_date_last"
         case nbCategories = "nb_categories"
-        case upperCat = "id_uppercat"
+
+//        case permalink
+//        case pageUrl = "url"
         case thumbnailId = "representative_picture_id"
         case thumbnailUrl = "tn_url"
+
+        case dateLast = "date_last"
+//        case maxDateLast = "max_date_last"
     }
 }
