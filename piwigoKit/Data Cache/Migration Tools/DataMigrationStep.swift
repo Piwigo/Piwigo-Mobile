@@ -55,7 +55,8 @@ struct DataMigrationStep {
     
     private static func customMappingModel(fromSourceModel sourceModel: NSManagedObjectModel,
                                            toDestinationModel destinationModel: NSManagedObjectModel) -> NSMappingModel? {
-        return NSMappingModel(from: [Bundle.main], forSourceModel: sourceModel,
+        let mainBundle = Bundle(for: DataController.self)
+        return NSMappingModel(from: [mainBundle], forSourceModel: sourceModel,
                               destinationModel: destinationModel)
     }
 }
