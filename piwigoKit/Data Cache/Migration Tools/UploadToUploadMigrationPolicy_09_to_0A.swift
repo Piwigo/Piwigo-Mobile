@@ -8,7 +8,7 @@
 
 import CoreData
 
-let userErrorDomain = "User Account Migration"
+let uploadErrorDomain = "Upload Migration"
 
 class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
     
@@ -44,13 +44,13 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
                     } else {
                         let message = "Attribute destination not configured properly!"
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: userErrorDomain, code: 0, userInfo: userInfo)
+                        throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: userErrorDomain, code: 0, userInfo: userInfo)
+                throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
             }
         }
 
