@@ -19,27 +19,30 @@ let tagErrorDomain = "Tag Migration"
  - Associate source instance with destination instance
 */
 class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
-    
-    // MARK: - Constants
-    let serverKey = "currentServer"
 
-    
-    // MARK: - Core Data Providers
-    private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider()
-        return provider
-    }()
-
-
-    // MARK: - Create Destination Instances
+    /**
+     Creates a Server instance of the currently used server before migrating Tag and Upload entities.
+     */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
-        // Initialise manager's userInfo with instance of current server
-        if let server = serverProvider.getServerObject(with: manager.destinationContext) {
-            let userInfo = [serverKey : server]
-            manager.userInfo = userInfo
+        // Check current server path
+        guard let _ = URL(string: NetworkVars.serverPath) else {
+            // Should never happen — discard this record
+            return
         }
+
+        // Create instance for the currently used server
+        let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
+        let newServer = Server(entity: description!, insertInto: manager.destinationContext)
+        newServer.setValue(NetworkVars.serverPath, forKey: "path")
+        newServer.setValue(UploadVars.serverFileTypes, forKey: "fileTypes")
+
+        // Store new server instance in userInfo for later usage.
+        manager.userInfo = [NetworkVars.serverPath : newServer]
     }
     
+    /**
+     Creates new Tag and sets its attributes from the old Tag instance.
+     */
     override func createDestinationInstances(forSource sInstance: NSManagedObject,
                                              in mapping: NSEntityMapping,
                                              manager: NSMigrationManager) throws {
@@ -70,7 +73,7 @@ class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             }
         }
 
-        // Most of the attribute migrations are performed using the expressions defined in the mapping model.
+        // The attribute migrations are performed using the expressions defined in the mapping model.
         try traversePropertyMappings { propertyMapping, destinationName in
             // Retrieve source value expression
             guard let valueExpression = propertyMapping.valueExpression else { return }
@@ -80,19 +83,45 @@ class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             // Set attribute value
             newTag.setValue(destinationValue, forKey: destinationName)
         }
-
-        // Check current server path
-        guard let _ = URL(string: NetworkVars.serverPath) else {
-            // Should never happen — discard this record
+        
+        // Associate new Tag to old one
+//        print("••> Tag to Tag migration:")
+//        print("    old Tag: \(sInstance)")
+//        print("    new Tag: \(newTag)")
+        manager.associate(sourceInstance: sInstance,
+                          withDestinationInstance: newTag,
+                          for: mapping)
+    }
+    
+    /**
+     Called once new instances of Tags and Uploads have been created.
+     - Adds relationship between a Tag and the current Server.
+     - Adds relationship between a Tag and the Upload requests.
+     */
+    override func createRelationships(forDestination dInstance: NSManagedObject,
+                                      in mapping: NSEntityMapping,
+                                      manager: NSMigrationManager) throws {
+        // Retrieve Server instance common to all tags
+        guard let userInfo = manager.userInfo,
+              let newServer = userInfo[NetworkVars.serverPath] as? NSManagedObject else {
             return
         }
         
-        // Should we add this server to the store?
-        if let server = manager.userInfo?[AnyHashable(serverKey)] as? Server {
-            newTag.setValue(server, forKey: "server")
-        }
+        // Add relationship from Tag to Server
+        // Core Data creates automatically the inverse relationship
+        dInstance.setValue(newServer, forKey: "server")
+
+        // Add relationship from Tag to Upload if any
+        guard let tagId = dInstance.value(forKey: "tagId") as? Int32 else { return }
+        let tagIdStr = String(tagId)
+        let oldUploads = manager.sourceModel.entities.filter({$0.name == "Upload"})
+            .filter({
+                guard let tagIds = $0.value(forKey: "tagIds") as? String else { return false }
+                return tagIds.components(separatedBy: ",").contains(tagIdStr)
+            })
+        dInstance.setValue(Set(oldUploads), forKey: "uploads")
         
-        // Associate new Server object to Upload request
-        manager.associate(sourceInstance: sInstance, withDestinationInstance: newTag, for: mapping)
+        debugPrint(newServer)
+        debugPrint(dInstance)
     }
 }

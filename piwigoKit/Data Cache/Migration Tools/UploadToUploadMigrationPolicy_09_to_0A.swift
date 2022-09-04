@@ -20,19 +20,9 @@ let userErrorDomain = "User Account Migration"
 */
 class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
     
-    // MARK: - Core Data Providers
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
-        return provider
-    }()
-
-    private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
-        return provider
-    }()
-
-
-    // MARK: - Create Destination Instances
+    /**
+     Creates new Upload request and sets its attributes from the old Upload instance.
+     */
     override func createDestinationInstances(forSource sInstance: NSManagedObject,
                                              in mapping: NSEntityMapping,
                                              manager: NSMigrationManager) throws {
@@ -77,37 +67,60 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         // Check server data stored in the source instance
         guard let serverPath = sInstance.value(forKeyPath: "serverPath") as? String,
               let _ = URL(string: serverPath),
-              let username = sInstance.value(forKeyPath: "username") as? String,
-              username.isEmpty == false else {
-            // Should never happen — discard this record
+              NetworkVars.username.isEmpty == false else {
+            // If the user requested uploads to the non-current server,
+            // we discard this record because we do not know the username of the account :=(
+            debugPrint("••> Error: Upload request instance w/o serverPath or username!")
             return
         }
         
-        // Should we add this user's account to the store?
-        let serverKey = username + " @ " + serverPath
-        if let user = manager.userInfo?[AnyHashable(serverKey)] as? User {
+        // Retrieve the corresponding user account if possible
+        guard let userInfo = manager.userInfo else { return }
+        let userAccountKey = NetworkVars.username + " @ " + serverPath
+        if let user = userInfo[userAccountKey] as? NSManagedObject {
+            // Add relationship from Upload to User
+            // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
-        } else {
+        }
+        else {
             // Create User destination instance
             let description = NSEntityDescription.entity(forEntityName: "User", in: manager.destinationContext)
             let newUser = User(entity: description!, insertInto: manager.destinationContext)
+            newUser.setValue(userAccountKey, forKey: "name")
+            newUser.setValue(NetworkVars.username, forKey: "username")
+            if let dateCreated = sInstance.value(forKey: "requestDate") as? TimeInterval {
+                newUser.setValue(dateCreated, forKey: "lastUsed")
+            }
+
+            // Should we also create a server destination instance?
+            if let server = userInfo[serverPath] {
+                // Add relationship from User to Server
+                // Core Data creates automatically the inverse relationship
+                newUser.setValue(server, forKey: "server")
+            }
+            else {
+                // Create instance for this server
+                let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
+                let newServer = Server(entity: description!, insertInto: manager.destinationContext)
+                newServer.setValue(serverPath, forKey: "path")
+                newServer.setValue(UploadVars.serverFileTypes, forKey: "fileTypes")
+
+                // Add relationship from User to Server
+                // Core Data creates automatically the inverse relationship
+                newUser.setValue(newServer, forKey: "server")
+
+                // Store new server instance in userInfo for later usage.
+                manager.userInfo = [NetworkVars.serverPath : newServer]
+            }
             
-            // Get user instance
-            let server = userProvider.getUserAccountObject(with: manager.destinationContext,
-                                                           atPath: serverPath, withUsername: username)
-            // Get tag instances
-            let tags = tagProvider.getTags(withIDs: sInstance.value(forKeyPath: "tagIds") as! String,
-                                           taskContext: manager.destinationContext)
-            // Set key/value pairs
-            newUpload.setValue(username, forKey: "username")
-            newUpload.setValue(server, forKey: "server")
-            newUpload.setValue(tags, forKey: "tags")
-            
-            // Store new user account instance in userInfo
-            manager.userInfo?[AnyHashable(serverKey)] = newUser
+            // Store new user account instance in userInfo for later usage.
+            manager.userInfo = [userAccountKey : newUser]
         }
         
         // Associate new Server object to Upload request
+        print("••> Upload to Upload migration:")
+        print("    old Upload: \(sInstance)")
+        print("    new Upload: \(newUpload)")
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
     }
 }

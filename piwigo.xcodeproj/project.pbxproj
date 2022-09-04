@@ -36,6 +36,7 @@
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */; };
+		AD129E6828C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		AD18C73C27F1005B002CD05C /* UIApplication+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73B27F1005B002CD05C /* UIApplication+AppTools.swift */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
@@ -194,7 +195,6 @@
 		AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD98DEB527C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
 		AD98E52628BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */; };
-		AD98E52E28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD98E52D28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel */; };
 		AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53028BB8C3A008C846A /* User+CoreDataClass.swift */; };
 		AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53128BB8C3A008C846A /* User+CoreDataProperties.swift */; };
 		AD98E53528BBB50C008C846A /* UserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53428BBB50C008C846A /* UserError.swift */; };
@@ -461,6 +461,7 @@
 		AD11E46224A930B000C8876F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD11E46824A9319C00C8876F /* pwg.images.upload.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload.json; sourceTree = "<group>"; };
 		AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+AppTools.swift"; sourceTree = "<group>"; };
+		AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		AD18C73B27F1005B002CD05C /* UIApplication+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppTools.swift"; sourceTree = "<group>"; };
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
@@ -676,8 +677,7 @@
 		AD987633262606C600B964C5 /* UIViewController+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppTools.swift"; sourceTree = "<group>"; };
 		AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.getStatus.json; sourceTree = "<group>"; };
 		AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.getStatus.swift; sourceTree = "<group>"; };
-		AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagToTagMigrationPolicy_09_to_0A.swift; sourceTree = "<group>"; };
-		AD98E52D28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
+		AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagToTagMigrationPolicy_09_to_0A.swift; sourceTree = "<group>"; };
 		AD98E53028BB8C3A008C846A /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		AD98E53128BB8C3A008C846A /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AD98E53428BBB50C008C846A /* UserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserError.swift; sourceTree = "<group>"; };
@@ -846,7 +846,7 @@
 		ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADF35E7B28B296D2009F3ECE /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
 		ADF35E7D28B29A06009F3ECE /* ServerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
-		ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_09_to_0A.swift; sourceTree = "<group>"; };
+		ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_09_to_0A.swift; sourceTree = "<group>"; };
 		ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearClipboardViewController.swift; sourceTree = "<group>"; };
 		ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClearClipboardViewController.storyboard; sourceTree = "<group>"; };
@@ -1031,7 +1031,7 @@
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				AD98E52D28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel */,
+				AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 			);
@@ -1388,8 +1388,8 @@
 				AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
 				ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */,
-				AD129E6428C34F8E007A2A52 /* Extensions */,
 				AD129E6328C34F4E007A2A52 /* Migration Tools */,
+				AD129E6428C34F8E007A2A52 /* Extensions */,
 				AD41BEC8223E9BB200A5DEE3 /* Location Data */,
 				ADF35E7628B2834F009F3ECE /* Server Data */,
 				AD98E52F28BB8B34008C846A /* User Data */,
@@ -2396,6 +2396,7 @@
 				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
 				ADF35E8428B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift in Sources */,
 				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
+				AD129E6828C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */,
 				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
 				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
@@ -2428,7 +2429,6 @@
 				AD25CA7A286B932000D574C7 /* NSManagedObjectModel+AppTools.swift in Sources */,
 				AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */,
 				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
-				AD98E52E28BB89EA008C846A /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
