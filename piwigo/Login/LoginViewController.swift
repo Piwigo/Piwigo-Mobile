@@ -38,6 +38,11 @@ class LoginViewController: UIViewController {
         return provider
     }()
 
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -290,6 +295,10 @@ class LoginViewController: UIViewController {
                 withUsername: username, password: password,
                 completion: { [self] in
                     // Session now opened
+                    // Add User Account instance to persistent cache (if necessary)
+                    DispatchQueue.global(qos: .background).async { [unowned self] in
+                        let _ = self.userProvider.getUserAccountObject(with: DataController.shared.backgroundContext)
+                    }
                     // First determine user rights if Community extension installed
                     getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
 

@@ -8,7 +8,7 @@
 
 import CoreData
 
-class UserProvider: NSObject {
+public class UserProvider: NSObject {
     
     // MARK: - Core Data Providers
     private lazy var serverProvider: ServerProvider = {
@@ -24,9 +24,9 @@ class UserProvider: NSObject {
      - Will create a Server object if it does not already exist.
      - Will create a User Account object if it does not already exist.
      */
-    func getUserAccountObject(with taskContext: NSManagedObjectContext,
-                              atPath path: String = NetworkVars.serverPath,
-                              withUsername username: String = NetworkVars.username) -> User? {
+    public func getUserAccountObject(with taskContext: NSManagedObjectContext,
+                                     atPath path: String = NetworkVars.serverPath,
+                                     withUsername username: String = NetworkVars.username) -> User? {
         // Initialisation
         var currentUser: User?
         
