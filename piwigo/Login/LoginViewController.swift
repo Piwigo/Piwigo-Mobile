@@ -32,6 +32,13 @@ class LoginViewController: UIViewController {
     }
 
     
+    // MARK: - Core Data Providers
+    private lazy var serverProvider: ServerProvider = {
+        let provider : ServerProvider = ServerProvider()
+        return provider
+    }()
+
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,7 +157,11 @@ class LoginViewController: UIViewController {
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
         LoginUtilities.requestServerMethods { [self] in
-            // Known methods, pursue logging in…
+            // Add Server instance to persistent cache (if necessary)
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                let _ = self.serverProvider.getServerObject(with: DataController.shared.backgroundContext)
+            }
+            // Pursue logging in…
             performLogin()
         } didRejectCertificate: { [self] error in
             // The SSL certificate is not trusted

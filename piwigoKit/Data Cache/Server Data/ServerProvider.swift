@@ -8,15 +8,15 @@
 
 import CoreData
 
-class ServerProvider: NSObject {
+public class ServerProvider: NSObject {
     
     // MARK: - Get/Set Server Object
     /**
      Returns the Server object at path.
      Will create the Server object if it does not exist before returning it.
      */
-    func getServerObject(with taskContext: NSManagedObjectContext,
-                         atPath path:String = NetworkVars.serverPath) -> Server? {
+    public func getServerObject(with taskContext: NSManagedObjectContext,
+                                atPath path:String = NetworkVars.serverPath) -> Server? {
         // Initialisation
         var currentServer: Server?
         
