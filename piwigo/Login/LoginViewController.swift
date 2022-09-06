@@ -164,7 +164,7 @@ class LoginViewController: UIViewController {
         LoginUtilities.requestServerMethods { [self] in
             // Add Server instance to persistent cache (if necessary)
             DispatchQueue.global(qos: .background).async { [unowned self] in
-                let _ = self.serverProvider.getServerObject(with: DataController.shared.backgroundContext)
+                let _ = self.serverProvider.getServerObject(with: DataController.shared.bckgContext)
             }
             // Pursue logging in…
             performLogin()
@@ -297,7 +297,7 @@ class LoginViewController: UIViewController {
                     // Session now opened
                     // Add User Account instance to persistent cache (if necessary)
                     DispatchQueue.global(qos: .background).async { [unowned self] in
-                        let _ = self.userProvider.getUserAccountObject(with: DataController.shared.backgroundContext)
+                        let _ = self.userProvider.getUserAccountObject(with: DataController.shared.bckgContext)
                     }
                     // First determine user rights if Community extension installed
                     getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })

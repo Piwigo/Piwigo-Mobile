@@ -18,7 +18,7 @@ public class TagProvider: NSObject {
     }()
 
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.backgroundContext
+        let context:NSManagedObjectContext = DataController.shared.bckgContext
         return context
     }()
 

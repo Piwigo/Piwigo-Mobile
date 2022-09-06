@@ -378,7 +378,7 @@ public class UploadManager: NSObject {
     
     public func resumeTransfers() -> Void {
         // Get active upload tasks and initialise isUploading
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
         let frgdSession: URLSession = UploadSessions.shared.frgdSession
         let bckgSession: URLSession = UploadSessions.shared.bckgSession
 
@@ -485,7 +485,7 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1024,7 +1024,7 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1161,7 +1161,7 @@ public class UploadManager: NSObject {
         
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -1280,7 +1280,7 @@ public class UploadManager: NSObject {
         completedRequests.forEach { (uploadID) in
             // Retrieve upload request properties
             var uploadProperties: UploadProperties!
-            let taskContext = DataController.shared.backgroundContext
+            let taskContext = DataController.shared.bckgContext
             do {
                 let upload = try taskContext.existingObject(with: uploadID)
                 if upload.isFault {
@@ -1368,7 +1368,7 @@ public class UploadManager: NSObject {
         print("••> Resume upload operations…")
 
         // Get active upload tasks
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
         let uploadSession: URLSession = UploadSessions.shared.bckgSession
         uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
@@ -1474,7 +1474,7 @@ public class UploadManager: NSObject {
         var uploadsToUpdate = [UploadProperties]()
         
         // Create a private queue context.
-        let taskContext = DataController.shared.backgroundContext
+        let taskContext = DataController.shared.bckgContext
 
         // Loop over the failed uploads
         for failedUploadID in failedUploads {

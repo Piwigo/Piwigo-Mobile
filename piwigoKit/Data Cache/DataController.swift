@@ -46,12 +46,12 @@ public class DataController: NSObject {
         return context
     }()
     
-    public lazy var backgroundContext: NSManagedObjectContext = {
+    public var bckgContext: NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.shouldDeleteInaccessibleFaults = true
         return context
-    }()
+    }
     
 
     // MARK: - Core Data Loading

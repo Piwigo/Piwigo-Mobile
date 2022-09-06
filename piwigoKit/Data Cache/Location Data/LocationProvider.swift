@@ -159,7 +159,7 @@ public class LocationProvider: NSObject {
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
-                        let taskContext = DataController.shared.backgroundContext
+                        let taskContext = DataController.shared.bckgContext
                                 
                         // Add new location to CoreData store
                         let newLocation = LocationProperties(coordinate: location.coordinate,
