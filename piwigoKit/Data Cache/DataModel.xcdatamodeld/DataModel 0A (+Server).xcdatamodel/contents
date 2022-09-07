@@ -8,8 +8,9 @@
         <attribute name="streetName" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="Server" representedClassName=".Server" syncable="YES">
-        <attribute name="fileTypes" attributeType="String" defaultValueString=""/>
+        <attribute name="fileTypes" attributeType="String" defaultValueString="jpg,jpeg,png,gif"/>
         <attribute name="isDemo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="path" attributeType="String" minValueString="0" defaultValueString=""/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Tag" inverseName="server" inverseEntity="Tag"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="User" inverseName="server" inverseEntity="User"/>
@@ -69,7 +70,7 @@
     </entity>
     <elements>
         <element name="Location" positionX="-566.4729614257812" positionY="-269.6976013183594" width="128" height="118"/>
-        <element name="Server" positionX="-556.7369384765625" positionY="44.769287109375" width="103.3634643554688" height="118"/>
+        <element name="Server" positionX="-556.7369384765625" positionY="44.769287109375" width="103.3634643554688" height="119"/>
         <element name="Tag" positionX="-381.8359374999999" positionY="-148.5090789794922" width="128" height="133"/>
         <element name="Upload" positionX="-189.45751953125" positionY="-271.2020721435547" width="128" height="463"/>
         <element name="User" positionX="-378.0614013671875" positionY="119.5408935546876" width="128" height="118"/>
