@@ -18,6 +18,7 @@ extension Server {
 
     @NSManaged public var fileTypes: String
     @NSManaged public var isDemo: Bool
+    @NSManaged public var lastUsed: TimeInterval
     @NSManaged public var path: String
     @NSManaged public var tags: Set<Tag>?
     @NSManaged public var users: Set<User>?

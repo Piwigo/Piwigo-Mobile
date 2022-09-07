@@ -16,7 +16,9 @@ public class User: NSManagedObject {
     /**
      Updates the attributes of a User Account instance.
      */
-    func update(username: String, onServer server: Server, withName name: String = "") throws {
+    func update(username: String, onServer server: Server, withName name: String = "",
+                lastUsed: TimeInterval = Date().timeIntervalSinceReferenceDate) throws {
+        
         guard username.isEmpty == false else {
             throw UserError.emptyUsername
         }
@@ -25,5 +27,7 @@ public class User: NSManagedObject {
 
         // When the name is not provided, build name from the path
         self.name = name.isEmpty ? username + " @ " + server.path : name
+        
+        self.lastUsed = lastUsed
     }
 }

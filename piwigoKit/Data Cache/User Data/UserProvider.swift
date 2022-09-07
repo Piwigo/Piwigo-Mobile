@@ -24,9 +24,9 @@ public class UserProvider: NSObject {
      - Will create a Server object if it does not already exist.
      - Will create a User Account object if it does not already exist.
      */
-    public func getUserAccountObject(with taskContext: NSManagedObjectContext,
-                                     atPath path: String = NetworkVars.serverPath,
-                                     withUsername username: String = NetworkVars.username) -> User? {
+    public func getUserAccount(inContext taskContext: NSManagedObjectContext,
+                               atPath path: String = NetworkVars.serverPath,
+                               withUsername username: String = NetworkVars.username) -> User? {
         // Initialisation
         var currentUser: User?
         
@@ -59,7 +59,7 @@ public class UserProvider: NSObject {
             if cachedUser.isEmpty {
                 // Get the Server managed object on the current queue context.
                 // Create a User managed object on the current queue context.
-                guard let server = serverProvider.getServerObject(with: taskContext, atPath: path),
+                guard let server = serverProvider.getServer(inContext: taskContext, atPath: path),
                       let user = NSEntityDescription.insertNewObject(forEntityName: "User",
                                                                      into: taskContext) as? User else {
                     print(UserError.creationError.localizedDescription)

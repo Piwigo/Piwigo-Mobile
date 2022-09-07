@@ -162,10 +162,6 @@ class LoginViewController: UIViewController {
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
         LoginUtilities.requestServerMethods { [self] in
-            // Add Server instance to persistent cache (if necessary)
-            DispatchQueue.global(qos: .background).async { [unowned self] in
-                let _ = self.serverProvider.getServerObject(with: DataController.shared.bckgContext)
-            }
             // Pursue logging in…
             performLogin()
         } didRejectCertificate: { [self] error in
@@ -293,11 +289,20 @@ class LoginViewController: UIViewController {
             // Perform login
             LoginUtilities.sessionLogin(
                 withUsername: username, password: password,
-                completion: { [self] in
-                    // Session now opened
-                    // Add User Account instance to persistent cache (if necessary)
-                    DispatchQueue.global(qos: .background).async { [unowned self] in
-                        let _ = self.userProvider.getUserAccountObject(with: DataController.shared.bckgContext)
+                completion: { [self] in         // Session now opened
+                    // Add User and Server objects to persistent cache if necessary
+                    DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                        let bckgContext = DataController.shared.bckgContext
+                        let user = self.userProvider.getUserAccount(inContext: bckgContext,
+                                                                    withUsername: username)
+                        let lastUsedNow = Date().timeIntervalSinceReferenceDate
+                        user?.lastUsed = lastUsedNow
+                        user?.server?.lastUsed = lastUsedNow
+                        user?.server?.fileTypes = UploadVars.serverFileTypes
+                        try? bckgContext.save()
+                        DispatchQueue.main.async {
+                            DataController.shared.saveMainContext()
+                        }
                     }
                     // First determine user rights if Community extension installed
                     getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
@@ -315,6 +320,18 @@ class LoginViewController: UIViewController {
             KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
                                              account: NetworkVars.username)
             NetworkVars.username = ""
+
+            // Add Server object to persistent cache if necessary
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                let bckgContext = DataController.shared.bckgContext
+                let server = self.serverProvider.getServer(inContext: bckgContext)
+                server?.lastUsed = Date().timeIntervalSinceReferenceDate
+                server?.fileTypes = UploadVars.serverFileTypes
+                try? bckgContext.save()
+                DispatchQueue.main.async {
+                    DataController.shared.saveMainContext()
+                }
+            }
 
             // Check Piwigo version, get token, available sizes, etc.
             getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })

@@ -49,7 +49,7 @@ public class UploadProvider: NSObject {
         }
         
         // Get current user account
-        guard let user = userProvider.getUserAccountObject(with: bckgContext) else {
+        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             return
         }
         
@@ -204,12 +204,9 @@ public class UploadProvider: NSObject {
             
             // Update cached upload
             do {
-                let user = userProvider.getUserAccountObject(with: bckgContext,
-                                                             atPath: properties.serverPath,
-                                                             withUsername: NetworkVars.username)
                 let tags = tagProvider.getTags(withIDs: properties.tagIds,
                                                taskContext: bckgContext)
-                try cachedUpload.update(with: properties, tags: tags, forUser: user!)
+                try cachedUpload.update(with: properties, tags: tags)
             }
             catch UploadError.missingData {
                 // Could not perform the update

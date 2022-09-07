@@ -51,6 +51,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
 
+    
+    // MARK: - Core Data Providers
+    private lazy var serverProvider: ServerProvider = {
+        let provider : ServerProvider = ServerProvider()
+        return provider
+    }()
+
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
 
     // MARK: - View Lifecycle
 
@@ -288,6 +300,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func loginLogout() {
         if NetworkVars.username.isEmpty {
+            // Update Server.lastUsed attributes in persistent cache
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                let bckgContext = DataController.shared.bckgContext
+                let server = self.serverProvider.getServer(inContext: bckgContext)
+                server?.lastUsed = Date().timeIntervalSinceReferenceDate
+                try? bckgContext.save()
+                DispatchQueue.main.async {
+                    DataController.shared.saveMainContext()
+                }
+            }
+
             // Clear caches and display login view
             ClearCache.closeSessionAndClearCache() { }
             return
@@ -301,7 +324,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             LoginUtilities.sessionLogout {
-                // Logout successful
+                // Update Server.lastUsed and User.lastUsed attributes in persistent cache
+                DispatchQueue.global(qos: .background).async { [unowned self] in
+                    let bckgContext = DataController.shared.bckgContext
+                    let user = self.userProvider.getUserAccount(inContext: bckgContext)
+                    let lastUsedNow = Date().timeIntervalSinceReferenceDate
+                    user?.lastUsed = lastUsedNow
+                    user?.server?.lastUsed = lastUsedNow
+                    try? bckgContext.save()
+                    DispatchQueue.main.async {
+                        DataController.shared.saveMainContext()
+                    }
+                }
+                // Close session and clear cache
                 DispatchQueue.main.async {
                     ClearCache.closeSessionAndClearCache() { }
                 }

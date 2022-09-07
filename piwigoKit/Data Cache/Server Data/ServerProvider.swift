@@ -15,8 +15,8 @@ public class ServerProvider: NSObject {
      Returns the Server object at path.
      Will create the Server object if it does not exist before returning it.
      */
-    public func getServerObject(with taskContext: NSManagedObjectContext,
-                                atPath path:String = NetworkVars.serverPath) -> Server? {
+    public func getServer(inContext taskContext: NSManagedObjectContext,
+                          atPath path:String = NetworkVars.serverPath) -> Server? {
         // Initialisation
         var currentServer: Server?
         
@@ -51,7 +51,7 @@ public class ServerProvider: NSObject {
                     return
                 }
                 
-                // Populate the Server's properties using the current server data.
+                // Populate the Server's properties using default values
                 do {
                     try server.update(withPath: path)
                     currentServer = server

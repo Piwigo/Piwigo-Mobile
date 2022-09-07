@@ -16,15 +16,18 @@ public class Server: NSManagedObject {
     /**
      Updates the attributes of a Server instance.
      */
-    func update(withPath path: String) throws {
+    func update(withPath path: String,
+                fileTypes: String = UploadVars.serverFileTypes,
+                lastUsed: TimeInterval = Date().timeIntervalSinceReferenceDate) throws {
         // Server path
+        guard path.isEmpty == false,
+              let _ = URL(string: NetworkVars.serverPath) else {
+            throw ServerError.wrongURL
+        }
         self.path = path
         
-        // Server accepted file types
-        if path == NetworkVars.serverPath {
-            self.fileTypes = UploadVars.serverFileTypes
-        } else {
-            self.fileTypes = "jpg,jpeg,png,gif"
-        }
+        // Other attributes
+        self.fileTypes = fileTypes.isEmpty ? "jpg,jpeg,png,gif" : fileTypes
+        self.lastUsed = lastUsed        // Defaults to now
     }
 }

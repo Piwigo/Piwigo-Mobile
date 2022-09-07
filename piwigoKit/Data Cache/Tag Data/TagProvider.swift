@@ -90,7 +90,7 @@ public class TagProvider: NSObject {
     private let batchSize = 256
     private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
         // Get current server object
-        guard let server = serverProvider.getServerObject(with: bckgContext) else {
+        guard let server = serverProvider.getServer(inContext: bckgContext) else {
             fatalError("Unresolved error!")
         }
         
@@ -272,7 +272,7 @@ public class TagProvider: NSObject {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                if let server = self.serverProvider.getServerObject(with: self.bckgContext),
+                if let server = self.serverProvider.getServer(inContext: self.bckgContext),
                    self.importOneBatch([newTag], from: server, asAdmin: true) {
                     completionHandler(nil)
                 } else {

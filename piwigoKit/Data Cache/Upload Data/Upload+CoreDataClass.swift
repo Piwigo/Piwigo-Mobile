@@ -16,7 +16,7 @@ public class Upload: NSManagedObject {
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
-    func update(with uploadProperties: UploadProperties, tags: [Tag], forUser user: User) throws {
+    func update(with uploadProperties: UploadProperties, tags: [Tag], forUser user: User? = nil) throws {
         
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
@@ -75,7 +75,9 @@ public class Upload: NSManagedObject {
         markedForAutoUpload = uploadProperties.markedForAutoUpload
         
         // User account
-        self.user = user
+        if let user = user {
+            self.user = user
+        }
     }
     
     /**
