@@ -38,24 +38,14 @@ class TagSelectorViewController: UITableViewController {
     var searchQuery = ""
     private var filteredTags: [Tag] {
         let allTags = tagProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
-        if #available(iOS 11.0, *) {
-            return allTags.filterTags(for: searchQuery)
-        } else {
-            return allTags
-        }
+        return allTags.filterTags(for: searchQuery)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Add search bar and prepare data source
-        if #available(iOS 11.0, *) {
-            // Initialise search bar
-            initSearchBar()
-        } else {
-            // Rebuild ABC index
-            rebuildABCindex()
-        }
+        // Initialise search bar
+        initSearchBar()
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
@@ -83,9 +73,7 @@ class TagSelectorViewController: UITableViewController {
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -121,39 +109,6 @@ class TagSelectorViewController: UITableViewController {
     }
 
 
-    // MARK: - UITableView ABC Index (before iOS 11)
-    func rebuildABCindex() {
-        // Rebuild ABC index
-        let firstCharacters = NSMutableSet(capacity: 0)
-        for tag in filteredTags {
-            firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
-        }
-        letterIndex = (firstCharacters.allObjects as! [String]).sorted()
-    }
-    
-    // Returns the titles for the sections
-    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        if #available(iOS 11.0, *) {
-            return nil
-        } else {
-            return letterIndex
-        }
-    }
-
-    // Returns the section that the table view should scroll to
-    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-
-        var newRow: Int = 0
-        for tag in filteredTags {
-            if tag.tagName.hasPrefix(title) { break }
-            newRow += 1
-        }
-        let newIndexPath = IndexPath(row: newRow, section: 0)
-        tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
-        return index
-    }
-
-    
     // MARK: - UITableView Rows & Cells
     // Return the number of sections for the table.
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -296,13 +251,5 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tagsTableView.endUpdates()
-        
-        if #available(iOS 11, *) {
-            // Use search bar
-        } else {
-            // Rebuild ABC index
-            rebuildABCindex()
-            tagsTableView.reloadSectionIndexTitles()
-        }
     }
 }

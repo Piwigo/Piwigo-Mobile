@@ -126,9 +126,7 @@ class AppLockViewController: UIViewController {
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -279,19 +277,12 @@ class AppLockViewController: UIViewController {
     
     private func configConstraints() {
         // Get the safe area width and height
-        var vertOffset = CGFloat.zero       // Used when safe area unknown i.e. before iOS 11
         var safeAreaWidth = view.bounds.size.width
         var safeAreaHeight = view.bounds.size.height
-        if #available(iOS 11.0, *) {
-            safeAreaWidth -= view.safeAreaInsets.left + view.safeAreaInsets.right
-            safeAreaHeight -= view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        } else {
-            vertOffset += UIApplication.shared.statusBarFrame.size.height
-            safeAreaHeight -= vertOffset
-        }
+        safeAreaWidth -= view.safeAreaInsets.left + view.safeAreaInsets.right
+        safeAreaHeight -= view.safeAreaInsets.top + view.safeAreaInsets.bottom
         if let nav = navigationController {
             // Remove the height of the navigation bar
-            vertOffset += nav.navigationBar.bounds.height
             safeAreaHeight -= nav.navigationBar.bounds.height
         }
 
@@ -333,25 +324,14 @@ class AppLockViewController: UIViewController {
             let mainStackHeight: CGFloat = 23*diameter/5
             safeAreaHeight -= mainStackHeight
             let topElementsHeight: CGFloat = 23.5 + 16 + 10
-            if #available(iOS 11.0, *) {
-                // Safe area known
-                titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2
-                mainStackVertOffset.constant = CGFloat.zero
-            } else {
-                // Safe area unknown
-                titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2 + vertOffset
-                mainStackVertOffset.constant = vertOffset / 2
-            }
+            titleLabelVertOffset.constant = (safeAreaHeight/2 - topElementsHeight)/2
+            mainStackVertOffset.constant = CGFloat.zero
             infoLabelMaxWidth.constant = maxWidth
             infoLabelVertOffset.constant = (safeAreaHeight/2 - height) / 2
         }
         else {
             // iPhone in landscape mode ▸ Labels and numpad side by side
-            if #available(iOS 11.0, *) {
-                mainStackVertOffset.constant = CGFloat.zero
-            } else {
-                mainStackVertOffset.constant = vertOffset / 2
-            }
+            mainStackVertOffset.constant = CGFloat.zero
             let horOffset = min(safeAreaWidth/4.0, 300.0)
             if orientation == .landscapeLeft {
                 titleLabelHorOffset.constant = horOffset

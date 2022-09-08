@@ -130,9 +130,7 @@ extension CGImageMetadata {
         dictOfKeys[kCGImageMetadataPrefixExifAux] = ImageMetadata().exifAuxPrivateProperties
         dictOfKeys[kCGImageMetadataPrefixIPTCCore] = ImageMetadata().iptcPrivateProperties
         dictOfKeys[kCGImageMetadataPrefixTIFF] = ImageMetadata().tiffPrivateProperties
-        if #available(iOS 11.3, *) {
-            dictOfKeys[kCGImageMetadataPrefixIPTCExtension] = ImageMetadata().iptcPrivateProperties
-        }
+        dictOfKeys[kCGImageMetadataPrefixIPTCExtension] = ImageMetadata().iptcPrivateProperties
         dictOfKeys[kCGImageMetadataPrefixXMPBasic] = ImageMetadata().pngPrivateProperties
 
         // Loop over all tags

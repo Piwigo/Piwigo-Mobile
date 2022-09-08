@@ -16,11 +16,8 @@ extension NSManagedObjectModel {
         let mainBundle = Bundle(for: DataController.self)
         let subdirectory = "DataModel.momd"
         
-        var omoURL: URL?
-        if #available(iOS 11, *) {
-            omoURL = mainBundle.url(forResource: version.rawValue, withExtension: "omo",
-                                    subdirectory: subdirectory) // optimized model file
-        }
+        let omoURL = mainBundle.url(forResource: version.rawValue, withExtension: "omo",
+                                subdirectory: subdirectory) // optimized model file
         let momURL = mainBundle.url(forResource: version.rawValue, withExtension: "mom",
                                     subdirectory: subdirectory)
         

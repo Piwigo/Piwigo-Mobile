@@ -121,14 +121,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            let attributesLarge = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-                NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
-            ]
-            navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
-            navigationController?.navigationBar.prefersLargeTitles = true
-        }
+        let attributesLarge = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
+        ]
+        navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()

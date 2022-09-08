@@ -157,9 +157,7 @@ class ImageViewController: UIViewController {
         ]
         navigationBar?.titleTextAttributes = attributes
         setTitleViewFromImageData()
-        if #available(iOS 11.0, *) {
-            navigationBar?.prefersLargeTitles = false
-        }
+        navigationBar?.prefersLargeTitles = false
 
         if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
@@ -573,10 +571,8 @@ class ImageViewController: UIViewController {
             navigationController?.setNavigationBarHidden(!isNavigationBarHidden, animated: true)
 
             // Display/hide home indicator
-            if #available(iOS 11, *) {
-                // Notify UIKit that this view controller updated its preference regarding the visual indicator
-                setNeedsUpdateOfHomeIndicatorAutoHidden()
-            }
+            // Notify UIKit that this view controller updated its preference regarding the visual indicator
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
 
             // Display/hide the toolbar on iPhone if required
             if isToolbarRequired {

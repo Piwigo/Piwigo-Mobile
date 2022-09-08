@@ -90,11 +90,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
             discoverBarButton?.accessibilityIdentifier = "discover"
 
-            // For iOS 11 and later: place search bar in navigation bar for root album
-            if #available(iOS 11.0, *) {
-                // Initialise search controller when displaying root album
-                initSearchBar()
-            }
+            // Place search bar in navigation bar of root album
+            initSearchBar()
         }
         
         // Initialise selection mode
@@ -134,9 +131,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             view.addSubview(imagesCollection)
             view.addConstraints(NSLayoutConstraint.constraintFillSize(imagesCollection)!)
         }
-        if #available(iOS 11.0, *) {
-            imagesCollection?.contentInsetAdjustmentBehavior = .always
-        }
+        imagesCollection?.contentInsetAdjustmentBehavior = .always
 
         // "Add" button above collection view and other buttons
         addButton = getAddButton()
@@ -267,49 +262,43 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
         ]
-        if #available(iOS 11.0, *) {
-            if categoryId == AlbumVars.shared.defaultCategory {
-                // Title
-                navigationBar?.largeTitleTextAttributes = attributesLarge
-                navigationBar?.prefersLargeTitles = true
+        if categoryId == AlbumVars.shared.defaultCategory {
+            // Title
+            navigationBar?.largeTitleTextAttributes = attributesLarge
+            navigationBar?.prefersLargeTitles = true
 
-                // Search bar
-                let searchBar = navigationItem.searchController?.searchBar
-                searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-                if #available(iOS 13.0, *) {
-                    searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
-                    searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                }
-            } else {
-                navigationBar?.titleTextAttributes = attributes
-                navigationBar?.prefersLargeTitles = false
-            }
-
+            // Search bar
+            let searchBar = navigationItem.searchController?.searchBar
+            searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
             if #available(iOS 13.0, *) {
-                let barAppearance = UINavigationBarAppearance()
-                barAppearance.configureWithTransparentBackground()
-                barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-                barAppearance.titleTextAttributes = attributes
-                barAppearance.largeTitleTextAttributes = attributesLarge
-                if categoryId != AlbumVars.shared.defaultCategory {
-                    barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
-                }
-                navigationItem.standardAppearance = barAppearance
-                navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-                navigationItem.scrollEdgeAppearance = barAppearance
-
-                let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-                toolbar?.standardAppearance = toolbarAppearance
-                if #available(iOS 15.0, *) {
-                    /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-                    /// which by default produces a transparent background, to all navigation bars.
-                    toolbar?.scrollEdgeAppearance = toolbarAppearance
-                }
+                searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
+                searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
             }
         } else {
             navigationBar?.titleTextAttributes = attributes
-            navigationBar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.3)
-            toolbar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            navigationBar?.prefersLargeTitles = false
+        }
+
+        if #available(iOS 13.0, *) {
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            barAppearance.largeTitleTextAttributes = attributesLarge
+            if categoryId != AlbumVars.shared.defaultCategory {
+                barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
+            }
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+
+            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+            toolbar?.standardAppearance = toolbarAppearance
+            if #available(iOS 15.0, *) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar?.scrollEdgeAppearance = toolbarAppearance
+            }
         }
 
         // Collection view
@@ -1308,14 +1297,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         categoryId = AlbumVars.shared.defaultCategory
 
         // Add/remove search bar
-        if #available(iOS 11.0, *) {
-            if categoryId == 0 {
-                // Initialise search bar
-                initSearchBar()
-            } else {
-                // Remove search bar from the navigation bar
-                navigationItem.searchController = nil
-            }
+        if categoryId == 0 {
+            // Initialise search bar
+            initSearchBar()
+        } else {
+            // Remove search bar from the navigation bar
+            navigationItem.searchController = nil
         }
 
         // Initialise data source

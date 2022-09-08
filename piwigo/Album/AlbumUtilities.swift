@@ -609,10 +609,8 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Common Methods
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
         var pageSize: CGSize = view?.frame.size ?? UIScreen.main.bounds.size
-        if #available(iOS 11.0, *) {
-            pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
-            pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
-        }
+        pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
+        pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
         return pageSize
     }
     

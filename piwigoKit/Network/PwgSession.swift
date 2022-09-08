@@ -44,9 +44,7 @@ public class PwgSession: NSObject {
         config.httpCookieAcceptPolicy = .always
         
         /// Allows a seamless handover from Wi-Fi to cellular
-        if #available(iOS 11.0, *) {
-            config.multipathServiceType = .handover
-        }
+        config.multipathServiceType = .handover
         
         /// Create the main session and set its description
         let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
@@ -177,13 +175,10 @@ public class PwgSession: NSObject {
             success(jsonData)
         }
         
-        // Inform iOS so that it can optimize the scheduling of the task
-        if #available(iOS 11.0, *) {
-            // Tell the system how many bytes are expected to be exchanged
-            task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
-                                                            (request.allHTTPHeaderFields ?? [:]).count)
-            task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
-        }
+        // Tell the system how many bytes are expected to be exchanged
+        task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
+                                                        (request.allHTTPHeaderFields ?? [:]).count)
+        task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
 
         // Sets the task description from the method
         if let pos = method.lastIndex(of: "=") {

@@ -43,9 +43,7 @@ public class UploadSessions: NSObject {
         config.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
         
         /// Allows a seamless handover from Wi-Fi to cellular
-        if #available(iOS 11.0, *) {
-            config.multipathServiceType = .handover
-        }
+        config.multipathServiceType = .handover
         
         /// Create the background session and set its description
         let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
@@ -110,9 +108,7 @@ public class UploadSessions: NSObject {
         }
 
         /// Allows a seamless handover from Wi-Fi to cellular
-        if #available(iOS 11.0, *) {
-            config.multipathServiceType = .handover
-        }
+        config.multipathServiceType = .handover
         
         /// The identifier for the shared container into which files in background URL sessions should be downloaded.
         config.sharedContainerIdentifier = UserDefaults.appGroup

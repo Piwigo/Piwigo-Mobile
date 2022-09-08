@@ -564,9 +564,7 @@ import piwigoKit
         // Get a fresh context
         let context = LAContext()
         context.localizedFallbackTitle = ""
-        if #available(iOS 11.0, *) {
-            context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
-        }
+        context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
 
         // First check if we have the needed hardware support
         var error: NSError?

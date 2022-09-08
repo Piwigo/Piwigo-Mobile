@@ -9,7 +9,6 @@
 import Foundation
 
 // MARK: - Search Images
-@available(iOS 11.0, *)
 extension TagSelectorViewController
 {
     func initSearchBar() {
@@ -30,7 +29,6 @@ extension TagSelectorViewController
 
 
 // MARK: - UISearchResultsUpdating Methods
-@available(iOS 11.0, *)
 extension TagSelectorViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController) {
@@ -49,7 +47,6 @@ extension TagSelectorViewController: UISearchResultsUpdating
 
 
 // MARK: - UISearchBarDelegate Methods
-@available(iOS 11.0, *)
 extension TagSelectorViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

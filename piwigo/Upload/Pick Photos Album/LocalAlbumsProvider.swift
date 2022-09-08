@@ -108,24 +108,17 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Smart album that groups all images captured using the device’s screenshot function
         screenshotsAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumScreenshots, options: nil)
         
-        if #available(iOS 10.2, *) {
-            // Smart album that groups all images captured using the Depth Effect camera mode on compatible devices
-            depthEffectAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumDepthEffect, options: nil)
-        }
+        // Smart album that groups all images captured using the Depth Effect camera mode on compatible devices
+        depthEffectAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumDepthEffect, options: nil)
         
-        if #available(iOS 10.3, *) {
-            // Smart album that groups all Live Photo assets
-            livePhotosAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumLivePhotos, options: nil)
-        }
+        // Smart album that groups all Live Photo assets
+        livePhotosAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumLivePhotos, options: nil)
         
         // Smart album that groups all image animation assets
-        if #available(iOS 11, *) {
-            // Smart album that groups all image animation assets
-            animatedAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumAnimated, options: nil)
+        animatedAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumAnimated, options: nil)
 
-            // Smart album that groups all Live Photo assets where the Long Exposure variation is enabled
-            longExposuresAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumLongExposures, options: nil)
-        }
+        // Smart album that groups all Live Photo assets where the Long Exposure variation is enabled
+        longExposuresAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumLongExposures, options: nil)
         
         /**
          User Album Types
@@ -287,26 +280,20 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             screenshotsAlbum = changeDetails.fetchResultAfterChanges
         }
 
-        if #available(iOS 10.2, *) {
-            if let changeDetails = changeInstance.changeDetails(for: depthEffectAlbum) {
-                depthEffectAlbum = changeDetails.fetchResultAfterChanges
-            }
+        if let changeDetails = changeInstance.changeDetails(for: depthEffectAlbum) {
+            depthEffectAlbum = changeDetails.fetchResultAfterChanges
         }
 
-        if #available(iOS 10.3, *) {
-            if let changeDetails = changeInstance.changeDetails(for: livePhotosAlbum) {
-                livePhotosAlbum = changeDetails.fetchResultAfterChanges
-            }
+        if let changeDetails = changeInstance.changeDetails(for: livePhotosAlbum) {
+            livePhotosAlbum = changeDetails.fetchResultAfterChanges
         }
 
-        if #available(iOS 11, *) {
-            if let changeDetails = changeInstance.changeDetails(for: animatedAlbum) {
-                animatedAlbum = changeDetails.fetchResultAfterChanges
-            }
+        if let changeDetails = changeInstance.changeDetails(for: animatedAlbum) {
+            animatedAlbum = changeDetails.fetchResultAfterChanges
+        }
 
-            if let changeDetails = changeInstance.changeDetails(for: longExposuresAlbum) {
-                longExposuresAlbum = changeDetails.fetchResultAfterChanges
-            }
+        if let changeDetails = changeInstance.changeDetails(for: longExposuresAlbum) {
+            longExposuresAlbum = changeDetails.fetchResultAfterChanges
         }
 
         if let changeDetails = changeInstance.changeDetails(for: regularAlbums) {

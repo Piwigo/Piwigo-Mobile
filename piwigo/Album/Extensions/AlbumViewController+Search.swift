@@ -12,7 +12,6 @@ import piwigoKit
 // MARK: - Search Images
 extension AlbumViewController
 {
-    @available(iOS 11.0, *)
     func initSearchBar() {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.delegate = self

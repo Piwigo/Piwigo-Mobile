@@ -47,9 +47,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -113,9 +111,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberOfSection = 2
-        if #available(iOS 11.0, *) {
-            nberOfSection += context.biometryType == .none ? 0 : 1
-        }
+        nberOfSection += context.biometryType == .none ? 0 : 1
         return nberOfSection
     }
 
@@ -179,15 +175,13 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
                 return SwitchTableViewCell()
             }
             var title = ""
-            if #available(iOS 11.0, *) {
-                switch context.biometryType {
-                case .touchID:
-                    title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
-                case .faceID:
-                    title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
-                default:
-                    title = "—?—"
-                }
+            switch context.biometryType {
+            case .touchID:
+                title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
+            case .faceID:
+                title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+            default:
+                title = "—?—"
             }
             cell.configure(with: title)
             if contextErrorMsg.isEmpty == false {
@@ -221,17 +215,15 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             footer = NSLocalizedString("settings_passcodeInfo", comment: "The passcode is separate…")
         case 2:     // Touch ID / Face ID On/Off
             if contextErrorMsg.isEmpty {
-                if #available(iOS 11.0, *) {
-                    switch context.biometryType {
-                    case .none:
-                        footer = ""
-                    case .touchID:
-                        footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
-                    case .faceID:
-                        footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
-                    @unknown default:
-                        footer = ""
-                    }
+                switch context.biometryType {
+                case .none:
+                    footer = ""
+                case .touchID:
+                    footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
+                case .faceID:
+                    footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+                @unknown default:
+                    footer = ""
                 }
             } else {
                 footer = contextErrorMsg

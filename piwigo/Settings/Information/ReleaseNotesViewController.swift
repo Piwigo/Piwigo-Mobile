@@ -43,9 +43,7 @@ class ReleaseNotesViewController: UIViewController {
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -86,12 +84,7 @@ class ReleaseNotesViewController: UIViewController {
         fixTextPositionAfterLoadingViewOnPad = true
         textView.attributedText = notesAttributedString()
         textView.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        textView.contentInsetAdjustmentBehavior = .never
 
         // Set colors, fonts, etc.
         applyColorPalette()

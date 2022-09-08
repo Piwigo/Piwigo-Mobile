@@ -98,12 +98,9 @@ extension UIViewController {
         DispatchQueue.main.async {
             // Show "Completed" icon
             if let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if #available(iOS 11, *) {
-                    // An iPod on iOS 9.3 enters an infinite loop when creating imageView
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                }
+                let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
+                let imageView = UIImageView(image: image)
+                hud.customView = imageView
                 hud.mode = MBProgressHUDMode.customView
                 hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
             }

@@ -60,17 +60,13 @@ class LoginViewController: UIViewController {
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
         userTextField.text = NetworkVars.username
-        if #available(iOS 11.0, *) {
-            userTextField.textContentType = .username
-        }
+        userTextField.textContentType = .username
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.serverPath,
                                                             account: NetworkVars.username)
-        if #available(iOS 11.0, *) {
-            passwordTextField.textContentType = .password
-        }
+        passwordTextField.textContentType = .password
         
         // Login button
         loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)

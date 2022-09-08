@@ -126,11 +126,10 @@ extension UploadManager {
         let uploadSession: URLSession = UploadSessions.shared.frgdSession
         let task = uploadSession.uploadTask(with: request, from: httpBody)
         task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
-        if #available(iOS 11.0, *) {
-            // Tell the system how many bytes are expected to be exchanged
-            task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
-            task.countOfBytesClientExpectsToReceive = 600
-        }
+
+        // Tell the system how many bytes are expected to be exchanged
+        task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
+        task.countOfBytesClientExpectsToReceive = 600
         
         // Resume task
         print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
@@ -488,11 +487,10 @@ extension UploadManager {
                 // As soon as tasks are created, the timeout counter starts
                 let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
                 task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
-                if #available(iOS 11.0, *) {
-                    // Tell the system how many bytes are expected to be exchanged
-                    task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
-                    task.countOfBytesClientExpectsToReceive = 600
-                }
+
+                // Tell the system how many bytes are expected to be exchanged
+                task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
+                task.countOfBytesClientExpectsToReceive = 600
                 
                 // Adds bytes expected to be sent to counter
                 if isExecutingBackgroundUploadTask {

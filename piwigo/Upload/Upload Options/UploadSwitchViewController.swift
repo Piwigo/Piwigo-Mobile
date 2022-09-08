@@ -75,10 +75,7 @@ class UploadSwitchViewController: UIViewController {
         navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
         navigationItem.titleView = switchViewSegmentedControl
         
-        // iOS 9 & 10 fix
-        if #available(iOS 11, *) {
-            parametersView.translatesAutoresizingMaskIntoConstraints = false
-        }
+        parametersView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     @objc func applyColorPalette() {
@@ -91,9 +88,7 @@ class UploadSwitchViewController: UIViewController {
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()

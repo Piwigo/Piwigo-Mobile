@@ -49,9 +49,7 @@ class ImageDescriptionView: UIVisualEffectView {
         var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
         if let root = navController?.topViewController {
             safeAreaWidth = root.view.frame.size.width
-            if #available(iOS 11.0, *) {
-                safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-            }
+            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
         }
         
         // Calculate the required number of lines, corners'width deducted

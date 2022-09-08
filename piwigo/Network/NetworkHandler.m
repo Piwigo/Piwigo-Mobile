@@ -92,11 +92,7 @@ NSInteger const loadingViewTag = 899;
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
     config.HTTPShouldSetCookies = YES;
     config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
-    if (@available(iOS 11.0, *)) {
-        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
-    } else {
-        // Fallback on earlier versions
-    }
+    config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
     
     // Create session manager
     NetworkVarsObjc.sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
@@ -159,11 +155,7 @@ NSInteger const loadingViewTag = 899;
     config.HTTPMaximumConnectionsPerHost = 1;       // 1 is the advised default value
     config.HTTPShouldSetCookies = YES;
     config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
-    if (@available(iOS 11.0, *)) {
-        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
-    } else {
-        // Fallback on earlier versions
-    }
+    config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
     
     // Create session manager
     NetworkVarsObjc.favoritesManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
@@ -234,11 +226,7 @@ NSInteger const loadingViewTag = 899;
     config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
     config.URLCache = NetworkVarsObjc.imageCache;
     config.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
-    if (@available(iOS 11.0, *)) {
-        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
-    } else {
-        // Fallback on earlier versions
-    }
+    config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
 
     // Create session manager
     NetworkVarsObjc.imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
@@ -310,11 +298,7 @@ NSInteger const loadingViewTag = 899;
     config.HTTPShouldSetCookies = YES;
     config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
     config.URLCache = nil;
-    if (@available(iOS 11.0, *)) {
-        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
-    } else {
-        // Fallback on earlier versions
-    }
+    config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
 
     // Create session manager
     AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];

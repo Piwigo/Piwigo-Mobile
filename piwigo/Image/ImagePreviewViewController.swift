@@ -191,11 +191,7 @@ class ImagePreviewViewController: UIViewController
         
         // Don't adjust the insets when showing or hiding the navigation bar/toolbar
         scrollView.contentInset = .zero
-        if #available(iOS 11.0, *) {
-            scrollView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-        }
+        scrollView.contentInsetAdjustmentBehavior = .never
         
         // Define the zoom scale range
         let widthScale = view.bounds.size.width / image.size.width
@@ -232,14 +228,13 @@ class ImagePreviewViewController: UIViewController
             spaceTop += nav.navigationBar.bounds.height
             spaceBottom += isToolbarRequired ? nav.toolbar.bounds.height : 0
         }
-        if #available(iOS 11.0, *) {
-            // Takes into account the safe area insets
-            if let root = topMostViewController()?.view?.window?.topMostViewController() {
-                spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
-                spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
-                spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
-                spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
-            }
+
+        // Takes into account the safe area insets
+        if let root = topMostViewController()?.view?.window?.topMostViewController() {
+            spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
+            spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
+            spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
+            spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
         }
         
         // Horizontal constraints
