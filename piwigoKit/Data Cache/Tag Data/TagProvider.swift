@@ -37,13 +37,6 @@ public class TagProvider: NSObject {
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
     */
     public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
-
-        // Prepare Piwigo JSON request
-        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList)")
-        var request = URLRequest(url: url!)
-        request.httpMethod = "POST"
-
         // Launch the HTTP(S) request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
