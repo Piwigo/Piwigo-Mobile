@@ -14,7 +14,7 @@ public let kPiwigoCategoriesGetList = "format=json&method=pwg.categories.getList
 public struct CategoriesGetListJSON: Decodable {
 
     public var status: String?
-    public var data = [Category]()
+    public var data = [CategoryData]()
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -50,7 +50,7 @@ public struct CategoriesGetListJSON: Decodable {
             // Decodes tags from the data and store them in the array
             do {
                 // Use TagProperties struct
-                try data = resultContainer.decode([Category].self, forKey: .categories)
+                try data = resultContainer.decode([CategoryData].self, forKey: .categories)
             }
             catch {
                 // Returns an empty array => No category
@@ -79,8 +79,8 @@ public struct CategoriesGetListJSON: Decodable {
     }
 }
 
-// MARK: - Category
-public struct Category: Decodable
+// MARK: - Category Data
+public struct CategoryData: Decodable
 {
     // The following data is returned by pwg.categories.getList
     public let id: Int?                     // 32

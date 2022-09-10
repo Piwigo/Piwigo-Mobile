@@ -14,7 +14,7 @@ public let kCommunityCategoriesGetList = "format=json&method=community.categorie
 public struct CommunityCategoriesGetListJSON: Decodable {
 
     public var status: String?
-    public var data = [Category]()
+    public var data = [CategoryData]()
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -50,7 +50,7 @@ public struct CommunityCategoriesGetListJSON: Decodable {
             // Decodes tags from the data and store them in the array
             do {
                 // Use TagProperties struct
-                try data = resultContainer.decode([Category].self, forKey: .categories)
+                try data = resultContainer.decode([CategoryData].self, forKey: .categories)
             }
             catch {
                 // Returns an empty array => No category

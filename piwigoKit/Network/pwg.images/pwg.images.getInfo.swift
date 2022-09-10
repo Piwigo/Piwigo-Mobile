@@ -251,7 +251,7 @@ public struct ImagesGetInfo: Decodable
     public var ratingScore: String?             // "1.0"
     public var fileSize: Int?                   // 3025
     public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
-    public let categoryIds: [Category]?         // Defined in pwg.category.getList
+    public let categoryIds: [CategoryData]?     // Defined in pwg.category.getList
 
     public enum CodingKeys: String, CodingKey {
         case imageId = "id"

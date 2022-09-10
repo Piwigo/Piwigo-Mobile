@@ -221,7 +221,7 @@ class AlbumUtilities: NSObject {
         }
     }
     
-    private static func parseAlbumJSON(_ jsonAlbums:[Album]) -> [PiwigoAlbumData] {
+    private static func parseAlbumJSON(_ jsonAlbums:[CategoryData]) -> [PiwigoAlbumData] {
         var albums = [PiwigoAlbumData]()
         for category in jsonAlbums {
             if let id = category.id {
