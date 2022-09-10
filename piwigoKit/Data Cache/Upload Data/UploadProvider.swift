@@ -103,10 +103,10 @@ public class UploadProvider: NSObject {
             
             // Select upload requests:
             /// — for the current server and user only
-            var andPredicate = [NSPredicate]()
-            andPredicate.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-            andPredicate.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicate)
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -298,10 +298,10 @@ public class UploadProvider: NSObject {
 
             // Select upload request:
             /// — for the current server and user only
-            var andPredicate = [NSPredicate]()
-            andPredicate.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-            andPredicate.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicate)
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -475,18 +475,18 @@ public class UploadProvider: NSObject {
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates)
             
             // AND subpredicates
-            var andSubpredicates:[NSPredicate] = [statesPredicate]
-            andSubpredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-            andSubpredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+            var andPredicates:[NSPredicate] = [statesPredicate]
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
             if markedForAutoUpload {
                 // Only auto-upload requests are wanted
-                andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
+                andPredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
             }
             if markedForDeletion {
                 // Only image marked for deletion are wanted
-                andSubpredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
+                andPredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
             }
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -544,10 +544,10 @@ public class UploadProvider: NSObject {
 
         // Select upload requests:
         /// — for the current server and user only
-        var andPredicate = [NSPredicate]()
-        andPredicate.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicate.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicate)
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
@@ -609,11 +609,11 @@ public class UploadProvider: NSObject {
         // Select upload requests:
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
-        var andPredicate = [NSPredicate]()
-        andPredicate.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
-        andPredicate.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicate.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicate)
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -659,13 +659,13 @@ public class UploadProvider: NSObject {
         /// — which are not completed
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
-        var andPredicate = [NSPredicate]()
-        andPredicate.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue))
-        andPredicate.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue))
-        andPredicate.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
-        andPredicate.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicate.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicate)
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
