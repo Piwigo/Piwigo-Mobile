@@ -58,7 +58,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var progressLayer: CAShapeLayer!
     var nberOfUploadsLabel: UILabel!
 
-    private var refreshControl: UIRefreshControl? // iOS 9.x only
     private var imageDetailView: ImageViewController?
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
@@ -116,12 +115,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Refresh view
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        if #available(iOS 10.0, *) {
-            imagesCollection?.refreshControl = refreshControl
-        } else {
-            // Fallback on earlier versions
-            self.refreshControl = refreshControl
-        }
+        imagesCollection?.refreshControl = refreshControl
 
         imagesCollection?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         imagesCollection?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
@@ -179,24 +173,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         view.backgroundColor = UIColor.piwigoColorBackground()
 
         // Refresh controller
-        if #available(iOS 10.0, *) {
-            imagesCollection?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-            imagesCollection?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
-            let attributesRefresh = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                NSAttributedString.Key.font: UIFont.piwigoFontLight()
-            ]
-            imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
-        } else {
-            // Fallback on earlier versions
-            refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-            refreshControl?.tintColor = UIColor.piwigoColorOrange()
-            let attributesRefresh = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
-                NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-            ]
-            refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Images"), attributes: attributesRefresh)
-        }
+        imagesCollection?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
+        imagesCollection?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        let attributesRefresh = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.font: UIFont.piwigoFontLight()
+        ]
+        imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
 
         // Buttons
         addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
@@ -382,15 +365,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Update title of current scene (iPad only)
         if #available(iOS 13.0, *) {
             view?.window?.windowScene?.title = self.title
-        }
-
-        if #available(iOS 10.0, *) {
-            } else {
-            // Fallback on earlier versions
-            if let refreshControl = refreshControl {
-                imagesCollection?.addSubview(refreshControl)
-                imagesCollection?.alwaysBounceVertical = true
-            }
         }
 
         // Stop here if app is reloading album data
@@ -599,14 +573,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         reloginAndReloadAlbumData { [self] in
             // End refreshing
-            if #available(iOS 10.0, *) {
-                if imagesCollection?.refreshControl != nil {
-                    imagesCollection?.refreshControl?.endRefreshing()
-                }
-            } else {
-                if refreshControl != nil {
-                    refreshControl?.endRefreshing()
-                }
+            if imagesCollection?.refreshControl != nil {
+                imagesCollection?.refreshControl?.endRefreshing()
             }
         }
     }
