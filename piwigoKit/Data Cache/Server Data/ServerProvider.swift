@@ -30,7 +30,7 @@ public class ServerProvider: NSObject {
             // Look for the server located at the provided path
             fetchRequest.predicate = NSPredicate(format: "path == %@", path)
 
-            // Create a fetched results controller and set its fetch request, context, and delegate.
+            // Create a fetched results controller and set its fetch request and context.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                 managedObjectContext: taskContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
