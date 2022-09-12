@@ -337,10 +337,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                name: .pwgUploadProgress, object: nil)
 
-        // Inform Upload view controllers that user selected this category
-        let userInfo = ["currentCategoryId": NSNumber(value: categoryId)]
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: kPiwigoNotificationChangedCurrentCategory), object: nil, userInfo: userInfo)
-
         // If displaying smart album —> reload images
         if categoryId < 0 {
             // Load, sort images and reload collection

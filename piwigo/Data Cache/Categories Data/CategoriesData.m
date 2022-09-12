@@ -9,8 +9,6 @@
 #import "AlbumData.h"
 #import "CategoriesData.h"
 
-NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
-
 @interface CategoriesData()
 
 @property (nonatomic, strong) NSArray<PiwigoAlbumData *> *allCategories;
