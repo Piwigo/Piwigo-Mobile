@@ -54,7 +54,8 @@ class TagSelectorViewController: UITableViewController {
                 guard let error = error else { return }
 
                 // Show an alert if there was an error.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), message: error.localizedDescription) { }
+                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                        message: error.localizedDescription) { }
             }
         }
         

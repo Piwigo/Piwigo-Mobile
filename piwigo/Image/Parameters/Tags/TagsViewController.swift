@@ -76,7 +76,8 @@ class TagsViewController: UITableViewController {
 
             // Show an alert if there was an error.
             DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: "", message: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), errorMessage: error.localizedDescription) { }
+                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                        message: error.localizedDescription) { }
             }
         }
         

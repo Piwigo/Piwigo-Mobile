@@ -10,6 +10,7 @@
 import Foundation
 
 public enum TagError: Error {
+    case fetchFailed
     case wrongDataFormat
     case missingData
     case creationError
@@ -18,6 +19,9 @@ public enum TagError: Error {
 extension TagError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .fetchFailed:
+            return NSLocalizedString("CoreDataFetch_TagError",
+                                     comment: "Fetch tags error!")
         case .wrongDataFormat:
             return NSLocalizedString("CoreDataFetch_DigestError",
                                      comment: "Could not digest the fetched data.")
