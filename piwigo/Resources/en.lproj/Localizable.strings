@@ -54,6 +54,16 @@
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 
+// User objects
+"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserUnknownStatus" = "Will discard a user account missing a valid user status.";
+"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fetch albums error!";
+"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
+"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
+
 // Tag objects
 "CoreDataFetch_TagError" = "Fetch tags error!";
 "CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";

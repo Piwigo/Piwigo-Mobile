@@ -10,6 +10,7 @@ import Foundation
 
 public enum UserError: Error {
     case emptyUsername
+    case unknownUserStatus
     case creationError
 }
 
@@ -19,6 +20,9 @@ extension UserError: LocalizedError {
         case .emptyUsername:
             return NSLocalizedString("CoreDataFetch_UserMissingData",
                                      comment: "Will discard a user account missing a valid username.")
+        case .unknownUserStatus:
+            return NSLocalizedString("CoreDataFetch_UserUnknownStatus",
+                                     comment: "Will discard a user account missing a valid user status.")
         case .creationError:
             return NSLocalizedString("CoreData_UserCreateFailed",
                                      comment: "Failed to create a new User object.")

@@ -8,6 +8,11 @@
 
 import CoreData
 
+public enum pwgUserStatus: String {
+    case guest, generic, normal, admin, webmaster
+    public static let allValues = [guest, generic, normal, admin, webmaster]
+}
+
 public class UserProvider: NSObject {
     
     // MARK: - Core Data Providers
@@ -34,7 +39,7 @@ public class UserProvider: NSObject {
         taskContext.performAndWait {
             // Create a fetch request for the User entity
             let fetchRequest = User.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "username", ascending: true,
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
 
             // Look for a user account of the server at path
@@ -70,11 +75,6 @@ public class UserProvider: NSObject {
                 do {
                     try user.update(username: username, onServer: server)
                     currentUser = user
-                }
-                catch UserError.emptyUsername {
-                    // Delete invalid User from the current queue context.
-                    print(UserError.emptyUsername.localizedDescription)
-                    taskContext.delete(user)
                 }
                 catch {
                     print(error.localizedDescription)

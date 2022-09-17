@@ -20,7 +20,7 @@ extension User {
     @NSManaged public var lastUsed: Date
     @NSManaged public var name: String
     @NSManaged public var username: String
-    @NSManaged public var lastUsed: Date
+    @NSManaged public var status: String
     @NSManaged public var server: Server?
     @NSManaged public var uploads: Set<Upload>?
     @NSManaged public var albums: Set<Album>?
