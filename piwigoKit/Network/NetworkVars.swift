@@ -104,9 +104,6 @@ public class NetworkVars: NSObject {
     /// - Logged user has normal rigths, false by default
     public static var hasNormalRights = false
 
-    /// - Logged user has normal rigths and upload rights, false by default
-    public static var hasNormalAndUploadRights = false
-
     /// - Logged user has admin rigths, false by default
     public static var hasAdminRights = false
 
