@@ -267,8 +267,8 @@ public class LocationProvider: NSObject {
 
         // Create a fetch request for the location
         let fetchRequest = Location.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
-                                        NSSortDescriptor(key: "longitude", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Location.latitude), ascending: true),
+                                        NSSortDescriptor(key: #keyPath(Location.longitude), ascending: true)]
         let deltaLatitude = getDeltaLatitude(for: location.coordinate.latitude, radius: location.horizontalAccuracy)
         let latitudeMinPredicate = NSPredicate(format: "latitude >= %lf", location.coordinate.latitude - deltaLatitude)
         let latitudeMaxPredicate = NSPredicate(format: "latitude <= %lf", location.coordinate.latitude + deltaLatitude)
@@ -363,8 +363,8 @@ public class LocationProvider: NSObject {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Location.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
-                                        NSSortDescriptor(key: "longitude", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Location.latitude), ascending: true),
+                                        NSSortDescriptor(key: #keyPath(Location.longitude), ascending: true)]
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
