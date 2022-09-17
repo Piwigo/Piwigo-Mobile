@@ -35,9 +35,9 @@ extension User {
     @NSManaged public func removeFromUploads(_ value: Upload)
 
     @objc(addUploads:)
-    @NSManaged public func addToUploads(_ values: NSSet)
+    @NSManaged public func addToUploads(_ values: Set<Upload>)
 
     @objc(removeUploads:)
-    @NSManaged public func removeFromUploads(_ values: NSSet)
+    @NSManaged public func removeFromUploads(_ values: Set<Upload>)
 
 }
