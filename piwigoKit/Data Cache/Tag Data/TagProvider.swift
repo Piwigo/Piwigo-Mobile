@@ -138,7 +138,7 @@ public class TagProvider: NSObject {
             
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
             
             // Look for tags belonging to the currently active server
             var andPredicates = [NSPredicate]()
@@ -298,7 +298,7 @@ public class TagProvider: NSObject {
         taskContext.performAndWait {
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
@@ -360,7 +360,7 @@ public class TagProvider: NSObject {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         
         // Select tags of the current server only
@@ -395,7 +395,7 @@ public class TagProvider: NSObject {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         // AND subpredicates
         var andPredicates = [NSPredicate]()
