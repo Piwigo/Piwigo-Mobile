@@ -72,7 +72,7 @@ extension UploadManager {
         // Collect IDs of images to upload
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: false)]
         if UploadVars.serverFileTypes.contains("mp4") {
             fetchOptions.predicate = NSPredicate(format: "(mediaType == %d) || (mediaType == %d)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
         } else {
