@@ -5,8 +5,6 @@
 //  Created by Eddy Lelièvre-Berna on 22/02/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
-//  Properties of the Tag entity.
-//
 
 import Foundation
 import CoreData
@@ -23,10 +21,11 @@ extension Tag {
     @NSManaged public var tagName: String
     @NSManaged public var server: Server?
     @NSManaged public var uploads: Set<Upload>?
+    @NSManaged public var images: Set<Image>?
 
 }
 
-// MARK: Generated accessors for tags
+// MARK: Generated accessors for uploads
 extension Tag {
 
     @objc(addUploadsObject:)
@@ -40,6 +39,23 @@ extension Tag {
 
     @objc(removeUploads:)
     @NSManaged public func removeFromUploads(_ values: Set<Upload>)
+
+}
+
+// MARK: Generated accessors for images
+extension Tag {
+
+    @objc(addImagesObject:)
+    @NSManaged public func addToImages(_ value: Image)
+
+    @objc(removeImagesObject:)
+    @NSManaged public func removeFromImages(_ value: Image)
+
+    @objc(addImages:)
+    @NSManaged public func addToImages(_ values: Set<Image>)
+
+    @objc(removeImages:)
+    @NSManaged public func removeFromImages(_ values: Set<Image>)
 
 }
 
