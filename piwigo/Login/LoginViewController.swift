@@ -120,12 +120,11 @@ class LoginViewController: UIViewController {
 
         // Default settings
         isAlreadyTryingToLogin = true
-        NetworkVars.hasAdminRights = false
-        NetworkVars.hasNormalRights = false
+        NetworkVars.userStatus = pwgUserStatus.guest.rawValue
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.userCancelledCommunication = false
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
 
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
@@ -261,7 +260,7 @@ class LoginViewController: UIViewController {
 
     func performLogin() {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
 
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
@@ -291,10 +290,11 @@ class LoginViewController: UIViewController {
                         let bckgContext = DataController.shared.bckgContext
                         let user = self.userProvider.getUserAccount(inContext: bckgContext,
                                                                     withUsername: username)
-                        let lastUsedNow = Date().timeIntervalSinceReferenceDate
+                        let lastUsedNow = Date()
                         user?.lastUsed = lastUsedNow
                         user?.server?.lastUsed = lastUsedNow
                         user?.server?.fileTypes = UploadVars.serverFileTypes
+                        user?.status = NetworkVars.userStatus
                         try? bckgContext.save()
                         DispatchQueue.main.async {
                             DataController.shared.saveMainContext()
@@ -321,7 +321,7 @@ class LoginViewController: UIViewController {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 let bckgContext = DataController.shared.bckgContext
                 let server = self.serverProvider.getServer(inContext: bckgContext)
-                server?.lastUsed = Date().timeIntervalSinceReferenceDate
+                server?.lastUsed = Date()
                 server?.fileTypes = UploadVars.serverFileTypes
                 try? bckgContext.save()
                 DispatchQueue.main.async {
@@ -338,7 +338,7 @@ class LoginViewController: UIViewController {
     func getCommunityStatus(atFirstLogin isFirstLogin: Bool,
                             withReloginCompletion reloginCompletion: @escaping () -> Void) {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
         
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
@@ -378,7 +378,7 @@ class LoginViewController: UIViewController {
     func getSessionStatus(atFirstLogin isFirstLogin: Bool,
                           withReloginCompletion reloginCompletion: @escaping () -> Void) {
         print(
-            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
 
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
@@ -439,34 +439,16 @@ class LoginViewController: UIViewController {
 
         // Load navigation if needed
         if isFirstLogin {
-            print("••> Load album data in LoginViewController.")
-            // Update HUD during login
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                inMode: .indeterminate)
+            // Reinitialise flag
+            NetworkVars.userCancelledCommunication = false
 
-            // Load category data in recursive mode
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
-                AlbumUtilities.getAlbums { didUpdateCats in
-                    // Reinitialise flag
-                    NetworkVars.userCancelledCommunication = false
-
-                    // Hide HUD and present root album
-                    DispatchQueue.main.async { [unowned self] in
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        hidePiwigoHUD() {
-                            // Present Album/Images view and resume uploads
-                            appDelegate?.loadNavigation(in: self.view.window)
-                        }
-                    }
-                } failure: { error in
-                    DispatchQueue.main.async { [unowned self] in
-                        // Inform user that we could not load album data
-                        logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-                    }
+            // Hide HUD and present root album
+            DispatchQueue.main.async { [unowned self] in
+                // Present Album/Images view and resume uploads
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                hidePiwigoHUD() {
+                    // Present Album/Images view and resume uploads
+                    appDelegate?.loadNavigation(in: self.view.window)
                 }
             }
         } else {

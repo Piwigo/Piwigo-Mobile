@@ -273,7 +273,7 @@ public class UploadManager: NSObject {
             // Moderate images uploaded by Community regular user
             // Considers only uploads to the server to which the user is logged in
             let finishedUploads = uploadsProvider.getRequests(inStates: [.finished]).1
-            if NetworkVars.hasNormalRights,
+            if pwgUserStatus(rawValue: NetworkVars.userStatus) == .normal,
                NetworkVars.usesCommunityPluginV29, finishedUploads.count > 0 {
 
                 // Pause upload manager if the app is not in the foreground anymore

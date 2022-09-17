@@ -314,7 +314,7 @@ extension UploadManager {
             }
 
             // Add image to cache when uploaded by admin users
-            if NetworkVars.hasAdminRights {
+            if pwgUserStatus(rawValue: NetworkVars.userStatus) == .admin {
                 // Get Upload properties
                 var userInfo = [String : Any](minimumCapacity: 12)
                 userInfo["datePosted"]      = Date()
@@ -734,7 +734,7 @@ extension UploadManager {
                 }
                 
                 // Add uploaded image to cache and update UI if needed
-                if NetworkVars.hasAdminRights {
+                if pwgUserStatus(rawValue: NetworkVars.userStatus) == .admin {
                     var userInfo = [String : Any](minimumCapacity: 1)
                     userInfo["isVideo"]         = uploadProperties.isVideo
                     userInfo["categoryId"]      = uploadProperties.category

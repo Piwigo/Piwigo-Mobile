@@ -64,7 +64,11 @@ public class NetworkVars: NSObject {
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var username: String
 
-    
+    /// - Status of the user accessing the Piwigo server
+    @UserDefault("userStatus", defaultValue: "guest", userDefaults: UserDefaults.dataSuite)
+    public static var userStatus: String
+
+
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - Session manager used to communicate with the Piwigo server
@@ -98,15 +102,6 @@ public class NetworkVars: NSObject {
     /// - Remembers that the user cancelled login attempt
     public static var userCancelledCommunication = false
     
-    /// - Logged user has guest rigths, false by default
-    public static var hasGuestRights = false
-
-    /// - Logged user has normal rigths, false by default
-    public static var hasNormalRights = false
-
-    /// - Logged user has admin rigths, false by default
-    public static var hasAdminRights = false
-
     /// - Remembers when the user logged in
     public static var dateOfLastLogin: Date = .distantPast
     

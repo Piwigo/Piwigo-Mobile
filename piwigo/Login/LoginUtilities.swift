@@ -133,17 +133,13 @@ class LoginUtilities: NSObject {
                     return
                 }
 
-                // Update session flags
-                NetworkVars.hasAdminRights = ["admin", "webmaster"].contains(statusJSON.realUser)
-                NetworkVars.hasNormalRights = (statusJSON.realUser == "normal")
-                NetworkVars.hasGuestRights = (statusJSON.realUser == "guest")
+                // Update user's status
+                NetworkVars.userStatus = statusJSON.realUser
                 completion()
             }
             catch {
                 // Data cannot be digested
-                NetworkVars.hasAdminRights = false
-                NetworkVars.hasNormalRights = false
-                NetworkVars.usesUploadAsync = false
+                NetworkVars.userStatus = pwgUserStatus.guest.rawValue
                 let error = error as NSError
                 failure(error)
             }
@@ -205,7 +201,8 @@ class LoginUtilities: NSObject {
                 NetworkVars.pwgVersion = versionStr
 
                 // Community users cannot upload with uploadAsync with Piwigo 11.x
-                if NetworkVars.usesCommunityPluginV29, NetworkVars.hasNormalRights,
+                if NetworkVars.usesCommunityPluginV29,
+                   NetworkVars.userStatus == pwgUserStatus.normal.rawValue,
                    "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
                    "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
                     NetworkVars.usesUploadAsync = false
@@ -264,17 +261,18 @@ class LoginUtilities: NSObject {
 
                 // Images and videos can be uploaded if their file types are found.
                 // The iPhone creates mov files that will be uploaded in mp4 format.
-                // This string is empty if the server does not provide it.
-                UploadVars.serverFileTypes = data.uploadFileTypes ?? ""
+                UploadVars.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
                 
                 // User rights are determined by Community extension (if installed)
-                if !NetworkVars.usesCommunityPluginV29,
-                   let userStatus = data.userStatus, userStatus.isEmpty == false {
-                    NetworkVars.hasAdminRights = ["admin", "webmaster"].contains(userStatus)
-                    NetworkVars.hasNormalRights = (userStatus == "normal")
-                    NetworkVars.hasGuestRights = (userStatus == "guest")
+                let userStatus = data.userStatus ?? pwgUserStatus.guest.rawValue
+                guard !NetworkVars.usesCommunityPluginV29,
+                      let status = pwgUserStatus(rawValue: userStatus),
+                      pwgUserStatus.allValues.contains(status) else {
+                    failure(UserError.unknownUserStatus as NSError)
+                    return
                 }
-                
+                NetworkVars.userStatus = userStatus
+
                 // Retrieve the list of available sizes
                 AlbumVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
                 AlbumVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
