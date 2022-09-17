@@ -22,11 +22,11 @@ extension Tag {
     @NSManaged public var tagId: Int32
     @NSManaged public var tagName: String
     @NSManaged public var server: Server?
-    @NSManaged public var uploads: NSSet?
+    @NSManaged public var uploads: Set<Upload>?
 
 }
 
-// MARK: Generated accessors for uploads
+// MARK: Generated accessors for tags
 extension Tag {
 
     @objc(addUploadsObject:)
@@ -36,10 +36,10 @@ extension Tag {
     @NSManaged public func removeFromUploads(_ value: Upload)
 
     @objc(addUploads:)
-    @NSManaged public func addToUploads(_ values: NSSet)
+    @NSManaged public func addToUploads(_ values: Set<Upload>)
 
     @objc(removeUploads:)
-    @NSManaged public func removeFromUploads(_ values: NSSet)
+    @NSManaged public func removeFromUploads(_ values: Set<Upload>)
 
 }
 
