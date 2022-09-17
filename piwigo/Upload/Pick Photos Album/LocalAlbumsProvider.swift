@@ -125,7 +125,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         */
         // Albums created in Photos
         let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "localizedTitle", ascending: true)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAssetCollection.localizedTitle), ascending: true)]
         regularAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: fetchOptions)
         
         // Events synced to the device from iPhoto
