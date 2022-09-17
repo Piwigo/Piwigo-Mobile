@@ -99,7 +99,7 @@ public class UploadProvider: NSObject {
             // Retrieve existing uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = Upload.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.localIdentifier), ascending: true)]
             
             // Select upload requests:
             /// — for the current server and user only
@@ -293,7 +293,7 @@ public class UploadProvider: NSObject {
             // Retrieve existing upload (if any)
             // Create a fetch request for the image ID uploaded to the albumId
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "imageId", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.imageId), ascending: true)]
             fetchRequest.predicate = NSPredicate(format: "imageId == %ld", imageId)
 
             // Select upload request:
@@ -463,8 +463,8 @@ public class UploadProvider: NSObject {
             let fetchRequest = Upload.fetchRequest()
             
             // Priority to uploads requested manually, oldest ones first
-            var sortDescriptors = [NSSortDescriptor(key: "markedForAutoUpload", ascending: true)]
-            sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+            var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+            sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
             fetchRequest.sortDescriptors = sortDescriptors
 
             // OR subpredicates
@@ -602,8 +602,8 @@ public class UploadProvider: NSObject {
         let fetchRequest = Upload.fetchRequest()
 
         // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: "markedForAutoUpload", ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Select upload requests:
@@ -650,9 +650,9 @@ public class UploadProvider: NSObject {
 
         // Sort upload requests by state and date
         // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: "requestSectionKey", ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: "markedForAutoUpload", ascending: true))
-        sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestSectionKey), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true))
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
         
         // Select upload requests:
