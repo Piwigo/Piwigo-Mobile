@@ -22,6 +22,7 @@ extension User {
     @NSManaged public var lastUsed: Date
     @NSManaged public var server: Server?
     @NSManaged public var uploads: Set<Upload>?
+    @NSManaged public var albums: Set<Album>?
 
 }
 
@@ -39,5 +40,22 @@ extension User {
 
     @objc(removeUploads:)
     @NSManaged public func removeFromUploads(_ values: Set<Upload>)
+
+}
+
+// MARK: Generated accessors for albums
+extension User {
+
+    @objc(addAlbumsObject:)
+    @NSManaged public func addToAlbums(_ value: Album)
+
+    @objc(removeAlbumsObject:)
+    @NSManaged public func removeFromAlbums(_ value: Album)
+
+    @objc(addAlbums:)
+    @NSManaged public func addToAlbums(_ values: Set<Album>)
+
+    @objc(removeAlbums:)
+    @NSManaged public func removeFromAlbums(_ values: Set<Album>)
 
 }
