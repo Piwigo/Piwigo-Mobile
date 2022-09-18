@@ -265,6 +265,26 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertTrue(result.success)
     }
     
+    func testPwgCategoriesGetImagesDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.categories.getImages", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesGetImagesJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+//        XCTAssertTrue(result.data.contains(where: { $0.id == 285 }))
+    }
+
     // MARK: - pwg.images…
     func testPwgImagesUploadDecoding() {
         
@@ -491,7 +511,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data[1].id, 14)
+        XCTAssertEqual(result.data[1].id?.value, 14)
         XCTAssertEqual(result.data[2].counter, 9)
     }
 
@@ -512,7 +532,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data[0].id, 1)
+        XCTAssertEqual(result.data[0].id?.value, 1)
         XCTAssertEqual(result.data[2].name, "Piwigo")
     }
 

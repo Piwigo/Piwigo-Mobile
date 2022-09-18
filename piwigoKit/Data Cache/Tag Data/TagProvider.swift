@@ -167,7 +167,7 @@ public class TagProvider: NSObject {
             for tagData in tagsBatch {
             
                 // Index of this new tag in cache
-                guard let ID = tagData.id else { continue }
+                guard let ID = tagData.id?.value else { continue }
                 if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
                     // Update the tag's properties using the raw data
                     do {
@@ -205,7 +205,7 @@ public class TagProvider: NSObject {
             }
             
             // Remove deleted tags
-            let newTagIds = tagsBatch.compactMap({$0.id}).map({$0})
+            let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.value})
             let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
             cachedTagsToDelete.forEach { cachedTag in
                 print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
@@ -254,13 +254,17 @@ public class TagProvider: NSObject {
                 // Piwigo error?
                 if tagJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
-                                                                    errorMessage: tagJSON.errorMessage)
+                                                        errorMessage: tagJSON.errorMessage)
                     completionHandler(error)
                     return
                 }
 
                 // Import the tagJSON into Core Data.
-                let newTag = TagProperties(id: tagJSON.data.id,
+                guard let tagId = tagJSON.data.id else {
+                    completionHandler(TagError.missingData)
+                    return
+                }
+                let newTag = TagProperties(id: Int32OrString.integer(tagId),
                                            name: NetworkUtilities.utf8mb4String(from: name),
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 

@@ -53,17 +53,6 @@ public struct TagJSON: Decodable {
                 // Use TagProperties struct
                 try data = resultContainer.decode([TagProperties].self, forKey: .tags)
             }
-            catch {
-                // Use a different struct because id is a String instead of an Int
-                let tagPropertiesArray4Admin = try resultContainer.decode([TagProperties4Admin].self, forKey: .tags)
-                
-                // Inject data into TagProperties after converting id
-                for tagProperty4Admin in tagPropertiesArray4Admin {
-                    let id:Int32? = Int32(tagProperty4Admin.id ?? "")!
-                    let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, counter: Int64.max, url_name: tagProperty4Admin.url_name, url: "")
-                    data.append(tagProperty)
-                }
-            }
         }
         else if (status == "fail")
         {
@@ -89,12 +78,12 @@ public struct TagJSON: Decodable {
 }
 
 /**
- A struct for decoding JSON returned by kPiwigoTagsGetList.
+ A struct for decoding JSON returned by kPiwigoTagsGetList or kPiwigoTagsGetAdminList.
  All members are optional in case they are missing from the data.
 */
 public struct TagProperties: Decodable
 {
-    public let id: Int32?                  // 1
+    public let id: Int32OrString?          // 2 or "2"
     public let name: String?               // "Birthday"
     public let lastmodified: String?       // "2018-08-23 15:30:43"
     public let counter: Int64?             // 8
@@ -102,18 +91,4 @@ public struct TagProperties: Decodable
     // The following data is not stored in cache
     public let url_name: String?           // "birthday"
     public let url: String?                // "https:…"
-}
-
-/**
- A struct for decoding JSON returned by kPiwigoTagsGetAdminList:
- All members are optional in case they are missing from the data.
-*/
-private struct TagProperties4Admin: Decodable
-{
-    public let id: String?                 // 1 (String instead of Int)
-    public let name: String?               // "Birthday"
-    public let lastmodified: String?       // "2018-08-23 15:30:43"
-
-    // The following data is not stored in cache
-    public let url_name: String?           // "birthday"
 }
