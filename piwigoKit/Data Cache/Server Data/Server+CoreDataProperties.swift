@@ -18,7 +18,7 @@ extension Server {
 
     @NSManaged public var fileTypes: String
     @NSManaged public var isDemo: Bool
-    @NSManaged public var lastUsed: TimeInterval
+    @NSManaged public var lastUsed: Date
     @NSManaged public var path: String
     @NSManaged public var tags: Set<Tag>?
     @NSManaged public var users: Set<User>?
@@ -35,10 +35,10 @@ extension Server {
     @NSManaged public func removeFromTags(_ value: Tag)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged public func addToTags(_ values: Set<Tag>)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged public func removeFromTags(_ values: Set<Tag>)
 
 }
 
@@ -52,9 +52,9 @@ extension Server {
     @NSManaged public func removeFromUsers(_ value: User)
 
     @objc(addUsers:)
-    @NSManaged public func addToUsers(_ values: NSSet)
+    @NSManaged public func addToUsers(_ values: Set<User>)
 
     @objc(removeUsers:)
-    @NSManaged public func removeFromUsers(_ values: NSSet)
+    @NSManaged public func removeFromUsers(_ values: Set<User>)
 
 }
