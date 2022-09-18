@@ -511,7 +511,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data[1].id?.value, 14)
+        XCTAssertEqual(result.data[1].id?.intValue, 14)
         XCTAssertEqual(result.data[2].counter, 9)
     }
 
@@ -532,7 +532,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data[0].id?.value, 1)
+        XCTAssertEqual(result.data[0].id?.intValue, 1)
         XCTAssertEqual(result.data[2].name, "Piwigo")
     }
 

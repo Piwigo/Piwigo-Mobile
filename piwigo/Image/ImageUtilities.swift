@@ -112,7 +112,7 @@ class ImageUtilities: NSObject {
                 for tag in data.tags ?? [] {
                     guard let tagId = tag.id else { continue }
                     let newTag = PiwigoTagData()
-                    newTag.tagId = Int(tagId.value)
+                    newTag.tagId = Int(tagId.intValue)
                     newTag.tagName = NetworkUtilities.utf8mb4String(from: tag.name ?? "")
                     newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "") ?? Date()
                     newTag.numberOfImagesUnderTag = tag.counter ?? Int64(NSNotFound)

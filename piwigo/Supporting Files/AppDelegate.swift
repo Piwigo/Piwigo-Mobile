@@ -916,7 +916,7 @@ import piwigoKit
         let tags = notification.userInfo?["tags"] as? [TagProperties] ?? []
         tags.forEach { (tag) in
             let newTag = PiwigoTagData()
-            newTag.tagId = Int(tag.id!.value)
+            newTag.tagId = Int(tag.id!.intValue)
             newTag.tagName = tag.name
             newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "")
             newTag.numberOfImagesUnderTag = tag.counter ?? 0

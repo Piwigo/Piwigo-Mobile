@@ -167,7 +167,7 @@ public class TagProvider: NSObject {
             for tagData in tagsBatch {
             
                 // Index of this new tag in cache
-                guard let ID = tagData.id?.value else { continue }
+                guard let ID = tagData.id?.int32Value else { continue }
                 if let index = cachedTags.firstIndex(where: { $0.tagId == ID }) {
                     // Update the tag's properties using the raw data
                     do {
@@ -205,7 +205,7 @@ public class TagProvider: NSObject {
             }
             
             // Remove deleted tags
-            let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.value})
+            let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.int32Value})
             let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
             cachedTagsToDelete.forEach { cachedTag in
                 print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
@@ -264,7 +264,7 @@ public class TagProvider: NSObject {
                     completionHandler(TagError.missingData)
                     return
                 }
-                let newTag = TagProperties(id: Int32OrString.integer(tagId),
+                let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
                                            name: NetworkUtilities.utf8mb4String(from: name),
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 

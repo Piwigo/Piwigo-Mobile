@@ -19,7 +19,7 @@ public class Tag: NSManagedObject {
     func update(with tagProperties: TagProperties, server: Server) throws {
         
         // Update the tag only if the Id and Name properties have values.
-        guard let newId = tagProperties.id?.value,
+        guard let newId = tagProperties.id?.int32Value,
               let newName = tagProperties.name else {
                 throw TagError.missingData
         }

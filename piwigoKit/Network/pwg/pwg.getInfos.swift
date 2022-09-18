@@ -86,7 +86,7 @@ public struct GetInfosJSON: Decodable {
 public struct InfoKeyValue: Decodable
 {
     public let name: String?        // "version"
-    public let value: StringOrInt?  // "11.5.0"
+    public let value: StringOrInt?  // "11.5.0" or 23
 }
 
 public enum StringOrInt: Codable {
@@ -131,6 +131,15 @@ public enum StringOrInt: Codable {
             return x
         case .string(let x):
             return Int(x) ?? NSNotFound
+        }
+    }
+    
+    public var int32Value: Int32? {
+        switch self {
+        case .integer(let x):
+            return Int32(x)
+        case .string(let x):
+            return Int32(x)
         }
     }
 }
