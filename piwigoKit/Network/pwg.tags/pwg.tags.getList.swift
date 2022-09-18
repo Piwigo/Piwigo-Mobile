@@ -83,12 +83,12 @@ public struct TagJSON: Decodable {
 */
 public struct TagProperties: Decodable
 {
-    public let id: Int32OrString?          // 2 or "2"
-    public let name: String?               // "Birthday"
-    public let lastmodified: String?       // "2018-08-23 15:30:43"
-    public let counter: Int64?             // 8
+    public let id: StringOrInt?             // 2 or "2"
+    public let name: String?                // "Birthday"
+    public let lastmodified: String?        // "2018-08-23 15:30:43"
+    public let counter: Int64?              // 8
 
     // The following data is not stored in cache
-    public let url_name: String?           // "birthday"
-    public let url: String?                // "https:…"
+    public let url_name: String?            // "birthday"
+    public let url: String?                 // "https:…"
 }
