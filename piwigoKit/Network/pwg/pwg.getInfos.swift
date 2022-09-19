@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.getInfos
-public let kPiwigoGetInfos = "format=json&method=pwg.getInfos"
+public let pwgGetInfos = "format=json&method=pwg.getInfos"
 
 public struct GetInfosJSON: Decodable {
     
@@ -80,7 +80,7 @@ public struct GetInfosJSON: Decodable {
 }
 
 /**
- A struct for decoding JSON returned by kPiwigoGetinfos.
+ A struct for decoding JSON returned by pwgGetInfos.
  All members are optional in case they are missing from the data.
 */
 public struct InfoKeyValue: Decodable

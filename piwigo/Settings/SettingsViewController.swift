@@ -1465,7 +1465,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Collect stats from server
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
+        JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: GetInfosJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and retrieve statistics.
