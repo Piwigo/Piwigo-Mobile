@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.session.logout
-public let kPiwigoSessionLogout = "format=json&method=pwg.session.logout"
+public let pwgSessionLogout = "format=json&method=pwg.session.logout"
 
 public struct SessionLogoutJSON: Decodable {
 

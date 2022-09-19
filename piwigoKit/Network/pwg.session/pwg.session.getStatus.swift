@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.session.getStatus
-public let kPiwigoSessionGetStatus = "format=json&method=pwg.session.getStatus"
+public let pwgSessionGetStatus = "format=json&method=pwg.session.getStatus"
 
 public struct SessionGetStatusJSON: Decodable {
 

@@ -70,7 +70,7 @@ class LoginUtilities: NSObject {
                                           "password" : password]
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoSessionLogin, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in
             // Decode the JSON object and check if the login was successful
@@ -156,7 +156,7 @@ class LoginUtilities: NSObject {
         print("••> Get session status…")
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoSessionGetStatus, paramDict: [:],
+        JSONsession.postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
                                 countOfBytesClientExpectsToReceive: 7400) { jsonData in
             // Decode the JSON object and retrieve the status
@@ -466,7 +466,7 @@ class LoginUtilities: NSObject {
         print("••> Session logout…")
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoSessionLogout, paramDict: [:],
+        JSONsession.postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in
             // Decode the JSON object and check if the logout was successful

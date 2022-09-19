@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.session.login
-public let kPiwigoSessionLogin = "format=json&method=pwg.session.login"
+public let pwgSessionLogin = "format=json&method=pwg.session.login"
 
 public struct SessionLoginJSON: Decodable {
 
