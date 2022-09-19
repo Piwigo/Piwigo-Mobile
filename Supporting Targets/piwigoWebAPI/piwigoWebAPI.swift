@@ -282,7 +282,11 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-//        XCTAssertTrue(result.data.contains(where: { $0.id == 285 }))
+        XCTAssertEqual(result.paging?.perPage, 100)
+        XCTAssertEqual(result.paging?.totalCount.intValue, 8)
+        XCTAssertEqual(result.data.first?.datePosted, "2018-08-23 19:01:39")
+        XCTAssertEqual(result.data.first?.categoryIds?.first?.id, 2)
+        XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 756)
     }
 
     // MARK: - pwg.images…
