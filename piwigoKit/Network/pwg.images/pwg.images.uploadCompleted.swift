@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.images.uploadCompleted
-public let kPiwigoImagesUploadCompleted = "format=json&method=pwg.images.uploadCompleted"
+public let pwgImagesUploadCompleted = "format=json&method=pwg.images.uploadCompleted"
 
 public struct ImagesUploadCompletedJSON: Decodable {
 

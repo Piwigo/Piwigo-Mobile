@@ -40,7 +40,7 @@ extension UploadManager {
         
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
@@ -109,7 +109,7 @@ extension UploadManager {
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
-        JSONsession.postRequest(withMethod: kPiwigoImagesUploadCompleted, paramDict: paramDict,
+        JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { jsonData in
             print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())

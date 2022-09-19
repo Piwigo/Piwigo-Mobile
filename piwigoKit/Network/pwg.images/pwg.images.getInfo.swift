@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.images.getInfo
-public let kPiwigoImagesGetInfo = "format=json&method=pwg.images.getInfo"
+public let pwgImagesGetInfo = "format=json&method=pwg.images.getInfo"
 
 public struct ImagesGetInfoJSON: Decodable {
 

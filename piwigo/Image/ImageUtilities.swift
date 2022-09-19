@@ -23,7 +23,7 @@ class ImageUtilities: NSObject {
         
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesGetInfo, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 50000) { jsonData in
             // Decode the JSON object and store image data in cache.
@@ -177,7 +177,7 @@ class ImageUtilities: NSObject {
                         completion: @escaping () -> Void,
                         failure: @escaping (NSError) -> Void) {
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and check if image data were updated on server.
@@ -227,7 +227,7 @@ class ImageUtilities: NSObject {
                                           "pwg_token" : NetworkVars.pwgToken]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesDelete, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgImagesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON and delete image from cache if successful.

@@ -86,7 +86,7 @@ extension UploadManager {
 
         // Prepare URL
         let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(kPiwigoImagesUpload)")
+        let url = URL(string: urlStr + "/ws.php?\(pwgImagesUpload)")
         guard let validUrl = url else { fatalError() }
         
         // Initialise boundary of upload request
@@ -401,7 +401,7 @@ extension UploadManager {
 
         // Prepare URL
         let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(kPiwigoImagesUploadAsync)")
+        let url = URL(string: urlStr + "/ws.php?\(pwgImagesUploadAsync)")
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
