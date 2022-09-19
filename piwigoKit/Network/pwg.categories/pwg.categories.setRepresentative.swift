@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.categories.setRepresentative
-public let kPiwigoCategoriesSetRepresentative = "format=json&method=pwg.categories.setRepresentative"
+public let pwgCategoriesSetRepresentative = "format=json&method=pwg.categories.setRepresentative"
 
 public struct CategoriesSetRepresentativeJSON: Decodable {
 

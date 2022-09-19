@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.images.upload
-public let kPiwigoCategoriesAdd = "format=json&method=pwg.categories.add"
+public let pwgCategoriesAdd = "format=json&method=pwg.categories.add"
 
 public struct CategoriesAddJSON: Decodable {
 

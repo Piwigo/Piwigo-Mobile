@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.categories.getList
-public let kPiwigoCategoriesGetList = "format=json&method=pwg.categories.getList"
+public let pwgCategoriesGetList = "format=json&method=pwg.categories.getList"
 
 public struct CategoriesGetListJSON: Decodable {
 
@@ -47,7 +47,7 @@ public struct CategoriesGetListJSON: Decodable {
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
 //            dump(resultContainer)
             
-            // Decodes tags from the data and store them in the array
+            // Decodes categories from the data and store them in the array
             do {
                 // Use TagProperties struct
                 try data = resultContainer.decode([CategoryData].self, forKey: .categories)
@@ -83,18 +83,18 @@ public struct CategoriesGetListJSON: Decodable {
 public struct CategoryData: Decodable
 {
     // The following data is returned by pwg.categories.getList
-    public let id: Int?                     // 32
+    public let id: Int32?                   // 32
     public let name: String?                // "Insects & Spiders"
-    public let comment: String?             // "…"
+    public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters
 //    public let status: String?              // "public"
-    public let globalRank: String?          // "1"
+    public let globalRank: String?          // "11.2.1" i.e. 11th album in root, 2nd sub-album, 1st sub-sub-album
 
     public let upperCat: String?            // "41"
     public let upperCats: String?           // "32"
 
-    public let nbImages: Int?               // 6
-    public let totalNbImages: Int?          // 6
-    public let nbCategories: Int?           // 0
+    public let nbImages: Int64?             // 6
+    public let totalNbImages: Int64?        // 6
+    public let nbCategories: Int32?         // 0
 
 //    public let permalink: String?           // "insects-spiders"
 //    public let pageUrl: String?             // "https:…"
@@ -121,6 +121,8 @@ public struct CategoryData: Decodable
 //    public let dateLast: String?            // "yyyy-MM-dd HH:mm:ss"
 //    public let maxDateLast: String?         // "yyyy-MM-dd HH:mm:ss"
 
+    // Used to identify album with upload rights
+    public var hasUploadRights = false
 
     public enum CodingKeys: String, CodingKey {
         case id, name, comment //, status

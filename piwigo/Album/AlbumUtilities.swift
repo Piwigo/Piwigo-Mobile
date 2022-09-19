@@ -276,7 +276,7 @@ class AlbumUtilities: NSObject {
                                           "status"  : status]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoCategoriesAdd, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgCategoriesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 1040) { jsonData in
             // Decode the JSON object and update the category in cache.
@@ -331,7 +331,7 @@ class AlbumUtilities: NSObject {
                                           "comment"     : description]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoCategoriesSetInfo, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update the category in cache.
@@ -383,7 +383,7 @@ class AlbumUtilities: NSObject {
                                           "pwg_token"   : NetworkVars.pwgToken]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoCategoriesMove, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update the category in cache.
@@ -492,7 +492,7 @@ class AlbumUtilities: NSObject {
         }
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoCategoriesDelete, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update the category in cache.
@@ -558,7 +558,7 @@ class AlbumUtilities: NSObject {
                                           "image_id"    : imageData.imageId]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoCategoriesSetRepresentative, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetRepresentativeJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update the category in cache.
