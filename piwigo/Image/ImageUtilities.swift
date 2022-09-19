@@ -282,7 +282,7 @@ class ImageUtilities: NSObject {
         let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesAdd, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and add image to favorites.
@@ -333,7 +333,7 @@ class ImageUtilities: NSObject {
         let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
 
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesRemove, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and remove image from faborites.

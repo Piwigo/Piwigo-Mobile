@@ -9,8 +9,8 @@
 import Foundation
 
 // MARK: - pwg.users.favorites.add + pwg.users.favorites.remove
-public let kPiwigoUsersFavoritesAdd = "format=json&method=pwg.users.favorites.add"
-public let kPiwigoUsersFavoritesRemove = "format=json&method=pwg.users.favorites.remove"
+public let pwgUsersFavoritesAdd = "format=json&method=pwg.users.favorites.add"
+public let pwgUsersFavoritesRemove = "format=json&method=pwg.users.favorites.remove"
 
 public struct FavoritesAddRemoveJSON: Decodable {
 
