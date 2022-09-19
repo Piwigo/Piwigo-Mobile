@@ -14,8 +14,7 @@ public let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
 public struct ImagesUploadJSON: Decodable {
 
     public var status: String?
-    public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "", name: "")
-    public var category = ImageCategory(catId: NSNotFound, catName: "", nbPhotos: NSNotFound)
+    public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "")
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -55,27 +54,8 @@ public struct ImagesUploadJSON: Decodable {
             if status == "ok"
             {
                 // Decodes response from the data and store them in the array
-                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "", name: "")
+                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "")
 //                dump(data)
-
-                // Result container keyed by ResultCodingKeys
-                let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
-//                dump(resultContainer)
-
-                // Decodes derivatives
-                do {
-                    try category = resultContainer.decode(ImageCategory.self, forKey: .category)
-                }
-                catch {
-                    // Sometimes, nbPhotos is provided as String instead of Int!
-                    var categoryStr = ImageCategoryStr(catId: NSNotFound, catName: "", nbPhotos: "")
-                    try categoryStr = resultContainer.decode(ImageCategoryStr.self, forKey: .category)
-                    if let nbPhotosStr = categoryStr.nbPhotos, let nbPhotos = Int(nbPhotosStr) {
-                        category = ImageCategory(catId: categoryStr.catId,
-                                                 catName: categoryStr.catName,
-                                                 nbPhotos: nbPhotos)
-                    }
-                }
             }
             else if status == "fail"
             {
@@ -107,35 +87,24 @@ public struct ImagesUploadJSON: Decodable {
 // MARK: - Result
 public struct ImagesUpload: Decodable
 {
-    public let image_id: Int?              // 1042
-    public let square_src: String?         // "https://…-sq.jpg"
-    public let src: String?                // "https://…-th.jpg"
+    public let image_id: Int?               // 1042
+    public let square_src: String?          // "https://…-sq.jpg"
+    public let src: String?                 // "https://…-th.jpg"
 
     // The following data is not used yet
-    public let name: String?               // "Delft - 01"
+//    public let name: String?                // "Delft - 01"
+//    public let category: ImageCategory?     // See below
 }
 
 // MARK: - Category
-public struct ImageCategory: Decodable {
-    public let catId: Int?                  // 140
-    public let catName: String?             // "Essai"
-    public let nbPhotos: Int?               // 7
-
-    public enum CodingKeys: String, CodingKey {
-        case catId = "id"
-        case catName = "label"
-        case nbPhotos = "nb_photos"
-    }
-}
-
-public struct ImageCategoryStr: Decodable {
-    public let catId: Int?                  // 140
-    public let catName: String?             // "Essai"
-    public let nbPhotos: String?            // "7"
-
-    public enum CodingKeys: String, CodingKey {
-        case catId = "id"
-        case catName = "label"
-        case nbPhotos = "nb_photos"
-    }
-}
+//public struct ImageCategory: Decodable {
+//    public let catId: Int?                  // 140
+//    public let catName: String?             // "Essai"
+//    public let nbPhotos: StringOrInt?       // 7 or "7"
+//
+//    public enum CodingKeys: String, CodingKey {
+//        case catId = "id"
+//        case catName = "label"
+//        case nbPhotos = "nb_photos"
+//    }
+//}
