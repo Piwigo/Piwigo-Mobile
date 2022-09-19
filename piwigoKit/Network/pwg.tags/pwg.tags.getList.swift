@@ -9,8 +9,8 @@
 import Foundation
 
 // MARK: - pwg.tags.getList & pwg.tags.getAdminList
-public let kPiwigoTagsGetList = "format=json&method=pwg.tags.getList"
-public let kPiwigoTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
+public let pwgTagsGetList = "format=json&method=pwg.tags.getList"
+public let pwgTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
 
 public struct TagJSON: Decodable {
 
@@ -78,7 +78,7 @@ public struct TagJSON: Decodable {
 }
 
 /**
- A struct for decoding JSON returned by kPiwigoTagsGetList or kPiwigoTagsGetAdminList.
+ A struct for decoding JSON returned by pwgTagsGetList or pwgTagsGetAdminList.
  All members are optional in case they are missing from the data.
 */
 public struct TagProperties: Decodable

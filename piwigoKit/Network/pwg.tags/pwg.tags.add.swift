@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.tags.add
-public let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
+public let pwgTagsAdd = "format=json&method=pwg.tags.add"
 
 public struct TagAddJSON: Decodable {
 
@@ -69,7 +69,7 @@ public struct TagAddJSON: Decodable {
 }
 
 /**
- A struct for decoding JSON returned by kPiwigoTagsAdd:
+ A struct for decoding JSON returned by pwgTagsAdd:
  All members are optional in case they are missing from the data.
 */
 public struct TagPropertiesAdd: Decodable

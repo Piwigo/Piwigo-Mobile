@@ -39,7 +39,7 @@ public class TagProvider: NSObject {
     public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
         // Launch the HTTP(S) request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
+        JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
             // Decode the JSON object and import it into Core Data.
@@ -242,7 +242,7 @@ public class TagProvider: NSObject {
                 
         // Add tag on server
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
+        JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 3000) { jsonData in
             // Decode the JSON object and import it into Core Data.
