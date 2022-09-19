@@ -15,7 +15,6 @@ public struct ImagesGetInfoJSON: Decodable {
 
     public var status: String?
     public var data: ImagesGetInfo!
-    public var derivatives: Derivatives!
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -26,24 +25,6 @@ public struct ImagesGetInfoJSON: Decodable {
         case errorMessage = "message"
     }
     
-    private enum ResultCodingKeys: String, CodingKey {
-        case derivatives
-    }
-
-    private enum DerivativesCodingKeys: String, CodingKey {
-        case squareImage = "square"
-        case thumbImage = "thumb"
-        case mediumImage = "medium"
-        
-        case smallImage = "small"
-        case xSmallImage = "xsmall"
-        case xxSmallImage = "2small"
-
-        case largeImage = "large"
-        case xLargeImage = "xlarge"
-        case xxLargeImage = "xxlarge"
-    }
-
     private enum ErrorCodingKeys: String, CodingKey {
         case code = "code"
         case message = "msg"
@@ -82,129 +63,6 @@ public struct ImagesGetInfoJSON: Decodable {
             if data.ratingScore == nil { data.ratingScore = "0.0" }
             if data.fileSize == nil { data.fileSize = NSNotFound }
             if data.md5checksum == nil { data.md5checksum = "" }
-            
-            // Result container keyed by ResultCodingKeys
-            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
-//                dump(resultContainer)
-
-            // Decodes derivatives
-            do {
-                try derivatives = resultContainer.decode(Derivatives.self, forKey: .derivatives)
-            }
-            catch {
-                // Sometimes, width and height are provided as String instead of Int!
-                derivatives = Derivatives()
-                let derivativesContainer = try resultContainer.nestedContainer(keyedBy: DerivativesCodingKeys.self, forKey: .derivatives)
-//                    dump(derivativesContainer)
-                
-                // Square image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .squareImage)
-                    derivatives?.squareImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .squareImage)
-                    derivatives?.squareImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // Thumbnail image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .thumbImage)
-                    derivatives?.thumbImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .thumbImage)
-                    derivatives?.thumbImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // Medium image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .mediumImage)
-                    derivatives?.mediumImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .mediumImage)
-                    derivatives?.mediumImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // Small image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .smallImage)
-                    derivatives?.smallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .smallImage)
-                    derivatives?.smallImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // XSmall image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xSmallImage)
-                    derivatives?.xSmallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xSmallImage)
-                    derivatives?.xSmallImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // XXSmall image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxSmallImage)
-                    derivatives?.xxSmallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxSmallImage)
-                    derivatives?.xxSmallImage = Derivative(url: square.url,
-                                                           width: Int(square.width ?? "1"),
-                                                           height: Int(square.height ?? "1"))
-                }
-
-                // Large image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .largeImage)
-                    derivatives?.largeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .largeImage)
-                    derivatives?.largeImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // XLarge image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xLargeImage)
-                    derivatives?.xLargeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xLargeImage)
-                    derivatives?.xLargeImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // XXLarge image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxLargeImage)
-                    derivatives?.xxLargeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxLargeImage)
-                    derivatives?.xxLargeImage = Derivative(url: square.url,
-                                                           width: Int(square.width ?? "1"),
-                                                           height: Int(square.height ?? "1"))
-                }
-            }
         }
         else if status == "fail"
         {
@@ -252,6 +110,7 @@ public struct ImagesGetInfo: Decodable
     public var fileSize: Int?                   // 3025
     public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
     public let categoryIds: [CategoryData]?     // Defined in pwg.category.getList
+    public let derivatives: Derivatives         // See below
 
     public enum CodingKeys: String, CodingKey {
         case imageId = "id"
@@ -273,6 +132,7 @@ public struct ImagesGetInfo: Decodable
         case fileSize = "filesize"
         case md5checksum = "md5sum"
         case categoryIds = "categories"
+        case derivatives = "derivatives"
     }
 }
 
@@ -308,12 +168,6 @@ public struct Derivatives: Decodable {
 
 public struct Derivative: Decodable {
     public let url: String?
-    public let width: Int?
-    public let height: Int?
-}
-
-public struct DerivativeStr: Decodable {
-    public let url: String?
-    public let width: String?
-    public let height: String?
+    public let width: StringOrInt?
+    public let height: StringOrInt?
 }

@@ -41,8 +41,7 @@ class ImageUtilities: NSObject {
                 }
 
                 // Collect data returned by server
-                guard let data = imageJSON.data,
-                      let derivatives = imageJSON.derivatives else {
+                guard let data = imageJSON.data else {
                           // Data cannot be digested
                           failure(JsonError.unexpectedError as NSError)
                           return
@@ -124,33 +123,33 @@ class ImageUtilities: NSObject {
                 imageData.fullResHeight = data.fullResHeight ?? 1
                 imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? imageData.fullResPath ?? "")
 
-                imageData.squarePath = NetworkUtilities.encodedImageURL(derivatives.squareImage?.url ?? imageData.squarePath ?? "")
-                imageData.squareWidth = derivatives.squareImage?.width ?? 1
-                imageData.squareHeight = derivatives.squareImage?.height ?? 1
-                imageData.thumbPath = NetworkUtilities.encodedImageURL(derivatives.thumbImage?.url ?? imageData.thumbPath ?? "")
-                imageData.thumbWidth = derivatives.thumbImage?.width ?? 1
-                imageData.thumbHeight = derivatives.thumbImage?.height ?? 1
-                imageData.mediumPath = NetworkUtilities.encodedImageURL(derivatives.mediumImage?.url ?? imageData.mediumPath ?? "")
-                imageData.mediumWidth = derivatives.mediumImage?.width ?? 1
-                imageData.mediumHeight = derivatives.mediumImage?.height ?? 1
-                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(derivatives.xxSmallImage?.url ?? imageData.xxSmallPath ?? "")
-                imageData.xxSmallWidth = derivatives.xxSmallImage?.width ?? 1
-                imageData.xxSmallHeight = derivatives.xxSmallImage?.height ?? 1
-                imageData.xSmallPath = NetworkUtilities.encodedImageURL(derivatives.xSmallImage?.url ?? imageData.xSmallPath ?? "")
-                imageData.xSmallWidth = derivatives.xSmallImage?.width ?? 1
-                imageData.xSmallHeight = derivatives.xSmallImage?.height ?? 1
-                imageData.smallPath = NetworkUtilities.encodedImageURL(derivatives.smallImage?.url ?? imageData.smallPath ?? "")
-                imageData.smallWidth = derivatives.smallImage?.width ?? 1
-                imageData.smallHeight = derivatives.smallImage?.height ?? 1
-                imageData.largePath = NetworkUtilities.encodedImageURL(derivatives.largeImage?.url ?? imageData.largePath ?? "")
-                imageData.largeWidth = derivatives.largeImage?.width ?? 1
-                imageData.largeHeight = derivatives.largeImage?.height ?? 1
-                imageData.xLargePath = NetworkUtilities.encodedImageURL(derivatives.xLargeImage?.url ?? imageData.xLargePath ?? "")
-                imageData.xLargeWidth = derivatives.xLargeImage?.width ?? 1
-                imageData.xLargeHeight = derivatives.xLargeImage?.height ?? 1
-                imageData.xxLargePath = NetworkUtilities.encodedImageURL(derivatives.xxLargeImage?.url ?? imageData.xxLargePath ?? "")
-                imageData.xxLargeWidth = derivatives.xxLargeImage?.width ?? 1
-                imageData.xxLargeHeight = derivatives.xxLargeImage?.height ?? 1
+                imageData.squarePath = NetworkUtilities.encodedImageURL(data.derivatives.squareImage?.url ?? imageData.squarePath ?? "")?.absoluteString
+                imageData.squareWidth = data.derivatives.squareImage?.width?.intValue ?? 1
+                imageData.squareHeight = data.derivatives.squareImage?.height?.intValue ?? 1
+                imageData.thumbPath = NetworkUtilities.encodedImageURL(data.derivatives.thumbImage?.url ?? imageData.thumbPath ?? "")?.absoluteString
+                imageData.thumbWidth = data.derivatives.thumbImage?.width?.intValue ?? 1
+                imageData.thumbHeight = data.derivatives.thumbImage?.height?.intValue ?? 1
+                imageData.mediumPath = NetworkUtilities.encodedImageURL(data.derivatives.mediumImage?.url ?? imageData.mediumPath ?? "")?.absoluteString
+                imageData.mediumWidth = data.derivatives.mediumImage?.width?.intValue ?? 1
+                imageData.mediumHeight = data.derivatives.mediumImage?.height?.intValue ?? 1
+                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xxSmallImage?.url ?? imageData.xxSmallPath ?? "")?.absoluteString
+                imageData.xxSmallWidth = data.derivatives.xxSmallImage?.width?.intValue ?? 1
+                imageData.xxSmallHeight = data.derivatives.xxSmallImage?.height?.intValue ?? 1
+                imageData.xSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xSmallImage?.url ?? imageData.xSmallPath ?? "")?.absoluteString
+                imageData.xSmallWidth = data.derivatives.xSmallImage?.width?.intValue ?? 1
+                imageData.xSmallHeight = data.derivatives.xSmallImage?.height?.intValue ?? 1
+                imageData.smallPath = NetworkUtilities.encodedImageURL(data.derivatives.smallImage?.url ?? imageData.smallPath ?? "")?.absoluteString
+                imageData.smallWidth = data.derivatives.smallImage?.width?.intValue ?? 1
+                imageData.smallHeight = data.derivatives.smallImage?.height?.intValue ?? 1
+                imageData.largePath = NetworkUtilities.encodedImageURL(data.derivatives.largeImage?.url ?? imageData.largePath ?? "")?.absoluteString
+                imageData.largeWidth = data.derivatives.largeImage?.width?.intValue ?? 1
+                imageData.largeHeight = data.derivatives.largeImage?.height?.intValue ?? 1
+                imageData.xLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xLargeImage?.url ?? imageData.xLargePath ?? "")?.absoluteString
+                imageData.xLargeWidth = data.derivatives.xLargeImage?.width?.intValue ?? 1
+                imageData.xLargeHeight = data.derivatives.xLargeImage?.height?.intValue ?? 1
+                imageData.xxLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xxLargeImage?.url ?? imageData.xxLargePath ?? "")?.absoluteString
+                imageData.xxLargeWidth = data.derivatives.xxLargeImage?.width?.intValue ?? 1
+                imageData.xxLargeHeight = data.derivatives.xxLargeImage?.height?.intValue ?? 1
 
                 // Update cache
                 for catId in imageData.categoryIds {

@@ -25,16 +25,6 @@ public struct ImagesUploadJSON: Decodable {
         case errorMessage = "message"
     }
 
-    private enum ResultCodingKeys: String, CodingKey {
-        case category
-    }
-
-    private enum CategoryCodingKeys: String, CodingKey {
-        case catId = "id"
-        case catName = "label"
-        case nbPhotos = "nb_photos"
-    }
-
     private enum ErrorCodingKeys: String, CodingKey {
         case code = "code"
         case message = "msg"

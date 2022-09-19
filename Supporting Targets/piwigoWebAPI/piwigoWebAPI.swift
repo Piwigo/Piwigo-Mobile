@@ -307,7 +307,7 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.errorMessage, "")
         
         XCTAssertEqual(result.data.image_id, 6580)
-        XCTAssertEqual(result.data.name, "Delft - 06")
+//        XCTAssertEqual(result.data.name, "Delft - 06")
         XCTAssertEqual(result.data.square_src, "https://.../20200628211106-5fc9fb08-sq.jpg")
         XCTAssertEqual(result.data.src, "https://.../20200628211106-5fc9fb08-th.jpg")
 
@@ -327,7 +327,7 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result2.errorMessage, "")
         
         XCTAssertEqual(result2.data.image_id, 6582)
-        XCTAssertEqual(result2.data.name, "Screenshot 2020-06-28 at 14.01.38")
+//        XCTAssertEqual(result2.data.name, "Screenshot 2020-06-28 at 14.01.38")
         XCTAssertEqual(result2.data.square_src, "https://.../20200628212043-0a9c6158-sq.png")
         XCTAssertEqual(result2.data.src, "https://.../20200628212043-0a9c6158-th.png")
     }
@@ -369,6 +369,7 @@ class piwigoWebAPI: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data.md5checksum, "7870f465dd76af3f0bd6d4f087afa5cd")
+        XCTAssertEqual(result.data.derivatives.largeImage?.height?.intValue, 756)
     }
 
     func testPwgImagesSetInfoDecoding() {
