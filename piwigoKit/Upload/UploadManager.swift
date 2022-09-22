@@ -25,11 +25,11 @@ public class UploadManager: NSObject {
     public let kMovieSuffix = "-mov-"
     
     // Constants returning the list of:
-    /// - image formats whcih can be converted with iOS
+    /// - image formats which can be converted with iOS
     /// - movie formats which can be converted with iOS
-    /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
+    /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
     @nonobjc let acceptedImageFormats: String = {
-        return "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
+        return "heic,heif,png,gif,jpg,jpeg,webp,tif,tiff,bmp,raw,ico,icns"
     }()
     @nonobjc let acceptedMovieFormats: String = {
         return "mov,mpg,mpeg,mpeg2,mp4,avi"
@@ -273,7 +273,7 @@ public class UploadManager: NSObject {
             // Moderate images uploaded by Community regular user
             // Considers only uploads to the server to which the user is logged in
             let finishedUploads = uploadsProvider.getRequests(inStates: [.finished]).1
-            if pwgUserStatus(rawValue: NetworkVars.userStatus) == .normal,
+            if NetworkVars.userStatus == .normal,
                NetworkVars.usesCommunityPluginV29, finishedUploads.count > 0 {
 
                 // Pause upload manager if the app is not in the foreground anymore
