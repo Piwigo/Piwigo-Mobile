@@ -75,31 +75,29 @@ import piwigoKit
             registerBgTasks()
         }
 
-        // Migrate the Core Data store to the new version if needed
-        DataController.shared.setup { [self] in
-            // What follows depends on iOS version
-            if #available(iOS 13.0, *) {
-                // Delegate to SceneDelegate
-                /// - Present login view and if needed passcode view
-            } else {
-                // Create login view
-                window = UIWindow(frame: UIScreen.main.bounds)
-                loadLoginView(in: window)
-                window?.makeKeyAndVisible()
-                
-                // Blur views if the App Lock is enabled
-                /// The passcode window is not presented  so that the app
-                /// does not request the passcode until it is put into the background.
-                if AppVars.shared.isAppLockActive {
-                    // User is not allowed to access albums yet
-                    AppVars.shared.isAppUnlocked = false
-                    // Protect presented login view
-                    addPrivacyProtection(to: window)
-                }
-                else {
-                    // User is allowed to access albums
-                    AppVars.shared.isAppUnlocked = true
-                }
+        // What follows depends on iOS version
+        if #available(iOS 13.0, *) {
+            // Delegate to SceneDelegate
+            /// - Present login view and if needed passcode view
+            /// - or album view behind passcode view if needed
+        } else {
+            // Create login view
+            window = UIWindow(frame: UIScreen.main.bounds)
+            loadLoginView(in: window)
+            window?.makeKeyAndVisible()
+            
+            // Blur views if the App Lock is enabled
+            /// The passcode window is not presented  so that the app
+            /// does not request the passcode until it is put into the background.
+            if AppVars.shared.isAppLockActive {
+                // User is not allowed to access albums yet
+                AppVars.shared.isAppUnlocked = false
+                // Protect presented login view
+                addPrivacyProtection(to: window)
+            }
+            else {
+                // User is allowed to access albums
+                AppVars.shared.isAppUnlocked = true
             }
         }
         

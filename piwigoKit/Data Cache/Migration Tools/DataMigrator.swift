@@ -12,6 +12,7 @@ import CoreData
 // MARK: - Core Data Migrator
 /// See: https://williamboles.com/progressive-core-data-migration/
 protocol DataMigratorProtocol {
+    static var appGroupDirectory: URL { get }
     func forceWALCheckpointingForStore(at storeURL: URL)
     func requiresMigration(at storeURL: URL, toVersion version: DataMigrationVersion) -> Bool
     func migrateStore(at storeURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL)
@@ -35,8 +36,216 @@ protocol DataMigratorProtocol {
  */
 class DataMigrator: DataMigratorProtocol {
     
+    // Initialisation
+    init() {
+        // Perform migration right before creating DataController instance if needed
+        migrateStoreIfNeeded()
+    }
+    
+    internal func migrateStoreIfNeeded() {
+        // URL of the store in the App Group directory
+        let storeURL = DataMigrator.appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+
+        // Move the very old store to the new folder if needed
+        var oldStoreURL = appDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
+        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            migrateStore(at: oldStoreURL,
+                         toVersion: DataMigrationVersion.current, at: storeURL)
+            return
+        }
+        
+        // Move the old store to the new folder if needed
+        oldStoreURL = appSupportDirectory.appendingPathComponent("DataModel.sqlite")
+        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            migrateStore(at: oldStoreURL,
+                         toVersion: DataMigrationVersion.current, at: storeURL)
+            // Move Upload folder to container if needed
+            self.moveFilesToUpload()
+            return
+        }
+
+        // Migrate store to new data model if needed
+        if requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            migrateStore(at: storeURL,
+                         toVersion: DataMigrationVersion.current, at: storeURL)
+            return
+        }
+    }
+
+    internal func moveIncompatibleStore(storeURL: URL) {
+        let fm = FileManager.default
+        let applicationIncompatibleStoresDirectory = self.appSupportDirectory.appendingPathComponent("Incompatible")
+
+        // Create the Piwigo/Incompatible directory if needed
+        if !fm.fileExists(atPath: applicationIncompatibleStoresDirectory.path) {
+            do {
+                try fm.createDirectory(at: applicationIncompatibleStoresDirectory,
+                                       withIntermediateDirectories: true, attributes: nil)
+            } catch let error {
+                print("Unable to create directory for corrupt data stores: \(error.localizedDescription)")
+            }
+        }
+        
+        // Rename files with current date
+        let dateFormatter = DateFormatter()
+        dateFormatter.formatterBehavior = .behavior10_4
+        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+        let nameForIncompatibleStore = "\(dateFormatter.string(from: Date()))"
+
+        // Move .sqlite file
+        if fm.fileExists(atPath: storeURL.path) {
+            let corruptURL = applicationIncompatibleStoresDirectory
+                .appendingPathComponent(nameForIncompatibleStore)
+                .appendingPathExtension("sqlite")
+
+            // Move Corrupt Store
+            do {
+                try fm.moveItem(at: storeURL, to: corruptURL)
+            } catch let error {
+                print("Unable to move corrupt store: \(error.localizedDescription)")
+            }
+        }
+
+        // Move .sqlite-shm file
+        let shmURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-shm")
+        if fm.fileExists(atPath: shmURL.path) {
+            let corruptURL = applicationIncompatibleStoresDirectory
+                .appendingPathComponent(nameForIncompatibleStore)
+                .appendingPathExtension("sqlite-shm")
+
+            // Move Corrupt Store
+            do {
+                try fm.moveItem(at: shmURL, to: corruptURL)
+            } catch let error {
+                print("Unable to move corrupt store: \(error.localizedDescription)")
+            }
+        }
+
+        // Move .sqlite-shm file
+        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
+        if fm.fileExists(atPath: walURL.path) {
+            let corruptURL = applicationIncompatibleStoresDirectory
+                .appendingPathComponent(nameForIncompatibleStore)
+                .appendingPathExtension("sqlite-wal")
+
+            // Move Corrupt Store
+            do {
+                try fm.moveItem(at: walURL, to: corruptURL)
+            } catch let error {
+                print("Unable to move corrupt store: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    internal func moveFilesToUpload() {
+        let fm = FileManager.default
+        let oldURL = appSupportDirectory.appendingPathComponent("Uploads")
+        let newURL = DataMigrator.appGroupDirectory.appendingPathComponent("Uploads")
+
+        // Move Uploads directory
+        do {
+            // Get list of files
+            let filesToMove = try fm.contentsOfDirectory(at: oldURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+
+            // Move files
+            for fileToMove in filesToMove {
+                let newFileURL = newURL.appendingPathComponent(fileToMove.lastPathComponent)
+                try fm.moveItem(at: fileToMove, to: newFileURL)
+            }
+            
+            // Delete old Uploads directory
+            try fm.removeItem(at: oldURL)
+        }
+        catch let error {
+            print("Unable to move content of Uploads directory: \(error.localizedDescription)")
+        }
+    }
+
+    
+    //MARK: - Core Data Directories
+    // "Library/Application Support/Piwigo" inside the group container.
+    /// - The shared database and temporary files to upload are stored in the App Group
+    ///   container so that they can be used and shared by the app and the extensions.
+    static var appGroupDirectory: URL = {
+        // We use different App Groups:
+        /// - Development: one chosen by the developer
+        /// - Release: the official group.org.piwigo
+        #if DEBUG
+        let AppGroup = "group.net.lelievre-berna.piwigo"
+        #else
+        let AppGroup = "group.org.piwigo"
+        #endif
+
+        // Get path of group container
+        let fm = FileManager.default
+        let containerDirectory = fm.containerURL(forSecurityApplicationGroupIdentifier: AppGroup)
+        let piwigoURL = containerDirectory?.appendingPathComponent("Library")
+            .appendingPathComponent("Application Support")
+            .appendingPathComponent("Piwigo")
+
+        // Create the Piwigo directory in the container if needed
+        if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
+            var errorCreatingDirectory: Error? = nil
+            do {
+                if let piwigoURL = piwigoURL {
+                    try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
+                }
+            }
+            catch let errorCreatingDirectory {
+            }
+            if errorCreatingDirectory != nil {
+                fatalError("Unable to create Piwigo directory in App Group container.")
+            }
+        }
+
+        print("••> AppGroupDirectory: \(piwigoURL!)")
+        return piwigoURL!
+    }()
+
+    // "Library/Application Support/Piwigo" inside the Data Container of the Sandbox.
+    /// - This is where the incompatible Core Data stores are stored.
+    /// - The contents of this directory are backed up by iTunes and iCloud.
+    /// - This is the directory where the application used to store the Core Data store files
+    ///   and files to upload before the creation of extensions.
+    lazy var appSupportDirectory: URL = {
+        let fm = FileManager.default
+        let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
+        let piwigoURL = applicationSupportDirectory?.appendingPathComponent("Piwigo")
+
+        // Create the Piwigo directory in "Library/Application Support" if needed
+        if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
+            var errorCreatingDirectory: Error? = nil
+            do {
+                if let piwigoURL = piwigoURL {
+                    try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
+                }
+            } catch let errorCreatingDirectory {
+            }
+            if errorCreatingDirectory != nil {
+                fatalError("Unable to create \"Piwigo\" directory in \"Library/Application Support\".")
+            }
+        }
+
+        print("••> AppSupportDirectory: \(piwigoURL!)")
+        return piwigoURL!
+    }()
+
+    // "Documents" inside the Data Container of the Sandbox.
+    /// - This is the directory where the application used to store the Core Data store files long ago.
+    lazy var appDocumentsDirectory: URL = {
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let appDocumentsDirectory = urls[urls.count-1]
+
+        print("••> appDocumentsDirectory: \(appDocumentsDirectory)")
+        return appDocumentsDirectory
+    }()
+
+    
     // MARK: - Check
-    func requiresMigration(at storeURL: URL, toVersion version: DataMigrationVersion) -> Bool {
+    internal func requiresMigration(at storeURL: URL, toVersion version: DataMigrationVersion) -> Bool {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL) else {
             return false
         }
@@ -46,7 +255,7 @@ class DataMigrator: DataMigratorProtocol {
     
     
     // MARK: - Migration
-    func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) {
+    internal func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) {
         // Force WAL checkpoint
         forceWALCheckpointingForStore(at: oldStoreURL)
         
@@ -99,7 +308,7 @@ class DataMigrator: DataMigratorProtocol {
         }
     }
     
-    private func migrationStepsForStore(at storeURL: URL, toVersion destinationVersion: DataMigrationVersion) -> [DataMigrationStep] {
+    internal func migrationStepsForStore(at storeURL: URL, toVersion destinationVersion: DataMigrationVersion) -> [DataMigrationStep] {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL),
               let sourceVersion = DataMigrationVersion.compatibleVersionForStoreMetadata(metadata) else {
             return [DataMigrationStep]()
@@ -108,7 +317,7 @@ class DataMigrator: DataMigratorProtocol {
         return migrationSteps(fromSourceVersion: sourceVersion, toDestinationVersion: destinationVersion)
     }
 
-    private func migrationSteps(fromSourceVersion sourceVersion: DataMigrationVersion,
+    internal func migrationSteps(fromSourceVersion sourceVersion: DataMigrationVersion,
                                 toDestinationVersion destinationVersion: DataMigrationVersion) -> [DataMigrationStep] {
         var sourceVersion = sourceVersion
         var migrationSteps = [DataMigrationStep]()
@@ -126,7 +335,7 @@ class DataMigrator: DataMigratorProtocol {
     
     
     // MARK: - WAL
-    func forceWALCheckpointingForStore(at storeURL: URL) {
+    internal func forceWALCheckpointingForStore(at storeURL: URL) {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL),
               let currentModel = NSManagedObjectModel.compatibleModelForStoreMetadata(metadata) else {
             return
@@ -144,38 +353,38 @@ class DataMigrator: DataMigratorProtocol {
     
     
     // MARK: - Incompatible Stores
-    private func moveIncompatibleStore(storeURL: URL) {
-        let fm = FileManager.default
-        let appIncompatibleStoresDirectory = DataController.shared.appSupportDirectory.appendingPathComponent("Incompatible")
-
-        // Create the Piwigo/Incompatible directory if needed
-        if !fm.fileExists(atPath: appIncompatibleStoresDirectory.path) {
-            do {
-                try fm.createDirectory(at: appIncompatibleStoresDirectory,
-                                       withIntermediateDirectories: true, attributes: nil)
-            } catch let error {
-                print("Unable to create directory for corrupt data stores: \(error.localizedDescription)")
-            }
-        }
-        
-        // Rename files with current date
-        let dateFormatter = DateFormatter()
-        dateFormatter.formatterBehavior = .behavior10_4
-        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-        let nameForIncompatibleStore = "\(dateFormatter.string(from: Date()))"
-
-        // Move store
-        let corruptStoreURL = appIncompatibleStoresDirectory
-            .appendingPathComponent(nameForIncompatibleStore)
-            .appendingPathExtension("sqlite")
-
-        // Move Corrupt Store
-        do {
-            try fm.moveItem(at: storeURL, to: corruptStoreURL)
-        } catch let error {
-            print("Unable to move corrupt store: \(error.localizedDescription)")
-        }
-    }
+//    private func moveIncompatibleStore(storeURL: URL) {
+//        let fm = FileManager.default
+//        let appIncompatibleStoresDirectory = appSupportDirectory.appendingPathComponent("Incompatible")
+//
+//        // Create the Piwigo/Incompatible directory if needed
+//        if !fm.fileExists(atPath: appIncompatibleStoresDirectory.path) {
+//            do {
+//                try fm.createDirectory(at: appIncompatibleStoresDirectory,
+//                                       withIntermediateDirectories: true, attributes: nil)
+//            } catch let error {
+//                print("Unable to create directory for corrupt data stores: \(error.localizedDescription)")
+//            }
+//        }
+//
+//        // Rename files with current date
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.formatterBehavior = .behavior10_4
+//        dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+//        let nameForIncompatibleStore = "\(dateFormatter.string(from: Date()))"
+//
+//        // Move store
+//        let corruptStoreURL = appIncompatibleStoresDirectory
+//            .appendingPathComponent(nameForIncompatibleStore)
+//            .appendingPathExtension("sqlite")
+//
+//        // Move Corrupt Store
+//        do {
+//            try fm.moveItem(at: storeURL, to: corruptStoreURL)
+//        } catch let error {
+//            print("Unable to move corrupt store: \(error.localizedDescription)")
+//        }
+//    }
 }
 
 
