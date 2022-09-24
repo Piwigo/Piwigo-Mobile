@@ -56,15 +56,4 @@ enum DataMigrationVersion: String, CaseIterable {
             return nil
         }
     }
-    
-    func directory() -> URL {
-        switch self {
-        case .version01, .version02:
-            return DataController.shared.appDocumentsDirectory
-        case .version03, .version04, .version05, .version06, .version07:
-            return DataController.shared.appSupportDirectory
-        case .version08, .version09, .version0A:
-            return DataController.shared.appGroupDirectory
-        }
-    }
 }
