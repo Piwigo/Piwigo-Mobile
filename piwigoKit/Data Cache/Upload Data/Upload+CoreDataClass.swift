@@ -24,60 +24,107 @@ public class Upload: NSManagedObject {
                 throw UploadError.missingData
         }
         // Local identifier of the image to upload
-        localIdentifier = uploadProperties.localIdentifier
+        if localIdentifier != uploadProperties.localIdentifier {
+            localIdentifier = uploadProperties.localIdentifier
+        }
         
         // Category to upload the image to
-        category = Int64(uploadProperties.category)
+        let newCategory = Int64(uploadProperties.category)
+        if category != newCategory { category = newCategory }
         
         // Date of upload request defaults to now
-        requestDate = uploadProperties.requestDate
+        if requestDate != uploadProperties.requestDate {
+            requestDate = uploadProperties.requestDate
+        }
         
         // State of upload request defaults to "waiting"
-        requestState = Int16(uploadProperties.requestState.rawValue)
+        let newState = Int16(uploadProperties.requestState.rawValue)
+        if requestState != newState { requestState = newState }
         
         // Section key corresponding to the request state
-        requestSectionKey = uploadProperties.requestState.sectionKey
+        let newSection = uploadProperties.requestState.sectionKey
+        if requestSectionKey != newSection { requestSectionKey = newSection }
 
         // Error message description
-        requestError = uploadProperties.requestError
+        if requestError != uploadProperties.requestError {
+            requestError = uploadProperties.requestError
+        }
 
         // Photo creation date, filename and MIME type
-        creationDate = uploadProperties.creationDate
-        fileName = uploadProperties.fileName
-        mimeType = uploadProperties.mimeType
-        md5Sum = uploadProperties.md5Sum
-        isVideo = uploadProperties.isVideo
+        if creationDate != uploadProperties.creationDate {
+            creationDate = uploadProperties.creationDate
+        }
+        if fileName != uploadProperties.fileName {
+            fileName = uploadProperties.fileName
+        }
+        if mimeType != uploadProperties.mimeType {
+            mimeType = uploadProperties.mimeType
+        }
+        if md5Sum != uploadProperties.md5Sum {
+            md5Sum = uploadProperties.md5Sum
+        }
+        if isVideo != uploadProperties.isVideo {
+            isVideo = uploadProperties.isVideo
+        }
 
         // Photo author name is empty if not provided
-        author = uploadProperties.author
+        if author != uploadProperties.author {
+            author = uploadProperties.author
+        }
         
         // Privacy level is the lowest one if not provided
-        privacyLevel = Int16(uploadProperties.privacyLevel.rawValue)
+        let newLevel = Int16(uploadProperties.privacyLevel.rawValue)
+        if privacyLevel != newLevel { privacyLevel = newLevel }
 
         // Other image properties
-        imageName = uploadProperties.imageTitle
-        comment = uploadProperties.comment
-        imageId = Int64(uploadProperties.imageId)
-        if tags.isEmpty == false {
-            self.tags = Set(tags)
+        if imageName != uploadProperties.imageTitle {
+            imageName = uploadProperties.imageTitle
         }
+        if comment != uploadProperties.comment {
+            comment = uploadProperties.comment
+        }
+        let newImageId = Int64(uploadProperties.imageId)
+        if imageId != newImageId { imageId = newImageId }
+        let newTagIds = tags.map { $0.objectID }
+        let tagIds = Array(self.tags ?? Set<Tag>()).map {$0.objectID }
+        if tagIds != newTagIds { self.tags = Set(tags)}
         
         // Upload settings
-        stripGPSdataOnUpload = uploadProperties.stripGPSdataOnUpload
-        resizeImageOnUpload = uploadProperties.resizeImageOnUpload
-        photoMaxSize = uploadProperties.photoMaxSize
-        videoMaxSize = uploadProperties.videoMaxSize
-        compressImageOnUpload = uploadProperties.compressImageOnUpload
-        photoQuality = Int16(uploadProperties.photoQuality)
-        prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
-        defaultPrefix = uploadProperties.defaultPrefix
-        deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
-        markedForAutoUpload = uploadProperties.markedForAutoUpload
+        if stripGPSdataOnUpload != uploadProperties.stripGPSdataOnUpload {
+            stripGPSdataOnUpload = uploadProperties.stripGPSdataOnUpload
+        }
+        if resizeImageOnUpload != uploadProperties.resizeImageOnUpload {
+            resizeImageOnUpload = uploadProperties.resizeImageOnUpload
+        }
+        if photoMaxSize != uploadProperties.photoMaxSize {
+            photoMaxSize = uploadProperties.photoMaxSize
+        }
+        if videoMaxSize != uploadProperties.videoMaxSize {
+            videoMaxSize = uploadProperties.videoMaxSize
+        }
+        if compressImageOnUpload != uploadProperties.compressImageOnUpload {
+            compressImageOnUpload = uploadProperties.compressImageOnUpload
+        }
+        if photoQuality != uploadProperties.photoQuality {
+            photoQuality = Int16(uploadProperties.photoQuality)
+        }
+        if prefixFileNameBeforeUpload != uploadProperties.prefixFileNameBeforeUpload {
+            prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
+        }
+        if defaultPrefix != uploadProperties.defaultPrefix {
+            defaultPrefix = uploadProperties.defaultPrefix
+        }
+        if deleteImageAfterUpload != uploadProperties.deleteImageAfterUpload {
+            deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
+        }
+        if markedForAutoUpload != uploadProperties.markedForAutoUpload {
+            markedForAutoUpload = uploadProperties.markedForAutoUpload
+        }
         
         // User account
-        if let user = user {
-            self.user = user
-        }
+        let newId = user?.objectID
+        let id = self.user?.objectID
+        if id != newId { self.user = user }
     }
     
     /**
