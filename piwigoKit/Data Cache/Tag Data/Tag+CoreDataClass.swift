@@ -23,24 +23,29 @@ public class Tag: NSManagedObject {
               let newName = tagProperties.name else {
                 throw TagError.missingData
         }
-        tagId = newId
-        tagName = NetworkUtilities.utf8mb4String(from: newName)
+        if tagId != newId { tagId = newId }
+        let newTagName = NetworkUtilities.utf8mb4String(from: newName)
+        if tagName != newTagName { tagName = newTagName }
 
         // In the absence of date, keep 1st January 1900 at 00:00:00 (see DataModel)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        if let newDate = dateFormatter.date(from: tagProperties.lastmodified ?? "") {
+        if let newDate = dateFormatter.date(from: tagProperties.lastmodified ?? ""),
+           lastModified != newDate {
             lastModified = newDate
         }
 
         // In the absence of count, use max integer
-        if let newCount = tagProperties.counter, newCount != Int64.max {
+        if let newCount = tagProperties.counter, newCount != Int64.max,
+           numberOfImagesUnderTag != newCount {
             numberOfImagesUnderTag = newCount
         } else if numberOfImagesUnderTag == 0  {
             numberOfImagesUnderTag = Int64.max
         }
         
         // This tag belongs to the provided server
-        self.server = server
+        if self.server?.objectID != server.objectID {
+            self.server = server
+        }
     }
 }
