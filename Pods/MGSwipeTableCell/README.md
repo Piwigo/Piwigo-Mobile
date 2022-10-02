@@ -7,7 +7,7 @@ MGSwipeTableCell is an easy to use UITableViewCell subclass that allows to displ
 
 This library is compatible with all the different ways to create a UITableViewCell: system predefined styles, programmatically created cells, cells loaded from a xib and prototype cells within a storyboard. You can use autolayout if you want.
 
-Works on iOS >= 5.0. Tested on all iOS versions on iPhone and iPad: iOS 7, iOS 8, iOS 9, iOS 10, iOS 11, iOS 12, iOS 13
+Works on iOS >= 5.0. Tested on all iOS versions on iPhone and iPad: iOS 7, iOS 8, iOS 9, iOS 10, iOS 11, iOS 12, iOS 13, iOS 14.
 
 ## Transitions demo
 
@@ -42,7 +42,7 @@ See [`SpotifyDemo`](demo/SpotifyDemo) for a complete project which mimics Spotif
 
 See [`MGSwipeDemo`](demo/MGSwipeDemo) for a complete project where you can test the variety of transitions on a real device/simulator.
 
-##Setup your project
+## Setup your project
 
 You can use CocoaPods to include MGSwipeTableCell into you project:
 
@@ -51,6 +51,10 @@ You can use CocoaPods to include MGSwipeTableCell into you project:
 You can use Carthage to include MGSwipeTableCell into your project. Just add this dependency to your Cartfile:
     
     github "MortimerGoro/MGSwipeTableCell"
+
+You can use Swift Package Manager to include MGSwipeTableCell into you project:
+
+    .package(url: "https://github.com/MortimerGoro/MGSwipeTableCell.git", from: "1.6.0")
 
 ## Usage
 
