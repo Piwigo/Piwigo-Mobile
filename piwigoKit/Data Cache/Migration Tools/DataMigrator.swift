@@ -181,28 +181,25 @@ class DataMigrator: DataMigratorProtocol {
 
         // Get path of group container
         let fm = FileManager.default
-        let containerDirectory = fm.containerURL(forSecurityApplicationGroupIdentifier: AppGroup)
-        let piwigoURL = containerDirectory?.appendingPathComponent("Library")
+        guard let containerDirectory = fm.containerURL(forSecurityApplicationGroupIdentifier: AppGroup) else {
+            fatalError("Unable to retrieve the App Group directory.")
+        }
+        let piwigoURL = containerDirectory.appendingPathComponent("Library")
             .appendingPathComponent("Application Support")
             .appendingPathComponent("Piwigo")
 
         // Create the Piwigo directory in the container if needed
-        if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
-            var errorCreatingDirectory: Error? = nil
+        if fm.fileExists(atPath: piwigoURL.path) == false {
             do {
-                if let piwigoURL = piwigoURL {
-                    try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
-                }
+                try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
             }
-            catch let errorCreatingDirectory {
-            }
-            if errorCreatingDirectory != nil {
-                fatalError("Unable to create Piwigo directory in App Group container.")
+            catch {
+                fatalError("Unable to create the \"Piwigo\" directory in the App Group container (\(error.localizedDescription).")
             }
         }
 
-        print("••> AppGroupDirectory: \(piwigoURL!)")
-        return piwigoURL!
+        print("••> AppGroupDirectory: \(piwigoURL)")
+        return piwigoURL
     }()
 
     // "Library/Application Support/Piwigo" inside the Data Container of the Sandbox.
@@ -212,25 +209,23 @@ class DataMigrator: DataMigratorProtocol {
     ///   and files to upload before the creation of extensions.
     lazy var appSupportDirectory: URL = {
         let fm = FileManager.default
-        let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
-        let piwigoURL = applicationSupportDirectory?.appendingPathComponent("Piwigo")
+        guard let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory,
+                                                        in: .userDomainMask).last else {
+            fatalError("Unable to retrieve the \"Library/Application Support\" directory.")
+        }
+        let piwigoURL = applicationSupportDirectory.appendingPathComponent("Piwigo")
 
         // Create the Piwigo directory in "Library/Application Support" if needed
-        if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
-            var errorCreatingDirectory: Error? = nil
+        if fm.fileExists(atPath: piwigoURL.path) == false {
             do {
-                if let piwigoURL = piwigoURL {
-                    try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
-                }
-            } catch let errorCreatingDirectory {
-            }
-            if errorCreatingDirectory != nil {
-                fatalError("Unable to create \"Piwigo\" directory in \"Library/Application Support\".")
+                try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Unable to create \"Piwigo\" directory in \"Library/Application Support\" (\(error.localizedDescription).")
             }
         }
 
-        print("••> AppSupportDirectory: \(piwigoURL!)")
-        return piwigoURL!
+        print("••> AppSupportDirectory: \(piwigoURL)")
+        return piwigoURL
     }()
 
     // "Documents" inside the Data Container of the Sandbox.
