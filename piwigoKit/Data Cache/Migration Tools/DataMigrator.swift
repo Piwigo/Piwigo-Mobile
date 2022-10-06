@@ -198,7 +198,7 @@ class DataMigrator: DataMigratorProtocol {
             }
         }
 
-        print("••> AppGroupDirectory: \(piwigoURL)")
+        print("••> appGroupDirectory: \(piwigoURL)")
         return piwigoURL
     }()
 
@@ -224,7 +224,7 @@ class DataMigrator: DataMigratorProtocol {
             }
         }
 
-        print("••> AppSupportDirectory: \(piwigoURL)")
+        print("••> appSupportDirectory: \(piwigoURL)")
         return piwigoURL
     }()
 
