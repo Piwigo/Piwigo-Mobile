@@ -38,7 +38,7 @@ extension URL {
 
     // Returns the file size
     var fileSize: UInt64 {
-        return attributes?[.size] as? UInt64 ?? UInt64(0)
+        return attributes?[.size] as? UInt64 ?? UInt64.zero
     }
 
     // Returns the unit of the file size
@@ -49,5 +49,21 @@ extension URL {
     // Returns the creation date of the file
     var creationDate: Date? {
         return attributes?[.creationDate] as? Date
+    }
+    
+    // Returns the folder size
+    var folderSize: UInt64 {
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
+            var folderSize: UInt64 = UInt64.zero
+            for content in contents {
+                folderSize += content.fileSize
+            }
+            return folderSize
+            
+        } catch let error {
+            print(error.localizedDescription)
+            return UInt64.zero
+        }
     }
 }
