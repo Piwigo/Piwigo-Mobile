@@ -75,16 +75,21 @@ extension AlbumViewController
  
     
     // MARK: - Discover Menu
-    /// - for presenting favorite images
+    /// - for presenting favorite images if logged in
     /// - for presenting the tag selector and then tagged images
     /// - for presenting most visited images
     /// - for presenting best rated images
     /// - for presenting recent images
     func discoverMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.discover")
+        var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
+        if NetworkVars.username.isEmpty == false,
+           NetworkVars.username.lowercased() != "guest" {
+            children.insert(favoritesAction(), at: 0)
+        }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [favoritesAction(), taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()])
+                          children: children)
         return menu
     }
     
