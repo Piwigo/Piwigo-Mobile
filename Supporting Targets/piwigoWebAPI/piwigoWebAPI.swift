@@ -283,9 +283,9 @@ class piwigoWebAPI: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.paging?.perPage, 100)
-        XCTAssertEqual(result.paging?.totalCount.intValue, 8)
+        XCTAssertEqual(result.paging?.totalCount?.intValue, 8)
         XCTAssertEqual(result.data.first?.datePosted, "2018-08-23 19:01:39")
-        XCTAssertEqual(result.data.first?.categoryIds?.first?.id, 2)
+        XCTAssertEqual(result.data.first?.categories?.first?.id, 2)
         XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 756)
     }
 
@@ -563,6 +563,29 @@ class piwigoWebAPI: XCTestCase {
 
     
     // MARK: - pwg.users…
+    func testPwgUsersFavoritesGetList() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.users.favorites.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CategoriesGetImagesJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.paging?.perPage, 2)
+        XCTAssertEqual(result.paging?.count, 40)
+        XCTAssertEqual(result.data.first?.datePosted, "2018-08-23 19:28:43")
+        XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 670)
+    }
+
     func testPwgUsersFavoritesAddDecoding() {
         
         // Case of a successful request
