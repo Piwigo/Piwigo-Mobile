@@ -129,7 +129,7 @@
 		204408012A7A91D45921CB3195522672 /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFURLRequestSerialization.m; path = AFNetworking/AFURLRequestSerialization.m; sourceTree = "<group>"; };
 		22208B9E8BDA750908D8357CF375C3D0 /* MBProgressHUD-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD-dummy.m"; sourceTree = "<group>"; };
 		226F3902987E1698AD9E2390B80EBF61 /* MGSwipeTableCell.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MGSwipeTableCell.debug.xcconfig; sourceTree = "<group>"; };
-		25F18D1B6B5143BEF52BDC9EFD5CBE0A /* MGSwipeTableCell */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = MGSwipeTableCell; path = libMGSwipeTableCell.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		25F18D1B6B5143BEF52BDC9EFD5CBE0A /* libMGSwipeTableCell.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMGSwipeTableCell.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		266E198D473423662E1A7CE99C754459 /* IQKeyboardManager+UITextFieldViewNotification.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "IQKeyboardManager+UITextFieldViewNotification.swift"; path = "IQKeyboardManagerSwift/IQKeyboardManager+UITextFieldViewNotification.swift"; sourceTree = "<group>"; };
 		27B8B8E7C36BBD723AFC6F48F4B5594F /* AFSecurityPolicy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFSecurityPolicy.m; path = AFNetworking/AFSecurityPolicy.m; sourceTree = "<group>"; };
 		28BCD1EB0B9C096AB59DD4EDF51CF9FE /* MBProgressHUD.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
@@ -166,21 +166,21 @@
 		862C81A417326361769B1BF0D596C78F /* WKWebView+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "WKWebView+AFNetworking.m"; path = "UIKit+AFNetworking/WKWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		8822A2A201EEBD0A1B2786533B029F27 /* WKWebView+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "WKWebView+AFNetworking.h"; path = "UIKit+AFNetworking/WKWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		88554D72A97AFDB3926C039C72E4FBFB /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFNetworkActivityIndicatorManager.h; path = "UIKit+AFNetworking/AFNetworkActivityIndicatorManager.h"; sourceTree = "<group>"; };
-		8B8FAB0D627B17EDE1366984278705D9 /* MBProgressHUD */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = MBProgressHUD; path = libMBProgressHUD.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B8FAB0D627B17EDE1366984278705D9 /* libMBProgressHUD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMBProgressHUD.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9D0A0BCE2014393A0DF473FDA6ABEB /* Pods-piwigo.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-piwigo.modulemap"; sourceTree = "<group>"; };
 		944D90F4F0707BB0C8D46BC499467358 /* IQUIScrollView+Additions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "IQUIScrollView+Additions.swift"; path = "IQKeyboardManagerSwift/Categories/IQUIScrollView+Additions.swift"; sourceTree = "<group>"; };
 		99FE3B1BC27D052DA4355CEAFA07346D /* IQKeyboardManager+Toolbar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "IQKeyboardManager+Toolbar.swift"; path = "IQKeyboardManagerSwift/IQKeyboardManager+Toolbar.swift"; sourceTree = "<group>"; };
 		9AC1C29BB7118E20B68619EA0BB1FDE6 /* AFImageDownloader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFImageDownloader.h; path = "UIKit+AFNetworking/AFImageDownloader.h"; sourceTree = "<group>"; };
 		9C1E38D3A099CAE0A1065147E6998458 /* IQKeyboardManagerSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IQKeyboardManagerSwift-prefix.pch"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9E434AE52CCFBFC7C7DAFC84CCE181FD /* UIRefreshControl+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIRefreshControl+AFNetworking.h"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.h"; sourceTree = "<group>"; };
 		A2A2BA41F1E23034EB7F9080065830BE /* MGSwipeTableCell-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MGSwipeTableCell-dummy.m"; sourceTree = "<group>"; };
 		A4543FC2F69400C3D3CFC6877A4F6C8A /* IQTextView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQTextView.swift; path = IQKeyboardManagerSwift/IQTextView/IQTextView.swift; sourceTree = "<group>"; };
-		A4FA15D44DF6BAC7550EDEED10862AA3 /* AFNetworking */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = AFNetworking; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4FA15D44DF6BAC7550EDEED10862AA3 /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C15690BC51EC2EFA86FE2890E96827 /* IQPreviousNextView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQPreviousNextView.swift; path = IQKeyboardManagerSwift/IQToolbar/IQPreviousNextView.swift; sourceTree = "<group>"; };
 		A61CEA044E18F939AEFF7EADFB40354C /* IQBarButtonItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQBarButtonItem.swift; path = IQKeyboardManagerSwift/IQToolbar/IQBarButtonItem.swift; sourceTree = "<group>"; };
 		A71FB988F1923DBA14779EE637853303 /* MBProgressHUD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MBProgressHUD.release.xcconfig; sourceTree = "<group>"; };
-		A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = IQKeyboardManagerSwift; path = libIQKeyboardManagerSwift.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8E950A16D00F649C54FFB30F81D7842 /* libIQKeyboardManagerSwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIQKeyboardManagerSwift.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D85C5A0B54E1079DA54FB6B6906D89 /* AFURLSessionManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFURLSessionManager.m; path = AFNetworking/AFURLSessionManager.m; sourceTree = "<group>"; };
 		AAEEFA91FF99A934A8DE5E538FB1100D /* Pods-piwigo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-piwigo.debug.xcconfig"; sourceTree = "<group>"; };
 		AC1CDE03CDAFC1A07B3A0A157D77006A /* AFNetworking-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AFNetworking-prefix.pch"; sourceTree = "<group>"; };
@@ -291,7 +291,6 @@
 				CFA6CAE11CD660B48BBF165707B71AA2 /* IQUIViewController+Additions.swift */,
 				25A89ABB1CEBCD6264E4039B784621C2 /* Support Files */,
 			);
-			name = IQKeyboardManagerSwift;
 			path = IQKeyboardManagerSwift;
 			sourceTree = "<group>";
 		};
@@ -434,7 +433,6 @@
 				28BCD1EB0B9C096AB59DD4EDF51CF9FE /* MBProgressHUD.m */,
 				216EC9EAEB2924D9D7007EF12D1293CD /* Support Files */,
 			);
-			name = MBProgressHUD;
 			path = MBProgressHUD;
 			sourceTree = "<group>";
 		};
@@ -449,17 +447,16 @@
 				85D8FDF78018DADE744A43C228BBEB20 /* Support Files */,
 				6F55399D386666D50B42D8B422D46878 /* UIKit */,
 			);
-			name = AFNetworking;
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
 		A2AAA42E7145579417BBBC38A02477EF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A4FA15D44DF6BAC7550EDEED10862AA3 /* AFNetworking */,
-				A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift */,
-				8B8FAB0D627B17EDE1366984278705D9 /* MBProgressHUD */,
-				25F18D1B6B5143BEF52BDC9EFD5CBE0A /* MGSwipeTableCell */,
+				A4FA15D44DF6BAC7550EDEED10862AA3 /* libAFNetworking.a */,
+				A8E950A16D00F649C54FFB30F81D7842 /* libIQKeyboardManagerSwift.a */,
+				8B8FAB0D627B17EDE1366984278705D9 /* libMBProgressHUD.a */,
+				25F18D1B6B5143BEF52BDC9EFD5CBE0A /* libMGSwipeTableCell.a */,
 				B9DFC8964BAADB81C132F25C0C6CE40C /* Pods-piwigo */,
 				5706E84C9AE0B10A0BB3C1DDAB1AA291 /* Pods-piwigoAppStore */,
 			);
@@ -514,7 +511,6 @@
 				F23E5F090F1DF905BA29749A18137760 /* MGSwipeTableCell.m */,
 				69F0971EFDC77676E9FB4786DE6F1204 /* Support Files */,
 			);
-			name = MGSwipeTableCell;
 			path = MGSwipeTableCell;
 			sourceTree = "<group>";
 		};
@@ -613,7 +609,7 @@
 			);
 			name = AFNetworking;
 			productName = AFNetworking;
-			productReference = A4FA15D44DF6BAC7550EDEED10862AA3 /* AFNetworking */;
+			productReference = A4FA15D44DF6BAC7550EDEED10862AA3 /* libAFNetworking.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		1EEB7FC8FC3DC62BFD58C64EF0EDFF4B /* MGSwipeTableCell */ = {
@@ -630,7 +626,7 @@
 			);
 			name = MGSwipeTableCell;
 			productName = MGSwipeTableCell;
-			productReference = 25F18D1B6B5143BEF52BDC9EFD5CBE0A /* MGSwipeTableCell */;
+			productReference = 25F18D1B6B5143BEF52BDC9EFD5CBE0A /* libMGSwipeTableCell.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		4D72DA4D5EFCE5D0CE44D031B08BE51D /* Pods-piwigo */ = {
@@ -686,7 +682,7 @@
 			);
 			name = MBProgressHUD;
 			productName = MBProgressHUD;
-			productReference = 8B8FAB0D627B17EDE1366984278705D9 /* MBProgressHUD */;
+			productReference = 8B8FAB0D627B17EDE1366984278705D9 /* libMBProgressHUD.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		B490E7485944099E16C9CBD79119D1D4 /* IQKeyboardManagerSwift */ = {
@@ -704,7 +700,7 @@
 			);
 			name = IQKeyboardManagerSwift;
 			productName = IQKeyboardManagerSwift;
-			productReference = A8E950A16D00F649C54FFB30F81D7842 /* IQKeyboardManagerSwift */;
+			productReference = A8E950A16D00F649C54FFB30F81D7842 /* libIQKeyboardManagerSwift.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -900,7 +896,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/IQKeyboardManagerSwift/IQKeyboardManagerSwift-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = Headers/Public/IQKeyboardManagerSwift/IQKeyboardManagerSwift.modulemap;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -1012,7 +1008,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/IQKeyboardManagerSwift/IQKeyboardManagerSwift-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = Headers/Public/IQKeyboardManagerSwift/IQKeyboardManagerSwift.modulemap;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -1144,7 +1140,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -1168,7 +1164,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -1192,7 +1188,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -1215,7 +1211,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -1239,7 +1235,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -1284,7 +1280,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
