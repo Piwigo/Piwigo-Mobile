@@ -21,6 +21,13 @@ class TagSelectorViewController: UITableViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
 
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+    
     // MARK: - Core Data Providers
     private lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
@@ -36,10 +43,30 @@ class TagSelectorViewController: UITableViewController {
 
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
-    private var filteredTags: [Tag] {
-        let allTags = tagProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
-        return allTags.filterTags(for: searchQuery)
-    }
+    lazy var predicates: [NSPredicate] = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
+        return andPredicates
+    }()
+    lazy var fetchRequest: NSFetchRequest = {
+        // Create a fetch request for the Tag entity sorted by name.
+        let fetchRequest = Tag.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+    lazy var tags: NSFetchedResultsController<Tag> = {
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let tags = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                              managedObjectContext: mainContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        tags.delegate = self
+        return tags
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,6 +119,13 @@ class TagSelectorViewController: UITableViewController {
         // Set colors, fonts, etc.
         applyColorPalette()
         
+        // Initialise data source
+        do {
+            try tags.performFetch()
+        } catch {
+            fatalError("Failed to fetch tags: \(error)")
+        }
+
         // Reload data
         tagsTableView.reloadData()
         
@@ -110,7 +144,7 @@ class TagSelectorViewController: UITableViewController {
     }
 
 
-    // MARK: - UITableView Rows & Cells
+    // MARK: - UITableView Rows
     // Return the number of sections for the table.
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -118,7 +152,8 @@ class TagSelectorViewController: UITableViewController {
 
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredTags.count
+        let objects = tags.fetchedObjects
+        return objects?.count ?? 0
     }
 
     // Return cell configured with tag
@@ -128,7 +163,7 @@ class TagSelectorViewController: UITableViewController {
             print("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
             return TagSelectorCell()
         }
-        cell.configure(with: filteredTags[indexPath.row])
+        cell.configure(with: tags.object(at: indexPath))
         return cell
     }
 
@@ -137,7 +172,7 @@ class TagSelectorViewController: UITableViewController {
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        let nberOfTags = filteredTags.count
+        let nberOfTags = tags.fetchedObjects?.count ?? 0
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
             String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberAsStr) :
@@ -166,8 +201,8 @@ class TagSelectorViewController: UITableViewController {
         
         // Determine selected tag before deactivating search bar
         var catID = NSNotFound
-        if filteredTags.count > indexPath.row {
-            let tag = filteredTags[indexPath.row]
+        if tags.fetchedObjects?.count ?? 0 > indexPath.row {
+            let tag = tags.object(at: indexPath)
             catID = getCategory(withTagId: tag.tagId, tagName: tag.tagName)
         }
         if catID == NSNotFound { return }
@@ -202,9 +237,6 @@ class TagSelectorViewController: UITableViewController {
 extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Stores tag IDs before the update
-        tagIdsBeforeUpdate = filteredTags.map({$0.tagId})
-        
         // Begin the update
         tagsTableView.beginUpdates()
     }
@@ -213,37 +245,20 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .delete:   // Action performed in priority
-            // Should we remove this tag from the filtered list?
-            guard let tag: Tag = anObject as? Tag else { return }
-            if let index = tagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                // Delete tag from table view
-                let deleteAtIndexPath = IndexPath(row: index, section: 0)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
+            guard let indexPath = indexPath else { return }
+            tagsTableView.deleteRows(at: [indexPath], with: .automatic)
             
         case .insert:
-            // Should we add this tag to the filtered list?
-            guard let tag: Tag = anObject as? Tag else { return }
-            if let index = filteredTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let addAtIndexPath = IndexPath(row: index, section: 0)
-                print(".insert =>", addAtIndexPath.debugDescription)
-                tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
-            }
+            guard let newIndexPath = newIndexPath else { return }
+            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
             
         case .move:
-            // Should never happen…
-            print("TagsSelectorViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
+            guard let indexPath = indexPath,  let newIndexPath = newIndexPath else { return }
+            tagsTableView.moveRow(at: indexPath, to: newIndexPath)
             
         case .update:
-            guard let tag: Tag = anObject as? Tag else { return }
-            // Get index of tag to update
-            if let index = tagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                let indexPath = IndexPath(row: index, section: 0)
-                if let cell = tableView.cellForRow(at: indexPath) as? TagSelectorCell {
-                    cell.configure(with: tag)
-                }
-            }
+            guard let indexPath = indexPath else { return }
+            tagsTableView.reloadRows(at: [indexPath], with: .automatic)
             
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")

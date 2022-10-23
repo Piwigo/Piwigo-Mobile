@@ -385,42 +385,4 @@ public class TagProvider: NSObject {
         
         return controller
     }()
-
-    /**
-     A fetched results controller delegate to give consumers a chance to update
-     the TagsSelectorViewController user interface when content changes.
-     */
-    public weak var fetchedNonAdminResultsControllerDelegate: NSFetchedResultsControllerDelegate?
-    
-    /**
-     A fetched results controller to fetch non-orphaned Tag records of the current server, sorted by name.
-     */
-    public lazy var fetchedNonAdminResultsController: NSFetchedResultsController<Tag> = {
-        
-        // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-        // AND subpredicates
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
-        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: mainContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = fetchedNonAdminResultsControllerDelegate
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error \(error)")
-        }
-        
-        return controller
-    }()
 }
