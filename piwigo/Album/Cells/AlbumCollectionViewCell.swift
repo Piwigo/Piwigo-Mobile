@@ -123,7 +123,13 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
         renameAlert?.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
-            textField.text = albumData.comment.htmlToString
+            let attributedStr = NSMutableAttributedString(attributedString: albumData.comment)
+            let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
+            attributedStr.addAttribute(.foregroundColor, value: AppVars.shared.isDarkPaletteActive ? UIColor.lightText : UIColor.darkText, range: wholeRange)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.left
+            attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+            textField.attributedText = attributedStr
             textField.clearButtonMode = .always
             textField.keyboardType = .default
             textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
