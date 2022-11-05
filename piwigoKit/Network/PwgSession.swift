@@ -154,12 +154,6 @@ public class PwgSession: NSObject {
                 return
             }
             
-            // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
-                failure(JsonError.invalidJSONobject as NSError)
-                return
-            }
-
             // Check returned data
             /// - The following 2 lines are used to determine the count of returned bytes.
             /// - This value can then be used to provide the expected count of returned bytes.
@@ -171,6 +165,12 @@ public class PwgSession: NSObject {
             print(" > JSON — \(countsOfByte) bytes received:\r \(dataStr)")
             #endif
             
+            // Return Piwigo error if no error and no data returned.
+            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+                failure(JsonError.invalidJSONobject as NSError)
+                return
+            }
+
             // The caller will decode the returned data
             success(jsonData)
         }
