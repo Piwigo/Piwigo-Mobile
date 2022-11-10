@@ -1691,7 +1691,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
-                var titleFull = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), fullResSize)
+                let titleFull = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), fullResSize)
                 let clearFullResAction = UIAlertAction(title: titleFull, style: .default, handler: { action in
                     // Delete full resolution images in background queue
                     DispatchQueue.global(qos: .userInteractive).async { [self] in
