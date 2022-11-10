@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 28/08/2022.
+//  Created by Eddy Lelièvre-Berna on 17/09/2022.
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 //
@@ -22,8 +22,27 @@ extension User {
     @NSManaged public var username: String
     @NSManaged public var status: String
     @NSManaged public var server: Server?
-    @NSManaged public var uploads: Set<Upload>?
     @NSManaged public var albums: Set<Album>?
+    @NSManaged public var uploadRights: String
+    @NSManaged public var uploads: Set<Upload>?
+    @NSManaged public var images: Set<Image>?
+
+}
+
+// MARK: Generated accessors for albums
+extension User {
+
+    @objc(addAlbumsObject:)
+    @NSManaged public func addToAlbums(_ value: Album)
+
+    @objc(removeAlbumsObject:)
+    @NSManaged public func removeFromAlbums(_ value: Album)
+
+    @objc(addAlbums:)
+    @NSManaged public func addToAlbums(_ values: Set<Album>)
+
+    @objc(removeAlbums:)
+    @NSManaged public func removeFromAlbums(_ values: Set<Album>)
 
 }
 
@@ -44,19 +63,19 @@ extension User {
 
 }
 
-// MARK: Generated accessors for albums
+// MARK: Generated accessors for images
 extension User {
 
-    @objc(addAlbumsObject:)
-    @NSManaged public func addToAlbums(_ value: Album)
+    @objc(addImagesObject:)
+    @NSManaged public func addToImages(_ value: Image)
 
-    @objc(removeAlbumsObject:)
-    @NSManaged public func removeFromAlbums(_ value: Album)
+    @objc(removeImagesObject:)
+    @NSManaged public func removeFromImages(_ value: Image)
 
-    @objc(addAlbums:)
-    @NSManaged public func addToAlbums(_ values: Set<Album>)
+    @objc(addImages:)
+    @NSManaged public func addToImages(_ values: Set<Image>)
 
-    @objc(removeAlbums:)
-    @NSManaged public func removeFromAlbums(_ values: Set<Album>)
+    @objc(removeImages:)
+    @NSManaged public func removeFromImages(_ values: Set<Image>)
 
 }

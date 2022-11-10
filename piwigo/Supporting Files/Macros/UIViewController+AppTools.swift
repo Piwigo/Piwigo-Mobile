@@ -8,7 +8,9 @@
 
 import UIKit
 
-@objc
+let kDelayPiwigoHUD = 500
+let loadingViewTag = 899
+
 extension UIViewController {
 
     // MARK: - Top Most View Controller

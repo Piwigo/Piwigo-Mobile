@@ -292,7 +292,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                           "single_value_mode" : "replace"]
         // Launch request
         let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
+        JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
             // Decode the JSON object and update image filename if successful.

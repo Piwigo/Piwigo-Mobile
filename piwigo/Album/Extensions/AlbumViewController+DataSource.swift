@@ -12,6 +12,7 @@ import piwigoKit
 
 extension AlbumViewController
 {
+    // MARK: - Login / Relogin
     func reloginAndReloadAlbumData(completion: @escaping () -> Void) {
         /// - Pause upload operations
         /// - Perform relogin
@@ -19,20 +20,7 @@ extension AlbumViewController
         /// - Resume upload operations in background queue
         ///   and update badge, upload button of album navigator
         UploadManager.shared.isPaused = true
-
-        // Display HUD when loading album data for the first time
-        if AppVars.shared.nberOfAlbumsInCache == 0 {
-            let title = NSLocalizedString("login_loggingIn", comment: "Logging In...")
-            let detail = NSLocalizedString("login_connecting", comment: "Connecting")
-            DispatchQueue.main.async { [unowned self] in
-                navigationController?.showPiwigoHUD(
-                    withTitle: title, detail: detail,
-                    buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                    buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                    inMode: .indeterminate)
-            }
-        }
-
+        
         // Request server methods
         LoginUtilities.requestServerMethods { [unowned self] in
             // Known methods, pursue logging in…
@@ -44,14 +32,14 @@ extension AlbumViewController
                 completion()
             }
         } didFailHTTPauthentication: { [unowned self] error in
-            showErrorAndReturnToLoginView(error)
+            showError(error)
         } didFailSecureConnection: { [unowned self] error in
-            showErrorAndReturnToLoginView(error)
+            showError(error)
         } failure: { [unowned self] error in
-            showErrorAndReturnToLoginView(error)
+            showError(error)
         }
     }
-
+    
     func requestCertificateApproval(afterError error: Error?,
                                     completion: @escaping () -> Void) {
         DispatchQueue.main.async { [unowned self] in
@@ -63,7 +51,7 @@ extension AlbumViewController
                     // Should forget certificate
                     NetworkVars.didApproveCertificate = false
                     // Report error
-                    showErrorAndReturnToLoginView(error)
+                    showError(error)
                 })
             let acceptAction = UIAlertAction(
                 title: NSLocalizedString("alertOkButton", comment: "OK"),
@@ -78,14 +66,14 @@ extension AlbumViewController
             presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, acceptAction])
         }
     }
-
+    
     func performLogin(completion: @escaping () -> Void) {
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
-            showErrorAndReturnToLoginView(nil)
+            showError(nil)
             return
         }
-
+        
         // Perform login if username exists
         let username = NetworkVars.username
         if username.isEmpty {
@@ -94,53 +82,29 @@ extension AlbumViewController
                 completion()
             }
         } else {
-            // Display HUD when loading album data for the first time
-            if AppVars.shared.nberOfAlbumsInCache == 0 {
-                DispatchQueue.main.async { [unowned self] in
-                    navigationController?.showPiwigoHUD(
-                        withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                        detail: NSLocalizedString("login_newSession", comment: "Opening Session"),
-                        buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                        buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                        inMode: .indeterminate)
-                }
-            }
-            
             // Perform login
             let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
             LoginUtilities.sessionLogin(withUsername: NetworkVars.username, password: password) { [self] in
-                    // Session now opened
-                    // First determine user rights if Community extension installed
-                    getCommunityStatus() {
-                        completion()
-                    }
-                } failure: { [unowned self] error in
-                    // Login request failed
-                    showErrorAndReturnToLoginView(NetworkVars.userCancelledCommunication ? nil : error)
+                // Session now opened
+                // First determine user rights if Community extension installed
+                getCommunityStatus() {
+                    completion()
                 }
+            } failure: { [unowned self] error in
+                // Login request failed
+                showError(NetworkVars.userCancelledCommunication ? nil : error)
+            }
         }
     }
-
+    
     func getCommunityStatus(completion: @escaping () -> Void) {
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
-            showErrorAndReturnToLoginView(nil)
+            showError(nil)
             return
         }
         
         if NetworkVars.usesCommunityPluginV29 {
-            // Display HUD when loading album data for the first time
-            if AppVars.shared.nberOfAlbumsInCache == 0 {
-                DispatchQueue.main.async { [unowned self] in
-                    navigationController?.showPiwigoHUD(
-                        withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                        detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"),
-                        buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                        buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                        inMode: .indeterminate)
-                }
-            }
-
             // Community extension installed
             LoginUtilities.communityGetStatus { [unowned self] in
                 // Check Piwigo version, get token, available sizes, etc.
@@ -149,7 +113,7 @@ extension AlbumViewController
                 }
             } failure: { [unowned self] error in
                 // Inform user that server failed to retrieve Community parameters
-                showErrorAndReturnToLoginView(NetworkVars.userCancelledCommunication ? nil : error)
+                showError(NetworkVars.userCancelledCommunication ? nil : error)
             }
         } else {
             // Community extension not installed
@@ -158,178 +122,26 @@ extension AlbumViewController
                 completion()
             }
         }
-
+        
     }
-
+    
     func getSessionStatus(completion: @escaping () -> Void) {
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
-            showErrorAndReturnToLoginView(nil)
+            showError(nil)
             return
         }
         
-        // Display HUD when loading album data for the first time
-        if AppVars.shared.nberOfAlbumsInCache == 0 {
+        LoginUtilities.sessionGetStatus { [self] in
             DispatchQueue.main.async { [unowned self] in
-                navigationController?.showPiwigoHUD(
-                    withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                    detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"),
-                    buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                    buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                    inMode: .indeterminate)
-            }
-        }
-        
-        LoginUtilities.sessionGetStatus { [unowned self] in
-            DispatchQueue.main.async { [unowned self] in
-                print("••> Reload album data…")
-                reloadAlbumData {
-                    // Resume upload operations in background queue
-                    // and update badge, upload button of album navigator
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeAll()
-                    }
+                print("••> Reload album and image data…")
+                fetchAlbumsAndImages {
                     completion()
                 }
             }
         } failure: { [self]  error in
-            showErrorAndReturnToLoginView(error)
+            showError(error)
         }
-    }
-    
-    func reloadAlbumData(completion: @escaping () -> Void) {
-        // Display HUD while downloading albums data recursively
-        navigationController?.showPiwigoHUD(
-            withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-            detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-            buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Load category data in recursive mode
-        AlbumUtilities.getAlbums { didUpdateCats in
-            DispatchQueue.main.async { [self] in
-                // Check data source and reload collection if needed
-                checkDataSource(withChangedCategories: didUpdateCats) { [self] in
-                    // Hide HUD
-                    navigationController?.hidePiwigoHUD() {
-                        completion()
-                    }
-
-                    // Update other album views
-                    if #available(iOS 13.0, *) {
-                        // Refresh other album views if any
-                        DispatchQueue.main.async { [self] in
-                            // Loop over all other active scenes
-                            let sessionID = view.window?.windowScene?.session.persistentIdentifier ?? ""
-                            let connectedScenes = UIApplication.shared.connectedScenes
-                                .filter({[.foregroundActive].contains($0.activationState)})
-                                .filter({$0.session.persistentIdentifier != sessionID})
-                            for scene in connectedScenes {
-                                if let windowScene = scene as? UIWindowScene,
-                                   let albumVC = windowScene.topMostViewController() as? AlbumViewController {
-                                    albumVC.checkDataSource(withChangedCategories: didUpdateCats) { }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Load favorites in the background if necessary
-                    AlbumUtilities.loadFavoritesInBckg()
-                }
-            }
-        } failure: { error in
-            DispatchQueue.main.async { [self] in
-                // Set navigation bar buttons
-                initButtonsInSelectionMode()
-                // Hide HUD if needed
-                navigationController?.hidePiwigoHUD() { [self] in
-                    dismissPiwigoError(withTitle: "", message: error.localizedDescription) { }
-                }
-                completion()
-            }
-        }
-    }
-
-    func checkDataSource(withChangedCategories didChange: Bool,
-                         completion: @escaping () -> Void) {
-        print(String(format: "checkDataSource...=> ID:%ld - Categories did change:%@",
-                     categoryId, didChange ? "YES" : "NO"))
-
-        // Does this album still exist?
-        let album = CategoriesData.sharedInstance().getCategoryById(categoryId)
-        if categoryId > 0, album == nil {
-            // This album does not exist anymore
-            let VCs = navigationController?.children
-            var index = (VCs?.count ?? 0) - 1
-            while index >= 0 {
-                if let vc = VCs?[index] as? AlbumViewController {
-                    if vc.categoryId == 0 || CategoriesData.sharedInstance().getCategoryById(vc.categoryId) != nil {
-                        // Present the album
-                        navigationController?.popToViewController(vc, animated: true)
-                        completion()
-                        return
-                    }
-                }
-                index -= 1
-            }
-            // We did not find a parent album — should never happen…
-            completion()
-            return
-        }
-
-        // Root album -> reload collection
-        if categoryId == 0 {
-            if didChange {
-                // Reload album collection
-                imagesCollection?.reloadData()
-                // Set navigation bar buttons
-                updateButtonsInPreviewMode()
-            }
-            completion()
-            return
-        }
-        
-        // Non root or smart album
-        if didChange, categoryId >= 0 {
-            // Loop over all displayed albums to set titles and therefore back buttons
-            for parentAlbumVC in navigationController?.children ?? [] {
-                if let parentVC = parentAlbumVC as? AlbumViewController,
-                   parentVC.categoryId != categoryId {
-                    print("••> Update buttons in album #\(parentVC.categoryId) from album #\(categoryId)")
-                    if parentVC.categoryId == 0 {
-                        parentVC.title = NSLocalizedString("tabBar_albums", comment: "Albums")
-                    } else {
-                        parentVC.title = CategoriesData.sharedInstance().getCategoryById(parentVC.categoryId)?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
-                    }
-                }
-            }
-
-            // Reload album collection
-            imagesCollection?.reloadSections(IndexSet(integer: 0))
-            // Set navigation bar buttons
-            updateButtonsInPreviewMode()
-        }
-
-        // Other album —> If the number of images in cache is null, reload collection
-        if album == nil || album?.imageList?.count == 0 {
-            // Something did change… reset album data
-            albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            // Reload collection
-            if categoryId < 0 {
-                // Load, sort images and reload collection
-                albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
-                    // Reset navigation bar buttons after image load
-                    updateButtonsInPreviewMode()
-                    imagesCollection?.reloadData()
-                }, onFailure: { [unowned self] _, error in
-                    dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
-                })
-            } else {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-            // Cancel selection
-            cancelSelect()
-        }
-        completion()
     }
     
     @objc func cancelLoggingIn() {
@@ -343,7 +155,7 @@ extension AlbumViewController
         NetworkVarsObjc.sessionManager!.tasks.forEach { task in
             task.cancel()
         }
-
+        
         // Update login HUD
         navigationController?.showPiwigoHUD(
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -352,8 +164,8 @@ extension AlbumViewController
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
     }
-
-    private func showErrorAndReturnToLoginView(_ error: Error?) {
+    
+    private func showError(_ error: Error?) {
         DispatchQueue.main.async { [unowned self] in
             if error == nil {
                 navigationController?.showPiwigoHUD(
@@ -376,15 +188,150 @@ extension AlbumViewController
             }
         }
     }
-
+    
     @objc func hideLoading() {
         // Reinitialise flag
         NetworkVars.userCancelledCommunication = false
-
+        
         // Hide HUD
         navigationController?.hidePiwigoHUD() {
             // Return to login view
             ClearCache.closeSessionAndClearCache { }
+        }
+    }
+    
+    
+    // MARK: - Album and Image Data
+    func fetchAlbumsAndImages(completion: @escaping () -> Void) {
+        // Fetch albums and images
+        if categoryId < 0 {
+            // Use the AlbumProvider to create the album data. On completion,
+            // handle general UI updates and error alerts on the main queue.
+            let albumId = Int32(self.categoryId)
+            DispatchQueue.global(qos: .userInteractive).async { [self] in
+                // Remember which images belong to this album
+                let oldImageIds = Set(albumData?.images?.compactMap({$0.pwgID}) ?? [])
+                // The number of images is unknown when a smart album is created.
+                // Use the ImageProvider to fetch image data. On completion,
+                // handle general UI updates and error alerts on the main queue.
+                let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+                self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
+                                 fromPage: 0, toPage: 0, perPage: perPage) {
+                    completion()
+                }
+            }
+        } else {
+            fetchAlbums {
+                completion()
+            }
+        }
+    }
+    
+    private func fetchAlbums(completion: @escaping () -> Void) {
+        // Use the AlbumProvider to fetch album data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        let thumnailSize = AlbumUtilities.thumbnailSizeArg()
+        albumProvider.fetchAlbums(inParentWithId: Int32(categoryId),
+                                  thumbnailSize: thumnailSize) { [self] error in
+            guard let error = error else {
+                // No error ► Fetch image data?
+                if self.categoryId == 0 {
+                    completion()
+                    return
+                }
+                
+                // Check that we have an album with ID
+                guard let albumId = albumData?.pwgID else {
+                    return
+                }
+                
+                // Remember which images belong to this album
+                let oldImageIds = Set(albumData?.images?.compactMap({$0.pwgID}) ?? [])
+
+                // Use the ImageProvider to fetch image data. On completion,
+                // handle general UI updates and error alerts on the main queue.
+                let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+                let albumNbImages = self.albumData?.nbImages ?? 0
+                let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+                let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
+                self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
+                                 fromPage: 0, toPage: lastPage, perPage: perPage,
+                                 completion: completion)
+                return
+            }
+            
+            // Show the error
+            DispatchQueue.main.async { [self] in
+                completion()
+                self.showError(error)
+            }
+        }
+    }
+    
+    private func fetchImages(ofAlbumWithId albumId: Int32, imageIds: Set<Int64>,
+                             fromPage onPage: Int, toPage lastPage: Int,
+                             perPage: Int, completion: @escaping () -> Void) {
+        // Use the ImageProvider to fetch image data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        imageProvider.fetchImages(ofAlbumWithId: albumId, withQuery: self.query,
+                                  sort: .dateCreatedAscending,
+                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
+            guard let error = error else {
+                // No error ► Smart album?
+                var newLastPage = lastPage
+                if albumId < 0 {
+                    // Re-calculate number of pages
+                    newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+
+                    // Update smart album data
+                    if albumData?.nbImages != totalCount {
+                        albumData?.nbImages = totalCount
+                    }
+                    if albumData?.totalNbImages != totalCount {
+                        albumData?.totalNbImages = totalCount
+                    }
+                    do {
+                        try mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not fetch \(error), \(error.userInfo)")
+                    }
+                }
+                
+                // Update title and number of images in footer
+                DispatchQueue.main.async { [self] in
+                    let indexPath = IndexPath(item: 0, section: 1)
+                    if let footer = self.imagesCollection?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? NberImagesFooterCollectionReusableView {
+                        let (shown, total) = getImageCounts()
+                        footer.noImagesLabel?.text = AlbumUtilities.footerLegend(shown, total)
+                    }
+                }
+
+                // Will not remove fetched images from album image list
+                let newImageIds = imageIds.subtracting(fetchedImageIds)
+                
+                // Should we continue?
+                if onPage < newLastPage {
+                    // Pursue fetch without HUD
+                    DispatchQueue.main.async { [self] in
+                        navigationController?.hidePiwigoHUD { }
+                    }
+                    // Load next page of images
+                    self.fetchImages(ofAlbumWithId: albumId, imageIds: newImageIds,
+                                     fromPage: onPage + 1, toPage: newLastPage,
+                                     perPage: perPage, completion: completion)
+                    return
+                }
+                
+                // Done fetching images ► Remove non-fetched images
+                DispatchQueue.main.async { [self] in
+                    let images = imageProvider.getImages(inContext: mainContext, withIds: newImageIds)
+                    albumData?.removeFromImages(Set(images))
+                }
+                
+                completion()
+                return
+            }
+            self.showError(error)
         }
     }
 }

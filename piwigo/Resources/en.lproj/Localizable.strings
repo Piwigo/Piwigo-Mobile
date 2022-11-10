@@ -56,13 +56,19 @@
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
-"CoreDataFetch_UserUnknownStatus" = "Will discard a user account missing a valid user status.";
+"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
 "CoreData_UserCreateFailed" = "Failed to create a new User object.";
 
 // Album objects
 "CoreDataFetch_AlbumError" = "Fetch albums error!";
 "CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
 "CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
+"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
+"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
+"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Fetch tags error!";
@@ -119,9 +125,6 @@
 
 "sessionStatusError_title" = "Authentication Fail";
 "sessionStatusError_message" = "Failed to authenticate with the server. Try logging in again.";
-
-"serverCommunityError_title" = "Community Error";
-"serverCommunityError_message" = "Failed to get Community extension parameters. Try logging in again.";
 
 // Logout
 "logoutConfirmation_title" = "Logout";

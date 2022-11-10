@@ -50,14 +50,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
+    private var fullResSize = ""
+    private var thumbSize = ""
 
     
     // MARK: - Core Data Providers
-    private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider()
-        return provider
-    }()
-
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider()
         return provider
@@ -213,6 +210,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 })
             }
         }
+        
+        // Calculate cache sizes
+        DispatchQueue.global(qos: .userInteractive).async {
+            let bckgContext = DataController.shared.bckgContext
+            if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+               let server = user.server {
+                self.fullResSize = server.fullResSize
+                self.thumbSize = server.thumbnailSize
+            }
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -300,17 +307,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if NetworkVars.username.isEmpty {
             // Update Server.lastUsed attributes in persistent cache
             DispatchQueue.global(qos: .background).async { [unowned self] in
-                let bckgContext = DataController.shared.bckgContext
-                let server = self.serverProvider.getServer(inContext: bckgContext)
-                server?.lastUsed = Date().timeIntervalSinceReferenceDate
-                try? bckgContext.save()
-                DispatchQueue.main.async {
-                    DataController.shared.saveMainContext()
-                }
+                self.userProvider.setLastUsedDate()
             }
-
             // Clear caches and display login view
-            ClearCache.closeSessionAndClearCache() { }
+            DispatchQueue.main.async {
+                ClearCache.closeSessionAndClearCache() { }
+            }
             return
         }
         
@@ -324,15 +326,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             LoginUtilities.sessionLogout {
                 // Update Server.lastUsed and User.lastUsed attributes in persistent cache
                 DispatchQueue.global(qos: .background).async { [unowned self] in
-                    let bckgContext = DataController.shared.bckgContext
-                    let user = self.userProvider.getUserAccount(inContext: bckgContext)
-                    let lastUsedNow = Date().timeIntervalSinceReferenceDate
-                    user?.lastUsed = lastUsedNow
-                    user?.server?.lastUsed = lastUsedNow
-                    try? bckgContext.save()
-                    DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
-                    }
+                    self.userProvider.setLastUsedDate()
                 }
                 // Close session and clear cache
                 DispatchQueue.main.async {
@@ -434,7 +428,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
         return NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
+            (NetworkVars.userStatus == .normal && NetworkVars.usesCommunityPluginV29)
     }
     
     private func activeSection(_ section: Int) -> SettingsSection {
@@ -641,8 +635,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
-                let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 414 {
@@ -654,7 +646,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultImageSort", comment: "Sort")
                 }
-                cell.configure(with: title, detail: defaultSort)
+                cell.configure(with: title, detail: AlbumVars.shared.defaultSort.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultSort"
                 tableViewCell = cell
@@ -1172,9 +1164,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
                                value: value,
-                               increment: Float(AppVars.shared.kPiwigoDiskCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoDiskCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoDiskCacheMax),
+                               increment: Float(kPiwigoDiskCacheInc),
+                               minValue: Float(kPiwigoDiskCacheMin),
+                               maxValue: Float(kPiwigoDiskCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
@@ -1207,9 +1199,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
                                value: value,
-                               increment: Float(AppVars.shared.kPiwigoMemoryCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoMemoryCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoMemoryCacheMax),
+                               increment: Float(kPiwigoMemoryCacheInc),
+                               minValue: Float(kPiwigoMemoryCacheMin),
+                               maxValue: Float(kPiwigoMemoryCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
@@ -1699,7 +1691,49 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
-                #if DEBUG
+                var titleFull = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), fullResSize)
+                let clearFullResAction = UIAlertAction(title: titleFull, style: .default, handler: { action in
+                    // Delete full resolution images in background queue
+                    DispatchQueue.global(qos: .userInteractive).async { [self] in
+                        let bckgContext = DataController.shared.bckgContext
+                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+                           let server = user.server {
+                            server.deleteFullResImages()
+                            self.fullResSize = server.fullResSize
+                        }
+                    }
+                })
+                alert.addAction(clearFullResAction)
+
+                let titleThumb = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbSize)
+                let clearThumbAction = UIAlertAction(title: titleThumb, style: .default, handler: { action in
+                    // Delete all thumbnails in background queue
+                    DispatchQueue.global(qos: .userInteractive).async { [self] in
+                        let bckgContext = DataController.shared.bckgContext
+                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+                           let server = user.server {
+                            server.deleteThumbnails()
+                            thumbSize = server.thumbnailSize
+                        }
+                    }
+                })
+                alert.addAction(clearThumbAction)
+                
+#if DEBUG
+                let clearAlbumsAction = UIAlertAction(title: "Clear All Albums",
+                                                      style: .default, handler: { action in
+                    // Delete all albums in background queue
+                    AlbumProvider().clearAlbums()
+                })
+                alert.addAction(clearAlbumsAction)
+                
+                let clearImagesAction = UIAlertAction(title: "Clear All Images",
+                                                      style: .default, handler: { action in
+                    // Delete all images in background queue
+                    ImageProvider().clearImages()
+                })
+                alert.addAction(clearImagesAction)
+                
                 let clearTagsAction = UIAlertAction(title: "Clear All Tags",
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
@@ -1957,18 +1991,18 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 
 // MARK: - CategorySortDelegate Methods
 extension SettingsViewController: CategorySortDelegate {
-    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
+    func didSelectCategorySortType(_ sortType: pwgImageSort) {
         // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
+        if sortType == AlbumVars.shared.defaultSort { return }
         
         // Save new choice
-        AlbumVars.shared.defaultSort = sortType.rawValue
+        AlbumVars.shared.defaultSort = sortType
 
         // Refresh settings
         let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = CategorySortViewController.getNameForCategorySortType(sortType)
+            cell.detailLabel.text = sortType.name
         }
         
         // Clear image data in cache

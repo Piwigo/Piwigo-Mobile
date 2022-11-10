@@ -285,7 +285,7 @@ extension AlbumViewController
         // — admin rights
         // — normal rights and upload access to the current category
         if categoryId > 0,
-           NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
+           NetworkVars.hasAdminRights || userHasUploadRights {
             let xPos = addButton.frame.origin.x
             let yPos = addButton.frame.origin.y
             return CGRect(x: xPos - 3 * kRadius, y: yPos,
@@ -401,6 +401,13 @@ extension AlbumViewController
     
     // MARK: - Buttons in Preview mode
     func initButtonsInPreviewMode() {
+        // Title is name of category
+        if categoryId == 0 {
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        } else {
+            title = albumData?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
+        }
+
         // When using several scenes on iPad, buttons might have to be relocated.
         if #available(iOS 13.0, *) {
             let sizeOfScreen = UIScreen.main.bounds.size
@@ -450,13 +457,6 @@ extension AlbumViewController
             navigationController?.setToolbarHidden(true, animated: true)
         }
 
-        // Title is name of category
-        if categoryId == 0 {
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
-        } else {
-            title = CategoriesData.sharedInstance().getCategoryById(categoryId)?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
-        }
-
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             // Button for accessing settings
@@ -472,10 +472,10 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if CategoriesData.sharedInstance().getCategoryById(categoryId)?.numberOfImages ?? 0 > 0 {
+        } else if albumData?.nbImages ?? 0 > 0 {
             // Button for activating the selection mode
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton?.isEnabled = (albumData?.images.count ?? 0) > 0
+            selectBarButton?.isEnabled = (images.fetchedObjects?.count ?? 0) > 0
         } else {
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)
@@ -488,8 +488,8 @@ extension AlbumViewController
         // User can upload images/videos if he/she has:
         // — admin rights
         // — normal rights and upload access to the current category
-        let hasAdminOrUploadRights = NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false)
-        if categoryId >= 0, hasAdminOrUploadRights {
+        if categoryId >= 0,
+           NetworkVars.hasAdminRights || userHasUploadRights {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Unhide transparent Add button

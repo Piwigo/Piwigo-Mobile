@@ -8,37 +8,6 @@
 
 import Foundation
 
-// MARK: - Privacy Levels
-public enum kPiwigoPrivacy : Int16 {
-    case everybody = 0
-    case adminsFamilyFriendsContacts = 1
-    case adminsFamilyFriends = 2
-    case adminsFamily = 4
-    case admins = 8
-    case count = 5
-    case unknown = -1
-}
-
-extension kPiwigoPrivacy {
-    public var name: String {
-        switch self {
-        case .everybody:
-            return NSLocalizedString("privacyLevel_everybody", comment: "Everybody")
-        case .adminsFamilyFriendsContacts:
-            return NSLocalizedString("privacyLevel_adminsFamilyFriendsContacts", comment: "Admins, Family, Friends, Contacts")
-        case .adminsFamilyFriends:
-            return NSLocalizedString("privacyLevel_adminsFamilyFriends", comment: "Admins, Family, Friends")
-        case .adminsFamily:
-            return NSLocalizedString("privacyLevel_adminFamily", comment: "Admins, Family")
-        case .admins:
-            return NSLocalizedString("privacyLevel_admin", comment: "Admins")
-        default:
-            return ""
-        }
-    }
-}
-
-
 // MARK: - Max Photo Sizes
 public enum pwgPhotoMaxSizes: Int16, CaseIterable {
     case fullResolution = 0, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
@@ -101,34 +70,6 @@ extension pwgVideoMaxSizes {
     }
 }
 
-// MARK: - Photo Sort Options
-public enum kPiwigoSort : Int16 {
-    case nameAscending = 0              // Photo title, A → Z
-    case nameDescending                 // Photo title, Z → A
-            
-    case dateCreatedDescending          // Date created, new → old
-    case dateCreatedAscending           // Date created, old → new
-            
-    case datePostedDescending           // Date posted, new → old
-    case datePostedAscending            // Date posted, old → new
-            
-    case fileNameAscending              // File name, A → Z
-    case fileNameDescending             // File name, Z → A
-            
-    case ratingScoreDescending          // Rating score, high → low
-    case ratingScoreAscending           // Rating score, low → high
-        
-    case visitsDescending               // Visits, high → low
-    case visitsAscending                // Visits, low → high
-        
-    case manual                         // Manual order
-    case random                         // Random order
-//    case kPiwigoSortVideoOnly
-//    case kPiwigoSortImageOnly
-    
-    case count
-}
-
 public class UploadVars: NSObject {
     
     // Remove deprecated stored objects if needed
@@ -136,6 +77,10 @@ public class UploadVars: NSObject {
         // Deprecated data?
         if let _ = UserDefaults.dataSuite.object(forKey: "photoResize") {
             UserDefaults.dataSuite.removeObject(forKey: "photoResize")
+        }
+        if let localImagesSort = UserDefaults.dataSuite.object(forKey: "localImagesSort") {
+            UserDefaults.dataSuite.removeObject(forKey: "localImagesSort")
+            UserDefaults.dataSuite.set(localImagesSort, forKey: "localImagesSortRaw")
         }
     }
 
@@ -147,8 +92,16 @@ public class UploadVars: NSObject {
     // MARK: - Vars in UserDefaults / App Group
     // Upload variables stored in UserDefaults / App Group
     /// - Default image sort option
-    @UserDefault("localImagesSort", defaultValue: kPiwigoSort.dateCreatedDescending.rawValue, userDefaults: UserDefaults.dataSuite)
-    public static var localImagesSort: Int16
+    @UserDefault("localImagesSortRaw", defaultValue: pwgImageSort.dateCreatedDescending.rawValue, userDefaults: UserDefaults.dataSuite)
+    private static var localImagesSortRaw: Int16
+    public static var localImagesSort: pwgImageSort {
+        get { return pwgImageSort(rawValue: localImagesSortRaw) ?? .dateCreatedDescending }
+        set(value) {
+            if pwgImageSort.allCases.contains(value) {
+                localImagesSortRaw = value.rawValue
+            }
+        }
+    }
 
     /// - Default author name
     @UserDefault("defaultAuthor", defaultValue: "", userDefaults: UserDefaults.dataSuite)

@@ -22,155 +22,155 @@ class ImageUtilities: NSObject {
         let paramsDict: [String : Any] = ["image_id" : imageId]
         
         // Launch request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
-                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
-            // Decode the JSON object and store image data in cache.
-            do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
-                let decoder = JSONDecoder()
-                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
-
-                // Piwigo error?
-                if imageJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                    errorMessage: imageJSON.errorMessage)
-                    failure(error as NSError)
-                    return
-                }
-
-                // Collect data returned by server
-                guard let data = imageJSON.data else {
-                          // Data cannot be digested
-                          failure(JsonError.unexpectedError as NSError)
-                          return
-                }
-
-                // Retrieve image data currently in cache
-                let imageData = CategoriesData.sharedInstance()
-                    .getImageForCategory(categoryId, andId: imageId) ?? PiwigoImageData()
-                imageData.imageId = data.imageId ?? imageId
-
-                // Upper categoies
-                if let catIds = data.categoryIds, !catIds.isEmpty {
-                    imageData.categoryIds = [NSNumber]()
-                    for catId in catIds {
-                        if let id = catId.id {
-                            imageData.categoryIds.append(NSNumber(value: id))
-                        }
-                    }
-                }
-                if imageData.categoryIds.isEmpty {
-                    imageData.categoryIds.append(NSNumber(value: categoryId))
-                }
-                
-                // Image title and description
-                if let title = data.imageTitle {
-                    imageData.imageTitle = NetworkUtilities.utf8mb4String(from: title)
-                }
-                if let description = data.comment {
-                    imageData.comment = NetworkUtilities.utf8mb4String(from: description)
-                }
-                
-                // Image visits and rate
-                if let visits = data.visits {
-                    imageData.visits = visits
-                }
-                if let score = data.ratingScore, let rate = Float(score) {
-                    imageData.ratingScore = rate
-                }
-                
-                // Image file size, name and MD5 checksum
-                imageData.fileSize = data.fileSize ?? NSNotFound
-                imageData.md5checksum = data.md5checksum ?? imageData.md5checksum ?? ""
-                imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? imageData.fileName ?? "NoName.jpg")
-                let fileExt = URL(fileURLWithPath: imageData.fileName).pathExtension as NSString
-                if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
-                    imageData.isVideo = UTTypeConformsTo(uti, kUTTypeMovie)
-                }
-                
-                // Image dates
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? imageData.datePosted ?? Date()
-                imageData.dateCreated = dateFormatter.date(from: data.dateCreated ?? "") ?? imageData.dateCreated ?? imageData.datePosted
-                
-                // Author
-                imageData.author = NetworkUtilities.utf8mb4String(from: data.author ?? imageData.author ?? "NSNotFound")
-                
-                // Privacy level
-                if let privacyLevel = Int32(data.privacyLevel ?? String(kPiwigoPrivacyObjcUnknown.rawValue)) {
-                    imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: privacyLevel)
-                } else {
-                    imageData.privacyLevel = kPiwigoPrivacyObjcUnknown
-                }
-                
-                // Switch to old cache data format
-                var tagList = [PiwigoTagData]()
-                for tag in data.tags ?? [] {
-                    guard let tagId = tag.id else { continue }
-                    let newTag = PiwigoTagData()
-                    newTag.tagId = Int(tagId.intValue)
-                    newTag.tagName = NetworkUtilities.utf8mb4String(from: tag.name ?? "")
-                    newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "") ?? Date()
-                    newTag.numberOfImagesUnderTag = tag.counter ?? Int64(NSNotFound)
-                    tagList.append(newTag)
-                }
-                imageData.tags = tagList
-
-                imageData.fullResWidth = data.fullResWidth ?? 1
-                imageData.fullResHeight = data.fullResHeight ?? 1
-                imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? imageData.fullResPath ?? "")
-
-                imageData.squarePath = NetworkUtilities.encodedImageURL(data.derivatives.squareImage?.url ?? imageData.squarePath ?? "")?.absoluteString
-                imageData.squareWidth = data.derivatives.squareImage?.width?.intValue ?? 1
-                imageData.squareHeight = data.derivatives.squareImage?.height?.intValue ?? 1
-                imageData.thumbPath = NetworkUtilities.encodedImageURL(data.derivatives.thumbImage?.url ?? imageData.thumbPath ?? "")?.absoluteString
-                imageData.thumbWidth = data.derivatives.thumbImage?.width?.intValue ?? 1
-                imageData.thumbHeight = data.derivatives.thumbImage?.height?.intValue ?? 1
-                imageData.mediumPath = NetworkUtilities.encodedImageURL(data.derivatives.mediumImage?.url ?? imageData.mediumPath ?? "")?.absoluteString
-                imageData.mediumWidth = data.derivatives.mediumImage?.width?.intValue ?? 1
-                imageData.mediumHeight = data.derivatives.mediumImage?.height?.intValue ?? 1
-                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xxSmallImage?.url ?? imageData.xxSmallPath ?? "")?.absoluteString
-                imageData.xxSmallWidth = data.derivatives.xxSmallImage?.width?.intValue ?? 1
-                imageData.xxSmallHeight = data.derivatives.xxSmallImage?.height?.intValue ?? 1
-                imageData.xSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xSmallImage?.url ?? imageData.xSmallPath ?? "")?.absoluteString
-                imageData.xSmallWidth = data.derivatives.xSmallImage?.width?.intValue ?? 1
-                imageData.xSmallHeight = data.derivatives.xSmallImage?.height?.intValue ?? 1
-                imageData.smallPath = NetworkUtilities.encodedImageURL(data.derivatives.smallImage?.url ?? imageData.smallPath ?? "")?.absoluteString
-                imageData.smallWidth = data.derivatives.smallImage?.width?.intValue ?? 1
-                imageData.smallHeight = data.derivatives.smallImage?.height?.intValue ?? 1
-                imageData.largePath = NetworkUtilities.encodedImageURL(data.derivatives.largeImage?.url ?? imageData.largePath ?? "")?.absoluteString
-                imageData.largeWidth = data.derivatives.largeImage?.width?.intValue ?? 1
-                imageData.largeHeight = data.derivatives.largeImage?.height?.intValue ?? 1
-                imageData.xLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xLargeImage?.url ?? imageData.xLargePath ?? "")?.absoluteString
-                imageData.xLargeWidth = data.derivatives.xLargeImage?.width?.intValue ?? 1
-                imageData.xLargeHeight = data.derivatives.xLargeImage?.height?.intValue ?? 1
-                imageData.xxLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xxLargeImage?.url ?? imageData.xxLargePath ?? "")?.absoluteString
-                imageData.xxLargeWidth = data.derivatives.xxLargeImage?.width?.intValue ?? 1
-                imageData.xxLargeHeight = data.derivatives.xxLargeImage?.height?.intValue ?? 1
-
-                // Update cache
-                for catId in imageData.categoryIds {
-                    if let _ = CategoriesData.sharedInstance().getCategoryById(catId.intValue) {
-                        CategoriesData.sharedInstance().getCategoryById(catId.intValue)
-                            .updateImages([imageData])
-                    }
-                }
-                completion(imageData)
-            }
-            catch {
-                // Data cannot be digested
-                let error = error as NSError
-                failure(error)
-            }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
-        }
+//        let JSONsession = PwgSession.shared
+//        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
+//                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
+//                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
+//            // Decode the JSON object and store image data in cache.
+//            do {
+//                // Decode the JSON into codable type ImagesGetInfoJSON.
+//                let decoder = JSONDecoder()
+//                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
+//
+//                // Piwigo error?
+//                if imageJSON.errorCode != 0 {
+//                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
+//                                                                    errorMessage: imageJSON.errorMessage)
+//                    failure(error as NSError)
+//                    return
+//                }
+//
+//                // Collect data returned by server
+//                guard let data = imageJSON.data else {
+//                          // Data cannot be digested
+//                          failure(JsonError.unexpectedError as NSError)
+//                          return
+//                }
+//
+//                // Retrieve image data currently in cache
+//                let imageData = CategoriesData.sharedInstance()
+//                    .getImageForCategory(categoryId, andId: imageId) ?? PiwigoImageData()
+//                imageData.imageId = Int(data.id ?? Int64(imageId))
+//
+//                // Upper categoies
+//                if let catIds = data.categoryIds, !catIds.isEmpty {
+//                    imageData.categoryIds = [NSNumber]()
+//                    for catId in catIds {
+//                        if let id = catId.id {
+//                            imageData.categoryIds.append(NSNumber(value: id))
+//                        }
+//                    }
+//                }
+//                if imageData.categoryIds.isEmpty {
+//                    imageData.categoryIds.append(NSNumber(value: categoryId))
+//                }
+//
+//                // Image title and description
+//                if let title = data.imageTitle {
+//                    imageData.imageTitle = NetworkUtilities.utf8mb4String(from: title)
+//                }
+//                if let description = data.comment {
+//                    imageData.comment = NetworkUtilities.utf8mb4String(from: description)
+//                }
+//
+//                // Image visits and rate
+//                if let visits = data.visits {
+//                    imageData.visits = visits
+//                }
+//                if let score = data.ratingScore, let rate = Float(score) {
+//                    imageData.ratingScore = rate
+//                }
+//
+//                // Image file size, name and MD5 checksum
+//                imageData.fileSize = data.fileSize ?? NSNotFound
+//                imageData.md5checksum = data.md5checksum ?? imageData.md5checksum ?? ""
+//                imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? imageData.fileName ?? "NoName.jpg")
+//                let fileExt = URL(fileURLWithPath: imageData.fileName).pathExtension as NSString
+//                if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
+//                    imageData.isVideo = UTTypeConformsTo(uti, kUTTypeMovie)
+//                }
+//
+//                // Image dates
+//                let dateFormatter = DateFormatter()
+//                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//                imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? imageData.datePosted ?? Date()
+//                imageData.dateCreated = dateFormatter.date(from: data.dateCreated ?? "") ?? imageData.dateCreated ?? imageData.datePosted
+//
+//                // Author
+//                imageData.author = NetworkUtilities.utf8mb4String(from: data.author ?? imageData.author ?? "NSNotFound")
+//
+//                // Privacy level
+//                if let privacyLevel = Int32(data.privacyLevel ?? String(kPiwigoPrivacyObjcUnknown.rawValue)) {
+//                    imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: privacyLevel)
+//                } else {
+//                    imageData.privacyLevel = kPiwigoPrivacyObjcUnknown
+//                }
+//
+//                // Switch to old cache data format
+//                var tagList = [PiwigoTagData]()
+//                for tag in data.tags ?? [] {
+//                    guard let tagId = tag.id else { continue }
+//                    let newTag = PiwigoTagData()
+//                    newTag.tagId = Int(tagId.intValue)
+//                    newTag.tagName = NetworkUtilities.utf8mb4String(from: tag.name ?? "")
+//                    newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "") ?? Date()
+//                    newTag.numberOfImagesUnderTag = tag.counter ?? Int64(NSNotFound)
+//                    tagList.append(newTag)
+//                }
+//                imageData.tags = tagList
+//
+//                imageData.fullResWidth = data.fullResWidth ?? 1
+//                imageData.fullResHeight = data.fullResHeight ?? 1
+//                imageData.fullResPath = NetworkUtilities.encodedImageURL(data.fullResPath ?? imageData.fullResPath ?? "")?.absoluteString
+//
+//                imageData.squarePath = NetworkUtilities.encodedImageURL(data.derivatives.squareImage?.url ?? imageData.squarePath ?? "")?.absoluteString
+//                imageData.squareWidth = data.derivatives.squareImage?.width?.intValue ?? 1
+//                imageData.squareHeight = data.derivatives.squareImage?.height?.intValue ?? 1
+//                imageData.thumbPath = NetworkUtilities.encodedImageURL(data.derivatives.thumbImage?.url ?? imageData.thumbPath ?? "")?.absoluteString
+//                imageData.thumbWidth = data.derivatives.thumbImage?.width?.intValue ?? 1
+//                imageData.thumbHeight = data.derivatives.thumbImage?.height?.intValue ?? 1
+//                imageData.mediumPath = NetworkUtilities.encodedImageURL(data.derivatives.mediumImage?.url ?? imageData.mediumPath ?? "")?.absoluteString
+//                imageData.mediumWidth = data.derivatives.mediumImage?.width?.intValue ?? 1
+//                imageData.mediumHeight = data.derivatives.mediumImage?.height?.intValue ?? 1
+//                imageData.xxSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xxSmallImage?.url ?? imageData.xxSmallPath ?? "")?.absoluteString
+//                imageData.xxSmallWidth = data.derivatives.xxSmallImage?.width?.intValue ?? 1
+//                imageData.xxSmallHeight = data.derivatives.xxSmallImage?.height?.intValue ?? 1
+//                imageData.xSmallPath = NetworkUtilities.encodedImageURL(data.derivatives.xSmallImage?.url ?? imageData.xSmallPath ?? "")?.absoluteString
+//                imageData.xSmallWidth = data.derivatives.xSmallImage?.width?.intValue ?? 1
+//                imageData.xSmallHeight = data.derivatives.xSmallImage?.height?.intValue ?? 1
+//                imageData.smallPath = NetworkUtilities.encodedImageURL(data.derivatives.smallImage?.url ?? imageData.smallPath ?? "")?.absoluteString
+//                imageData.smallWidth = data.derivatives.smallImage?.width?.intValue ?? 1
+//                imageData.smallHeight = data.derivatives.smallImage?.height?.intValue ?? 1
+//                imageData.largePath = NetworkUtilities.encodedImageURL(data.derivatives.largeImage?.url ?? imageData.largePath ?? "")?.absoluteString
+//                imageData.largeWidth = data.derivatives.largeImage?.width?.intValue ?? 1
+//                imageData.largeHeight = data.derivatives.largeImage?.height?.intValue ?? 1
+//                imageData.xLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xLargeImage?.url ?? imageData.xLargePath ?? "")?.absoluteString
+//                imageData.xLargeWidth = data.derivatives.xLargeImage?.width?.intValue ?? 1
+//                imageData.xLargeHeight = data.derivatives.xLargeImage?.height?.intValue ?? 1
+//                imageData.xxLargePath = NetworkUtilities.encodedImageURL(data.derivatives.xxLargeImage?.url ?? imageData.xxLargePath ?? "")?.absoluteString
+//                imageData.xxLargeWidth = data.derivatives.xxLargeImage?.width?.intValue ?? 1
+//                imageData.xxLargeHeight = data.derivatives.xxLargeImage?.height?.intValue ?? 1
+//
+//                // Update cache
+//                for catId in imageData.categoryIds {
+//                    if let _ = CategoriesData.sharedInstance().getCategoryById(catId.intValue) {
+//                        CategoriesData.sharedInstance().getCategoryById(catId.intValue)
+//                            .updateImages([imageData])
+//                    }
+//                }
+//                completion(imageData)
+//            }
+//            catch {
+//                // Data cannot be digested
+//                let error = error as NSError
+//                failure(error)
+//            }
+//        } failure: { error in
+//            /// - Network communication errors
+//            /// - Returned JSON data is empty
+//            /// - Cannot decode data returned by Piwigo server
+//            failure(error)
+//        }
     }
     
     static func setInfos(with paramsDict: [String: Any],

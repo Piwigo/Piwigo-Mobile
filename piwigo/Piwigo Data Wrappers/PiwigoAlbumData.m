@@ -106,7 +106,7 @@ NSInteger const kPiwigoTagsCategoryId       = -10;          // Tag images (offse
     self.lastImageBulkCount = 0;
     
     // Set sort string parameter from sort type
-    NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:sort];
+    NSString *sortDesc = @"date_creation asc";
 
     [self loopLoadImagesForSort:sortDesc
 				   withProgress:progress

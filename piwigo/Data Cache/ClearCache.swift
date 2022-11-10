@@ -22,7 +22,7 @@ class ClearCache: NSObject {
         AlbumVars.shared.defaultCategory = 0
         AlbumVars.shared.recentCategories = "0"
         NetworkVars.usesCommunityPluginV29 = false
-        NetworkVars.hasAdminRights = false
+        NetworkVars.userStatus = pwgUserStatus.guest
         
         // Disable Auto-Uploading and clear settings
         UploadVars.isAutoUploadActive = false
@@ -74,7 +74,10 @@ class ClearCache: NSObject {
         LocationProvider.shared.clearLocations()
 
         // Album data
-        if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
+        if !exceptCategories {
+            AlbumProvider().clearAlbums()
+            ImageProvider().clearImages()
+        }
 
         // URL requests
         NetworkVarsObjc.imageCache?.removeAllCachedResponses()

@@ -68,7 +68,9 @@ class ImagePreviewViewController: UIViewController
                 previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeThumb)
             }
         }
-        guard let previewURL = URL(string: previewStr ?? "") else {return }
+        guard let path = previewStr, path.isEmpty == false,
+              let previewURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(path)" )
+        else {return }
         weak var weakSelf = self
 
         downloadTask = NetworkVarsObjc.imagesSessionManager?.get(

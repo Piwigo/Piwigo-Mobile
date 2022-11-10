@@ -25,10 +25,6 @@ extension AlbumViewController
     }
 
     func initButtonsInSelectionMode() {
-        // Get album upload rights
-        userHasUploadRights = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId)?.hasUploadRights ?? false
-
         // Hide back, Settings, Upload and Home buttons
         navigationItem.hidesBackButton = true
         addButton.isHidden = true
@@ -43,8 +39,7 @@ extension AlbumViewController
             let orientation = view.window?.windowScene?.interfaceOrientation
 
             // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights ||
-               (NetworkVars.hasNormalRights && userHasUploadRights) {
+            if NetworkVars.hasAdminRights || userHasUploadRights {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -92,7 +87,7 @@ extension AlbumViewController
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if !NetworkVars.hasGuestRights,
+            } else if NetworkVars.userStatus != .guest,
                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending) {
                 favoriteBarButton = getFavoriteBarButton()
 
@@ -137,8 +132,7 @@ extension AlbumViewController
             // User with admin or upload rights can do everything
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-            if NetworkVars.hasAdminRights ||
-               (NetworkVars.hasNormalRights && userHasUploadRights) {
+            if NetworkVars.hasAdminRights || userHasUploadRights {
                 // The action button only proposes to edit image parameters
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
                 actionBarButton?.accessibilityIdentifier = "actions"
@@ -181,7 +175,7 @@ extension AlbumViewController
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if !NetworkVars.hasGuestRights,
+            } else if NetworkVars.userStatus != .guest,
                       "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 
@@ -228,8 +222,7 @@ extension AlbumViewController
         // User with admin or upload rights can do everything
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-        if NetworkVars.hasAdminRights ||
-           (NetworkVars.hasNormalRights && userHasUploadRights) {
+        if NetworkVars.hasAdminRights || userHasUploadRights {
             cancelBarButton?.isEnabled = true
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton?.isEnabled = hasImagesSelected
@@ -254,7 +247,7 @@ extension AlbumViewController
             /// — guests can share photo of high-resolution or not
             /// — non-guest users can set favorites in addition
             shareBarButton?.isEnabled = hasImagesSelected
-            if !NetworkVars.hasGuestRights,
+            if NetworkVars.userStatus != .guest,
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
                 let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
@@ -371,7 +364,7 @@ extension AlbumViewController
             if let indexPath = imagesCollection?.indexPathForItem(at: point),
                indexPath.section == 1,
                let imageCell = imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.imageId
+               let imageId = imageCell.imageData?.pwgID
             {
                 // Update the selection if not already done
                 let imageIdObject = NSNumber(value: imageId)

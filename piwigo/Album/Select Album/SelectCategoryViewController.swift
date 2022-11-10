@@ -530,11 +530,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
-        let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
-                                                (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-        if filteredCat.count > 0 {
-            buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? .hideSubAlbum : .showSubAlbum
-        }
+//        let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
+//                                                (NetworkVars.hasNormalRights && $0.hasUploadRights) })
+//        if filteredCat.count > 0 {
+//            buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? .hideSubAlbum : .showSubAlbum
+//        }
 
         // How should we present the category
         cell.delegate = self
@@ -1240,15 +1240,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Look for categories which are not already displayed
         /// - Smart albums should not be proposed
         /// - Non-admin Community users can only upload in specific albums
-        let filteredCat = allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
-            .filter({ NetworkVars.hasAdminRights ||
-                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-        for category in filteredCat {   // Don't use forEach to keep the order
-            // Is this category already in displayed list?
-            if !categories.contains(where: { $0.albumId == category.albumId }) {
-                diff.append(category)
-            }
-        }
+//        let filteredCat = allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
+//            .filter({ NetworkVars.hasAdminRights ||
+//                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
+//        for category in filteredCat {   // Don't use forEach to keep the order
+//            // Is this category already in displayed list?
+//            if !categories.contains(where: { $0.albumId == category.albumId }) {
+//                diff.append(category)
+//            }
+//        }
 
         // Build list of categories to be displayed
         for category in diff {   // Don't use forEach to keep the order
@@ -1318,16 +1318,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Look for categories which are not already displayed
         /// - Non-admin Community users can only upload in specific albums
         /// - Only add sub-categories of tapped category
-        let filteredCat = allCategories
-            .filter({ NetworkVars.hasAdminRights ||
-                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-            .filter({ $0.parentAlbumId == categoryTapped.albumId })
-        for category in filteredCat {   // Don't use forEach to keep the order
-            // Is this category already in displayed list?
-            if !categories.contains(where: { $0.albumId == category.albumId }) {
-                diff.append(category)
-            }
-        }
+//        let filteredCat = allCategories
+//            .filter({ NetworkVars.hasAdminRights ||
+//                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
+//            .filter({ $0.parentAlbumId == categoryTapped.albumId })
+//        for category in filteredCat {   // Don't use forEach to keep the order
+//            // Is this category already in displayed list?
+//            if !categories.contains(where: { $0.albumId == category.albumId }) {
+//                diff.append(category)
+//            }
+//        }
 
         // Build new list of categories to be displayed
         guard let indexOfParent = categories.firstIndex(where: { $0.albumId == categoryTapped.albumId }) else { return }

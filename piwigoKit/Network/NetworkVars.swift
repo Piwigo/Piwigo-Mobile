@@ -11,12 +11,12 @@ import Foundation
 import SystemConfiguration
 
 public class NetworkVars: NSObject {
-
+    
     public static func domain() -> String {
         let strURL = "\(serverProtocol)\(serverPath)"
         return URL(string: strURL)?.host ?? ""
     }
-
+    
     public static func isConnectedToWiFi() -> Bool {
         guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault,
                                                                      domain()) else { return false }
@@ -28,19 +28,19 @@ public class NetworkVars: NSObject {
         let needsConnection = flags.contains(.connectionRequired)
         return (isReachable && !cellular && !needsConnection)
     }
-
+    
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
-
+    //    override init() {
+    //        // Deprecated data?
+    //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+    //            UserDefaults.dataSuite.removeObject(forKey: "test")
+    //        }
+    //    }
+    
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
     /// - None
-
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Network variables stored in UserDefaults / App Group
@@ -59,16 +59,31 @@ public class NetworkVars: NSObject {
     /// -  Username provided to access a server requiring HTTP basic authentication
     @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var httpUsername: String
-
+    
     /// - Username provided to access the Piwigo server
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var username: String
-
+    
     /// - Status of the user accessing the Piwigo server
-    @UserDefault("userStatus", defaultValue: "guest", userDefaults: UserDefaults.dataSuite)
-    public static var userStatus: String
-
-
+    @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
+    private static var userStatusRaw: String
+    public static var userStatus: pwgUserStatus {
+        get { return pwgUserStatus(rawValue: userStatusRaw) ?? pwgUserStatus.guest }
+        set (value) {
+            if pwgUserStatus.allCases.contains(value) {
+                userStatusRaw = value.rawValue
+            }
+        }
+    }
+    public static var hasAdminRights: Bool {
+        get { return [.admin, .webmaster].contains(userStatus) }
+    }
+    
+    /// - Library/Caches/Piwigo/Thumbnail folder size
+    @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
+    public static var thumbFolderSize: UInt
+    
+    
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - Session manager used to communicate with the Piwigo server
@@ -113,4 +128,7 @@ public class NetworkVars: NSObject {
 
     /// - User's default language
     public static var language = ""
+    
+    /// - Custom HTTP header field names
+    public static let HTTPCatID = "X-PWG-categoryID"
 }

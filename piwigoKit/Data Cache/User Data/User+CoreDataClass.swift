@@ -17,23 +17,32 @@ public class User: NSManagedObject {
      Updates the attributes of a User Account instance.
      */
     func update(username: String, onServer server: Server,
-                status: String = NetworkVars.userStatus,
+                userStatus: pwgUserStatus = NetworkVars.userStatus,
                 withName name: String = "", lastUsed: Date = Date()) throws {
         // Check user's status
-        guard let userStatus = pwgUserStatus(rawValue: status),
-              pwgUserStatus.allValues.contains(userStatus) else {
+        guard pwgUserStatus.allCases.contains(userStatus) else {
             throw UserError.unknownUserStatus
         }
         
-        // Username and server path
-        self.username = username
-        self.server = server
-
+        // Server andd username
+        if self.server == nil { self.server = server }
+        if self.username != username { self.username = username }
+        
         // When the name is not provided, build name from the path
         let login = username.isEmpty ? pwgUserStatus.guest.rawValue : username
-        self.name = name.isEmpty ? login + " @ " + server.path : name
+        let newName = name.isEmpty ? login + " @ " + server.path : name
+        if self.name != newName { self.name = newName }
         
         // Last time the user used this account
-        self.lastUsed = lastUsed
+        if self.lastUsed != lastUsed { self.lastUsed = lastUsed }
+    }
+    
+    func addAlbumWithUploadRights(_ id: Int32) {
+        let IDstr = String(id)
+        var idList = self.uploadRights.components(separatedBy: ",")
+        if idList.contains(IDstr) == false {
+            idList.append(IDstr)
+            self.uploadRights = String(idList.map({"\($0),"}).reduce("", +).dropLast(1))
+        }
     }
 }

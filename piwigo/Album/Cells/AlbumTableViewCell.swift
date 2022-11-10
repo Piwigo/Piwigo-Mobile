@@ -23,7 +23,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
 
-    func config(withAlbumData albumData: PiwigoAlbumData?) {
+    func config(withAlbumData albumData: Album?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -36,12 +36,11 @@ class AlbumTableViewCell: MGSwipeTableCell {
         albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
 
         // Album description
-        if let description = albumData?.comment, description.isEmpty == false,
-           let catID = albumData?.albumId {
-            albumComment.attributedText = AlbumUtilities.headerLegend(for: catID)
+        if let description = albumData?.comment, description.string.isEmpty == false {
+            albumComment.attributedText = description
             albumComment.textColor = UIColor.piwigoColorText()
         }
-        else {  // No comment
+        else {  // No description
             if NetworkVars.hasAdminRights {
                 albumComment.text = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
                 albumComment.textColor = UIColor.piwigoColorRightLabel()
@@ -55,29 +54,29 @@ class AlbumTableViewCell: MGSwipeTableCell {
         numberOfImages.textColor = UIColor.piwigoColorText()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        if albumData?.numberOfSubCategories ?? 0 == 0 {
+        if albumData?.nbSubAlbums ?? 0 == 0 {
             // There are no sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.numberOfImages ?? 0))
-            numberOfImages.text = (albumData?.numberOfImages ?? 0 > 1)
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
+            numberOfImages.text = (albumData?.nbImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
         }
-        else if albumData?.totalNumberOfImages ?? 0 == 0 {
+        else if albumData?.totalNbImages ?? 0 == 0 {
             // There are no images but sub-albums
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
-            numberOfImages.text = (albumData?.numberOfSubCategories ?? 0 > 1)
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
+            numberOfImages.text = (albumData?.nbSubAlbums ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNumberOfImages ?? 0))
-            var nberOfImages = (albumData?.totalNumberOfImages ?? 0 > 1)
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
+            var nberOfImages = (albumData?.totalNbImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
             nberOfImages += ", "
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
-            nberOfImages += (albumData?.numberOfSubCategories ?? 0 > 1)
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
+            nberOfImages += (albumData?.nbSubAlbums ?? 0 > 1)
                 ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
                 : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
             numberOfImages.text = nberOfImages
@@ -91,9 +90,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
 
         // Display recent icon when images have been uploaded recently
         DispatchQueue.global(qos: .userInteractive).async {
-            guard let catId = albumData?.albumId,
-                  let dateLast = CategoriesData.sharedInstance()
-                                    .getDateLastOfCategories(inCategory: catId) else { return }
+            guard let dateLast = albumData?.dateLast else { return }
             let timeSinceLastUpload: TimeInterval = dateLast.timeIntervalSinceNow
             var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
             indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
@@ -110,33 +107,37 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
         
         // Display album image
-        let placeHolder = UIImage(named: "placeholder")
+        let placeHolder = UIImage(named: "placeholder")!
 
-        // Do we have a correct URL?
-        guard let thumbUrlStr: String = albumData?.albumThumbnailUrl,
-              let thumbURL = URL(string: thumbUrlStr) else {
+        // Do we have an URL? and all IDs for storing it (we should)?
+        guard let thumbUrl = albumData?.thumbnailUrl,
+              let thumbID = albumData?.uuid,
+              let serverID = albumData?.server?.uuid else {
             // No album thumbnail URL
-            albumData?.categoryImage = placeHolder
             backgroundImage.image = placeHolder
             return
         }
 
         // Do we have the thumbnail in cache?
-        if let cachedImage: UIImage = albumData?.categoryImage,
-           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           (albumData?.categoryImage != placeHolder) {
-            // Album thumbnail in memory
-            backgroundImage.image = albumData?.categoryImage
+        let fileUrl = DataController.cacheDirectory.appendingPathComponent(serverID)
+                                                   .appendingPathComponent(pwgImageSize.thumb.path)
+                                                   .appendingPathComponent(thumbID)
+        // Get cached image
+        if let cachedImage: UIImage = UIImage(contentsOfFile: fileUrl.path),
+            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
+            cachedImage != placeHolder {
+            // Album thumbnail in cache
+            print("••> Image \(thumbID) retrieved from cache.")
+            backgroundImage.image = cachedImage
             return
         }
-
+        
         // Retrieve the image file
+        print("••> download album thumbnail image at \(thumbUrl.absoluteString ?? "—?—")")
         let size: CGSize = backgroundImage.bounds.size
         let scale = CGFloat(fmax(1.0, backgroundImage.traitCollection.displayScale))
-        var thumbRequest = URLRequest(url: thumbURL)
-        thumbRequest.addValue("image/*", forHTTPHeaderField: "Accept")
-        backgroundImage.setImageWith(thumbRequest, placeholderImage: placeHolder)
-        { _, _, image in
+        ImageSession.shared.downloadImage(atURL: thumbUrl as URL,
+                                          cachingAtURL: fileUrl) { [self] image in
             DispatchQueue.global(qos: .userInitiated).async {
                 // Process saliency
                 var finalImage:UIImage = image
@@ -150,20 +151,18 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 let imageSize: CGSize = finalImage.size
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
                     let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
-                    DispatchQueue.main.async {
-                        albumData?.categoryImage = albumImage
+                    DispatchQueue.main.async { [self] in
                         self.backgroundImage.image = albumImage
                     }
                 } else {
-                    DispatchQueue.main.async {
-                        albumData?.categoryImage = finalImage
+                    DispatchQueue.main.async { [self] in
                         self.backgroundImage.image = finalImage
                     }
                 }
             }
-        } failure: { _, _, error in
+        } failure: { error in
             #if DEBUG
-            debugPrint("setupWithAlbumData — Fail to get album image at \(albumData?.albumThumbnailUrl ?? "—?—")")
+            debugPrint("downloadImage() — Fail to get album image at \(albumData?.thumbnailUrl?.absoluteString ?? "—?—")")
             #endif
         }
     }

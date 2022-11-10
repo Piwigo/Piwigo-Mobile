@@ -1,0 +1,142 @@
+//
+//  Album+CoreDataClass.swift
+//  piwigoKit
+//
+//  Created by Eddy Lelièvre-Berna on 10/09/2022.
+//  Copyright © 2022 Piwigo.org. All rights reserved.
+//
+//
+
+import Foundation
+import CoreData
+import UIKit
+
+public class Album: NSManagedObject {
+    /**
+     Updates an Album instance with the values from a CategoryData struct.
+     */
+    func update(with albumData: CategoryData, user: User) throws {
+        
+        // Update the album only if the Id and Name properties have values.
+        guard let newPwgId = albumData.id,
+              let newName = albumData.name else {
+                throw AlbumError.missingData
+        }
+        if uuid.isEmpty {
+            uuid = UUID().uuidString
+        }
+        if pwgID != newPwgId {
+            pwgID = newPwgId
+        }
+        let newNameUtf8mb4 = NetworkUtilities.utf8mb4String(from: newName)
+        if name != newNameUtf8mb4 {
+            name = newNameUtf8mb4
+        }
+
+        // Album description and rank
+        let description = NetworkUtilities.utf8mb4String(from: albumData.comment ?? "")
+                                          .htmlToAttributedString
+        if comment.string != description.string {
+            comment = description
+        }
+        let newGlobalRank = albumData.globalRank ?? ""
+        if globalRank != newGlobalRank {
+            globalRank = newGlobalRank
+        }
+
+        // When upperCat is null or not supplied: album at the root
+        let newUpperCat = Int32(albumData.upperCat ?? "") ?? 0
+        if parentId != newUpperCat {
+            parentId = newUpperCat
+        }
+        let newUpperCats = albumData.upperCats ?? ""
+        if upperIds != newUpperCats {
+            upperIds = newUpperCats
+        }
+
+        // Number of images and sub-albums
+        let newNbImages = albumData.nbImages ?? Int64.zero
+        if nbImages != newNbImages {
+            nbImages = newNbImages
+        }
+        let newTotalNbImages = albumData.totalNbImages ?? Int64.zero
+        if totalNbImages != newTotalNbImages {
+            totalNbImages = newTotalNbImages
+        }
+        let newNbCategories = albumData.nbCategories ?? Int32.zero
+        if nbSubAlbums != newNbCategories {
+            nbSubAlbums = newNbCategories
+        }
+
+        // Album thumbnail
+        /// - Store relative URLs to save space and because the URL might changed in future
+        /// - Remove photo from cache if the path changed
+        let newThumbailId = Int32(albumData.thumbnailId ?? "") ?? Int32.max
+        if thumbnailId != newThumbailId {
+            thumbnailId = newThumbailId
+        }
+        let newThumbnailUrl = NetworkUtilities.encodedImageURL(albumData.thumbnailUrl ?? "")
+        if thumbnailUrl != newThumbnailUrl {
+            thumbnailUrl = newThumbnailUrl
+        }
+
+        // When "date_last" is null or not supplied: date in distant past
+        /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let newDateLast = dateFormatter.date(from: albumData.dateLast ?? "") ?? .distantPast
+        if dateLast != newDateLast {
+            dateLast = newDateLast
+        }
+
+        // This album of the current server is accessible to the user
+        if server == nil {
+            server = user.server
+        }
+        if users == nil || users?.contains(where: { $0.objectID == user.objectID }) == false {
+            addToUsers(user)
+        }
+    }
+}
+
+extension String {
+
+    // MARK: - HTML conversion
+    var htmlToAttributedString: NSAttributedString {
+
+        // Remove any white space or newline located at the beginning or end of the description
+        var comment = self
+        if comment.isEmpty { return NSAttributedString() }
+        while comment.count > 0, comment.first!.isNewline || comment.first!.isWhitespace {
+            comment.removeFirst()
+        }
+        while comment.count > 0, comment.last!.isNewline || comment.last!.isWhitespace  {
+            comment.removeLast()
+        }
+
+        // Convert HTML code
+        guard let data = comment.data(using: .utf8) else { return NSAttributedString(string: "") }
+        do {
+            let attributedStr = try NSMutableAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+            let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
+            let appFont = UIFont(name: "OpenSans", size: 13.0) ?? UIFont.systemFont(ofSize: 13.0)
+            attributedStr.addAttribute(.font, value: appFont, range: wholeRange)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+            
+            // Removes superfluous line feed
+            while !attributedStr.string.isEmpty
+                    && CharacterSet.newlines.contains(attributedStr.string.unicodeScalars.last!) {
+                attributedStr.deleteCharacters(in: NSRange(location: attributedStr.length - 1, length: 1))
+            }
+            return attributedStr
+        } catch {
+            return NSAttributedString(string: self)
+        }
+    }
+    
+    var htmlToString: String {
+        return htmlToAttributedString.string
+    }
+}

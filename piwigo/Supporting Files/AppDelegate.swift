@@ -20,7 +20,10 @@ import piwigoKit
 @UIApplicationMain
 @objc class AppDelegate: UIResponder, UIApplicationDelegate {
         
-    let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
+    private let k1WeekInDays: TimeInterval  = 60 * 60 * 24 *  7.0
+    private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
+    private let k3WeeksInDays: TimeInterval = 60 * 60 * 24 * 21.0
+    private let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
     var privacyView: UIView?
@@ -31,9 +34,6 @@ import piwigoKit
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("••> App did finish launching with options.")
-        // Read old settings file and create UserDefaults cached files
-        Model.sharedInstance().readFromDisk()
-
         // Register notifications for displaying number of uploads to perform in app badge
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
@@ -68,6 +68,11 @@ import piwigoKit
             AppVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
+        
+        // Register custom transformers used by the Core Data stack
+        DescriptionValueTransformer.register()
+        RelativeURLValueTransformer.register()
+        ResolutionValueTransformer.register()
         
         // Register launch handlers for tasks if using iOS 13+
         /// Will have to check if pwg.images.uploadAsync is available
@@ -902,7 +907,7 @@ import piwigoKit
 
         imageData.imageTitle = notification.userInfo?["imageTitle"] as? String ?? ""
         imageData.author = notification.userInfo?["author"] as? String ?? ""
-        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
+//        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
         imageData.comment = notification.userInfo?["comment"] as? String ?? ""
         imageData.visits = notification.userInfo?["visits"] as? Int ?? 0
         imageData.ratingScore = notification.userInfo?["ratingScore"] as? Float ?? 0.0

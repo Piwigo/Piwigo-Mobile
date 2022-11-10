@@ -142,4 +142,13 @@ public enum StringOrInt: Codable {
             return Int32(x)
         }
     }
+    
+    public var int64Value: Int64? {
+        switch self {
+        case .integer(let x):
+            return Int64(x)
+        case .string(let x):
+            return Int64(x)
+        }
+    }
 }

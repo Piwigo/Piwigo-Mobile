@@ -44,7 +44,7 @@ public struct ImagesGetInfoJSON: Decodable {
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Adopt default values when data are not provided
-            if data.imageTitle == nil { data.imageTitle = "" }
+            if data.title == nil { data.title = "" }
             if data.comment == nil { data.comment = "" }
             if data.visits == nil { data.visits = 0 }
             if data.fileName == nil { data.fileName = "" }
@@ -61,7 +61,7 @@ public struct ImagesGetInfoJSON: Decodable {
             if data.privacyLevel == nil { data.privacyLevel = "0" }
             if data.tags == nil { data.tags = [TagProperties]() }
             if data.ratingScore == nil { data.ratingScore = "0.0" }
-            if data.fileSize == nil { data.fileSize = NSNotFound }
+            if data.fileSize == nil { data.fileSize = Int64.zero }
             if data.md5checksum == nil { data.md5checksum = "" }
         }
         else if status == "fail"
@@ -91,10 +91,10 @@ public struct ImagesGetInfoJSON: Decodable {
 // MARK: - Result
 public struct ImagesGetInfo: Decodable
 {
-    public let imageId: Int?                    // 1042
-    public var imageTitle: String?              // "Title"
+    public let id: Int64?                       // 1042
+    public var title: String?                   // "Title"
     public var comment: String?                 // "No description"
-    public var visits: Int?                     // 0
+    public var visits: Int32?                   // 0
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
@@ -107,14 +107,14 @@ public struct ImagesGetInfo: Decodable
     public var privacyLevel: String?            // "0"
     public var tags: [TagProperties]?           // See TagProperties
     public var ratingScore: String?             // "1.0"
-    public var fileSize: Int?                   // 3025
+    public var fileSize: Int64?                 // 3025
     public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
-    public let categoryIds: [CategoryData]?     // Defined in pwg.category.getList
+    public var categories: [CategoryData]?      // Defined in pwg.category.getList
     public let derivatives: Derivatives         // See below
 
     public enum CodingKeys: String, CodingKey {
-        case imageId = "id"
-        case imageTitle = "name"
+        case id = "id"
+        case title = "name"
         case comment = "comment"
         case visits = "hit"
         case fileName = "file"
@@ -131,7 +131,7 @@ public struct ImagesGetInfo: Decodable
         case ratingScore = "rating_score"
         case fileSize = "filesize"
         case md5checksum = "md5sum"
-        case categoryIds = "categories"
+        case categories = "categories"
         case derivatives = "derivatives"
     }
 }

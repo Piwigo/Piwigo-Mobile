@@ -12,57 +12,12 @@ import UIKit
 import piwigoKit
 
 protocol CategorySortDelegate: NSObjectProtocol {
-    func didSelectCategorySortType(_ sortType: kPiwigoSort)
+    func didSelectCategorySortType(_ sortType: pwgImageSort)
 }
 
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     weak var sortDelegate: CategorySortDelegate?
-    private var currentCategorySortType = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
-
-    class func getNameForCategorySortType(_ sortType: kPiwigoSort) -> String {
-        var name = ""
-        switch sortType {
-        case .nameAscending:
-            name = NSLocalizedString("categorySort_nameAscending", comment: "Photo Title, A → Z")
-        case .nameDescending:
-            name = NSLocalizedString("categorySort_nameDescending", comment: "Photo Title, Z → A")
-        case .fileNameAscending:
-            name = NSLocalizedString("categorySort_fileNameAscending", comment: "File Name, A → Z")
-        case .fileNameDescending:
-            name = NSLocalizedString("categorySort_fileNameDescending", comment: "File Name, Z → A")
-        case .dateCreatedDescending:
-            name = NSLocalizedString("categorySort_dateCreatedDescending", comment: "Date Created, new → old")
-        case .dateCreatedAscending:
-            name = NSLocalizedString("categorySort_dateCreatedAscending", comment: "Date Created, old → new")
-        case .datePostedDescending:
-            name = NSLocalizedString("categorySort_datePostedDescending", comment: "Date Posted, new → old")
-        case .datePostedAscending:
-            name = NSLocalizedString("categorySort_datePostedAscending", comment: "Date Posted, old → new")
-        case .ratingScoreDescending:
-            name = NSLocalizedString("categorySort_ratingScoreDescending", comment: "Rating Score, high → low")
-        case .ratingScoreAscending:
-            name = NSLocalizedString("categorySort_ratingScoreAscending", comment: "Rating Score, low → high")
-        case .visitsDescending:
-            name = NSLocalizedString("categorySort_visitsDescending", comment: "Visits, high → low")
-        case .visitsAscending:
-            name = NSLocalizedString("categorySort_visitsAscending", comment: "Visits, low → high")
-        case .manual:
-            name = NSLocalizedString("categorySort_manual", comment: "Manual Order")
-        case .random:
-            name = NSLocalizedString("categorySort_random", comment: "Random Order")
-//		case .videoOnly:
-//			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
-//			break;
-//		case .imageOnly:
-//			name = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
-//			break;
-
-        case .count:
-            name = ""
-        }
-        return name
-    }
 
     @IBOutlet var sortSelectTableView: UITableView!
 
@@ -125,7 +80,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         super.viewDidDisappear(animated)
 
         // Return selected album
-        sortDelegate?.didSelectCategorySortType(currentCategorySortType ?? .dateCreatedAscending)
+        sortDelegate?.didSelectCategorySortType(AlbumVars.shared.defaultSort)
     }
 
     deinit {
@@ -156,19 +111,19 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(kPiwigoSort.count.rawValue)
+        return pwgImageSort.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let sortChoice = kPiwigoSort(rawValue: Int16(indexPath.row))
+        let sortChoice = pwgImageSort(rawValue: Int16(indexPath.row))!
 
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
         cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
-        cell.textLabel?.text = CategorySortViewController.getNameForCategorySortType(sortChoice!)
+        cell.textLabel?.text = sortChoice.name
         cell.textLabel?.minimumScaleFactor = 0.5
         cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.textLabel?.lineBreakMode = .byTruncatingMiddle
@@ -176,7 +131,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
             cell.accessibilityIdentifier = "sortAZ"
         }
 
-        if indexPath.row == currentCategorySortType!.rawValue {
+        if indexPath.row == AlbumVars.shared.defaultSort.rawValue {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -192,11 +147,12 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Did the user change the sort option
-        if kPiwigoSort(rawValue: Int16(indexPath.row)) == currentCategorySortType { return }
+        let currentSort = Int(AlbumVars.shared.defaultSort.rawValue)
+        if indexPath.row == currentSort { return }
 
         // Update choice
-        tableView.cellForRow(at: IndexPath(row: Int(currentCategorySortType!.rawValue), section: 0))?.accessoryType = .none
-        currentCategorySortType = kPiwigoSort(rawValue: Int16(indexPath.row))
+        tableView.cellForRow(at: IndexPath(row: currentSort, section: 0))?.accessoryType = .none
+        AlbumVars.shared.defaultSort = pwgImageSort(rawValue: Int16(indexPath.row))!
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

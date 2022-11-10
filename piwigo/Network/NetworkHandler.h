@@ -7,38 +7,39 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AFAutoPurgingImageCache.h"
 
 typedef void(^SuccessBlock)(id responseObject);
 
 // Piwigo URLs:
 //FOUNDATION_EXPORT NSString * const kReflectionGetMethodList;
-//FOUNDATION_EXPORT NSString * const kPiwigoSessionLogin;
-//FOUNDATION_EXPORT NSString * const kPiwigoSessionGetStatus;
+//FOUNDATION_EXPORT NSString * const pwgSessionLogin;
+//FOUNDATION_EXPORT NSString * const pwgSessionGetStatus;
 //FOUNDATION_EXPORT NSString * const kCommunitySessionGetStatus;
 //FOUNDATION_EXPORT NSString * const kPiwigoSessionGetPluginsList;
-//FOUNDATION_EXPORT NSString * const kPiwigoSessionLogout;
+//FOUNDATION_EXPORT NSString * const pwgSessionLogout;
 
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetList;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesGetList;
 //FOUNDATION_EXPORT NSString * const kCommunityCategoriesGetList;
-FOUNDATION_EXPORT NSString * const kPiwigoCategoriesGetImages;
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesAdd;
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesSetInfo;
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesDelete;
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesMove;
-//FOUNDATION_EXPORT NSString * const kPiwigoCategoriesSetRepresentative;
+FOUNDATION_EXPORT NSString * const pwgCategoriesGetImages;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesAdd;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesSetInfo;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesDelete;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesMove;
+//FOUNDATION_EXPORT NSString * const pwgCategoriesSetRepresentative;
 //FOUNDATION_EXPORT NSString * const kPiwigoCategoriesRefreshRepresentative;
 
-//FOUNDATION_EXPORT NSString * const kPiwigoImagesUpload;
+//FOUNDATION_EXPORT NSString * const pwgImagesUpload;
 //FOUNDATION_EXPORT NSString * const kCommunityImagesUploadCompleted;
-//FOUNDATION_EXPORT NSString * const kPiwigoImagesGetInfo;
+//FOUNDATION_EXPORT NSString * const pwgImagesGetInfo;
 //FOUNDATION_EXPORT NSString * const kPiwigoImageSetInfo;
 //FOUNDATION_EXPORT NSString * const kPiwigoImageDelete;
 FOUNDATION_EXPORT NSString * const kPiwigoImageSearch;
 
-//FOUNDATION_EXPORT NSString * const kPiwigoTagsGetList;
-//FOUNDATION_EXPORT NSString * const kPiwigoTagsGetAdminList;
+//FOUNDATION_EXPORT NSString * const pwgTagsGetList;
+//FOUNDATION_EXPORT NSString * const pwgTagsGetAdminList;
 FOUNDATION_EXPORT NSString * const kPiwigoTagsGetImages;
-//FOUNDATION_EXPORT NSString * const kPiwigoTagsAdd;
+//FOUNDATION_EXPORT NSString * const pwgTagsAdd;
 
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesAdd;
 //FOUNDATION_EXPORT NSString * const kPiwigoUserFavoritesRemove;
@@ -62,9 +63,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoImagesUploadParamMimeType;
 FOUNDATION_EXPORT NSInteger const kInvalidMethod;
 FOUNDATION_EXPORT NSInteger const kMissingParameter;
 FOUNDATION_EXPORT NSInteger const kInvalidParameter;
-
-// HUD tag:
-FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 @interface NetworkHandler : NSObject
 

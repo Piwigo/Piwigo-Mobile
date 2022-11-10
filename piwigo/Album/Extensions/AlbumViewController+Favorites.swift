@@ -101,7 +101,7 @@ extension AlbumViewController
         let visibleCells = imagesCollection?.visibleCells ?? []
         visibleCells.forEach { cell in
             if let imageCell = cell as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.imageId {
+               let imageId = imageCell.imageData?.pwgID {
                 let Ids = [NSNumber(value: imageId)]
                 let isFavorite = CategoriesData.sharedInstance()
                     .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: Ids)

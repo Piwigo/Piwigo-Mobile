@@ -66,6 +66,16 @@ public class PwgSession: NSObject {
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         request.networkServiceType = .responsiveData
+        switch method {
+        case pwgCategoriesGetList, pwgCategoriesGetImages:
+            // Identify requests performed for a specific album
+            // so that they can be easily cancelled.
+            if let albumId = paramDict["cat_id"] as? Int {
+                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.HTTPCatID)
+            }
+        default:
+            break
+        }
 
         // Combine percent encoded parameters
         var encPairs = [String]()

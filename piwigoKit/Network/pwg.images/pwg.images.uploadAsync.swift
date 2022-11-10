@@ -45,7 +45,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
             data = try? rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Did the server returned the image parameters?
-            guard let _ = data, let _ = data.imageId else {
+            guard let _ = data, let _ = data.id else {
                 // The server returned the list of uploaded chunks
                 chunks = try rootContainer.decode(ImagesUploadAsync.self, forKey: .result)
 //                print("    > \(chunks.message ?? "Done - No message!")")

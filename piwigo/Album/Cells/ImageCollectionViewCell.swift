@@ -9,10 +9,11 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    var imageData: PiwigoImageData?
+    var imageData: Image!
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -99,11 +100,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
         favImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int) {
+    func config(with imageData: Image, inCategoryId categoryId: Int) {
         // Do we have any info on that image ?
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        guard let imageData = imageData else { return }
-        if imageData.imageId == 0 { return }
+        if imageData.pwgID == Int64.zero { return }
 
         // Store image data
         self.imageData = imageData
@@ -125,17 +125,17 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
             } else if categoryId == kPiwigoBestCategoryId {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
-                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
-                    nameLabel?.text = imageTitle
+                if imageData.title.string.isEmpty == false {
+                    nameLabel?.attributedText = imageData.title
                 } else {
-                    nameLabel?.text = imageData.fileName
+                    nameLabel?.attributedText = NSAttributedString(string: imageData.fileName)
                 }
-            } else if categoryId == kPiwigoRecentCategoryId,
-                      let dateCreated = imageData.dateCreated {
-                nameLabel?.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .medium, timeStyle: .none)
+            } else if categoryId == kPiwigoRecentCategoryId {
+                nameLabel?.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                                dateStyle: .medium, timeStyle: .none)
             } else {
-                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
-                    nameLabel?.text = imageTitle
+                if imageData.title.string.isEmpty == false {
+                    nameLabel?.attributedText = imageData.title
                 } else {
                     nameLabel?.text = imageData.fileName
                 }
@@ -151,120 +151,140 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Download the image of the requested resolution (or get it from the cache)
+        guard let serverID = imageData.server?.uuid,
+              let _ = imageData.thumbRes?.uuid else {
+            noDataLabel?.isHidden = false
+            return
+        }
+        
+        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        let thumbUrl = cacheDir.appendingPathComponent(pwgImageSize.thumb.path)
         switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
-                setImageFromPath(squarePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasSquareSizeImages {
+                setImage(withResolution: imageData.squareRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.square.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeXXSmall:
-            if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
-                setImageFromPath(xxSmallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasXXSmallSizeImages {
+                setImage(withResolution: imageData.xxsmallRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xxSmall.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeXSmall:
-            if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
-                setImageFromPath(xSmallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasXSmallSizeImages {
+                setImage(withResolution: imageData.xsmallRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xSmall.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeSmall:
-            if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
-                setImageFromPath(smallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasSmallSizeImages {
+                setImage(withResolution: imageData.smallRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.small.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeMedium:
-            if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
-                setImageFromPath(mediumPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasMediumSizeImages {
+                setImage(withResolution: imageData.mediumRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.medium.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeLarge:
-            if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
-                setImageFromPath(largePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasLargeSizeImages {
+                setImage(withResolution: imageData.largeRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.large.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeXLarge:
-            if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
-                setImageFromPath(xLargePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasXLargeSizeImages {
+                setImage(withResolution: imageData.xlargeRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xLarge.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeXXLarge:
-            if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
-                setImageFromPath(xxLargePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasXXLargeSizeImages {
+                setImage(withResolution: imageData.xxlargeRes,
+                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xxLarge.path))
+            } else if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
             fallthrough
         default:
-            if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
+            if AlbumVars.shared.hasThumbSizeImages {
+                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
             } else {
                 noDataLabel?.isHidden = false
-                return
             }
         }
 
         applyColorPalette()
     }
 
-    private func setImageFromPath(_ imagePath: String) {
-        // Do we have a correct URL?
-        let placeHolderImage = UIImage(named: "placeholderImage")
-        if imagePath.isEmpty {
+    private func setImage(withResolution resolution: Resolution?, cachingAtUrl cacheUrl: URL) {
+        // Display album image
+        let placeHolderImage = UIImage(named: "placeholderImage")!
+
+        // Do we have an URL? and all IDs for storing it (we should)?
+        guard let imageID = resolution?.uuid,
+              let imageUrl = resolution?.url as? URL else {
             // No image thumbnail
             cellImage?.image = placeHolderImage
             return
         }
 
+        // Get cached image
+        let fileUrl = cacheUrl.appendingPathComponent(imageID)
+        if let cachedImage: UIImage = UIImage(contentsOfFile: fileUrl.path),
+            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
+            cachedImage != placeHolderImage {
+            // Image thumbnail in cache
+            print("••> Image \(imageID) retrieved from cache.")
+            cellImage?.image = cachedImage
+            return
+        }
+
         // Retrieve the image file
+        print("••> download image at \(imageUrl.absoluteString)")
         let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-        guard let anURL = URL(string: imagePath) else { return }
-        var request = URLRequest(url: anURL)
-        request.addValue("image/*", forHTTPHeaderField: "Accept")
-        cellImage?.setImageWith(request, placeholderImage: placeHolderImage,
-            success: { [self] _, _, image in
-                // Downsample image is necessary
+        ImageSession.shared.downloadImage(atURL: imageUrl, cachingAtURL: fileUrl) { [self] image in
+            // Display
+            DispatchQueue.main.async { [self] in
+                // Downsample image if necessary
                 var displayedImage = image
                 let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
                 if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
                     displayedImage = ImageUtilities.downsample(image: image, to: self.bounds.size, scale: scale)
                 }
                 self.cellImage?.image = displayedImage
-
+                
                 // Favorite image position depends on device
-                self.deltaX = margin
-                self.deltaY = margin
+                self.deltaX = self.margin
+                self.deltaY = self.margin
                 let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
                                              self.bounds.size.height / displayedImage.size.height))
                 if UIDevice.current.userInterfaceIdiom == .pad {
@@ -302,10 +322,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
                     let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
                     self.favBottom?.constant = deltaY
                 }
-            },
-        failure: { request, response, error in
-            debugPrint("••> cell image: \(error.localizedDescription)")
-        })
+            }
+        } failure: { error in
+            debugPrint("••> cell image: \(error?.localizedDescription ?? "Unknown!")")
+        }
     }
 
     override func prepareForReuse() {

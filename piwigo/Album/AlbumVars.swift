@@ -20,6 +20,10 @@ class AlbumVars: NSObject {
         if let _ = UserDefaults.dataSuite.object(forKey: "recentPeriod") {
             UserDefaults.dataSuite.removeObject(forKey: "recentPeriod")
         }
+        if let defaultSort = UserDefaults.dataSuite.object(forKey: "defaultSort") {
+            UserDefaults.dataSuite.removeObject(forKey: "defaultSort")
+            UserDefaults.dataSuite.set(defaultSort, forKey: "defaultSortRaw")
+        }
     }
 
     // MARK: - Vars in UserDefaults / Standard
@@ -41,8 +45,16 @@ class AlbumVars: NSObject {
     @objc var maxNberRecentCategories: Int
 
     /// - Default image sort option
-    @UserDefault("defaultSort", defaultValue: kPiwigoSort.dateCreatedAscending.rawValue)
-    @objc var defaultSort: Int16
+    @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.dateCreatedAscending.rawValue)
+    private var defaultSortRaw: Int16
+    var defaultSort: pwgImageSort {
+        get { return pwgImageSort(rawValue: defaultSortRaw) ?? .dateCreatedAscending }
+        set(value) {
+            if pwgImageSort.allCases.contains(value) {
+                defaultSortRaw = value.rawValue
+            }
+        }
+    }
 
     /// - Display images titles in collection views
     @UserDefault("displayImageTitles", defaultValue: true)

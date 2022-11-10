@@ -10,6 +10,23 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// Constants
+/// - Preferred popover view width on iPad
+let kPiwigoPadSubViewWidth = CGFloat(375.0)
+///- Preferred Settings view width on iPad
+let kPiwigoPadSettingsWidth = CGFloat(512.0)
+
+/// - Memory cache size
+let kPiwigoMemoryCacheInc = 8            // Slider increment
+let kPiwigoMemoryCacheMin = 0            // Minimum size
+let kPiwigoMemoryCacheMax = 256          // Maximum size
+
+/// - Disk cache size
+let kPiwigoDiskCacheInc   = 64;          // Slider increment
+let kPiwigoDiskCacheMin   = 128;         // Minimum size
+let kPiwigoDiskCacheMax   = 2048;        // Maximum size
+
+
 class AppVars: NSObject {
     
     // Singleton
@@ -49,17 +66,9 @@ class AppVars: NSObject {
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     @objc var clearClipboardDelay: Int
 
-    /// - Memory cache size
-    let kPiwigoMemoryCacheInc = 8            // Slider increment
-    let kPiwigoMemoryCacheMin = 0            // Minimum size
-    let kPiwigoMemoryCacheMax = 256          // Maximum size
     @UserDefault("memoryCache", defaultValue: 32)   // 4 x min = 32 MB
     @objc var memoryCache: Int
 
-    /// - Disk cache size
-    let kPiwigoDiskCacheInc   = 64;          // Slider increment
-    let kPiwigoDiskCacheMin   = 128;         // Minimum size
-    let kPiwigoDiskCacheMax   = 2048;        // Maximum size
     @UserDefault("diskCache", defaultValue: 512)    // 4 x min = 512 MB
     @objc var diskCache: Int
     
@@ -91,9 +100,6 @@ class AppVars: NSObject {
 
     /// - App Lock status
     var isAppUnlocked: Bool = false
-    
-    /// - Flag telling whether the app is already loading album data (case de several scenes)
-    var isReloadingData: Bool = false
     
     /// - Number of albums in cache (excepted smart albums) calculated before connecting other scenes
     var nberOfAlbumsInCache: Int = 0

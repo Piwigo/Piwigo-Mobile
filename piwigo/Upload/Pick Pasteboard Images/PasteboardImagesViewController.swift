@@ -6,6 +6,7 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import MobileCoreServices
 import Photos
 import UIKit
@@ -23,18 +24,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
 
     // MARK: - View
-    @objc func setCategoryId(_ categoryId: Int) {
-        _categoryId = categoryId
-    }
-    private var _categoryId: Int?
-    private var categoryId: Int {
-        get {
-            return _categoryId ?? AlbumVars.shared.defaultCategory
-        }
-        set(categoryId) {
-            _categoryId = categoryId
-        }
-    }
+    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var userHasUploadRights: Bool = false
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -648,9 +639,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             uploadSwitchVC.canDeleteImages = false
 
             // Can the user create tags?
-            let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && albumData?.hasUploadRights ?? false) {
+            if NetworkVars.hasAdminRights || userHasUploadRights {
                 uploadSwitchVC.hasTagCreationRights = true
             }
 

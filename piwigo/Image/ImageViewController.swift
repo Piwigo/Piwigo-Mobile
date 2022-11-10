@@ -22,12 +22,12 @@ class ImageViewController: UIViewController {
     var images = [PiwigoImageData]()
     var categoryId = 0
     var imageIndex = 0
-    
+    var userHasUploadRights = false
+
     var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var pageViewController: UIPageViewController?
-    lazy var userHasUploadRights = false
 
     // MARK: - Navigation Bar & Toolbar Buttons
     var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
@@ -67,9 +67,6 @@ class ImageViewController: UIViewController {
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
 
-        // Initialise flags
-        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false
-
         // Load initial image preview view controller
         if let startingImage = imagePageViewController(atIndex: index) {
             startingImage.imagePreviewDelegate = self
@@ -78,7 +75,7 @@ class ImageViewController: UIViewController {
         
         // Did we already load the list of favorite images?
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           !NetworkVars.hasGuestRights,
+           NetworkVars.userStatus != .guest,
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
             // Show HUD during the download
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
@@ -89,7 +86,7 @@ class ImageViewController: UIViewController {
             CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
-                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.shared.defaultSort)),
+                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.shared.defaultSort.rawValue)),
                                           forProgress: { [unowned self] onPage, outOf in
                     let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
                     self.updatePiwigoHUD(withProgress: fraction)
@@ -323,8 +320,7 @@ class ImageViewController: UIViewController {
             let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
             
             // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && userHasUploadRights) {
+            if NetworkVars.hasAdminRights || userHasUploadRights {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -366,7 +362,7 @@ class ImageViewController: UIViewController {
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             }
-            else if !NetworkVars.hasGuestRights,
+            else if NetworkVars.userStatus != .guest,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 
@@ -429,7 +425,7 @@ class ImageViewController: UIViewController {
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if NetworkVars.hasNormalRights && userHasUploadRights {
+            else if userHasUploadRights {
                 // WRONG =====> 'normal' user with upload access to the current category can edit images
                 // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
                 // Navigation bar
@@ -453,7 +449,7 @@ class ImageViewController: UIViewController {
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if !NetworkVars.hasGuestRights,
+            else if NetworkVars.userStatus != .guest,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 

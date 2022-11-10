@@ -8,10 +8,11 @@
 //  Converted to Swift 5.4 by Eddy Lelièvre-Berna on 11/06/2022
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
-//#import <StoreKit/StoreKit.h>
+//import StoreKit
 
 let kRadius: CGFloat = 25.0
 let kDeg2Rad: CGFloat = 3.141592654 / 180.0
@@ -24,15 +25,14 @@ enum pwgImageAction {
 @objc
 class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
-    @objc var categoryId = 0
+    @objc var categoryId = Int.zero
+    var query = ""
     var totalNumberOfImages = 0
     var selectedImageIds = [NSNumber]()
     var selectedImageIdsLoop = [Int]()
     var selectedImageData = [PiwigoImageData]()
 
     var imagesCollection: UICollectionView?
-    var albumData: AlbumData?
-    var userHasUploadRights = false
     private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
@@ -59,6 +59,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var nberOfUploadsLabel: UILabel!
 
     private var imageDetailView: ImageViewController?
+    private var updateOperations: [BlockOperation] = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -153,6 +154,99 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         uploadImagesButton = getUploadImagesButton()
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
     }
+
+    
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+    lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider()
+        return provider
+    }()
+
+    lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider()
+        return provider
+    }()
+
+    
+    // MARK: - Core Data Source
+    lazy var user = userProvider.getUserAccount(inContext: mainContext)
+    
+    lazy var userHasUploadRights: Bool = {
+        // Case of Community user?
+        let userUploadRights = user?.uploadRights ?? ""
+        return (NetworkVars.userStatus == .normal) &&
+                userUploadRights.components(separatedBy: ",").contains(String(categoryId))
+    }()
+    
+    lazy var albumData: Album? = {
+        if categoryId != 0 {
+            return albumProvider.getAlbum(inContext: mainContext, withId: Int32(categoryId))
+        }
+        return nil
+    }()
+    
+    lazy var predicates: [NSPredicate] = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
+        return andPredicates
+    }()
+
+    lazy var fetchAlbumsRequest: NSFetchRequest = {
+        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "parentId == %ld", categoryId))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var albums: NSFetchedResultsController<Album> = {
+        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        albums.delegate = self
+        return albums
+    }()
+    
+    lazy var fetchImagesRequest: NSFetchRequest = {
+        // Sort images by creation date
+        let fetchRequest = Image.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: true)]
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %ld", categoryId))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchBatchSize = AlbumUtilities.numberOfImagesToDownloadPerPage()
+        return fetchRequest
+    }()
+
+    lazy var images: NSFetchedResultsController<Image> = {
+        let images = NSFetchedResultsController(fetchRequest: fetchImagesRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        images.delegate = self
+        return images
+    }()
 
     
     // MARK: - View Lifecycle
@@ -314,9 +408,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         print(String(format: "viewWillAppear    => ID:%ld", categoryId))
 
         // Initialise data source
-        if categoryId != 0 {
-            albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            AlbumUtilities.updateDescriptionOfAlbum(withId: categoryId)
+        do {
+            try albums.performFetch()
+            try images.performFetch()
+        } catch {
+            print("Error: \(error)")
         }
 
         // Set colors, fonts, etc.
@@ -337,21 +433,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                name: .pwgUploadProgress, object: nil)
 
-        // If displaying smart album —> reload images
-        if categoryId < 0 {
-            // Load, sort images and reload collection
-            let oldImageList = albumData?.images ?? []
-            albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
-                // Reset navigation bar buttons after image load
-                updateButtonsInPreviewMode()
-                reloadImagesCollection(from: oldImageList)
-            }, onFailure: { [self] _, error in
-                dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
-            })
-        } else {
-            // Images will be loaded if needed after displaying cells
-            imagesCollection?.reloadData()
+        // Display HUD when loading images for the first time
+        let noRootAlbumData = categoryId == 0 && albums.fetchedObjects?.isEmpty ?? true
+        let nbImages = images.fetchedObjects?.count ?? Int.zero
+        let expectedNbImages = albumData?.nbImages ?? Int64.zero
+        if noRootAlbumData || (nbImages != expectedNbImages) {
+            // Display HUD while downloading album data
+            navigationController?.showPiwigoHUD(
+                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                detail: NSLocalizedString("severalImages", comment: "Photos"),
+                buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
+        
+        // Display albums and images
+        imagesCollection?.reloadData()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -363,64 +458,39 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             view?.window?.windowScene?.title = self.title
         }
 
-        // Stop here if app is reloading album data
-        if AppVars.shared.isReloadingData {
+        // Connected as guest?
+        if NetworkVars.serverPath.isEmpty == false,
+           NetworkVars.username.isEmpty == true {
+            fetchAlbumsAndImages { [self] in
+                fetchCompleted()
+            }
             return
         }
-        
-        // Determine for how long the session was open
-        /// Piwigo 11 session duration defaults to an hour.
+
+        // Determine if the session is active and for how long before fetching
+        let pwgToken = NetworkVars.pwgToken
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        let allAlbums = CategoriesData.sharedInstance().allCategories?.filter({ $0.numberOfImages != NSNotFound})
-        AppVars.shared.nberOfAlbumsInCache = allAlbums?.count ?? 0
-        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == false,
-           ((timeSinceLastLogin < TimeInterval(-1800)) || AppVars.shared.nberOfAlbumsInCache == 0) {
-            // Check if we have album data
-            AppVars.shared.isReloadingData = true
-            if AppVars.shared.nberOfAlbumsInCache == 0 {
-                reloginAndReloadAlbumData {
-                    AppVars.shared.isReloadingData = false
+        LoginUtilities.sessionGetStatus { [self] in
+            print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
+            if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
+                (timeSinceLastLogin < TimeInterval(-1800)) {
+                // Re-login before fetching album and image data
+                reloginAndReloadAlbumData { [self] in
+                    fetchCompleted()
                 }
             } else {
-                // Check if session is active in the background
-                let pwgToken = NetworkVars.pwgToken
-                LoginUtilities.sessionGetStatus { [unowned self] in
-                    if NetworkVars.pwgToken != pwgToken {
-                        reloginAndReloadAlbumData {
-                            AppVars.shared.isReloadingData = false
-                        }
-                    }
-                } failure: { _ in
-                    print("••> Failed to check session status…")
-                    AppVars.shared.isReloadingData = false
-                    // Will re-check later…
+                // Fetch album and image data
+                fetchAlbumsAndImages { [self] in
+                    fetchCompleted()
                 }
             }
-            return
-        }
-        
-        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == true,
-           AppVars.shared.nberOfAlbumsInCache == 0 {
-            // Apparently this is the first time we load album data as Guest
-            /// - Reload album data
-            print("••> Reload album data…")
-            AppVars.shared.isReloadingData = true
-            reloadAlbumData {
-                AppVars.shared.isReloadingData = false
-            }
-            return
-        }
-        
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
+        } failure: { _ in
+            print("••> Failed to check session status…")
+            // Will re-check later…
         }
 
         // Should we highlight the image of interest?
-        if categoryId != 0, (albumData?.images.count ?? 0) > 0,
+        if categoryId != 0, (images.fetchedObjects?.count ?? 0) > 0,
            imageOfInterest.item != 0 {
             // Highlight the cell of interest
             let indexPathsForVisibleItems = imagesCollection?.indexPathsForVisibleItems
@@ -439,19 +509,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
-        if categoryId != 0, (albumData?.images.count ?? 0) > 5,
+        if categoryId != 0, images.fetchedObjects?.count ?? 0 > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
         if categoryId != 0,
-           let albums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-           albums.count > 2, NetworkVars.hasAdminRights,
+           albums.fetchedObjects?.count ?? 0 > 2, NetworkVars.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
-        if categoryId != 0,
-           let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
-           let parents = album.upperCategories, parents.count > 2,
+        if categoryId != 0, albumData?.upperIds.count ?? 0 > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
             displayHelpPagesWithID.append(8) // i.e. back to parent album
         }
@@ -492,6 +559,27 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
     }
 
+    func fetchCompleted() {
+        DispatchQueue.main.async { [self] in
+            // Hide HUD
+            self.navigationController?.hidePiwigoHUD { }
+            // Set navigation bar buttons
+            if isSelect {
+                self.updateButtonsInSelectionMode()
+            } else {
+                self.updateButtonsInPreviewMode()
+            }
+        }
+
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
+        }
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -542,6 +630,28 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
         }
 
+        // Cancel remaining tasks
+        PwgSession.shared.dataSession.getAllTasks { tasks in
+            // Select tasks related with this album if any
+            let tasksToCancel = tasks.filter({ $0.originalRequest?
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                $0.cancel()
+            })
+        }
+        ImageSession.shared.dataSession.getAllTasks { tasks in
+            // Select tasks related with this album if any
+            let tasksToCancel = tasks.filter({ $0.originalRequest?
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                $0.cancel()
+            })
+        }
+
         // Hide upload button during transition
         addButton.isHidden = true
     }
@@ -554,6 +664,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     deinit {
+        // Cancel all block operations
+        for operation in updateOperations {
+            operation.cancel()
+        }
+        updateOperations.removeAll(keepingCapacity: false)
+
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
@@ -567,32 +683,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - Category Data
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        // Re-login and then fetch album and image data
         reloginAndReloadAlbumData { [self] in
             // End refreshing
-            if imagesCollection?.refreshControl != nil {
+            DispatchQueue.main.async { [self] in
                 imagesCollection?.refreshControl?.endRefreshing()
-            }
-        }
-    }
-
-    private func reloadImagesCollection(from oldImages: [PiwigoImageData]) {
-        if oldImages.count != albumData?.images?.count ?? NSNotFound {
-            // List of images has changed
-            imagesCollection?.reloadData()
-            // Cancel selection
-            cancelSelect()
-        }
-        else {
-            // Loop over the visible cells (the number of images did not changed)
-            for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
-                // Only concerns cells of section 1
-                if indexPath.section == 0 { continue }
-
-                // Check that there exists a cell at this indexPath
-                if indexPath.item >= oldImages.count { continue }
-
-                // We should update this cell
-                imagesCollection?.reloadItems(at: [indexPath])
             }
         }
     }
@@ -600,69 +695,69 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     @objc
     func updateSubCategory(withId albumId: Int) {
         // Get index of updated category
-        if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-           let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == albumId}) {
-            // Update cell of corresponding category
-            let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
-            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-                imagesCollection?.reloadItems(at: [indexPath])
-            }
-        }
+//        if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
+//           let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == albumId}) {
+//            // Update cell of corresponding category
+//            let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
+//            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
+//                imagesCollection?.reloadItems(at: [indexPath])
+//            }
+//        }
     }
 
-    @objc
-    func addImage(withId imageId: Int) {
-        // Retrieve images from cache
-        guard let newImages = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList else { return }
-        if let indexOfNewItem = newImages.firstIndex(where: {$0.imageId == imageId}),
-           newImages.count > (albumData?.images.count ?? 0) {
-            // Add image to data source
-            albumData?.images = newImages
-            // Insert corresponding cell
-            let indexPath = IndexPath(item: indexOfNewItem, section: 1)
-            imagesCollection?.insertItems(at: [indexPath])
+//    @objc
+//    func addImage(withId imageId: Int) {
+//        // Retrieve images from cache
+//        guard let newImages = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList else { return }
+//        if let indexOfNewItem = newImages.firstIndex(where: {$0.imageId == imageId}),
+//           newImages.count > (albumData?.images.count ?? 0) {
+//            // Add image to data source
+//            albumData?.images = newImages
+//            // Insert corresponding cell
+//            let indexPath = IndexPath(item: indexOfNewItem, section: 1)
+//            imagesCollection?.insertItems(at: [indexPath])
+//
+//            // Update footer if visible
+//            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
+//                imagesCollection?.reloadSections(IndexSet(integer: 1))
+//            }
+//        }
 
-            // Update footer if visible
-            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-        }
+//        // Display Select button if there was no image in the album
+//        if newImages.count == 1 {
+//            // Display Select button
+//            if isSelect == false {
+//                updateButtonsInPreviewMode()
+//            }
+//        }
+//    }
 
-        // Display Select button if there was no image in the album
-        if newImages.count == 1 {
-            // Display Select button
-            if isSelect == false {
-                updateButtonsInPreviewMode()
-            }
-        }
-    }
-
-    @objc
-    func removeImage(withId imageId: Int) {
-        // Remove image from the selection if needed
-        let imageIdObject = NSNumber(value: imageId)
-        if selectedImageIds.contains(imageIdObject) {
-            selectedImageIds.removeAll { $0 === imageIdObject }
-        }
-
-        // Get index of deleted image
-        if let indexOfExistingItem = albumData?.images.firstIndex(where: {$0.imageId == imageId}) {
-            // Remove image from data source
-            var imageList = albumData?.images
-            imageList?.remove(at: indexOfExistingItem)
-            albumData?.images = imageList
-            // Delete corresponding cell
-            let indexPath = IndexPath(item: indexOfExistingItem, section: 1)
-            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-                imagesCollection?.deleteItems(at: [indexPath])
-            }
-
-            // Update footer if visible
-            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-        }
-    }
+//    @objc
+//    func removeImage(withId imageId: Int) {
+//        // Remove image from the selection if needed
+//        let imageIdObject = NSNumber(value: imageId)
+//        if selectedImageIds.contains(imageIdObject) {
+//            selectedImageIds.removeAll { $0 === imageIdObject }
+//        }
+//
+//        // Get index of deleted image
+//        if let indexOfExistingItem = albumData?.images.firstIndex(where: {$0.imageId == imageId}) {
+//            // Remove image from data source
+//            var imageList = albumData?.images
+//            imageList?.remove(at: indexOfExistingItem)
+//            albumData?.images = imageList
+//            // Delete corresponding cell
+//            let indexPath = IndexPath(item: indexOfExistingItem, section: 1)
+//            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
+//                imagesCollection?.deleteItems(at: [indexPath])
+//            }
+//
+//            // Update footer if visible
+//            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
+//                imagesCollection?.reloadSections(IndexSet(integer: 1))
+//            }
+//        }
+//    }
 
 
     // MARK: - Default Category Management
@@ -718,7 +813,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
                     fatalError("No LocalAlbumsViewController!")
                 }
-                localAlbumsVC.setCategoryId(categoryId)
+                localAlbumsVC.categoryId = categoryId
+                localAlbumsVC.userHasUploadRights = userHasUploadRights
                 let navController = UINavigationController(rootViewController: localAlbumsVC)
                 navController.modalTransitionStyle = .coverVertical
                 navController.modalPresentationStyle = .pageSheet
@@ -733,7 +829,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
                     fatalError("No LocalAlbumsViewController!")
                 }
-                localAlbumsVC.setCategoryId(self.categoryId)
+                localAlbumsVC.categoryId = categoryId
+                localAlbumsVC.userHasUploadRights = userHasUploadRights
                 let navController = UINavigationController(rootViewController: localAlbumsVC)
                 navController.modalTransitionStyle = .coverVertical
                 navController.modalPresentationStyle = .pageSheet
@@ -772,6 +869,23 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - UICollectionView Headers & Footers
+    func getImageCounts() -> (Bool, Int64) {
+        if categoryId == 0 {
+            // Only albums in Root Album => calculate total number of images
+            var total = Int64.zero
+            albums.fetchedObjects?.forEach({ album in
+                total += album.totalNbImages
+            })
+            return (true, total)
+        } else {
+            // Number of images in current album
+            let nber = Int(albumData?.nbImages ?? Int64.zero)
+            let shown = albumData?.images?.count ?? 0
+            let total = albumData?.totalNbImages ?? Int64.zero
+            return (nber >= shown, total)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         switch indexPath.section {
@@ -780,34 +894,19 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                header?.commentLabel?.attributedText = AlbumUtilities.headerLegend(for: categoryId)
+                header?.commentLabel?.attributedText = albumData?.comment ?? NSAttributedString()
                 header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
                 return header!
             }
         case 1 /* Section 1 — Image collection */:
             if kind == UICollectionView.elementKindSectionFooter {
-                // Get number of images
-                var totalImageCount = NSNotFound
-                if categoryId == 0 {
-                    // Only albums in Root Album => total number of images
-                    for albumData in CategoriesData.sharedInstance().getCategoriesForParentCategory(0) {
-                        if totalImageCount == NSNotFound {
-                            totalImageCount = 0
-                        }
-                        totalImageCount += albumData.totalNumberOfImages
-                    }
-                } else {
-                    // Number of images in current album
-                    if let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) {
-                        totalImageCount = albumData.totalNumberOfImages
-                    }
-                }
-
+                // Get number of images and status
                 guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "NberImagesFooterCollection", for: indexPath) as? NberImagesFooterCollectionReusableView else {
                     fatalError("No NberImagesFooterCollectionReusableView!")
                 }
+                let (allShown, total) = getImageCounts()
                 footer.noImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(for: totalImageCount)
+                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(allShown, total)
                 return footer
             }
         default:
@@ -831,18 +930,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Section 0 — Album collection */:
             // Header height?
-            guard let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            guard let desc = albumData?.comment else {
                 return CGSize.zero
             }
-            if let desc = albumData.comment, desc.isEmpty == false,
-               collectionView.frame.size.width - 30.0 > 0 {
-                let description = AlbumUtilities.headerLegend(for: categoryId)
+            if desc.string.isEmpty {
+                return CGSize.zero
+            }
+            if collectionView.frame.size.width - 30.0 > 0 {
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
-                let headerRect = description.boundingRect(
-                    with: CGSize(width: collectionView.frame.size.width - 30.0,
-                                 height: CGFloat.greatestFiniteMagnitude),
-                    options: .usesLineFragmentOrigin, context: context)
+                let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 30.0,
+                                                                height: CGFloat.greatestFiniteMagnitude),
+                                                   options: .usesLineFragmentOrigin, context: context)
                 return CGSize(width: collectionView.frame.size.width - 30.0,
                               height: ceil(headerRect.size.height))
             }
@@ -857,23 +956,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     {
         switch section {
         case 1 /* Section 1 — Image collection */:
-            var footer = ""
-            // Get number of images
-            var totalImageCount = NSNotFound
-            if categoryId == 0 {
-                // Only albums in Root Album => total number of images
-                for albumData in CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId) {
-                    if totalImageCount == NSNotFound {
-                        totalImageCount = 0
-                    }
-                    totalImageCount += albumData.totalNumberOfImages
-                }
-            } else {
-                // Number of images in current album
-                totalImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.totalNumberOfImages ?? 0
-            }
-
-            footer = AlbumUtilities.footerLegend(for: totalImageCount)
+            // Get number of images and status
+            let (allShown, total) = getImageCounts()
+            let footer = AlbumUtilities.footerLegend(allShown, total)
             if footer.count > 0,
                collectionView.frame.size.width - 30.0 > 0 {
                 let attributes = [NSAttributedString.Key.font: UIFont.piwigoFontLight()]
@@ -899,16 +984,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Returns number of images or albums
-        var numberOfItems: Int
         switch section {
         case 0 /* Albums */:
-            numberOfItems = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId)?.count ?? 0
+            let objects = albums.fetchedObjects
+            return objects?.count ?? 0
         
         default /* Images */:
-            numberOfItems = albumData?.images?.count ?? 0
+            let objects = images.fetchedObjects
+            print("••> \(objects?.count ?? 0) images")
+            return objects?.count ?? 0
         }
-        return numberOfItems
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
@@ -932,11 +1017,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                                     right: AlbumUtilities.kAlbumMarginsSpacing)
             }
         default /* Images */:
-            let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             if collectionView.numberOfItems(inSection: section) == 0 {
                 return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
-            } else if albumData?.comment?.count == 0 {
+            } else if albumData?.comment.string.isEmpty ?? true {
                 return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             } else {
@@ -988,18 +1072,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell else {
                 fatalError("No AlbumCollectionViewCell!")
             }
-            cell.categoryDelegate = self
-
-            // Check album data
-            guard let parentAlbums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-                  indexPath.item < parentAlbums.count else {
-                cell.config()
-                return cell
-            }
 
             // Configure cell with album data
-            let albumData = parentAlbums[indexPath.item]
-            cell.config(withAlbumData: albumData)
+            cell.albumData = albums.object(at: indexPath)
+            cell.savingContext = mainContext
+            cell.categoryDelegate = self
 
             // Disable category cells in Image selection mode
             if isSelect {
@@ -1017,19 +1094,21 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 fatalError("No ImageCollectionViewCell!")
             }
 
-            if (self.albumData?.images?.count ?? 0) > indexPath.item {
+            if images.fetchedObjects?.count ?? 0 > indexPath.item {
                 // Remember that user did scroll down to this item
                 didScrollToImageIndex = indexPath.item
 
                 // Create cell from Piwigo data
-                let imageData = self.albumData?.images[indexPath.row] as? PiwigoImageData
-                cell.config(with: imageData, inCategoryId: categoryId)
-                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
+                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+                cell.config(with: images.object(at: imageIndexPath), inCategoryId: categoryId)
+//                let imageData = self.albumData?.images[indexPath.row] as? PiwigoImageData
+//                cell.config(with: imageData, inCategoryId: categoryId)
+//                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
-                }
+//                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+//                    cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
+//                }
 
                 // Add pan gesture recognition
                 let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
@@ -1042,10 +1121,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Load more image data if possible (page after page…)
-            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
-               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
-                self.needToLoadMoreImages()
-            }
+//            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
+//               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
+//                self.needToLoadMoreImages()
+//            }
 
             return cell
         }
@@ -1064,10 +1143,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Avoid rare crashes…
-            if (indexPath.row < 0) || (indexPath.row >= (albumData?.images.count ?? 0)) {
+            if (indexPath.row < 0) || (indexPath.row >= (images.fetchedObjects?.count ?? 0)) {
                 return
             }
-            if albumData?.images?[indexPath.item].imageId == 0 {
+            if images.fetchedObjects?[indexPath.item].pwgID == 0 {
                 return
             }
 
@@ -1085,7 +1164,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
                 imageDetailView?.imageIndex = indexPath.row
                 imageDetailView?.categoryId = categoryId
-                imageDetailView?.images = albumData?.images ?? []
+//                imageDetailView?.images = albumData?.images ?? []
+                imageDetailView?.userHasUploadRights = userHasUploadRights
                 imageDetailView?.hidesBottomBarWhenPushed = true
                 imageDetailView?.imgDetailDelegate = self
                 imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
@@ -1096,7 +1176,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
             } else {
                 // Selection mode active => add/remove image from selection
-                let imageIdObject = NSNumber(value: selectedCell.imageData?.imageId ?? NSNotFound)
+                let imageIdObject = NSNumber(value: selectedCell.imageData?.pwgID ?? Int64.zero)
                 if !selectedImageIds.contains(imageIdObject) {
                     selectedImageIds.append(imageIdObject)
                     selectedCell.isSelection = true
@@ -1115,26 +1195,26 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     // MARK: - ImageDetailDelegate Methods
     func didSelectImage(withId imageId: Int) {
         // Determine index of image
-        guard let indexOfImage = albumData?.images.firstIndex(where: {$0.imageId == imageId}) else { return }
-
-        // Scroll view to center image
-        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
-            let indexPath = IndexPath(item: indexOfImage, section: 1)
-            imageOfInterest = indexPath
-            imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-        }
+//        guard let indexOfImage = albumData?.images.firstIndex(where: {$0.imageId == imageId}) else { return }
+//
+//        // Scroll view to center image
+//        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
+//            let indexPath = IndexPath(item: indexOfImage, section: 1)
+//            imageOfInterest = indexPath
+//            imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+//        }
     }
 
     func didUpdateImage(withData imageData: PiwigoImageData) {
         // Update data source
-        let indexOfImage = albumData?.updateImage(imageData) ?? 0
-        if indexOfImage == NSNotFound { return }
-
-        // Refresh image banner
-        let indexPath = IndexPath(item: indexOfImage, section: 1)
-        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-            imagesCollection?.reloadItems(at: [indexPath])
-        }
+//        let indexOfImage = albumData?.updateImage(imageData) ?? 0
+//        if indexOfImage == NSNotFound { return }
+//
+//        // Refresh image banner
+//        let indexPath = IndexPath(item: indexOfImage, section: 1)
+//        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
+//            imagesCollection?.reloadItems(at: [indexPath])
+//        }
     }
 
     func needToLoadMoreImages() {
@@ -1148,101 +1228,101 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let downloadedImageCount = currentAlbumData.imageList.count
 
         // Load more images
-        DispatchQueue.global(qos: .default).async { [self] in
-            let start = CFAbsoluteTimeGetCurrent()
-            self.albumData?.loadMoreImages(onCompletion: { [self] done in
-                // Did we try to collect more images?
-                if !done {
-                    debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... nothing done")
-                    return
-                }
-
-                // Should we retry loading more images?
-                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
-                let didProgress = (newDownloadedImageCount > downloadedImageCount)
-                if !didProgress {
-                    // Did try loading more images but unsuccessfully
-                    debugPrint("••••••>> needToLoadMoreImagesfor catID \(self.categoryId)... unsuccessful!")
-                    if self.didScrollToImageIndex >= newDownloadedImageCount {
-                        // Re-login before continuing to load images
-                        LoginUtilities.reloginAndRetry() { [self] in
-                            DispatchQueue.main.async { [self] in
-                                self.needToLoadMoreImages()
-                            }
-                        } failure: { [self] error in
-                            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                            self.dismissPiwigoError(withTitle: title, completion: {})
-                        }
-                    } else {
-                        return
-                    }
-                }
-
-                // Prepare indexPaths of cells to reload
-                var indexPaths: [IndexPath] = []
-                for i in downloadedImageCount..<newDownloadedImageCount {
-                    indexPaths.append(IndexPath(item: i, section: 1))
-                }
-
-                // Back to main thread…
-                DispatchQueue.main.async { [self] in
-                    // Update detail view if needed
-                    if let imageDetailView = self.imageDetailView {
-                        imageDetailView.images = self.albumData?.images ?? []
-                    }
-
-                    // Add indexPaths of cell presented with placeholder
-                    let placeHolderImage = UIImage(named: "placeholderImage")
-                    for indexPath in self.imagesCollection?.indexPathsForVisibleItems ?? [] {
-                        if indexPath.section == 0 { continue }
-                        if indexPaths.contains(indexPath) { continue }
-                        let cell = self.imagesCollection?.cellForItem(at: indexPath)
-                        if let imageCell = cell as? ImageCollectionViewCell,
-                           imageCell.cellImage.image == placeHolderImage {
-                            indexPaths.append(indexPath)
-                        }
-                    }
-
-                    // Reload cells
-                    self.imagesCollection?.reloadItems(at: indexPaths)
-
-                    // Display HUD if it will take more than a second to load image data
-                    let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
-                    let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
-                    let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
-                    print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
-                    if left > 1000.0, didProgress {
-                        if view.viewWithTag(loadingViewTag) == nil {
-                            self.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), inMode: .annularDeterminate)
-                        } else {
-                            let fraction = Float(newDownloadedImageCount) / Float(didScrollToImageIndex)
-                            self.updatePiwigoHUD(withProgress: fraction)
-                        }
-                    } else {
-                        self.hidePiwigoHUD() { }
-                    }
-                    
-                    // Should we continue loading images?
-                    print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if self.didScrollToImageIndex >= newDownloadedImageCount {
-                        if didProgress {
-                            // Continue loadding images
-                            self.needToLoadMoreImages()
-                        } else {
-                            // Re-login before continuing to load images
-                            LoginUtilities.reloginAndRetry() { [unowned self] in
-                                DispatchQueue.main.async { [unowned self] in
-                                    self.needToLoadMoreImages()
-                                }
-                            } failure: { [unowned self] error in
-                                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                                self.dismissPiwigoError(withTitle: title, completion: {})
-                            }
-                        }
-                    }
-                }
-            }, onFailure: nil)
-        }
+//        DispatchQueue.global(qos: .default).async { [self] in
+//            let start = CFAbsoluteTimeGetCurrent()
+//            self.albumData?.loadMoreImages(onCompletion: { [self] done in
+//                // Did we try to collect more images?
+//                if !done {
+//                    debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... nothing done")
+//                    return
+//                }
+//
+//                // Should we retry loading more images?
+//                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
+//                let didProgress = (newDownloadedImageCount > downloadedImageCount)
+//                if !didProgress {
+//                    // Did try loading more images but unsuccessfully
+//                    debugPrint("••••••>> needToLoadMoreImagesfor catID \(self.categoryId)... unsuccessful!")
+//                    if self.didScrollToImageIndex >= newDownloadedImageCount {
+//                        // Re-login before continuing to load images
+//                        LoginUtilities.reloginAndRetry() { [self] in
+//                            DispatchQueue.main.async { [self] in
+//                                self.needToLoadMoreImages()
+//                            }
+//                        } failure: { [self] error in
+//                            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+//                            self.dismissPiwigoError(withTitle: title, completion: {})
+//                        }
+//                    } else {
+//                        return
+//                    }
+//                }
+//
+//                // Prepare indexPaths of cells to reload
+//                var indexPaths: [IndexPath] = []
+//                for i in downloadedImageCount..<newDownloadedImageCount {
+//                    indexPaths.append(IndexPath(item: i, section: 1))
+//                }
+//
+//                // Back to main thread…
+//                DispatchQueue.main.async { [self] in
+//                    // Update detail view if needed
+//                    if let imageDetailView = self.imageDetailView {
+//                        imageDetailView.images = self.albumData?.images ?? []
+//                    }
+//
+//                    // Add indexPaths of cell presented with placeholder
+//                    let placeHolderImage = UIImage(named: "placeholderImage")
+//                    for indexPath in self.imagesCollection?.indexPathsForVisibleItems ?? [] {
+//                        if indexPath.section == 0 { continue }
+//                        if indexPaths.contains(indexPath) { continue }
+//                        let cell = self.imagesCollection?.cellForItem(at: indexPath)
+//                        if let imageCell = cell as? ImageCollectionViewCell,
+//                           imageCell.cellImage.image == placeHolderImage {
+//                            indexPaths.append(indexPath)
+//                        }
+//                    }
+//
+//                    // Reload cells
+//                    self.imagesCollection?.reloadItems(at: indexPaths)
+//
+//                    // Display HUD if it will take more than a second to load image data
+//                    let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
+//                    let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
+//                    let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
+//                    print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
+//                    if left > 1000.0, didProgress {
+//                        if view.viewWithTag(loadingViewTag) == nil {
+//                            self.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), inMode: .annularDeterminate)
+//                        } else {
+//                            let fraction = Float(newDownloadedImageCount) / Float(didScrollToImageIndex)
+//                            self.updatePiwigoHUD(withProgress: fraction)
+//                        }
+//                    } else {
+//                        self.hidePiwigoHUD() { }
+//                    }
+//
+//                    // Should we continue loading images?
+//                    print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
+//                    if self.didScrollToImageIndex >= newDownloadedImageCount {
+//                        if didProgress {
+//                            // Continue loadding images
+//                            self.needToLoadMoreImages()
+//                        } else {
+//                            // Re-login before continuing to load images
+//                            LoginUtilities.reloginAndRetry() { [unowned self] in
+//                                DispatchQueue.main.async { [unowned self] in
+//                                    self.needToLoadMoreImages()
+//                                }
+//                            } failure: { [unowned self] error in
+//                                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+//                                self.dismissPiwigoError(withTitle: title, completion: {})
+//                            }
+//                        }
+//                    }
+//                }
+//            }, onFailure: nil)
+//        }
     }
 
     // MARK: - SelectCategoryDelegate Methods
@@ -1270,7 +1350,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Initialise data source
-        albumData = AlbumData(categoryId: categoryId, andQuery: "")
+//        albumData = AlbumData(categoryId: categoryId, andQuery: "")
 
         // Reset buttons and menus
         updateButtonsInPreviewMode()
@@ -1289,7 +1369,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     @objc
     func removeCategory(_ albumCell: AlbumCollectionViewCell?) {
         // Update data source
-        albumData = AlbumData(categoryId: categoryId, andQuery: "")
+//        albumData = AlbumData(categoryId: categoryId, andQuery: "")
 
         // Remove cell
         var indexPath: IndexPath? = nil
@@ -1302,7 +1382,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
             if indexPath.section == 1 { return }
             if let cell = imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
-               cell.albumData?.albumId == albumCell?.albumData?.parentAlbumId {
+               cell.albumData?.pwgID == albumCell?.albumData?.parentId {
                 imagesCollection?.reloadItems(at: [indexPath])
             }
         }
@@ -1409,5 +1489,69 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+extension AlbumViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        updateOperations.removeAll(keepingCapacity: false)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        if let album = anObject as? Album, album.pwgID == categoryId { return }
+        switch type {
+        case .insert:
+            guard var newIndexPath = newIndexPath else { return }
+            if anObject is Image { newIndexPath.section = 1 }
+            updateOperations.append( BlockOperation { [weak self] in
+                print("••> Insert imagesCollection item at \(newIndexPath)")
+                self?.imagesCollection?.insertItems(at: [newIndexPath])
+            })
+        case .update:
+            guard var indexPath = indexPath else { return }
+            if anObject is Image { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Update imagesCollection item at \(indexPath)")
+                self?.imagesCollection?.reloadItems(at: [indexPath])
+            })
+        case .move:
+            guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
+            if anObject is Image {
+                indexPath.section = 1
+                newIndexPath.section = 1
+            }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Move imagesCollection item from \(indexPath) to \(newIndexPath)")
+                self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
+            })
+        case .delete:
+            guard var indexPath = indexPath else { return }
+            if anObject is Image { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Delete imagesCollection item at \(indexPath)")
+                self?.imagesCollection?.deleteItems(at: [indexPath])
+            })
+        @unknown default:
+            fatalError("AlbumViewController: unknown NSFetchedResultsChangeType")
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Do not update items if the album is not presented.
+        if view.window == nil { return }
+        
+        // Any update to perform?
+        if updateOperations.isEmpty || view.window == nil { return }
+
+        // Perform all updates
+        imagesCollection?.performBatchUpdates({ () -> Void  in
+            for operation: BlockOperation in self.updateOperations {
+                operation.start()
+            }
+        })
     }
 }

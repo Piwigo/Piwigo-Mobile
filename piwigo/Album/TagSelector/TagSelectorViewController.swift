@@ -35,7 +35,12 @@ class TagSelectorViewController: UITableViewController {
         return provider
     }()
     
-    
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider()
+        return provider
+    }()
+
+
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
@@ -200,12 +205,13 @@ class TagSelectorViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         // Determine selected tag before deactivating search bar
-        var catID = NSNotFound
-        if tags.fetchedObjects?.count ?? 0 > indexPath.row {
-            let tag = tags.object(at: indexPath)
-            catID = getCategory(withTagId: tag.tagId, tagName: tag.tagName)
+        let tag = tags.object(at: indexPath)
+        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+        
+        // Check that an album of tagged images exists in cache (create it if necessary)
+        guard let _ = albumProvider.getAlbum(inContext: mainContext, withId: catID) else {
+            return
         }
-        if catID == NSNotFound { return }
         
         // Deactivate search bar
         searchController.isActive = false
@@ -213,21 +219,9 @@ class TagSelectorViewController: UITableViewController {
         // Dismiss tag select
         dismiss(animated: true) { [self] in
             // Push tagged images view with AlbumViewController
-            let taggedImagesVC = AlbumViewController(albumId: catID)
+            let taggedImagesVC = AlbumViewController(albumId: Int(catID))
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
         }
-    }
-    
-    private func getCategory(withTagId tagId:Int32, tagName:String) -> Int {
-        // Calc category ID
-        let categoryId = kPiwigoTagsCategoryId - Int(tagId)
-        
-        // Create category in cache if necessary
-        if CategoriesData.sharedInstance().getCategoryById(categoryId) == nil,
-           let album = PiwigoAlbumData(id: categoryId, andQuery: tagName) {
-            CategoriesData.sharedInstance().updateCategories([album])
-        }
-        return categoryId
     }
 }
 

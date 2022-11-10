@@ -52,28 +52,29 @@ public class NetworkUtilities: NSObject {
     
     // MARK: - Clean URLs of Images
     public class
-    func encodedImageURL(_ originalURL:String?) -> String? {
+    func encodedImageURL(_ originalURL:String?) -> NSURL? {
         // Return nil if originalURL is nil and a placeholder will be used
         guard let okURL = originalURL else { return nil }
         
         // TEMPORARY PATCH for case where $conf['original_url_protection'] = 'images';
         /// See https://github.com/Piwigo/Piwigo-Mobile/issues/503
-        var serverURL: NSURL? = NSURL(string: okURL.replacingOccurrences(of: "&amp;part=", with: "&part="))
+        let patchedURL = okURL.replacingOccurrences(of: "&amp;part=", with: "&part=")
+        var serverURL: NSURL? = NSURL(string: patchedURL)
         
         // Servers may return incorrect URLs
         // See https://tools.ietf.org/html/rfc3986#section-2
         if serverURL == nil {
             // URL not RFC compliant!
-            var leftURL = okURL
+            var leftURL = patchedURL
 
             // Remove protocol header
-            if okURL.hasPrefix("http://") { leftURL.removeFirst(7) }
-            if okURL.hasPrefix("https://") { leftURL.removeFirst(8) }
+            if patchedURL.hasPrefix("http://") { leftURL.removeFirst(7) }
+            if patchedURL.hasPrefix("https://") { leftURL.removeFirst(8) }
             
             // Retrieve authority
             guard let endAuthority = leftURL.firstIndex(of: "/") else {
                 // No path, incomplete URL —> return image.jpg but should never happen
-                return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                return nil
             }
             let authority = String(leftURL.prefix(upTo: endAuthority))
             leftURL.removeFirst(authority.count)
@@ -91,12 +92,12 @@ public class NetworkUtilities: NSObject {
                 let query = (String(leftURL.prefix(upTo: endQuery)) + "?").replacingOccurrences(of: "??", with: "?")
                 guard let newQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                     // Could not apply percent encoding —> return image.jpg but should never happen
-                    return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                    return nil
                 }
                 leftURL.removeFirst(query.count)
                 guard let newPath = leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
                     // Could not apply percent encoding —> return image.jpg but should never happen
-                    return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                    return nil
                 }
                 serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(newQuery)\(newPath)")
             } else {
@@ -107,15 +108,15 @@ public class NetworkUtilities: NSObject {
             
             // Last check
             if serverURL == nil {
-                // Could not apply percent encoding —> return image.jpg but should never happen
-                return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                // Could not apply percent encoding —> return nil
+                return nil
             }
         }
         
         // Servers may return image URLs different from those used to login (e.g. wrong server settings)
         // We only keep the path+query because we only accept to download images from the same server.
         guard var cleanPath = serverURL?.path else {
-            return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+            return nil
         }
         if let paramStr = serverURL?.parameterString {
             cleanPath.append(paramStr)
@@ -157,7 +158,7 @@ public class NetworkUtilities: NSObject {
             print("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
         }
         #endif
-        return encodedImageURL;
+        return NSURL(string: encodedImageURL)
     }
 }
 

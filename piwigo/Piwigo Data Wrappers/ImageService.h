@@ -8,16 +8,16 @@
 
 #import "NetworkHandler.h"
 
-FOUNDATION_EXPORT NSString * const kGetImageOrderId;
-FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
-FOUNDATION_EXPORT NSString * const kGetImageOrderName;
-FOUNDATION_EXPORT NSString * const kGetImageOrderVisits;
-FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
-FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
-FOUNDATION_EXPORT NSString * const kGetImageOrderDatePosted;
-FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
-FOUNDATION_EXPORT NSString * const kGetImageOrderAscending;
-FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderId;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderFileName;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderName;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderVisits;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderRating;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderDateCreated;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderDatePosted;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderRandom;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderAscending;
+//FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 
 @class PiwigoImageData;
 

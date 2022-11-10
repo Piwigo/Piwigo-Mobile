@@ -10,7 +10,7 @@ import CoreData
 
 public class ServerProvider: NSObject {
     
-    // MARK: - Get/Set Server Object
+    // MARK: - Get/Create Server Object
     /**
      Returns the Server object at path.
      Will create the Server object if it does not exist before returning it.
@@ -24,11 +24,12 @@ public class ServerProvider: NSObject {
         taskContext.performAndWait {
             // Create a fetch request for the Server entity
             let fetchRequest = Server.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "path", ascending: true,
-                                            selector: #selector(NSString.caseInsensitiveCompare(_:)))]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Server.path), ascending: true,
+                                            selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
 
             // Look for the server located at the provided path
             fetchRequest.predicate = NSPredicate(format: "path == %@", path)
+            fetchRequest.fetchBatchSize = 1
 
             // Create a fetched results controller and set its fetch request and context.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -42,8 +43,9 @@ public class ServerProvider: NSObject {
             }
 
             // Did we find a Server instance?
-            let cachedServer: [Server] = controller.fetchedObjects ?? []
-            if cachedServer.isEmpty {
+            if let cachedServer: Server = controller.fetchedObjects?.first {
+                currentServer = cachedServer
+            } else {
                 // Create a Server object on the current queue context.
                 guard let server = NSEntityDescription.insertNewObject(forEntityName: "Server",
                                                                        into: taskContext) as? Server else {
@@ -70,17 +72,16 @@ public class ServerProvider: NSObject {
                 if taskContext.hasChanges {
                     do {
                         try taskContext.save()
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
+                        if Thread.isMainThread == false {
+                            DispatchQueue.main.async {
+                                DataController.shared.saveMainContext()
+                            }
                         }
                     }
                     catch {
                         print("Error: \(error)\nCould not save Core Data context.")
-                        return
                     }
                 }
-            } else {
-                currentServer = cachedServer.first
             }
         }
         

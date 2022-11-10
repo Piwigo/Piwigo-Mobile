@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import piwigoKit
 
 extension AlbumViewController
 {
@@ -89,15 +89,14 @@ extension AlbumViewController
         // Create album
         AlbumUtilities.create(withName: albumName, description: albumComment,
                               status: "public", inParentWithId: parentId) { [self] newCatId in
-            // Get index of added category
-            if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-               let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == newCatId}) {
-                // Insert cell of new category
-                DispatchQueue.main.async { [self] in
-                    let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
-                    imagesCollection?.insertItems(at: [indexPath])
-                }
-            }
+            // Album successfully created ▶ Add new album to cache
+            albumData?.nbSubAlbums += 1
+            let newCat = CategoryData(withId: Int32(newCatId),
+                                      albumName: albumName, albumComment: albumComment,
+                                      parentId: String(parentId),
+                                      parentIds: albumData?.upperIds ?? "" + "," + String(parentId),
+                                      nberImages: Int64.zero, totalNberImages: Int64.zero)
+            try? self.albumProvider.importAlbums([newCat], inParent: Int32(parentId), delete: false)
             
             // Hide HUD
             updatePiwigoHUDwithSuccess() { [self] in

@@ -22,7 +22,7 @@ extension UserError: LocalizedError {
                                      comment: "Will discard a user account missing a valid username.")
         case .unknownUserStatus:
             return NSLocalizedString("CoreDataFetch_UserUnknownStatus",
-                                     comment: "Will discard a user account missing a valid user status.")
+                                     comment: "Failed to get Community extension parameters.\nTry logging in again.")
         case .creationError:
             return NSLocalizedString("CoreData_UserCreateFailed",
                                      comment: "Failed to create a new User object.")

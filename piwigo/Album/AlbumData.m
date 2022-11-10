@@ -28,7 +28,7 @@
 	{
         self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
-		self.sortType = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
+		self.sortType = (kPiwigoSortObjc)2;
                 
         // Create empty album in cache if necessary
         if ([[CategoriesData sharedInstance] getCategoryById:categoryId] == nil) {
@@ -121,7 +121,7 @@
 	}
     
     // Set sort string parameter from sort type
-    NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:self.sortType];
+    NSString *sortDesc = @"date_creation asc";
 	
     // Load more category image data
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]

@@ -127,19 +127,18 @@ class LoginUtilities: NSObject {
                     return
                 }
                 
-                // No status returned?
-                if statusJSON.realUser.isEmpty {
-                    failure(JsonError.unknownStatus as NSError)
+                // Update user's status
+                guard statusJSON.realUser.isEmpty == false,
+                      let userStatus = pwgUserStatus(rawValue: statusJSON.realUser) else {
+                    failure(UserError.unknownUserStatus as NSError)
                     return
                 }
-
-                // Update user's status
-                NetworkVars.userStatus = statusJSON.realUser
+                NetworkVars.userStatus = userStatus
                 completion()
             }
             catch {
                 // Data cannot be digested
-                NetworkVars.userStatus = pwgUserStatus.guest.rawValue
+                NetworkVars.userStatus = pwgUserStatus.guest
                 let error = error as NSError
                 failure(error)
             }
@@ -202,7 +201,7 @@ class LoginUtilities: NSObject {
 
                 // Community users cannot upload with uploadAsync with Piwigo 11.x
                 if NetworkVars.usesCommunityPluginV29,
-                   NetworkVars.userStatus == pwgUserStatus.normal.rawValue,
+                   NetworkVars.userStatus == pwgUserStatus.normal,
                    "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
                    "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
                     NetworkVars.usesUploadAsync = false
@@ -264,14 +263,15 @@ class LoginUtilities: NSObject {
                 UploadVars.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
                 
                 // User rights are determined by Community extension (if installed)
-                let userStatus = data.userStatus ?? pwgUserStatus.guest.rawValue
-                guard !NetworkVars.usesCommunityPluginV29,
-                      let status = pwgUserStatus(rawValue: userStatus),
-                      pwgUserStatus.allValues.contains(status) else {
+                if let status = data.userStatus, status.isEmpty == false,
+                   let userStatus = pwgUserStatus(rawValue: status) {
+                    if NetworkVars.usesCommunityPluginV29 == false {
+                        NetworkVars.userStatus = userStatus
+                    }
+                } else {
                     failure(UserError.unknownUserStatus as NSError)
                     return
                 }
-                NetworkVars.userStatus = userStatus
 
                 // Retrieve the list of available sizes
                 AlbumVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false

@@ -8,8 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Model.h"
+//#import "Model.h"
 #import "PiwigoTagData.h"
+
+typedef enum {
+    kPiwigoPrivacyObjcEverybody = 0,
+    kPiwigoPrivacyObjcAdminsFamilyFriendsContacts = 1,
+    kPiwigoPrivacyObjcAdminsFamilyFriends = 2,
+    kPiwigoPrivacyObjcAdminsFamily = 4,
+    kPiwigoPrivacyObjcAdmins = 8,
+    kPiwigoPrivacyObjcCount = 5,
+    kPiwigoPrivacyObjcUnknown = -1
+} kPiwigoPrivacyObjc;
+
+#define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
 
 typedef enum NSInteger {
     kPiwigoImageSizeSquare,

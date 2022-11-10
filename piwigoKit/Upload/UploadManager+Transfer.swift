@@ -314,7 +314,7 @@ extension UploadManager {
             }
 
             // Add image to cache when uploaded by admin users
-            if pwgUserStatus(rawValue: NetworkVars.userStatus) == .admin {
+            if NetworkVars.hasAdminRights {
                 // Get Upload properties
                 var userInfo = [String : Any](minimumCapacity: 12)
                 userInfo["datePosted"]      = Date()
@@ -705,8 +705,8 @@ extension UploadManager {
             UploadSessions.shared.removeCounter(withID: identifier)
 
             // Collect image data
-            if let getInfos = uploadJSON.data, let imageId = getInfos.imageId,
-               imageId != NSNotFound {
+            if let getInfos = uploadJSON.data, let imageId = getInfos.id,
+               imageId != Int64.zero {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
@@ -720,8 +720,8 @@ extension UploadManager {
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
                 // Get data returned by the server
-                uploadProperties.imageId    = imageId
-                uploadProperties.imageTitle = NetworkUtilities.utf8mb4String(from: getInfos.imageTitle ?? "")
+                uploadProperties.imageId    = Int(imageId)
+                uploadProperties.imageTitle = NetworkUtilities.utf8mb4String(from: getInfos.title ?? "")
                 uploadProperties.author     = NetworkUtilities.utf8mb4String(from: getInfos.author ?? "NSNotFound")
                 if let privacyLevelStr = getInfos.privacyLevel {
                     let privacyLevelRaw = Int16(privacyLevelStr) ?? kPiwigoPrivacy.unknown.rawValue
@@ -734,7 +734,7 @@ extension UploadManager {
                 }
                 
                 // Add uploaded image to cache and update UI if needed
-                if pwgUserStatus(rawValue: NetworkVars.userStatus) == .admin {
+                if NetworkVars.hasAdminRights {
                     var userInfo = [String : Any](minimumCapacity: 1)
                     userInfo["isVideo"]         = uploadProperties.isVideo
                     userInfo["categoryId"]      = uploadProperties.category

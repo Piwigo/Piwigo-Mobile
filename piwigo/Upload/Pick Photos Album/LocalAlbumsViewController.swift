@@ -14,31 +14,18 @@ import PhotosUI
 import UIKit
 import piwigoKit
 
-@objc
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
     func didSelectPhotoAlbum(withId: String)
 }
 
-@objc
 class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsProviderDelegate {
 
-    @objc weak var delegate: LocalAlbumsSelectorDelegate?
+    weak var delegate: LocalAlbumsSelectorDelegate?
 
     @IBOutlet var localAlbumsTableView: UITableView!
     
-    @objc
-    func setCategoryId(_ categoryId: Int) {
-        _categoryId = categoryId
-    }
-    private var _categoryId: Int?
-    private var categoryId: Int {
-        get {
-            return _categoryId ?? 0
-        }
-        set(categoryId) {
-            _categoryId = categoryId
-        }
-    }
+    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var userHasUploadRights: Bool = false
 
     // Actions to perform after selection
     private enum kPiwigoCategorySelectAction : Int {
@@ -555,7 +542,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         case .pasteboard:
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
             guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
-            localImagesVC.setCategoryId(categoryId)
+            localImagesVC.categoryId = categoryId
+            localImagesVC.userHasUploadRights = userHasUploadRights
             navigationController?.pushViewController(localImagesVC, animated: true)
             return
         case .localAlbums:
@@ -597,8 +585,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // Presents local images of the selected album
             let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
             guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
-            localImagesVC.setCategoryId(categoryId)
-            localImagesVC.setImageCollectionId(albumID)
+            localImagesVC.categoryId = categoryId
+            localImagesVC.imageCollectionId = albumID
+            localImagesVC.userHasUploadRights = userHasUploadRights
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }

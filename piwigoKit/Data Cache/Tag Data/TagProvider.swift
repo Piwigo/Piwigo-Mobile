@@ -216,8 +216,10 @@ public class TagProvider: NSObject {
             if bckgContext.hasChanges {
                 do {
                     try bckgContext.save()
-                    DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
+                    if Thread.isMainThread == false {
+                        DispatchQueue.main.async {
+                            DataController.shared.saveMainContext()
+                        }
                     }
                 }
                 catch {

@@ -8,24 +8,34 @@
 
 import CoreData
 
-public enum pwgUserStatus: String {
+public enum pwgUserStatus: String, CaseIterable {
     case guest, generic, normal, admin, webmaster
-    public static let allValues = [guest, generic, normal, admin, webmaster]
 }
 
 public class UserProvider: NSObject {
+    
+    // MARK: - Core Data Object Contexts
+    //    private lazy var mainContext: NSManagedObjectContext = {
+    //        let context:NSManagedObjectContext = DataController.shared.mainContext
+    //        return context
+    //    }()
+    
+    private lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        return context
+    }()
+    
     
     // MARK: - Core Data Providers
     private lazy var serverProvider: ServerProvider = {
         let provider : ServerProvider = ServerProvider()
         return provider
     }()
-
-
-    // MARK: - Get/Set User Account Object
+    
+    
+    // MARK: - Get/Create User Account Object
     /**
      Returns a User Account instance
-     
      - Will create a Server object if it does not already exist.
      - Will create a User Account object if it does not already exist.
      */
@@ -40,28 +50,30 @@ public class UserProvider: NSObject {
             // Create a fetch request for the User entity
             let fetchRequest = User.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
-                                            selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-
+                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+            
             // Look for a user account of the server at path
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "username == %@", username))
             andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.fetchBatchSize = 1
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
+                                                        managedObjectContext: taskContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
             // Perform the fetch.
             do {
                 try controller.performFetch()
             } catch {
                 fatalError("Unresolved error \(error)")
             }
-
+            
             // Did we find a User instance?
-            let cachedUser: [User] = controller.fetchedObjects ?? []
-            if cachedUser.isEmpty {
+            if let cachedUser: User = controller.fetchedObjects?.first {
+                currentUser = cachedUser
+            } else {
                 // Get the Server managed object on the current queue context.
                 // Create a User managed object on the current queue context.
                 guard let server = serverProvider.getServer(inContext: taskContext, atPath: path),
@@ -80,13 +92,15 @@ public class UserProvider: NSObject {
                     print(error.localizedDescription)
                     taskContext.delete(user)
                 }
-
+                
                 // Save all insertions from the context to the store.
                 if taskContext.hasChanges {
                     do {
                         try taskContext.save()
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
+                        if Thread.isMainThread == false {
+                            DispatchQueue.main.async {
+                                DataController.shared.saveMainContext()
+                            }
                         }
                     }
                     catch {
@@ -94,11 +108,20 @@ public class UserProvider: NSObject {
                         return
                     }
                 }
-            } else {
-                currentUser = cachedUser.first
             }
         }
         
         return currentUser
+    }
+    
+    public func setLastUsedDate() {
+        let user = getUserAccount(inContext: bckgContext)
+        let lastUsedNow = Date()
+        user?.lastUsed = lastUsedNow
+        user?.server?.lastUsed = lastUsedNow
+        try? bckgContext.save()
+        DispatchQueue.main.async {
+            DataController.shared.saveMainContext()
+        }
     }
 }

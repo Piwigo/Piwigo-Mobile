@@ -34,7 +34,7 @@ extension AlbumViewController
         }
         editImageVC.images = selectedImageData
         let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-        editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && albumData?.hasUploadRights ?? false)
+        editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC)
     }
@@ -61,14 +61,14 @@ extension AlbumViewController: EditImageParamsDelegate
         }
 
         // Update data source
-        let indexOfUpdatedImage = albumData?.updateImage(params) ?? NSNotFound
-        if indexOfUpdatedImage == NSNotFound { return }
+//        let indexOfUpdatedImage = albumData?.updateImage(params) ?? NSNotFound
+//        if indexOfUpdatedImage == NSNotFound { return }
 
         // Refresh image cell
-        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 1)
-        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-            imagesCollection?.reloadItems(at: [indexPath])
-        }
+//        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 1)
+//        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
+//            imagesCollection?.reloadItems(at: [indexPath])
+//        }
     }
 
     @objc func didFinishEditingParameters() {

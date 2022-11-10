@@ -12,16 +12,16 @@
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
 
-NSString * const kGetImageOrderId = @"id";
-NSString * const kGetImageOrderFileName = @"file";
-NSString * const kGetImageOrderName = @"name";
-NSString * const kGetImageOrderVisits = @"hit";
-NSString * const kGetImageOrderRating = @"rating_score";
-NSString * const kGetImageOrderDateCreated = @"date_creation";
-NSString * const kGetImageOrderDatePosted = @"date_available";
-NSString * const kGetImageOrderRandom = @"random";
-NSString * const kGetImageOrderAscending = @"asc";
-NSString * const kGetImageOrderDescending = @"desc";
+//NSString * const kGetImageOrderId = @"id";
+//NSString * const kGetImageOrderFileName = @"file";
+//NSString * const kGetImageOrderName = @"name";
+//NSString * const kGetImageOrderVisits = @"hit";
+//NSString * const kGetImageOrderRating = @"rating_score";
+//NSString * const kGetImageOrderDateCreated = @"date_creation";
+//NSString * const kGetImageOrderDatePosted = @"date_available";
+//NSString * const kGetImageOrderRandom = @"random";
+//NSString * const kGetImageOrderAscending = @"asc";
+//NSString * const kGetImageOrderDescending = @"desc";
 
 #ifndef DEBUG_LOAD
 #define DEBUG_LOAD
@@ -53,7 +53,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  };
 
     // Send request
-    return [self post:kPiwigoCategoriesGetImages
+    return [self post:pwgCategoriesGetImages
 		URLParameters:nil
            parameters:parameters
        sessionManager:NetworkVarsObjc.sessionManager
@@ -71,7 +71,7 @@ NSString * const kGetImageOrderDescending = @"desc";
           {
               // Display Piwigo error
               NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                    path:kPiwigoCategoriesGetImages andURLparams:nil];
+                                    path:pwgCategoriesGetImages andURLparams:nil];
               if(completion) {
                   [NetworkHandler showPiwigoError:error withCompletion:^{
                       completion(task, nil);
@@ -232,7 +232,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Send request
-    return [self post:kPiwigoCategoriesGetImages
+    return [self post:pwgCategoriesGetImages
         URLParameters:nil
            parameters:parameters
        sessionManager:NetworkVarsObjc.sessionManager
@@ -255,7 +255,7 @@ NSString * const kGetImageOrderDescending = @"desc";
           {
               // Display Piwigo error
               NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                    path:kPiwigoCategoriesGetImages andURLparams:nil];
+                                    path:pwgCategoriesGetImages andURLparams:nil];
               if(completion) {
                   [NetworkHandler showPiwigoError:error withCompletion:^{
                       completion(task, nil);

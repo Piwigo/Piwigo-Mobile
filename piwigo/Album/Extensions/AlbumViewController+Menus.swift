@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 @available(iOS 14.0, *)
 extension AlbumViewController
@@ -98,14 +99,21 @@ extension AlbumViewController
         let action = UIAction(title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
+            // Check that an album of favorites exists in cache (create it if necessary)
+            guard let _ = albumProvider.getAlbum(inContext: mainContext,
+                                                 withId: pwgSmartAlbum.favorites.rawValue) else {
+                return
+            }
+
             // Present favorite images
-            let favoritesVC = AlbumViewController(albumId: kPiwigoFavoritesCategoryId)
+            let favoritesVC = AlbumViewController(albumId: Int(pwgSmartAlbum.favorites.rawValue))
             navigationController?.pushViewController(favoritesVC, animated: true)
         })
         return action
     }
 
     private func taggedAction() -> UIAction {
+        // Create action
         let actionId = UIAction.Identifier("Tagged")
         let action = UIAction(title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
                               image: UIImage(systemName: "tag"),
@@ -122,7 +130,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "person.3.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present most visited images
-            discoverImages(inCategoryId: kPiwigoVisitsCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.visits.rawValue)
         })
         return action
     }
@@ -133,7 +141,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "star.leadinghalf.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present best rated images
-            discoverImages(inCategoryId: kPiwigoBestCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.best.rawValue)
         })
         return action
     }
@@ -144,7 +152,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "clock"),
                               identifier: actionId, handler: { [self] action in
             // Present recent images
-            discoverImages(inCategoryId: kPiwigoRecentCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
         })
         return action
     }

@@ -83,7 +83,7 @@ public struct CategoriesGetListJSON: Decodable {
 public struct CategoryData: Decodable
 {
     // The following data is returned by pwg.categories.getList
-    public let id: Int32?                   // 32
+    public var id: Int32?                   // 32
     public let name: String?                // "Insects & Spiders"
     public let comment: String?             // "…" i.e. text potentially containing HTML encoded characters
 //    public let status: String?              // "public"
@@ -142,5 +142,24 @@ public struct CategoryData: Decodable
 
         case dateLast = "date_last"
 //        case maxDateLast = "max_date_last"
+    }
+    
+    public init(withId albumId: Int32,
+                albumName: String = NSLocalizedString("tabBar_albums", comment: "Albums"),
+                albumComment: String = "",
+                parentId: String = "\(Int32.min)", parentIds: String = "\(Int32.min)",
+                nberImages: Int64 = Int64.min, totalNberImages: Int64 = Int64.min) {
+        id = albumId
+        name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName
+        comment = albumComment
+        globalRank = "1"
+        upperCat = parentId
+        upperCats = parentIds
+        nbImages = nberImages
+        totalNbImages = totalNberImages
+        nbCategories = Int32.zero
+        thumbnailId = ""
+        thumbnailUrl = ""
+        dateLast = ""
     }
 }

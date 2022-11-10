@@ -19,7 +19,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [Resolution.self, NSURL.self]
+        return [Resolution.self, NSString.self, NSURL.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {
@@ -54,7 +54,8 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
             path.removeFirst(serverPath.count)
             let newResolution = Resolution(imageWidth: resolution.width,
                                            imageHeight: resolution.height,
-                                           imagePath: path)
+                                           imagePath: path,
+                                           imageID: resolution.uuid)
             return super.reverseTransformedValue(newResolution)
         }
         return super.reverseTransformedValue(resolution)

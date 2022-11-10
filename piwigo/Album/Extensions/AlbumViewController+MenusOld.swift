@@ -30,8 +30,14 @@ extension AlbumViewController
         let favoritesSelectorAction = UIAlertAction(
             title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
             style: .default, handler: { [self] action in
+                // Check that an album of favorites exists in cache (create it if necessary)
+                guard let _ = albumProvider.getAlbum(inContext: mainContext,
+                                                     withId: pwgSmartAlbum.favorites.rawValue) else {
+                    return
+                }
+                
                 // Present favorite images
-                let favoritesVC = AlbumViewController(albumId: kPiwigoFavoritesCategoryId)
+                let favoritesVC = AlbumViewController(albumId: Int(pwgSmartAlbum.favorites.rawValue))
                 navigationController?.pushViewController(favoritesVC, animated: true)
             })
 
@@ -44,19 +50,19 @@ extension AlbumViewController
         let mostVisitedAction = UIAlertAction(
             title: NSLocalizedString("categoryDiscoverVisits_title", comment: "Most visited"),
             style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: kPiwigoVisitsCategoryId)
+                discoverImages(inCategoryId: pwgSmartAlbum.visits.rawValue)
             })
 
         let bestRatedAction = UIAlertAction(
             title: NSLocalizedString("categoryDiscoverBest_title", comment: "Best rated"),
             style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: kPiwigoBestCategoryId)
+                discoverImages(inCategoryId: pwgSmartAlbum.best.rawValue)
             })
 
         let recentAction = UIAlertAction(
             title: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
             style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: kPiwigoRecentCategoryId)
+                discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
             })
 
         // Add actions
@@ -85,10 +91,15 @@ extension AlbumViewController
 
     
     // MARK: - Discover Images
-    func discoverImages(inCategoryId categoryId: Int) {
-        // Create Discover view
-        let discoverVC = AlbumViewController(albumId: categoryId)
-        navigationController?.pushViewController(discoverVC, animated: true)
+    func discoverImages(inCategoryId categoryId: Int32) {
+        // Check that a discover album exists in cache (create it if necessary)
+        guard let _ = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) else {
+            return
+        }
+        
+        // Create and push Discover view
+        let discoverVC = AlbumViewController(albumId: Int(categoryId))
+        self.navigationController?.pushViewController(discoverVC, animated: true)
     }
 
     func discoverImagesByTag() {

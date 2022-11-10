@@ -6,6 +6,7 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
@@ -14,19 +15,56 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+    
     // MARK: - Core Data Providers
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
         return provider
     }()
     
-    let hasTagCreationRights:Bool = {
-        // Admin?
-        if NetworkVars.hasAdminRights { return true }
-        // Community user with upload rights?
-        let albumId = UploadVars.autoUploadCategoryId
-        if let albumData = CategoriesData.sharedInstance().getCategoryById(albumId),
-           (NetworkVars.hasNormalRights && albumData.hasUploadRights) { return true }
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider()
+        return provider
+    }()
+
+    private lazy var hasTagCreationRights: Bool = {
+        // Depends on the user's rights
+        switch NetworkVars.userStatus {
+        case .guest, .generic:
+            return false
+        case .admin, .webmaster:
+            return true
+        case .normal:
+            // Community user with upload rights?
+            let fetchRequest = User.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true, selector: nil)]
+
+            // Select album:
+            /// — from the current server and user only
+            /// — whose ID is the ID of the displayed album
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "username == %@", NetworkVars.username))
+            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
+            // Create a fetched results controller and set its fetch request and context.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: self.mainContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+
+            // Perform the fetch.
+            try? controller.performFetch()
+            if let user = controller.fetchedObjects?.first,
+               user.uploadRights.components(separatedBy: ",").contains("\(UploadVars.autoUploadCategoryId)")  {
+                return true
+            }
+        }
         return false
     }()
 
@@ -372,7 +410,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         // Open local albums view controller
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.setCategoryId(NSNotFound)
+                        localAlbumsVC.categoryId = NSNotFound
+                        localAlbumsVC.userHasUploadRights = false
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
@@ -383,7 +422,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self) {
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.setCategoryId(NSNotFound)
+                        localAlbumsVC.categoryId = NSNotFound
+                        localAlbumsVC.userHasUploadRights = false
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
@@ -414,9 +454,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     tagsVC.setPreselectedTagIds(UploadVars.autoUploadTagIds
                                                     .components(separatedBy: ",")
                                                     .map { Int32($0) ?? nil }.compactMap {$0})
-                    let tagCreationRights = NetworkVars.hasAdminRights ||
-                        (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
-                    tagsVC.setTagCreationRights(tagCreationRights)
+                    tagsVC.setTagCreationRights(hasTagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
 

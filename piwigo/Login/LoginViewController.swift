@@ -120,11 +120,11 @@ class LoginViewController: UIViewController {
 
         // Default settings
         isAlreadyTryingToLogin = true
-        NetworkVars.userStatus = pwgUserStatus.guest.rawValue
+        NetworkVars.userStatus = pwgUserStatus.guest
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.userCancelledCommunication = false
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
@@ -260,7 +260,7 @@ class LoginViewController: UIViewController {
 
     func performLogin() {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
@@ -285,21 +285,9 @@ class LoginViewController: UIViewController {
             LoginUtilities.sessionLogin(
                 withUsername: username, password: password,
                 completion: { [self] in         // Session now opened
-                    // Add User and Server objects to persistent cache if necessary
-                    DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-                        let bckgContext = DataController.shared.bckgContext
-                        let user = self.userProvider.getUserAccount(inContext: bckgContext,
-                                                                    withUsername: username)
-                        let lastUsedNow = Date()
-                        user?.lastUsed = lastUsedNow
-                        user?.server?.lastUsed = lastUsedNow
-                        user?.server?.fileTypes = UploadVars.serverFileTypes
-                        user?.status = NetworkVars.userStatus
-                        try? bckgContext.save()
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
+                    // Create User account in persistent cache if necessary
+                    createUserAccountIfNeedded(username)
+
                     // First determine user rights if Community extension installed
                     getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
 
@@ -317,20 +305,30 @@ class LoginViewController: UIViewController {
                                              account: NetworkVars.username)
             NetworkVars.username = ""
 
-            // Add Server object to persistent cache if necessary
-            DispatchQueue.global(qos: .background).async { [unowned self] in
-                let bckgContext = DataController.shared.bckgContext
-                let server = self.serverProvider.getServer(inContext: bckgContext)
-                server?.lastUsed = Date()
-                server?.fileTypes = UploadVars.serverFileTypes
-                try? bckgContext.save()
-                DispatchQueue.main.async {
-                    DataController.shared.saveMainContext()
-                }
-            }
+            // Create User account in persistent cache if necessary
+            createUserAccountIfNeedded("guest")
 
             // Check Piwigo version, get token, available sizes, etc.
             getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
+        }
+    }
+    
+    private func createUserAccountIfNeedded(_ username: String) {
+        // Add User and Server objects to persistent cache if necessary
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+            let bckgContext = DataController.shared.bckgContext
+            let user = self.userProvider.getUserAccount(inContext: bckgContext,
+                                                        withUsername: username)
+            let lastUsedNow = Date()
+            user?.lastUsed = lastUsedNow
+            user?.server?.lastUsed = lastUsedNow
+            user?.server?.fileTypes = UploadVars.serverFileTypes
+            user?.status = NetworkVars.userStatus.rawValue
+            
+            try? bckgContext.save()
+            DispatchQueue.main.async {
+                DataController.shared.saveMainContext()
+            }
         }
     }
 
@@ -338,7 +336,7 @@ class LoginViewController: UIViewController {
     func getCommunityStatus(atFirstLogin isFirstLogin: Bool,
                             withReloginCompletion reloginCompletion: @escaping () -> Void) {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {
@@ -378,7 +376,7 @@ class LoginViewController: UIViewController {
     func getSessionStatus(atFirstLogin isFirstLogin: Bool,
                           withReloginCompletion reloginCompletion: @escaping () -> Void) {
         print(
-            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus)")
+            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Did the user cancel communication?
         if NetworkVars.userCancelledCommunication {

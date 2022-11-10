@@ -8,6 +8,7 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 18/04/2020
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
@@ -31,31 +32,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
 
     // MARK: - View
-    @objc func setCategoryId(_ categoryId: Int) {
-        _categoryId = categoryId
-    }
-    private var _categoryId: Int?
-    private var categoryId: Int {
-        get {
-            return _categoryId ?? AlbumVars.shared.defaultCategory
-        }
-        set(categoryId) {
-            _categoryId = categoryId
-        }
-    }
-
-    @objc func setImageCollectionId(_ imageCollectionId: String) {
-        _imageCollectionId = imageCollectionId
-    }
-    private var _imageCollectionId: String?
-    private var imageCollectionId: String {
-        get {
-            return _imageCollectionId ?? String()
-        }
-        set(imageCollectionId) {
-            _imageCollectionId = imageCollectionId
-        }
-    }
+    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var imageCollectionId: String = String()
+    var userHasUploadRights: Bool = false
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -781,7 +760,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getImageIndex(for indexPath:IndexPath) -> Int {
         switch sortType {
         case .month:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByMonth[indexPath.section].first {
                     return index + indexPath.row
@@ -799,7 +778,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .week:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByWeek[indexPath.section].first {
                     return index + indexPath.row
@@ -817,7 +796,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .day:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByDay[indexPath.section].first {
                     return index + indexPath.row
@@ -835,7 +814,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .all:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 return indexPath.row
             case .dateCreatedAscending:
@@ -944,7 +923,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - Sort Images
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortImage() -> UIImage {
-        switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+        switch UploadVars.localImagesSort {
         case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescending")!
@@ -964,7 +943,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortCompactImage() -> UIImage {
-        switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+        switch UploadVars.localImagesSort {
         case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescendingCompact")!
@@ -986,7 +965,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getMenuForSorting() -> UIMenu {
         // Initialise menu items
         let swapOrder: UIAction!
-        switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+        switch UploadVars.localImagesSort {
         case .dateCreatedAscending:
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
@@ -1053,11 +1032,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func swapSortOrder() {
         // Swap between the two sort options
-        switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+        switch UploadVars.localImagesSort {
         case .dateCreatedDescending:
-            UploadVars.localImagesSort = kPiwigoSort.dateCreatedAscending.rawValue
+            UploadVars.localImagesSort = .dateCreatedAscending
         case .dateCreatedAscending:
-            UploadVars.localImagesSort = kPiwigoSort.dateCreatedDescending.rawValue
+            UploadVars.localImagesSort = .dateCreatedDescending
         default:
             return
         }
@@ -1260,9 +1239,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
             
             // Can the user create tags?
-            let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && albumData?.hasUploadRights ?? false) {
+            if NetworkVars.hasAdminRights || userHasUploadRights {
                 uploadSwitchVC.hasTagCreationRights = true
             }
             
@@ -1393,7 +1370,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
-        if UploadVars.localImagesSort == kPiwigoSort.dateCreatedDescending.rawValue {
+        if UploadVars.localImagesSort == .dateCreatedDescending {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -1531,7 +1508,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Number of items depends on image sort type and date order
         switch sortType {
         case .month:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByMonth[section].count
             case .dateCreatedAscending:
@@ -1540,7 +1517,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .week:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByWeek[section].count
             case .dateCreatedAscending:
@@ -1549,7 +1526,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .day:
-            switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
+            switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByDay[section].count
             case .dateCreatedAscending:
@@ -1662,7 +1639,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         let firstIndex: Int, lastIndex: Int
-        if UploadVars.localImagesSort == kPiwigoSort.dateCreatedDescending.rawValue {
+        if UploadVars.localImagesSort == .dateCreatedDescending {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {

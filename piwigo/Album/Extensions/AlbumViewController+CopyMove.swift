@@ -81,11 +81,11 @@ extension AlbumViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage(withData imageData: PiwigoImageData) {
         // Determine index of updated image
-        var newImages = albumData?.images ?? []
-        if let indexOfUpdatedImage = newImages.firstIndex(where: {$0.imageId == imageData.imageId}) {
-            // Update image data
-            newImages[indexOfUpdatedImage] = imageData
-            albumData?.images = newImages
-        }
+//        var newImages = albumData?.images ?? []
+//        if let indexOfUpdatedImage = newImages.firstIndex(where: {$0.imageId == imageData.imageId}) {
+//            // Update image data
+//            newImages[indexOfUpdatedImage] = imageData
+//            albumData?.images = newImages
+//        }
     }
 }

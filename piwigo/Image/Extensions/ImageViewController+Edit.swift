@@ -20,8 +20,7 @@ extension ImageViewController
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
         editImageVC.images = [imageData]
-        editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights ||
-                                           (NetworkVars.hasNormalRights && userHasUploadRights)
+        editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC, forButton: actionBarButton)
     }
