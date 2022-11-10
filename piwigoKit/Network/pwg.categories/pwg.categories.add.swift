@@ -61,7 +61,6 @@ public struct CategoriesAddJSON: Decodable {
                     errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
                     errorMessage = try errorContainer.decode(String.self, forKey: .message)
                 }
-
             }
             else {
                 // Unexpected Piwigo server error
