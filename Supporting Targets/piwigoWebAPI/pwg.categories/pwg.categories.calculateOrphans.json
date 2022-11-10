@@ -1,0 +1,9 @@
+{
+    "stat" : "ok",
+    "result" :  [
+        {"nb_images_associated_outside" : 0,
+            "nb_images_becoming_orphan" : 8,
+                  "nb_images_recursive" : 8
+        }
+    ]
+}
