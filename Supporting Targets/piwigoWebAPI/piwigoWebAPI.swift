@@ -234,6 +234,7 @@ class piwigoWebAPI: XCTestCase {
             return
         }
 
+        XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data?.first?.nbImagesBecomingOrphan, 8)
     }
     

@@ -99,8 +99,11 @@ public class NetworkVars: NSObject {
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
     public static var usesCommunityPluginV29 = false
     
-    /// - uploadAsync method available, false by default (avaiable since Piwigo 11)
+    /// - pwg.images.uploadAsync method available, false by default (avaiable since Piwigo 11)
     public static var usesUploadAsync = false
+    
+    /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
+    public static var usesCalcOrphans = false
     
     /// - Remembers that the HTTP authentication failed
     public static var didFailHTTPauthentication = false

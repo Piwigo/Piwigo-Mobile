@@ -470,6 +470,51 @@ class AlbumUtilities: NSObject {
         }
     }
 
+    static func calcOrphans(_ catID: Int32,
+                            completion: @escaping (Int) -> Void,
+                            failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for setting album thumbnail
+        let paramsDict: [String : Any] = ["category_id": catID]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: pwgCategoriesCalcOrphans, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: CategoriesCalcOrphansJSON.self,
+                                countOfBytesClientExpectsToReceive: 2100) { jsonData in
+            // Decode the JSON object and update the category in cache.
+            do {
+                // Decode the JSON into codable type CategoriesCalcOrphansJSON.
+                let decoder = JSONDecoder()
+                let orphansJSON = try decoder.decode(CategoriesCalcOrphansJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if orphansJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: orphansJSON.errorCode,
+                                                                 errorMessage: orphansJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Data retrieved successfully?
+                guard let nberOrphans = orphansJSON.data?.first?.nbImagesBecomingOrphan else {
+                    // Could not retrieve number of orphans
+                    failure(JsonError.unexpectedError as NSError)
+                    return
+                }
+                
+                completion(nberOrphans)
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
     static func delete(_ category: PiwigoAlbumData,
                        inModde mode: pwgCategoryDeletionMode,
                        completion: @escaping () -> Void,

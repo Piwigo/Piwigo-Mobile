@@ -248,6 +248,7 @@
 "deleteCategory_empty" = "Delete Empty Album";
 "deleteCategory_noImages" = "Keep Photos";
 "deleteCategory_orphanedImages" = "Delete Orphans";
+"deleteCategory_nberOrphanedImages" = "Delete %@ Orphans";
 "deleteCategory_allImages" = "Delete %@ Photos";
 "deleteCategoryConfirm_title" = "Are you sure?";
 "deleteCategoryConfirm_message" = "Please enter the number of photos in order to delete this album. Number of photos: %@";

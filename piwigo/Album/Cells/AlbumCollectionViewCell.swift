@@ -32,6 +32,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
     private var deleteAction: UIAlertAction?
+    private var nbOrphans = NSNotFound
     private enum textFieldTag: Int {
         case albumName = 1000, albumDescription, nberOfImages
     }
@@ -267,54 +268,65 @@ class AlbumCollectionViewCell: UICollectionViewCell
                 let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
                 cell?.hideSwipe(animated: true)
             })
+        alert.addAction(cancelAction)
 
-        let emptyCategoryAction = UIAlertAction(
-            title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
-            style: .destructive, handler: { [self] action in
-                // Display HUD during the deletion
-                topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-                // Delete empty album
-                deleteCategory(withDeletionMode: .none,
-                               andViewController: topViewController)
-            })
-
-        let keepImagesAction = UIAlertAction(
-            title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
-            style: .default, handler: { [self] action in
-                confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                        deletionMode: .none,
-                                        andViewController: topViewController)
-            })
-
-        let orphanImagesAction = UIAlertAction(
-            title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
-            style: .destructive,
-            handler: { [self] action in
-                confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                        deletionMode: .orphaned,
-                                        andViewController: topViewController)
-            })
-
-        let allImagesAction = UIAlertAction(
-            title: albumData.totalNbImages > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Images"), NSNumber(value: albumData.totalNbImages)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
-            style: .destructive,
-            handler: { [self] action in
-                confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                        deletionMode: .all,
-                                        andViewController: topViewController)
-            })
-        allImagesAction.accessibilityIdentifier = "DeleteAll"
-
-        // Add actions
-        switch albumData.totalNbImages {
-        case 0:
-            alert.addAction(cancelAction)
+        if albumData.totalNbImages == 0 {
+            // Empty album
+            let emptyCategoryAction = UIAlertAction(
+                title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
+                style: .destructive, handler: { [self] action in
+                    // Display HUD during the deletion
+                    topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+                    
+                    // Delete empty album
+                    deleteCategory(withDeletionMode: .none,
+                                   andViewController: topViewController)
+                })
             alert.addAction(emptyCategoryAction)
-        default:
-            alert.addAction(cancelAction)
+        } else {
+            // Album containing images
+            let keepImagesAction = UIAlertAction(
+                title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
+                style: .default, handler: { [self] action in
+                    confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
+                                            deletionMode: .none,
+                                            andViewController: topViewController)
+                })
             alert.addAction(keepImagesAction)
-            alert.addAction(orphanImagesAction)
+
+            if NetworkVars.usesCalcOrphans == false ||
+                (NetworkVars.usesCalcOrphans && nbOrphans == NSNotFound) {
+                let orphanImagesAction = UIAlertAction(
+                    title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
+                    style: .destructive,
+                    handler: { [self] action in
+                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
+                                                deletionMode: .orphaned,
+                                                andViewController: topViewController)
+                    })
+                alert.addAction(orphanImagesAction)
+            }
+            else if nbOrphans != 0 {
+                let orphanImagesAction = UIAlertAction(
+                    title: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_nberOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)),
+                    style: .destructive,
+                    handler: { [self] action in
+                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
+                                                deletionMode: .orphaned,
+                                                andViewController: topViewController)
+                    })
+                alert.addAction(orphanImagesAction)
+            }
+
+            let allImagesAction = UIAlertAction(
+                title: albumData.totalNbImages > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Images"), NSNumber(value: albumData.totalNbImages)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+                style: .destructive,
+                handler: { [self] action in
+                    confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
+                                            deletionMode: .all,
+                                            andViewController: topViewController)
+                })
+            allImagesAction.accessibilityIdentifier = "DeleteAll"
             alert.addAction(allImagesAction)
         }
 
@@ -547,6 +559,17 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
     func swipeTableCell(_ cell: MGSwipeTableCell, canSwipe direction: MGSwipeDirection,
                         from point: CGPoint) -> Bool {
         return true
+    }
+    
+    func swipeTableCellWillBeginSwiping(_ cell: MGSwipeTableCell) {
+        // Determine number of orphans if album deleted
+        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
+            self.nbOrphans = NSNotFound
+            guard let catId = albumData?.pwgID else { return }
+            AlbumUtilities.calcOrphans(catId) { nbOrphans in
+                self.nbOrphans = nbOrphans
+            } failure: { _ in }
+        }
     }
 
     func swipeTableCell(_ cell: MGSwipeTableCell, swipeButtonsFor direction: MGSwipeDirection, swipeSettings: MGSwipeSettings, expansionSettings: MGSwipeExpansionSettings) -> [UIView]?

@@ -46,6 +46,9 @@ class LoginUtilities: NSObject {
                 // Check if the pwg.images.uploadAsync method is available
                 NetworkVars.usesUploadAsync = methodsJSON.data.contains("pwg.images.uploadAsync")
 
+                // Check if the pwg.categories.calculateOrphans method is available
+                NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
+
                 completion()
             }
             catch {
