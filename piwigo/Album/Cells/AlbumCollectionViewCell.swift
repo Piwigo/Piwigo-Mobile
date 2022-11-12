@@ -308,7 +308,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             }
             else if nbOrphans != 0 {
                 let orphanImagesAction = UIAlertAction(
-                    title: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_nberOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)),
+                    title: self.nbOrphans > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)) : NSLocalizedString("deleteCategory_singleOrphanedImage", comment: "Delete Orphan"),
                     style: .destructive,
                     handler: { [self] action in
                         confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
