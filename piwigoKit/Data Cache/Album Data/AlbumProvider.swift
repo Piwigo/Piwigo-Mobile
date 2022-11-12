@@ -518,7 +518,69 @@ public class AlbumProvider: NSObject {
     }
     
     
-    // MARK: - Clear Albums
+    // MARK: - Delete Albums
+    /**
+        Delete album and its sub-albums
+     */
+    public func deleteAlbum(_ catID: Int32) {
+        // Job performed in the background
+        bckgContext.performAndWait {
+            
+            // Retrieve albums in persistent store
+            let fetchRequest = Album.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
+            
+            // Retrieve albums:
+            /// — from the current server
+            /// — whose ID is the ID of the deleted album
+            /// — whose one of the upper album IDs is the ID of the deleted album
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+            var orSubpredicates = [NSPredicate]()
+            orSubpredicates.append(NSPredicate(format: "pwgID == %ld", catID))
+            orSubpredicates.append(NSPredicate(format: "parentId == %ld", catID))
+            let regExp =  NSRegularExpression.escapedPattern(for: String(catID))
+            let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
+            orSubpredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
+            andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let cachedAlbumsToDdelete:[Album] = controller.fetchedObjects ?? []
+            
+            // Delete album and sub-albums
+            cachedAlbumsToDdelete.forEach { cachedAlbum in
+                print("••> delete album with ID:\(cachedAlbum.pwgID) and name:\(cachedAlbum.name)")
+                bckgContext.delete(cachedAlbum)
+            }
+            
+            // Save all insertions from the context to the store.
+            if bckgContext.hasChanges {
+                do {
+                    try bckgContext.save()
+                    DispatchQueue.main.async {
+                        DataController.shared.saveMainContext()
+                    }
+                }
+                catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                    return
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+            }
+        }
+    }
+
     /**
      Clear cached Core Data album entry
     */
