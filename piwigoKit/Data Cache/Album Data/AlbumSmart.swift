@@ -23,7 +23,7 @@ extension pwgSmartAlbum {
     public var name: String {
         switch self {
         case .root:
-            return NSLocalizedString("categorySelection_title", comment: "Album")
+            return NSLocalizedString("categorySelection_root", comment: "Root Album")
         case .search:
             return ""
         case .visits:
