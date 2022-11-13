@@ -515,20 +515,13 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func delete(_ category: PiwigoAlbumData,
-                       inModde mode: pwgCategoryDeletionMode,
+    static func delete(_ catID: Int32, inMode mode: pwgCategoryDeletionMode,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id"         : category.albumId,
+        let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
                                           "pwg_token"           : NetworkVars.pwgToken]
-
-        // Stores image data before category deletion
-        var images: [PiwigoImageData]? = []
-        if mode != .none {
-            images = category.imageList
-        }
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
@@ -551,25 +544,25 @@ class AlbumUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Album successfully deleted ▶ Remove category from list of recent albums
-                    let userInfo = ["categoryId" : NSNumber.init(value: category.albumId)]
+                    let userInfo = ["categoryId" : NSNumber.init(value: catID)]
                     NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
                                                     object: nil, userInfo: userInfo)
 
                     // Delete images from cache
-                    for image in images ?? [] {
-                        // Delete orphans only?
-                        if (mode == .orphaned) && image.categoryIds.count > 1 {
-                            // Update categories the images belongs to
-                            CategoriesData.sharedInstance().removeImage(image, fromCategory: String(category.albumId))
-                            continue
-                        }
-
-                        // Delete image
-                        CategoriesData.sharedInstance().deleteImage(image)
-                    }
+//                    for image in images ?? [] {
+//                        // Delete orphans only?
+//                        if (mode == .orphaned) && image.categoryIds.count > 1 {
+//                            // Update categories the images belongs to
+//                            CategoriesData.sharedInstance().removeImage(image, fromCategory: String(category.albumId))
+//                            continue
+//                        }
+//
+//                        // Delete image
+//                        CategoriesData.sharedInstance().deleteImage(image)
+//                    }
 
                     // Delete category from cache
-                    CategoriesData.sharedInstance().deleteCategory(withId: category.albumId)
+//                    CategoriesData.sharedInstance().deleteCategory(withId: category.albumId)
                     completion()
                 }
                 else {

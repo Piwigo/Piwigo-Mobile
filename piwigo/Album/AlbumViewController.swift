@@ -1365,27 +1365,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     
-    // MARK: - AlbumCollectionViewCellDelegate Method (+ PushView:)
+    // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
     @objc
-    func removeCategory(_ albumCell: AlbumCollectionViewCell?) {
-        // Update data source
-//        albumData = AlbumData(categoryId: categoryId, andQuery: "")
+    func deleteCategory(_ albumId: Int32, nbImages: Int64) {
+        // Delete album and sub-albums from presistent cache
+        albumProvider.deleteAlbum(albumId)
+        
+        // Update total number of images
+        albumData?.totalNbImages -= nbImages
 
-        // Remove cell
-        var indexPath: IndexPath? = nil
-        if let albumCell = albumCell {
-            indexPath = imagesCollection?.indexPath(for: albumCell)
-        }
-        imagesCollection?.deleteItems(at: [indexPath].compactMap { $0 })
-
-        // If necessary, update the cell of the category into which the album was moved
-        for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
-            if indexPath.section == 1 { return }
-            if let cell = imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
-               cell.albumData?.pwgID == albumCell?.albumData?.parentId {
-                imagesCollection?.reloadItems(at: [indexPath])
-            }
-        }
+        // Update number of images in footer
+        updateNberOfImagesInFooter()
     }
 
     @objc
