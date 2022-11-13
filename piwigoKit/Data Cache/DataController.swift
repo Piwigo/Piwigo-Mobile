@@ -61,14 +61,15 @@ public class DataController: NSObject {
 
     
     // MARK: - Core Data Saving
-    // "Library/Caches/Piwigo" in the user’s home directory.
+    // "Library/Caches/Piwigo" in the AppGroup container.
     /// - Folder in which we store the images referenced in the Core Data store
     public static var cacheDirectory: URL = {
         let fm = FileManager.default
         do {
-            // Get path of the Caches directory in the user’s home directory
-            let cacheDirectory = try fm.url(for: .cachesDirectory, in: .userDomainMask,
-                                            appropriateFor: nil, create: true)
+            // Get path of the Caches directory in the AppGroup container
+            let cacheDirectory = DataMigrator.containerDirectory.appendingPathComponent("Library")
+                .appendingPathComponent("Caches")
+
             // Append Piwigo
             let pwgDirectory = cacheDirectory.appendingPathComponent("Piwigo")
 

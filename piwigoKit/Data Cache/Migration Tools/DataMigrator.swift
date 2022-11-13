@@ -166,10 +166,8 @@ class DataMigrator: DataMigratorProtocol {
 
     
     //MARK: - Core Data Directories
-    // "Library/Application Support/Piwigo" inside the group container.
-    /// - The shared database and temporary files to upload are stored in the App Group
-    ///   container so that they can be used and shared by the app and the extensions.
-    static var appGroupDirectory: URL = {
+    /// AppGroup/… container shared by the app and the extensions
+    static var containerDirectory : URL = {
         // We use different App Groups:
         /// - Development: one chosen by the developer
         /// - Release: the official group.org.piwigo
@@ -182,13 +180,22 @@ class DataMigrator: DataMigratorProtocol {
         // Get path of group container
         let fm = FileManager.default
         guard let containerDirectory = fm.containerURL(forSecurityApplicationGroupIdentifier: AppGroup) else {
-            fatalError("Unable to retrieve the App Group directory.")
+            fatalError("Unable to retrieve the Group Container directory.")
         }
+        return containerDirectory
+    }()
+    
+    // "Library/Application Support/Piwigo" inside the group container.
+    /// - The shared database and temporary files to upload are stored in the App Group
+    ///   container so that they can be used and shared by the app and the extensions.
+    static var appGroupDirectory: URL = {
+        // Get path of group container
         let piwigoURL = containerDirectory.appendingPathComponent("Library")
             .appendingPathComponent("Application Support")
             .appendingPathComponent("Piwigo")
 
         // Create the Piwigo directory in the container if needed
+        let fm = FileManager.default
         if fm.fileExists(atPath: piwigoURL.path) == false {
             do {
                 try fm.createDirectory(at: piwigoURL, withIntermediateDirectories: true, attributes: nil)
