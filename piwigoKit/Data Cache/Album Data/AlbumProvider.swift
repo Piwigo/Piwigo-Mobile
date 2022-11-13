@@ -112,7 +112,7 @@ public class AlbumProvider: NSObject {
         // Initialisation
         var currentAlbum: Album?
         
-        // Does this smart album exist?
+        // Does this album exist?
         taskContext.performAndWait {
             
             // Create a fetched results controller and set its fetch request and context.
@@ -129,7 +129,7 @@ public class AlbumProvider: NSObject {
             if let cachedAlbum: Album = controller.fetchedObjects?.first {
                 currentAlbum = cachedAlbum
             }
-            else if albumId < 0 {     // We should not create standard albums manually
+            else if albumId <= 0 {     // We should not create standard albums manually
                 // Get current User object (will create Server object if needed)
                 guard let user = userProvider.getUserAccount(inContext: taskContext),
                       let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
