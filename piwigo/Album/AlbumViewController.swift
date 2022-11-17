@@ -1220,9 +1220,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
                             self.dismissPiwigoError(withTitle: title, completion: {})
                         }
-                    } else {
-                        return
                     }
+                    return
                 }
 
                 // Prepare indexPaths of cells to reload
