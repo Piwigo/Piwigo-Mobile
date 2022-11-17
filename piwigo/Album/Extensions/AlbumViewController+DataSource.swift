@@ -354,7 +354,7 @@ extension AlbumViewController
     }
 
     private func showErrorAndReturnToLoginView(_ error: Error?) {
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async { [self] in
             if error == nil {
                 navigationController?.showPiwigoHUD(
                     withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
