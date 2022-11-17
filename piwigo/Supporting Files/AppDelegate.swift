@@ -115,8 +115,8 @@ import piwigoKit
                                                name: .pwgAppendAutoUploadRequestsFailed, object: nil)
 
         // Register uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.addObserver(self, selector: #selector(addImage),
-                                               name: .pwgAddUploadedImageToCache, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(addImage),
+//                                               name: .pwgAddUploadedImageToCache, object: nil)
         return true
     }
 
@@ -286,7 +286,7 @@ import piwigoKit
         NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
         
         // Unregister uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
     }
     
 
@@ -701,10 +701,10 @@ import piwigoKit
 
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int32 else {
             fatalError("!!! Did not provide a category ID !!!")
         }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+        if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
         // Get new album Id as string
         let categoryIdStr = String(categoryId)
@@ -746,7 +746,7 @@ import piwigoKit
         guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
             fatalError("!!! Did not provide a category ID !!!")
         }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+        if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
         // Get current list of recent albums
         let recentAlbumsStr = AlbumVars.shared.recentCategories
@@ -892,82 +892,82 @@ import piwigoKit
     
     // MARK: - Upload Methods advertised to Obj-C and Old Cache
         
-    @objc func didDeletePiwigoImage(withID imageId: Int) {
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.didDeletePiwigoImage(withID: imageId)
-        }
-    }
+//    @objc func didDeletePiwigoImage(withID imageId: Int) {
+//        UploadManager.shared.backgroundQueue.async {
+//            UploadManager.shared.didDeletePiwigoImage(withID: imageId)
+//        }
+//    }
     
     // Add image uploaded to the Piwigo server
-    @objc func addImage(_ notification: Notification) {
-        // Prepare image for cache
-        let imageData = PiwigoImageData()
-        imageData.imageId = notification.userInfo?["imageId"] as? Int ?? NSNotFound
-        imageData.categoryIds = [(notification.userInfo?["categoryId"] as? Int ?? 0) as NSNumber]
-
-        imageData.imageTitle = notification.userInfo?["imageTitle"] as? String ?? ""
-        imageData.author = notification.userInfo?["author"] as? String ?? ""
-//        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
-        imageData.comment = notification.userInfo?["comment"] as? String ?? ""
-        imageData.visits = notification.userInfo?["visits"] as? Int ?? 0
-        imageData.ratingScore = notification.userInfo?["ratingScore"] as? Float ?? 0.0
-
-        // Switch to old cache data format
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        var tagList = [PiwigoTagData]()
-        let tags = notification.userInfo?["tags"] as? [TagProperties] ?? []
-        tags.forEach { (tag) in
-            let newTag = PiwigoTagData()
-            newTag.tagId = Int(tag.id!.intValue)
-            newTag.tagName = tag.name
-            newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "")
-            newTag.numberOfImagesUnderTag = tag.counter ?? 0
-            tagList.append(newTag)
-        }
-        imageData.tags = tagList
-
-        imageData.fileName = notification.userInfo?["fileName"] as? String ?? "image.jpg"
-        imageData.fileSize = notification.userInfo?["fileSize"] as? Int ?? NSNotFound    // Will trigger pwg.images.getInfo
-        imageData.isVideo = notification.userInfo?["isVideo"] as? Bool ?? false
-        imageData.datePosted = notification.userInfo?["datePosted"] as? Date ?? Date()
-        imageData.dateCreated = notification.userInfo?["dateCreated"] as? Date ?? Date()
-        imageData.md5checksum = notification.userInfo?["md5checksum"] as? String ?? ""
-
-        imageData.fullResPath = notification.userInfo?["fullResPath"] as? String ?? ""
-        imageData.fullResWidth = notification.userInfo?["fullResWidth"] as? Int ?? 1
-        imageData.fullResHeight = notification.userInfo?["fullResHeight"] as? Int ?? 1
-        imageData.squarePath = notification.userInfo?["squarePath"] as? String ?? ""
-        imageData.squareWidth = notification.userInfo?["squareWidth"] as? Int ?? 1
-        imageData.squareHeight = notification.userInfo?["squareHeight"] as? Int ?? 1
-        imageData.thumbPath = notification.userInfo?["thumbPath"] as? String ?? ""
-        imageData.thumbWidth = notification.userInfo?["thumbWidth"] as? Int ?? 1
-        imageData.thumbHeight = notification.userInfo?["thumbHeight"] as? Int ?? 1
-        imageData.mediumPath = notification.userInfo?["mediumPath"] as? String ?? ""
-        imageData.mediumWidth = notification.userInfo?["mediumWidth"] as? Int ?? 1
-        imageData.mediumHeight = notification.userInfo?["mediumHeight"] as? Int ?? 1
-        imageData.xxSmallPath = notification.userInfo?["xxSmallPath"] as? String ?? ""
-        imageData.xxSmallWidth = notification.userInfo?["xxSmallWidth"] as? Int ?? 1
-        imageData.xxSmallHeight = notification.userInfo?["xxSmallHeight"] as? Int ?? 1
-        imageData.xSmallPath = notification.userInfo?["xSmallPath"] as? String ?? ""
-        imageData.xSmallWidth = notification.userInfo?["xSmallWidth"] as? Int ?? 1
-        imageData.xSmallHeight = notification.userInfo?["xSmallHeight"] as? Int ?? 1
-        imageData.smallPath = notification.userInfo?["smallPath"] as? String ?? ""
-        imageData.smallWidth = notification.userInfo?["smallWidth"] as? Int ?? 1
-        imageData.smallHeight = notification.userInfo?["smallHeight"] as? Int ?? 1
-        imageData.largePath = notification.userInfo?["largePath"] as? String ?? ""
-        imageData.largeWidth = notification.userInfo?["largeWidth"] as? Int ?? 1
-        imageData.largeHeight = notification.userInfo?["largeHeight"] as? Int ?? 1
-        imageData.xLargePath = notification.userInfo?["xLargePath"] as? String ?? ""
-        imageData.xLargeWidth = notification.userInfo?["xLargeWidth"] as? Int ?? 1
-        imageData.xLargeHeight = notification.userInfo?["xLargeHeight"] as? Int ?? 1
-        imageData.xxLargePath = notification.userInfo?["xxLargePath"] as? String ?? ""
-        imageData.xxLargeWidth = notification.userInfo?["xxLargeWidth"] as? Int ?? 1
-        imageData.xxLargeHeight = notification.userInfo?["xxLargeHeight"] as? Int ?? 1
-
-        // Add uploaded image to cache and update UI if needed
-        CategoriesData.sharedInstance()?.addImage(imageData)
-    }
+//    @objc func addImage(_ notification: Notification) {
+//        // Prepare image for cache
+//        let imageData = PiwigoImageData()
+//        imageData.imageId = notification.userInfo?["imageId"] as? Int64 ?? Int64.min
+//        imageData.categoryIds = [(notification.userInfo?["categoryId"] as? Int ?? 0) as NSNumber]
+//
+//        imageData.imageTitle = notification.userInfo?["imageTitle"] as? String ?? ""
+//        imageData.author = notification.userInfo?["author"] as? String ?? ""
+////        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
+//        imageData.comment = notification.userInfo?["comment"] as? String ?? ""
+//        imageData.visits = notification.userInfo?["visits"] as? Int ?? 0
+//        imageData.ratingScore = notification.userInfo?["ratingScore"] as? Float ?? 0.0
+//
+//        // Switch to old cache data format
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        var tagList = [PiwigoTagData]()
+//        let tags = notification.userInfo?["tags"] as? [TagProperties] ?? []
+//        tags.forEach { (tag) in
+//            let newTag = PiwigoTagData()
+//            newTag.tagId = Int(tag.id!.intValue)
+//            newTag.tagName = tag.name
+//            newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "")
+//            newTag.numberOfImagesUnderTag = tag.counter ?? 0
+//            tagList.append(newTag)
+//        }
+//        imageData.tags = tagList
+//
+//        imageData.fileName = notification.userInfo?["fileName"] as? String ?? "image.jpg"
+//        imageData.fileSize = notification.userInfo?["fileSize"] as? Int64 ?? Int64.min    // Will trigger pwg.images.getInfo
+//        imageData.isVideo = notification.userInfo?["isVideo"] as? Bool ?? false
+//        imageData.datePosted = notification.userInfo?["datePosted"] as? Date ?? Date()
+//        imageData.dateCreated = notification.userInfo?["dateCreated"] as? Date ?? Date()
+//        imageData.md5checksum = notification.userInfo?["md5checksum"] as? String ?? ""
+//
+//        imageData.fullResPath = notification.userInfo?["fullResPath"] as? String ?? ""
+//        imageData.fullResWidth = notification.userInfo?["fullResWidth"] as? Int ?? 1
+//        imageData.fullResHeight = notification.userInfo?["fullResHeight"] as? Int ?? 1
+//        imageData.squarePath = notification.userInfo?["squarePath"] as? String ?? ""
+//        imageData.squareWidth = notification.userInfo?["squareWidth"] as? Int ?? 1
+//        imageData.squareHeight = notification.userInfo?["squareHeight"] as? Int ?? 1
+//        imageData.thumbPath = notification.userInfo?["thumbPath"] as? String ?? ""
+//        imageData.thumbWidth = notification.userInfo?["thumbWidth"] as? Int ?? 1
+//        imageData.thumbHeight = notification.userInfo?["thumbHeight"] as? Int ?? 1
+//        imageData.mediumPath = notification.userInfo?["mediumPath"] as? String ?? ""
+//        imageData.mediumWidth = notification.userInfo?["mediumWidth"] as? Int ?? 1
+//        imageData.mediumHeight = notification.userInfo?["mediumHeight"] as? Int ?? 1
+//        imageData.xxSmallPath = notification.userInfo?["xxSmallPath"] as? String ?? ""
+//        imageData.xxSmallWidth = notification.userInfo?["xxSmallWidth"] as? Int ?? 1
+//        imageData.xxSmallHeight = notification.userInfo?["xxSmallHeight"] as? Int ?? 1
+//        imageData.xSmallPath = notification.userInfo?["xSmallPath"] as? String ?? ""
+//        imageData.xSmallWidth = notification.userInfo?["xSmallWidth"] as? Int ?? 1
+//        imageData.xSmallHeight = notification.userInfo?["xSmallHeight"] as? Int ?? 1
+//        imageData.smallPath = notification.userInfo?["smallPath"] as? String ?? ""
+//        imageData.smallWidth = notification.userInfo?["smallWidth"] as? Int ?? 1
+//        imageData.smallHeight = notification.userInfo?["smallHeight"] as? Int ?? 1
+//        imageData.largePath = notification.userInfo?["largePath"] as? String ?? ""
+//        imageData.largeWidth = notification.userInfo?["largeWidth"] as? Int ?? 1
+//        imageData.largeHeight = notification.userInfo?["largeHeight"] as? Int ?? 1
+//        imageData.xLargePath = notification.userInfo?["xLargePath"] as? String ?? ""
+//        imageData.xLargeWidth = notification.userInfo?["xLargeWidth"] as? Int ?? 1
+//        imageData.xLargeHeight = notification.userInfo?["xLargeHeight"] as? Int ?? 1
+//        imageData.xxLargePath = notification.userInfo?["xxLargePath"] as? String ?? ""
+//        imageData.xxLargeWidth = notification.userInfo?["xxLargeWidth"] as? Int ?? 1
+//        imageData.xxLargeHeight = notification.userInfo?["xxLargeHeight"] as? Int ?? 1
+//
+//        // Add uploaded image to cache and update UI if needed
+//        CategoriesData.sharedInstance()?.addImage(imageData)
+//    }
 }
 
 

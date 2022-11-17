@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 enum pwgCategoryCellButtonState : Int {
     case none
@@ -16,35 +17,35 @@ enum pwgCategoryCellButtonState : Int {
 
 @objc
 protocol CategoryCellDelegate: NSObjectProtocol {
-    func tappedDisclosure(of categoryTapped: PiwigoAlbumData)
+    func tappedDisclosure(of categoryTapped: Album)
 }
 
 class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     
     weak var delegate: CategoryCellDelegate?
     
-    @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var albumLabel: UILabel!
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var subCategoriesLabel: UILabel!
     @IBOutlet weak var showHideSubCategoriesImage: UIImageView!
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
     
-    private var categoryData:PiwigoAlbumData!
+    private var albumData: Album!
     private var buttonState: pwgCategoryCellButtonState = .none
     
-    func configure(with category:PiwigoAlbumData, atDepth depth:Int,
+    func configure(with album: Album, atDepth depth:Int,
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
 
         // Category data
-        categoryData = category
+        albumData = album
         
         // Is this a sub-category?
-        categoryLabel.font = .piwigoFontNormal()
-        categoryLabel.textColor = .piwigoColorLeftLabel()
-        categoryLabel.text = categoryData.name
+        albumLabel.font = .piwigoFontNormal()
+        albumLabel.textColor = .piwigoColorLeftLabel()
+        albumLabel.text = albumData.name
         if depth == 0 {
             // Categories in root album or root album itself
             leadingConstraint.constant = 20.0
@@ -54,14 +55,14 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         }
         
         // Show open/close button (# sub-albums) if there are sub-categories
-        if (category.numberOfSubCategories <= 0) || buttonState == .none {
+        if (albumData.nbSubAlbums <= 0) || buttonState == .none {
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: categoryData.numberOfSubCategories)) ?? "0"
-            subCategoriesLabel.text = categoryData.numberOfSubCategories > 1 ?
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.nbSubAlbums)) ?? "0"
+            subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
                 String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
                 String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
             
@@ -98,12 +99,12 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             }
             
             // Add/remove sub-categories
-            self.delegate?.tappedDisclosure(of: self.categoryData)
+            self.delegate?.tappedDisclosure(of: self.albumData)
         }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        categoryLabel.text = ""
+        albumLabel.text = ""
     }
 }

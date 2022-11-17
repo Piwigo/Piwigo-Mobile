@@ -46,7 +46,7 @@ extension SceneDelegate {
         }
 
         // Restore sub-albums
-        let catIDs = (userInfo["catIDs"] as? [Int]) ?? [AlbumVars.shared.defaultCategory]
+        let catIDs = (userInfo["catIDs"] as? [Int32]) ?? [AlbumVars.shared.defaultCategory]
         if catIDs.count > 1 {
             for catID in catIDs[1...] {
                 let subAlbumVC = AlbumViewController(albumId: catID)

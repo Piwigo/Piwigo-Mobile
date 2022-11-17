@@ -16,7 +16,7 @@ extension Upload {
     }
 
     @NSManaged public var author: String
-    @NSManaged public var category: Int64
+    @NSManaged public var category: Int32
     @NSManaged public var comment: String
     @NSManaged public var compressImageOnUpload: Bool
     @NSManaged public var creationDate: TimeInterval

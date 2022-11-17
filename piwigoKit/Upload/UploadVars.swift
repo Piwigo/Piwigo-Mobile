@@ -186,8 +186,8 @@ public class UploadVars: NSObject {
     public static var autoUploadAlbumId: String
 
     /// - Category ID of the Piwigo album to upload photos into (i.e. destination album)
-    @UserDefault("autoUploadCategoryId", defaultValue: NSNotFound, userDefaults: UserDefaults.dataSuite)
-    public static var autoUploadCategoryId: Int
+    @UserDefault("autoUploadCategoryId", defaultValue: Int32.min, userDefaults: UserDefaults.dataSuite)
+    public static var autoUploadCategoryId: Int32
 
     /// - IDs of the tags applied to the photos to auto-upload
     @UserDefault("autoUploadTagIds", defaultValue: "", userDefaults: UserDefaults.dataSuite)

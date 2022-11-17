@@ -33,7 +33,7 @@ extension AlbumViewController
             fatalError("No EditImageParamsViewController!")
         }
         editImageVC.images = selectedImageData
-        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+//        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
         editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC)
@@ -45,9 +45,9 @@ extension AlbumViewController
 @objc
 extension AlbumViewController: EditImageParamsDelegate
 {
-    @objc func didDeselectImage(withId imageId: Int) {
+    @objc func didDeselectImage(withId imageId: Int64) {
         // Deselect image
-        selectedImageIds.removeAll { $0 == NSNumber(value: imageId) }
+        selectedImageIds.removeAll { $0 == imageId }
         imagesCollection?.reloadSections(IndexSet(integer: 1))
     }
 

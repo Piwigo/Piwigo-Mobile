@@ -524,7 +524,7 @@ extension AlbumViewController
             /// - not in root or default album
             /// - not searching for images
             addButton.isHidden = true
-            if ![0, AlbumVars.shared.defaultCategory, kPiwigoSearchCategoryId].contains(categoryId) {
+            if ![0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
                 showHomeAlbumButtonIfNeeded()
             }
         }

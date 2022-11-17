@@ -282,11 +282,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.autoUploadCategoryId
-                if let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) {
+                if let albumData = CategoriesData.sharedInstance().getCategoryById(Int(categoryId)) {
                     detail = albumData.name ?? ""
                 } else {
                     // Did not find the Piwigo album
-                    UploadVars.autoUploadCategoryId = NSNotFound
+                    UploadVars.autoUploadCategoryId = Int32.min
                     UploadVars.isAutoUploadActive = false
                 }
                 cell.configure(with: title, detail: detail)
@@ -410,7 +410,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         // Open local albums view controller
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.categoryId = NSNotFound
+                        localAlbumsVC.categoryId = Int32.min
                         localAlbumsVC.userHasUploadRights = false
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
@@ -422,7 +422,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self) {
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.categoryId = NSNotFound
+                        localAlbumsVC.categoryId = Int32.min
                         localAlbumsVC.userHasUploadRights = false
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
@@ -506,11 +506,11 @@ extension AutoUploadViewController {
 
 extension AutoUploadViewController {
     // Collect chosen Piwigo category
-    func didSelectCategory(withId categoryId: Int) -> Void {
+    func didSelectCategory(withId categoryId: Int32) -> Void {
         // Check selection
-        if categoryId == NSNotFound {
+        if categoryId == Int32.min {
             // Did not select a Piwigo album
-            UploadVars.autoUploadCategoryId = NSNotFound
+            UploadVars.autoUploadCategoryId = Int32.min
             UploadVars.isAutoUploadActive = false
         } else if categoryId != UploadVars.autoUploadCategoryId {
             // Did select another category

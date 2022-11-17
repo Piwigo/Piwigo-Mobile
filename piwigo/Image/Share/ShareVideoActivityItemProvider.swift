@@ -373,7 +373,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
-            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: self.imageData.imageId)
+            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: Int64(self.imageData.imageId))
         })
     }
     

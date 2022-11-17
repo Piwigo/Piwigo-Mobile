@@ -354,6 +354,72 @@ public class ImageProvider: NSObject {
     
     // MARK: - Clear Images
     /**
+        Purge cache from orphaned images
+     */
+    public func purgeImages() {
+        
+        // Retrieve images in persistent store
+        let fetchRequest = Image.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
+        
+        // Select images of the current server not belonging to an album
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "albums.@count == 0"))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
+        // Delete associated files in the background
+        bckgContext.performAndWait {
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let cachedImagesToDdelete:[Image] = controller.fetchedObjects ?? []
+            if cachedImagesToDdelete.count == 0 {
+                print("••> No need to purge cache from orphaned images.")
+                return
+            }
+            
+            // Delete cached image files
+            for image in cachedImagesToDdelete {
+                bckgContext.delete(image)
+            }
+        }
+
+        // Save all insertions from the context to the store.
+        if bckgContext.hasChanges {
+            do {
+                try bckgContext.save()
+                DispatchQueue.main.async {
+                    DataController.shared.saveMainContext()
+                }
+            }
+            catch {
+                print("Error: \(error)\nCould not save Core Data context.")
+                return
+            }
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
+        }
+
+//
+//        // Create batch delete request
+//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+//
+//        // Execute batch delete request
+//        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+    }
+    
+
+    /**
      Clear cached Core Data image entry
     */
     public func clearImages() {

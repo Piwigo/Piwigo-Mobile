@@ -99,7 +99,7 @@ extension UploadManager {
     }
 
     func processImages(withIds imageIds: String,
-                       inCategory categoryId: Int,
+                       inCategory categoryId: Int32,
                        completionHandler: @escaping (Error?) -> Void) -> (Void) {
         
         print("\(debugFormatter.string(from: Date())) > processImages() in", queueName())

@@ -226,4 +226,107 @@ public class Image: NSManagedObject {
             addToAlbums(albums)
         }
     }
+    
+    /**
+        Delete image files in cache before deleting object
+     */
+    public override func prepareForDeletion() {
+        super.prepareForDeletion()
+        
+        // Delete cached image files in background queue
+        guard let serverUUID = self.server?.uuid else { return }
+        let fm = FileManager.default
+        let cacheUrl = DataController.cacheDirectory.appendingPathComponent(serverUUID)
+        print("••> Image \(self.uuid) deleted from cache.")
+
+        // Square resolution
+        var fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.square.path)
+                              .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> square resolution: \(error.localizedDescription)")
+        }
+        
+        // Thumbnail resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.thumb.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> thumbnail resolution: \(error.localizedDescription)")
+        }
+        
+        // XXSmall resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xxSmall.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> xxSmall resolution: \(error.localizedDescription)")
+        }
+
+        // XSmall resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xSmall.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> xSmall resolution: \(error.localizedDescription)")
+        }
+
+        // Small resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.small.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> small resolution: \(error.localizedDescription)")
+        }
+
+        // Medium resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.medium.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> medium resolution: \(error.localizedDescription)")
+        }
+
+        // Large resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.large.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> large resolution: \(error.localizedDescription)")
+        }
+
+        // XLarge resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xLarge.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> xLarge resolution: \(error.localizedDescription)")
+        }
+
+        // XXLarge resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xxLarge.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> xxLarge resolution: \(error.localizedDescription)")
+        }
+
+        // Full resolution
+        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.fullRes.path)
+                          .appendingPathComponent(self.uuid)
+        do {
+            try fm.removeItem(at: fileUrl)
+        } catch {
+            print("••> full resolution: \(error.localizedDescription)")
+        }
+    }
 }

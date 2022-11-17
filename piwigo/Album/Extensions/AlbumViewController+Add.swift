@@ -82,7 +82,7 @@ extension AlbumViewController
     }
 
     func addCategory(withName albumName: String, andComment albumComment: String,
-                     inParent parentId: Int) {
+                     inParent parentId: Int32) {
         // Display HUD during the update
         showPiwigoHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 

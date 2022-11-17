@@ -219,7 +219,7 @@ class TagSelectorViewController: UITableViewController {
         // Dismiss tag select
         dismiss(animated: true) { [self] in
             // Push tagged images view with AlbumViewController
-            let taggedImagesVC = AlbumViewController(albumId: Int(catID))
+            let taggedImagesVC = AlbumViewController(albumId: catID)
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
         }
     }

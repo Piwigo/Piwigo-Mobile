@@ -13,7 +13,7 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
     
-    func configure(with title: String, nberPhotos: Int) -> Void {
+    func configure(with title: String, nberPhotos: Int64) -> Void {
 
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
@@ -29,7 +29,7 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != NSNotFound {
+        if nberPhotos != Int64.min {
             numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         } else {
             numberLabel.text = ""

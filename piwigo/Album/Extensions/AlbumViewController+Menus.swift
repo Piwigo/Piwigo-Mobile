@@ -106,7 +106,7 @@ extension AlbumViewController
             }
 
             // Present favorite images
-            let favoritesVC = AlbumViewController(albumId: Int(pwgSmartAlbum.favorites.rawValue))
+            let favoritesVC = AlbumViewController(albumId: pwgSmartAlbum.favorites.rawValue)
             navigationController?.pushViewController(favoritesVC, animated: true)
         })
         return action

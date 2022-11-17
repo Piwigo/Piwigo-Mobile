@@ -14,7 +14,7 @@ import Foundation
 public struct UploadProperties
 {
     public let localIdentifier: String             // Unique PHAsset identifier
-    public let category: Int                       // 8
+    public let category: Int32                     // 8
     public let serverPath: String                  // URL path of Piwigo server
     public var serverFileTypes: String             // File formats accepted by the server
     public let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
@@ -32,7 +32,7 @@ public struct UploadProperties
     public var imageTitle: String                  // "Image title"
     public var comment: String                     // "A comment…"
     public var tagIds: String                      // List of tag IDs
-    public var imageId: Int                        // 1042
+    public var imageId: Int64                      // 1042
 
     public var stripGPSdataOnUpload: Bool
     public var resizeImageOnUpload: Bool
@@ -48,7 +48,7 @@ public struct UploadProperties
 
 extension UploadProperties {
     // Create new upload from localIdentifier and category
-    public init(localIdentifier: String, category: Int) {
+    public init(localIdentifier: String, category: Int32) {
         self.init(localIdentifier: localIdentifier,
             // Category ID of the album to upload to
             category: category,
@@ -72,7 +72,7 @@ extension UploadProperties {
             privacyLevel: kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody,
             
             // No title, comment, tag, filename by default, image ID unknown
-            imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
+            imageTitle: "", comment: "", tagIds: "", imageId: Int64.min,
             
             // Upload settings
             stripGPSdataOnUpload: UploadVars.stripGPSdataOnUpload,

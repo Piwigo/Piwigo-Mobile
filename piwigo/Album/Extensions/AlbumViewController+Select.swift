@@ -230,9 +230,9 @@ extension AlbumViewController
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+//                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
+//                favoriteBarButton?.setFavoriteImage(for: areFavorites)
+//                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
 
             if #available(iOS 14, *) {
@@ -250,9 +250,9 @@ extension AlbumViewController
             if NetworkVars.userStatus != .guest,
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+//                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
+//                favoriteBarButton?.setFavoriteImage(for: areFavorites)
+//                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
         }
     }
@@ -367,19 +367,18 @@ extension AlbumViewController
                let imageId = imageCell.imageData?.pwgID
             {
                 // Update the selection if not already done
-                let imageIdObject = NSNumber(value: imageId)
-                if touchedImageIds.contains(imageIdObject) { return }
+                if touchedImageIds.contains(imageId) { return }
 
                 // Store that the user touched this cell during this gesture
-                touchedImageIds.append(imageIdObject)
+                touchedImageIds.append(imageId)
 
                 // Update the selection state
-                if !selectedImageIds.contains(imageIdObject) {
-                    selectedImageIds.append(imageIdObject)
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.append(imageId)
                     imageCell.isSelection = true
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIds.removeAll { $0 === imageIdObject }
+                    selectedImageIds.removeAll { $0 == imageId }
                 }
 
                 // Update the navigation bar
@@ -421,7 +420,7 @@ extension AlbumViewController
         
         // Retrieve image data
         selectedImageData = []
-        selectedImageIdsLoop = selectedImageIds.compactMap({$0.intValue})
+        selectedImageIdsLoop = selectedImageIds.compactMap({$0})
         retrieveImageData(beforeAction: action)
     }
 

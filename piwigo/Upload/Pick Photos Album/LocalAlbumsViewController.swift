@@ -24,7 +24,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     @IBOutlet var localAlbumsTableView: UITableView!
     
-    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var userHasUploadRights: Bool = false
 
     // Actions to perform after selection
@@ -387,7 +387,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
             let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
                                                                                 kUTTypeMovie as String])?.count ?? NSNotFound
-            cell.configure(with: title, nberPhotos: nberPhotos)
+            cell.configure(with: title, nberPhotos: Int64(nberPhotos))
             cell.isAccessibilityElement = true
             return cell
         case .localAlbums:
@@ -433,7 +433,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Case of an album
         let title = aCollection.localizedTitle ?? "—> ? <——"
-        let nberPhotos = aCollection.estimatedAssetCount
+        let nberPhotos = Int64(aCollection.estimatedAssetCount)
 
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {

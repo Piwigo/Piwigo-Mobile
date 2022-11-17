@@ -131,7 +131,7 @@ class AlbumUtilities: NSObject {
 //                // Check whether the auto-upload category still exists
 //                let autoUploadCatId = UploadVars.autoUploadCategoryId
 //                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
-//                if indexOfAutoUpload == NSNotFound {
+//                if indexOfAutoUpload == Int32.min {
 //                    UploadManager.shared.disableAutoUpload()
 //                }
 //
@@ -139,7 +139,7 @@ class AlbumUtilities: NSObject {
 //                let defaultCatId = AlbumVars.shared.defaultCategory
 //                if defaultCatId != 0 {
 //                    let indexOfDefault = albums.firstIndex(where: {$0.albumId == defaultCatId})
-//                    if indexOfDefault == NSNotFound {
+//                    if indexOfDefault == Int32.min {
 //                        AlbumVars.shared.defaultCategory = 0    // Back to root album
 //                    }
 //                }
@@ -247,7 +247,7 @@ class AlbumUtilities: NSObject {
 //                albumData.numberOfSubCategories = Int(category.nbCategories ?? 0)
 //
 //                // Thumbnail
-//                albumData.albumThumbnailId = Int(category.thumbnailId ?? "") ?? NSNotFound
+//                albumData.albumThumbnailId = Int(category.thumbnailId ?? "") ?? Int64.min
 //                albumData.albumThumbnailUrl = NetworkUtilities.encodedImageURL(category.thumbnailUrl ?? "")?.absoluteString
 //
 //                // When "date_last" is null or not supplied: no date
@@ -266,8 +266,8 @@ class AlbumUtilities: NSObject {
 //    }
     
     static func create(withName name:String, description: String, status: String,
-                       inParentWithId parentCategeoryId: Int,
-                       completion: @escaping (Int) -> Void,
+                       inParentWithId parentCategeoryId: Int32,
+                       completion: @escaping (Int32) -> Void,
                        failure: @escaping (NSError) -> Void) {
 
         // Prepare parameters for setting album thumbnail
@@ -295,7 +295,7 @@ class AlbumUtilities: NSObject {
                 }
 
                 // Successful?
-                if let catId = uploadJSON.data.id, catId != NSNotFound {
+                if let catId = uploadJSON.data.id, catId != Int32.min {
                     // Album successfully created
                     // Add new category to list of recent albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
@@ -368,12 +368,12 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func move(_ category: PiwigoAlbumData, intoCategoryWithId newParentCatId: Int,
-                     completion: @escaping (PiwigoAlbumData) -> Void,
+    static func move(_ albumId: Int32, intoCategoryWithId newParentId: Int32,
+                     completion: @escaping () -> Void,
                      failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : category.albumId,
-                                          "parent"      : newParentCatId,
+        let paramsDict: [String : Any] = ["category_id" : albumId,
+                                          "parent"      : newParentId,
                                           "pwg_token"   : NetworkVars.pwgToken]
 
         let JSONsession = PwgSession.shared
@@ -397,61 +397,61 @@ class AlbumUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Update cached old parent categories, except root album
-                    for oldParentStr in category.upperCategories {
-                        guard let oldParentID = Int(oldParentStr) else { continue }
-                        // Check that it is not the root album, nor the moved album
-                        if (oldParentID == 0) || (oldParentID == category.albumId) { continue }
-
-                        // Remove number of moved sub-categories and images
-                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= category.numberOfSubCategories + 1
-                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= category.totalNumberOfImages
-                    }
+//                    for oldParentStr in category.upperCategories {
+//                        guard let oldParentID = Int(oldParentStr) else { continue }
+//                        // Check that it is not the root album, nor the moved album
+//                        if (oldParentID == 0) || (oldParentID == category.albumId) { continue }
+//
+//                        // Remove number of moved sub-categories and images
+//                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= category.numberOfSubCategories + 1
+//                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= category.totalNumberOfImages
+//                    }
 
                     // Update cached new parent categories, except root album
-                    var newUpperCategories = [String]()
-                    if newParentCatId != 0 {
-                        // Parent category in which we moved the category
-                        newUpperCategories = CategoriesData.sharedInstance().getCategoryById(newParentCatId).upperCategories ?? []
-                        for newParentStr in newUpperCategories {
-                            // Check that it is not the root album, nor the moved album
-                            guard let newParentId = Int(newParentStr) else { continue }
-                            if (newParentId == 0) || (newParentId == category.albumId) { continue }
-                            
-                            // Add number of moved sub-categories and images
-                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += category.numberOfSubCategories + 1;
-                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += category.totalNumberOfImages
-                        }
-                    }
+//                    var newUpperCategories = [String]()
+//                    if newParentCatId != 0 {
+//                        // Parent category in which we moved the category
+//                        newUpperCategories = CategoriesData.sharedInstance().getCategoryById(newParentCatId).upperCategories ?? []
+//                        for newParentStr in newUpperCategories {
+//                            // Check that it is not the root album, nor the moved album
+//                            guard let newParentId = Int(newParentStr) else { continue }
+//                            if (newParentId == 0) || (newParentId == category.albumId) { continue }
+//                            
+//                            // Add number of moved sub-categories and images
+//                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += category.numberOfSubCategories + 1;
+//                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += category.totalNumberOfImages
+//                        }
+//                    }
 
                     // Update upperCategories of moved sub-categories
-                    var upperCatToRemove:[String] = category.upperCategories ?? []
-                    upperCatToRemove.removeAll(where: {$0 == String(category.albumId)})
-                    var catToUpdate = [PiwigoAlbumData]()
-                    
-                    if category.numberOfSubCategories > 0 {
-                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(category.albumId) ?? []
-                        for subCategory in subCategories {
-                            // Replace list of upper categories
-                            var upperCategories = subCategory.upperCategories ?? []
-                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                            upperCategories.append(contentsOf: newUpperCategories)
-                            subCategory.upperCategories = upperCategories
-                            catToUpdate.append(subCategory)
-                        }
-                    }
+//                    var upperCatToRemove:[String] = category.upperCategories ?? []
+//                    upperCatToRemove.removeAll(where: {$0 == String(category.albumId)})
+//                    var catToUpdate = [PiwigoAlbumData]()
+//                    
+//                    if category.numberOfSubCategories > 0 {
+//                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(category.albumId) ?? []
+//                        for subCategory in subCategories {
+//                            // Replace list of upper categories
+//                            var upperCategories = subCategory.upperCategories ?? []
+//                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+//                            upperCategories.append(contentsOf: newUpperCategories)
+//                            subCategory.upperCategories = upperCategories
+//                            catToUpdate.append(subCategory)
+//                        }
+//                    }
 
                     // Replace upper category of moved album
-                    var upperCategories = category.upperCategories ?? []
-                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                    upperCategories.append(contentsOf: newUpperCategories)
-                    category.upperCategories = upperCategories
-                    category.parentAlbumId = newParentCatId
-                    catToUpdate.append(category)
+//                    var upperCategories = category.upperCategories ?? []
+//                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+//                    upperCategories.append(contentsOf: newUpperCategories)
+//                    category.upperCategories = upperCategories
+//                    category.parentAlbumId = newParentCatId
+//                    catToUpdate.append(category)
 
                     // Update categories in cache
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+//                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
 
-                    completion(category)
+                    completion()
                 }
                 else {
                     // Could not move album
@@ -471,7 +471,7 @@ class AlbumUtilities: NSObject {
     }
 
     static func calcOrphans(_ catID: Int32,
-                            completion: @escaping (Int) -> Void,
+                            completion: @escaping (Int64) -> Void,
                             failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]

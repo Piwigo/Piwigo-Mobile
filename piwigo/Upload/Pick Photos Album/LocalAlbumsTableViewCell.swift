@@ -14,7 +14,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
     
-    func configure(with title: String, nberPhotos: Int, startDate: Date?, endDate: Date?) -> Void {
+    func configure(with title: String, nberPhotos: Int64, startDate: Date?, endDate: Date?) -> Void {
 
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
@@ -30,7 +30,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != NSNotFound {
+        if nberPhotos != Int64.min {
             numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         } else {
             numberLabel.text = ""

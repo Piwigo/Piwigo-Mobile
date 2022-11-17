@@ -15,7 +15,7 @@ import UIKit
 class ImageUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods
-    static func getInfos(forID imageId:Int, inCategoryId categoryId: Int,
+    static func getInfos(forID imageId: Int64, inCategoryId categoryId: Int32,
                         completion: @escaping (PiwigoImageData) -> Void,
                         failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos

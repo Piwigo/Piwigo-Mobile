@@ -151,7 +151,7 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
         presentedViewController?.updatePiwigoHUD(withProgress: progress)
     }
 
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int) {
+    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int64) {
         // Close HUD
         if imageActivityItemProvider?.isCancelled ?? false {
             presentedViewController?.hidePiwigoHUD(completion: {

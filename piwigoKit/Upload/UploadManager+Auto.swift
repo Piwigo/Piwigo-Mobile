@@ -26,9 +26,9 @@ extension UploadManager {
 
         // Check existence of Piwigo album
         let categoryId = UploadVars.autoUploadCategoryId
-        guard categoryId != NSNotFound else {
+        guard categoryId != Int32.min else {
             // Cannot access Piwigo album -> Reset album ID
-            UploadVars.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+            UploadVars.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
@@ -67,8 +67,8 @@ extension UploadManager {
         }
     }
     
-    public func getNewRequests(inCollection collection:PHAssetCollection,
-                               toBeUploadedIn categoryId:Int) -> [UploadProperties] {
+    public func getNewRequests(inCollection collection: PHAssetCollection,
+                               toBeUploadedIn categoryId: Int32) -> [UploadProperties] {
         // Collect IDs of images to upload
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false

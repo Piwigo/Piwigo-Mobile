@@ -26,7 +26,7 @@ class ClearCache: NSObject {
         
         // Disable Auto-Uploading and clear settings
         UploadVars.isAutoUploadActive = false
-        UploadVars.autoUploadCategoryId = NSNotFound
+        UploadVars.autoUploadCategoryId = Int32.min
         UploadVars.autoUploadAlbumId = ""
         UploadVars.autoUploadTagIds = ""
         UploadVars.autoUploadComments = ""

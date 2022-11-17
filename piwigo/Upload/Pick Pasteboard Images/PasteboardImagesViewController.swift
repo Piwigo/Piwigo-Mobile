@@ -24,7 +24,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
 
     // MARK: - View
-    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var userHasUploadRights: Bool = false
 
     @IBOutlet weak var localImagesCollection: UICollectionView!

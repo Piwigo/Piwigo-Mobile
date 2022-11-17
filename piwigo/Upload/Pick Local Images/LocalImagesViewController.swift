@@ -32,7 +32,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
 
     // MARK: - View
-    var categoryId: Int = AlbumVars.shared.defaultCategory
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var imageCollectionId: String = String()
     var userHasUploadRights: Bool = false
 

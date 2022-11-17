@@ -78,7 +78,7 @@ public struct CategoriesCalcOrphansJSON: Decodable {
 public struct CategoriesCalcOrphans: Decodable {
     public let nbImagesAssociatedOutside,
                nbImagesBecomingOrphan,
-               nbImagesRecursive: Int
+               nbImagesRecursive: Int64
 
     enum CodingKeys: String, CodingKey {
         case nbImagesAssociatedOutside = "nb_images_associated_outside"

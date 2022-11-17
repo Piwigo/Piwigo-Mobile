@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int)
+    func didDeselectImage(withId imageId: Int64)
     func didChangeImageParameters(_ imageData: PiwigoImageData)
     func didFinishEditingParameters()
 }
@@ -889,7 +889,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 // MARK: - EditImageThumbnailCellDelegate Methods
 extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 {
-    func didDeselectImage(withId imageId: Int) {
+    func didDeselectImage(withId imageId: Int64) {
         // Hide picker if needed
         let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
         if hasDatePicker {
@@ -931,9 +931,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         editImageParamsTableView.reloadData()
 
         // Deselect image in album view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didDeselectImage(withId:))) ?? false {
-            delegate?.didDeselectImage(withId: imageId)
-        }
+        delegate?.didDeselectImage(withId: imageId)
     }
 
     func didRenameFileOfImage(_ imageData: PiwigoImageData) {

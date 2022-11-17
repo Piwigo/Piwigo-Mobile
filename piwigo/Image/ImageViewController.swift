@@ -20,7 +20,7 @@ class ImageViewController: UIViewController {
     
     weak var imgDetailDelegate: ImageDetailDelegate?
     var images = [PiwigoImageData]()
-    var categoryId = 0
+    var categoryId = Int32.zero
     var imageIndex = 0
     var userHasUploadRights = false
 
@@ -502,7 +502,7 @@ class ImageViewController: UIViewController {
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async {
-            ImageUtilities.getInfos(forID: imageData.imageId,
+            ImageUtilities.getInfos(forID: Int64(imageData.imageId),
                                     inCategoryId: self.categoryId) { [unowned self] retrievedData in
                 self.imageData = retrievedData
                 // Disable HUD if needed
@@ -716,7 +716,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         }
 
         // Should we load more images?
-        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+        let albumData = CategoriesData.sharedInstance().getCategoryById(Int(categoryId))
         let totalImageCount = albumData?.numberOfImages ?? 0
         let downloadedImageCount = albumData?.imageList?.count ?? 0
         if totalImageCount > 0, downloadedImageCount < totalImageCount,
@@ -758,7 +758,7 @@ extension ImageViewController: ImagePreviewDelegate
 // MARK: - SelectCategoryDelegate Methods
 extension ImageViewController: SelectCategoryDelegate
 {
-    func didSelectCategory(withId category: Int) {
+    func didSelectCategory(withId category: Int32) {
         setEnableStateOfButtons(true)
     }
 }

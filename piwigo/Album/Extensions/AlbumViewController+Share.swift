@@ -166,17 +166,16 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
     }
     
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageId imageId: Int) {
+                                                      withImageId imageId: Int64) {
         // Check activity item provider
         guard let imageActivityItemProvider = imageActivityItemProvider else { return }
         
         // Close HUD
-        let imageIdObject = NSNumber(value: imageId)
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hidePiwigoHUD { }
-        } else if selectedImageIds.contains(imageIdObject) {
+        } else if selectedImageIds.contains(imageId) {
             // Remove image from selection
-            selectedImageIds.removeAll(where: {$0 == imageIdObject})
+            selectedImageIds.removeAll(where: {$0 == imageId})
             updateButtonsInSelectionMode()
 
             // Close HUD if last image

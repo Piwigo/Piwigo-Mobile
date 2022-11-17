@@ -231,7 +231,7 @@ extension AlbumViewController
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = AlbumUtilities.thumbnailSizeArg()
-        albumProvider.fetchAlbums(inParentWithId: Int32(categoryId),
+        albumProvider.fetchAlbums(inParentWithId: categoryId,
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Fetch image data?

@@ -100,7 +100,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         favImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image, inCategoryId categoryId: Int) {
+    func config(with imageData: Image, inCategoryId categoryId: Int32) {
         // Do we have any info on that image ?
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         if imageData.pwgID == Int64.zero { return }

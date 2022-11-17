@@ -32,7 +32,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     private var renameAlert: UIAlertController?
     private var renameAction: UIAlertAction?
     private var deleteAction: UIAlertAction?
-    private var nbOrphans = NSNotFound
+    private var nbOrphans = Int64.min
     private enum textFieldTag: Int {
         case albumName = 1000, albumDescription, nberOfImages
     }
@@ -93,6 +93,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
             moveVC.albumMovedDelegate = self
+            moveVC.savingContext = savingContext
             categoryDelegate?.pushCategoryView(moveVC)
         }
     }
@@ -295,7 +296,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             alert.addAction(keepImagesAction)
 
             if NetworkVars.usesCalcOrphans == false ||
-                (NetworkVars.usesCalcOrphans && nbOrphans == NSNotFound) {
+                (NetworkVars.usesCalcOrphans && nbOrphans == Int64.min) {
                 let orphanImagesAction = UIAlertAction(
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
@@ -428,7 +429,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
             // Remove this album from the auto-upload destination
             if UploadVars.autoUploadCategoryId == albumData.pwgID {
-                UploadVars.autoUploadCategoryId = NSNotFound
+                UploadVars.autoUploadCategoryId = Int32.min
             }
 
             // Close HUD, hide swipe button, remove album from cache
@@ -496,7 +497,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Push new album view
         if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false,
             let albumData = albumData {
-            let albumView = AlbumViewController(albumId: Int(albumData.pwgID))
+            let albumView = AlbumViewController(albumId: albumData.pwgID)
             categoryDelegate?.pushCategoryView(albumView)
         }
     }
@@ -514,7 +515,7 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
     func swipeTableCellWillBeginSwiping(_ cell: MGSwipeTableCell) {
         // Determine number of orphans if album deleted
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            self.nbOrphans = NSNotFound
+            self.nbOrphans = Int64.min
             guard let catId = albumData?.pwgID else { return }
             AlbumUtilities.calcOrphans(catId) { nbOrphans in
                 self.nbOrphans = nbOrphans

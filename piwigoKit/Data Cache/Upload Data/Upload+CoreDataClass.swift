@@ -29,7 +29,7 @@ public class Upload: NSManagedObject {
         }
         
         // Category to upload the image to
-        let newCategory = Int64(uploadProperties.category)
+        let newCategory = uploadProperties.category
         if category != newCategory { category = newCategory }
         
         // Date of upload request defaults to now
@@ -217,7 +217,7 @@ extension Upload {
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
-            category: Int(self.category),
+            category: self.category,
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
             serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
@@ -229,7 +229,7 @@ extension Upload {
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
-            tagIds: newTagIds, imageId: Int(self.imageId),
+            tagIds: newTagIds, imageId: self.imageId,
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,
@@ -245,7 +245,7 @@ extension Upload {
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
-            category: Int(self.category),
+            category: self.category,
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
             serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
@@ -257,7 +257,7 @@ extension Upload {
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
-            tagIds: newTagIds, imageId: Int(self.imageId),
+            tagIds: newTagIds, imageId: self.imageId,
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,

@@ -29,8 +29,8 @@ class AlbumVars: NSObject {
     // MARK: - Vars in UserDefaults / Standard
     // Album variables stored in UserDefaults / Standard
     /// - Default root album, 0 by default
-    @UserDefault("defaultCategory", defaultValue: 0)
-    @objc var defaultCategory: Int
+    @UserDefault("defaultCategory", defaultValue: Int32.zero)
+    @objc var defaultCategory: Int32
 
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
     @UserDefault("defaultAlbumThumbnailSize", defaultValue: PiwigoImageData.optimumAlbumThumbnailSizeForDevice().rawValue)

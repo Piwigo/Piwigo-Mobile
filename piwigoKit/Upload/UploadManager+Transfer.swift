@@ -318,7 +318,7 @@ extension UploadManager {
                 // Get Upload properties
                 var userInfo = [String : Any](minimumCapacity: 12)
                 userInfo["datePosted"]      = Date()
-                userInfo["fileSize"]        = NSNotFound // will trigger pwg.images.getInfo
+                userInfo["fileSize"]        = Int64.min // will trigger pwg.images.getInfo
                 userInfo["imageTitle"]      = uploadProperties.imageTitle
                 userInfo["categoryId"]      = uploadProperties.category
                 userInfo["fileName"]        = uploadProperties.fileName
@@ -333,8 +333,8 @@ extension UploadManager {
                 userInfo["thumbPath"]       = uploadJSON.data.src
 
                 // Add image to CategoriesData cache
-                NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
-                                                object: nil, userInfo: userInfo)
+//                NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
+//                                                object: nil, userInfo: userInfo)
             }
 
             // Update state of upload
@@ -720,7 +720,7 @@ extension UploadManager {
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
                 // Get data returned by the server
-                uploadProperties.imageId    = Int(imageId)
+                uploadProperties.imageId    = imageId
                 uploadProperties.imageTitle = NetworkUtilities.utf8mb4String(from: getInfos.title ?? "")
                 uploadProperties.author     = NetworkUtilities.utf8mb4String(from: getInfos.author ?? "NSNotFound")
                 if let privacyLevelStr = getInfos.privacyLevel {
@@ -749,7 +749,7 @@ extension UploadManager {
                     userInfo["tags"]            = getInfos.tags
 
                     userInfo["fileName"]        = getInfos.fileName ?? uploadProperties.fileName
-                    userInfo["fileSize"]        = getInfos.fileSize ?? NSNotFound // Will trigger pwg.images.getInfo
+                    userInfo["fileSize"]        = getInfos.fileSize ?? Int64.min // Will trigger pwg.images.getInfo
                     userInfo["datePosted"]      = dateFormatter.date(from: getInfos.datePosted ?? "") ?? Date()
                     userInfo["dateCreated"]     = dateFormatter.date(from: getInfos.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
                     userInfo["md5checksum"]     = getInfos.md5checksum ?? uploadProperties.md5Sum
@@ -785,8 +785,8 @@ extension UploadManager {
                     userInfo["xxLargeWidth"]    = getInfos.derivatives.xxLargeImage?.width ?? 1
                     userInfo["xxLargeHeight"]   = getInfos.derivatives.xxLargeImage?.height ?? 1
 
-                    NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
-                                                    object: nil, userInfo: userInfo)
+//                    NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
+//                                                    object: nil, userInfo: userInfo)
                 }
             }
 

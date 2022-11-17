@@ -37,7 +37,7 @@ extension AlbumViewController
                 }
                 
                 // Present favorite images
-                let favoritesVC = AlbumViewController(albumId: Int(pwgSmartAlbum.favorites.rawValue))
+                let favoritesVC = AlbumViewController(albumId: pwgSmartAlbum.favorites.rawValue)
                 navigationController?.pushViewController(favoritesVC, animated: true)
             })
 
@@ -98,7 +98,7 @@ extension AlbumViewController
         }
         
         // Create and push Discover view
-        let discoverVC = AlbumViewController(albumId: Int(categoryId))
+        let discoverVC = AlbumViewController(albumId: categoryId)
         self.navigationController?.pushViewController(discoverVC, animated: true)
     }
 

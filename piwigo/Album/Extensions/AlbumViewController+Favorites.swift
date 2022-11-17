@@ -12,11 +12,12 @@ extension AlbumViewController
 {
     // MARK: Favorites Bar Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
-        let areFavorites = CategoriesData.sharedInstance()
-            .category(withId: categoryId, containsImagesWithId: selectedImageIds)
-        let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
-        button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
-        return button
+//        let areFavorites = CategoriesData.sharedInstance()
+//            .category(withId: categoryId, containsImagesWithId: selectedImageIds)
+//        let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
+//        button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+//        return button
+        return nil
     }
 
     
@@ -45,9 +46,9 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard let imageId = selectedImageIds.last?.intValue,
+        guard let imageId = selectedImageIds.last,
               let imageData = CategoriesData.sharedInstance()
-                .getImageForCategory(categoryId, andId: imageId) else {
+                    .getImageForCategory(Int(categoryId), andId: Int(imageId)) else {
             // Forget this image
             selectedImageIds.removeLast()
 
@@ -138,9 +139,9 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard  let imageId = selectedImageIds.last?.intValue,
+        guard  let imageId = selectedImageIds.last,
                let imageData = CategoriesData.sharedInstance()
-                .getImageForCategory(categoryId, andId: imageId) else {
+                    .getImageForCategory(Int(categoryId), andId: Int(imageId)) else {
             // Forget this image
             selectedImageIds.removeLast()
 

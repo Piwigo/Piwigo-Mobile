@@ -43,10 +43,10 @@ extension AlbumViewController: UISearchControllerDelegate
     func willPresentSearchController(_ searchController: UISearchController) {
         debugPrint("willPresentSearchController…")
         // Switch to Search album
-        categoryId = Int(pwgSmartAlbum.search.rawValue)
+        categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext, withId: Int32(categoryId))
+        albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
         albumData?.query = ""
         albumData?.nbImages = Int64.min
         albumData?.totalNbImages = Int64.min
@@ -88,7 +88,7 @@ extension AlbumViewController: UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
         debugPrint("didDismissSearchController…")
         // Update albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext, withId: Int32(categoryId))
+        albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
 
         // Update albums
         var andPredicates = predicates
@@ -224,7 +224,7 @@ extension AlbumViewController: UISearchResultsUpdating
 //            // Display "Loading..."
 //            if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
 //               let footer = footers.first as? NberImagesFooterCollectionReusableView {
-//                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(for: NSNotFound)
+//                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(for: Int64.min)
 //            }
 //
 //            // Load, sort images and reload collection

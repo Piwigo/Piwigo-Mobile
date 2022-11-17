@@ -549,7 +549,7 @@
     // Notify the Upload database that the image was deleted
     dispatch_async(dispatch_get_main_queue(), ^{
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate didDeletePiwigoImageWithID: image.imageId];
+//        [appDelegate didDeletePiwigoImageWithID: image.imageId];
     });
 }
 

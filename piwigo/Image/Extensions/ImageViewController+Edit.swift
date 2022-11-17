@@ -30,7 +30,7 @@ extension ImageViewController
 // MARK: - EditImageParamsDelegate Methods
 extension ImageViewController: EditImageParamsDelegate
 {
-    func didDeselectImage(withId imageId: Int) {
+    func didDeselectImage(withId imageId: Int64) {
         // Should never be called when the properties of a single image are edited
     }
 
@@ -53,7 +53,7 @@ extension ImageViewController: EditImageParamsDelegate
 
         // Update cached image data
         /// Note: the current category might be a smart album.
-        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
+        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [Int(categoryId)]))
         for catId in mergedCatIds {
             CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
         }

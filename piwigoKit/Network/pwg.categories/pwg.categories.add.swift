@@ -14,7 +14,7 @@ public let pwgCategoriesAdd = "format=json&method=pwg.categories.add"
 public struct CategoriesAddJSON: Decodable {
 
     public var status: String?
-    public var data = CategoriesAdd(id: NSNotFound, info: "")
+    public var data = CategoriesAdd(id: Int32.min, info: "")
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -44,7 +44,7 @@ public struct CategoriesAddJSON: Decodable {
             if status == "ok"
             {
                 // Decodes response from the data and store them in the array
-                data = try rootContainer.decodeIfPresent(CategoriesAdd.self, forKey: .data) ?? CategoriesAdd(id: NSNotFound, info: "")
+                data = try rootContainer.decodeIfPresent(CategoriesAdd.self, forKey: .data) ?? CategoriesAdd(id: Int32.min, info: "")
 //                dump(data)
             }
             else if status == "fail"
@@ -76,6 +76,6 @@ public struct CategoriesAddJSON: Decodable {
 // MARK: - Result
 public struct CategoriesAdd: Decodable
 {
-    public let id: Int?              // 1042
+    public let id: Int32?            // 1042
     public let info: String?         // "Album added"
 }

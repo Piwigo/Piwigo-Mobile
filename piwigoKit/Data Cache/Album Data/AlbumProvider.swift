@@ -140,7 +140,7 @@ public class AlbumProvider: NSObject {
                 
                 // Populate the Album's properties using the default data.
                 do {
-                    let smartAlbum = CategoryData(withId: Int32(albumId), albumName: name)
+                    let smartAlbum = CategoryData(withId: albumId, albumName: name)
                     try album.update(with: smartAlbum, user: user)
                     currentAlbum = album
                 }
@@ -247,13 +247,13 @@ public class AlbumProvider: NSObject {
                     if NetworkVars.hasAdminRights == false,
                        NetworkVars.usesCommunityPluginV29 {
                         // Non-admin user and Community installed —> collect Community albums
-                        self.fetchCommunityAlbums(inParentWithId: parentId, albums: albumJSON.data,
-                                                  completion: completion)
+                        self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
+                                                  albums: albumJSON.data, completion: completion)
                         return
                     }
                     
                     // Import the albumJSON into Core Data.
-                    try self.importAlbums(albumJSON.data, inParent: parentId)
+                    try self.importAlbums(albumJSON.data, recursively: recursively, inParent: parentId)
                     completion(nil)
                     
                 } catch {
@@ -269,12 +269,12 @@ public class AlbumProvider: NSObject {
         }
     }
     
-    private func fetchCommunityAlbums(inParentWithId parentId: Int32, albums: [CategoryData],
-                                      completion: @escaping (Error?) -> Void) {
+    private func fetchCommunityAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
+                                      albums: [CategoryData], completion: @escaping (Error?) -> Void) {
         print("••> Fetch Community albums in parent with ID: \(parentId)")
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
-                                          "recursive" : false]
+                                          "recursive" : recursively]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
@@ -298,7 +298,7 @@ public class AlbumProvider: NSObject {
                 
                 // No Community albums?
                 if albumsJSON.data.isEmpty == true {
-                    try self.importAlbums(albums, inParent: parentId)
+                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
                 }
@@ -314,13 +314,13 @@ public class AlbumProvider: NSObject {
                         combinedAlbums.append(newAlbum)
                     }
                 }
-                try self.importAlbums(combinedAlbums, inParent: parentId)
+                try self.importAlbums(combinedAlbums, recursively: recursively, inParent: parentId)
                 completion(nil)
             }
             catch {
                 // Data cannot be digested
                 do {
-                    try self.importAlbums(albums, inParent: parentId)
+                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                 } catch {
                     completion(error as NSError)
                 }
@@ -330,7 +330,7 @@ public class AlbumProvider: NSObject {
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
             do {
-                try self.importAlbums(albums, inParent: parentId)
+                try self.importAlbums(albums, recursively: recursively, inParent: parentId)
             } catch {
                 completion(error as NSError)
             }
@@ -342,8 +342,8 @@ public class AlbumProvider: NSObject {
      processing the record in batches to avoid a high memory footprint.
      */
     private let batchSize = 256
-    public func importAlbums(_ albumArray: [CategoryData], inParent parentId: Int32,
-                             delete: Bool = true) throws {
+    public func importAlbums(_ albumArray: [CategoryData], recursively: Bool = false,
+                             inParent parentId: Int32, delete: Bool = true) throws {
         // Get current user object (will create server object if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             fatalError("Unresolved error!")
@@ -352,7 +352,8 @@ public class AlbumProvider: NSObject {
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
-            _ = importOneBatch([CategoryData](), inParent: parentId, for: user, delete: delete)
+            _ = importOneBatch([CategoryData](), recursively: recursively,
+                               inParent: parentId, for: user, delete: delete)
             return
         }
         
@@ -375,7 +376,8 @@ public class AlbumProvider: NSObject {
             let albumsBatch = Array(albumArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(albumsBatch, inParent: parentId, for: user, delete: delete) {
+            if !importOneBatch(albumsBatch, recursively: recursively,
+                               inParent: parentId, for: user, delete: delete) {
                 return
             }
         }
@@ -390,8 +392,8 @@ public class AlbumProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
      */
-    private func importOneBatch(_ albumsBatch: [CategoryData], inParent parentId: Int32,
-                                for user: User, delete: Bool) -> Bool {
+    private func importOneBatch(_ albumsBatch: [CategoryData], recursively: Bool = false,
+                                inParent parentId: Int32, for user: User, delete: Bool) -> Bool {
         var success = false
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
@@ -408,10 +410,12 @@ public class AlbumProvider: NSObject {
             /// — whose parent ID is the ID of the parent album
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-            var orSubpredicates = [NSPredicate]()
-            orSubpredicates.append(NSPredicate(format: "pwgID == %ld", parentId))
-            orSubpredicates.append(NSPredicate(format: "parentId == %ld", parentId))
-            andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
+            if recursively == false {
+                var orSubpredicates = [NSPredicate]()
+                orSubpredicates.append(NSPredicate(format: "pwgID == %ld", parentId))
+                orSubpredicates.append(NSPredicate(format: "parentId == %ld", parentId))
+                andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
+            }
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -482,7 +486,7 @@ public class AlbumProvider: NSObject {
             if delete, parentId > 0 {   // Smart albums should not be deleted here
                 let newAlbumIds = albumsBatch.compactMap({$0.id})
                 let cachedAlbumsToDelete = cachedAlbums.filter({newAlbumIds.contains($0.pwgID) == false})
-                let cachedAlbumIdsToDelete = cachedAlbumsToDelete.compactMap({Int($0.pwgID)})
+                let cachedAlbumIdsToDelete = cachedAlbumsToDelete.compactMap({$0.pwgID})
                 
                 // Check whether the auto-upload category will be deleted
                 if cachedAlbumIdsToDelete.contains(UploadVars.autoUploadCategoryId) {

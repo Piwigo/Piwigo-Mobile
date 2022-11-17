@@ -25,11 +25,11 @@ enum pwgImageAction {
 @objc
 class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
-    @objc var categoryId = Int.zero
+    @objc var categoryId = Int32.zero
     var query = ""
     var totalNumberOfImages = 0
-    var selectedImageIds = [NSNumber]()
-    var selectedImageIdsLoop = [Int]()
+    var selectedImageIds = [Int64]()
+    var selectedImageIdsLoop = [Int64]()
     var selectedImageData = [PiwigoImageData]()
 
     var imagesCollection: UICollectionView?
@@ -45,7 +45,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var favoriteBarButton: UIBarButtonItem?
 
     var isSelect = false
-    var touchedImageIds = [NSNumber]()
+    var touchedImageIds = [Int64]()
     var cancelBarButton: UIBarButtonItem!
     var selectBarButton: UIBarButtonItem!
 
@@ -66,7 +66,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
     
-    init(albumId: Int) {
+    init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
         
         // Store album ID
@@ -197,7 +197,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     lazy var albumData: Album? = {
         if categoryId != 0 {
-            return albumProvider.getAlbum(inContext: mainContext, withId: Int32(categoryId))
+            return albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
         }
         return nil
     }()
@@ -991,7 +991,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         default /* Images */:
             let objects = images.fetchedObjects
-            print("••> \(objects?.count ?? 0) images")
             return objects?.count ?? 0
         }
     }
@@ -1103,7 +1102,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 cell.config(with: images.object(at: imageIndexPath), inCategoryId: categoryId)
 //                let imageData = self.albumData?.images[indexPath.row] as? PiwigoImageData
 //                cell.config(with: imageData, inCategoryId: categoryId)
-//                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
+//                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? Int64.min))
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
 //                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
@@ -1176,7 +1175,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
             } else {
                 // Selection mode active => add/remove image from selection
-                let imageIdObject = NSNumber(value: selectedCell.imageData?.pwgID ?? Int64.zero)
+                let imageIdObject = selectedCell.imageData?.pwgID ?? Int64.zero
                 if !selectedImageIds.contains(imageIdObject) {
                     selectedImageIds.append(imageIdObject)
                     selectedCell.isSelection = true
@@ -1219,13 +1218,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     func needToLoadMoreImages() {
         // Check that album data exists
-        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
-            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
-            return
-        }
+//        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+//            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
+//            return
+//        }
         
         // Get number of downloaded images
-        let downloadedImageCount = currentAlbumData.imageList.count
+//        let downloadedImageCount = currentAlbumData.imageList.count
 
         // Load more images
 //        DispatchQueue.global(qos: .default).async { [self] in
@@ -1326,8 +1325,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     // MARK: - SelectCategoryDelegate Methods
-    func didSelectCategory(withId category: Int) {
-        if category == NSNotFound {
+    func didSelectCategory(withId category: Int32) {
+        if category == Int32.min {
             setEnableStateOfButtons(true)
         } else {
             cancelSelect()
@@ -1492,7 +1491,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        if let album = anObject as? Album, album.pwgID == categoryId { return }
+        // Check that this update should be managed by this view controller
+        if let album = anObject as? Album, album.parentId != categoryId {
+            return
+        }
+        if let image = anObject as? Image, let albums = image.albums,
+           albums.contains(where: { $0.pwgID == categoryId }) {
+            return
+        }
+        
+        // Collect operation changes
         switch type {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }

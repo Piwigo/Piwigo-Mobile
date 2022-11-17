@@ -14,7 +14,7 @@ public let pwgImagesUpload = "format=json&method=pwg.images.upload"
 public struct ImagesUploadJSON: Decodable {
 
     public var status: String?
-    public var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "")
+    public var data = ImagesUpload(image_id: Int64.min, square_src: "", src: "")
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -44,7 +44,7 @@ public struct ImagesUploadJSON: Decodable {
             if status == "ok"
             {
                 // Decodes response from the data and store them in the array
-                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "")
+                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: Int64.min, square_src: "", src: "")
 //                dump(data)
             }
             else if status == "fail"
@@ -77,7 +77,7 @@ public struct ImagesUploadJSON: Decodable {
 // MARK: - Result
 public struct ImagesUpload: Decodable
 {
-    public let image_id: Int?               // 1042
+    public let image_id: Int64?             // 1042
     public let square_src: String?          // "https://…-sq.jpg"
     public let src: String?                 // "https://…-th.jpg"
 

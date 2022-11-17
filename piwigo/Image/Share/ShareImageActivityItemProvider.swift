@@ -21,7 +21,7 @@ protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
                                    preprocessingProgressDidUpdate progress: Float)
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageId imageId: Int)
+                                                      withImageId imageId: Int64)
     func showError(withTitle title: String, andMessage message: String?)
 }
 
@@ -359,7 +359,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
-            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: self.imageData.imageId)
+            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: Int64(self.imageData.imageId))
         })
     }
     

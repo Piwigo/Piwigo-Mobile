@@ -1925,9 +1925,9 @@ extension SettingsViewController: UITextFieldDelegate {
 
 // MARK: - SelectCategoryDelegate Methods
 extension SettingsViewController: SelectCategoryDelegate {
-    func didSelectCategory(withId categoryId: Int) {
+    func didSelectCategory(withId categoryId: Int32) {
         // Do nothing if new default album is unknown or unchanged
-        guard categoryId != NSNotFound,
+        guard categoryId != Int32.min,
               categoryId != AlbumVars.shared.defaultCategory else {
             return
         }
@@ -1960,12 +1960,12 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-        if let albumData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory),
-           let albumName = albumData.name {
-            return albumName
-        } else {
+//        if let albumData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory),
+//           let albumName = albumData.name {
+//            return albumName
+//        } else {
             return NSLocalizedString("categorySelection_title", comment: "Album")
-        }
+//        }
     }
 }
 

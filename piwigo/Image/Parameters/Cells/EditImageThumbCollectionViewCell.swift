@@ -14,8 +14,8 @@ import piwigoKit
 
 @objc
 protocol EditImageThumbnailDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String)
+    func didDeselectImage(withId imageId: Int64)
+    func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String)
 }
 
 class EditImageThumbCollectionViewCell: UICollectionViewCell
@@ -34,7 +34,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     @IBOutlet private weak var removeButtonView: UIView!
     @IBOutlet private weak var removeImageButton: UIButton!
 
-    private var imageId = 0
+    private var imageId = Int64.zero
     private var renameFileNameAction: UIAlertAction?
     private var oldFileName: String?
 
@@ -81,7 +81,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
         
         // Store image ID
-        imageId = imageData.imageId
+        imageId = Int64(imageData.imageId)
 
         // Image file name
         if let fileName: String = imageData.fileName, fileName.isEmpty == false {
@@ -366,9 +366,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     // MARK: - Remove Image from Selection
     @IBAction func removeImage() {
         // Notify this deselection to parent view
-        if delegate?.responds(to: #selector(EditImageThumbnailDelegate.didDeselectImage(withId:))) ?? false {
-            delegate?.didDeselectImage(withId: imageId)
-        }
+        delegate?.didDeselectImage(withId: imageId)
     }
 }
 
