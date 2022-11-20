@@ -223,7 +223,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
             recentCatIds.removeAll(where: {$0 == Int32.zero})
         }
-        recentCatIds.removeAll(where: {$0 == self.inputCategoryId})
+        recentCatIds.removeAll(where: {($0 == self.inputCategoryId) || ($0 == self.inputCategoryData.parentId)})
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = 5
