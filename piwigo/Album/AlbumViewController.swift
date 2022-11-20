@@ -1366,6 +1366,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
     @objc
+    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?) {
+        // Remove cell
+        guard let cellToRemove = albumCell else { return }
+        if let indexPath = imagesCollection?.indexPath(for: cellToRemove) {
+            imagesCollection?.deleteItems(at: [indexPath])
+        }
+        
+        // Update number of images in footer
+        updateNberOfImagesInFooter()
+    }
+
+    @objc
     func deleteCategory(_ albumId: Int32, nbImages: Int64) {
         // Delete album and sub-albums from presistent cache
         albumProvider.deleteAlbum(albumId)

@@ -15,6 +15,7 @@ import piwigoKit
 @objc
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushCategoryView(_ viewController: UIViewController?)
+    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?)
     func deleteCategory(_ albumId: Int32, nbImages: Int64)
 }
 
@@ -658,9 +659,9 @@ extension AlbumCollectionViewCell: SelectCategoryAlbumMovedDelegate
     func didMoveCategory() {
         // Hide swipe commands
         let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-        cell?.hideSwipe(animated: true)
-
-        // Remove category from the album/images collection
-//        categoryDelegate?.moveCategory(self)
+        cell?.hideSwipe(animated: true) { [self] _ in
+            // Remove category from the album/images collection
+            categoryDelegate?.didMoveCategory(self)
+        }
     }
 }
