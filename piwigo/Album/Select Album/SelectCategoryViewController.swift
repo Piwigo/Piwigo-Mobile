@@ -67,7 +67,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
             inputCategoryId = albumId
-//            inputCategoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+            inputCategoryData = albumProvider.getAlbum(inContext: mainContext, withId: albumId)
             
         case .moveAlbum:
             guard let albumData = parameter as? Album else {
@@ -284,9 +284,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             print("Error: \(error)")
         }
 
-        // Build list of recent categories (1st section)
-//        buildRecentCategoryArray()
-        
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
