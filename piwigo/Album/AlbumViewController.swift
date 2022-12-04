@@ -255,6 +255,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         print("===============================")
         print(String(format: "viewDidLoad       => ID:%ld", categoryId))
 
+        // Initialise data source
+        do {
+            try albums.performFetch()
+            try images.performFetch()
+        } catch {
+            print("Error: \(error)")
+        }
+
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
@@ -406,14 +414,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print(String(format: "viewWillAppear    => ID:%ld", categoryId))
-
-        // Initialise data source
-        do {
-            try albums.performFetch()
-            try images.performFetch()
-        } catch {
-            print("Error: \(error)")
-        }
 
         // Set colors, fonts, etc.
         applyColorPalette()
