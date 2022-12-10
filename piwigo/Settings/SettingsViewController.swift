@@ -60,6 +60,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return provider
     }()
 
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider()
+        return provider
+    }()
+    
 
     // MARK: - View Lifecycle
 
@@ -1960,12 +1965,12 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-//        if let albumData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory),
-//           let albumName = albumData.name {
-//            return albumName
-//        } else {
+        let mainContext = DataController.shared.mainContext
+        if let albumName = albumProvider.getAlbum(inContext: mainContext, withId: AlbumVars.shared.defaultCategory)?.name, albumName.isEmpty == false {
+            return albumName
+        } else {
             return NSLocalizedString("categorySelection_title", comment: "Album")
-//        }
+        }
     }
 }
 
