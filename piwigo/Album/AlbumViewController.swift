@@ -682,6 +682,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Category Data
+    func updateDataSource() {
+        // Update albums
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "parentId == %ld", categoryId))
+        fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        try? albums.performFetch()
+
+        // Update images
+        andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %ld", categoryId))
+        fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        try? images.performFetch()
+    }
+    
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Re-login and then fetch album and image data
         reloginAndReloadAlbumData { [self] in
@@ -1348,8 +1362,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             navigationItem.searchController = nil
         }
 
-        // Initialise data source
-//        albumData = AlbumData(categoryId: categoryId, andQuery: "")
+        // Update albums and images
+        updateDataSource()
 
         // Reset buttons and menus
         updateButtonsInPreviewMode()

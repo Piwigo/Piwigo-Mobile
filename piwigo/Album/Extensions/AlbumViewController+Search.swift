@@ -90,17 +90,8 @@ extension AlbumViewController: UISearchControllerDelegate
         // Update albumData
         albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
 
-        // Update albums
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %ld", categoryId))
-        fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        try? albums.performFetch()
-
-        // Update images
-        andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %ld", categoryId))
-        fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        try? images.performFetch()
+        // Update albums and images
+        updateDataSource()
 
         // Reload collection
         imagesCollection?.reloadData()
