@@ -1522,7 +1522,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             return
         }
         if let image = anObject as? Image, let albums = image.albums,
-           albums.contains(where: { $0.pwgID == categoryId }) {
+           albums.contains(where: { $0.pwgID == categoryId }) == false {
             return
         }
         
