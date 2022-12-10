@@ -243,16 +243,23 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
-        var andPredicates = predicates
+        
+        // Only show albums at the root at start
+        let nonSmartAlbumPredicate = NSPredicate(format: "pwgID > 0")
+        var orPredicates = [NSPredicate(format: "parentId == 0")]
+        for albumId in albumsShowingSubAlbums {
+            orPredicates.append(NSPredicate(format: "parentId == %ld", albumId))
+        }
+        let parentPredicates = NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
+        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: [nonSmartAlbumPredicate, parentPredicates])
+
         // The root album is proposed for some actions
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
-            andPredicates.append(NSPredicate(format: "pwgID >= 0"))
+            let rootPredicate = NSPredicate(format: "pwgID == 0")
+            fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicate, albumPredicates])
         } else {
-            andPredicates.append(NSPredicate(format: "pwgID > 0"))
+            fetchRequest.predicate = albumPredicates
         }
-        // Only show albums at the root at start
-        andPredicates.append(NSPredicate(format: "parentId == 0"))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
@@ -1582,22 +1589,22 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             albumsShowingSubAlbums.insert(parentAlbum.pwgID)
         }
 
-        // Always show albums at the root
+        // Show albums at the root + those demanded
+        let nonSmartAlbumPredicate = NSPredicate(format: "pwgID > 0")
         var orPredicates = [NSPredicate(format: "parentId == 0")]
         for albumId in albumsShowingSubAlbums {
             orPredicates.append(NSPredicate(format: "parentId == %ld", albumId))
         }
-        let subAlbumsPredicates = NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
+        let parentPredicates = NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
+        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: [nonSmartAlbumPredicate, parentPredicates])
 
         // The root album is proposed for some actions
-        var andPredicates = predicates
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
-            andPredicates.append(NSPredicate(format: "pwgID >= 0"))
+            let rootPredicate = NSPredicate(format: "pwgID == 0")
+            fetchAlbumsRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicate, albumPredicates])
         } else {
-            andPredicates.append(NSPredicate(format: "pwgID > 0"))
+            fetchAlbumsRequest.predicate = albumPredicates
         }
-        andPredicates.append(subAlbumsPredicates)
-        fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Perform a new fetch
         try? albums.performFetch()
