@@ -152,7 +152,7 @@ public struct CategoryData: Decodable
         id = albumId
         name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName
         comment = albumComment
-        globalRank = "1"
+        globalRank = albumId <= 0 ? "0" : "0.1"
         upperCat = parentId
         upperCats = parentIds
         nbImages = nberImages
