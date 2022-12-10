@@ -159,8 +159,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @IBOutlet var categoriesTableView: UITableView!
     private var cancelBarButton: UIBarButtonItem?
 
-//    private var recentCategories: [Album] = []                  // Recent categories presented in 1st section
-//    private var categories: [Album] = []                        // Categories presented in 2nd section
     private var updateOperations: [BlockOperation] = [BlockOperation]()
     private var albumsShowingSubAlbums = Set<Int32>()
     private var nberOfSelectedImages = Float(0)
