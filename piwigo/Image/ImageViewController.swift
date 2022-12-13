@@ -6,6 +6,7 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
@@ -19,12 +20,12 @@ import piwigoKit
 class ImageViewController: UIViewController {
     
     weak var imgDetailDelegate: ImageDetailDelegate?
-    var images = [PiwigoImageData]()
+    var images: NSFetchedResultsController<Image>?
     var categoryId = Int32.zero
     var imageIndex = 0
     var userHasUploadRights = false
 
-    var imageData = PiwigoImageData()
+    var imageData: Image?
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var pageViewController: UIPageViewController?
@@ -59,8 +60,8 @@ class ImageViewController: UIViewController {
                                               attribute: .top, multiplier: 1.0, constant: 0))
         // Current image
         var index = max(0, imageIndex)
-        index = min(imageIndex, images.count - 1)
-        imageData = images[index]
+        index = min(imageIndex, (images?.fetchedObjects?.count ?? 0) - 1)
+        imageData = images?.object(at: IndexPath(item: index, section: 0))
 
         // Initialise pageViewController
         pageViewController = children[0] as? UIPageViewController
@@ -73,41 +74,50 @@ class ImageViewController: UIViewController {
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
-        // Did we already load the list of favorite images?
+        // Fetch favorite images in the background if needed
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.userStatus != .guest,
-           CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
-            // Show HUD during the download
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
-            
-            // Unknown list -> initialise album and download list
-            let nberImagesPerPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-            let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "")
-            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-            CategoriesData.sharedInstance()
-                .getCategoryById(kPiwigoFavoritesCategoryId)
-                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.shared.defaultSort.rawValue)),
-                                          forProgress: { [unowned self] onPage, outOf in
-                    let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
-                    self.updatePiwigoHUD(withProgress: fraction)
-                }) { [unowned self] _ in
-                    // Retrieve complete image data if needed (buttons are greyed until job done)
-                    if self.imageData.fileSize == NSNotFound {
-                        self.retrieveCompleteImageDataOfImage(self.imageData)
-                    } else {
-                        hidePiwigoHUD { [unowned self] in
-                            let isFavorite = CategoriesData.sharedInstance()
-                                .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                            self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                        }
-                    }
-                } onFailure: { _, _ in }
-        } else {
-            // Retrieve complete image data if needed (buttons are greyed until job done)
-            if imageData.fileSize == NSNotFound {
-                retrieveCompleteImageDataOfImage(imageData)
+           NetworkVars.userStatus != .guest {
+            DispatchQueue.global(qos: .default).async {
+
             }
         }
+        
+        
+        // Did we already load the list of favorite images?
+//        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+//           NetworkVars.userStatus != .guest,
+//           CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
+//            // Show HUD during the download
+//            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
+//            
+//            // Unknown list -> initialise album and download list
+//            let nberImagesPerPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+//            let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "")
+//            CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
+//            CategoriesData.sharedInstance()
+//                .getCategoryById(kPiwigoFavoritesCategoryId)
+//                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.shared.defaultSort.rawValue)),
+//                                          forProgress: { [unowned self] onPage, outOf in
+//                    let fraction = Float(onPage) * Float(nberImagesPerPage) / Float(outOf)
+//                    self.updatePiwigoHUD(withProgress: fraction)
+//                }) { [unowned self] _ in
+//                    // Retrieve complete image data if needed (buttons are greyed until job done)
+//                    if self.imageData?.fileSize == Int64.zero {
+//                        self.retrieveCompleteImageDataOfImage(self.imageData)
+//                    } else {
+//                        hidePiwigoHUD { [unowned self] in
+//                            let isFavorite = CategoriesData.sharedInstance()
+//                                .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
+//                            self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+//                        }
+//                    }
+//                } onFailure: { _, _ in }
+//        } else {
+//            // Retrieve complete image data if needed (buttons are greyed until job done)
+//            if imageData?.fileSize == Int64.zero {
+//                retrieveCompleteImageDataOfImage(imageData)
+//            }
+//        }
 
         // Navigation bar
         let navigationBar = navigationController?.navigationBar
@@ -234,7 +244,7 @@ class ImageViewController: UIViewController {
     }
 
     deinit {
-        debugPrint("••> ImageViewController of image \(imageData.imageId) is being deinitialized.")
+        debugPrint("••> ImageViewController of image \(String(describing: imageData?.pwgID)) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
@@ -253,18 +263,20 @@ class ImageViewController: UIViewController {
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        if let title = imageData.imageTitle, title.isEmpty == false {
-            titleLabel.text = title
+        if let title = imageData?.title, title.string.isEmpty == false {
+            titleLabel.text = ""
+            titleLabel.attributedText = title
         } else {
             // No title => Use file name
-            titleLabel.text = imageData.fileName
+            titleLabel.attributedText = NSAttributedString()
+            titleLabel.text = imageData?.fileName
         }
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            (imageData.dateCreated == imageData.datePosted) {
+            (imageData?.dateCreated == imageData?.datePosted) {
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
@@ -285,7 +297,7 @@ class ImageViewController: UIViewController {
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            if let dateCreated = imageData.dateCreated {
+            if let dateCreated = imageData?.dateCreated {
                 subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
                                                                    dateStyle: .medium, timeStyle: .medium)
             }
@@ -492,60 +504,60 @@ class ImageViewController: UIViewController {
         favoriteBarButton?.isEnabled = state
     }
 
-    private func retrieveCompleteImageDataOfImage(_ imageData: PiwigoImageData) {
+    private func retrieveCompleteImageDataOfImage(_ imageData: Image) {
         // Image data is not complete when retrieved using pwg.categories.getImages
         setEnableStateOfButtons(false)
 
         // Image data is not complete after an upload with pwg.images.upload
-        let imageSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
-        let shouldUpdateImage = (imageData.getURLFromImageSizeType(imageSize) == nil)
+        let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        let shouldUpdateImage = ImageUtilities.getURLs(imageData, ofMinSize: imageSize) == nil
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async {
-            ImageUtilities.getInfos(forID: Int64(imageData.imageId),
-                                    inCategoryId: self.categoryId) { [unowned self] retrievedData in
-                self.imageData = retrievedData
-                // Disable HUD if needed
-                self.hidePiwigoHUD {
-                    if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
-                        self.images[index] = self.imageData
-                        
-                        // Set favorite button
-                        let isFavorite = CategoriesData.sharedInstance()
-                            .category(withId: kPiwigoFavoritesCategoryId,
-                                      containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                        self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-
-                        // Refresh image if needed
-                        if shouldUpdateImage {
-                            for childVC in self.children {
-                                if let previewVC = childVC as? ImagePreviewViewController,
-                                   previewVC.imageIndex == index {
-                                    previewVC.imageData = self.imageData
-                                }
-                            }
-                        }
-                    }
-
-                    // Enable actions
-                    self.setEnableStateOfButtons(true)
-                }
-            } failure: { error in
-                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-                self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                             errorMessage: error.localizedDescription, dismiss: {
-                }, retry: { [unowned self] in
-                    // Relogin and retry
-                    LoginUtilities.reloginAndRetry() { [unowned self] in
-                        retrieveCompleteImageDataOfImage(self.imageData)
-                    } failure: { [self] error in
-                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                        dismissPiwigoError(withTitle: title, message: message,
-                                           errorMessage: error?.localizedDescription ?? "") { }
-                    }
-                })
-            }
+//            ImageUtilities.getInfos(forID: imageData.pwgID,
+//                                    inCategoryId: self.categoryId) { [unowned self] retrievedData in
+//                self.imageData = retrievedData
+//                // Disable HUD if needed
+//                self.hidePiwigoHUD {
+//                    if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
+//                        self.images[index] = self.imageData
+//
+//                        // Set favorite button
+//                        let isFavorite = CategoriesData.sharedInstance()
+//                            .category(withId: kPiwigoFavoritesCategoryId,
+//                                      containsImagesWithId: [NSNumber(value: imageData.imageId)])
+//                        self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+//
+//                        // Refresh image if needed
+//                        if shouldUpdateImage {
+//                            for childVC in self.children {
+//                                if let previewVC = childVC as? ImagePreviewViewController,
+//                                   previewVC.imageIndex == index {
+//                                    previewVC.imageData = self.imageData
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    // Enable actions
+//                    self.setEnableStateOfButtons(true)
+//                }
+//            } failure: { error in
+//                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+//                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+//                self.dismissRetryPiwigoError(withTitle: title, message: message,
+//                                             errorMessage: error.localizedDescription, dismiss: {
+//                }, retry: { [unowned self] in
+//                    // Relogin and retry
+//                    LoginUtilities.reloginAndRetry() { [unowned self] in
+//                        retrieveCompleteImageDataOfImage(imageData)
+//                    } failure: { [self] error in
+//                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+//                        dismissPiwigoError(withTitle: title, message: message,
+//                                           errorMessage: error?.localizedDescription ?? "") { }
+//                    }
+//                })
+//            }
         }
     }
 
@@ -556,10 +568,12 @@ class ImageViewController: UIViewController {
     }
 
     @objc func didTapOnce() {
+        guard let imageData = imageData else { return }
+        
         // Should we do something else?
         if imageData.isVideo {
             // User wants to play/replay the video
-            startVideoPlayerView(with: imageData)
+//            startVideoPlayerView(with: imageData)
         }
         else {
             // Display/hide the navigation bar
@@ -591,6 +605,8 @@ class ImageViewController: UIViewController {
     }
     
     @objc func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
+        guard let imageData = imageData else { return }
+
         // Should we do something else?
         if imageData.isVideo { return }
 
@@ -653,12 +669,12 @@ extension ImageViewController: UIPageViewControllerDelegate
         // Retrieve complete image data if needed
         for pendingVC in pendingViewControllers {
             if let previewVC = pendingVC as? ImagePreviewViewController,
-               previewVC.imageIndex < images.count {
-                let imageData = images[previewVC.imageIndex]
-                if imageData.fileSize == NSNotFound {
+               previewVC.imageIndex < images?.fetchedObjects?.count ?? 0 {
+                let imageData = images?.object(at: IndexPath(item: previewVC.imageIndex, section: 0))
+                if imageData?.fileSize == Int64.zero {
                     // Retrieve image data in case user will want to copy,
                     // edit, move, etc. the image
-                    retrieveCompleteImageDataOfImage(imageData)
+//                    retrieveCompleteImageDataOfImage(imageData)
                 }
             }
         }
@@ -677,20 +693,18 @@ extension ImageViewController: UIPageViewControllerDelegate
         // To prevent crash reported by AppStore here on August 26th, 2017
         currentIndex = max(0, currentIndex)
         // To prevent crash reported by AppleStore in November 2017
-        currentIndex = min(currentIndex, images.count - 1)
+        currentIndex = min(currentIndex, images?.fetchedObjects?.count ?? 0 - 1)
         // Remember index of presented page
         imageIndex = currentIndex
-        imageData = images[currentIndex]
+        imageData = images?.object(at: IndexPath(item: currentIndex, section: 0))
 
         pvc.imagePreviewDelegate = self
-        progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
+        progressBar.isHidden = pvc.imageLoaded || imageData?.isVideo ?? false
         setTitleViewFromImageData()
         updateNavBar()
 
         // Scroll album collection view to keep the selected image centered on the screen
-        if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didSelectImage(withId:))) ?? false {
-            imgDetailDelegate?.didSelectImage(withId: imageData.imageId)
-        }
+//        imgDetailDelegate?.didSelectImage(withId: imageData?.pwgID)
     }
 }
 
@@ -702,7 +716,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
         imagePage.imageIndex = index
-        imagePage.imageData = images[index]
+        imagePage.imageData = images?.object(at: IndexPath(item: index, section: 0))
         imagePage.imageLoaded = false
         return imagePage
     }
@@ -710,19 +724,19 @@ extension ImageViewController: UIPageViewControllerDataSource
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if (imageIndex >= images.count - 1) {
+        if (imageIndex >= images?.fetchedObjects?.count ?? 0 - 1) {
             // Reached the end of the category
             return nil
         }
 
         // Should we load more images?
-        let albumData = CategoriesData.sharedInstance().getCategoryById(Int(categoryId))
-        let totalImageCount = albumData?.numberOfImages ?? 0
-        let downloadedImageCount = albumData?.imageList?.count ?? 0
-        if totalImageCount > 0, downloadedImageCount < totalImageCount,
-           imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
-                imgDetailDelegate?.needToLoadMoreImages()
-        }
+//        let albumData = CategoriesData.sharedInstance().getCategoryById(Int(categoryId))
+//        let totalImageCount = albumData?.numberOfImages ?? 0
+//        let downloadedImageCount = albumData?.imageList?.count ?? 0
+//        if totalImageCount > 0, downloadedImageCount < totalImageCount,
+//           imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
+//                imgDetailDelegate?.needToLoadMoreImages()
+//        }
 
         // Create view controller for presenting next image
         return imagePageViewController(atIndex: imageIndex + 1)

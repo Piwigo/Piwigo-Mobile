@@ -120,57 +120,57 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
         // Retrieve image thumbnail from Piwigo server
         var thumbnailUrl: String?
-        let albumThumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)
+        let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)
         switch albumThumbnailSize {
-        case kPiwigoImageSizeSquare:
+        case .square:
             if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
                 thumbnailUrl = squarePath
             } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeXXSmall:
+        case .xxSmall:
             if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
                 thumbnailUrl = xxSmallPath
             } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                 thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeXSmall:
+        case .xSmall:
             if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
                 thumbnailUrl = xSmallPath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeSmall:
+        case .small:
             if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
                 thumbnailUrl = smallPath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeMedium:
+        case .medium:
             if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
                 thumbnailUrl = mediumPath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeLarge:
+        case .large:
             if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
                 thumbnailUrl = largePath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeXLarge:
+        case .xLarge:
             if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
                 thumbnailUrl = xLargePath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeXXLarge:
+        case .xxLarge:
             if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
                 thumbnailUrl = xxLargePath
             }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
                  thumbnailUrl = thumbPath
             }
-        case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
+        case .thumb, .fullRes:
             fallthrough
         default:
             thumbnailUrl = imageData.thumbPath

@@ -17,194 +17,188 @@ class ShareUtilities {
     /// - Download the image file and store it in /tmp.
     
     // URL request of image to download
-    class func getUrlRequest(forImage image: PiwigoImageData,
+    class func getUrlRequest(forImage image: Image,
                              withMaxSize wantedSize: Int) -> URLRequest? {
         // If this is a video, always select the full resolution file, i.e. the video.
         if image.isVideo {
             // NOP if no image can be downloaded
-            if image.fullResPath.isEmpty { return nil }
-            if let url = URL(string: image.fullResPath) {
-                return URLRequest(url: url)
+            guard let fileURL = image.fullRes?.url as? URL else {
+                return nil
             }
-            return nil
+            return URLRequest(url: fileURL)
         }
         
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
         /// - Note: image.width and .height are always > 1
-        var selectedURLRequest = ""
+        var selectedURL: URL?
         var selectedSize = Int.zero
 
         // Square Size (should always be available)
-        if image.squarePath.isEmpty == false {
+        if let fileURL = image.squareRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.squareWidth, image.squareHeight)
+            let size = max(image.squareRes?.width ?? 1, image.squareRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.squarePath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // Thumbnail Size (should always be available)
-        if image.thumbPath.isEmpty == false {
+        if let fileURL = image.thumbRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.thumbWidth, image.thumbHeight)
+            let size = max(image.thumbRes?.width ?? 1, image.thumbRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.thumbPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.thumbPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // XX Small Size
-        if image.xxSmallPath.isEmpty == false {
+        if let fileURL = image.xxsmallRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.xxSmallWidth, image.xxSmallHeight)
+            let size = max(image.xxsmallRes?.width ?? 1, image.xxsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.xxSmallPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.xxSmallPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // X Small Size
-        if image.xSmallPath.isEmpty == false {
+        if let fileURL = image.xsmallRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.xSmallWidth, image.xSmallHeight)
+            let size = max(image.xsmallRes?.width ?? 1, image.xsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.xSmallPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.xSmallPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // Small Size
-        if image.smallPath.isEmpty == false {
+        if let fileURL = image.smallRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.smallWidth, image.smallHeight)
+            let size = max(image.smallRes?.width ?? 1, image.smallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.smallPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.smallPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // Medium Size (should always be available)
-        if image.mediumPath.isEmpty == false {
+        if let fileURL = image.mediumRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.mediumWidth, image.mediumHeight)
+            let size = max(image.mediumRes?.width ?? 1, image.mediumRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.mediumPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.mediumPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // Large Size
-        if image.largePath.isEmpty == false {
+        if let fileURL = image.largeRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.largeWidth, image.largeHeight)
+            let size = max(image.largeRes?.width ?? 1, image.largeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.largePath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.largePath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // X Large Size
-        if image.xLargePath.isEmpty == false {
+        if let fileURL = image.xlargeRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.xLargeWidth, image.xLargeHeight)
+            let size = max(image.xlargeRes?.width ?? 1, image.xlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.xLargePath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.xLargePath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // XX Large Size
-        if image.xxLargePath.isEmpty == false {
+        if let fileURL = image.xxlargeRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.xxLargeWidth, image.xxLargeHeight)
+            let size = max(image.xxlargeRes?.width ?? 1, image.xxlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.xxLargePath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.xxLargePath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // Full Resolution
-        if image.fullResPath.isEmpty == false {
+        if let fileURL = image.fullRes?.url as? URL {
             // Max dimension of this image
-            let size = max(image.fullResWidth, image.fullResHeight)
+            let size = max(image.fullRes?.width ?? 1, image.fullRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if selectedURLRequest.isEmpty {
-                selectedURLRequest = image.fullResPath
+            if selectedURL == nil {
+                selectedURL = fileURL
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = image.fullResPath
+                selectedURL = fileURL
                 selectedSize = size
             }
         }
 
         // NOP if no image can be downloaded
-        if selectedURLRequest.isEmpty {
-            return nil
+        if let fileURL = selectedURL {
+            return URLRequest(url: fileURL)
         }
-
-        if let url = URL(string: selectedURLRequest) {
-            return URLRequest(url: url)
-        }
-        
         return nil
     }
     
     
     // URL of the image file stored in /tmp before the share
-    class func getFileUrl(ofImage image: PiwigoImageData?,
+    class func getFileUrl(ofImage image: Image?,
                           withURLrequest urlRequest: URLRequest?) -> URL {
         // Get filename from URL request
         var fileName = urlRequest?.url?.lastPathComponent
@@ -213,13 +207,13 @@ class ShareUtilities {
         if fileName?.contains(".php") ?? false {
             // The URL does not contain a file name but a PHP request
             // Sometimes happening with full resolution images, try with medium resolution file
-            fileName = URL(string: image?.mediumPath ?? "")?.lastPathComponent
+            fileName = image?.mediumRes?.url?.lastPathComponent
             
             // Is filename of medium size image still a PHP request?
             if fileName?.contains(".php") ?? false {
                 // The URL does not contain a unique file name but a PHP request
                 // Try using the filename stored in Piwigo image data
-                if (image?.fileName.count ?? 0) > 0 {
+                if image?.fileName.isEmpty == false {
                     // Use the image file name returned by Piwigo
                     fileName = image?.fileName
                 } else {
@@ -258,7 +252,7 @@ class ShareUtilities {
 
     
     // Download image from the Piwigo server
-    class func downloadImage(with piwigoData: PiwigoImageData, at urlRequest: URLRequest,
+    class func downloadImage(with imageData: Image, at urlRequest: URLRequest,
                              onProgress progress: @escaping (Progress?) -> Void,
                              completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
                              ) -> URLSessionDownloadTask? {
@@ -268,7 +262,7 @@ class ShareUtilities {
             with: urlRequest,
             progress: progress,
             destination: { targetPath, response in
-                return self.getFileUrl(ofImage: piwigoData, withURLrequest: urlRequest)
+                return self.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
             },
             completionHandler: completionHandler)
         task.resume()

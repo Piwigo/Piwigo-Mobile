@@ -19,7 +19,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     // MARK: - Initialisation
     weak var delegate: ShareImageActivityItemProviderDelegate?
 
-    private var imageData: PiwigoImageData              // Piwigo image data
+    private var imageData: Image                        // Core Data image
     private var task: URLSessionDownloadTask?           // Download task
     private var exportSession: AVAssetExportSession?    // Export session
     private var alertTitle: String?                     // Used if task cancels or fails
@@ -46,27 +46,24 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     
     
     // MARK: - Placeholder Image
-    init(placeholderImage imageData: PiwigoImageData) {
+    init(placeholderImage: Image) {
         // Store Piwigo image data for future use
-        self.imageData = imageData
+        self.imageData = placeholderImage
 
         // We use the thumbnail cached in memory
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
-        guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
         
         // Retrieve thumbnail image
-        let thumb = UIImageView()
-        thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
-        if let thumbnailImage = thumb.image {
-            imageFileURL = thumbnailURL
-            let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
+        imageFileURL = imageURL as URL
+        if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
+            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
-            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 
@@ -373,7 +370,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
-            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: Int64(self.imageData.imageId))
+            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: self.imageData.pwgID)
         })
     }
     
@@ -416,12 +413,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let linkMetaData = LPLinkMetadata()
         
         // We use the thumbnail in cache
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
-        if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        if let fileURL = ImageUtilities.getURLs(imageData, ofMinSize: size)?.1 {
             // Retrieve thumbnail image
-            let thumb = UIImageView()
-            thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
-            if let thumbnailImage = thumb.image {
+            if let thumbnailImage = UIImage(contentsOfFile: fileURL.path) {
                 linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
             } else {
                 linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)

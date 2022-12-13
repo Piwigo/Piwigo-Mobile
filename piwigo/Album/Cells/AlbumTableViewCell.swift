@@ -118,37 +118,25 @@ class AlbumTableViewCell: MGSwipeTableCell {
             return
         }
 
-        // Do we have the thumbnail in cache?
-        let fileUrl = DataController.cacheDirectory.appendingPathComponent(serverID)
-                                                   .appendingPathComponent(pwgImageSize.thumb.path)
-                                                   .appendingPathComponent(thumbID)
-        // Get cached image
-        if let cachedImage: UIImage = UIImage(contentsOfFile: fileUrl.path),
-            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-            cachedImage != placeHolder {
-            // Album thumbnail in cache
-            print("••> Image \(thumbID) retrieved from cache.")
-            backgroundImage.image = cachedImage
-            return
-        }
-        
-        // Retrieve the image file
-        print("••> download album thumbnail image at \(thumbUrl.absoluteString ?? "—?—")")
-        let size: CGSize = backgroundImage.bounds.size
-        let scale = CGFloat(fmax(1.0, backgroundImage.traitCollection.displayScale))
-        ImageSession.shared.downloadImage(atURL: thumbUrl as URL,
-                                          cachingAtURL: fileUrl) { [self] image in
+        // Retrieve image in cache or download it
+        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        let fileUrl = cacheDir.appendingPathComponent(imageSize.path).appendingPathComponent(thumbID)
+        ImageSession.shared.setImage(withURL: thumbUrl as URL, cachedAt: fileUrl,
+                                     placeHolder: placeHolder) { [self] cachedImage in
             DispatchQueue.global(qos: .userInitiated).async {
                 // Process saliency
-                var finalImage:UIImage = image
+                var finalImage:UIImage = cachedImage
                 if #available(iOS 13.0, *) {
-                    if let croppedImage = image.processSaliency() {
+                    if let croppedImage = cachedImage.processSaliency() {
                         finalImage = croppedImage
                     }
                 }
                 
                 // Reduce size?
                 let imageSize: CGSize = finalImage.size
+                let size: CGSize = self.backgroundImage.bounds.size
+                let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
                     let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
                     DispatchQueue.main.async { [self] in
@@ -160,10 +148,11 @@ class AlbumTableViewCell: MGSwipeTableCell {
                     }
                 }
             }
-        } failure: { error in
-            #if DEBUG
-            debugPrint("downloadImage() — Fail to get album image at \(albumData?.thumbnailUrl?.absoluteString ?? "—?—")")
-            #endif
+        } failure: { _ in
+            DispatchQueue.main.async { [self] in
+                // No album thumbnail URL
+                self.backgroundImage.image = placeHolder
+            }
         }
     }
     

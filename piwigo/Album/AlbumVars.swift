@@ -33,8 +33,8 @@ class AlbumVars: NSObject {
     @objc var defaultCategory: Int32
 
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
-    @UserDefault("defaultAlbumThumbnailSize", defaultValue: PiwigoImageData.optimumAlbumThumbnailSizeForDevice().rawValue)
-    @objc var defaultAlbumThumbnailSize: UInt32
+    @UserDefault("defaultAlbumThumbnailSize", defaultValue: AlbumUtilities.optimumAlbumThumbnailSizeForDevice().rawValue)
+    @objc var defaultAlbumThumbnailSize: Int16
 
     /// - List of albums recently visited / used
     @UserDefault("recentCategories", defaultValue: "0")
@@ -60,9 +60,9 @@ class AlbumVars: NSObject {
     @UserDefault("displayImageTitles", defaultValue: true)
     @objc var displayImageTitles: Bool
 
-    /// - Album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
-    @UserDefault("defaultThumbnailSize", defaultValue: PiwigoImageData.optimumImageThumbnailSizeForDevice().rawValue)
-    @objc var defaultThumbnailSize: UInt32
+    /// - Image thumbnail size determined from the available image sizes
+    @UserDefault("defaultThumbnailSize", defaultValue: AlbumUtilities.optimumThumbnailSizeForDevice().rawValue)
+    @objc var defaultThumbnailSize: Int16
 
     /// - Number of images per row in portrait mode
     @UserDefault("thumbnailsPerRowInPortrait", defaultValue: UIDevice.current.userInterfaceIdiom == .phone ? 4 : 6)

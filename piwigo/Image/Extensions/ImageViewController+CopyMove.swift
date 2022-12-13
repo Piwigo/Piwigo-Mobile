@@ -89,7 +89,7 @@ extension ImageViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage(withData imageData: PiwigoImageData) {
         // Update image data
-        self.imageData = imageData
+//        self.imageData = imageData
 
         // Re-enable buttons
         setEnableStateOfButtons(true)

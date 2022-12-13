@@ -107,16 +107,16 @@ typedef enum NSInteger {
 
 @property (nonatomic, assign) BOOL isVideo;
 
--(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
-+(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize;
+//-(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
+//+(CGFloat)widthForImageSizeType:(kPiwigoImageSize)imageSize;
 
-+(kPiwigoImageSize)optimumAlbumThumbnailSizeForDevice;
-+(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
+//+(kPiwigoImageSize)optimumAlbumThumbnailSizeForDevice;
+//+(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
-+(kPiwigoImageSize)optimumImageThumbnailSizeForDevice;
-+(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
+//+(kPiwigoImageSize)optimumImageThumbnailSizeForDevice;
+//+(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
-+(kPiwigoImageSize)optimumImageSizeForDevice;
-+(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
+//+(kPiwigoImageSize)optimumImageSizeForDevice;
+//+(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
 @end

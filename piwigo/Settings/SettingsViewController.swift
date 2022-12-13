@@ -554,8 +554,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize)
-                let defaultSize = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
+                let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                let defaultSize = AlbumUtilities.albumThumbnailSizeName(for: albumImageSize)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -661,7 +661,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize), withInfo: false)!
+                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                let defaultSize = AlbumUtilities.thumbnailSizeName(for: thumbnailSize)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -684,8 +685,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize))
-                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forView: nil, maxWidth: defaultWidth))
+                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                let defaultWidth = thumbnailSize.minPixels
+                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
                 if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
@@ -742,7 +744,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageSizeType: kPiwigoImageSize(ImageVars.shared.defaultImagePreviewSize), withInfo: false)!
+                let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+                let defaultSize = ImageUtilities.imageSizeName(for: imageSize)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -1974,85 +1977,6 @@ extension SettingsViewController: SelectCategoryDelegate {
     }
 }
 
-
-// MARK: - DefaultAlbumThumbnailSizeDelegate Methods
-extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
-    func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize) { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
-
-        // Refresh settings row
-        let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
-        }
-    }
-}
-
-
-// MARK: - CategorySortDelegate Methods
-extension SettingsViewController: CategorySortDelegate {
-    func didSelectCategorySortType(_ sortType: pwgImageSort) {
-        // Do nothing if sort type is unchanged
-        if sortType == AlbumVars.shared.defaultSort { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultSort = sortType
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = sortType.name
-        }
-        
-        // Clear image data in cache
-        for category in CategoriesData.sharedInstance().allCategories {
-            category.resetData()
-        }
-    }
-}
-
-
-// MARK: - DefaultImageThumbnailSizeDelegate Methods
-extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
-    func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize) { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
-        }
-    }
-}
-
-// MARK: - DefaultImageSizeDelegate Methods
-extension SettingsViewController: DefaultImageSizeDelegate {
-    func didSelectImageDefaultSize(_ imageSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if imageSize == kPiwigoImageSize(ImageVars.shared.defaultImagePreviewSize) { return }
-        
-        // Save new choice
-        ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 4, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: imageSize, withInfo: false)!
-        }
-    }
-}
 
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {

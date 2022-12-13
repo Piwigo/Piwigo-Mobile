@@ -12,13 +12,13 @@ import UIKit
 import piwigoKit
 
 protocol DefaultImageSizeDelegate: NSObjectProtocol {
-    func didSelectImageDefaultSize(_ imageSize: kPiwigoImageSize)
+    func didSelectImageDefaultSize(_ imageSize: pwgImageSize)
 }
 
 class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     weak var delegate: DefaultImageSizeDelegate?
-    private var currentImageSize = kPiwigoImageSize(ImageVars.shared.defaultImagePreviewSize)
+    private var currentImageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     
     @IBOutlet var tableView: UITableView!
     
@@ -108,7 +108,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(kPiwigoImageSizeEnumCount.rawValue)
+        return pwgImageSize.allCases.count
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -118,7 +118,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = kPiwigoImageSize(UInt32(indexPath.row))
+        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .fullRes
 
         // Name of the image size
         cell.backgroundColor = .piwigoColorCellBackground()
@@ -136,96 +136,94 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
 
         // Disable unavailable sizes
         switch imageSize {
-            case kPiwigoImageSizeSquare:
-                cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = .piwigoColorRightLabel()
-                if !AlbumVars.shared.hasSquareSizeImages {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                } else {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                }
-            case kPiwigoImageSizeThumb:
-                cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = .piwigoColorRightLabel()
-                if !AlbumVars.shared.hasThumbSizeImages {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                } else {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                }
-            case kPiwigoImageSizeXXSmall:
-                cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = .piwigoColorRightLabel()
-                if !AlbumVars.shared.hasXXSmallSizeImages {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                } else {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                }
-            case kPiwigoImageSizeXSmall:
-                cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = .piwigoColorRightLabel()
-                if !AlbumVars.shared.hasXSmallSizeImages {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                } else {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                }
-            case kPiwigoImageSizeSmall:
-                cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = .piwigoColorRightLabel()
-                if !AlbumVars.shared.hasSmallSizeImages {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                } else {
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                }
-            case kPiwigoImageSizeMedium:
-                if AlbumVars.shared.hasMediumSizeImages {
-                    cell.isUserInteractionEnabled = true
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                } else {
-                    cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = .piwigoColorRightLabel()
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                }
-            case kPiwigoImageSizeLarge:
-                if AlbumVars.shared.hasLargeSizeImages {
-                    cell.isUserInteractionEnabled = true
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                } else {
-                    cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = .piwigoColorRightLabel()
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                }
-            case kPiwigoImageSizeXLarge:
-                if AlbumVars.shared.hasXLargeSizeImages {
-                    cell.isUserInteractionEnabled = true
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                } else {
-                    cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = .piwigoColorRightLabel()
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                }
-            case kPiwigoImageSizeXXLarge:
-                if AlbumVars.shared.hasXXLargeSizeImages {
-                    cell.isUserInteractionEnabled = true
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-                } else {
-                    cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = .piwigoColorRightLabel()
-                    cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
-                    cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
-                }
-            case kPiwigoImageSizeFullRes:
+        case .square:
+            cell.isUserInteractionEnabled = false
+            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            if !AlbumVars.shared.hasSquareSizeImages {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
+            } else {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            }
+        case .thumb:
+            cell.isUserInteractionEnabled = false
+            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            if !AlbumVars.shared.hasThumbSizeImages {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)"))
+            } else {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            }
+        case .xxSmall:
+            cell.isUserInteractionEnabled = false
+            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            if !AlbumVars.shared.hasXXSmallSizeImages {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
+            } else {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            }
+        case .xSmall:
+            cell.isUserInteractionEnabled = false
+            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            if !AlbumVars.shared.hasXSmallSizeImages {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)"))
+            } else {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            }
+        case .small:
+            cell.isUserInteractionEnabled = false
+            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            if !AlbumVars.shared.hasSmallSizeImages {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
+            } else {
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            }
+        case .medium:
+            if AlbumVars.shared.hasMediumSizeImages {
                 cell.isUserInteractionEnabled = true
-                cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
-            default:
-                break
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            } else {
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)"))
+            }
+        case .large:
+            if AlbumVars.shared.hasLargeSizeImages {
+                cell.isUserInteractionEnabled = true
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            } else {
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
+            }
+        case .xLarge:
+            if AlbumVars.shared.hasXLargeSizeImages {
+                cell.isUserInteractionEnabled = true
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            } else {
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
+            }
+        case .xxLarge:
+            if AlbumVars.shared.hasXXLargeSizeImages {
+                cell.isUserInteractionEnabled = true
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
+            } else {
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
+                cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize)
+                cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)"))
+            }
+        case .fullRes:
+            cell.isUserInteractionEnabled = true
+            cell.textLabel?.text = ImageUtilities.imageSizeName(for: imageSize, withInfo: true)
         }
 
         return cell
@@ -251,11 +249,12 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Did the user change of default size
-        if kPiwigoImageSize(UInt32(indexPath.row)) == currentImageSize { return }
+        guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
+        if selectedSize == currentImageSize { return }
 
         // Update default size
         tableView.cellForRow(at: IndexPath(row: Int(currentImageSize.rawValue), section: 0))?.accessoryType = .none
-        currentImageSize = kPiwigoImageSize(UInt32(indexPath.row))
+        currentImageSize = selectedSize
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

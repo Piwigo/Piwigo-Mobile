@@ -59,26 +59,26 @@ extension AlbumViewController
         for imageData in selectedImageData {
             if imageData.isVideo {
                 // Case of a video
-                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
+//                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
 
                 // Use delegation to monitor the progress of the item method
-                videoItemProvider.delegate = self
+//                videoItemProvider.delegate = self
 
                 // Add to list of items to share
-                itemsToShare.append(videoItemProvider)
+//                itemsToShare.append(videoItemProvider)
 
                 // Exclude "assign to contact" activity
                 excludedActivityTypes.append(.assignToContact)
                 
             } else {
                 // Case of an image
-                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
+//                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
 
                 // Use delegation to monitor the progress of the item method
-                imageItemProvider.delegate = self
+//                imageItemProvider.delegate = self
 
                 // Add to list of items to share
-                itemsToShare.append(imageItemProvider)
+//                itemsToShare.append(imageItemProvider)
             }
         }
 

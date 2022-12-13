@@ -50,48 +50,49 @@ class AlbumUtilities: NSObject {
 
     
     // MARK: - Piwigo Server Methods
-    static func thumbnailSizeArg() -> String {
-        var sizeArg = "thumb"
-        switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
-        case kPiwigoImageSizeSquare:
-            if AlbumVars.shared.hasSquareSizeImages {
-                sizeArg = "square"
-            }
-        case kPiwigoImageSizeXXSmall:
-            if AlbumVars.shared.hasXXSmallSizeImages {
-                sizeArg = "2small"
-            }
-        case kPiwigoImageSizeXSmall:
-            if AlbumVars.shared.hasXSmallSizeImages {
-                sizeArg = "xsmall"
-            }
-        case kPiwigoImageSizeSmall:
-            if AlbumVars.shared.hasSmallSizeImages {
-                sizeArg = "small"
-            }
-        case kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
-            if AlbumVars.shared.hasMediumSizeImages {
-                sizeArg = "medium"
-            }
-        case kPiwigoImageSizeLarge:
-            if AlbumVars.shared.hasLargeSizeImages {
-                sizeArg = "large"
-            }
-        case kPiwigoImageSizeXLarge:
-            if AlbumVars.shared.hasXLargeSizeImages {
-                sizeArg = "xlarge"
-            }
-        case kPiwigoImageSizeXXLarge:
-            if AlbumVars.shared.hasXXLargeSizeImages {
-                sizeArg = "xxlarge"
-            }
-        case kPiwigoImageSizeThumb:
-            fallthrough
-        default:
-            sizeArg = "thumb"
-        }
-        return sizeArg
-    }
+//    static func thumbnailSizeArg() -> String {
+//        // Defaults to thumbnail size
+//        var sizeArg = pwgImageSize.thumb.argument
+//        let defaultSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
+//        
+//        switch defaultSize {
+//        case .square:
+//            if AlbumVars.shared.hasSquareSizeImages {
+//                sizeArg = pwgImageSize.square.argument
+//            }
+//        case .xxSmall:
+//            if AlbumVars.shared.hasXXSmallSizeImages {
+//                sizeArg = pwgImageSize.xxSmall.argument
+//            }
+//        case .xSmall:
+//            if AlbumVars.shared.hasXSmallSizeImages {
+//                sizeArg = pwgImageSize.xSmall.argument
+//            }
+//        case .small:
+//            if AlbumVars.shared.hasSmallSizeImages {
+//                sizeArg = pwgImageSize.small.argument
+//            }
+//        case .medium, .fullRes:
+//            if AlbumVars.shared.hasMediumSizeImages {
+//                sizeArg = pwgImageSize.medium.argument
+//            }
+//        case .large:
+//            if AlbumVars.shared.hasLargeSizeImages {
+//                sizeArg = pwgImageSize.large.argument
+//            }
+//        case .xLarge:
+//            if AlbumVars.shared.hasXLargeSizeImages {
+//                sizeArg = pwgImageSize.xLarge.argument
+//            }
+//        case .xxLarge:
+//            if AlbumVars.shared.hasXXLargeSizeImages {
+//                sizeArg = pwgImageSize.xxLarge.argument
+//            }
+//        case .thumb:
+//            break
+//        }
+//        return sizeArg
+//    }
     
 //    static func getAlbums(completion: @escaping (Bool) -> Void,
 //                          failure: @escaping (NSError) -> Void) {
@@ -650,6 +651,93 @@ class AlbumUtilities: NSObject {
     
 
     // MARK: - Album/Images Collections | Image Thumbnails
+    static func optimumThumbnailSizeForDevice() -> pwgImageSize {
+        // Get optimum number of images per row
+        let nberThumbnailsPerRow = self.minNberOfImagesPerRow()
+
+        // Square?
+        var minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.square.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .square
+        }
+        
+        // Thumbnail?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.thumb.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .thumb
+        }
+
+        // XXSmall?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xxSmall.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .xxSmall
+        }
+
+        // XSmall?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xSmall.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .xSmall
+        }
+
+        // Small?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.small.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .small
+        }
+
+        // Medium?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.medium.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .medium
+        }
+
+        // Large?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.large.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .large
+        }
+
+        // XLarge?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xLarge.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .xLarge
+        }
+
+        // XXLarge?
+        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xxLarge.minPixels)
+        if minNberOfImages <= nberThumbnailsPerRow {
+            return .xxLarge
+        }
+        
+        return .thumb
+    }
+
+    static func thumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
+        var sizeName = size.name
+        
+        // Determine the optimum image size for the current device
+        let optimumSize = self.optimumThumbnailSizeForDevice()
+
+        // Return name for given thumbnail size
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
+            if withInfo {
+                if size == optimumSize {
+                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
+                } else {
+                    sizeName.append(contentsOf: size.sizeAndScale)
+                }
+            }
+        case .large, .xLarge, .xxLarge:
+            if withInfo {
+                sizeName.append(contentsOf: size.sizeAndScale)
+            }
+        case .fullRes:
+            break
+        }
+        return sizeName
+    }
+
     static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
         var imageCellHorizontalSpacing = CGFloat.zero
         switch type {
@@ -672,6 +760,17 @@ class AlbumUtilities: NSObject {
         return imageCellVerticalSpacing
     }
     
+    static func imagesPerRowInPortrait(forMaxWidth: CGFloat) -> Int {
+        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
+        return imagesPerRowInPortrait(forView: nil, maxWidth: forMaxWidth)
+    }
+
+    @objc
+    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
+        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
+        return imagesPerRowInPortrait(forView: view, maxWidth: maxWidth, collectionType: .full)
+    }
+
     static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat,
                                        collectionType type: pwgImageCollectionType) -> Int {
         // We display at least 3 thumbnails per row and images never exceed the thumbnails size
@@ -684,12 +783,6 @@ class AlbumUtilities: NSObject {
         return max(minNberOfImagesPerRow(), nberOfImagePerRow)
     }
 
-    @objc
-    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
-        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-        return imagesPerRowInPortrait(forView: view, maxWidth: maxWidth, collectionType: .full)
-    }
-    
     static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int,
                           collectionType type: pwgImageCollectionType) -> CGFloat {
         // CGFloat version of imagesPerRowInPortrait
@@ -783,6 +876,84 @@ class AlbumUtilities: NSObject {
     
 
     // MARK: - Album/Images Collections | Album Thumbnails
+    static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
+        // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
+        let albumThumbnailSize: CGFloat = 144
+
+        // Square?
+        if pwgImageSize.square.minPixels >= albumThumbnailSize {
+            return .square
+        }
+        
+        // Thumbnail?
+        if pwgImageSize.thumb.minPixels >= albumThumbnailSize {
+            return .thumb
+        }
+        
+        // XXSmall?
+        if pwgImageSize.xxSmall.minPixels >= albumThumbnailSize {
+            return .xxSmall
+        }
+        
+        // XSmall?
+        if pwgImageSize.xSmall.minPixels >= albumThumbnailSize {
+            return .xSmall
+        }
+        
+        // Small?
+        if pwgImageSize.small.minPixels >= albumThumbnailSize {
+            return .small
+        }
+        
+        // Medium?
+        if pwgImageSize.medium.minPixels >= albumThumbnailSize {
+            return .medium
+        }
+        
+        // Large?
+        if pwgImageSize.large.minPixels >= albumThumbnailSize {
+            return .large
+        }
+        
+        // XLarge?
+        if pwgImageSize.xLarge.minPixels >= albumThumbnailSize {
+            return .xLarge
+        }
+
+        // XXLarge?
+        if pwgImageSize.xxLarge.minPixels >= albumThumbnailSize {
+            return .xxLarge
+        }
+
+        return .medium
+    }
+    
+    static func albumThumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
+        var sizeName = size.name
+        
+        // Determine the optimum image size for the current device
+        let optimumSize = self.optimumAlbumThumbnailSizeForDevice()
+
+        // Return name for given thumbnail size
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
+            if withInfo {
+                if size == optimumSize {
+                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
+                } else {
+                    sizeName.append(contentsOf: size.sizeAndScale)
+                }
+            }
+        case .large, .xLarge, .xxLarge:
+            if withInfo {
+                sizeName.append(contentsOf: size.sizeAndScale)
+            }
+        case .fullRes:
+            break
+        }
+        return sizeName
+    }
+
     static func imageDetailsSize(forView view: UIView) -> CGFloat {
         // Size of view or screen
         let cellSize = sizeOfPage(forView:view)

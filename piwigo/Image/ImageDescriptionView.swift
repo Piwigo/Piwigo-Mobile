@@ -29,10 +29,11 @@ class ImageDescriptionView: UIVisualEffectView {
         }
     }
     
-    func configDescription(with imageComment:String?,
+    func configDescription(with imageComment:NSAttributedString?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
-        guard let comment = imageComment, comment.isEmpty == false else {
+        guard let comment = imageComment,
+              comment.string.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
@@ -41,7 +42,7 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         
         // Configure the description view
-        descTextView.attributedText = comment.htmlToAttributedString
+        descTextView.attributedText = comment
         let navController = topMostController()?.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 

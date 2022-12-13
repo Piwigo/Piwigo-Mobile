@@ -484,9 +484,7 @@ class EditImageParamsViewController: UIViewController
         ImageUtilities.setInfos(with: paramsDict) {
             // Notify album/image view of modification
             DispatchQueue.main.async {
-                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
-                    self.delegate?.didChangeImageParameters(imageData)
-                }
+//                self.delegate?.didChangeImageParameters(imageData)
             }
 
             // Image properties successfully updated
@@ -941,9 +939,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         }
 
         // Update parent image view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
-            delegate?.didChangeImageParameters(imageData)
-        }
+//        delegate?.didChangeImageParameters(imageData)
     }
 }
 

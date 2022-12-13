@@ -56,6 +56,9 @@ extension ImageViewController
         // To exclude some activity types
         var excludedActivityTypes = [UIActivity.ActivityType]()
 
+        // Check input image data
+        guard let imageData = imageData else { return }
+        
         // Create new activity provider item to pass to the activity view controller
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {

@@ -210,7 +210,7 @@ public class AlbumProvider: NSObject {
      Fetches the album feed from the remote Piwigo server, and imports it into Core Data.
      */
     public func fetchAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
-                            thumbnailSize: String, completion: @escaping (Error?) -> Void) {
+                            thumbnailSize: pwgImageSize, completion: @escaping (Error?) -> Void) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
         print("••> Fetch albums in parent with ID: \(parentId)")
@@ -220,7 +220,7 @@ public class AlbumProvider: NSObject {
             "cat_id"            : parentId,
             "recursive"         : recursively,
             "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
-            "thumbnail_size"    : thumbnailSize
+            "thumbnail_size"    : thumbnailSize.argument
         ]
         
         // Launch the HTTP(S) request

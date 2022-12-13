@@ -289,102 +289,100 @@ class LoginUtilities: NSObject {
                 
                 // Check that the actual default album thumbnail size is available
                 // and select the next available size in case of unavailability
-                switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
-                case kPiwigoImageSizeXXSmall:
+                switch pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
+                case .xxSmall:
                     if !AlbumVars.shared.hasXXSmallSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasXSmallSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall.rawValue
+                            AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.xSmall.rawValue
                         } else if AlbumVars.shared.hasSmallSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
+                            AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.small.rawValue
                         } else {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                            AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                         }
                     }
-                case kPiwigoImageSizeXSmall:
+                case .xSmall:
                     if !AlbumVars.shared.hasXSmallSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasSmallSizeImages {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall.rawValue
+                            AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.small.rawValue
                         } else {
-                            AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                            AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                         }
                     }
-                case kPiwigoImageSizeSmall:
+                case .small:
                     if !AlbumVars.shared.hasSmallSizeImages {
                         // Select next available larger size
-                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                     }
-                case kPiwigoImageSizeLarge:
+                case .large:
                     if !AlbumVars.shared.hasLargeSizeImages {
-                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                     }
-                case kPiwigoImageSizeXLarge:
+                case .xLarge:
                     if !AlbumVars.shared.hasXLargeSizeImages {
-                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                     }
-                case kPiwigoImageSizeXXLarge:
+                case .xxLarge:
                     if !AlbumVars.shared.hasXXLargeSizeImages {
-                        AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                        AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                     }
-                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                case .square, .thumb, .medium, .fullRes:
                     // Should always be available
                     break
                 default:
-                    AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                    AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                 }
                 
                 // Check that the actual default image thumbnail size is available
                 // and select the next available size in case of unavailability
-                switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
-                    case kPiwigoImageSizeXXSmall:
-                        if !AlbumVars.shared.hasXXSmallSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasXSmallSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeXSmall.rawValue
-                            } else if AlbumVars.shared.hasSmallSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                            } else {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
+                switch pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
+                case .xxSmall:
+                    if !AlbumVars.shared.hasXXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasXSmallSizeImages {
+                            AlbumVars.shared.defaultThumbnailSize = pwgImageSize.xSmall.rawValue
+                        } else if AlbumVars.shared.hasSmallSizeImages {
+                            AlbumVars.shared.defaultThumbnailSize = pwgImageSize.small.rawValue
+                        } else {
+                            AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
                         }
-                    case kPiwigoImageSizeXSmall:
-                        if !AlbumVars.shared.hasXSmallSizeImages {
-                            // Look for next available larger size
-                            if AlbumVars.shared.hasSmallSizeImages {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall.rawValue
-                            } else {
-                                AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                            }
+                    }
+                case .xSmall:
+                    if !AlbumVars.shared.hasXSmallSizeImages {
+                        // Look for next available larger size
+                        if AlbumVars.shared.hasSmallSizeImages {
+                            AlbumVars.shared.defaultThumbnailSize = pwgImageSize.small.rawValue
+                        } else {
+                            AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
                         }
-                    case kPiwigoImageSizeSmall:
-                        if !AlbumVars.shared.hasSmallSizeImages {
-                            // Select next available larger size
-                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeLarge:
-                        if !AlbumVars.shared.hasLargeSizeImages {
-                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeXLarge:
-                        if !AlbumVars.shared.hasXLargeSizeImages {
-                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                    case kPiwigoImageSizeXXLarge:
-                        if !AlbumVars.shared.hasXXLargeSizeImages {
-                            AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
-                        }
-                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                    }
+                case .small:
+                    if !AlbumVars.shared.hasSmallSizeImages {
+                        // Select next available larger size
+                        AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
+                    }
+                case .large:
+                    if !AlbumVars.shared.hasLargeSizeImages {
+                        AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
+                    }
+                case .xLarge:
+                    if !AlbumVars.shared.hasXLargeSizeImages {
+                        AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
+                    }
+                case .xxLarge:
+                    if !AlbumVars.shared.hasXXLargeSizeImages {
+                        AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
+                    }
+                case .square, .thumb, .medium, .fullRes:
                     // Should always be available
                     break
                 default:
-                    AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium.rawValue
+                    AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
                 }
 
                 // Calculate number of thumbnails per row for that selection
-                let minNberOfImages = AlbumUtilities.imagesPerRowInPortrait(forView: nil, maxWidth: PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)))
+                let minNberOfImages = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: (pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb).minPixels)
 
                 // Make sure that default number fits inside selected range
                 AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
@@ -392,62 +390,61 @@ class LoginUtilities: NSObject {
 
                 // Check that the actual default image preview size is still available
                 // and select the next available size in case of unavailability
-                switch kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) {
-                case kPiwigoImageSizeXXSmall:
+                switch pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) {
+                case .xxSmall:
                     if !AlbumVars.shared.hasXXSmallSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasXSmallSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXSmall.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xSmall.rawValue
                         } else if AlbumVars.shared.hasSmallSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.small.rawValue
                         } else {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
                         }
                     }
-                case kPiwigoImageSizeXSmall:
+                case .xSmall:
                     if !AlbumVars.shared.hasXSmallSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasSmallSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.small.rawValue
                         } else {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
                         }
                     }
-                case kPiwigoImageSizeSmall:
+                case .small:
                     if !AlbumVars.shared.hasSmallSizeImages {
                         // Select next available larger size
-                        ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium.rawValue
+                        ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
                     }
-                case kPiwigoImageSizeLarge:
+                case .large:
                     if !AlbumVars.shared.hasLargeSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasXLargeSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXLarge.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xLarge.rawValue
                         } else if AlbumVars.shared.hasXXLargeSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xxLarge.rawValue
                         } else {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                         }
                     }
-                case kPiwigoImageSizeXLarge:
+                case .xLarge:
                     if !AlbumVars.shared.hasXLargeSizeImages {
                         // Look for next available larger size
                         if AlbumVars.shared.hasXXLargeSizeImages {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xxLarge.rawValue
                         } else {
-                            ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
+                            ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                         }
                     }
-                case kPiwigoImageSizeXXLarge:
+                case .xxLarge:
                     if !AlbumVars.shared.hasXXLargeSizeImages {
-                        ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
+                        ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                     }
-                case kPiwigoImageSizeSquare, kPiwigoImageSizeThumb,
-                     kPiwigoImageSizeMedium, kPiwigoImageSizeFullRes:
+                case .square, .thumb, .medium, .fullRes:
                     // Should always be available
                     break
                 default:
-                    ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes.rawValue
+                    ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                 }
                 completion()
             }

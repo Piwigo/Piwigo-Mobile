@@ -207,7 +207,6 @@ extension AlbumViewController
         if categoryId < 0 {
             // Use the AlbumProvider to create the album data. On completion,
             // handle general UI updates and error alerts on the main queue.
-            let albumId = Int32(self.categoryId)
             DispatchQueue.global(qos: .userInteractive).async { [self] in
                 // Remember which images belong to this album
                 let oldImageIds = Set(albumData?.images?.compactMap({$0.pwgID}) ?? [])
@@ -215,7 +214,7 @@ extension AlbumViewController
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
+                self.fetchImages(ofAlbumWithId: self.categoryId, imageIds: oldImageIds,
                                  fromPage: 0, toPage: 0, perPage: perPage) {
                     completion()
                 }
@@ -230,7 +229,7 @@ extension AlbumViewController
     private func fetchAlbums(completion: @escaping () -> Void) {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        let thumnailSize = AlbumUtilities.thumbnailSizeArg()
+        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         albumProvider.fetchAlbums(inParentWithId: categoryId,
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {

@@ -69,17 +69,38 @@ class ImageSession: NSObject {
     
 
     // MARK: - Session Methods
-    public func downloadImage(atURL imageUrl: URL, cachingAtURL fileUrl: URL,
+    func setImage(withURL imageURL: URL, cachedAt fileURL: URL, placeHolder: UIImage,
+                  success: @escaping (UIImage) -> Void,
+                  failure: @escaping (Error?) -> Void) {
+        // Get cached image
+        if let cachedImage: UIImage = UIImage(contentsOfFile: fileURL.path),
+           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
+           cachedImage != placeHolder {
+            print("••> Image \(fileURL.lastPathComponent) retrieved from cache.")
+            success(cachedImage)
+            return
+        }
+
+        // Retrieve the image file
+        downloadImage(atURL: imageURL, cachingAtURL: fileURL) { downloadedImage in
+            success(downloadedImage)
+        } failure: { error in
+            failure(error)
+        }
+    }
+
+    public func downloadImage(atURL imageURL: URL, cachingAtURL fileURL: URL,
                               fileSize: Int64 = NSURLSessionTransferSizeUnknown,
                               success: @escaping (UIImage) -> Void,
                               failure: @escaping (Error?) -> Void) {
         // Create download task
-        let request = URLRequest(url: imageUrl)
+        let request = URLRequest(url: imageURL)
         let task = dataSession.dataTask(with: request) { data, response, error in
             // Check returned image data
             guard let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
                   let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
                   let data = data, error == nil, let image = UIImage(data: data) else {
+                print("••> Could not download image from \(imageURL.absoluteString): \(error?.localizedDescription ?? "Unknown!")")
                 failure(error)
                 return
             }
@@ -88,19 +109,19 @@ class ImageSession: NSObject {
             DispatchQueue.global(qos: .background).async {
                 // Create parent directories if needed
                 let fm = FileManager.default
-                let dirUrl = fileUrl.deletingLastPathComponent()
-                if fm.fileExists(atPath: dirUrl.path) == false {
-                    print("••> Create directory \(dirUrl.path)")
-                    try? fm.createDirectory(at: dirUrl, withIntermediateDirectories: true,
+                let dirURL = fileURL.deletingLastPathComponent()
+                if fm.fileExists(atPath: dirURL.path) == false {
+                    print("••> Create directory \(dirURL.path)")
+                    try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                             attributes: nil)
                 }
 
                 // Delete already existing file if it exists (incomplete previous attempt?)
-                try? FileManager.default.removeItem(at: fileUrl)
+                try? FileManager.default.removeItem(at: fileURL)
 
                 // Store image data
-                let success = FileManager.default.createFile(atPath: fileUrl.path, contents: data)
-                print("••> Image \(fileUrl.lastPathComponent) stored in cache: \(success ? "YES" : "NO")")
+                let success = FileManager.default.createFile(atPath: fileURL.path, contents: data)
+                print("••> Image \(fileURL.lastPathComponent) stored in cache: \(success ? "YES" : "NO")")
             }
             
             // Return image object

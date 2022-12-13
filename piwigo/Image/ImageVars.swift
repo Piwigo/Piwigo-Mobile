@@ -24,9 +24,9 @@ class ImageVars: NSObject {
 
     // MARK: - Vars in UserDefaults / Standard
     // Images variables stored in UserDefaults / Standard
-    /// - Size of the image file presented in preview mode (i.e. full screen mode)
-    @UserDefault("defaultImagePreviewSize", defaultValue: PiwigoImageData.optimumImageSizeForDevice().rawValue)
-    @objc var defaultImagePreviewSize: UInt32
+    /// - Size of the image file presented in preview mode on the main screen (i.e. full screen mode)
+    @UserDefault("defaultImagePreviewSize", defaultValue: ImageUtilities.optimumImageSizeForDevice().rawValue)
+    @objc var defaultImagePreviewSize: Int16
 
     /// - Share image by AirDrop with metadata by default
     @UserDefault("shareMetadataTypeAirDrop", defaultValue: true)

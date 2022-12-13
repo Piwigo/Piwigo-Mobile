@@ -150,135 +150,27 @@ class ImageCollectionViewCell: UICollectionViewCell {
             cellImage?.contentMode = .scaleAspectFit
         }
         
-        // Download the image of the requested resolution (or get it from the cache)
-        guard let serverID = imageData.server?.uuid,
-              let _ = imageData.thumbRes?.uuid else {
-            noDataLabel?.isHidden = false
-            return
-        }
-        
-        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
-        let thumbUrl = cacheDir.appendingPathComponent(pwgImageSize.thumb.path)
-        switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
-        case kPiwigoImageSizeSquare:
-            if AlbumVars.shared.hasSquareSizeImages {
-                setImage(withResolution: imageData.squareRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.square.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeXXSmall:
-            if AlbumVars.shared.hasXXSmallSizeImages {
-                setImage(withResolution: imageData.xxsmallRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xxSmall.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeXSmall:
-            if AlbumVars.shared.hasXSmallSizeImages {
-                setImage(withResolution: imageData.xsmallRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xSmall.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeSmall:
-            if AlbumVars.shared.hasSmallSizeImages {
-                setImage(withResolution: imageData.smallRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.small.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeMedium:
-            if AlbumVars.shared.hasMediumSizeImages {
-                setImage(withResolution: imageData.mediumRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.medium.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeLarge:
-            if AlbumVars.shared.hasLargeSizeImages {
-                setImage(withResolution: imageData.largeRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.large.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeXLarge:
-            if AlbumVars.shared.hasXLargeSizeImages {
-                setImage(withResolution: imageData.xlargeRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xLarge.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeXXLarge:
-            if AlbumVars.shared.hasXXLargeSizeImages {
-                setImage(withResolution: imageData.xxlargeRes,
-                         cachingAtUrl: cacheDir.appendingPathComponent(pwgImageSize.xxLarge.path))
-            } else if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
-            fallthrough
-        default:
-            if AlbumVars.shared.hasThumbSizeImages {
-                setImage(withResolution: imageData.thumbRes, cachingAtUrl: thumbUrl)
-            } else {
-                noDataLabel?.isHidden = false
-            }
-        }
-
-        applyColorPalette()
-    }
-
-    private func setImage(withResolution resolution: Resolution?, cachingAtUrl cacheUrl: URL) {
-        // Display album image
-        let placeHolderImage = UIImage(named: "placeholderImage")!
-
-        // Do we have an URL? and all IDs for storing it (we should)?
-        guard let imageID = resolution?.uuid,
-              let imageUrl = resolution?.url as? URL else {
-            // No image thumbnail
-            cellImage?.image = placeHolderImage
+        // Retrieve image URLs (Piwigo server and cache)
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
+            self.noDataLabel?.isHidden = false
+            applyColorPalette()
             return
         }
 
-        // Get cached image
-        let fileUrl = cacheUrl.appendingPathComponent(imageID)
-        if let cachedImage: UIImage = UIImage(contentsOfFile: fileUrl.path),
-            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-            cachedImage != placeHolderImage {
-            // Image thumbnail in cache
-            print("••> Image \(imageID) retrieved from cache.")
-            cellImage?.image = cachedImage
-            return
-        }
-
-        // Retrieve the image file
-        print("••> download image at \(imageUrl.absoluteString)")
-        let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-        ImageSession.shared.downloadImage(atURL: imageUrl, cachingAtURL: fileUrl) { [self] image in
+        // Get image from cache or download it
+        let placeHolder = UIImage(named: "placeholderImage")!
+        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
+                                        placeHolder: placeHolder) { cachedImage in
             // Display
             DispatchQueue.main.async { [self] in
                 // Downsample image if necessary
-                var displayedImage = image
+                var displayedImage = cachedImage
+                let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
                 let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
-                if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
-                    displayedImage = ImageUtilities.downsample(image: image, to: self.bounds.size, scale: scale)
+                if CGFloat(max(cachedImage.size.width, cachedImage.size.height)) > maxDimensionInPixels {
+                    displayedImage = ImageUtilities.downsample(image: cachedImage,
+                                                                to: self.bounds.size, scale: scale)
                 }
                 self.cellImage?.image = displayedImage
                 
@@ -286,7 +178,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 self.deltaX = self.margin
                 self.deltaY = self.margin
                 let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
-                                             self.bounds.size.height / displayedImage.size.height))
+                                                self.bounds.size.height / displayedImage.size.height))
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     // Case of an iPad: respect aspect ratio
                     // Image width smaller than collection view cell?
@@ -296,7 +188,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
                         self.darkImgWidth?.constant = imageWidth
                         self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
                     }
-
                     // Image height smaller than collection view cell?
                     let imageHeight = displayedImage.size.height * imageScale
                     if imageHeight < self.bounds.size.height {
@@ -305,12 +196,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
                         self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
                     }
                 }
-
                 // Update horizontal constraints
                 self.selImgRight?.constant = self.deltaX
                 self.favLeft?.constant = self.deltaX
                 self.playLeft?.constant = self.deltaX
-
                 // Update vertical constraints
                 self.selImgTop?.constant = self.deltaY + 2 * margin
                 self.playTop?.constant = self.deltaY
@@ -322,9 +211,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
                     let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
                     self.favBottom?.constant = deltaY
                 }
+                applyColorPalette()
             }
-        } failure: { error in
-            debugPrint("••> cell image: \(error?.localizedDescription ?? "Unknown!")")
+        } failure: { _ in
+            // No image available
+            DispatchQueue.main.async { [self] in
+                self.noDataLabel?.isHidden = false
+                applyColorPalette()
+            }
         }
     }
 

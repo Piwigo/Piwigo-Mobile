@@ -7,11 +7,15 @@
 //
 
 import Foundation
+import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: Favorites Bar Button
+    // MARK: Favorites bar button
     func getFavoriteBarButton() -> UIBarButtonItem? {
+//        let areFavorites = images.fetchedObjects?.compactMap({$0.albums})
+//            .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})})
+        
 //        let areFavorites = CategoriesData.sharedInstance()
 //            .category(withId: categoryId, containsImagesWithId: selectedImageIds)
 //        let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)

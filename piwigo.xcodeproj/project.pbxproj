@@ -34,6 +34,8 @@
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
+		AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */; };
+		AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD11AC4C273B17A100433038 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD11AC4B273B17A100433038 /* help01.png */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
@@ -489,6 +491,8 @@
 		AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Albums.swift"; sourceTree = "<group>"; };
+		AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Images.swift"; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagProvider.swift; sourceTree = "<group>"; };
 		AD11AC4B273B17A100433038 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = help01.png; path = piwigo/Resources/Images/help01.png; sourceTree = SOURCE_ROOT; };
@@ -1065,6 +1069,15 @@
 				AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */,
 			);
 			path = Share;
+			sourceTree = "<group>";
+		};
+		AD0F70202946260E008F1394 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */,
+				AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		AD11E45F24A930B000C8876F /* piwigoWebAPI */ = {
@@ -2005,6 +2018,7 @@
 			children = (
 				ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */,
 				ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */,
+				AD0F70202946260E008F1394 /* Extensions */,
 				D8083A641A7FF30B00A95605 /* Cells */,
 				D81C993E1B02DA190081C976 /* Albums */,
 				ADD714512301E0B000A1B7B2 /* Images */,
@@ -2647,12 +2661,14 @@
 				AD4BD3E328DCF56D009278A5 /* ImageSession.swift in Sources */,
 				AD8D218B26B20D6E0008E907 /* PadTableViewCell.swift in Sources */,
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
+				AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
 				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
 				ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
+				AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */,
 				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,

@@ -22,7 +22,7 @@ class ImagePreviewViewController: UIViewController
 
     var imageIndex = 0
     var imageLoaded = false
-    var imageData: PiwigoImageData!
+    var imageData: Image!
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
@@ -41,14 +41,12 @@ class ImagePreviewViewController: UIViewController
         super.viewDidLoad()
         
         // Thumbnail image should be available in cache
-        let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)
-        let thumbnailStr = imageData.getURLFromImageSizeType(thumbnailSize)
-        let thumbnailURL = URL(string: thumbnailStr ?? "")
-        let thumb = UIImageView()
-        if let thumbnailURL = thumbnailURL {
-            thumb.image = NetworkVarsObjc.thumbnailCache?.imageforRequest(URLRequest(url: thumbnailURL), withAdditionalIdentifier: nil)
+        var thumbnailImage: UIImage? = nil
+        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        if let thumbnailURL = ImageUtilities.getURLs(imageData, ofMinSize: thumbnailSize)?.1 {
+            thumbnailImage = UIImage(contentsOfFile: thumbnailURL.path)
         }
-        guard let imageThumbnail = thumb.image ?? UIImage(named: "placeholderImage") else {
+        guard let imageThumbnail = thumbnailImage ?? UIImage(named: "placeholderImage") else {
             fatalError("!!! No placeholder image available !!!")
         }
         
@@ -58,71 +56,95 @@ class ImagePreviewViewController: UIViewController
         }
 
         // Previewed image
-        let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
-        var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
-        if previewStr == nil {
-            // Image URL unknown => default to medium image size
-            previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeMedium)
-            // After an upload, the server only returns the Square and Thumbnail sizes
-            if previewStr == nil {
-                previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeThumb)
-            }
+        let imagePreviewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: imagePreviewSize) else {
+            return
         }
-        guard let path = previewStr, path.isEmpty == false,
-              let previewURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(path)" )
-        else {return }
         weak var weakSelf = self
+        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
+                                     placeHolder: imageThumbnail) { cachedImage in
+            // Set image view content
+            weakSelf?.configScrollView(with: cachedImage)
+            // Layout subviews
+            weakSelf?.view.layoutIfNeeded()
+            
+            // Hide progress bar
+            weakSelf?.imageLoaded = true
+            weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
+            
+            // Display "play" button if video
+            weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
 
-        downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
-            previewURL.absoluteString,
-            parameters: [],
-            headers: [:],
-            progress: { progress in
-                DispatchQueue.main.async(
-                    execute: {
-                        // Update progress bar
-                        if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-                            weakSelf?.imagePreviewDelegate?.downloadProgress(CGFloat(progress.fractionCompleted))
-                        }
-                    })
-            },
-            success: { task, image in
-                if let image = image as? UIImage {
-                    // Set image view content
-                    weakSelf?.configScrollView(with: image)
-                    // Layout subviews
-                    weakSelf?.view.layoutIfNeeded()
-                    
-                    // Hide progress bar
-                    weakSelf?.imageLoaded = true
-                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
-                    }
-                    
-                    // Display "play" button if video
-                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
+        } failure: { error in
+            print("••> Could not load image at \(imageURL.relativeString): \(String(describing: error))")
+        }
 
-                    // Store image in cache
-                    var cachedResponse: CachedURLResponse? = nil
-                    if let response = task.response,
-                        let image1 = image.jpegData(compressionQuality: 0.9) {
-                        cachedResponse = CachedURLResponse(response: response, data: image1)
-                    }
-                    if let cachedResponse = cachedResponse, let downloadTask1 = weakSelf?.downloadTask {
-                        NetworkVarsObjc.imageCache?.storeCachedResponse(cachedResponse, for: downloadTask1)
-                    }
-                } else {
-                    // Keep thumbnail or placeholder if image could not be loaded
-                    debugPrint("setImageScrollViewWithImageData: loaded image is nil!")
-                }
-            },
-            failure: { task, error in
-                if let error = error as NSError? {
-                    debugPrint("setImageScrollViewWithImageData/GET Error: \(error)")
-                }
-            })
+        
+//        let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
+//        var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
+//        if previewStr == nil {
+//            // Image URL unknown => default to medium image size
+//            previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeMedium)
+//            // After an upload, the server only returns the Square and Thumbnail sizes
+//            if previewStr == nil {
+//                previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeThumb)
+//            }
+//        }
+//        guard let path = previewStr, path.isEmpty == false,
+//              let previewURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(path)" )
+//        else {return }
+//        weak var weakSelf = self
 
-        downloadTask?.resume()
+//        downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
+//            previewURL.absoluteString,
+//            parameters: [],
+//            headers: [:],
+//            progress: { progress in
+//                DispatchQueue.main.async(
+//                    execute: {
+//                        // Update progress bar
+//                        if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
+//                            weakSelf?.imagePreviewDelegate?.downloadProgress(CGFloat(progress.fractionCompleted))
+//                        }
+//                    })
+//            },
+//            success: { task, image in
+//                if let image = image as? UIImage {
+//                    // Set image view content
+//                    weakSelf?.configScrollView(with: image)
+//                    // Layout subviews
+//                    weakSelf?.view.layoutIfNeeded()
+//
+//                    // Hide progress bar
+//                    weakSelf?.imageLoaded = true
+//                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
+//                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
+//                    }
+//
+//                    // Display "play" button if video
+//                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
+//
+//                    // Store image in cache
+//                    var cachedResponse: CachedURLResponse? = nil
+//                    if let response = task.response,
+//                        let image1 = image.jpegData(compressionQuality: 0.9) {
+//                        cachedResponse = CachedURLResponse(response: response, data: image1)
+//                    }
+//                    if let cachedResponse = cachedResponse, let downloadTask1 = weakSelf?.downloadTask {
+//                        NetworkVarsObjc.imageCache?.storeCachedResponse(cachedResponse, for: downloadTask1)
+//                    }
+//                } else {
+//                    // Keep thumbnail or placeholder if image could not be loaded
+//                    debugPrint("setImageScrollViewWithImageData: loaded image is nil!")
+//                }
+//            },
+//            failure: { task, error in
+//                if let error = error as NSError? {
+//                    debugPrint("setImageScrollViewWithImageData/GET Error: \(error)")
+//                }
+//            })
+//
+//        downloadTask?.resume()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -141,7 +163,8 @@ class ImagePreviewViewController: UIViewController
         applyColorPalette()
 
         // Show/hide the description
-        guard let comment = imageData.comment, comment.isEmpty == false else {
+        guard let comment = imageData?.comment,
+                comment.string.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
@@ -249,7 +272,7 @@ class ImagePreviewViewController: UIViewController
         let imageHeight = image.size.height * scrollView.zoomScale
         var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
         var descHeight: CGFloat = 0.0
-        if let comment = imageData.comment, comment.isEmpty == false {
+        if let comment = imageData?.comment, comment.string.isEmpty == false {
             descHeight = descContainer.descHeight.constant + 8
         }
         if isToolbarRequired {
@@ -302,7 +325,8 @@ class ImagePreviewViewController: UIViewController
         userdidTapOnce = true
         
         // Show/hide the description
-        guard let comment = imageData.comment, comment.isEmpty == false else {
+        guard let comment = imageData?.comment,
+              comment.string.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
@@ -347,14 +371,14 @@ class ImagePreviewViewController: UIViewController
     
     func updateImageMetadata(with data:PiwigoImageData) {
         // Update Piwigo data
-        imageData = data
+//        imageData = data
 
         // Should we update the image description?
-        if descContainer.descTextView.text != data.comment {
-            descContainer.configDescription(with: data.comment) {
-                self.view.layoutIfNeeded()
-            }
-        }
+//        if descContainer.descTextView.text != data.comment {
+//            descContainer.configDescription(with: data.comment) {
+//                self.view.layoutIfNeeded()
+//            }
+//        }
     }
 }
 
