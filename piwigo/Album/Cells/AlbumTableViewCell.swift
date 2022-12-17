@@ -122,6 +122,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
         let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
         let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         let fileUrl = cacheDir.appendingPathComponent(imageSize.path).appendingPathComponent(thumbID)
+        let size: CGSize = self.backgroundImage.bounds.size
+        let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
         ImageSession.shared.setImage(withURL: thumbUrl as URL, cachedAt: fileUrl,
                                      placeHolder: placeHolder) { [self] cachedImage in
             DispatchQueue.global(qos: .userInitiated).async {
@@ -135,8 +137,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 
                 // Reduce size?
                 let imageSize: CGSize = finalImage.size
-                let size: CGSize = self.backgroundImage.bounds.size
-                let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
                     let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
                     DispatchQueue.main.async { [self] in
