@@ -427,68 +427,53 @@ class EditImageParamsViewController: UIViewController
                                completion: @escaping () -> Void,
                                failure: @escaping (NSError) -> Void) {
         // Image ID
-        let imageId = "\(NSNumber(value: imageData.imageId))"
-        
-        // File name
-        var fileName = ""
-        if let name = imageData.fileName, name.isEmpty == false {
-            fileName = name
-        }
-        if fileName == "NSNotFound" { fileName = "Unknown.jpg" }
-        
-        // Date created
-        var dateCreated = ""
-        let dateFormat = DateFormatter()
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        if let creationDate = imageData.dateCreated {
-            dateCreated = dateFormat.string(from: creationDate)
-        }
-
-        // Image title
-        var imageTitle = ""
-        if let title = imageData.imageTitle, title.isEmpty == false {
-            imageTitle = NetworkUtilities.utf8mb3String(from: title)
-        }
-
-        // Author
-        var author = ""
-        if let name = imageData.author, author != "NSNotFound" {
-            // We should never set NSNotFound in the database
-            author = NetworkUtilities.utf8mb3String(from: name)
-        }
-
-        // Description
-        var comment = ""
-        if let desc = imageData.comment, desc.isEmpty == false {
-            comment = NetworkUtilities.utf8mb3String(from: desc)
-        }
-
-        // Tags
-        let tags = imageData.tags?.compactMap({$0}) ?? []
-        let tagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-
-        // Privacy level
-        let privacyLevel = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
-
-        // Prepare parameters for changing the images/videos data
-        let paramsDict: [String : Any] = ["image_id"            : imageId,
-                                          "file"                : fileName,
-                                          "name"                : imageTitle,
-                                          "author"              : author,
-                                          "date_creation"       : dateCreated,
-                                          "level"               : privacyLevel,
-                                          "comment"             : comment,
-                                          "tag_ids"             : tagIds,
+        var paramsDict: [String : Any] = ["image_id" : "\(NSNumber(value: imageData.imageId))",
                                           "single_value_mode"   : "replace",
                                           "multiple_value_mode" : "replace"]
+        // Update image title?
+        if shouldUpdateTitle,
+           let title = imageData.imageTitle {
+            paramsDict["name"] = NetworkUtilities.utf8mb3String(from: title)
+        }
+
+        // Update image author?
+        if shouldUpdateAuthor,
+           var name = imageData.author {
+            // We should never set NSNotFound in the database
+            if name == "NSNotFound" { name = "" }
+            paramsDict["author"] = NetworkUtilities.utf8mb3String(from: name)
+        }
+
+        // Update image creation date?
+        if shouldUpdateDateCreated,
+           let creationDate = imageData.dateCreated {
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            paramsDict["date_creation"] = dateFormat.string(from: creationDate)
+        }
+
+        // Update image privacy level?
+        if shouldUpdatePrivacyLevel {
+            paramsDict["level"] = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
+        }
+
+        // Update image tags?
+        if shouldUpdateTags {
+            let tags = imageData.tags?.compactMap({$0}) ?? []
+            paramsDict["tag_ids"] = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+        }
+
+        // Update image description?
+        if shouldUpdateComment,
+           let desc = imageData.comment {
+            paramsDict["comment"] = NetworkUtilities.utf8mb3String(from: desc)
+        }
         
         // Send request to Piwigo server
         ImageUtilities.setInfos(with: paramsDict) {
             // Notify album/image view of modification
             DispatchQueue.main.async {
-                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
-                    self.delegate?.didChangeImageParameters(imageData)
-                }
+                self.delegate?.didChangeImageParameters(imageData)
             }
 
             // Image properties successfully updated
