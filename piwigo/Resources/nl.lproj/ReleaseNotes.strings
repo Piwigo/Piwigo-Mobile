@@ -6,21 +6,25 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.5_text" = "Versie 2.12.5\n\n• Foutjes verbeterd";
+"v2.12.7_text" = "Versie 2.12.7\n\n• Foutjes verbeterd";
+
+"v2.12.6_text" = "Versie 2.12.6\n21 November 2022\n\n• Foutjes verbeterd";
+
+"v2.12.5_text" = "Versie 2.12.5\n26 augustus 2022\n\n• Foutjes verbeterd";
 
 "v2.12.4_text" = "Versie 2.12.4\n16 augustus 2022\n\n• Foutjes verbeterd";
 
 "v2.12.3_text" = "Versie 2.12.3\n7 augustus 2022\n\n• Foutjes verbeterd";
 
-"v2.12.2_text" = "Versie 2.12.2\n2 augustus 2022\n\n• Los een crash op die optreedt op iOS 9-12 wanneer de wachtrij voor de upload aanvraag wordt weergegeven\n• Kleine foutjes hersteld en verbetering van de interface";
+"v2.12.2_text" = "Versie 2.12.2\n2 augustus 2022\n\n• Lost een crash op die optreedt op iOS 9-12 wanneer de wachtrij voor de upload aanvraag wordt weergegeven\n• Kleine foutjes hersteld en verbetering van de interface";
 
-"v2.12.1_text" = "Versie 2.12.1\n10 juli 2022\n\n• Corrigeert een crash die optreedt op iOS 9-13 bij het veranderen van tags toegewezen aan foto's";
+"v2.12.1_text" = "Versie 2.12.1\n10 juli 2022\n\n• Corrigeert een crash die optreedt op iOS 9-13 bij het veranderen van labels toegewezen aan foto's";
 
-"v2.12.0_text" = "Versie 2.12\n3 juli 2022\n\n• Selecteer een tag sneller met de zoekbalk\n• Codemodernisering\n• Foutjes verbeterd";
+"v2.12.0_text" = "Versie 2.12\n3 juli 2022\n\n• Selecteer een label sneller met de zoekbalk\n• Code-modernisering\n• Foutjes verbeterd";
 
 "v2.11.2_text" = "Versie 2.11.2\n21 juni 2022\n\n• Lost een compatibiliteitsprobleem op met de Community-plug-in";
 
-"v2.11.1_text" = "Versie 2.11.1\n12 juni 2022\n\n• Foutjes verbeterd";
+"v2.11.1_text" = "Versie 2.12.3\n7 augustus 2022\n\n• Foutjes verbeterd";
 
 "v2.11.0_text" = "Versie 2.11\n11 juni 2022\n\n• Voegt een optie toe voor het opnieuw uploaden van foto's en video's\n• Code modernisering\n• Foutjes verbeterd";
 
@@ -42,19 +46,19 @@
 
 "v2.8.1_text" = "Versie 2.8.1\n9 November 2021\n\n• Foutjes verbeterd";
 
-"v2.8.0_text" = "Versie 2.8\n23 Oktober 2021\n\n• Foto's toevoegen aan en verwijderen uit favorieten\n• Bugfixes en verbeteringen van de interface";
+"v2.8.0_text" = "Versie 2.8\n23 oktober 2021\n\n• Foto's toevoegen aan en verwijderen uit favorieten\n• Bugfixes en verbeteringen van de interface";
 
-"v2.7.2_text" = "Versie 2.7.2\n20 September 2021\n\n• iOS 15-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
+"v2.7.2_text" = "Versie 2.7.2\n20 september 2021\n\n• iOS 15-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
 
-"v2.7.1_text" = "Versie 2.7.1\n1 September 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
+"v2.7.1_text" = "Versie 2.7.1\n1 september 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
 
-"v2.7.0_text" = "Versie 2.7\n12 augustus 2021\n\n• Automatisch foto's en video's uploaden\n• Verbeterde opties voor foto en video downsizing\n• Kleine foutjes hersteld en verbetering van de interface\n• Codemodernisering";
+"v2.7.0_text" = "Versie 2.7\n12 augustus 2021\n\n• Automatisch foto's en video's uploaden\n• Verbeterde opties voor foto en video downsizing\n• Kleine foutjes hersteld en verbetering van de interface\n• Code-modernisering";
 
-"v2.6.4_text" = "Versie 2.6.4\n18 Mei 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface";
+"v2.6.4_text" = "Versie 2.6.4\n18 mei 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface";
 
-"v2.6.3_text" = "Versie 2.6.3\n11 Mei 2021\n\n• Foutjes verbeterd";
+"v2.6.3_text" = "Versie 2.6.3\n11 mei 2021\n\n• Foutjes verbeterd";
 
-"v2.6.2_text" = "Versie 2.6.2\n3 Mei 2021\n\n• Laat sommige gebruikers toe om tags te maken\n• Lost een compatibiliteitsprobleem op met Piwigo 11\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
+"v2.6.2_text" = "Versie 2.6.2\n3 mei 2021\n\n• Laat sommige gebruikers toe om tags te maken\n• Lost een compatibiliteitsprobleem op met Piwigo 11\n• Kleine foutjes hersteld en verbetering van de interface\n• Code-modernisering";
 
 "v2.6.1_text" = "Version 2.6.1\n19 maart 2021\n\n• Lost een probleem op met het toekennen van tags aan een selectie van foto's\n• Hernieuwt ontwerp van de Uiterlijk instellingen\n• Verbetert betrouwbaarheid van het uploaden op de achtergrond\n• Kleine bugfixes en verbeteringen van het uiterlijk";
 

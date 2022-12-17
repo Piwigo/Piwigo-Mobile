@@ -6,7 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.5_text" = "Wersja 2.12.5\n\n• Poprawki błędów";
+"v2.12.7_text" = "Wersja 2.12.7\n\n• Poprawki błędów";
+
+"v2.12.6_text" = "Wersja 2.12.6\n21 listopada 2022\n\n• Poprawki błędów";
+
+"v2.12.5_text" = "Wersja 2.12.5\n26 sierpnia 2022\n\n• Poprawki błędów";
 
 "v2.12.4_text" = "Wersja 2.12.4\n16 sierpnia 2022\n\n• Poprawki błędów";
 

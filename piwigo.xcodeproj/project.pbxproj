@@ -3420,7 +3420,7 @@
 				CODE_SIGN_ENTITLEMENTS = piwigo/Resources/debug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 322;
+				CURRENT_PROJECT_VERSION = 494;
 				DEAD_CODE_STRIPPING = YES;
 				"DEBUG_INFORMATION_FORMAT[sdk=*]" = "dwarf-with-dsym";
 				"DEBUG_INFORMATION_FORMAT[sdk=iphonesimulator*]" = dwarf;
@@ -3439,7 +3439,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.12.5;
+				MARKETING_VERSION = 2.12.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -3491,7 +3491,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 322;
+				CURRENT_PROJECT_VERSION = 494;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				HEADER_SEARCH_PATHS = (
@@ -3507,7 +3507,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.12.5;
+				MARKETING_VERSION = 2.12.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

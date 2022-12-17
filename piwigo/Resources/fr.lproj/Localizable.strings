@@ -682,7 +682,7 @@
 "settings_photoQuality" = "Qualité";
 "settings_placeholderQuality" = "Entrez une qualité de photo entre 50 et 98";
 "settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant téléchargement";
-"settings_prefixFilename>375px" = "Préfixer le nom du fichier avant téléchargement";
+"settings_prefixFilename>375px" = "Préfixer nom du fichier avant téléch.";
 "settings_prefixFilename" = "Préfixer nom du fichier";
 "settings_defaultPrefix" = "Préfixe";
 "settings_defaultPrefix>320px" = "Préfixe du fichier";

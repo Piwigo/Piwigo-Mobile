@@ -6,7 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.5_text" = "Version 2.12.5\n\n• Bug fixes";
+"v2.12.7_text" = "Version 2.12.7\n\n• Bug fixes";
+
+"v2.12.6_text" = "Version 2.12.6\nNovember 21, 2022\n\n• Bug fixes";
+
+"v2.12.5_text" = "Version 2.12.5\nAugust 26, 2022\n\n• Bug fixes";
 
 "v2.12.4_text" = "Version 2.12.4\nAugust 16, 2022\n\n• Bug fixes";
 
