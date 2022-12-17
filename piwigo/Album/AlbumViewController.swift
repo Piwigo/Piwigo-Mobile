@@ -1365,11 +1365,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Update albums and images
         updateDataSource()
 
-        // Reset buttons and menus
-        updateButtonsInPreviewMode()
-
         // Reload album
         imagesCollection?.reloadData()
+        
+        // Reset buttons and menus
+        initButtonsInPreviewMode()
+        updateButtonsInPreviewMode()
     }
 
     func didChangeRecentPeriod() {
