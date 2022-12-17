@@ -137,7 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "探す";
-"categoryDiscoverTagged_title" = "タグを付けました";
+"categoryDiscoverTagged_title" = "タグ付き";
 "categoryDiscoverVisits_title" = "最多アクセス";
 "categoryDiscoverVisits_legend" = "ヒット";
 "categoryDiscoverBest_title" = "最高評価";
@@ -674,7 +674,7 @@
 "settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";
 "settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
 "settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
-"settings_photoResize" = "アップロードする前にサイズを変更します";
+"settings_photoResize" = "アップロードする前にサイズを縮小する";
 "settings_photoSize" = "サイズ";
 "settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
 "settings_photoCompress" = "アップロードする前に圧縮します";

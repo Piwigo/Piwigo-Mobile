@@ -45,7 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Kan JSON object van Piwigo server niet verwerken.";
 "PiwigoServer_invalidJSONobject" = "De Piwigo-server heeft geen geldig JSON-object teruggegeven.";
-"PiwigoServer_emptyJSONobject" = "Piwigo server geeft een leeg JSON object terug.";
+"PiwigoServer_emptyJSONobject" = "Piwigo-server geeft een leeg JSON object terug.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -126,8 +126,8 @@
 // Generic
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ subalbum";
-"severalSubAlbumsCount" = "%@ subalbums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
 "categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
@@ -137,7 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Ontdek";
-"categoryDiscoverTagged_title" = "Getagd";
+"categoryDiscoverTagged_title" = "Gelabeld";
 "categoryDiscoverVisits_title" = "Meest bezocht";
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best gewaardeerd";
@@ -347,8 +347,8 @@
 "none" = "niets";
 "tag" = "Label";
 "tags" = "Labels";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ label";
+"severalTagsCount" = "%@ labels";
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
 "tagsHeader_notSelected" = "Niet geselecteerd";
@@ -392,7 +392,7 @@
 "deleteSeveralImagesHUD_deleting" = "Foto's aan het verwijderen…";
 "removeSingleImage_title" = "Verwijder uit album";
 "removeSingleImageHUD_removing" = "Foto verwijderen…";
-"removeSeveralImagesHUD_removing" = "Foto verwijderen…";
+"removeSeveralImagesHUD_removing" = "Foto's verwijderen…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 "deleteSeveralImages_title" = "Verwijder %@ foto's";
 "deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
@@ -439,8 +439,8 @@
 
 // Image copy
 "copyImage_title" = "Kopieer naar album";
-"copySingleImage_selectAlbum" = "Selecteer het album waarin u de foto %@ wilt kopiëren.";
-"copySeveralImages_selectAlbum" = "Selecteer het album waarin u de foto's wilt kopiëren.";
+"copySingleImage_selectAlbum" = "Selecteer het album waarin je de foto %@ wilt kopiëren.";
+"copySeveralImages_selectAlbum" = "Selecteer het album waarin je de foto's wilt kopiëren.";
 "copySingleImage_message" = "Wet je zeker dat je foto \"%@\" naar album \"%@\" wilt kopiëren?";
 "copySeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "copySingleImageHUD_copying" = "Kopiëren van foto…";
@@ -452,7 +452,7 @@
 "copySeveralImagesError_message" = "Kopiëren van foto's is mislukt";
 
 // Images upload
-"imageUploadHeader" = "Selecteer alstublieft het album of sub-album van welke foto's en video's van uw apparaat worden geüpload.";
+"imageUploadHeader" = "Selecteer a.u.b het album of sub-album van welke foto's en video's van jouw apparaat worden ge-upload.";
 "imageUploadHeaderTitle_images" = "Foto's parameters";
 "imageUploadHeaderText_images" = "Stel de parameters in om toe te passen op de selectie van fotos/video's";
 "imageUploadHeaderTitle_upload" = "Upload instellingen";
@@ -579,7 +579,7 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
 // Local images — Explain
-"localImages_reUploadTitle" = "Her-upload";
+"localImages_reUploadTitle" = "Opnieuw uploaden";
 "localImages_deleteTitle" = "Verwijderen uit filmrol";
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
@@ -695,25 +695,25 @@
 "settings_autoUpload" = "Automatisch uploaden";
 "settings_autoUpload>414px" = "Automatisch foto's uploaden";
 "settings_autoUploadEnabled" = "Aan";
-"settings_autoUploadEnabledInfo" = "Foto's worden automatisch geüpload naar jouw Piwigo.";
+"settings_autoUploadEnabledInfo" = "Foto's worden automatisch ge-upload naar jouw Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foto's en video's worden automatisch geüpload naar jouw Piwigo.";
 "settings_autoUploadDisabled" = "Uit";
-"settings_autoUploadDisabledInfo" = "Foto's worden niet automatisch geüpload naar jouw Piwigo.";
+"settings_autoUploadDisabledInfo" = "Foto's worden niet automatisch ge-upload naar jouw Piwigo.";
 "settings_autoUploadSource" = "Bron";
-"settings_autoUploadSourceInvalid" = "Ongeldig bronalbum";
-"settings_autoUploadSourceInfo" = "Selecteer het album of sub-album van welke foto's en video's van uw apparaat automatisch worden geüpload.";
+"settings_autoUploadSourceInvalid" = "Ongeldig bron-album";
+"settings_autoUploadSourceInfo" = "Selecteer het album of sub-album van welke foto's en video's van jouw apparaat automatisch worden ge-upload.";
 "settings_autoUploadDestination" = "Bestemming";
 "settings_autoUploadDestinationInvalid" = "Ongeldige bestemming";
-"settings_autoUploadDestinationInfo" = "Selecteer het album of sub-album naar welke foto's en video's automatisch worden geüpload.";
-"AutoUploadError_Disabled" = "De Auto-Upload optie is uitgeschakeld in de app instellingen.";
+"settings_autoUploadDestinationInfo" = "Selecteer a.u.b het album of sub-album waarnaar welke foto's en video's automatisch worden ge-upload.";
+"AutoUploadError_Disabled" = "De auto-upload-optie is uitgeschakeld in de app instellingen.";
 "AutoUploadError_Failed" = "Meerdere overdrachten zijn mislukt en de wachtrij voor upload is in de app geblokkeerd. Controleer de app.";
 
 // Settings — Upload Photo Size
-"UploadPhotoSize_title" = "Max. Foto Grootte";
+"UploadPhotoSize_title" = "Max. fotogrootte";
 "UploadPhotoSize_header" = "Selecteer de maximale grootte van de foto's die zullen worden geüpload.";
 "UploadPhotoSize_resolution" = "Maximale resolutie voor ingebouwde camera's:";
 "UploadVideoSize_title" = "Maximale videogrootte";
-"UploadVideoSize_header" = "Selecteer de maximale grootte van de video's die zullen worden geüpload.";
+"UploadVideoSize_header" = "Selecteer de maximale grootte van de video's die zullen worden ge-upload.";
 "UploadVideoSize_resolution" = "Maximaal aantal specificaties ingebouwde camera's:";
 "UploadPhotoSize_original" = "Niet verkleinen";
 
@@ -721,28 +721,28 @@
 "settingsHeader_privacy" = "Privacy";
 "settings_appLock" = "App Lock";
 "settings_appLockEnter" = "Voer wachtwoord in";
-"settings_appLockVerify" = "Toegangscode verifiëren";
-"settings_appLockModify" = "Wijzig toegangscode";
+"settings_appLockVerify" = "Wachtwoord controleren";
+"settings_appLockModify" = "Wijzig wachtwoord";
 "settings_appLockInfo" = "Met App Lock, is een apparaatspecifieke code vereist voor toegang tot de app. Als je deze code verliest, moet je de app opnieuw installeren.";
 "settings_passcodeInfo" = "De toegangscode staat los van het wachtwoord van je Piwigo-account.";
 
 "settings_biometricsReason" = "Toegang tot je Piwigo albums";
-"settings_biometricsTouchID" = "Touch ID";
-"settings_biometricsTouchIDinfo" = "Gebruik Touch ID als alternatief voor uw App Lock toegangscode.";
-"settings_biometricsFaceID" = "Face ID";
-"settings_biometricsFaceIDinfo" = "Gebruik Face ID als een alternatief voor uw App Lock toegangscode.";
+"settings_biometricsTouchID" = "Tik ID";
+"settings_biometricsTouchIDinfo" = "Gebruik Tik ID als alternatief voor uw App Lock toegangscode.";
+"settings_biometricsFaceID" = "Gezicht ID";
+"settings_biometricsFaceIDinfo" = "Gebruik Gezicht ID als een alternatief voor uw App Lock toegangscode.";
 
 "settings_clearClipboard" = "Klembord leegmakten";
-"settings_clearClipboardInfo" = "Selecteer de vertraging waarna het klembord zal worden gewist.";
+"settings_clearClipboardInfo" = "Selecteer de vertraging waarna het prikbord zal worden gewist.";
 "settings_clearClipboard10sUnit" = "Na 10 sec";
 "settings_clearClipboard10sText" = "Na 10 seconden";
 "settings_clearClipboard30sUnit" = "Na 30 sec";
 "settings_clearClipboard30sText" = "Na 30 seconden";
 "settings_clearClipboard1minText" = "Na 1 minuut";
 "settings_clearClipboard1minUnit" = "Na 1 min.";
-"settings_clearClipboard2minText" = "Na 2 minuut";
+"settings_clearClipboard2minText" = "Na 2 minuten";
 "settings_clearClipboard2minUnit" = "Na 2 min.";
-"settings_clearClipboard5minText" = "Na 5 minuut";
+"settings_clearClipboard5minText" = "Na 5 minuten";
 "settings_clearClipboard5minUnit" = "Na 5 min.";
 "settings_clearClipboardNever" = "Nooit";
 
