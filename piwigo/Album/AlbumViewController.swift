@@ -507,18 +507,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
         }
 
+        // Inform user why the app crashed at start
+        if CacheVars.couldNotMigrateCoreDataStore {
+            dismissPiwigoError(
+                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
+                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
+                errorMessage: "") {
+                // Reset flag
+                CacheVars.couldNotMigrateCoreDataStore = false
+            }
+            return
+        }
+        
+        // Display help views only when showing regular albums
+        if categoryId <= 0 { return }
+            
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
-        if categoryId > 0, images.fetchedObjects?.count ?? 0 > 5,
+        if images.fetchedObjects?.count ?? 0 > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if categoryId > 0,
-           albums.fetchedObjects?.count ?? 0 > 2, NetworkVars.hasAdminRights,
+        if albums.fetchedObjects?.count ?? 0 > 2, NetworkVars.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
-        if categoryId > 0, albumData?.upperIds.count ?? 0 > 3,
+        if albumData?.upperIds.count ?? 0 > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
             displayHelpPagesWithID.append(8) // i.e. back to parent album
         }
