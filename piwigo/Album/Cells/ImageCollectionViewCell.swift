@@ -161,7 +161,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Get image from cache or download it
         let placeHolder = UIImage(named: "placeholderImage")!
         ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                        placeHolder: placeHolder) { cachedImage in
+                                     placeHolder: placeHolder) { cachedImage in
             // Display
             DispatchQueue.main.async { [self] in
                 // Downsample image if necessary
