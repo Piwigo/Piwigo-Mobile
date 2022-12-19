@@ -611,7 +611,7 @@ class ImageViewController: UIViewController {
         // Should we do something else?
         if imageData.isVideo {
             // User wants to play/replay the video
-//            startVideoPlayerView(with: imageData)
+            startVideoPlayerView(with: imageData)
         }
         else {
             // Display/hide the navigation bar

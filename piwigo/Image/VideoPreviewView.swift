@@ -13,25 +13,22 @@ import piwigoKit
 extension ImageViewController
 {
     // MARK: - Video Player
-    func startVideoPlayerView(with imageData: PiwigoImageData?) {
+    func startVideoPlayerView(with imageData: Image?) {
         // Set URL
-        let videoURL = URL(string: imageData?.fullResPath ?? "")
+        guard let videoURL = imageData?.fullRes?.url as? URL else { return }
 
         // AVURLAsset + Loader
-        var asset: AVURLAsset? = nil
-        if let videoURL = videoURL {
-            asset = AVURLAsset(url: videoURL, options: nil)
-        }
-        let loader = asset?.resourceLoader
-        loader?.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
+        let asset = AVURLAsset(url: videoURL, options: nil)
+        let loader = asset.resourceLoader
+        loader.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
 
         // Load the asset's "playable" key
-        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
+        asset.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
             DispatchQueue.main.async(
                 execute: { [self] in
                     // IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem.
                     var error: NSError? = nil
-                    let keyStatus = asset?.statusOfValue(forKey: "playable", error: &error)
+                    let keyStatus = asset.statusOfValue(forKey: "playable", error: &error)
                     switch keyStatus {
                         case .loaded:
                             // Sucessfully loaded, continue processing
