@@ -1182,10 +1182,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
                 imageDetailView?.imageIndex = indexPath.row
                 imageDetailView?.categoryId = categoryId
-//                imageDetailView?.images = albumData?.images ?? []
+                imageDetailView?.images = images
                 imageDetailView?.userHasUploadRights = userHasUploadRights
-                imageDetailView?.hidesBottomBarWhenPushed = true
+                imageDetailView?.albumProvider = albumProvider
+                imageDetailView?.imageProvider = imageProvider
+                imageDetailView?.savingContext = mainContext
                 imageDetailView?.imgDetailDelegate = self
+                imageDetailView?.hidesBottomBarWhenPushed = true
                 imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
 //                self.imageDetailView.transitioningDelegate = self;
 //                self.selectedCellImageViewSnapshot = [self.selectedCell.cellImage snapshotViewAfterScreenUpdates:NO];

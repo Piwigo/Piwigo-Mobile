@@ -459,10 +459,10 @@ extension AlbumViewController
         }
         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        ImageUtilities.getInfos(forID: imageId,
-                                inCategoryId: categoryId) { [self] imageData in
+        self.imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) { [self] in
             // Store image data
-            selectedImageData.insert(imageData, at: 0)
+            let imageData = images.fetchedObjects?.first(where: { $0.pwgID == imageId })
+//            selectedImageData.insert(imageData, at: 0)
 
             // Image info retrieved
             selectedImageIdsLoop.removeLast()

@@ -107,7 +107,7 @@ class ImageViewController: UIViewController {
 //                }) { [unowned self] _ in
 //                    // Retrieve complete image data if needed (buttons are greyed until job done)
 //                    if self.imageData?.fileSize == Int64.zero {
-//                        self.retrieveCompleteImageDataOfImage(self.imageData)
+//                        self.retrieveImageData(self.imageData)
 //                    } else {
 //                        hidePiwigoHUD { [unowned self] in
 //                            let isFavorite = CategoriesData.sharedInstance()
@@ -119,7 +119,7 @@ class ImageViewController: UIViewController {
 //        } else {
 //            // Retrieve complete image data if needed (buttons are greyed until job done)
 //            if imageData?.fileSize == Int64.zero {
-//                retrieveCompleteImageDataOfImage(imageData)
+//                retrieveImageData(imageData)
 //            }
 //        }
 
@@ -508,7 +508,7 @@ class ImageViewController: UIViewController {
         favoriteBarButton?.isEnabled = state
     }
 
-    private func retrieveCompleteImageDataOfImage(_ imageData: Image) {
+    private func retrieveImageData(_ imageData: Image) {
         // Image data is not complete when retrieved using pwg.categories.getImages
         setEnableStateOfButtons(false)
 
@@ -517,9 +517,43 @@ class ImageViewController: UIViewController {
         let shouldUpdateImage = ImageUtilities.getURLs(imageData, ofMinSize: imageSize) == nil
 
         // Retrieve image/video infos
-        DispatchQueue.global(qos: .userInteractive).async {
-//            ImageUtilities.getInfos(forID: imageData.pwgID,
-//                                    inCategoryId: self.categoryId) { [unowned self] retrievedData in
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            self.imageProvider?.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
+                // Update image data
+                self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
+                
+                // Disable HUD if needed
+                self.hidePiwigoHUD {
+                    // Set favorite button
+
+                    // Refresh image if needed
+                    if shouldUpdateImage {
+                        for childVC in self.children {
+                            if let previewVC = childVC as? ImagePreviewViewController,
+                               previewVC.imageIndex == self.imageIndex {
+                                previewVC.imageData = self.imageData
+                            }
+                        }
+                    }
+                }
+            } failure: { error in
+                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
+                self.dismissRetryPiwigoError(withTitle: title, message: message,
+                                             errorMessage: error.localizedDescription, dismiss: {
+                }, retry: { [unowned self] in
+                    // Relogin and retry
+                    LoginUtilities.reloginAndRetry() { [unowned self] in
+                        retrieveImageData(imageData)
+                    } failure: { [self] error in
+                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+                        dismissPiwigoError(withTitle: title, message: message,
+                                           errorMessage: error?.localizedDescription ?? "") { }
+                    }
+                })
+            }
+
+//            ImageUtilities.getInfos(imageData.pwgID) { [unowned self] retrievedData in
 //                self.imageData = retrievedData
 //                // Disable HUD if needed
 //                self.hidePiwigoHUD {
@@ -554,7 +588,7 @@ class ImageViewController: UIViewController {
 //                }, retry: { [unowned self] in
 //                    // Relogin and retry
 //                    LoginUtilities.reloginAndRetry() { [unowned self] in
-//                        retrieveCompleteImageDataOfImage(imageData)
+//                        retrieveImageData(imageData)
 //                    } failure: { [self] error in
 //                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
 //                        dismissPiwigoError(withTitle: title, message: message,
@@ -674,11 +708,11 @@ extension ImageViewController: UIPageViewControllerDelegate
         for pendingVC in pendingViewControllers {
             if let previewVC = pendingVC as? ImagePreviewViewController,
                previewVC.imageIndex < images?.fetchedObjects?.count ?? 0 {
-                let imageData = images?.object(at: IndexPath(item: previewVC.imageIndex, section: 0))
-                if imageData?.fileSize == Int64.zero {
+                if let imageData = images?.object(at: IndexPath(item: previewVC.imageIndex, section: 0)),
+                   imageData.fileSize == Int64.zero {
                     // Retrieve image data in case user will want to copy,
                     // edit, move, etc. the image
-//                    retrieveCompleteImageDataOfImage(imageData)
+                    retrieveImageData(imageData)
                 }
             }
         }
@@ -693,22 +727,22 @@ extension ImageViewController: UIPageViewControllerDelegate
         guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
             fatalError("!!! Wrong View Controller Type !!!")
         }
-        var currentIndex = pvc.imageIndex
-        // To prevent crash reported by AppStore here on August 26th, 2017
-        currentIndex = max(0, currentIndex)
-        // To prevent crash reported by AppleStore in November 2017
-        currentIndex = min(currentIndex, images?.fetchedObjects?.count ?? 0 - 1)
+        
         // Remember index of presented page
-        imageIndex = currentIndex
-        imageData = images?.object(at: IndexPath(item: currentIndex, section: 0))
+        imageIndex = pvc.imageIndex
 
+        // Sets new image data
+        guard let imageData = images?.object(at: IndexPath(item: imageIndex, section: 0)) else { return }
+        self.imageData = imageData
+
+        // Initialise page view controller
         pvc.imagePreviewDelegate = self
-        progressBar.isHidden = pvc.imageLoaded || imageData?.isVideo ?? false
+        progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
         setTitleViewFromImageData()
         updateNavBar()
 
         // Scroll album collection view to keep the selected image centered on the screen
-//        imgDetailDelegate?.didSelectImage(withId: imageData?.pwgID)
+        imgDetailDelegate?.didSelectImage(withId: imageData.pwgID)
     }
 }
 
@@ -728,19 +762,12 @@ extension ImageViewController: UIPageViewControllerDataSource
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if (imageIndex >= images?.fetchedObjects?.count ?? 0 - 1) {
+        // Did we each the last image?
+        let maxIndex = max(0, (images?.fetchedObjects?.count ?? 0) - 1)
+        if (imageIndex + 1 > maxIndex) {
             // Reached the end of the category
             return nil
         }
-
-        // Should we load more images?
-//        let albumData = CategoriesData.sharedInstance().getCategoryById(Int(categoryId))
-//        let totalImageCount = albumData?.numberOfImages ?? 0
-//        let downloadedImageCount = albumData?.imageList?.count ?? 0
-//        if totalImageCount > 0, downloadedImageCount < totalImageCount,
-//           imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.needToLoadMoreImages)) ?? false {
-//                imgDetailDelegate?.needToLoadMoreImages()
-//        }
 
         // Create view controller for presenting next image
         return imagePageViewController(atIndex: imageIndex + 1)
@@ -749,8 +776,8 @@ extension ImageViewController: UIPageViewControllerDataSource
     // Returns the view controller before the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        // Did we reach the first image?
         if imageIndex - 1 < 0 {
-            // Reached the beginning the category
             return nil
         }
 

@@ -60,25 +60,24 @@ class ImagePreviewViewController: UIViewController
         guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: imagePreviewSize) else {
             return
         }
-        weak var weakSelf = self
         ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                     placeHolder: imageThumbnail) { cachedImage in
-            // Set image view content
-            weakSelf?.configScrollView(with: cachedImage)
-            // Layout subviews
-            weakSelf?.view.layoutIfNeeded()
-            
-            // Hide progress bar
-            weakSelf?.imageLoaded = true
-            weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
-            
-            // Display "play" button if video
-            weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
-
+                                     placeHolder: imageThumbnail) { [self] cachedImage in
+            DispatchQueue.main.async {
+                // Set image view content
+                self.configScrollView(with: cachedImage)
+                // Layout subviews
+                self.view.layoutIfNeeded()
+                
+                // Hide progress bar
+                self.imageLoaded = true
+                self.imagePreviewDelegate?.downloadProgress(1.0)
+                
+                // Display "play" button if video
+                self.playImage.isHidden = !self.imageData.isVideo
+            }
         } failure: { error in
             print("••> Could not load image at \(imageURL.relativeString): \(String(describing: error))")
         }
-
         
 //        let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
 //        var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)

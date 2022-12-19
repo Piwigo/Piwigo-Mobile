@@ -60,7 +60,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var totalNumberOfImages = Int.zero
     private var selectedCategoryId = Int32.min
 
-    func setInput(parameter:Any, for action:pwgCategorySelectAction) -> Bool {
+    func setInput(parameter:Any?, for action:pwgCategorySelectAction) -> Bool {
         wantedAction = action
         switch action {
         case .setDefaultAlbum, .setAutoUploadAlbum:
@@ -83,18 +83,21 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             inputCategoryData = albumData
             
         case .setAlbumThumbnail:
-            guard let imageData = parameter as? Image else {
-                debugPrint("Input parameter expected to be of type Image.")
+            guard let array = parameter as? [Any],
+                  let categoryId = array[0] as? Int32,
+                  let imageData = array[1] as? Image else {
+                debugPrint("Input parameter expected to be of type [Int32, Image].")
                 return false
             }
             // Image which will be set thumbnail of the selected album
-//            inputImageData = imageData
+            inputCategoryId = categoryId
+            inputImageData = imageData
             
         case .copyImage:
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? Image,
                   let categoryId = array[1] as? Int32 else {
-                debugPrint("Input parameter expected to be of type [Image, Int32]")
+                debugPrint("Input parameter expected to be of type [Image, Int32].")
                 return false
             }
             // Image of the category ID which will be copied to the selected album
@@ -196,7 +199,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
             recentCatIds.removeAll(where: {$0 == Int32.zero})
         }
-        recentCatIds.removeAll(where: {($0 == self.inputCategoryId) || ($0 == self.inputCategoryData.parentId)})
+        recentCatIds.removeAll(where: {($0 == self.inputCategoryId) || ($0 == self.inputCategoryData?.parentId ?? 0)})
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = 5
@@ -464,8 +467,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        ImageUtilities.getInfos(forID: imageId,
-                                inCategoryId: inputCategoryId) { imageData in
+        imageProvider.getInfos(forID: imageId,
+                               inCategoryId: inputCategoryId) { [self] in
             // Store image data
 //            self.inputImagesData.append(imageData)
 //
