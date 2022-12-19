@@ -41,7 +41,7 @@ public class AlbumProvider: NSObject {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
-        andPredicates.append(NSPredicate(format: "pwgID == %ld", albumId))
+        andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 1
 
