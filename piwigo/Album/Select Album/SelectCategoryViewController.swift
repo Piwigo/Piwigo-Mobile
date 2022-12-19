@@ -542,7 +542,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case .setAlbumThumbnail:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title))
+                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSettingsWidth),
