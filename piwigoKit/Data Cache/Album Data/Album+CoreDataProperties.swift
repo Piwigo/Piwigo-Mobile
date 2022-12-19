@@ -27,7 +27,7 @@ extension Album {
     @NSManaged public var nbSubAlbums: Int32
     @NSManaged public var parentId: Int32
     @NSManaged public var query: String
-    @NSManaged public var thumbnailId: Int32
+    @NSManaged public var thumbnailId: Int64
     @NSManaged public var thumbnailUrl: NSURL?
     @NSManaged public var totalNbImages: Int64
     @NSManaged public var upperIds: String

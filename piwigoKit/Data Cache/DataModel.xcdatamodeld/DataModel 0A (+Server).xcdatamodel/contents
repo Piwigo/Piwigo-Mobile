@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22C5044e" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName=".Album" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
         <attribute name="dateLast" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
@@ -10,7 +10,7 @@
         <attribute name="parentId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pwgID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="query" attributeType="String" defaultValueString=""/>
-        <attribute name="thumbnailId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thumbnailId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName=".NSURL"/>
         <attribute name="totalNbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="upperIds" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int&gt;"/>

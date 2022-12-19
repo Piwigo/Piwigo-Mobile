@@ -71,7 +71,7 @@ public class Album: NSManagedObject {
         // Album thumbnail
         /// - Store relative URLs to save space and because the URL might changed in future
         /// - Remove photo from cache if the path changed
-        let newThumbailId = Int32(albumData.thumbnailId ?? "") ?? Int32.max
+        let newThumbailId = Int64(albumData.thumbnailId ?? "") ?? Int64.max
         if thumbnailId != newThumbailId {
             thumbnailId = newThumbailId
         }
