@@ -12,14 +12,19 @@ extension ImageViewController
 {
     // MARK: - Set Image as Album Thumbnail
     @objc func setAsAlbumImage() {
+        // Check image data
+        guard let imageData = imageData else { return }
+        
         // Disable buttons during action
         setEnableStateOfButtons(false)
 
         // Present SelectCategory view
         let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if setThumbVC.setInput(parameter:imageData, for: .setAlbumThumbnail) {
+        if setThumbVC.setInput(parameter:[categoryId, imageData], for: .setAlbumThumbnail) {
             setThumbVC.delegate = self
+            setThumbVC.albumProvider = albumProvider
+            setThumbVC.savingContext = savingContext
             if #available(iOS 14.0, *) {
                 pushView(setThumbVC, forButton: actionBarButton)
             } else {

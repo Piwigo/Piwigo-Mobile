@@ -606,7 +606,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setAlbumThumbnail:
             if section == 0 {
-                return inputImageData.albums?.count ?? 0
+                return inputImageData.albums?.filter({$0.pwgID > 0}).count ?? 0
             } else {
                 return albums.fetchedObjects?.count ?? 0
             }
@@ -636,10 +636,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch indexPath.section {
         case 0:
             if wantedAction == .setAlbumThumbnail {
-                // Provided album
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-                albumData = albumProvider.getAlbum(inContext: mainContext, withId: 0)!
+                // Albums in which this image belongs to
+                var catId = inputCategoryId     // This album always exists in cache
+                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                   catIds.count > indexPath.row {
+                    catId = catIds[indexPath.row]
+                }
+                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -787,9 +790,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case 0:
             // Provided album
             if wantedAction == .setAlbumThumbnail {
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-                albumData = albumProvider.getAlbum(inContext: mainContext, withId: 0)!
+                var catId = inputCategoryId     // This album always exists in cache
+                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                   catIds.count > indexPath.row {
+                    catId = catIds[indexPath.row]
+                }
+                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -861,9 +867,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case 0:
             // Provided album
             if wantedAction == .setAlbumThumbnail {
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-                albumData = albumProvider.getAlbum(inContext: mainContext, withId: 0)!
+                var catId = inputCategoryId     // This album always exists in cache
+                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                   catIds.count > indexPath.row {
+                    catId = catIds[indexPath.row]
+                }
+                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -1196,32 +1205,32 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
-//            AlbumUtilities.setRepresentative(categoryData, with: self.inputImageData)
-//            {
-//                // Update image Id of album
-//                categoryData.albumThumbnailId = self.inputImageData.imageId
-//
-//                // Update image URL of album
-//                categoryData.albumThumbnailUrl = self.inputImageData.thumbPath;
-//
-//                // Image will be downloaded when displaying list of albums
-//                categoryData.categoryImage = nil
-//
-//                // Close HUD
-//                self.updatePiwigoHUDwithSuccess() {
-//                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-//                        self.dismiss(animated: true)
-//                    }
-//                }
-//            } failure: { [unowned self] error in
-//                self.hidePiwigoHUD {
-//                    guard let error = error as NSError? else {
-//                        self.showError()
-//                        return
-//                    }
-//                    self.showError(with: error.localizedDescription)
-//                }
-//            }
+            AlbumUtilities.setRepresentative(self.inputCategoryId, with: self.inputImageData)
+            {
+                DispatchQueue.main.async { [self] in
+                    // Save changes
+                    do {
+                        try self.savingContext.save()
+                    } catch let error as NSError {
+                        print("Could not fetch \(error), \(error.userInfo)")
+                    }
+
+                    // Close HUD
+                    self.updatePiwigoHUDwithSuccess() {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                            self.dismiss(animated: true)
+                        }
+                    }
+                }
+            } failure: { [unowned self] error in
+                self.hidePiwigoHUD {
+                    guard let error = error as NSError? else {
+                        self.showError()
+                        return
+                    }
+                    self.showError(with: error.localizedDescription)
+                }
+            }
         }
     }
     

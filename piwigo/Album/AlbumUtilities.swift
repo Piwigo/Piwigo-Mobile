@@ -539,12 +539,12 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func setRepresentative(_ category: PiwigoAlbumData, with imageData: PiwigoImageData,
+    static func setRepresentative(_ albumId: Int32, with imageData: Image,
                                   completion: @escaping () -> Void,
                                   failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : category.albumId,
-                                          "image_id"    : imageData.imageId]
+        let paramsDict: [String : Any] = ["category_id" : albumId,
+                                          "image_id"    : imageData.pwgID]
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
@@ -566,13 +566,39 @@ class AlbumUtilities: NSObject {
 
                 // Successful?
                 if uploadJSON.success {
-                    // Album thumbnail successfully set ▶ update catagory
-                    category.albumThumbnailId = imageData.imageId
-                    category.albumThumbnailUrl = imageData.thumbPath
-                    
-                    // Update catagory in cache
-                    CategoriesData.sharedInstance().updateCategories([category])
-                    completion()
+                    // Album thumbnail successfully changed ▶ update catagory
+                    if let albums = imageData.albums,
+                       let album = albums.first(where: {$0.pwgID == albumId}) {
+                        album.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        album.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
+
+                        // Replace cached thumbnail in the background
+                        DispatchQueue.global(qos: .background).async {
+                            if let thumbUrl = album.thumbnailUrl as? URL,
+                               let serverID = album.server?.uuid {
+                                let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+                                let fileUrl = cacheDir.appendingPathComponent(thumnailSize.path)
+                                    .appendingPathComponent(album.uuid)
+                                ImageSession.shared.downloadImage(atURL: thumbUrl, cachingAtURL: fileUrl) { _ in
+                                    // Will save album modifications in cache
+                                    completion()
+                                } failure: { _ in
+                                    // Delete old thumbnail image from cache
+                                    for size in pwgImageSize.allCases {
+                                        let fileUrl = cacheDir.appendingPathComponent(size.path)
+                                            .appendingPathComponent(album.uuid)
+                                        try? FileManager.default.removeItem(at: fileUrl)
+                                    }
+                                    // Will save album modifications in cache
+                                    completion()
+                                }
+                            }
+                        }
+                        return
+                    } else {
+                        completion()
+                    }
                 }
                 else {
                     // Could not set album thumbnail
