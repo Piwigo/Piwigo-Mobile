@@ -229,7 +229,7 @@ extension AlbumViewController
     private func fetchAlbums(completion: @escaping () -> Void) {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
+        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         albumProvider.fetchAlbums(inParentWithId: categoryId,
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
@@ -289,10 +289,13 @@ extension AlbumViewController
                     if albumData?.totalNbImages != totalCount {
                         albumData?.totalNbImages = totalCount
                     }
-                    do {
-                        try mainContext.save()
-                    } catch let error as NSError {
-                        print("Could not fetch \(error), \(error.userInfo)")
+                    // Save changes
+                    DispatchQueue.main.async { [self] in
+                        do {
+                            try mainContext.save()
+                        } catch let error as NSError {
+                            print("Could not fetch \(error), \(error.userInfo)")
+                        }
                     }
                 }
                 
