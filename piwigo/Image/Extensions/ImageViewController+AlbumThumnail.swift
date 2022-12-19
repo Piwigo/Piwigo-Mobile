@@ -21,7 +21,7 @@ extension ImageViewController
         // Present SelectCategory view
         let setThumbSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        if setThumbVC.setInput(parameter:[categoryId, imageData], for: .setAlbumThumbnail) {
+        if setThumbVC.setInput(parameter:[imageData, categoryId], for: .setAlbumThumbnail) {
             setThumbVC.delegate = self
             setThumbVC.albumProvider = albumProvider
             setThumbVC.savingContext = savingContext

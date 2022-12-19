@@ -84,8 +84,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             
         case .setAlbumThumbnail:
             guard let array = parameter as? [Any],
-                  let categoryId = array[0] as? Int32,
-                  let imageData = array[1] as? Image else {
+                  let imageData = array[0] as? Image,
+                  let categoryId = array[1] as? Int32 else {
                 debugPrint("Input parameter expected to be of type [Int32, Image].")
                 return false
             }
