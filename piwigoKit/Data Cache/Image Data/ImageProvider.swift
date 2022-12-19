@@ -187,6 +187,52 @@ public class ImageProvider: NSObject {
     }
     
     /**
+     Retrieves the complete image feed from the remote Piwigo server, and imports it into Core Data.
+     */
+    public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
+                         completion: @escaping () -> Void,
+                         failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for retrieving image/video infos
+        let paramsDict: [String : Any] = ["image_id" : imageId]
+        
+        // Launch request
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
+                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
+            // Decode the JSON object and store image data in cache.
+            do {
+                // Decode the JSON into codable type ImagesGetInfoJSON.
+                let decoder = JSONDecoder()
+                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if imageJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
+                                                                    errorMessage: imageJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Import the imageJSON into Core Data.
+                try self.importImages([imageJSON.data], inAlbum: albumId)
+                
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+
+    /**
      Imports a JSON dictionary into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
      */
