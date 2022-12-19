@@ -23,13 +23,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     
     // MARK: - Core Data Providers
+    var albumProvider: AlbumProvider!
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
-        return provider
-    }()
-    
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
         return provider
     }()
 
@@ -437,6 +433,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 if categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
+                    categoryVC.albumProvider = albumProvider
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
                 

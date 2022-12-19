@@ -46,7 +46,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
-    var savingContext: NSManagedObjectContext?
+    var userProvider: UserProvider!
+    var albumProvider: AlbumProvider!
+    var imageProvider: ImageProvider!
+    var savingContext: NSManagedObjectContext!
+    
     private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var inputCategoryId: Int32 = Int32.min
     private var inputCategoryData: Album!
@@ -67,7 +71,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
             inputCategoryId = albumId
-            inputCategoryData = albumProvider.getAlbum(inContext: mainContext, withId: albumId)
+            inputCategoryData = albumProvider?.getAlbum(inContext: savingContext, withId: albumId)
             
         case .moveAlbum:
             guard let albumData = parameter as? Album else {
@@ -164,37 +168,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var nberOfSelectedImages = Float(0)
 
     
-    // MARK: - Core Data Object Contexts
-    lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-
-//    lazy var bckgContext: NSManagedObjectContext = {
-//        let context:NSManagedObjectContext = DataController.shared.bckgContext
-//        return context
-//    }()
-
-    
-    // MARK: - Core Data Providers
-    lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
-        return provider
-    }()
-
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
-        return provider
-    }()
-
-//    lazy var imageProvider: ImageProvider = {
-//        let provider : ImageProvider = ImageProvider()
-//        return provider
-//    }()
-
-    
     // MARK: - Core Data Source
-    lazy var user = userProvider.getUserAccount(inContext: mainContext)
+    lazy var user = userProvider?.getUserAccount(inContext: savingContext)
     
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
@@ -230,7 +205,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     lazy var recentAlbums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
-                                                managedObjectContext: self.mainContext,
+                                                managedObjectContext: self.savingContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
         albums.delegate = self
         return albums
@@ -264,7 +239,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     lazy var albums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
-                                                managedObjectContext: self.mainContext,
+                                                managedObjectContext: self.savingContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
         albums.delegate = self
         return albums
@@ -276,8 +251,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewDidLoad()
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(inContext: mainContext,
-                                             withId: pwgSmartAlbum.root.rawValue) else {
+        guard let _ = albumProvider?.getAlbum(inContext: savingContext,
+                                              withId: pwgSmartAlbum.root.rawValue) else {
             return
         }
         
@@ -393,8 +368,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        albumProvider.fetchAlbums(inParentWithId: 0, recursively: true,
-                                  thumbnailSize: thumnailSize) { [self] error in
+        albumProvider?.fetchAlbums(inParentWithId: 0, recursively: true,
+                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Done
                 return

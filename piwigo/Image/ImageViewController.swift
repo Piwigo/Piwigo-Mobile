@@ -25,6 +25,10 @@ class ImageViewController: UIViewController {
     var imageIndex = 0
     var userHasUploadRights = false
 
+    var albumProvider: AlbumProvider?
+    var imageProvider: ImageProvider?
+    var savingContext: NSManagedObjectContext?
+
     var imageData: Image?
     private var progressBar = UIProgressView()
     var isToolbarRequired = false

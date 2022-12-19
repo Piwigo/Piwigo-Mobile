@@ -561,16 +561,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         //    }
         //#endif
 
-        // Inform user why the app crashed at start
-        if CacheVars.couldNotMigrateCoreDataStore {
-            dismissPiwigoError(
-                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
-                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
-                errorMessage: "") {
-                // Reset flag
-                CacheVars.couldNotMigrateCoreDataStore = false
-            }
-        }
     }
 
     func fetchCompleted() {
@@ -1102,6 +1092,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Configure cell with album data
             cell.albumData = albums.object(at: indexPath)
+            cell.albumProvider = albumProvider
             cell.savingContext = mainContext
             cell.categoryDelegate = self
 

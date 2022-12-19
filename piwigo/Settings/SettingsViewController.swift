@@ -1581,6 +1581,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
+                    categoryVC.albumProvider = albumProvider
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
             case 1 /* Thumbnail file selection */:
@@ -1650,6 +1651,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
+                autoUploadVC.albumProvider = albumProvider
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break

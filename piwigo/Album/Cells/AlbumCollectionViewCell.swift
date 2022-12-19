@@ -27,6 +27,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             tableView?.reloadData()
         }
     }
+    var albumProvider: AlbumProvider!
     var savingContext: NSManagedObjectContext?
     
     private var tableView: UITableView?
@@ -94,6 +95,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
             moveVC.albumMovedDelegate = self
+            moveVC.albumProvider = albumProvider
             moveVC.savingContext = savingContext
             categoryDelegate?.pushCategoryView(moveVC)
         }
