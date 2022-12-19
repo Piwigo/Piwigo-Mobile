@@ -50,50 +50,6 @@ class AlbumUtilities: NSObject {
 
     
     // MARK: - Piwigo Server Methods
-//    static func thumbnailSizeArg() -> String {
-//        // Defaults to thumbnail size
-//        var sizeArg = pwgImageSize.thumb.argument
-//        let defaultSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-//        
-//        switch defaultSize {
-//        case .square:
-//            if AlbumVars.shared.hasSquareSizeImages {
-//                sizeArg = pwgImageSize.square.argument
-//            }
-//        case .xxSmall:
-//            if AlbumVars.shared.hasXXSmallSizeImages {
-//                sizeArg = pwgImageSize.xxSmall.argument
-//            }
-//        case .xSmall:
-//            if AlbumVars.shared.hasXSmallSizeImages {
-//                sizeArg = pwgImageSize.xSmall.argument
-//            }
-//        case .small:
-//            if AlbumVars.shared.hasSmallSizeImages {
-//                sizeArg = pwgImageSize.small.argument
-//            }
-//        case .medium, .fullRes:
-//            if AlbumVars.shared.hasMediumSizeImages {
-//                sizeArg = pwgImageSize.medium.argument
-//            }
-//        case .large:
-//            if AlbumVars.shared.hasLargeSizeImages {
-//                sizeArg = pwgImageSize.large.argument
-//            }
-//        case .xLarge:
-//            if AlbumVars.shared.hasXLargeSizeImages {
-//                sizeArg = pwgImageSize.xLarge.argument
-//            }
-//        case .xxLarge:
-//            if AlbumVars.shared.hasXXLargeSizeImages {
-//                sizeArg = pwgImageSize.xxLarge.argument
-//            }
-//        case .thumb:
-//            break
-//        }
-//        return sizeArg
-//    }
-    
 //    static func getAlbums(completion: @escaping (Bool) -> Void,
 //                          failure: @escaping (NSError) -> Void) {
 //
