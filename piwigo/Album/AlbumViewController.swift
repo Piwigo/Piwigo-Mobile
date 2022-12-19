@@ -215,7 +215,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %ld", categoryId))
+        andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
@@ -234,7 +234,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let fetchRequest = Image.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: true)]
         var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %ld", categoryId))
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = AlbumUtilities.numberOfImagesToDownloadPerPage()
         return fetchRequest
