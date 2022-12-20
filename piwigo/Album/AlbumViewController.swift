@@ -189,18 +189,24 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var user = userProvider.getUserAccount(inContext: mainContext)
     
     lazy var userHasUploadRights: Bool = {
+        return getUserHasUploadRights()
+    }()
+    private func getUserHasUploadRights() -> Bool {
         // Case of Community user?
         let userUploadRights = user?.uploadRights ?? ""
         return (NetworkVars.userStatus == .normal) &&
                 userUploadRights.components(separatedBy: ",").contains(String(categoryId))
-    }()
+    }
     
     lazy var albumData: Album? = {
+        return currentAlbumData()
+    }()
+    private func currentAlbumData() -> Album? {
         if categoryId != 0 {
             return albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
         }
         return nil
-    }()
+    }
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
@@ -1360,6 +1366,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func didChangeDefaultAlbum() {
         // Change default album
         categoryId = AlbumVars.shared.defaultCategory
+        albumData = currentAlbumData()
+        userHasUploadRights = getUserHasUploadRights()
 
         // Add/remove search bar
         if categoryId == 0 {
