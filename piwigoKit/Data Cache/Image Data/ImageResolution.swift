@@ -15,43 +15,37 @@ public class Resolution: NSObject, NSSecureCoding {
     public var width: Int = 1
     public var height: Int = 1
     public var url: NSURL?
-    public var uuid: String = ""
     
     enum Key: String {
         case width = "width"
         case height = "height"
         case url = "url"
-        case uuid = "uuid"
     }
 
     init(imageWidth: Int, imageHeight: Int, imageURL: NSURL?, imageID: String? = nil) {
         width = imageWidth
         height = imageHeight
         url = imageURL
-        uuid = imageID ?? UUID().uuidString
     }
 
     init(imageWidth: Int, imageHeight: Int, imagePath: String?, imageID: String? = nil) {
         width = imageWidth
         height = imageHeight
         url = NSURL(string: imagePath ?? "")
-        uuid = imageID ?? UUID().uuidString
     }
     
     public required convenience init?(coder decoder: NSCoder) {
         let imageWidth = decoder.decodeInteger(forKey: Key.width.rawValue)
         let imageHeight = decoder.decodeInteger(forKey: Key.height.rawValue)
         let imageUrl = decoder.decodeObject(forKey: Key.url.rawValue)
-        let imageID = decoder.decodeObject(forKey: Key.uuid.rawValue)
         self.init(imageWidth: imageWidth, imageHeight: imageHeight,
-                  imageURL: imageUrl as? NSURL, imageID: imageID as? String)
+                  imageURL: imageUrl as? NSURL)
     }
 
     public func encode(with coder: NSCoder) {
         coder.encode(width, forKey: Key.width.rawValue)
         coder.encode(height, forKey: Key.height.rawValue)
         coder.encode(url, forKey: Key.url.rawValue)
-        coder.encode(uuid, forKey: Key.uuid.rawValue)
     }
 }
 

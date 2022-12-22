@@ -87,7 +87,7 @@ class ImageUtilities: NSObject {
                 
                 // Successful?
                 if uploadJSON.success {
-                    // Image properties successfully updated
+                    // Image properties successfully updated ▶ update image
                     completion()
                 }
                 else {
@@ -370,713 +370,514 @@ class ImageUtilities: NSObject {
         let serverURL = DataController.cacheDirectory.appendingPathComponent(serverID)
 
         // ATTENTION: Some URLs may not be available!
-        // So we go through the list of URLs...
-        var pwgURL: NSURL?, fileURL: URL?
+        // So we go through the whole list of URLs...
+        var pwgURL: NSURL?, pathURL: URL?
         switch size {
         case .square:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             else if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
                     let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             else if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
                     let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             else if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             else if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             else if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .thumb:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             else if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
                     let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             else if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             else if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             else if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .xxSmall:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
                     let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
                     let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             else if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             else if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             else if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .xSmall:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             else if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             else if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .small:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             else if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .medium:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
-                    let imageURL = imageData.mediumRes?.url {
+               let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             else if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .large:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
-                    let imageURL = imageData.mediumRes?.url {
+               let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
-                    let imageURL = imageData.largeRes?.url {
+               let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             else if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .xLarge:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
-                    let imageURL = imageData.mediumRes?.url {
+               let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
-                    let imageURL = imageData.largeRes?.url {
+               let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
-                    let imageURL = imageData.xlargeRes?.url {
+               let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             else if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .xxLarge:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
-                    let imageURL = imageData.mediumRes?.url {
+               let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
-                    let imageURL = imageData.largeRes?.url {
+               let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
-                    let imageURL = imageData.xlargeRes?.url {
+               let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
-                    let imageURL = imageData.xxlargeRes?.url {
+               let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            else if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            else if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         case .fullRes:
             if AlbumVars.shared.hasSquareSizeImages,
-               let imageUUID = imageData.squareRes?.uuid,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.square.path)
             }
             if AlbumVars.shared.hasThumbSizeImages,
-                    let imageUUID = imageData.thumbRes?.uuid,
-                    let imageURL = imageData.thumbRes?.url {
+               let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.thumb.path)
             }
             if AlbumVars.shared.hasXXSmallSizeImages,
-                    let imageUUID = imageData.xxsmallRes?.uuid,
-                    let imageURL = imageData.xxsmallRes?.url {
+               let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxSmall.path)
             }
             if AlbumVars.shared.hasXSmallSizeImages,
-                    let imageUUID = imageData.xsmallRes?.uuid,
-                    let imageURL = imageData.xsmallRes?.url {
+               let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xSmall.path)
             }
             if AlbumVars.shared.hasSmallSizeImages,
-                    let imageUUID = imageData.smallRes?.uuid,
-                    let imageURL = imageData.smallRes?.url {
+               let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.small.path)
             }
             if AlbumVars.shared.hasMediumSizeImages,
-                    let imageUUID = imageData.mediumRes?.uuid,
-                    let imageURL = imageData.mediumRes?.url {
+               let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.medium.path)
             }
             if AlbumVars.shared.hasLargeSizeImages,
-                    let imageUUID = imageData.largeRes?.uuid,
-                    let imageURL = imageData.largeRes?.url {
+               let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.large.path)
             }
             if AlbumVars.shared.hasXLargeSizeImages,
-                    let imageUUID = imageData.xlargeRes?.uuid,
-                    let imageURL = imageData.xlargeRes?.url {
+               let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xLarge.path)
             }
             if AlbumVars.shared.hasXXLargeSizeImages,
-                    let imageUUID = imageData.xxlargeRes?.uuid,
-                    let imageURL = imageData.xxlargeRes?.url {
+               let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.xxLarge.path)
             }
-            if let imageUUID = imageData.fullRes?.uuid,
-                    let imageURL = imageData.fullRes?.url {
+            if let imageURL = imageData.fullRes?.url {
                 pwgURL = imageURL
-                let cacheURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-                fileURL = cacheURL.appendingPathComponent(imageUUID)
+                pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
             }
         }
-        guard let pwgURL = pwgURL, let fileURL = fileURL else {
+        let imageID = String(imageData.pwgID)
+        guard let pwgURL = pwgURL, let pathURL = pathURL else {
             return nil
         }
-        return (pwgURL, fileURL)
+        return (pwgURL, pathURL.appendingPathComponent(imageID))
     }
 }
