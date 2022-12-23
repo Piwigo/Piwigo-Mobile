@@ -588,7 +588,7 @@ public class AlbumProvider: NSObject {
     /**
      Clear cached Core Data album entry
     */
-    public func clearAlbums() {
+    public func clearAll() {
         
         // Create a fetch request for the Album entity
         let fetchRequest = Album.fetchRequest()

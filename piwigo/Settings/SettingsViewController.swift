@@ -1727,7 +1727,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearAlbumsAction = UIAlertAction(title: "Clear All Albums",
                                                       style: .default, handler: { action in
                     // Delete all albums in background queue
-                    AlbumProvider().clearAlbums()
+                    AlbumProvider().clearAll()
                 })
                 alert.addAction(clearAlbumsAction)
                 
