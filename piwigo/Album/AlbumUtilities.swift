@@ -15,21 +15,6 @@ enum pwgImageCollectionType {
     case popup, full
 }
 
-enum pwgCategoryDeletionMode {
-    case none, orphaned, all
-    
-    var pwgArg: String {
-        switch self {
-        case .none:
-            return "no_delete"
-        case .orphaned:
-            return "delete_orphans"
-        case .all:
-            return "force_delete"
-        }
-    }
-}
-
 @objc
 class AlbumUtilities: NSObject {
     
@@ -472,7 +457,7 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func delete(_ catID: Int32, inMode mode: pwgCategoryDeletionMode,
+    static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
@@ -504,22 +489,6 @@ class AlbumUtilities: NSObject {
                     let userInfo = ["categoryId" : NSNumber.init(value: catID)]
                     NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
                                                     object: nil, userInfo: userInfo)
-
-                    // Delete images from cache
-//                    for image in images ?? [] {
-//                        // Delete orphans only?
-//                        if (mode == .orphaned) && image.categoryIds.count > 1 {
-//                            // Update categories the images belongs to
-//                            CategoriesData.sharedInstance().removeImage(image, fromCategory: String(category.albumId))
-//                            continue
-//                        }
-//
-//                        // Delete image
-//                        CategoriesData.sharedInstance().deleteImage(image)
-//                    }
-
-                    // Delete category from cache
-//                    CategoriesData.sharedInstance().deleteCategory(withId: category.albumId)
                     completion()
                 }
                 else {

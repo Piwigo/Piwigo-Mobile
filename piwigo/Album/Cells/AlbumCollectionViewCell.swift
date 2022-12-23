@@ -12,11 +12,10 @@ import CoreData
 import UIKit
 import piwigoKit
 
-@objc
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushCategoryView(_ viewController: UIViewController?)
     func didMoveCategory(_ albumCell: AlbumCollectionViewCell?)
-    func deleteCategory(_ albumId: Int32, nbImages: Int64)
+    func deleteCategory(_ albumId: Int32, inMode mode: pwgAlbumDeletionMode)
 }
 
 class AlbumCollectionViewCell: UICollectionViewCell
@@ -352,7 +351,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func confirmCategoryDeletion(withNumberOfImages number: Int64,
-                                         deletionMode: pwgCategoryDeletionMode,
+                                         deletionMode: pwgAlbumDeletionMode,
                                          andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -405,7 +404,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
     }
 
     private func checkDeletion(withNumberOfImages number: Int,
-                               deletionMode: pwgCategoryDeletionMode,
+                               deletionMode: pwgAlbumDeletionMode,
                                andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -423,7 +422,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         deleteCategory(withDeletionMode: deletionMode, andViewController: topViewController)
     }
 
-    private func deleteCategory(withDeletionMode deletionMode: pwgCategoryDeletionMode,
+    private func deleteCategory(withDeletionMode deletionMode: pwgAlbumDeletionMode,
                                 andViewController topViewController: UIViewController?) {
         guard let albumData = albumData else { return }
 
@@ -435,16 +434,15 @@ class AlbumCollectionViewCell: UICollectionViewCell
                 UploadVars.autoUploadCategoryId = Int32.min
             }
 
-            // Close HUD, hide swipe button, remove album from cache
+            // Close HUD, hide swipe button, remove album and images from cache
             topViewController?.updatePiwigoHUDwithSuccess() { [self] in
                 topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Hide swipe buttons
                     let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
                     cell?.hideSwipe(animated: true)
 
-                    // Delete album from cache and update total number of images in parent album
-                    let removedImages = deletionMode == .none ? Int64.zero : albumData.totalNbImages
-                    categoryDelegate?.deleteCategory(albumData.pwgID, nbImages: removedImages)
+                    // Delete album and images from cache and update UI
+                    categoryDelegate?.deleteCategory(albumData.pwgID, inMode: deletionMode)
                 }
             }
         } failure: { error in
@@ -498,8 +496,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Push new album view
-        if categoryDelegate?.responds(to: #selector(AlbumCollectionViewCellDelegate.pushCategoryView(_:))) ?? false,
-            let albumData = albumData {
+        if let albumData = albumData {
             let albumView = AlbumViewController(albumId: albumData.pwgID)
             categoryDelegate?.pushCategoryView(albumView)
         }

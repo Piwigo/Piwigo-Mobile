@@ -1190,6 +1190,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = images
                 imageDetailView?.userHasUploadRights = userHasUploadRights
+                imageDetailView?.userProvider = userProvider
                 imageDetailView?.albumProvider = albumProvider
                 imageDetailView?.imageProvider = imageProvider
                 imageDetailView?.savingContext = mainContext
@@ -1408,16 +1409,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         updateNberOfImagesInFooter()
     }
 
-    @objc
-    func deleteCategory(_ albumId: Int32, nbImages: Int64) {
-        // Delete album and sub-albums from presistent cache
-        albumProvider.deleteAlbum(albumId)
-        
-        // Update total number of images
-        albumData?.totalNbImages -= nbImages
-
-        // Update number of images in footer
-        updateNberOfImagesInFooter()
+    func deleteCategory(_ albumId: Int32, inMode mode: pwgAlbumDeletionMode) {
+        // Delete album, sub-albums and images from presistent cache
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+            self.albumProvider.deleteAlbum(albumId, inMode: mode)
+        }
     }
 
     @objc

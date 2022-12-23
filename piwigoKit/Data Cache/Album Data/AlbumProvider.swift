@@ -526,7 +526,7 @@ public class AlbumProvider: NSObject {
     /**
         Delete album and its sub-albums
      */
-    public func deleteAlbum(_ catID: Int32) {
+    public func deleteAlbum(_ catID: Int32, inMode mode: pwgAlbumDeletionMode) {
         // Job performed in the background
         bckgContext.performAndWait {
             
@@ -559,10 +559,34 @@ public class AlbumProvider: NSObject {
             } catch {
                 fatalError("Unresolved error \(error)")
             }
-            let cachedAlbumsToDdelete:[Album] = controller.fetchedObjects ?? []
+            let cachedAlbumsToDelete:[Album] = controller.fetchedObjects ?? []
+            
+            // Delete images if demanded
+            switch mode {
+            case .none:         // Keep all images
+                break
+            case .orphaned:     // Delete orphaned images
+                cachedAlbumsToDelete.forEach { album in
+                    if let images = album.images {
+                        images.forEach { image in
+                            if image.albums?.count == 1 {
+                                bckgContext.delete(image)
+                            }
+                        }
+                    }
+                }
+            case .all:          // Delete all images
+                cachedAlbumsToDelete.forEach { album in
+                    if let images = album.images {
+                        images.forEach { image in
+                            bckgContext.delete(image)
+                        }
+                    }
+                }
+            }
             
             // Delete album and sub-albums
-            cachedAlbumsToDdelete.forEach { cachedAlbum in
+            cachedAlbumsToDelete.forEach { cachedAlbum in
                 print("••> delete album with ID:\(cachedAlbum.pwgID) and name:\(cachedAlbum.name)")
                 bckgContext.delete(cachedAlbum)
             }
