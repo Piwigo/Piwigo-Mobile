@@ -76,7 +76,7 @@ class ClearCache: NSObject {
         // Album data
         if !exceptCategories {
             AlbumProvider().clearAlbums()
-            ImageProvider().clearImages()
+            ImageProvider().clearAll()
         }
 
         // URL requests

@@ -397,7 +397,7 @@ public class ImageProvider: NSObject {
     /**
         Purge cache from orphaned images
      */
-    public func purgeImages() {
+    public func purgeOrphans() {
         
         // Retrieve images in persistent store
         let fetchRequest = Image.fetchRequest()
@@ -450,7 +450,6 @@ public class ImageProvider: NSObject {
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
         }
-
 //
 //        // Create batch delete request
 //        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
@@ -463,7 +462,7 @@ public class ImageProvider: NSObject {
     /**
      Clear cached Core Data image entry
     */
-    public func clearImages() {
+    public func clearAll() {
         
         // Retrieve images in persistent store
         let fetchRequest = Image.fetchRequest()

@@ -8,6 +8,7 @@
 //  Converted to Swift 5 by Eddy Lelièvre-Berna on 12/04/2020.
 //
 
+import CoreData
 import Intents
 import MessageUI
 import UIKit
@@ -45,25 +46,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     weak var settingsDelegate: ChangedSettingsDelegate?
 
     @IBOutlet var settingsTableView: UITableView!
-    
+    var userProvider: UserProvider!
+    var albumProvider: AlbumProvider!
+    var savingContext: NSManagedObjectContext!
+
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
     private var fullResSize = ""
     private var thumbSize = ""
-
-    
-    // MARK: - Core Data Providers
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
-        return provider
-    }()
-
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
-        return provider
-    }()
     
 
     // MARK: - View Lifecycle
@@ -1578,10 +1570,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.albumProvider = albumProvider
+                categoryVC.savingContext = savingContext
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
-                    categoryVC.albumProvider = albumProvider
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
             case 1 /* Thumbnail file selection */:
@@ -1652,6 +1645,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
                 autoUploadVC.albumProvider = albumProvider
+                autoUploadVC.savingContext = savingContext
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break
@@ -1740,7 +1734,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearImagesAction = UIAlertAction(title: "Clear All Images",
                                                       style: .default, handler: { action in
                     // Delete all images in background queue
-                    ImageProvider().clearImages()
+                    ImageProvider().clearAll()
                 })
                 alert.addAction(clearImagesAction)
                 
