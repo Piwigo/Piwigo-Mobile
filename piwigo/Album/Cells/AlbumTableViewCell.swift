@@ -111,7 +111,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
 
         // Do we have an URL? and all IDs for storing it (we should)?
         guard let thumbUrl = albumData?.thumbnailUrl,
-              let thumbID = albumData?.uuid,
+              let thumbID = albumData?.thumbnailId,
               let serverID = albumData?.server?.uuid else {
             // No album thumbnail URL
             backgroundImage.image = placeHolder
@@ -121,7 +121,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
         // Retrieve image in cache or download it
         let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
         let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        let fileUrl = cacheDir.appendingPathComponent(imageSize.path).appendingPathComponent(thumbID)
+        let fileUrl = cacheDir.appendingPathComponent(imageSize.path)
+            .appendingPathComponent(String(thumbID))
         let size: CGSize = self.backgroundImage.bounds.size
         let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
         ImageSession.shared.setImage(withURL: thumbUrl as URL, cachedAt: fileUrl,
