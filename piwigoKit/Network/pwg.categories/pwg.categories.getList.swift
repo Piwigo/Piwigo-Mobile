@@ -146,13 +146,13 @@ public struct CategoryData: Decodable
     
     public init(withId albumId: Int32,
                 albumName: String = NSLocalizedString("tabBar_albums", comment: "Albums"),
-                albumComment: String = "",
+                albumComment: String = "", albumRank: String = "",
                 parentId: String = "\(Int32.min)", parentIds: String = "\(Int32.min)",
                 nberImages: Int64 = Int64.min, totalNberImages: Int64 = Int64.min) {
         id = albumId
         name = pwgSmartAlbum(rawValue: albumId)?.name ?? albumName
         comment = albumComment
-        globalRank = albumId <= 0 ? "0" : "0.1"
+        globalRank = albumId <= 0 ? "0" : albumRank + ".1"
         upperCat = parentId
         upperCats = parentIds
         nbImages = nberImages
