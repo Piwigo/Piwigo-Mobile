@@ -42,7 +42,17 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         
         // Configure the description view
-        descTextView.attributedText = comment
+        let wholeRange = NSRange(location: 0, length: comment.string.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.font: UIFont.piwigoFontSmallSemiBold(),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let desc = NSMutableAttributedString(attributedString: comment)
+        desc.addAttributes(attributes, range: wholeRange)
+        descTextView.attributedText = desc
         let navController = topMostController()?.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 

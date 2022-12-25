@@ -268,11 +268,19 @@ class ImageViewController: UIViewController {
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
         if let title = imageData?.title, title.string.isEmpty == false {
-            titleLabel.text = ""
-            titleLabel.attributedText = title
+            let wholeRange = NSRange(location: 0, length: title.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+                NSAttributedString.Key.font: UIFont.piwigoFontSmallSemiBold(),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let attTitle = NSMutableAttributedString(attributedString: title)
+            attTitle.addAttributes(attributes, range: wholeRange)
+            titleLabel.attributedText = attTitle
         } else {
             // No title => Use file name
-            titleLabel.attributedText = NSAttributedString()
             titleLabel.text = imageData?.fileName
         }
         titleLabel.sizeToFit()

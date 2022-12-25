@@ -918,8 +918,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                header?.commentLabel?.attributedText = albumData?.comment ?? NSAttributedString()
-                header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
+                let desc = NSMutableAttributedString(attributedString: albumData?.comment ?? NSAttributedString())
+                let wholeRange = NSRange(location: 0, length: desc.string.count)
+                let style = NSMutableParagraphStyle()
+                style.alignment = NSTextAlignment.center
+                let attributes = [
+                    NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                    NSAttributedString.Key.font: UIFont.piwigoFontNormal(),
+                    NSAttributedString.Key.paragraphStyle: style
+                ]
+                desc.addAttributes(attributes, range: wholeRange)
+                header?.commentLabel?.attributedText = desc
                 return header!
             }
         case 1 /* Section 1 — Image collection */:
@@ -954,12 +963,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Section 0 — Album collection */:
             // Header height?
-            guard let desc = albumData?.comment else {
+            guard let comment = albumData?.comment, !comment.string.isEmpty else {
                 return CGSize.zero
             }
-            if desc.string.isEmpty {
-                return CGSize.zero
-            }
+            let desc = NSMutableAttributedString(attributedString: comment)
+            let wholeRange = NSRange(location: 0, length: desc.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                NSAttributedString.Key.font: UIFont.piwigoFontNormal(),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+
             if collectionView.frame.size.width - 30.0 > 0 {
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
