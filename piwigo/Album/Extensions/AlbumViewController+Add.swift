@@ -89,14 +89,11 @@ extension AlbumViewController
         // Create album
         AlbumUtilities.create(withName: albumName, description: albumComment,
                               status: "public", inParentWithId: parentId) { [self] newCatId in
-            // Album successfully created ▶ Add new album to cache
-            albumData?.nbSubAlbums += 1
-            let newCat = CategoryData(withId: Int32(newCatId),
-                                      albumName: albumName, albumComment: albumComment,
-                                      parentId: String(parentId),
-                                      parentIds: albumData?.upperIds ?? "" + "," + String(parentId),
-                                      nberImages: Int64.zero, totalNberImages: Int64.zero)
-            try? self.albumProvider.importAlbums([newCat], inParent: Int32(parentId), delete: false)
+            // Album successfully created ▶ Add new album to cache and update parent albums
+            DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
+                                            intoAlbumWithId: parentId)
+            }
             
             // Hide HUD
             updatePiwigoHUDwithSuccess() { [self] in
