@@ -116,21 +116,19 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Title
         if AlbumVars.shared.displayImageTitles ||
-            (categoryId == kPiwigoVisitsCategoryId) ||
-            (categoryId == kPiwigoBestCategoryId) ||
-            (categoryId == kPiwigoRecentCategoryId) {
+            [.visits, .best, .recent].contains(pwgSmartAlbum(rawValue: categoryId)) {
             bottomLayer?.isHidden = false
             nameLabel?.isHidden = false
             if categoryId == kPiwigoVisitsCategoryId {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
-            } else if categoryId == kPiwigoBestCategoryId {
+            } else if categoryId == pwgSmartAlbum.best.rawValue {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
                 if imageData.title.string.isEmpty == false {
                     nameLabel?.attributedText = imageData.title
                 } else {
                     nameLabel?.attributedText = NSAttributedString(string: imageData.fileName)
                 }
-            } else if categoryId == kPiwigoRecentCategoryId {
+            } else if categoryId == pwgSmartAlbum.recent.rawValue {
                 nameLabel?.text = DateFormatter.localizedString(from: imageData.dateCreated,
                                                                 dateStyle: .medium, timeStyle: .none)
             } else {
