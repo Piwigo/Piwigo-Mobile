@@ -42,12 +42,11 @@ extension ImageViewController
         // Add actions
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-//        if let categoryIds = imageData.categoryIds, categoryIds.count > 1,
-//           categoryId > 0 {
-//            // This image is used in another album
-//            // Proposes to remove it from the current album, unless it was selected from a smart album
-//            alert.addAction(removeAction)
-//        }
+        if categoryId > 0, let albums = imageData?.albums, albums.count > 1 {
+            // This image is used in another album
+            // Proposes to remove it from the current album, unless it was selected from a smart album
+            alert.addAction(removeAction)
+        }
 
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
@@ -175,73 +174,77 @@ extension ImageViewController
 // MARK: - SelectCategoryImageRemovedDelegate Methods
 extension ImageViewController: SelectCategoryImageRemovedDelegate
 {
-    func didRemoveImage(withId imageID: Int) {
+    func didRemoveImage(withId imageID: Int64) {
         // Determine index of the removed image
 //        guard let indexOfRemovedImage = images.firstIndex(where: { $0.imageId == imageID }) else { return }
-//
-//        // Remove the image from the datasource
+
+        // Remove the image from the datasource
 //        images.remove(at: indexOfRemovedImage)
-//
-//        // Return to the album view if the album is empty
-//        if images.isEmpty {
-//            // Return to the Album/Images collection view
-//            navigationController?.popViewController(animated: true)
-//            return
-//        }
-//
-//        // Can we present the next image?
+
+        // Return to the album view if the album is empty
+        let nbImages = images?.fetchedObjects?.count ?? 0
+        if nbImages == 0 {
+            // Return to the Album/Images collection view
+            navigationController?.popViewController(animated: true)
+            return
+        }
+
+        // Can we present the next image?
+        if imageIndex < nbImages {
 //        if indexOfRemovedImage < images.count {
-//            // Retrieve data of next image (may be incomplete)
+            // Retrieve data of next image (may be incomplete)
 //            let imageData = images[indexOfRemovedImage]
-//
-//            // Create view controller for presenting next image
-//            guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
-//            nextImage.imagePreviewDelegate = self
+
+            // Create view controller for presenting next image
+            guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
+            nextImage.imagePreviewDelegate = self
 //            imageIndex = indexOfRemovedImage
-//
-//            // This changes the View Controller
-//            // and calls the presentationIndexForPageViewController datasource method
-//            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-//                // Update image data
-//                self.imageData = self.images[indexOfRemovedImage]
-//                // Re-enable buttons
-//                self.setEnableStateOfButtons(true)
-//                // Reset favorites button
-//                // pwg.users.favorites… methods available from Piwigo version 2.10
+
+            // This changes the View Controller
+            // and calls the presentationIndexForPageViewController datasource method
+            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+                // Update image data
+//                self.imageData = imageData
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
+                // pwg.users.favorites… methods available from Piwigo version 2.10
 //                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
 //                    let isFavorite = CategoriesData.sharedInstance()
 //                        .category(withId: kPiwigoFavoritesCategoryId,
 //                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
 //                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 //                }
-//            }
-//            return
-//        }
-//
-//        // Can we present the preceding image?
+            }
+            return
+        }
+
+        // Can we present the preceding image?
+        if imageIndex > 0 {
 //        if indexOfRemovedImage > 0 {
-//            // Retrieve data of next image (may be incomplete)
+            // Retrieve data of next image (may be incomplete)
 //            let imageData = images[indexOfRemovedImage - 1]
-//
-//            // Create view controller for presenting next image
-//            guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
-//            prevImage.imagePreviewDelegate = self
+
+            // Create view controller for presenting next image
+            imageIndex -= 1
+            guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
+            prevImage.imagePreviewDelegate = self
 //            imageIndex = indexOfRemovedImage - 1
-//
-//            // This changes the View Controller
-//            // and calls the presentationIndexForPageViewController datasource method
-//            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-//                // Re-enable buttons
-//                self.setEnableStateOfButtons(true)
-//                // Reset favorites button
+
+            // This changes the View Controller
+            // and calls the presentationIndexForPageViewController datasource method
+            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
 //                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
 //                    let isFavorite = CategoriesData.sharedInstance()
 //                        .category(withId: kPiwigoFavoritesCategoryId,
 //                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
 //                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 //                }
-//            }
-//            return
-//        }
+            }
+            return
+        }
     }
 }

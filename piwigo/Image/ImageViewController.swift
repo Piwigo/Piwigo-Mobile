@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
-    func didSelectImage(withId imageId: Int)
+    func didSelectImage(withId imageId: Int64)
     func didUpdateImage(withData imageData: PiwigoImageData)
     func needToLoadMoreImages()
 }
@@ -25,6 +25,7 @@ class ImageViewController: UIViewController {
     var imageIndex = 0
     var userHasUploadRights = false
 
+    var userProvider: UserProvider?
     var albumProvider: AlbumProvider?
     var imageProvider: ImageProvider?
     var savingContext: NSManagedObjectContext?

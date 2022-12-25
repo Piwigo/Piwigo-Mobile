@@ -246,6 +246,11 @@
 		ADB2C3D5291D9D4D009542FB /* pwg.categories.calculateOrphans.json in Resources */ = {isa = PBXBuildFile; fileRef = ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */; };
 		ADB2C3D6291D9D5C009542FB /* pwg.categories.calculateOrphans.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */; };
 		ADB2C3D7291DA363009542FB /* AlbumSmart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD44870B29056D50001288E4 /* AlbumSmart.swift */; };
+		ADB49D802955CBDF00EE377A /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D7F2955CBDF00EE377A /* AlbumDeletion.swift */; };
+		ADB49D822958F38B00EE377A /* AlbumCollectionViewCell+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */; };
+		ADB49D842958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */; };
+		ADB49D862958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */; };
+		ADB49D88295904BC00EE377A /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D87295904BC00EE377A /* String+AppTools.swift */; };
 		ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */; };
 		ADBABA362847F4FF00EF39B0 /* AlbumViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */; };
 		ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */; };
@@ -779,6 +784,11 @@
 		ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.calculateOrphans.swift; sourceTree = "<group>"; };
 		ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.calculateOrphans.json; sourceTree = "<group>"; };
 		ADB433F523FB3CCB00A873A9 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		ADB49D7F2955CBDF00EE377A /* AlbumDeletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDeletion.swift; sourceTree = "<group>"; };
+		ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Move.swift"; sourceTree = "<group>"; };
+		ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Rename.swift"; sourceTree = "<group>"; };
+		ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Delete.swift"; sourceTree = "<group>"; };
+		ADB49D87295904BC00EE377A /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Search.swift"; sourceTree = "<group>"; };
 		ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NberImagesFooterCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -1488,6 +1498,7 @@
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
 				AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */,
+				ADB49D87295904BC00EE377A /* String+AppTools.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -1667,6 +1678,7 @@
 				ADDC36C828CCE91700E5AE4B /* Album+CoreDataProperties.swift */,
 				AD44870B29056D50001288E4 /* AlbumSmart.swift */,
 				AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */,
+				ADB49D7F2955CBDF00EE377A /* AlbumDeletion.swift */,
 				ADDC36CB28CCEA9C00E5AE4B /* AlbumProvider.swift */,
 				ADDC36CD28CDE54200E5AE4B /* AlbumError.swift */,
 			);
@@ -1804,6 +1816,9 @@
 				AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */,
 				AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */,
 				ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */,
+				ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */,
+				ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */,
+				ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */,
 				AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */,
 				AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */,
 			);
@@ -2497,8 +2512,10 @@
 				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
 				ADDC36CA28CCE91700E5AE4B /* Album+CoreDataProperties.swift in Sources */,
 				ADF4001F266D705F004352B9 /* TagProvider.swift in Sources */,
+				ADB49D88295904BC00EE377A /* String+AppTools.swift in Sources */,
 				ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */,
 				ADF6264926B9ED4A0085A299 /* Tag+CoreDataProperties.swift in Sources */,
+				ADB49D802955CBDF00EE377A /* AlbumDeletion.swift in Sources */,
 				ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */,
 				AD0B6AD7268A21C0007DEE70 /* UploadManager+Auto.swift in Sources */,
 				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
@@ -2629,6 +2646,7 @@
 				AD98FB9B2843BB9100F6C0C5 /* AlbumViewController+Share.swift in Sources */,
 				AD98FB962843A2F100F6C0C5 /* AlbumViewController+Tagged.swift in Sources */,
 				ADEEC5D7285640290065BA6D /* AlbumViewController+MenusOld.swift in Sources */,
+				ADB49D862958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift in Sources */,
 				ADC69F1F285B6D9C009BF9AF /* AlbumViewController+Select.swift in Sources */,
 				ADCCFC3527D532AA00E42A6E /* AppLockViewController.swift in Sources */,
 				AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */,
@@ -2638,9 +2656,11 @@
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
+				ADB49D842958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
+				ADB49D822958F38B00EE377A /* AlbumCollectionViewCell+Move.swift in Sources */,
 				AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,

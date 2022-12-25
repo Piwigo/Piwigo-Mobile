@@ -209,7 +209,10 @@ extension AlbumViewController
             // handle general UI updates and error alerts on the main queue.
             DispatchQueue.global(qos: .userInteractive).async { [self] in
                 // Remember which images belong to this album
-                let oldImageIds = Set(albumData?.images?.compactMap({$0.pwgID}) ?? [])
+                var oldImageIds = Set<Int64>()
+                if let images = albumData?.images {
+                    oldImageIds = Set(images.compactMap({ $0.pwgID }))
+                }
                 // The number of images is unknown when a smart album is created.
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
@@ -245,7 +248,10 @@ extension AlbumViewController
                 }
                 
                 // Remember which images belong to this album
-                let oldImageIds = Set(albumData?.images?.compactMap({$0.pwgID}) ?? [])
+                var oldImageIds = Set<Int64>()
+                if let images = albumData?.images {
+                    oldImageIds = Set(images.compactMap({ $0.pwgID }))
+                }
 
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.

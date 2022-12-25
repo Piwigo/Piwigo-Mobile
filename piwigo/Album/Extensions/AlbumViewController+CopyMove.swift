@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 extension AlbumViewController
 {
@@ -27,13 +28,13 @@ extension AlbumViewController
         let copyAction = UIAlertAction(
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
-                copyImageToAlbum()
+                copyImagesToAlbum()
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
-                moveImageToAlbum()
+                moveImagesToAlbum()
             })
 
         // Add actions
@@ -53,39 +54,29 @@ extension AlbumViewController
         }
     }
 
-    func copyImageToAlbum() {
+    func copyImagesToAlbum() {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
+        copyVC.userProvider = userProvider
+        copyVC.albumProvider = albumProvider
+        copyVC.savingContext = mainContext
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
-            copyVC.delegate = self // To re-enable toolbar
-            copyVC.imageCopiedDelegate = self // To update image data after copy
+            copyVC.delegate = self              // To re-enable toolbar
             pushView(copyVC)
         }
     }
 
-    func moveImageToAlbum() {
+    func moveImagesToAlbum() {
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
+        moveVC.userProvider = userProvider
+        moveVC.albumProvider = albumProvider
+        moveVC.savingContext = mainContext
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
-            moveVC.delegate = self // To re-enable toolbar
+            moveVC.delegate = self              // To re-enable toolbar
             pushView(moveVC)
         }
-    }
-}
-
-
-// MARK: - SelectCategoryImageCopiedDelegate Methods
-extension AlbumViewController: SelectCategoryImageCopiedDelegate
-{
-    func didCopyImage(withData imageData: PiwigoImageData) {
-        // Determine index of updated image
-//        var newImages = albumData?.images ?? []
-//        if let indexOfUpdatedImage = newImages.firstIndex(where: {$0.imageId == imageData.imageId}) {
-//            // Update image data
-//            newImages[indexOfUpdatedImage] = imageData
-//            albumData?.images = newImages
-//        }
     }
 }

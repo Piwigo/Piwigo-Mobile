@@ -695,13 +695,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func updateDataSource() {
         // Update albums
         var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %ld", categoryId))
+        andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
         fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? albums.performFetch()
 
         // Update images
         andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %ld", categoryId))
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
         fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? images.performFetch()
     }
@@ -1238,7 +1238,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - ImageDetailDelegate Methods
-    func didSelectImage(withId imageId: Int) {
+    func didSelectImage(withId imageId: Int64) {
         // Determine index of image
 //        guard let indexOfImage = albumData?.images.firstIndex(where: {$0.imageId == imageId}) else { return }
 //
@@ -1414,7 +1414,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
-    @objc
     func didMoveCategory(_ albumCell: AlbumCollectionViewCell?) {
         // Remove cell
         guard let cellToRemove = albumCell else { return }
@@ -1426,11 +1425,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         updateNberOfImagesInFooter()
     }
 
-    func deleteCategory(_ albumId: Int32, inMode mode: pwgAlbumDeletionMode) {
+    func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
+                        inMode mode: pwgAlbumDeletionMode) {
         // Delete album, sub-albums and images from presistent cache
         DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.albumProvider.deleteAlbum(albumId, inMode: mode)
+            self.albumProvider.deleteAlbum(albumId, inParent: parentID, inMode: mode)
         }
+        
+        // Update number of images in footer
+        updateNberOfImagesInFooter()
     }
 
     @objc

@@ -32,7 +32,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for copying image
-            copyImageToAlbum()
+            copyImagesToAlbum()
         })
         action.accessibilityIdentifier = "copy"
         return action
@@ -46,7 +46,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for moving image
-            moveImageToAlbum()
+            moveImagesToAlbum()
         })
         action.accessibilityIdentifier = "move"
         return action

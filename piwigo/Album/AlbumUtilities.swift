@@ -238,8 +238,7 @@ class AlbumUtilities: NSObject {
 
                 // Successful?
                 if let catId = uploadJSON.data.id, catId != Int32.min {
-                    // Album successfully created
-                    // Add new category to list of recent albums
+                    // Album successfully created ▶ Add it to list of recent albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
                     NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                     completion(catId)
@@ -310,7 +309,7 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func move(_ albumId: Int32, intoCategoryWithId newParentId: Int32,
+    static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
                      completion: @escaping () -> Void,
                      failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
@@ -338,61 +337,7 @@ class AlbumUtilities: NSObject {
 
                 // Successful?
                 if uploadJSON.success {
-                    // Update cached old parent categories, except root album
-//                    for oldParentStr in category.upperCategories {
-//                        guard let oldParentID = Int(oldParentStr) else { continue }
-//                        // Check that it is not the root album, nor the moved album
-//                        if (oldParentID == 0) || (oldParentID == category.albumId) { continue }
-//
-//                        // Remove number of moved sub-categories and images
-//                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= category.numberOfSubCategories + 1
-//                        CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= category.totalNumberOfImages
-//                    }
-
-                    // Update cached new parent categories, except root album
-//                    var newUpperCategories = [String]()
-//                    if newParentCatId != 0 {
-//                        // Parent category in which we moved the category
-//                        newUpperCategories = CategoriesData.sharedInstance().getCategoryById(newParentCatId).upperCategories ?? []
-//                        for newParentStr in newUpperCategories {
-//                            // Check that it is not the root album, nor the moved album
-//                            guard let newParentId = Int(newParentStr) else { continue }
-//                            if (newParentId == 0) || (newParentId == category.albumId) { continue }
-//                            
-//                            // Add number of moved sub-categories and images
-//                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += category.numberOfSubCategories + 1;
-//                            CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += category.totalNumberOfImages
-//                        }
-//                    }
-
-                    // Update upperCategories of moved sub-categories
-//                    var upperCatToRemove:[String] = category.upperCategories ?? []
-//                    upperCatToRemove.removeAll(where: {$0 == String(category.albumId)})
-//                    var catToUpdate = [PiwigoAlbumData]()
-//                    
-//                    if category.numberOfSubCategories > 0 {
-//                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(category.albumId) ?? []
-//                        for subCategory in subCategories {
-//                            // Replace list of upper categories
-//                            var upperCategories = subCategory.upperCategories ?? []
-//                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-//                            upperCategories.append(contentsOf: newUpperCategories)
-//                            subCategory.upperCategories = upperCategories
-//                            catToUpdate.append(subCategory)
-//                        }
-//                    }
-
-                    // Replace upper category of moved album
-//                    var upperCategories = category.upperCategories ?? []
-//                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-//                    upperCategories.append(contentsOf: newUpperCategories)
-//                    category.upperCategories = upperCategories
-//                    category.parentAlbumId = newParentCatId
-//                    catToUpdate.append(category)
-
-                    // Update categories in cache
-//                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
-
+                    // Album successfully moved
                     completion()
                 }
                 else {
@@ -508,11 +453,11 @@ class AlbumUtilities: NSObject {
         }
     }
 
-    static func setRepresentative(_ albumId: Int32, with imageData: Image,
+    static func setRepresentative(_ albumData: Album, with imageData: Image,
                                   completion: @escaping () -> Void,
                                   failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
-        let paramsDict: [String : Any] = ["category_id" : albumId,
+        let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
 
         let JSONsession = PwgSession.shared
@@ -535,39 +480,11 @@ class AlbumUtilities: NSObject {
 
                 // Successful?
                 if uploadJSON.success {
-                    // Album thumbnail successfully changed ▶ update catagory
-                    if let albums = imageData.albums,
-                       let album = albums.first(where: {$0.pwgID == albumId}) {
-                        album.thumbnailId = imageData.pwgID
-                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                        album.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
-
-                        // Replace cached thumbnail in the background
-                        DispatchQueue.global(qos: .background).async {
-                            if let thumbUrl = album.thumbnailUrl as? URL,
-                               let serverID = album.server?.uuid {
-                                let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
-                                let fileUrl = cacheDir.appendingPathComponent(thumnailSize.path)
-                                    .appendingPathComponent(album.uuid)
-                                ImageSession.shared.downloadImage(atURL: thumbUrl, cachingAtURL: fileUrl) { _ in
-                                    // Will save album modifications in cache
-                                    completion()
-                                } failure: { _ in
-                                    // Delete old thumbnail image from cache
-                                    for size in pwgImageSize.allCases {
-                                        let fileUrl = cacheDir.appendingPathComponent(size.path)
-                                            .appendingPathComponent(album.uuid)
-                                        try? FileManager.default.removeItem(at: fileUrl)
-                                    }
-                                    // Will save album modifications in cache
-                                    completion()
-                                }
-                            }
-                        }
-                        return
-                    } else {
-                        completion()
-                    }
+                    // Album thumbnail successfully changed ▶ Update catagory in cache
+                    albumData.thumbnailId = imageData.pwgID
+                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                    albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
+                    completion()
                 }
                 else {
                     // Could not set album thumbnail
@@ -972,23 +889,23 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Favorites
-    static func loadFavoritesInBckg() {
-        DispatchQueue.global(qos: .default).async {
-            // Should we load favorites?
-            if NetworkVars.userStatus == .guest { return }
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
-            
-            // Initialise favorites album
-            if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
-                CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-            }
-
-            // Load favorites data in the background with dedicated URL session
-            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
-                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort.rawValue)),
-                forProgress: nil,
-                onCompletion: nil,
-                onFailure: nil)
-        }
-    }
+//    static func loadFavoritesInBckg() {
+//        DispatchQueue.global(qos: .default).async {
+//            // Should we load favorites?
+//            if NetworkVars.userStatus == .guest { return }
+//            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
+//
+//            // Initialise favorites album
+//            if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
+//                CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
+//            }
+//
+//            // Load favorites data in the background with dedicated URL session
+//            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
+//                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort.rawValue)),
+//                forProgress: nil,
+//                onCompletion: nil,
+//                onFailure: nil)
+//        }
+//    }
 }
