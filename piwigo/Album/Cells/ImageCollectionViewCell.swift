@@ -119,7 +119,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             [.visits, .best, .recent].contains(pwgSmartAlbum(rawValue: categoryId)) {
             bottomLayer?.isHidden = false
             nameLabel?.isHidden = false
-            if categoryId == kPiwigoVisitsCategoryId {
+            if categoryId == pwgSmartAlbum.visits.rawValue {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
             } else if categoryId == pwgSmartAlbum.best.rawValue {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
