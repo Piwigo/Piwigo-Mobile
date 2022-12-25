@@ -44,118 +44,118 @@
 
 # pragma mark - Add category
 
--(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters
-{
-    // Create category in cache
-    PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:nil];
-    
-    // Parent album
-    newCategory.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
-    PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:newCategory.parentAlbumId];
-    NSMutableArray *upperCategories = [NSMutableArray new];
-    if (parentAlbumData.upperCategories.count != 0) {
-        [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
-    }
-    [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
-    newCategory.upperCategories = [NSArray arrayWithArray:upperCategories];
-
-    // Name, description, upload rights, number of images
-    newCategory.name = [parameters objectForKey:@"name"];
-    newCategory.comment = [parameters objectForKey:@"comment"];
-    newCategory.hasUploadRights = parentAlbumData.hasUploadRights;
-    newCategory.numberOfImages = 0;
-    newCategory.totalNumberOfImages = 0;
-
-    // Add new category to cache
-    [[CategoriesData sharedInstance] updateCategories:@[newCategory]];
-    
-    // Get list of parent categories
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)newCategory.albumId];
-    if ([upperCategories containsObject:categoryIdStr]) {
-        [upperCategories removeObject:categoryIdStr];
-    }
-
-    // Create new list of categories
-    NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
-
-    // Look for parent categories and update them
-    for (NSString *upperCategoryId in upperCategories)
-    {
-        // Look for the index of upper category to update
-        NSInteger indexOfUpperCategory = [self indexOfCategoryWithId:[upperCategoryId integerValue] inArray:newCategories];
-        
-        // Update upper category
-        if (indexOfUpperCategory != NSNotFound)
-        {
-            // Parent category
-            PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
-            
-            // Decrement number of sub-categories for that upper category
-            parentCategory.numberOfSubCategories++;
-
-            // Update parent category
-            [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
-        }
-    }
-    
-    // Update cache
-    self.allCategories = newCategories;
-}
+//-(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters
+//{
+//    // Create category in cache
+//    PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andQuery:nil];
+//    
+//    // Parent album
+//    newCategory.parentAlbumId = [[parameters objectForKey:@"parent"] integerValue];
+//    PiwigoAlbumData *parentAlbumData = [[CategoriesData sharedInstance] getCategoryById:newCategory.parentAlbumId];
+//    NSMutableArray *upperCategories = [NSMutableArray new];
+//    if (parentAlbumData.upperCategories.count != 0) {
+//        [upperCategories addObjectsFromArray:parentAlbumData.upperCategories];
+//    }
+//    [upperCategories addObject:[NSString stringWithFormat:@"%ld", (long)categoryId]];
+//    newCategory.upperCategories = [NSArray arrayWithArray:upperCategories];
+//
+//    // Name, description, upload rights, number of images
+//    newCategory.name = [parameters objectForKey:@"name"];
+//    newCategory.comment = [parameters objectForKey:@"comment"];
+//    newCategory.hasUploadRights = parentAlbumData.hasUploadRights;
+//    newCategory.numberOfImages = 0;
+//    newCategory.totalNumberOfImages = 0;
+//
+//    // Add new category to cache
+//    [[CategoriesData sharedInstance] updateCategories:@[newCategory]];
+//    
+//    // Get list of parent categories
+//    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)newCategory.albumId];
+//    if ([upperCategories containsObject:categoryIdStr]) {
+//        [upperCategories removeObject:categoryIdStr];
+//    }
+//
+//    // Create new list of categories
+//    NSMutableArray *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+//
+//    // Look for parent categories and update them
+//    for (NSString *upperCategoryId in upperCategories)
+//    {
+//        // Look for the index of upper category to update
+//        NSInteger indexOfUpperCategory = [self indexOfCategoryWithId:[upperCategoryId integerValue] inArray:newCategories];
+//        
+//        // Update upper category
+//        if (indexOfUpperCategory != NSNotFound)
+//        {
+//            // Parent category
+//            PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
+//            
+//            // Decrement number of sub-categories for that upper category
+//            parentCategory.numberOfSubCategories++;
+//
+//            // Update parent category
+//            [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
+//        }
+//    }
+//    
+//    // Update cache
+//    self.allCategories = newCategories;
+//}
 
 
 # pragma mark - Delete category
 
--(void)deleteCategoryWithId:(NSInteger)categoryId
-{
-    // Look for index of category to delete
-    NSInteger index = [self indexOfCategoryWithId:categoryId inArray:self.allCategories];
-    if (index == NSNotFound) { return; }
-    
-    // Get category to delete
-    PiwigoAlbumData *catagoryToDelete = [self.allCategories objectAtIndex:index];
-
-    // Get list of parent categories
-    NSMutableArray<NSString *> *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)catagoryToDelete.albumId];
-    if ([upperCategories containsObject:categoryIdStr]) {
-        [upperCategories removeObject:categoryIdStr];
-    }
-
-    // Create new list of categories
-    NSMutableArray<PiwigoAlbumData*> *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
-
-    // Remove deleted category
-    [newCategories removeObjectAtIndex:index];
-
-    // Look for parent categories and update them
-    for (NSString *upperCategoryId in upperCategories)
-    {
-        // Look for the index of upper category to update
-        NSInteger indexOfUpperCategory = [self indexOfCategoryWithId:[upperCategoryId integerValue] inArray:newCategories];
-        
-        // Update upper category
-        if (indexOfUpperCategory != NSNotFound)
-        {
-            // Parent category
-            PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
-            
-            // Subtract deleted images
-            parentCategory.totalNumberOfImages -= catagoryToDelete.totalNumberOfImages;
-            
-            // Subtract deleted sub-categories
-            parentCategory.numberOfSubCategories -= catagoryToDelete.numberOfSubCategories;
-            
-            // Subtract deleted category
-            parentCategory.numberOfSubCategories--;
-            
-            // Update parent category
-            [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
-        }
-    }
-    
-    // Update cache
-    self.allCategories = newCategories;
-}
+//-(void)deleteCategoryWithId:(NSInteger)categoryId
+//{
+//    // Look for index of category to delete
+//    NSInteger index = [self indexOfCategoryWithId:categoryId inArray:self.allCategories];
+//    if (index == NSNotFound) { return; }
+//    
+//    // Get category to delete
+//    PiwigoAlbumData *catagoryToDelete = [self.allCategories objectAtIndex:index];
+//
+//    // Get list of parent categories
+//    NSMutableArray<NSString *> *upperCategories = [catagoryToDelete.upperCategories mutableCopy];
+//    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)catagoryToDelete.albumId];
+//    if ([upperCategories containsObject:categoryIdStr]) {
+//        [upperCategories removeObject:categoryIdStr];
+//    }
+//
+//    // Create new list of categories
+//    NSMutableArray<PiwigoAlbumData*> *newCategories = [[NSMutableArray alloc] initWithArray:self.allCategories];
+//
+//    // Remove deleted category
+//    [newCategories removeObjectAtIndex:index];
+//
+//    // Look for parent categories and update them
+//    for (NSString *upperCategoryId in upperCategories)
+//    {
+//        // Look for the index of upper category to update
+//        NSInteger indexOfUpperCategory = [self indexOfCategoryWithId:[upperCategoryId integerValue] inArray:newCategories];
+//        
+//        // Update upper category
+//        if (indexOfUpperCategory != NSNotFound)
+//        {
+//            // Parent category
+//            PiwigoAlbumData *parentCategory = [newCategories objectAtIndex:indexOfUpperCategory];
+//            
+//            // Subtract deleted images
+//            parentCategory.totalNumberOfImages -= catagoryToDelete.totalNumberOfImages;
+//            
+//            // Subtract deleted sub-categories
+//            parentCategory.numberOfSubCategories -= catagoryToDelete.numberOfSubCategories;
+//            
+//            // Subtract deleted category
+//            parentCategory.numberOfSubCategories--;
+//            
+//            // Update parent category
+//            [newCategories replaceObjectAtIndex:indexOfUpperCategory withObject:parentCategory];
+//        }
+//    }
+//    
+//    // Update cache
+//    self.allCategories = newCategories;
+//}
 
 
 # pragma mark - Update cache
@@ -547,10 +547,10 @@
     }
 
     // Notify the Upload database that the image was deleted
-    dispatch_async(dispatch_get_main_queue(), ^{
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 //        [appDelegate didDeletePiwigoImageWithID: image.imageId];
-    });
+//    });
 }
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category

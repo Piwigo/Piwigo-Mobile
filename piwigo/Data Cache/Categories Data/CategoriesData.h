@@ -17,8 +17,8 @@
 @property (nonatomic, readonly) NSArray<PiwigoAlbumData*> *communityCategoriesForUploadOnly;
 
 -(void)clearCache;
--(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
--(void)deleteCategoryWithId:(NSInteger)categoryId;
+//-(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;
+//-(void)deleteCategoryWithId:(NSInteger)categoryId;
 -(BOOL)replaceAllCategories:(NSArray*)categories;
 -(void)updateCategories:(NSArray*)categories;
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
