@@ -30,6 +30,9 @@ extension AlbumViewController
             fatalError("No SettingsViewController")
         }
         settingsVC.settingsDelegate = self
+        settingsVC.userProvider = userProvider
+        settingsVC.albumProvider = albumProvider
+        settingsVC.savingContext = mainContext
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet
@@ -297,7 +300,7 @@ extension AlbumViewController
     
     func showHomeAlbumButtonIfNeeded() {
         // Don't present the Home button in search mode
-        if categoryId == kPiwigoSearchCategoryId { return }
+        if categoryId == pwgSmartAlbum.search.rawValue { return }
         
         // Present Home Album button if needed
         if (homeAlbumButton?.isHidden ?? false ||
