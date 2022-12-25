@@ -15,19 +15,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
-    // MARK: - Core Data Object Contexts
-    private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
-    }()
-
-    
-    // MARK: - Core Data Providers
     var albumProvider: AlbumProvider!
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
         return provider
     }()
+    var savingContext: NSManagedObjectContext!
 
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
@@ -51,7 +44,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
             // Create a fetched results controller and set its fetch request and context.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: self.mainContext,
+                                                        managedObjectContext: self.savingContext,
                                                         sectionNameKeyPath: nil, cacheName: nil)
 
             // Perform the fetch.
@@ -278,7 +271,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.autoUploadCategoryId
-                if let albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) {
+                if let albumData = albumProvider.getAlbum(inContext: savingContext, withId: categoryId) {
                     detail = albumData.name
                 } else {
                     // Did not find the Piwigo album
@@ -430,10 +423,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.albumProvider = albumProvider
+                categoryVC.savingContext = savingContext
                 if categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
-                    categoryVC.albumProvider = albumProvider
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
                 
