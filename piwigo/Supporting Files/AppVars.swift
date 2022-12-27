@@ -12,9 +12,9 @@ import piwigoKit
 
 // Constants
 /// - Preferred popover view width on iPad
-let kPiwigoPadSubViewWidth = CGFloat(375.0)
+let pwgPadSubViewWidth = CGFloat(375.0)
 ///- Preferred Settings view width on iPad
-let kPiwigoPadSettingsWidth = CGFloat(512.0)
+let pwgPadSettingsWidth = CGFloat(512.0)
 
 /// - Memory cache size
 let kPiwigoMemoryCacheInc = 8            // Slider increment

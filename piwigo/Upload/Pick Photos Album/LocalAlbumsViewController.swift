@@ -269,11 +269,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let headerView = SelectCategoryHeaderView(frame: .zero)
         switch wantedAction {
         case .presentLocalAlbum:
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSettingsWidth),
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
                                  text: NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded."))
 
         case .setAutoUploadAlbum:
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
 
         default:

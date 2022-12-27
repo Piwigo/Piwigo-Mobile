@@ -411,10 +411,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                                                         width: 0, height: 0)
                 switch self.wantedAction {
                 case .setDefaultAlbum, .setAutoUploadAlbum:
-                    self.preferredContentSize = CGSize(width: kPiwigoPadSettingsWidth,
+                    self.preferredContentSize = CGSize(width: pwgPadSettingsWidth,
                                                        height: ceil(mainScreenBounds.height*2/3));
                 default:
-                    self.preferredContentSize = CGSize(width: kPiwigoPadSubViewWidth,
+                    self.preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                                        height: ceil(mainScreenBounds.height*2/3));
                 }
             }
@@ -523,35 +523,35 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let headerView = SelectCategoryHeaderView(frame: .zero)
         switch wantedAction {
         case .setDefaultAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSettingsWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
                                  text: NSLocalizedString("setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
 
         case .moveAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputCategoryData.name))
 
         case .setAlbumThumbnail:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
 
         case .setAutoUploadAlbum:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSettingsWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
                                  text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             
         case .copyImage:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
 
         case .moveImage:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
 
         case .copyImages:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: NSLocalizedString("copySeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         case .moveImages:
-            headerView.configure(width: min(categoriesTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: NSLocalizedString("moveSeveralImages_selectAlbum", comment: "Please, select the album in which you wish to copy the photos."))
 
         default:

@@ -212,7 +212,7 @@ class EditImageParamsViewController: UIViewController
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
-                preferredContentSize = CGSize(width: kPiwigoPadSubViewWidth,
+                preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
                 editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - size.height)), right: 0.0)
             } else {
