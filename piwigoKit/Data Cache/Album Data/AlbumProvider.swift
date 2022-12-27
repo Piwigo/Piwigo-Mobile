@@ -734,15 +734,15 @@ public class AlbumProvider: NSObject {
     }
     
 
-    // MARK: - Utilities
+    // MARK: - Album Utilities
     /**
-        The attribute 'nbSubAlbums' of parent albums must be:
-        - incremented when an album is added to an album,
-        - decremented when an album is removed from an album.
-        The attribute 'totalNbImages' of parent albums must be:
-        - increased by the number of images contained in added sub-albums,
-        - subtracted from the number of images contained in removed sub-albums
-        N.B.: Task exectued in the background.
+     The attribute 'nbSubAlbums' of parent albums must be:
+     - incremented when an album is added to an album,
+     - decremented when an album is removed from an album.
+     The attribute 'totalNbImages' of parent albums must be:
+     - increased by the number of images contained in added sub-albums,
+     - subtracted from the number of images contained in removed sub-albums
+     N.B.: Task exectued in the background.
      */
     private func updateParents(adding album: Album) {
         updateParents(of: album, sign: +1)
@@ -775,10 +775,10 @@ public class AlbumProvider: NSObject {
     }
     
     /**
-        The attribute 'globalRank' of albums belonging to a parent album is:
-        - incremented when an album is added so that the new album appears at the top.
-        - decremented when an album is removed so that the rank is properly set.
-        N.B.: Task exectued in the background.
+     The attribute 'globalRank' of albums belonging to a parent album is:
+     - incremented when an album is added so that the new album appears at the top.
+     - decremented when an album is removed so that the rank is properly set.
+     N.B.: Task exectued in the background.
      */
     private func updateRankOfAlbums(by diff: Int, inAlbum albumID: Int32, afterRank rank: String) {
         // Retrieve albums in parent album
