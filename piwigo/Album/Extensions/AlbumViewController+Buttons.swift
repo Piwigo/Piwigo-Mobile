@@ -41,7 +41,7 @@ extension AlbumViewController
             x: mainScreenBounds.midX, y: mainScreenBounds.midY,
             width: 0, height: 0)
         navController.preferredContentSize = CGSize(
-            width: kPiwigoPadSettingsWidth,
+            width: pwgPadSettingsWidth,
             height: ceil(mainScreenBounds.size.height * 2 / 3))
         present(navController, animated: true)
     }
