@@ -48,9 +48,16 @@ extension AlbumCollectionViewCell {
             let keepImagesAction = UIAlertAction(
                 title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
                 style: .default, handler: { [self] action in
-                    confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                            deletionMode: .none,
-                                            andViewController: topViewController)
+                    if NetworkVars.usesCalcOrphans, nbOrphans == Int64.zero {
+                        // There will be no more orphans after the album deletion
+                        deleteCategory(withDeletionMode: .none,
+                                       andViewController: topViewController)
+                    } else {
+                        // There will be orphans, ask confirmation
+                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
+                                                deletionMode: .none,
+                                                andViewController: topViewController)
+                    }
                 })
             alert.addAction(keepImagesAction)
 
