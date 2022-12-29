@@ -11,10 +11,10 @@ import CoreData
 public class AlbumProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
-    //    private lazy var mainContext: NSManagedObjectContext = {
-    //        let context:NSManagedObjectContext = DataController.shared.mainContext
-    //        return context
-    //    }()
+//    private lazy var mainContext: NSManagedObjectContext = {
+//        let context:NSManagedObjectContext = DataController.shared.mainContext
+//        return context
+//    }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.bckgContext
@@ -574,7 +574,7 @@ public class AlbumProvider: NSObject {
                 // Update parent albums and sub-albums
                 updateParents(removing: albumToMove)
             }
-
+            
             // Move album
             let upperIDs = parentID == Int32.zero ? String(catID) : parent.upperIds + "," + String(catID)
             albumToMove.parentId = parentID
@@ -590,7 +590,7 @@ public class AlbumProvider: NSObject {
                 // Update parent albums and sub-albums
                 updateParents(adding: albumToMove)
             }
-
+            
             // Save all insertions from the context to the store.
             if bckgContext.hasChanges {
                 do {
@@ -696,7 +696,7 @@ public class AlbumProvider: NSObject {
                 bckgContext.delete(cachedAlbum)
             }
             
-            // Save all insertions from the context to the store.
+            // Save all modifications from the context to the store.
             if bckgContext.hasChanges {
                 do {
                     try bckgContext.save()
@@ -712,6 +712,44 @@ public class AlbumProvider: NSObject {
                 bckgContext.reset()
             }
         }
+    }
+    
+    public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
+        // Remove image from album
+        album.nbImages += nbImages
+        album.totalNbImages += nbImages
+
+        // Keep 'date_last' set as expected by the server
+        let tz = NSTimeZone.default as NSTimeZone
+        let seconds = -TimeInterval(tz.secondsFromGMT(for: Date()))
+        album.dateLast = max(Date(timeInterval: seconds, since: Date()), album.dateLast)
+
+        // Update album and its parent albums in the background
+        updateParents(ofAlbum: album, nbImages: +(nbImages))
+   }
+
+    public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) {
+        // Remove image from album
+        album.nbImages -= nbImages
+        album.totalNbImages -= nbImages
+
+        // Keep 'date_last' set as expected by the server
+        var dateLast = Date(timeIntervalSince1970: 0)
+        for keptImage in album.images ?? Set<Image>() {
+            if dateLast.compare(keptImage.datePosted) == .orderedAscending {
+                dateLast = keptImage.datePosted
+            }
+        }
+        album.dateLast = dateLast
+        
+        // Reset source album thumbnail if necessary
+        if album.nbImages == 0 {
+            album.thumbnailId = Int64.zero
+            album.thumbnailUrl = nil
+        }
+
+        // Update album and its parent albums in the background
+        updateParents(ofAlbum: album, nbImages: -(nbImages))
     }
     
     /**
@@ -733,8 +771,8 @@ public class AlbumProvider: NSObject {
         try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
-
-    // MARK: - Album Utilities
+    
+    // MARK: - Albums Related Utilities
     /**
      The attribute 'nbSubAlbums' of parent albums must be:
      - incremented when an album is added to an album,
@@ -794,18 +832,18 @@ public class AlbumProvider: NSObject {
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Create a fetched results controller and set its fetch request and context.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                     managedObjectContext: bckgContext,
-                                                     sectionNameKeyPath: nil, cacheName: nil)
+                                                    managedObjectContext: bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
         // Perform the fetch.
         do {
             try controller.performFetch()
         } catch {
             fatalError("Unresolved error \(error)")
         }
-
+        
         // Update the rank of all sub-albums
         let minRank = rank.components(separatedBy: ",").compactMap({Int($0)}).last ?? 0
         let otherAlbums = controller.fetchedObjects ?? []
@@ -839,18 +877,18 @@ public class AlbumProvider: NSObject {
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Create a fetched results controller and set its fetch request and context.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                     managedObjectContext: bckgContext,
-                                                     sectionNameKeyPath: nil, cacheName: nil)
+                                                    managedObjectContext: bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
         // Perform the fetch.
         do {
             try controller.performFetch()
         } catch {
             fatalError("Unresolved error \(error)")
         }
-
+        
         // Update the rank of the other albums
         let parentRank = album.globalRank
         let range = parentRank.startIndex..<parentRank.endIndex
@@ -858,6 +896,30 @@ public class AlbumProvider: NSObject {
         for subAlbum in subAlbums {
             let rank = subAlbum.globalRank
             subAlbum.globalRank = rank.replacingCharacters(in: range, with: parentRank)
+        }
+    }
+    
+    
+    // MARK: - Images Related Utilities
+    /**
+     Add/substract the number of moved images to
+     - the attibute 'nbImages' of the album.
+     - the attribute 'totalNbImages' of the album and its parent albums.
+     N.B.: Task exectued in the background.
+     */
+    private func updateParents(ofAlbum album: Album, nbImages: Int64) {
+        guard let taskContext = album.managedObjectContext else { return }
+        let parentIDs = album.upperIds.components(separatedBy: ",")
+            .compactMap({Int32($0)})
+        for upperID in parentIDs {
+            // Check that it is not the root album nor the selected album
+            if (upperID == 0) || (upperID == album.pwgID) { continue }
+
+            // Get a parent album
+            if let upperAlbum =  getAlbum(inContext: taskContext, withId: upperID) {
+                // Update number of images
+                upperAlbum.totalNbImages += nbImages
+            }
         }
     }
 }
