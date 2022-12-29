@@ -226,35 +226,35 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        ImageUtilities.delete(toDelete) { [self] in
-            // Hide HUD
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    cancelSelect()
-                }
-            }
-        } failure: { [self] error in
-            // Error — Try again ?
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
-            dismissRetryPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription, dismiss: { [self] in
-                hidePiwigoHUD() { [self] in
-                    updateButtonsInSelectionMode()
-                }
-            }, retry: { [self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    deleteImages(toDelete)
-                } failure: { [self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [self] in
-                        hidePiwigoHUD() { [self] in
-                            updateButtonsInSelectionMode()
-                        }
-                    }
-                }
-            })
-        }
+//        ImageUtilities.delete(toDelete) { [self] in
+//            // Hide HUD
+//            updatePiwigoHUDwithSuccess() { [self] in
+//                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+//                    cancelSelect()
+//                }
+//            }
+//        } failure: { [self] error in
+//            // Error — Try again ?
+//            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+//            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+//            dismissRetryPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription, dismiss: { [self] in
+//                hidePiwigoHUD() { [self] in
+//                    updateButtonsInSelectionMode()
+//                }
+//            }, retry: { [self] in
+//                // Relogin and retry
+//                LoginUtilities.reloginAndRetry() { [unowned self] in
+//                    deleteImages(toDelete)
+//                } failure: { [self] error in
+//                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
+//                    dismissPiwigoError(withTitle: title, message: message,
+//                                       errorMessage: error?.localizedDescription ?? "") { [self] in
+//                        hidePiwigoHUD() { [self] in
+//                            updateButtonsInSelectionMode()
+//                        }
+//                    }
+//                }
+//            })
+//        }
     }
 }
