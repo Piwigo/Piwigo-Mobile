@@ -70,24 +70,14 @@ public class Album: NSManagedObject {
 
         // Album thumbnail
         /// - Store relative URLs to save space and because the URL might changed in future
-        /// - Remove photo from cache if the path changed
-        var thumbnailHasChanged = false
-        let newThumbailId = Int64(albumData.thumbnailId ?? "") ?? Int64.max
+        /// - Remove photo from cache if the path has changed
+        let newThumbailId = Int64(albumData.thumbnailId ?? "") ?? Int64.zero
         if thumbnailId != newThumbailId {
             thumbnailId = newThumbailId
-            thumbnailHasChanged = true
         }
         let newThumbnailUrl = NetworkUtilities.encodedImageURL(albumData.thumbnailUrl ?? "")
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
-            thumbnailHasChanged = true
-        }
-        if thumbnailHasChanged, let serverID = user.server?.uuid {
-            let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
-            for size in pwgImageSize.allCases {
-                let fileUrl = cacheDir.appendingPathComponent(size.path).appendingPathComponent(uuid)
-                try? FileManager.default.removeItem(at: fileUrl)
-            }
         }
 
         // When "date_last" is null or not supplied: date in distant past
