@@ -14,56 +14,7 @@ import UIKit
 
 class ImageUtilities: NSObject {
     
-    // MARK: - Piwigo Server Methods
-//    static func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
-//                         completion: @escaping () -> Void,
-//                         failure: @escaping (NSError) -> Void) {
-//        // Prepare parameters for retrieving image/video infos
-//        let paramsDict: [String : Any] = ["image_id" : imageId]
-//        
-//        // Launch request
-//        let JSONsession = PwgSession.shared
-//        JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
-//                                jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-//                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
-//            // Decode the JSON object and store image data in cache.
-//            do {
-//                // Decode the JSON into codable type ImagesGetInfoJSON.
-//                let decoder = JSONDecoder()
-//                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
-//
-//                // Piwigo error?
-//                if imageJSON.errorCode != 0 {
-//                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-//                                                                    errorMessage: imageJSON.errorMessage)
-//                    failure(error as NSError)
-//                    return
-//                }
-//
-//                // Collect data returned by server
-//                guard let data = imageJSON.data else {
-//                    // Data cannot be digested
-//                    failure(JsonError.unexpectedError as NSError)
-//                    return
-//                }
-//
-//                // Import the imageJSON into Core Data.
-//                try ImageProvider.importImages(imageJSON.data, inAlbum: albumId)
-//                completion()
-//            }
-//            catch {
-//                // Data cannot be digested
-//                let error = error as NSError
-//                failure(error)
-//            }
-//        } failure: { error in
-//            /// - Network communication errors
-//            /// - Returned JSON data is empty
-//            /// - Cannot decode data returned by Piwigo server
-//            failure(error)
-//        }
-//    }
-    
+    // MARK: - Piwigo Server Methods    
     static func setInfos(with paramsDict: [String: Any],
                          completion: @escaping () -> Void,
                          failure: @escaping (NSError) -> Void) {
@@ -107,13 +58,11 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func delete(_ images:[PiwigoImageData],
+    static func delete(_ images:[Image],
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
-        // Create string containing pipe separated list of image ids
-        let listOfImageIds = images.map({ "\($0.imageId)" }).joined(separator: "|")
-        
         // Prepare parameters for retrieving image/video infos
+        let listOfImageIds = images.map({ "\($0.pwgID)" }).joined(separator: "|")
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
                                           "pwg_token" : NetworkVars.pwgToken]
         
@@ -140,13 +89,6 @@ class ImageUtilities: NSObject {
                     // Images deleted successfully
                     /// We may check here that the number returned matches the number of images to delete
                     /// and return an error to the user.
-                    DispatchQueue.global(qos: .userInteractive).async {
-                        // Remove image from cache, update UI and Upload database
-                        for image in images {
-                            // Remove image from cache, update UI and Upload database
-                            CategoriesData.sharedInstance().deleteImage(image)
-                        }
-                    }
                     completion()
                 }
                 else {

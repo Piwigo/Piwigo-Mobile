@@ -251,6 +251,8 @@
 		ADB49D842958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */; };
 		ADB49D862958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */; };
 		ADB49D88295904BC00EE377A /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D87295904BC00EE377A /* String+AppTools.swift */; };
+		ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */; };
+		ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */; };
 		ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */; };
 		ADBABA362847F4FF00EF39B0 /* AlbumViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */; };
 		ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */; };
@@ -789,6 +791,8 @@
 		ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Rename.swift"; sourceTree = "<group>"; };
 		ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Delete.swift"; sourceTree = "<group>"; };
 		ADB49D87295904BC00EE377A /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
+		ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Images.swift"; sourceTree = "<group>"; };
+		ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Albums.swift"; sourceTree = "<group>"; };
 		ADB65D4E26FBAE0F0094DAF1 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Search.swift"; sourceTree = "<group>"; };
 		ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NberImagesFooterCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -1803,6 +1807,8 @@
 			children = (
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
 				ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */,
+				ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */,
+				ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */,
 				ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */,
 				ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
@@ -2717,6 +2723,7 @@
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */,
+				ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */,
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
@@ -2767,6 +2774,7 @@
 				ADEEC5D5285619120065BA6D /* AlbumViewController+Menus.swift in Sources */,
 				AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
+				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADBABA362847F4FF00EF39B0 /* AlbumViewController+Search.swift in Sources */,
 				AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */,

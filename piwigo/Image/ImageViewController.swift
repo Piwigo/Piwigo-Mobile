@@ -25,10 +25,10 @@ class ImageViewController: UIViewController {
     var imageIndex = 0
     var userHasUploadRights = false
 
-    var userProvider: UserProvider?
-    var albumProvider: AlbumProvider?
-    var imageProvider: ImageProvider?
-    var savingContext: NSManagedObjectContext?
+    var userProvider: UserProvider!
+    var albumProvider: AlbumProvider!
+    var imageProvider: ImageProvider!
+    var savingContext: NSManagedObjectContext!
 
     var imageData: Image?
     private var progressBar = UIProgressView()
@@ -527,7 +527,7 @@ class ImageViewController: UIViewController {
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            self.imageProvider?.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
+            self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
                 // Update image data
                 self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
                 

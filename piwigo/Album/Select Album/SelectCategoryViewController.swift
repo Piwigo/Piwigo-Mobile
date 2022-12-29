@@ -36,7 +36,7 @@ protocol SelectCategoryImageCopiedDelegate: NSObjectProtocol {
 
 @objc
 protocol SelectCategoryImageRemovedDelegate {
-    func didRemoveImage(withId imageId: Int64)
+    func didRemoveImage()
 }
 
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -46,19 +46,19 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
+    private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
+    private var selectedCategoryId = Int32.min
+
     var userProvider: UserProvider!
     var albumProvider: AlbumProvider!
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
     
-    private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
-    private var inputCategoryId: Int32 = Int32.min
-    private var inputCategoryData: Album!
-    private var inputImageData: Image!
-    private var inputImageIds = [Int64]()
-    private var inputImagesData = [Image]()
-    private var totalNumberOfImages = Int.zero
-    private var selectedCategoryId = Int32.min
+    var inputAlbum: Album!
+    var inputImageIds = Set<Int64>()
+    var inputImages = Set<Image>()
+    var commonCatIDs = Set<Int32>()
+    var nberOfImages = Int64.zero
 
     func setInput(parameter:Any?, for action:pwgCategorySelectAction) -> Bool {
         wantedAction = action
@@ -70,11 +70,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
-            inputCategoryId = albumId
-            guard let inputAlbum = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
                 return false
             }
-            inputCategoryData = inputAlbum
+            inputAlbum = album
             
         case .moveAlbum:
             guard let albumData = parameter as? Album else {
@@ -82,93 +81,47 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 return false
             }
             // Album which will be moved into the selected one
-            inputCategoryId = albumData.pwgID
-            inputCategoryData = albumData
+            inputAlbum = albumData
             
-        case .setAlbumThumbnail:
-            guard let array = parameter as? [Any],
-                  let imageData = array[0] as? Image,
-                  let albumId = array[1] as? Int32 else {
-                debugPrint("Input parameter expected to be of type [Int32, Image].")
-                return false
-            }
-            // Image which will be set thumbnail of the selected album
-            inputCategoryId = albumId
-            inputImageData = imageData
-            guard let inputAlbum = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
-                return false
-            }
-            inputCategoryData = inputAlbum
-
-        case .copyImage:
+        case .setAlbumThumbnail, .copyImage, .moveImage:
             guard let array = parameter as? [Any],
                   let imageData = array[0] as? Image,
                   let albumId = array[1] as? Int32 else {
                 debugPrint("Input parameter expected to be of type [Image, Int32].")
                 return false
             }
-            // Image of the category ID which will be copied to the selected album
-            inputImageData = imageData
-            inputCategoryId = albumId
-            guard let inputAlbum = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
+            // Image which will be set as thumbnail of the selected album
+            // or image of the category ID which will be copied/moved to the selected album
+            inputImages = Set([imageData])
+            // Album from which the image has been selected
+            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
                 return false
             }
-            inputCategoryData = inputAlbum
+            inputAlbum = album
 
-        case .moveImage:
+        case .copyImages, .moveImages:
             guard let array = parameter as? [Any],
-                  let imageData = array[0] as? Image,
-                  let albumId = array[1] as? Int32 else {
-                debugPrint("Input parameter expected to be of type [Image, Int32]")
-                return false
-            }
-            // Image of the category ID which will be moved to the selected album
-            inputImageData = imageData
-            inputCategoryId = albumId
-            guard let inputAlbum = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
-                return false
-            }
-            inputCategoryData = inputAlbum
-
-        case .copyImages:
-            guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [NSNumber],
+                  let imageIds = array[0] as? Set<Int64>,
                   let albumId = array[1] as? Int32 else {
                 debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
                 return false
             }
-            // Image IDs of the category ID which will be copied to the selected album
-//            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != Int64.min})
+            // IDs of the selected images which will be copied/moved to the selected album
+            inputImageIds = imageIds
             if inputImageIds.isEmpty {
                 debugPrint("List of image IDs should not be empty")
                 return false
             }
-//            inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
-            if inputImageData == nil {
-                debugPrint("No available image data in cache")
+            inputImages = imageProvider.getImages(inContext: savingContext, withIds: imageIds)
+            if inputImages.isEmpty {
+                debugPrint("No image in cache with these IDs: \(inputImageIds)")
                 return false
             }
-            inputCategoryId = albumId
-
-        case .moveImages:
-            guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [NSNumber],
-                  let albumId = array[1] as? Int32 else {
-                debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
+            // Album from which the images have been selected
+            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
                 return false
             }
-            // Image IDs of the category ID which will be moved to the selected album
-//            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != Int64.min})
-            if inputImageIds.isEmpty {
-                debugPrint("List of image IDs should not be empty")
-                return false
-            }
-//            inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
-            if inputImageData == nil {
-                debugPrint("No available image data in cache")
-                return false
-            }
-            inputCategoryId = albumId
+            inputAlbum = album
 
         default:
             debugPrint("Called setParameter before setting wanted action")
@@ -183,7 +136,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     private var updateOperations: [BlockOperation] = [BlockOperation]()
     private var albumsShowingSubAlbums = Set<Int32>()
-    private var nberOfSelectedImages = Float(0)
 
     
     // MARK: - Core Data Source
@@ -215,9 +167,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             recentCatIds.removeAll(where: {$0 == Int32.zero})
         }
         // Removes current album
-        recentCatIds.removeAll(where: {$0 == self.inputCategoryId})
+        recentCatIds.removeAll(where: {$0 == self.inputAlbum.pwgID})
         // Removes parent album
-        recentCatIds.removeAll(where: {$0 == self.inputCategoryData.parentId})
+        recentCatIds.removeAll(where: {$0 == self.inputAlbum.parentId})
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchLimit = 5
@@ -377,10 +329,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                    thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Retrieve image data if needed
-                /// Some images are not associated with freshly load albums
-                if [.copyImages, .moveImages].contains(wantedAction) {
-                    totalNumberOfImages = inputImageIds.count
-                    if totalNumberOfImages > 1 {
+                /// Some images are not associated with freshly loaded albums
+                nberOfImages = Int64(inputImageIds.count)
+                if [.copyImages, .moveImages].contains(wantedAction), nberOfImages > 0 {
+                    if nberOfImages > 1 {
                         showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
                     } else {
                         showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .indeterminate)
@@ -454,69 +406,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
     }
     
-    
-    // MARK: - Retrieve Image Data
-    private func retrieveImageData() {
-        // Job done?
-        if inputImageIds.count == 0 {
-            self.hidePiwigoHUD { self.categoriesTableView.reloadData() }
-            return
-        }
-        
-        // Check list of IDs
-        if inputImageIds.last == Int64.min {
-            inputImageIds.removeLast()
-            retrieveImageData()
-        }
-        
-        // Image data are not complete when retrieved using pwg.categories.getImages
-        // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-        guard let imageId = inputImageIds.last else {
-            self.hidePiwigoHUD {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")) {
-                    self.dismiss(animated: true) { }
-                }
-            }
-            return
-        }
-        imageProvider.getInfos(forID: imageId,
-                               inCategoryId: inputCategoryId) { [self] in
-            // Store image data
-//            self.inputImagesData.append(imageData)
-//
-//            // Determine in which albums all images belong to
-//            let set1:NSMutableSet = NSMutableSet(array: self.inputImageData.categoryIds.map { $0.intValue })
-//            let set2 = Set(imageData.categoryIds.map { $0.intValue })
-//            set1.intersect(set2)
-//            self.inputImageData.categoryIds = set1.allObjects.map { NSNumber(integerLiteral: $0 as! Int) }
-
-            // Image info retrieved
-            self.inputImageIds.removeLast()
-            
-            // Update HUD
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImageIds.count) / Float(self.totalNumberOfImages))
-            
-            // Next image
-            self.retrieveImageData()
-            
-        } failure: { [unowned self] error in
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: {
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    retrieveImageData()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { }
-                }
-            })
-        }
-    }
-    
 
     // MARK: - UITableView - Header
     private func setTableViewMainHeader() {
@@ -528,23 +417,26 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case .moveAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputCategoryData.name))
+                                 text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
 
         case .setAlbumThumbnail:
+            let title = inputImages.first?.title.string ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
+                                 text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
                                  text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             
         case .copyImage:
+            let title = inputImages.first?.title.string ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
+                                 text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .moveImage:
+            let title = inputImages.first?.title.string ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string))
+                                 text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .copyImages:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
@@ -568,7 +460,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if section == 0 {
                 // Title
                 title = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
-                text = inputImageData.albums?.count ?? 0 > 1 ?
+                text = inputImages.first?.albums?.count ?? 0 > 1 ?
                     NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image") :
                     NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
             } else {
@@ -618,7 +510,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setAlbumThumbnail:
             if section == 0 {
-                return inputImageData.albums?.filter({$0.pwgID > 0}).count ?? 0
+                return inputImages.first?.albums?.filter({$0.pwgID > 0}).count ?? 0
             } else {
                 return albums.fetchedObjects?.count ?? 0
             }
@@ -649,8 +541,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case 0:
             if wantedAction == .setAlbumThumbnail {
                 // Albums in which this image belongs to
-                var catId = inputCategoryId     // This album always exists in cache
-                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                var catId = inputAlbum.pwgID     // This album always exists in cache
+                if let catIds = inputImages.first?.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
@@ -704,7 +596,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
-            if albumData.pwgID == inputCategoryId {
+            if albumData.pwgID == inputAlbum.pwgID {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
                 cell.albumLabel.textColor = .piwigoColorRightLabel()
             } else {
@@ -721,7 +613,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Root album => No button
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
                 // Is the root album parent of the input album?
-                if inputCategoryData.parentId == 0 {
+                if inputAlbum.parentId == 0 {
                     // Yes => Change text colour
                     cell.albumLabel.textColor = .piwigoColorRightLabel()
                 }
@@ -730,13 +622,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Don't present sub-albums in Recent Albums section
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
             }
-            else if albumData.pwgID == inputCategoryData.parentId {
+            else if albumData.pwgID == inputAlbum.parentId {
                 // This album is the parent of the input album => Change text colour
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
                 cell.albumLabel.textColor = .piwigoColorRightLabel()
             }
             else if albumData.upperIds.components(separatedBy: ",")
-                .compactMap({Int32($0)}).contains(inputCategoryId) {
+                .compactMap({Int32($0)}).contains(inputAlbum.pwgID) {
                 // This album is a sub-album of the input album => No button
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
                 cell.albumLabel.textColor = .piwigoColorRightLabel()
@@ -780,7 +672,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
                 }
                 // Albums containing the image are not selectable
-                if let albums = inputImageData.albums,
+                if let albums = inputImages.first?.albums,
                    albums.contains(where: { $0.pwgID == albumData.pwgID }) {
                     cell.albumLabel.textColor = .piwigoColorRightLabel()
                 }
@@ -802,8 +694,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case 0:
             // Provided album
             if wantedAction == .setAlbumThumbnail {
-                var catId = inputCategoryId     // This album always exists in cache
-                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                var catId = inputAlbum.pwgID     // This album always exists in cache
+                if let catIds = inputImages.first?.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
@@ -833,17 +725,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
-            if albumData.pwgID == inputCategoryId { return false }
+            if albumData.pwgID == inputAlbum.pwgID { return false }
             
         case .moveAlbum:
             // Do nothing if this is the input category
-            if albumData.pwgID == inputCategoryId { return false }
+            if albumData.pwgID == inputAlbum.pwgID { return false }
             // User cannot move album to current parent album or in itself
             if albumData.pwgID == 0 {  // upperCategories is nil for root
-                if inputCategoryData.parentId == 0 { return false }
-            } else if (albumData.pwgID == inputCategoryData.parentId) ||
+                if inputAlbum.parentId == 0 { return false }
+            } else if (albumData.pwgID == inputAlbum.parentId) ||
                 albumData.upperIds.components(separatedBy: ",")
-                .compactMap({Int32($0)}).contains(inputCategoryId) { return false }
+                .compactMap({Int32($0)}).contains(inputAlbum.pwgID) { return false }
             
         case .setAlbumThumbnail:
             // The root album is not selectable (should not be presented but in case…)
@@ -857,8 +749,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // The root album is not selectable (should not be presented but in case…)
             if albumData.pwgID == 0 { return false }
             // Albums containing all the images are not selectable
-            if let albums = inputImageData.albums,
-               albums.contains(where: { $0.pwgID == albumData.pwgID}) { return false }
+            if commonCatIDs.contains(albumData.pwgID) { return false }
 
         default:
             return false
@@ -879,8 +770,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case 0:
             // Provided album
             if wantedAction == .setAlbumThumbnail {
-                var catId = inputCategoryId     // This album always exists in cache
-                if let catIds = inputImageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
+                var catId = inputAlbum.pwgID     // This album always exists in cache
+                if let catIds = inputImages.first?.albums?.compactMap({$0.pwgID}).filter({$0 > 0}),
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
@@ -915,7 +806,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setDefaultAlbum:
             // Do nothing if this is the current default category
             if (albumData.pwgID == Int32.min) ||
-               (albumData.pwgID == inputCategoryId) { return }
+                (albumData.pwgID == inputAlbum.pwgID) { return }
             
             // Ask user to confirm
             let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
@@ -935,17 +826,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case .moveAlbum:
             // Do nothing if this is the current default category
-            if albumData.pwgID == inputCategoryId { return }
+            if albumData.pwgID == inputAlbum.pwgID { return }
 
             // User must not move album to current parent album or in itself
             if albumData.pwgID == 0 {  // upperCategories is nil for root
-                if inputCategoryData.parentId == 0 { return }
-            } else if (albumData.pwgID == inputCategoryData.parentId) ||
-                        albumData.upperIds.components(separatedBy: ",").contains(where: { Int32($0) == inputCategoryId}) { return }
+                if inputAlbum.parentId == 0 { return }
+            } else if (albumData.pwgID == inputAlbum.parentId) ||
+                        albumData.upperIds.components(separatedBy: ",").contains(where: { Int32($0) == inputAlbum.pwgID}) { return }
 
             // Ask user to confirm
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
-            let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputCategoryData.name, albumData.name)
+            let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { _ in
                 // Move album to selected category
@@ -974,53 +865,54 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Do nothing if this is the root album
             if albumData.pwgID == 0 { return }
             // Do nothing if the image already belongs to the selected album
-            if let albums = inputImageData.albums,
-               albums.contains(where: { $0.pwgID == albumData.pwgID}) { return }
+            if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
-            let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string, albumData.name)
+            let imageTitle = inputImages.first?.title.string ?? ""
+            let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { _ in
+                // Display HUD
+                self.showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                 // Copy single image to selected album
-                self.copySingleImage(toCategory: albumData)
+                self.copyImages(toAlbum: albumData)
             })
 
         case .moveImage:
             // Do nothing if this is the root album
             if albumData.pwgID == 0 { return }
             // Do nothing if the image already belongs to the selected album
-//            if inputImageData.categoryIds.contains(NSNumber(value: categoryData.albumId)) { return }
+            if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
-            let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), inputImageData.title.string.isEmpty ? inputImageData.fileName : inputImageData.title.string, albumData.name)
+            let imageTitle = inputImages.first?.title.string ?? ""
+            let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { _ in
+                // Display HUD
+                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
                 // Move single image to selected album
-                self.moveSingleImage(toCategory: albumData)
+                self.moveImages(toAlbum: albumData)
             }
 
         case .copyImages:
             // Do nothing if this is the root album
             if albumData.pwgID == 0 { return }
             // Do nothing if the images already belong to the selected album
-            if let albums = inputImageData.albums,
-               albums.contains(where: { $0.pwgID == albumData.pwgID }) { return }
+            if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { _ in
-                // Initialise counter and display HUD
-                self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                                   inMode: .annularDeterminate)
-
+                // Display HUD
+                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), inMode: .annularDeterminate)
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
-                    self.copySeveralImages(toCategory: albumData)
+                    self.copyImages(toAlbum: albumData)
                 }
             })
 
@@ -1028,22 +920,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Do nothing if this is the root album
             if albumData.pwgID == 0 { return }
             // Do nothing if the images already belong to the selected album
-            if let albums = inputImageData.albums,
-               albums.contains(where: { $0.pwgID == albumData.pwgID }) { return }
+            if commonCatIDs.contains(albumData.pwgID) { return }
 
             // Ask user to confirm
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let message = String(format: NSLocalizedString("moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { _ in
-                // Initialise counter and display HUD
-                self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                                   inMode: .annularDeterminate)
-                
+                // Display HUD
+                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"), inMode: .annularDeterminate)
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
-                    self.moveSeveralImages(toCategory: albumData)
+                    self.moveImages(toAlbum: albumData)
                 }
             }
 
@@ -1083,7 +971,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         })
     }
 
-    private func showError(with error:String = "") {
+    func showError(with error:String = "") {
         // Title and message
         let title:String
         var message:String
@@ -1122,392 +1010,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
-        }
-    }
-    
-
-    // MARK: - Move Category Methods
-    private func moveCategory(intoCategory parentData: Album) {
-        // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
-
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Add category to list of recent albums
-            let userInfo = ["categoryId": parentData.pwgID]
-            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-            // Move album
-            AlbumUtilities.move(self.inputCategoryId,
-                                intoAlbumWithId: parentData.pwgID) { [self] in
-                // Update cached albums in the background
-                DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-                    albumProvider.moveAlbum(self.inputCategoryId, intoAlbumWithId: parentData.pwgID)
-                }
-                
-                // Hide HUD, swipe and view then remove category from the album/images collection view
-                self.updatePiwigoHUDwithSuccess() {
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                        self.dismiss(animated: true) {
-                            self.albumMovedDelegate?.didMoveCategory()
-                        }
-                    }
-                }
-            } failure: { [unowned self] error in
-                self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
-                }
-            }
-        }
-    }
-
-    // MARK: - Set Album Thumbnail Methods
-    private func setRepresentative(for albumData: Album) {
-        // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
-        
-        // Set image as representative
-        DispatchQueue.global(qos: .userInitiated).async {
-            AlbumUtilities.setRepresentative(albumData, with: self.inputImageData)
-            {
-                DispatchQueue.main.async { [self] in
-                    // Save changes
-                    do {
-                        try self.savingContext.save()
-                    } catch let error as NSError {
-                        print("Could not fetch \(error), \(error.userInfo)")
-                    }
-
-                    // Close HUD
-                    self.updatePiwigoHUDwithSuccess() {
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true)
-                        }
-                    }
-                }
-            } failure: { [unowned self] error in
-                self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    // MARK: - Copy Images Methods
-    private func copySingleImage(toCategory albumData: Album) {
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": albumData.pwgID]
-        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-        // Check image data
-        guard let imageData = self.inputImageData else {
-            self.showError()
-            return
-        }
-        
-        // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
-        
-        // Copy image to selected album
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.copyImage(imageData, toCategory: albumData) { success in
-                if success {
-                    // Close HUD
-                    self.updatePiwigoHUDwithSuccess() {
-                        // Save changes
-                        do {
-                            try self.savingContext.save()
-                        } catch let error as NSError {
-                            print("Could not fetch \(error), \(error.userInfo)")
-                        }
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true) {
-                                // Update image data in current view (ImageDetailImage view)
-                                self.imageCopiedDelegate?.didCopyImage()
-                            }
-                        }
-                    }
-                } else {
-                    // Close HUD and inform user
-                    self.hidePiwigoHUD { self.showError() }
-                }
-            } onFailure: { error in
-                // Close HUD and inform user
-                self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    private func copySeveralImages(toCategory albumData: Album) {
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": albumData.pwgID]
-        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-        // Jobe done?
-        if inputImagesData.count == 0 {
-            // Close HUD
-            updatePiwigoHUDwithSuccess() {
-                // Save changes
-                do {
-                    try self.savingContext.save()
-                } catch let error as NSError {
-                    print("Could not fetch \(error), \(error.userInfo)")
-                }
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                    self.dismiss(animated: true) {
-                        // Update image data in current view (ImageDetailImage view)
-                        self.imageCopiedDelegate?.didCopyImage()
-                    }
-                }
-            }
-            return
-        }
-        
-        // Check image data
-        guard let imageData = inputImagesData.last else {
-            // Close HUD and inform user
-            self.hidePiwigoHUD { self.showError() }
-            return
-        }
-
-        // Copy next image to seleted album
-        self.copyImage(imageData, toCategory: albumData) { success in
-            if success {
-                // Next image…
-                self.inputImagesData.removeLast()
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
-                self.copySeveralImages(toCategory: albumData)
-            } else {
-                // Close HUD and inform user
-                self.hidePiwigoHUD { self.showError() }
-            }
-        } onFailure: { error in
-            // Close HUD and inform user
-            self.hidePiwigoHUD {
-                guard let error = error as NSError? else {
-                    self.showError()
-                    return
-                }
-                self.showError(with: error.localizedDescription)
-            }
-        }
-    }
-    
-    private func copyImage(_ imageData: Image, toCategory albumData: Album,
-                           onCompletion completion: @escaping (_ success: Bool) -> Void,
-                           onFailure fail: @escaping (_ error: NSError?) -> Void) {
-        // Append selected category ID to image category list
-        guard let albums = imageData.albums else {
-            self.showError()
-            return
-        }
-        var categoryIds = albums.compactMap({$0.pwgID})
-        categoryIds.append(albumData.pwgID)
-
-        // Prepare parameters for copying the image/video to the selected category
-        let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-                                          "categories"          : newImageCategories,
-                                          "multiple_value_mode" : "replace"]
-        
-        // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) {
-            // Add image to selected album
-            imageData.addToAlbums(albumData)
-            
-            // Increment number of images in selected album
-            albumData.nbImages += 1
-            albumData.totalNbImages += 1
-            
-            // Keep 'date_last' set as expected by the server
-            let tz = NSTimeZone.default as NSTimeZone
-            let seconds = -TimeInterval(tz.secondsFromGMT(for: Date()))
-            albumData.dateLast = max(Date(timeInterval: seconds, since: Date()), albumData.dateLast)
-
-            // Set album thumbnail if necessary
-            if [nil, Int64.zero].contains(albumData.thumbnailId) ||
-                albumData.thumbnailUrl == nil {
-                albumData.thumbnailId = imageData.pwgID
-                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
-            }
-            completion(true)
-        } failure: { error in
-            fail(error)
-        }
-    }
-    
-    
-    // MARK: - Move Images Methods
-    private func moveSingleImage(toCategory albumData: Album) {
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": albumData.pwgID]
-        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-        // Check image data
-        guard let imageData = self.inputImageData else {
-            self.showError()
-            return
-        }
-        
-        // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
-        
-        // Move image to selected album
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.moveImage(imageData, toCategory: albumData) { success in
-                if success {
-                    // Close HUD
-                    self.updatePiwigoHUDwithSuccess() {
-                        // Save changes
-                        do {
-                            try self.savingContext.save()
-                        } catch let error as NSError {
-                            print("Could not fetch \(error), \(error.userInfo)")
-                        }
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                            self.dismiss(animated: true) {
-                                // Remove image from ImageDetailImage view
-                                self.imageRemovedDelegate?.didRemoveImage(withId: imageData.pwgID)
-                            }
-                        }
-                    }
-                } else {
-                    // Close HUD and inform user
-                    self.hidePiwigoHUD { self.showError() }
-                }
-            } onFailure: { error in
-                // Close HUD and inform user
-                self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    private func moveSeveralImages(toCategory albumData: Album) {
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": albumData.pwgID]
-        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-        // Jobe done?
-        if inputImagesData.count == 0 {
-            // Close HUD
-            updatePiwigoHUDwithSuccess() {
-                // Save changes
-                do {
-                    try self.savingContext.save()
-                } catch let error as NSError {
-                    print("Could not fetch \(error), \(error.userInfo)")
-                }
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                    self.dismiss(animated: true)
-                }
-            }
-            return
-        }
-        
-        // Check image data
-        guard let imageData = inputImagesData.last else {
-            // Close HUD and inform user
-            self.hidePiwigoHUD { self.showError() }
-            return
-        }
-
-        // Move next image to seleted album
-        moveImage(imageData, toCategory: albumData) { success in
-            if success {
-                // Next image…
-                self.inputImagesData.removeLast()
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
-                self.moveSeveralImages(toCategory: albumData)
-            } else {
-                // Close HUD and inform user
-                self.hidePiwigoHUD { self.showError() }
-            }
-        } onFailure: { error in
-            // Close HUD and inform user
-            self.hidePiwigoHUD {
-                guard let error = error as NSError? else {
-                    self.showError()
-                    return
-                }
-                self.showError(with: error.localizedDescription)
-            }
-        }
-    }
-    
-    private func moveImage(_ imageData: Image, toCategory albumData: Album,
-                           onCompletion completion: @escaping (_ success: Bool) -> Void,
-                           onFailure fail: @escaping (_ error: NSError?) -> Void) {
-        // Append selected category ID to image category list
-        guard let albums = imageData.albums else {
-            self.showError()
-            return
-        }
-        var categoryIds = albums.compactMap({$0.pwgID})
-        categoryIds.append(albumData.pwgID)
-        
-        // Remove current categoryId from image category list
-        categoryIds.removeAll(where: {$0 == inputCategoryId} )
-
-        // Prepare parameters for moving the image/video to the selected category
-        let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
-                                          "categories"          : newImageCategories,
-                                          "multiple_value_mode" : "replace"]
-        
-        // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [self] in
-            // Add image to target album
-            imageData.addToAlbums(albumData)
-            
-            // Increment number of images in target album
-            albumData.nbImages += 1
-            albumData.totalNbImages += 1
-            
-            // Remove image from original album
-            imageData.removeFromAlbums(inputCategoryData)
-
-            // Decrement number of images in original album
-            inputCategoryData.nbImages -= 1
-            inputCategoryData.totalNbImages -= 1
-            
-            // Keep 'date_last' set as expected by the server
-            var dateLast = Date(timeIntervalSince1970: 0)
-            for keptImage in inputCategoryData?.images ?? Set<Image>() {
-                if dateLast.compare(keptImage.datePosted) == .orderedAscending {
-                    dateLast = keptImage.datePosted
-                }
-            }
-            inputCategoryData.dateLast = dateLast
-
-            // Reset album thumbnail if necessary
-            if inputCategoryData.nbImages == 0 {
-                inputCategoryData.thumbnailId = Int64.zero
-                albumData.thumbnailUrl = nil
-            }
-            
-            completion(true)
-        } failure: { error in
-            fail(error)
         }
     }
 }
