@@ -249,8 +249,8 @@ extension AlbumViewController
                 
                 // Remember which images belong to this album
                 var oldImageIds = Set<Int64>()
-                if let images = albumData?.images {
-                    oldImageIds = Set(images.compactMap({ $0.pwgID }))
+                if let images = albumData?.images, !images.isEmpty {
+                    oldImageIds = Set(images.map({ $0.pwgID }))
                 }
 
                 // Use the ImageProvider to fetch image data. On completion,
@@ -327,7 +327,7 @@ extension AlbumViewController
                 // Done fetching images ► Remove non-fetched images
                 DispatchQueue.main.async { [self] in
                     let images = imageProvider.getImages(inContext: mainContext, withIds: newImageIds)
-                    albumData?.removeFromImages(Set(images))
+                    albumData?.removeFromImages(images)
                 }
                 
                 completion()
