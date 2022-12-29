@@ -11,10 +11,10 @@ import CoreData
 public class ImageProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
-//    private lazy var mainContext: NSManagedObjectContext = {
-//        let context:NSManagedObjectContext = DataController.shared.mainContext
-//        return context
-//    }()
+    //    private lazy var mainContext: NSManagedObjectContext = {
+    //        let context:NSManagedObjectContext = DataController.shared.mainContext
+    //        return context
+    //    }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.bckgContext
@@ -44,7 +44,7 @@ public class ImageProvider: NSObject {
                     withIds imageIds: Set<Int64>) -> NSFetchedResultsController<Image> {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
-
+        
         // Select images:
         /// — of the current server accessible to the current user
         /// — having an ID matching one of the given image IDs
@@ -53,17 +53,17 @@ public class ImageProvider: NSObject {
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Create a fetched results controller and set its fetch request and context.
         let image = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                managedObjectContext: taskContext,
                                                sectionNameKeyPath: nil, cacheName: nil)
         return image
     }
-
+    
     public func getImages(inContext taskContext: NSManagedObjectContext,
-                          withIds imageIds: Set<Int64>) -> [Image] {
-
+                          withIds imageIds: Set<Int64>) -> Set<Image> {
+        
         // Initialisation
         var cachedImages = [Image]()
         
@@ -83,11 +83,11 @@ public class ImageProvider: NSObject {
             // Return image objects
             cachedImages = controller.fetchedObjects ?? []
         }
-
-        return cachedImages
+        
+        return Set(cachedImages)
     }
-
-
+    
+    
     // MARK: - Fetch Images
     /**
      Fetches the image feed from the remote Piwigo server, and imports it into Core Data.
@@ -107,7 +107,7 @@ public class ImageProvider: NSObject {
         case pwgSmartAlbum.search.rawValue:
             method = pwgImagesSearch
             paramsDict["query"] = query
-
+            
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
             paramsDict["f_min_hit"] = 1
@@ -115,7 +115,7 @@ public class ImageProvider: NSObject {
         case pwgSmartAlbum.best.rawValue:
             paramsDict["recursive"] = true
             paramsDict["f_min_rate"] = 1
-
+            
         case pwgSmartAlbum.recent.rawValue:
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -123,7 +123,7 @@ public class ImageProvider: NSObject {
             let dateAvailableString = dateFormatter.string(from: threeMonthsAgo)
             paramsDict["recursive"] = true
             paramsDict["f_min_date_available"] = dateAvailableString
-
+            
         case pwgSmartAlbum.favorites.rawValue:
             method = pwgUsersFavoritesGetList
             
@@ -131,7 +131,7 @@ public class ImageProvider: NSObject {
             method = pwgTagsGetImages
             paramsDict["tag_id"] = pwgSmartAlbum.tagged.rawValue - albumId
             paramsDict["order"] = "rank asc, id desc"
-
+            
         default:    // Standard Piwigo album
             paramsDict["cat_id"] = albumId
         }
@@ -205,15 +205,15 @@ public class ImageProvider: NSObject {
                 // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
                 let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if imageJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                    errorMessage: imageJSON.errorMessage)
+                                                                 errorMessage: imageJSON.errorMessage)
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Import the imageJSON into Core Data.
                 try self.importImages([imageJSON.data], inAlbum: albumId)
                 
@@ -231,7 +231,7 @@ public class ImageProvider: NSObject {
             failure(error)
         }
     }
-
+    
     /**
      Imports a JSON dictionary into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
@@ -315,7 +315,7 @@ public class ImageProvider: NSObject {
                    let allAlbums = user.server?.albums?.filter({albumIds.contains($0.pwgID)}) {
                     albums.formUnion(allAlbums)
                 }
-
+                
                 // Index of this new image in cache
                 guard let ID = imageData.id else { continue }
                 if let index = cachedImages.firstIndex(where: { $0.pwgID == ID }) {
@@ -357,27 +357,27 @@ public class ImageProvider: NSObject {
             }
             
             // Determine images to delete
-//            let newImageIds = imagesBatch.compactMap({$0.id})
-//            let cachedImagesToDelete = cachedImages.filter({newImageIds.contains($0.id) == false})
-//            let cachedImageIdsToDelete = cachedImagesToDelete.compactMap({Int($0.id)})
+            //            let newImageIds = imagesBatch.compactMap({$0.id})
+            //            let cachedImagesToDelete = cachedImages.filter({newImageIds.contains($0.id) == false})
+            //            let cachedImageIdsToDelete = cachedImagesToDelete.compactMap({Int($0.id)})
             
             // Update uploaded images if needed
             
             // Delete images
-//            cachedImagesToDelete.forEach { cachedImage in
-//                print("••> delete image with ID:\(cachedImage.id) and name:\(cachedImage.title)")
-//                bckgContext.delete(cachedImage)
-//            }
+            //            cachedImagesToDelete.forEach { cachedImage in
+            //                print("••> delete image with ID:\(cachedImage.id) and name:\(cachedImage.title)")
+            //                bckgContext.delete(cachedImage)
+            //            }
             
             // Save all insertions from the context to the store.
             if bckgContext.hasChanges {
                 do {
                     try bckgContext.save()
-//                    if Thread.isMainThread == false {
-//                        DispatchQueue.main.async {
-//                            DataController.shared.saveMainContext()
-//                        }
-//                    }
+                    //                    if Thread.isMainThread == false {
+                    //                        DispatchQueue.main.async {
+                    //                            DataController.shared.saveMainContext()
+                    //                        }
+                    //                    }
                 }
                 catch {
                     print("Error: \(error)\nCould not save Core Data context.")
@@ -395,7 +395,7 @@ public class ImageProvider: NSObject {
     
     // MARK: - Clear Images
     /**
-        Purge cache from orphaned images
+     Purge cache from orphaned images
      */
     public func purgeOrphans() {
         
@@ -409,7 +409,7 @@ public class ImageProvider: NSObject {
         andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
         andPredicates.append(NSPredicate(format: "albums.@count == 0"))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Delete associated files in the background
         bckgContext.performAndWait {
             
@@ -434,7 +434,7 @@ public class ImageProvider: NSObject {
                 bckgContext.delete(image)
             }
         }
-
+        
         // Save all insertions from the context to the store.
         if bckgContext.hasChanges {
             do {
@@ -450,18 +450,18 @@ public class ImageProvider: NSObject {
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
         }
-//
-//        // Create batch delete request
-//        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
-//
-//        // Execute batch delete request
-//        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+        //
+        //        // Create batch delete request
+        //        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        //
+        //        // Execute batch delete request
+        //        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
-
+    
     /**
      Clear cached Core Data image entry
-    */
+     */
     public func clearAll() {
         
         // Retrieve images in persistent store
