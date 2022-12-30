@@ -17,6 +17,7 @@ extension ImageViewController
         let parameter = [imageData, NSNumber(value: categoryId)]
         copyVC.userProvider = userProvider
         copyVC.albumProvider = albumProvider
+        copyVC.imageProvider = imageProvider
         copyVC.savingContext = savingContext
         if copyVC.setInput(parameter: parameter, for: action) {
             copyVC.delegate = self                  // To re-enable toolbar
