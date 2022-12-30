@@ -203,16 +203,15 @@ extension AlbumViewController
     
     // MARK: - Album and Image Data
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
-        // Fetch albums and images
-        if categoryId < 0 {
-            // Use the AlbumProvider to create the album data. On completion,
-            // handle general UI updates and error alerts on the main queue.
-            DispatchQueue.global(qos: .userInteractive).async { [self] in
-                // Remember which images belong to this album
-                var oldImageIds = Set<Int64>()
-                if let images = albumData?.images {
-                    oldImageIds = Set(images.compactMap({ $0.pwgID }))
-                }
+        // Remember which images belong to this album
+        // from main context before calling background tasks
+        let oldImageIds = Set(albumData?.images?.map({$0.pwgID}) ?? [])
+
+        // Use the AlbumProvider to create the album data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            // Fetch albums and images
+            if categoryId < 0 {
                 // The number of images is unknown when a smart album is created.
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
@@ -221,15 +220,16 @@ extension AlbumViewController
                                  fromPage: 0, toPage: 0, perPage: perPage) {
                     completion()
                 }
-            }
-        } else {
-            fetchAlbums {
-                completion()
+            } else {
+                fetchAlbums(withInitialImageIds: oldImageIds) {
+                    completion()
+                }
             }
         }
     }
     
-    private func fetchAlbums(completion: @escaping () -> Void) {
+    private func fetchAlbums(withInitialImageIds oldImageIds: Set<Int64>,
+                             completion: @escaping () -> Void) {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
@@ -247,12 +247,6 @@ extension AlbumViewController
                     return
                 }
                 
-                // Remember which images belong to this album
-                var oldImageIds = Set<Int64>()
-                if let images = albumData?.images, !images.isEmpty {
-                    oldImageIds = Set(images.map({ $0.pwgID }))
-                }
-
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
