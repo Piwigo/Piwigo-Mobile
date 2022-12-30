@@ -14,7 +14,18 @@ extension SelectCategoryViewController {
     func retrieveImageData() {
         // Job done?
         if inputImageIds.count == 0 {
-            self.hidePiwigoHUD { }
+            // We do have complete image data
+            DispatchQueue.main.async { [self] in
+                self.inputImages.forEach { image in
+                    let catIDs = Set((image.albums ?? Set<Album>()).map({$0.pwgID}))
+                    if commonCatIDs.isEmpty {
+                        commonCatIDs = catIDs
+                    } else {
+                        commonCatIDs = commonCatIDs.intersection(catIDs)
+                    }
+                }
+                self.hidePiwigoHUD { }
+            }
             return
         }
         
@@ -30,25 +41,15 @@ extension SelectCategoryViewController {
         // Check whether we already have complete image data
         if let imageData = inputImages.first(where: {$0.pwgID == imageId}),
            imageData.fileSize != Int64.zero {
-            if let albums = imageData.albums {
-                let catIDs = albums.compactMap({$0.pwgID})
-                commonCatIDs = commonCatIDs.intersection(catIDs)
-            }
             inputImageIds.removeFirst()
             retrieveImageData()
+            return
         }
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
         imageProvider.getInfos(forID: imageId,
                                inCategoryId: inputAlbum.pwgID) { [self] in
-            // Determine in which albums all images belong to
-            if let imageData = inputImages.first(where: {$0.pwgID == imageId}),
-               let albums = imageData.albums {
-                let catIDs = albums.compactMap({$0.pwgID})
-                commonCatIDs = commonCatIDs.intersection(catIDs)
-            }
-
             // Image info retrieved
             self.inputImageIds.removeFirst()
             

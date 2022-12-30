@@ -92,6 +92,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             // Image which will be set as thumbnail of the selected album
             // or image of the category ID which will be copied/moved to the selected album
+            commonCatIDs = Set((imageData.albums ?? Set<Album>()).map({$0.pwgID}))
             inputImages = Set([imageData])
             // Album from which the image has been selected
             guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
@@ -331,11 +332,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // No error ► Retrieve image data if needed
                 /// Some images are not associated with freshly loaded albums
                 nberOfImages = Int64(inputImageIds.count)
-                if [.copyImages, .moveImages].contains(wantedAction), nberOfImages > 0 {
+                if nberOfImages > 0,
+                   [.copyImages, .moveImages].contains(wantedAction) {
                     if nberOfImages > 1 {
-                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
+                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
+                                      inMode: .annularDeterminate)
                     } else {
-                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .indeterminate)
+                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
+                                      inMode: .indeterminate)
                     }
                     retrieveImageData()
                 }
@@ -672,8 +676,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
                 }
                 // Albums containing the image are not selectable
-                if let albums = inputImages.first?.albums,
-                   albums.contains(where: { $0.pwgID == albumData.pwgID }) {
+                if commonCatIDs.contains(albumData.pwgID) {
                     cell.albumLabel.textColor = .piwigoColorRightLabel()
                 }
             }
