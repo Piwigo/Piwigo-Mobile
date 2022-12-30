@@ -235,6 +235,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+                // Update image data
+                self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
@@ -259,6 +261,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+                // Update image data
+                self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
