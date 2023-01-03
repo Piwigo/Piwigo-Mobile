@@ -50,15 +50,15 @@ public class Image: NSManagedObject {
         
         // Image file size, name and MD5 checksum
         let newSize = imageData.fileSize ?? Int64.zero
-        if fileSize != newSize {
+        if newSize != Int64.zero, fileSize != newSize {
             fileSize = newSize
         }
         let newMD5 = imageData.md5checksum ?? ""
-        if md5sum != newMD5 {
+        if newMD5.isEmpty == false, md5sum != newMD5 {
             md5sum = newMD5
         }
-        let newFile = NetworkUtilities.utf8mb4String(from: imageData.fileName ?? "NoName.jpg")
-        if fileName != newFile {
+        let newFile = NetworkUtilities.utf8mb4String(from: imageData.fileName ?? "")
+        if newFile.isEmpty == false, fileName != newFile {
             fileName = newFile
         }
         let fileExt = URL(fileURLWithPath: fileName).pathExtension as NSString
@@ -72,17 +72,18 @@ public class Image: NSManagedObject {
         // Image dates
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let newPosted = dateFormatter.date(from: imageData.datePosted ?? "") ?? Date()
-        if datePosted != newPosted {
+        let unknownDate = dateFormatter.date(from: "1900-01-01 00:00:00")!
+        let newPosted = dateFormatter.date(from: imageData.datePosted ?? "1900-01-01 00:00:00")!
+        if newPosted > unknownDate, datePosted != newPosted {
             datePosted = newPosted
         }
         let newCreated = dateFormatter.date(from: imageData.dateCreated ?? "") ?? datePosted
-        if dateCreated != newCreated {
+        if newCreated > unknownDate, dateCreated != newCreated {
             dateCreated = newCreated
         }
         
         // Author
-        let newAuthor = NetworkUtilities.utf8mb4String(from: imageData.author ?? "NSNotFound")
+        let newAuthor = NetworkUtilities.utf8mb4String(from: imageData.author ?? "")
         if author != newAuthor {
             author = newAuthor
         }
