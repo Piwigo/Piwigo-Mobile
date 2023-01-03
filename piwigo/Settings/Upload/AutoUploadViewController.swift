@@ -298,19 +298,14 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 // Retrieve tags and switch to old cache data format
                 let tags = tagProvider.fetchedResultsController.fetchedObjects
                 let tagIds = UploadVars.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) })
-                var tagList = [PiwigoTagData]()
+                var tagList = Set<Tag>()
                 tagIds.forEach({ tagId in
                     if let id = tagId,
                        let tag = tags?.first(where: { $0.tagId == id }) {
-                        let newTag = PiwigoTagData()
-                        newTag.tagId = Int(tag.tagId)
-                        newTag.tagName = tag.tagName
-                        newTag.lastModified = tag.lastModified
-                        newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
-                        tagList.append(newTag)
+                        tagList.insert(tag)
                     }
                 })
-                cell.config(withList: tagList, inColor: .piwigoColorRightLabel())
+                cell.config(withList: tagList, inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
             case 1 /* Comments */ :
@@ -318,7 +313,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
-                cell.config(withText: UploadVars.autoUploadComments, inColor: .piwigoColorRightLabel())
+                cell.config(withText: NSAttributedString(string: UploadVars.autoUploadComments),
+                            inColor: UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell
 
@@ -516,7 +512,7 @@ extension AutoUploadViewController {
 
 extension AutoUploadViewController {
     // Collect selected tags
-    func didSelectTags(_ selectedTags: [Tag]) {
+    func didSelectTags(_ selectedTags: Set<Tag>) {
         // Store selected tags
         UploadVars.autoUploadTagIds = String(selectedTags.map({"\($0.tagId),"})
                                                         .reduce("", +).dropLast(1))

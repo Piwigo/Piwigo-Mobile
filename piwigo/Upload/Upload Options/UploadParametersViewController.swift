@@ -26,7 +26,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     private var shouldUpdateAuthor = false
     var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
     private var shouldUpdatePrivacyLevel = false
-    var commonTags = [Tag]()
+    var commonTags = Set<Tag>()
     private var shouldUpdateTags = false
     var commonComment = ""
     private var shouldUpdateComment = false
@@ -133,9 +133,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            cell.config(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title:")),
                         placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
-                        andImageDetail: commonTitle)
+                        andImageDetail: NSAttributedString(string: commonTitle))
             cell.cellTextField.textColor = shouldUpdateTitle ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
             cell.cellTextField.delegate = self
@@ -146,9 +146,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            cell.config(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_author", comment: "Author:")),
                         placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
-                        andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
+                        andImageDetail: NSAttributedString(string: commonAuthor))
             cell.cellTextField.textColor = shouldUpdateAuthor ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
             cell.cellTextField.delegate = self
@@ -169,18 +169,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
                 return EditImageTagsTableViewCell()
             }
-            // Switch to old cache data format
-            var tagList = [PiwigoTagData]()
-            commonTags.forEach { (tag) in
-                let newTag = PiwigoTagData()
-                newTag.tagId = Int(tag.tagId)
-                newTag.tagName = tag.tagName
-                newTag.lastModified = tag.lastModified
-                newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
-                tagList.append(newTag)
-            }
-            cell.config(withList: tagList,
-                            inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.config(withList: commonTags,
+                        inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.accessibilityIdentifier = "setTags"
             tableViewCell = cell
 
@@ -189,8 +179,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                 return EditImageTextViewTableViewCell()
             }
-            cell.config(withText: commonComment,
-                                inColor: shouldUpdateComment ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.config(withText: NSAttributedString(string: commonComment),
+                        inColor: shouldUpdateComment ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
 
@@ -214,13 +204,12 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
-            if (commonAuthor == "NSNotFound") {
-                // only update if not yet set, dont overwrite
-                if 0 < UploadVars.defaultAuthor.count {
-                    // must know the default author
-                    commonAuthor = UploadVars.defaultAuthor
-                    tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
+            // only update if not yet set, dont overwrite
+            if commonAuthor.isEmpty,
+               UploadVars.defaultAuthor.isEmpty == false {
+                // must know the default author
+                commonAuthor = UploadVars.defaultAuthor
+                tableView.reloadRows(at: [indexPath], with: .automatic)
             }
 
         case .privacy:
@@ -292,11 +281,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         case .imageName:
             commonTitle = finalString
         case .author:
-            if finalString.count > 0 {
-                commonAuthor = finalString
-            } else {
-                commonAuthor = "NSNotFound"
-            }
+            commonAuthor = finalString
         default:
             break
         }
@@ -308,7 +293,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         case .imageName:
             commonTitle = ""
         case .author:
-            commonAuthor = "NSNotFound"
+            commonAuthor = ""
         default:
             break
         }
@@ -330,10 +315,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             let indexPath = IndexPath(row: EditImageDetailsOrder.imageName.rawValue, section: 0)
             paramsTableView.reloadRows(at: [indexPath], with: .automatic)
         case .author:
-            if let typedText = textField.text, typedText.count > 0 {
+            if let typedText = textField.text {
                 commonAuthor = typedText
-            } else {
-                commonAuthor = "NSNotFound"
             }
             // Update cell
             let indexPath = IndexPath(row: EditImageDetailsOrder.author.rawValue, section: 0)
@@ -384,7 +367,7 @@ extension UploadParametersViewController: SelectPrivacyDelegate {
 
 // MARK: - TagsViewControllerDelegate Methods
 extension UploadParametersViewController: TagsViewControllerDelegate {
-    func didSelectTags(_ selectedTags: [Tag]) {
+    func didSelectTags(_ selectedTags: Set<Tag>) {
         // Update image parameter
         commonTags = selectedTags
 

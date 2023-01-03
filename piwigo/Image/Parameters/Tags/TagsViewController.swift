@@ -13,7 +13,7 @@ import CoreData
 import piwigoKit
 
 protocol TagsViewControllerDelegate: NSObjectProtocol {
-    func didSelectTags(_ selectedTags: [Tag])
+    func didSelectTags(_ selectedTags: Set<Tag>)
 }
 
 class TagsViewController: UITableViewController {
@@ -131,7 +131,7 @@ class TagsViewController: UITableViewController {
         super .viewWillDisappear(animated)
 
         // Return list of selected tags
-        delegate?.didSelectTags(selectedTags)
+        delegate?.didSelectTags(Set(selectedTags))
     }
     
     deinit {
