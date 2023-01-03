@@ -30,7 +30,7 @@ extension UploadManager {
             "image_id"            : "\(NSNumber(value: uploadProperties.imageId))",
             "file"                : uploadProperties.fileName,
             "name"                : imageTitle,
-            "author"              : author == "NSNotFound" ? "" : author,
+            "author"              : author,
             "date_creation"       : creationDate,
             "level"               : "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
             "comment"             : comment,
