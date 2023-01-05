@@ -413,9 +413,6 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
                 print("Error: Unknown activity \(String(describing: activity))")
         }
 
-        // Clear URL requests to force reload images before sharing
-        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
-
         // Clean up /tmp directory where shared files are temporarily stored
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: true)
