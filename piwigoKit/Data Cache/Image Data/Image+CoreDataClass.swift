@@ -91,7 +91,7 @@ public class Image: NSManagedObject {
         // Privacy level
         let level = Int16(imageData.privacyLevel ?? "") ?? kPiwigoPrivacy.unknown.rawValue
         let newPrivacy = (kPiwigoPrivacy(rawValue: level) ?? .unknown).rawValue
-        if privacyLevel != newPrivacy {
+        if newPrivacy != -1, privacyLevel != newPrivacy {
             privacyLevel = newPrivacy
         }
         

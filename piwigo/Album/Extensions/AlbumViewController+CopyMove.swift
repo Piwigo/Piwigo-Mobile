@@ -57,9 +57,10 @@ extension AlbumViewController
     func copyImagesToAlbum() {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
+        let parameter: [Any] = [selectedImageIds, categoryId]
         copyVC.userProvider = userProvider
         copyVC.albumProvider = albumProvider
+        copyVC.imageProvider = imageProvider
         copyVC.savingContext = mainContext
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
@@ -70,9 +71,10 @@ extension AlbumViewController
     func moveImagesToAlbum() {
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        let parameter: [Any] = [selectedImageIds, NSNumber(value: categoryId)]
+        let parameter: [Any] = [selectedImageIds, categoryId]
         moveVC.userProvider = userProvider
         moveVC.albumProvider = albumProvider
+        moveVC.imageProvider = imageProvider
         moveVC.savingContext = mainContext
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar

@@ -77,7 +77,7 @@ class NetworkVarsObjc: NSObject {
     
     // - Image and thumbnail caches
     @objc static var imageCache: URLCache?
-    @objc static var thumbnailCache: AFAutoPurgingImageCache?
+//    @objc static var thumbnailCache: AFAutoPurgingImageCache?
     
     // - piwigoKit session manager
     @objc static var dataSession: URLSession {

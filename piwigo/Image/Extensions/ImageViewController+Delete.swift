@@ -158,7 +158,7 @@ extension ImageViewController
         showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
-        ImageUtilities.delete([imageData]) { [self] in
+        ImageUtilities.delete(Set([imageData])) { [self] in
             // Delete image from cache (also deletes image files)
             self.savingContext.delete(imageData)
             

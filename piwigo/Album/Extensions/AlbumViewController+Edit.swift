@@ -17,8 +17,8 @@ extension AlbumViewController
     }
 
     func editImages() {
-        if selectedImageData.isEmpty {
-            // No image => End (should never happened)
+        if selectedImageIds.isEmpty {
+            // No image => End (should never happen)
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     cancelSelect()
@@ -32,8 +32,10 @@ extension AlbumViewController
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else {
             fatalError("No EditImageParamsViewController!")
         }
-        editImageVC.images = selectedImageData
-//        let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+//        editImageVC.imageProvider = imageProvider
+        editImageVC.savingContext = mainContext
+        editImageVC.images = (images.fetchedObjects ?? [Image]())
+            .filter({selectedImageIds.contains($0.pwgID)})
         editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC)
@@ -47,18 +49,18 @@ extension AlbumViewController: EditImageParamsDelegate
 {
     @objc func didDeselectImage(withId imageId: Int64) {
         // Deselect image
-        selectedImageIds.removeAll { $0 == imageId }
+        selectedImageIds.remove(imageId)
         imagesCollection?.reloadSections(IndexSet(integer: 1))
     }
 
-    @objc func didChangeImageParameters(_ params: PiwigoImageData) {
-        // Update cached image data
-        /// Note: the current category cannot be a smart album.
-        if let categoryIds = params.categoryIds {
-            for catId in categoryIds {
-                CategoriesData.sharedInstance().getCategoryById(catId.intValue).updateImage(afterEdit: params)
-            }
-        }
+    @objc func didChangeImageParameters(_ params: Image) {
+//        // Update cached image data
+//        /// Note: the current category cannot be a smart album.
+//        if let categoryIds = params.categoryIds {
+//            for catId in categoryIds {
+//                CategoriesData.sharedInstance().getCategoryById(catId.intValue).updateImage(afterEdit: params)
+//            }
+//        }
 
         // Update data source
 //        let indexOfUpdatedImage = albumData?.updateImage(params) ?? NSNotFound

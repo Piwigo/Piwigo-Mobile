@@ -126,7 +126,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 if imageData.title.string.isEmpty == false {
                     nameLabel?.attributedText = imageData.title
                 } else {
-                    nameLabel?.attributedText = NSAttributedString(string: imageData.fileName)
+                    nameLabel?.text = imageData.fileName
                 }
             } else if categoryId == pwgSmartAlbum.recent.rawValue {
                 nameLabel?.text = DateFormatter.localizedString(from: imageData.dateCreated,

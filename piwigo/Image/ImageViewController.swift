@@ -13,8 +13,8 @@ import piwigoKit
 
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int64)
-    func didUpdateImage(withData imageData: PiwigoImageData)
-    func needToLoadMoreImages()
+//    func didUpdateImage(withData imageData: PiwigoImageData)
+//    func needToLoadMoreImages()
 }
 
 class ImageViewController: UIViewController {

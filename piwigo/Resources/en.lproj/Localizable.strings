@@ -763,9 +763,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
-"settings_cacheDisk" = "Disk";
-"settings_cacheMemory" = "Memory";
-"settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "Clear Cache";
 "settings_cacheClearAll" = "Clear Photo Cache";
 "settings_cacheClearMsg" = "Are you sure you want to clear the photo cache? This will make albums and photos take a while to load again.";

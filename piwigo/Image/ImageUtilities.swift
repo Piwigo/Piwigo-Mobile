@@ -58,7 +58,7 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func delete(_ images:[Image],
+    static func delete(_ images: Set<Image>,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
@@ -108,11 +108,11 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func addToFavorites(_ imageData: PiwigoImageData,
+    static func addToFavorites(_ imageData: Image,
                                completion: @escaping () -> Void,
                                failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
+        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
@@ -135,11 +135,6 @@ class ImageUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Images successfully added to user's favorites
-                    DispatchQueue.global(qos: .userInteractive).async {
-                        // Add image to cache
-                        CategoriesData.sharedInstance()
-                            .addImage(imageData, toCategory: "\(kPiwigoFavoritesCategoryId)")
-                    }
                     completion()
                 }
                 else {
@@ -159,11 +154,11 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func removeFromFavorites(_ imageData: PiwigoImageData,
+    static func removeFromFavorites(_ imageData: Image,
                                     completion: @escaping () -> Void,
                                     failure: @escaping (NSError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let paramsDict: [String : Any] = ["image_id"  : imageData.imageId]
+        let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
@@ -186,11 +181,6 @@ class ImageUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Images successfully added to user's favorites
-                    DispatchQueue.global(qos: .userInteractive).async {
-                        // Remove image from cache
-                        CategoriesData.sharedInstance()
-                            .removeImage(imageData, fromCategory: String(kPiwigoFavoritesCategoryId))
-                    }
                     completion()
                 }
                 else {

@@ -58,11 +58,6 @@ import piwigoKit
         // Set Settings Bundle data
         setSettingsBundleData()
         
-        // Create permanent session managers for retrieving data and downloading images
-        NetworkHandler.createJSONdataSessionManager()       // 30s timeout, 4 connections max
-        NetworkHandler.createFavoritesDataSessionManager()  // 30s timeout, 1 connection max
-        NetworkHandler.createImagesSessionManager()         // 60s timeout, 4 connections max
-
         // In absence of passcode, albums are always accessible
         if AppVars.shared.appLockKey.isEmpty {
             AppVars.shared.isAppLockActive = false
@@ -267,11 +262,11 @@ import piwigoKit
         DataController.shared.saveMainContext()
 
         // Cancel tasks and close sessions
-        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        PwgSession.shared.dataSession.invalidateAndCancel()
+        ImageSession.shared.dataSession.invalidateAndCancel()
 
         // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
+//        AFNetworkActivityIndicatorManager.shared().isEnabled = false
         
         // Disable network reachability monitoring
         AFNetworkReachabilityManager.shared().stopMonitoring()

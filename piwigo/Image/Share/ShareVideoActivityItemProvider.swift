@@ -97,7 +97,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Determine the URL request
         /// - The movie URL is necessarily the one of the full resolution Piwigo image
-        guard let urlRequest: URLRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: Int.max) else {
+        guard let (imageURL, fileURL) = ShareUtilities.getURLs(imageData, ofMaxSize: Int.max) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -107,35 +107,30 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
-        // Do we have the movie in cache?
-        if let cache = NetworkVarsObjc.imageCache,
-           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data, cachedImageData.isEmpty == false {
+        // Retrieve image from cache or download it
+        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
+                                     placeHolder: placeholderItem as! UIImage) { [self] cachedImage in
             // Create file URL where the shared file is expected to be found
-            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
+            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL as URL)
             
             // Deletes temporary image file if it exists
-            do {
-                try FileManager.default.removeItem(at: imageFileURL)
-            } catch {
-            }
+            try? FileManager.default.removeItem(at: imageFileURL)
 
-            // Store cached image data into /tmp directory
+            // Store a copy of the cached image into /tmp directory
             do {
-                try cachedImageData.write(to: imageFileURL)
+                try FileManager.default.copyItem(at: fileURL, to: imageFileURL)
                 // Notify the delegate on the main thread to show how it makes progress.
                 progressFraction = 0.5
             }
             catch let error as NSError {
-                // Cancel task
-                cancel()
-                // Notify the delegate on the main thread that the processing is cancelled
+                // Will notify the delegate on the main thread that the processing is cancelled
                 alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
                 alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
             }
-        }
-        else {
-            // Download synchronously the image file and store it in cache
-            downloadSynchronouslyVideo(with: urlRequest)
+        } failure: { [self] error in
+            // Will notify the delegate on the main thread that the processing is cancelled
+            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error?.localizedDescription ?? "-?-")
         }
 
         // Cancel item task if we could not retrieve the file
@@ -268,54 +263,54 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     }
 
     private func downloadSynchronouslyVideo(with urlRequest: URLRequest) {
-        let sema = DispatchSemaphore(value: 0)
-        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
-            onProgress: { (progress) in
-                // Notify the delegate on the main thread to show how it makes progress.
-                if let progress = progress {
-                    self.progressFraction = Float(0.75 * progress.fractionCompleted)
-                }
-            }, completionHandler: { (response, fileURL, error) in
-                // Any error ?
-                if let error = error {
-                    // Failed
-                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-                    sema.signal()
-                } else {
-                    // Get response
-                    if let fileURL = fileURL, let response = response {
-                        do {
-                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
-                            let data = try Data(contentsOf: fileURL)
-
-                            // Check content
-                            if data.isEmpty {
-                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
-                                sema.signal()
-                            }
-                            else {
-                                // Store image in cache
-                                let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVarsObjc.imageCache {
-                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
-                                }
-
-                                // Set image file URL
-                                self.imageFileURL = fileURL
-                                sema.signal()
-                            }
-                        }
-                        catch let error as NSError {
-                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-                            sema.signal()
-                        }
-                    }
-                }
-            })
-        let _ = sema.wait(timeout: .distantFuture)
+//        let sema = DispatchSemaphore(value: 0)
+//        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
+//            onProgress: { (progress) in
+//                // Notify the delegate on the main thread to show how it makes progress.
+//                if let progress = progress {
+//                    self.progressFraction = Float(0.75 * progress.fractionCompleted)
+//                }
+//            }, completionHandler: { (response, fileURL, error) in
+//                // Any error ?
+//                if let error = error {
+//                    // Failed
+//                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+//                    sema.signal()
+//                } else {
+//                    // Get response
+//                    if let fileURL = fileURL, let response = response {
+//                        do {
+//                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
+//                            let data = try Data(contentsOf: fileURL)
+//
+//                            // Check content
+//                            if data.isEmpty {
+//                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
+//                                sema.signal()
+//                            }
+//                            else {
+//                                // Store image in cache
+//                                let cachedResponse = CachedURLResponse(response: response, data: data)
+//                                if let cache = NetworkVarsObjc.imageCache {
+//                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
+//                                }
+//
+//                                // Set image file URL
+//                                self.imageFileURL = fileURL
+//                                sema.signal()
+//                            }
+//                        }
+//                        catch let error as NSError {
+//                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+//                            sema.signal()
+//                        }
+//                    }
+//                }
+//            })
+//        let _ = sema.wait(timeout: .distantFuture)
     }
     
     private func exportSynchronously(originalAsset: AVAsset, with exportPreset: String) {

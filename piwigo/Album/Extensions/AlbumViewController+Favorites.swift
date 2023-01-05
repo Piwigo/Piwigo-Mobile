@@ -11,21 +11,32 @@ import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: Favorites bar button
+    // MARK: Favorites Utilities
     func getFavoriteBarButton() -> UIBarButtonItem? {
-//        let areFavorites = images.fetchedObjects?.compactMap({$0.albums})
-//            .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})})
-        
-//        let areFavorites = CategoriesData.sharedInstance()
-//            .category(withId: categoryId, containsImagesWithId: selectedImageIds)
-//        let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
-//        button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
-//        return button
-        return nil
+        let areFavorites = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)})
+            .map({$0.albums ?? Set<Album>()})
+            .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
+        let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
+        button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+        return button
     }
 
-    
-    // MARK: - Add images to favorites
+    private func refreshFavorites() {
+        // Loop over the visible cells
+        let visibleCells = imagesCollection?.visibleCells ?? []
+        visibleCells.forEach { cell in
+            if let imageCell = cell as? ImageCollectionViewCell {
+                let isFavorite = (imageCell.imageData?.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                imageCell.isFavorite = isFavorite
+                imageCell.setNeedsLayout()
+                imageCell.layoutIfNeeded()
+            }
+        }
+    }
+
+
+    // MARK: - Add Images to Favorites
     @objc func addToFavorites() {
         initSelection(beforeAction: .addToFavorites)
     }
@@ -50,11 +61,10 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard let imageId = selectedImageIds.last,
-              let imageData = CategoriesData.sharedInstance()
-                    .getImageForCategory(Int(categoryId), andId: Int(imageId)) else {
+        guard let imageId = selectedImageIds.first,
+              let imageData = images.fetchedObjects?.first(where: {$0.pwgID == imageId}) else {
             // Forget this image
-            selectedImageIds.removeLast()
+            selectedImageIds.removeFirst()
 
             // Update HUD
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
@@ -70,7 +80,7 @@ extension AlbumViewController
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Image added to favorites
-            selectedImageIds.removeLast()
+            selectedImageIds.removeFirst()
 
             // Next image
             addImageToFavorites()
@@ -101,24 +111,8 @@ extension AlbumViewController
         }
     }
     
-    private func refreshFavorites() {
-        // Loop over the visible cells
-        let visibleCells = imagesCollection?.visibleCells ?? []
-        visibleCells.forEach { cell in
-            if let imageCell = cell as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.pwgID {
-                let Ids = [NSNumber(value: imageId)]
-                let isFavorite = CategoriesData.sharedInstance()
-                    .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: Ids)
-                imageCell.isFavorite = isFavorite
-                imageCell.setNeedsLayout()
-                imageCell.layoutIfNeeded()
-            }
-        }
-    }
-
     
-    // MARK: - Remove images from favorites
+    // MARK: - Remove Images from Favorites
     @objc func removeFromFavorites() {
         initSelection(beforeAction: .removeFromFavorites)
     }
@@ -143,11 +137,10 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard  let imageId = selectedImageIds.last,
-               let imageData = CategoriesData.sharedInstance()
-                    .getImageForCategory(Int(categoryId), andId: Int(imageId)) else {
-            // Forget this image
-            selectedImageIds.removeLast()
+        guard  let imageId = selectedImageIds.first,
+               let imageData = images.fetchedObjects?.first(where: {$0.pwgID == imageId}) else {
+            // Deselect this image
+            selectedImageIds.removeFirst()
 
             // Update HUD
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
@@ -163,7 +156,7 @@ extension AlbumViewController
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Image removed from the favorites
-            selectedImageIds.removeLast()
+            selectedImageIds.removeFirst()
 
             // Next image
             removeImageFromFavorites()

@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class EditImageTagsTableViewCell: UITableViewCell {
     
@@ -45,16 +46,12 @@ class EditImageTagsTableViewCell: UITableViewCell {
         tagsString = ""
     }
 
-    func config(withList tags: [PiwigoTagData]?, inColor color: UIColor?) {
+    func config(withList tags: Set<Tag>, inColor color: UIColor?) {
         // Set colours
-        tagsLabel.textColor = .piwigoColorLeftLabel()
+        tagsLabel.textColor = UIColor.piwigoColorLeftLabel()
         tagsList.textColor = color
 
-        // Check tag data
-        tagsString = ""
-        guard let tags = tags else { return }
-
         // Compile list of tags
-        tagsString = String(tags.compactMap({"\($0.tagName ?? "?"), "}).reduce("", +).dropLast(2))
+        tagsString = String(tags.compactMap({"\($0.tagName), "}).reduce("", +).dropLast(2))
     }
 }

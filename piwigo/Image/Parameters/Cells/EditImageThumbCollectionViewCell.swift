@@ -71,7 +71,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageTime.textColor = .piwigoColorLeftLabel()
     }
 
-    func config(withImage imageData: PiwigoImageData?, removeOption hasRemove: Bool) {
+    func config(withImage imageData: Image?, removeOption hasRemove: Bool) {
         // Colors
         applyColorPalette()
         
@@ -81,11 +81,11 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
         
         // Store image ID
-        imageId = Int64(imageData.imageId)
+        imageId = imageData.pwgID
 
         // Image file name
-        if let fileName: String = imageData.fileName, fileName.isEmpty == false {
-            imageFile.text = fileName
+        if imageData.fileName.isEmpty == false {
+            imageFile.text = imageData.fileName
             editButtonView.isHidden = false     // Show button for renaming file
         }
 
@@ -93,123 +93,64 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         removeButtonView.isHidden = !hasRemove
 
         // Image from Piwigo server…
-        if (imageData.fullResWidth > 0) && (imageData.fullResHeight > 0) {
+        if let imageWidth = imageData.fullRes?.width, imageWidth > 0,
+           let imageHeight = imageData.fullRes?.height, imageHeight > 0 {
             if bounds.size.width > CGFloat(299) {
                 // i.e. larger than iPhone 5 screen width
                 self.imageSize?.text = String(format: "%ldx%ld pixels, %.2f MB",
-                                              Int(imageData.fullResWidth),
-                                              Int(imageData.fullResHeight),
+                                              imageWidth, imageHeight,
                                               Double(imageData.fileSize) / 1024.0)
             } else {
                 self.imageSize?.text = String(format: "%ldx%ld pixels", 
-                                              Int(imageData.fullResWidth),
-                                              Int(imageData.fullResHeight))
+                                              imageWidth, imageHeight)
             }
         }
 
         imageDate.text = ""
-        if let dateCreated = imageData.dateCreated {
-            if bounds.size.width > CGFloat(320) {
-                // i.e. larger than iPhone 5 screen width
-                imageDate.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .full, timeStyle: .none)
-            } else {
-                imageDate.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .long, timeStyle: .none)
-            }
-            imageTime.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .none, timeStyle: .medium)
+        if bounds.size.width > CGFloat(320) {
+            // i.e. larger than iPhone 5 screen width
+            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                           dateStyle: .full, timeStyle: .none)
+        } else {
+            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                           dateStyle: .long, timeStyle: .none)
         }
+        imageTime.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                       dateStyle: .none, timeStyle: .medium)
 
         // Retrieve image thumbnail from Piwigo server
-        var thumbnailUrl: String?
-        let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize)
-        switch albumThumbnailSize {
-        case .square:
-            if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
-                thumbnailUrl = squarePath
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                thumbnailUrl = thumbPath
-            }
-        case .xxSmall:
-            if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
-                thumbnailUrl = xxSmallPath
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                thumbnailUrl = thumbPath
-            }
-        case .xSmall:
-            if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
-                thumbnailUrl = xSmallPath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .small:
-            if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
-                thumbnailUrl = smallPath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .medium:
-            if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
-                thumbnailUrl = mediumPath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .large:
-            if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
-                thumbnailUrl = largePath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .xLarge:
-            if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
-                thumbnailUrl = xLargePath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .xxLarge:
-            if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
-                thumbnailUrl = xxLargePath
-            }  else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                 thumbnailUrl = thumbPath
-            }
-        case .thumb, .fullRes:
-            fallthrough
-        default:
-            thumbnailUrl = imageData.thumbPath
-        }
-
-        guard let urlStr = thumbnailUrl,
-              let imageUrl = URL(string: urlStr) else {
-            // No known thumbnail URL
-            imageThumbnail.image = UIImage(named: "placeholder")
+        let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: albumThumbnailSize) else {
             return
         }
 
-        // Load album thumbnail
+        // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()
+        let placeHolder = UIImage(named: "placeholder")!
         let size: CGSize = imageThumbnail.bounds.size
         let scale = CGFloat(fmax(1.0, imageThumbnail.traitCollection.displayScale))
-        var request = URLRequest(url: imageUrl)
-        request.addValue("image/*", forHTTPHeaderField: "Accept")
-        imageThumbnail.setImageWith(request,
-                                    placeholderImage: UIImage(named: "placeholder"))
-        { _, _, downloadedImage in
+        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
+                                     placeHolder: placeHolder) { cachedImage in
+            // Display
             DispatchQueue.global(qos: .userInitiated).async {
-                let imageSize: CGSize = downloadedImage.size
+                let imageSize: CGSize = cachedImage.size
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
-                    let thumbnailImage = ImageUtilities.downsample(image: downloadedImage,
+                    let thumbnailImage = ImageUtilities.downsample(image: cachedImage,
                                                                    to: size, scale: scale)
                     DispatchQueue.main.async {
                         self.imageThumbnail.image = thumbnailImage
                     }
                 } else {
                     DispatchQueue.main.async {
-                        self.imageThumbnail.image = downloadedImage
+                        self.imageThumbnail.image = cachedImage
                     }
                 }
             }
-        } failure: { _, _, error in
-            #if DEBUG
-            print("setupWithImageData — Fail to get thumbnail for image at \(thumbnailUrl ?? "")")
-            #endif
+        } failure: { _ in
+            // No image available
+            DispatchQueue.main.async { [self] in
+                imageThumbnail.image = UIImage(named: "placeholder")
+            }
         }
     }
 
@@ -323,9 +264,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 imageFile.text = fileName
 
                                 // Update parent image view
-                                if delegate?.responds(to: #selector(EditImageThumbnailDelegate.didRenameFileOfImage(withId:andFilename:))) ?? false {
-                                    delegate?.didRenameFileOfImage(withId: imageId, andFilename: fileName)
-                                }
+                                delegate?.didRenameFileOfImage(withId: imageId, andFilename: fileName)
                             })
                         }
                     }

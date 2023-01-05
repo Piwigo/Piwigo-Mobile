@@ -37,36 +37,21 @@ public class Server: NSManagedObject {
     
     
     // MARK: - Cache Management
-    public lazy var thumbnailSize: String = {
-        let serverUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
+    public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
         var folderSize = UInt64.zero
-        for size in pwgImageSize.allCases {
-            if size == .fullRes { continue }
-            let sizeUrl = serverUrl.appendingPathComponent(size.path)
-            folderSize += sizeUrl.folderSize
-        }
-        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
-    }()
-    
-    public func deleteThumbnails() {
         let serverUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
-        for size in pwgImageSize.allCases {
-            if size == .fullRes { continue }
-            let sizeUrl = serverUrl.appendingPathComponent(size.path)
-            try? FileManager.default.removeItem(at: sizeUrl)
-        }
-    }
-    
-    public lazy var fullResSize: String = {
-        let fullResUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
-                                                      .appendingPathComponent(pwgImageSize.fullRes.path)
-        let folderSize = fullResUrl.folderSize
+        sizes.forEach({ size in
+            let cacheUrl = serverUrl.appendingPathComponent(size.path)
+            folderSize += cacheUrl.folderSize
+        })
         return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
-    }()
-    
-    public func deleteFullResImages() {
-        let fullResUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
-                                                      .appendingPathComponent(pwgImageSize.fullRes.path)
-        try? FileManager.default.removeItem(at: fullResUrl)
+    }
+
+    public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>) {
+        let serverUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
+        sizes.forEach { size in
+            let cacheUrl = serverUrl.appendingPathComponent(size.path)
+            try? FileManager.default.removeItem(at: cacheUrl)
+        }
     }
 }

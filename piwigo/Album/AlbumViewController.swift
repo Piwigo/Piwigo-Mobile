@@ -28,12 +28,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     @objc var categoryId = Int32.zero
     var query = ""
     var totalNumberOfImages = 0
-    var selectedImageIds = [Int64]()
-    var selectedImageIdsLoop = [Int64]()
-    var selectedImageData = [PiwigoImageData]()
+    var selectedImageIds = Set<Int64>()
+    var selectedImageIdsLoop = Set<Int64>()
 
     var imagesCollection: UICollectionView?
-    private var didScrollToImageIndex = 0
+//    private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
     var settingsBarButton: UIBarButtonItem!
@@ -263,7 +262,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Initialise data source
         do {
-            try albums.performFetch()
+            if categoryId >= Int32.zero {
+                try albums.performFetch()
+            }
             try images.performFetch()
         } catch {
             print("Error: \(error)")
@@ -716,9 +717,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
     }
 
-    @objc
-    func updateSubCategory(withId albumId: Int) {
-        // Get index of updated category
+//    @objc
+//    func updateSubCategory(withId albumId: Int) {
+//        // Get index of updated category
 //        if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
 //           let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == albumId}) {
 //            // Update cell of corresponding category
@@ -727,7 +728,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //                imagesCollection?.reloadItems(at: [indexPath])
 //            }
 //        }
-    }
+//    }
 
 //    @objc
 //    func addImage(withId imageId: Int) {
@@ -1136,15 +1137,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             if images.fetchedObjects?.count ?? 0 > indexPath.item {
-                // Remember that user did scroll down to this item
-                didScrollToImageIndex = indexPath.item
-
                 // Create cell from Piwigo data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
-                cell.config(with: images.object(at: imageIndexPath), inCategoryId: categoryId)
-//                let imageData = self.albumData?.images[indexPath.row] as? PiwigoImageData
-//                cell.config(with: imageData, inCategoryId: categoryId)
-//                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? Int64.min))
+                let image = images.object(at: imageIndexPath)
+                cell.config(with: image, inCategoryId: categoryId)
+                cell.isSelection = selectedImageIds.contains(image.pwgID)
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
 //                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
@@ -1160,13 +1157,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 cell.addGestureRecognizer(imageSeriesRocognizer)
                 cell.isUserInteractionEnabled = true
             }
-
-            // Load more image data if possible (page after page…)
-//            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
-//               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
-//                self.needToLoadMoreImages()
-//            }
-
             return cell
         }
     }
@@ -1221,13 +1211,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
             } else {
                 // Selection mode active => add/remove image from selection
-                let imageIdObject = selectedCell.imageData?.pwgID ?? Int64.zero
-                if !selectedImageIds.contains(imageIdObject) {
-                    selectedImageIds.append(imageIdObject)
+                let imageID = selectedCell.imageData?.pwgID ?? Int64.zero
+                if !selectedImageIds.contains(imageID) {
+                    selectedImageIds.insert(imageID)
                     selectedCell.isSelection = true
                 } else {
                     selectedCell.isSelection = false
-                    selectedImageIds.removeAll { $0 as AnyObject === imageIdObject as AnyObject }
+                    selectedImageIds.remove(imageID)
                 }
 
                 // and update nav buttons
@@ -1238,20 +1228,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - ImageDetailDelegate Methods
-    func didSelectImage(withId imageId: Int64) {
+    func didSelectImage(withId imageID: Int64) {
         // Determine index of image
-//        guard let indexOfImage = albumData?.images.firstIndex(where: {$0.imageId == imageId}) else { return }
-//
-//        // Scroll view to center image
-//        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
-//            let indexPath = IndexPath(item: indexOfImage, section: 1)
-//            imageOfInterest = indexPath
-//            imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-//        }
+        guard let indexOfImage = images.fetchedObjects?.firstIndex(where: {$0.pwgID == imageID}) else { return }
+
+        // Scroll view to center image
+        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
+            let indexPath = IndexPath(item: indexOfImage, section: 1)
+            imageOfInterest = indexPath
+            imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+        }
     }
 
-    func didUpdateImage(withData imageData: PiwigoImageData) {
-        // Update data source
+//    func didUpdateImage(withData imageData: Image) {
+//        // Update data source
 //        let indexOfImage = albumData?.updateImage(imageData) ?? 0
 //        if indexOfImage == NSNotFound { return }
 //
@@ -1260,10 +1250,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
 //            imagesCollection?.reloadItems(at: [indexPath])
 //        }
-    }
+//    }
 
-    func needToLoadMoreImages() {
-        // Check that album data exists
+//    func needToLoadMoreImages() {
+//        // Check that album data exists
 //        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
 //            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
 //            return
@@ -1368,7 +1358,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 //                }
 //            }, onFailure: nil)
 //        }
-    }
+//    }
 
     // MARK: - SelectCategoryDelegate Methods
     func didSelectCategory(withId category: Int32) {

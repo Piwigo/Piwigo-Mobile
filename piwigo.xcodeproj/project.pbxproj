@@ -326,7 +326,6 @@
 		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
 		ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */; };
 		ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */; };
-		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */; };
 		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
@@ -398,12 +397,6 @@
 		ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD446268A2953001F00E8 /* Upload+CoreDataClass.swift */; };
 		ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD449268A29E6001F00E8 /* Location+CoreDataClass.swift */; };
 		ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD44A268A29E6001F00E8 /* Location+CoreDataProperties.swift */; };
-		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
-		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
-		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
-		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
-		D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */; };
-		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -949,22 +942,8 @@
 		ADFFD44A268A29E6001F00E8 /* Location+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
-		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
-		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
-		D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoAlbumData.h; sourceTree = "<group>"; };
-		D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoAlbumData.m; sourceTree = "<group>"; };
 		D82B8CBB1A67820A000E47CA /* piwigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = piwigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D82B8CE41A678ED2000E47CA /* NetworkHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkHandler.h; sourceTree = "<group>"; };
-		D82B8CE51A678ED2000E47CA /* NetworkHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkHandler.m; sourceTree = "<group>"; };
 		D82B8CEE1A6790BF000E47CA /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		D82B8D2E1A688512000E47CA /* PiwigoImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoImageData.h; sourceTree = "<group>"; };
-		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
-		D89045AA1A94654D00A306FE /* PiwigoTagData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTagData.h; sourceTree = "<group>"; };
-		D89045AB1A94654D00A306FE /* PiwigoTagData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoTagData.m; sourceTree = "<group>"; };
-		D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumData.h; sourceTree = "<group>"; };
-		D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumData.m; sourceTree = "<group>"; };
-		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
-		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1563,15 +1542,6 @@
 			path = pwg.tags;
 			sourceTree = "<group>";
 		};
-		ADABACB92235A68E0095C4D0 /* Categories Data */ = {
-			isa = PBXGroup;
-			children = (
-				D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */,
-				D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */,
-			);
-			path = "Categories Data";
-			sourceTree = "<group>";
-		};
 		ADC019722471A6D500532A81 /* Upload Queue */ = {
 			isa = PBXGroup;
 			children = (
@@ -1831,21 +1801,6 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
-			isa = PBXGroup;
-			children = (
-				D8083A531A7D66CD00A95605 /* ImageService.h */,
-				D8083A541A7D66CD00A95605 /* ImageService.m */,
-				D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */,
-				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
-				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
-				D82B8D2F1A688512000E47CA /* PiwigoImageData.m */,
-				D89045AA1A94654D00A306FE /* PiwigoTagData.h */,
-				D89045AB1A94654D00A306FE /* PiwigoTagData.m */,
-			);
-			path = "Piwigo Data Wrappers";
-			sourceTree = "<group>";
-		};
 		D818EA031A74D32100733991 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1907,7 +1862,6 @@
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				ADC339FB26A7EC8500173F8A /* In-App Intents */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
-				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
@@ -1984,8 +1938,6 @@
 		D87C5A971A6F4F93001763BC /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
-				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
 				AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */,
 				ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */,
 			);
@@ -2009,8 +1961,6 @@
 			children = (
 				AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */,
 				ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */,
-				D8A59EF11ACE45BC00D2EBF0 /* AlbumData.h */,
-				D8A59EF21ACE45BC00D2EBF0 /* AlbumData.m */,
 				ADEEC5D228560DF00065BA6D /* AlbumViewController.swift */,
 				AD5A31642847F61700948FEE /* Extensions */,
 				D818E9F51A74BF1100733991 /* Cells */,
@@ -2057,7 +2007,6 @@
 			children = (
 				AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */,
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
-				ADABACB92235A68E0095C4D0 /* Categories Data */,
 			);
 			path = "Data Cache";
 			sourceTree = "<group>";
@@ -2430,7 +2379,7 @@
 		};
 		AD7038A4267B931200A72CE1 /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -2438,9 +2387,9 @@
 			name = "Auto-increment build version of release";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi\n";
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
 		};
 		AD77838E267E462A00317F36 /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2458,7 +2407,7 @@
 		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -2466,9 +2415,9 @@
 			name = "Auto-increment build version of release";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi\n";
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2639,13 +2588,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */,
-				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
-				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
-				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
-				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
-				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
-				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 				ADC69F21285B6F68009BF9AF /* AlbumViewController+CopyMove.swift in Sources */,
 				AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */,
 				ADBC08D02446060700BF82E8 /* AlbumHeaderReusableView.swift in Sources */,

@@ -54,8 +54,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
-    private var fullResSize = ""
-    private var thumbSize = ""
+    private var thumbCacheSize = ""
+    private var photoCacheSize = ""
     
 
     // MARK: - View Lifecycle
@@ -102,6 +102,25 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if UploadVars.prefixFileNameBeforeUpload,
            UploadVars.defaultPrefix.isEmpty {
             UploadVars.prefixFileNameBeforeUpload = false
+        }
+
+        // Calculate cache sizes
+        DispatchQueue.global(qos: .userInteractive).async {
+            let bckgContext = DataController.shared.bckgContext
+            if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+               let server = user.server {
+                // Album and photo thumbnails
+                var sizes = Set<pwgImageSize>()
+                sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
+                sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
+                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+
+                // Photos and videos
+                sizes = Set<pwgImageSize>()
+                sizes.insert(.fullRes)
+                sizes.insert(pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes)
+                self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+            }
         }
     }
 
@@ -205,16 +224,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                     alert.view.tintColor = .piwigoColorOrange()
                 })
-            }
-        }
-        
-        // Calculate cache sizes
-        DispatchQueue.global(qos: .userInteractive).async {
-            let bckgContext = DataController.shared.bckgContext
-            if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-               let server = user.server {
-                self.fullResSize = server.fullResSize
-                self.thumbSize = server.thumbnailSize
             }
         }
     }
@@ -1142,75 +1151,95 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Cache Settings
         case .cache /* Cache Settings */:
             switch indexPath.row {
-            case 0 /* Disk */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
+            case 0 /* Album and Photo Thumbnails */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                // Slider value
-                let value = Float(AppVars.shared.diskCache)
-
-                // Slider configuration
-                let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
-                let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                var prefix:String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    prefix = String(format: "%.1f/", currentDiskSizeInMB)
-                } else {
-                    prefix = String(format: "%ld/", lroundf(currentDiskSizeInMB))
-                }
-                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-                cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
-                               value: value,
-                               increment: Float(kPiwigoDiskCacheInc),
-                               minValue: Float(kPiwigoDiskCacheMin),
-                               maxValue: Float(kPiwigoDiskCacheMax),
-                               prefix: prefix, suffix: suffix)
-                cell.cellSliderBlock = { newValue in
-                    // Update settings
-                    AppVars.shared.diskCache = Int(newValue)
-                    // Update disk cache size
-                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
-                }
+                let title = NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails")
+                cell.configure(with: title, detail: self.thumbCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
-                
-            case 1 /* Memory */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
-                }
-                // Slider value
-                let value = Float(AppVars.shared.memoryCache)
 
-                // Slider configuration
-                let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
-                let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                var prefix:String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhone 6,7 screen width
-                    prefix = String(format: "%.1f/", currentMemSizeInMB)
-                } else {
-                    prefix = String(format: "%ld/", lroundf(currentMemSizeInMB))
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
+//                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
+//                    return SliderTableViewCell()
+//                }
+//                // Slider value
+//                let value = Float(AppVars.shared.diskCache)
+//
+//                // Slider configuration
+//                let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
+//                let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
+//                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+//                var prefix:String
+//                if view.bounds.size.width > 375 {
+//                    // i.e. larger than iPhones 6,7 screen width
+//                    prefix = String(format: "%.1f/", currentDiskSizeInMB)
+//                } else {
+//                    prefix = String(format: "%ld/", lroundf(currentDiskSizeInMB))
+//                }
+//                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
+//                cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
+//                               value: value,
+//                               increment: Float(kPiwigoDiskCacheInc),
+//                               minValue: Float(kPiwigoDiskCacheMin),
+//                               maxValue: Float(kPiwigoDiskCacheMax),
+//                               prefix: prefix, suffix: suffix)
+//                cell.cellSliderBlock = { newValue in
+//                    // Update settings
+//                    AppVars.shared.diskCache = Int(newValue)
+//                    // Update disk cache size
+//                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
+//                }
+//                cell.accessibilityIdentifier = "diskCache"
+//                tableViewCell = cell
+                
+            case 1 /* Photos and Videos */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-                cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
-                               value: value,
-                               increment: Float(kPiwigoMemoryCacheInc),
-                               minValue: Float(kPiwigoMemoryCacheMin),
-                               maxValue: Float(kPiwigoMemoryCacheMax),
-                               prefix: prefix, suffix: suffix)
-                cell.cellSliderBlock = { newValue in
-                    // Update settings
-                    AppVars.shared.memoryCache = Int(newValue)
-                    // Update memory cache size
-                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
-                }
+                let title = NSLocalizedString("severalImages", comment: "Photos")
+                cell.configure(with: title, detail: self.photoCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
+
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
+//                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
+//                    return SliderTableViewCell()
+//                }
+//                // Slider value
+//                let value = Float(AppVars.shared.memoryCache)
+//
+//                // Slider configuration
+//                let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
+//                let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
+//                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+//                var prefix:String
+//                if view.bounds.size.width > 375 {
+//                    // i.e. larger than iPhone 6,7 screen width
+//                    prefix = String(format: "%.1f/", currentMemSizeInMB)
+//                } else {
+//                    prefix = String(format: "%ld/", lroundf(currentMemSizeInMB))
+//                }
+//                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
+//                cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
+//                               value: value,
+//                               increment: Float(kPiwigoMemoryCacheInc),
+//                               minValue: Float(kPiwigoMemoryCacheMin),
+//                               maxValue: Float(kPiwigoMemoryCacheMax),
+//                               prefix: prefix, suffix: suffix)
+//                cell.cellSliderBlock = { newValue in
+//                    // Update settings
+//                    AppVars.shared.memoryCache = Int(newValue)
+//                    // Update memory cache size
+//                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
+//                }
+//                cell.accessibilityIdentifier = "memoryCache"
+//                tableViewCell = cell
                 
             default:
                 break
@@ -1695,57 +1724,63 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
-                let titleFull = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), fullResSize)
-                let clearFullResAction = UIAlertAction(title: titleFull, style: .default, handler: { action in
-                    // Delete full resolution images in background queue
-                    DispatchQueue.global(qos: .userInteractive).async { [self] in
-                        let bckgContext = DataController.shared.bckgContext
-                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-                           let server = user.server {
-                            server.deleteFullResImages()
-                            self.fullResSize = server.fullResSize
-                        }
-                    }
-                })
-                alert.addAction(clearFullResAction)
-
-                let titleThumb = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbSize)
-                let clearThumbAction = UIAlertAction(title: titleThumb, style: .default, handler: { action in
+                var title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
+                let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                     // Delete all thumbnails in background queue
                     DispatchQueue.global(qos: .userInteractive).async { [self] in
                         let bckgContext = DataController.shared.bckgContext
                         if let user = self.userProvider.getUserAccount(inContext: bckgContext),
                            let server = user.server {
-                            server.deleteThumbnails()
-                            thumbSize = server.thumbnailSize
+                            var sizes = Set<pwgImageSize>()
+                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
+                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
+                            server.clearCachedImages(ofSizes: sizes)
+                            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
                         }
                     }
                 })
-                alert.addAction(clearThumbAction)
+                alert.addAction(clearThumbCacheAction)
+                
+                title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
+                let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+                    // Delete full resolution images in background queue
+                    DispatchQueue.global(qos: .userInteractive).async { [self] in
+                        let bckgContext = DataController.shared.bckgContext
+                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+                           let server = user.server {
+                            var sizes = Set<pwgImageSize>()
+                            sizes.insert(.fullRes)
+                            sizes.insert(pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes)
+                            server.clearCachedImages(ofSizes: sizes)
+                            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+                        }
+                    }
+                })
+                alert.addAction(clearPhotoCacheAction)
                 
 #if DEBUG
-                let clearAlbumsAction = UIAlertAction(title: "Clear All Albums",
+                let clearAlbumsAction = UIAlertAction(title: "Album Data",
                                                       style: .default, handler: { action in
                     // Delete all albums in background queue
                     AlbumProvider().clearAll()
                 })
                 alert.addAction(clearAlbumsAction)
                 
-                let clearImagesAction = UIAlertAction(title: "Clear All Images",
+                let clearImagesAction = UIAlertAction(title: "Photo Data",
                                                       style: .default, handler: { action in
                     // Delete all images in background queue
                     ImageProvider().clearAll()
                 })
                 alert.addAction(clearImagesAction)
                 
-                let clearTagsAction = UIAlertAction(title: "Clear All Tags",
+                let clearTagsAction = UIAlertAction(title: "Tag Data",
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
                     TagProvider().clearTags()
                 })
                 alert.addAction(clearTagsAction)
                 
-                let titleClearLocations = "Clear All Locations"
+                let titleClearLocations = "Location Data"
                 let clearLocationsAction = UIAlertAction(title: titleClearLocations,
                                                          style: .default, handler: { action in
                     // Delete all locations in background queue
@@ -1753,13 +1788,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 })
                 alert.addAction(clearLocationsAction)
                 
-                let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
+                let clearUploadsAction = UIAlertAction(title: "Upload Requests",
                                                        style: .default, handler: { action in
                     // Delete all upload requests in the main thread
                     UploadProvider().clearUploads()
                 })
                 alert.addAction(clearUploadsAction)
-                #endif
+#endif
 
                 let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
                     // Delete image cache

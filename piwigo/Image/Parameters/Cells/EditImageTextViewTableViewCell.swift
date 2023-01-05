@@ -23,7 +23,7 @@ class EditImageTextViewTableViewCell: UITableViewCell {
         textView.layer.cornerRadius = 5.0
     }
 
-    func config(withText imageDetail: String?, inColor color: UIColor?) {
+    func config(withText imageDetail: NSAttributedString?, inColor color: UIColor?) {
         // Cell background
         backgroundColor = .piwigoColorBackground()
 
@@ -31,7 +31,7 @@ class EditImageTextViewTableViewCell: UITableViewCell {
         label.textColor = .piwigoColorLeftLabel()
 
         // Cell text view
-        textView.text = imageDetail
+        textView.attributedText = imageDetail
         textView.textColor = color
         textView.backgroundColor = .piwigoColorBackground()
         textView.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default

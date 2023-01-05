@@ -45,10 +45,5 @@ extension SettingsViewController: CategorySortDelegate {
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = sortType.name
         }
-        
-        // Clear image data in cache
-        for category in CategoriesData.sharedInstance().allCategories {
-            category.resetData()
-        }
     }
 }

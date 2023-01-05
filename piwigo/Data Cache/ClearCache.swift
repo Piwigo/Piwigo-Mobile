@@ -14,9 +14,8 @@ class ClearCache: NSObject {
     
     static func closeSessionAndClearCache(completion: @escaping () -> Void) {
         // Session closed
-        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
+        PwgSession.shared.dataSession.invalidateAndCancel()
+        ImageSession.shared.dataSession.invalidateAndCancel()
 
         // Back to default values
         AlbumVars.shared.defaultCategory = 0
@@ -79,9 +78,7 @@ class ClearCache: NSObject {
             ImageProvider().clearAll()
         }
 
-        // URL requests
-        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
-        NetworkVarsObjc.thumbnailCache?.removeAllImages()
+        // Image data
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

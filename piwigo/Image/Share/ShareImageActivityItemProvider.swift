@@ -35,7 +35,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
     private var imageFileURL: URL                       // Shared image file URL
-    private var imageFileData: Data                     // Content of the shared image file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
     
     // MARK: - Progress Faction
@@ -63,7 +62,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // We use the thumbnail image stored in cache
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
-            imageFileData = Data()
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
@@ -73,10 +71,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         imageFileURL = imageURL as URL
         if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
             let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
-            imageFileData = resizedImage.jpegData(compressionQuality: 1.0) ?? Data()
             super.init(placeholderItem: resizedImage)
         } else {
-            imageFileData = Data()
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 
@@ -112,7 +108,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let maxSize = activityType?.imageMaxSize() ?? Int.max
 
         // Determine the URL request of the image stored on the piwigo server
-        guard let urlRequest: URLRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: maxSize) else {
+        guard let (imageURL, fileURL) = ShareUtilities.getURLs(imageData, ofMaxSize: maxSize) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -122,23 +118,18 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
-        // Do we have the image in cache?
-        if let cache = NetworkVarsObjc.imageCache,
-           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data, cachedImageData.isEmpty == false {
+        // Retrieve image from cache or download it
+        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
+                                     placeHolder: placeholderItem as! UIImage) { [self] cachedImage in
             // Create file URL where the shared file is expected to be found
-            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
-            // Store image data for future use
-            imageFileData = cachedImageData
+            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL as URL)
             
             // Deletes temporary image file if it exists
-            do {
-                try FileManager.default.removeItem(at: imageFileURL)
-            } catch {
-            }
+            try? FileManager.default.removeItem(at: imageFileURL)
 
-            // Store cached image data into /tmp directory
+            // Store a copy of the cached image into /tmp directory
             do {
-                try imageFileData.write(to: imageFileURL)
+                try FileManager.default.copyItem(at: fileURL, to: imageFileURL)
                 // Notify the delegate on the main thread to show how it makes progress.
                 progressFraction = 0.75
             }
@@ -147,10 +138,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                 alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
                 alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
             }
-        }
-        else {
-            // Download synchronously the image file and store it in cache
-            downloadSynchronouslyImage(with: urlRequest)
+        } failure: { [self] error in
+            // Will notify the delegate on the main thread that the processing is cancelled
+            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error?.localizedDescription ?? "-?-")
         }
 
         // Cancel item task if image could not be retrieved
@@ -298,59 +289,59 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     }
 
     private func downloadSynchronouslyImage(with urlRequest: URLRequest) {
-        let sema = DispatchSemaphore(value: 0)
-        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
-            onProgress: { [unowned self] progress in
-                // Notify the delegate on the main thread to show how it makes progress.
-                self.progressFraction = Float((0.75 * (progress?.fractionCompleted ?? 0.0)))
-            },
-            completionHandler: { response, fileURL, error in
-                // Any error ?
-                if let error = error {
-                    // Will notify the delegate on the main thread that the processing is cancelled
-                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-                    sema.signal()
-                }
-                else {
-                    // Get response
-                    if let fileURL = fileURL, let response = response {
-                        do {
-                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
-                            let data = try Data(contentsOf: fileURL)
-
-                            // Check content
-                            if data.isEmpty {
-                                // Will notify the delegate on the main thread that the processing is cancelled
-                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
-                                sema.signal()
-                            }
-                            else {
-                                // Store image in cache
-                                let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVarsObjc.imageCache {
-                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
-                                }
-
-                                // Set image file URL
-                                self.imageFileURL = fileURL
-                                
-                                // Store image data for future use
-                                self.imageFileData = data
-                                sema.signal()
-                            }
-                        }
-                        catch let error as NSError {
-                            // Will notify the delegate on the main thread that the processing is cancelled
-                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-                            sema.signal()
-                        }
-                    }
-                }
-            })
-        let _ = sema.wait(timeout: .distantFuture)
+//        let sema = DispatchSemaphore(value: 0)
+//        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
+//            onProgress: { [unowned self] progress in
+//                // Notify the delegate on the main thread to show how it makes progress.
+//                self.progressFraction = Float((0.75 * (progress?.fractionCompleted ?? 0.0)))
+//            },
+//            completionHandler: { response, fileURL, error in
+//                // Any error ?
+//                if let error = error {
+//                    // Will notify the delegate on the main thread that the processing is cancelled
+//                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
+//                    sema.signal()
+//                }
+//                else {
+//                    // Get response
+//                    if let fileURL = fileURL, let response = response {
+//                        do {
+//                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
+//                            let data = try Data(contentsOf: fileURL)
+//
+//                            // Check content
+//                            if data.isEmpty {
+//                                // Will notify the delegate on the main thread that the processing is cancelled
+//                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
+//                                sema.signal()
+//                            }
+//                            else {
+//                                // Store image in cache
+//                                let cachedResponse = CachedURLResponse(response: response, data: data)
+//                                if let cache = NetworkVarsObjc.imageCache {
+//                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
+//                                }
+//
+//                                // Set image file URL
+//                                self.imageFileURL = fileURL
+//
+//                                // Store image data for future use
+//                                self.imageFileData = data
+//                                sema.signal()
+//                            }
+//                        }
+//                        catch let error as NSError {
+//                            // Will notify the delegate on the main thread that the processing is cancelled
+//                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+//                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
+//                            sema.signal()
+//                        }
+//                    }
+//                }
+//            })
+//        let _ = sema.wait(timeout: .distantFuture)
     }
 
     private func preprocessingDidEnd() {

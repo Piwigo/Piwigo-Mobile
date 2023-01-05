@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageShiftPickerDelegate: NSObjectProtocol {
-    func didSelectDate(withPicker date: Date?)
+    func didSelectDate(withPicker date: Date)
 }
 
 class EditImageShiftPickerTableViewCell: UITableViewCell
@@ -107,8 +107,7 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
         var comp = DateComponents()
         comp.month = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.month.rawValue) % kPiwigoPickerMonthsPerYear
         comp.year = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.year.rawValue)
-        var newDate: Date? = nil
-        newDate = gregorian.date(byAdding: comp, to: daysInSeconds, wrappingComponents: false)
+        let newDate = gregorian.date(byAdding: comp, to: daysInSeconds, wrappingComponents: false)
 
         return newDate
     }
@@ -118,8 +117,8 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
     @IBAction func changedMode(_ sender: Any)
     {
         // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageShiftPickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: getDateFromPicker())
+        if let date = getDateFromPicker() {
+            delegate?.didSelectDate(withPicker: date)
         }
     }
 }
@@ -264,8 +263,8 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
         pickerView.selectRow(newRow, inComponent: component, animated: false)
 
         // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageShiftPickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: getDateFromPicker())
+        if let date = getDateFromPicker() {
+            delegate?.didSelectDate(withPicker: date)
         }
     }
 }

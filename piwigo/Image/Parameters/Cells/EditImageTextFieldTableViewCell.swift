@@ -15,18 +15,18 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
     @IBOutlet weak var cellTextField: UITextField!
     @IBOutlet private weak var cellLabel: UILabel!
 
-    func config(withLabel label: String?, placeHolder: String?,
-               andImageDetail imageDetail: String?) {
+    func config(withLabel label: NSAttributedString?, placeHolder: String?,
+               andImageDetail imageDetail: NSAttributedString?) {
         // Cell background
         backgroundColor = .piwigoColorBackground()
 
         // Cell label
-        cellLabel.text = label
+        cellLabel.attributedText = label
         cellLabel.textColor = .piwigoColorLeftLabel()
 
         // Cell text field
         if let detail = imageDetail {
-            cellTextField.text = detail
+            cellTextField.attributedText = detail
         } else {
             cellTextField.text = ""
         }

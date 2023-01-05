@@ -201,14 +201,14 @@ extension ImageSession: URLSessionDelegate {
 
 // MARK: - Session Task Delegate
 extension ImageSession: URLSessionDataDelegate {
-        
+    
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Task-level authentication request from the remote server")
-
+        
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard authMethod == NSURLAuthenticationMethodHTTPBasic,
-            authMethod == NSURLAuthenticationMethodHTTPDigest else {
+              authMethod == NSURLAuthenticationMethodHTTPDigest else {
             completionHandler(.performDefaultHandling, nil)
             return
         }
@@ -225,5 +225,18 @@ extension ImageSession: URLSessionDataDelegate {
                                        password: password,
                                        persistence: .forSession)
         completionHandler(.useCredential, credential)
+    }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        print("    > Data task has received some of the expected data")
+        
+        // Update UI
+//        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+//                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+//                                          "progressFraction" : progressFraction]
+//        DispatchQueue.main.async {
+//            // Update UploadQueue cell and button shown in root album (or default album)
+//            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+//        }
     }
 }

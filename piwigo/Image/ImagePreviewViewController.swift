@@ -368,7 +368,7 @@ class ImagePreviewViewController: UIViewController
         }
     }
     
-    func updateImageMetadata(with data:PiwigoImageData) {
+    func updateImageMetadata(with data: Image) {
         // Update Piwigo data
 //        imageData = data
 

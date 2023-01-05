@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageDatePickerDelegate: NSObjectProtocol {
-    func didSelectDate(withPicker date: Date?)
+    func didSelectDate(withPicker date: Date)
     func didUnsetImageCreationDate()
 }
 
@@ -162,7 +162,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         datePicker.selectRow(lround(daysInSec), inComponent: PickerComponents.day.rawValue, animated: animated)
     }
 
-    private func getDateFromPicker() -> Date? {
+    private func getDateFromPicker() -> Date {
         // Date from first component
         let dateInSeconds = Date(timeInterval: TimeInterval(datePicker.selectedRow(inComponent: PickerComponents.day.rawValue)) * Double(kPiwigoPicker1Day), since: pickerRefDate)
 
@@ -201,9 +201,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 
     @IBAction func unsetDate(_ sender: Any) {
         // Close date picker
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didUnsetImageCreationDate)) ?? false {
-            delegate?.didUnsetImageCreationDate()
-        }
+        delegate?.didUnsetImageCreationDate()
     }
 
     @IBAction func setDateAsToday(_ sender: Any) {
@@ -211,12 +209,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let newDate = Date()
 
         // Update picker with new date
-        config(withDate: newDate, animated: true)
-
-        // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: newDate)
-        }
+        updatePicker(with: newDate)
     }
 
     @IBAction func incrementMonth(_ sender: Any) {
@@ -224,18 +217,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.month = 1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Add a month
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
     }
 
@@ -244,18 +229,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.month = -1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Removes a moonth
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-        }
-
-        // Update picker with new date
-        config(withDate: newDate, animated: true)
-
-        // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: newDate)
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
+            // Update picker with new date
+            updatePicker(with: newDate)
         }
     }
 
@@ -264,18 +241,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.year = 1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Adds a year
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
     }
 
@@ -284,19 +253,19 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.year = -1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Removes a year
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
+    }
+    
+    private func updatePicker(with newDate: Date) {
+        // Update picker with new date
+        config(withDate: newDate, animated: true)
+
+        // Change date in parent view
+        delegate?.didSelectDate(withPicker: newDate)
     }
 }
 
@@ -450,8 +419,6 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         pickerView.selectRow(newRow, inComponent: component, animated: false)
 
         // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: getDateFromPicker())
-        }
+        delegate?.didSelectDate(withPicker: getDateFromPicker())
     }
 }

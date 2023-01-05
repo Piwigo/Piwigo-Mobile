@@ -189,7 +189,7 @@ class LoginViewController: UIViewController {
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
                 // Cancel task
-                NetworkVarsObjc.sessionManager!.invalidateSessionCancelingTasks(true, resetSession: true)
+                PwgSession.shared.dataSession.invalidateAndCancel()
                 // Will accept certificate
                 NetworkVars.didApproveCertificate = true
                 // Try logging in with approved certificate
@@ -475,9 +475,6 @@ class LoginViewController: UIViewController {
                 task.cancel()
             }
         })
-        NetworkVarsObjc.sessionManager!.tasks.forEach { task in
-            task.cancel()
-        }
     }
 
     func logging(inConnectionError error: Error?) {

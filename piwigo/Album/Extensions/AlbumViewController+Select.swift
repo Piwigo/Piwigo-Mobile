@@ -230,9 +230,11 @@ extension AlbumViewController
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-//                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-//                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-//                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+                let areFavorites = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)})
+                    .map({$0.albums ?? Set<Album>()})
+                    .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) ==  false}) == nil
+                favoriteBarButton?.setFavoriteImage(for: areFavorites)
+                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
 
             if #available(iOS 14, *) {
@@ -250,9 +252,11 @@ extension AlbumViewController
             if NetworkVars.userStatus != .guest,
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-//                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-//                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-//                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+                let areFavorites = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)})
+                    .map({$0.albums ?? Set<Album>()})
+                    .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) ==  false}) == nil
+                favoriteBarButton?.setFavoriteImage(for: areFavorites)
+                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
         }
     }
@@ -327,7 +331,7 @@ extension AlbumViewController
 
         // Clear array of selected images and allow iOS device to sleep
         touchedImageIds = []
-        selectedImageIds = []
+        selectedImageIds = Set<Int64>()
         UIApplication.shared.isIdleTimerDisabled = false
     }
 
@@ -374,11 +378,11 @@ extension AlbumViewController
 
                 // Update the selection state
                 if !selectedImageIds.contains(imageId) {
-                    selectedImageIds.append(imageId)
+                    selectedImageIds.insert(imageId)
                     imageCell.isSelection = true
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIds.removeAll { $0 == imageId }
+                    selectedImageIds.remove(imageId)
                 }
 
                 // Update the navigation bar
@@ -400,72 +404,81 @@ extension AlbumViewController
         // Disable buttons
         setEnableStateOfButtons(false)
 
-        // Display HUD
-        totalNumberOfImages = selectedImageIds.count
-        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                      detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                      inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
-
-        // Add image to favorites?
-        if action == .addToFavorites {
+        // Prepare variable for HUD and attribute action
+        switch action {
+        case .edit      /* Edit images parameters */,
+             .delete    /* Distinguish orphanes and ask for confirmation */,
+             .share     /* Check Photo Library access rights */:
+            // Remove images fro which we already have complete data
+            selectedImageIdsLoop = selectedImageIds
+            for selectedImageId in selectedImageIds {
+                guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
+                    else { continue }
+                if selectedImage.fileSize != Int64.zero {
+                    selectedImageIdsLoop.remove(selectedImageId)
+                }
+            }
+            
+            // Should we retrieve data of some images?
+            if selectedImageIdsLoop.isEmpty {
+                doAction(action)
+            } else {
+                // Display HUD
+                totalNumberOfImages = selectedImageIdsLoop.count
+                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                              detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                              inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+                
+                // Retrieve image data if needed
+                retrieveImageData(beforeAction: action)
+            }
+            
+        case .addToFavorites /* Add photos to favorites */:
             addImageToFavorites()
-            return
-        }
-        
-        // Remove image from favorites?
-        if action == .removeFromFavorites {
+            
+        case .removeFromFavorites /* Remove photos from favorites */:
             removeImageFromFavorites()
-            return
         }
-        
-        // Retrieve image data
-        selectedImageData = []
-        selectedImageIdsLoop = selectedImageIds.compactMap({$0})
-        retrieveImageData(beforeAction: action)
+    }
+    
+    private func doAction(_ action:pwgImageAction) {
+        switch action {
+        case .edit      /* Edit images parameters */:
+            editImages()
+        case .delete    /* Distinguish orphanes and ask for confirmation */:
+            askDeleteConfirmation()
+        case .share     /* Check Photo Library access rights */:
+            checkPhotoLibraryAccessBeforeShare()
+        case .addToFavorites, .removeFromFavorites:
+            fatalError("••> Did call retrieveImageData() before adding/removing images!!")
+        }
     }
 
-    func retrieveImageData(beforeAction action:pwgImageAction) {
+    private func retrieveImageData(beforeAction action:pwgImageAction) {
         if selectedImageIdsLoop.isEmpty {
             hidePiwigoHUD() { [self] in
-                switch action {
-                case .edit:
-                    // Edit images parameters
-                    editImages()
-                case .delete:
-                    // Distinguish orphanes and ask for confirmation
-                    askDeleteConfirmation()
-                case .share:
-                    // Check Photo Library access rights
-                    checkPhotoLibraryAccessBeforeShare()
-                case .addToFavorites, .removeFromFavorites:
-                    // No need to retrieve image data
-                    debugPrint("••> Did call retrieveImageData() before adding/removing images from favorites!?")
-                }
+                doAction(action)
             }
             return
         }
 
         // Check the provided image ID
-        guard let imageId = selectedImageIdsLoop.last else {
+        guard let imageId = selectedImageIdsLoop.first else {
             // Forget this image
-            selectedImageIdsLoop.removeLast()
+            selectedImageIdsLoop.removeFirst()
             
-            // Update HUD
+            // Update HUD if any
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
             
             // Next image
             retrieveImageData(beforeAction: action)
             return
         }
-        
+                        
         // Image data are not complete when retrieved using pwg.categories.getImages
         self.imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) { [self] in
-            // Store image data
-            let imageData = images.fetchedObjects?.first(where: { $0.pwgID == imageId })
-//            selectedImageData.insert(imageData, at: 0)
-
             // Image info retrieved
-            selectedImageIdsLoop.removeLast()
+            selectedImageIdsLoop.removeFirst()
 
             // Update HUD
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))

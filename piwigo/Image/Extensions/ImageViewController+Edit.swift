@@ -13,13 +13,16 @@ extension ImageViewController
 {
     // MARK: - Edit Image
     @objc func editImage() {
+        guard let imageData = imageData else { return }
         // Disable buttons during action
         setEnableStateOfButtons(false)
 
         // Present EditImageDetails view
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
-//        editImageVC.images = [imageData]
+//        editImageVC.imageProvider = imageProvider
+        editImageVC.savingContext = savingContext
+        editImageVC.images = [imageData]
         editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC, forButton: actionBarButton)
@@ -34,7 +37,7 @@ extension ImageViewController: EditImageParamsDelegate
         // Should never be called when the properties of a single image are edited
     }
 
-    func didChangeImageParameters(_ params: PiwigoImageData) {
+    func didChangeImageParameters(_ params: Image) {
         // Determine index of updated image
 //        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
         
@@ -46,10 +49,10 @@ extension ImageViewController: EditImageParamsDelegate
         setTitleViewFromImageData()
         
         // Update image metadata
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+//        if let pVC = pageViewController,
+//           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
 //            imagePVC.updateImageMetadata(with: imageData)
-        }
+//        }
 
         // Update cached image data
         /// Note: the current category might be a smart album.

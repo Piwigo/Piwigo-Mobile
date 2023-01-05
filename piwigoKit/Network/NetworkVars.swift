@@ -85,17 +85,7 @@ public class NetworkVars: NSObject {
     
     
     // MARK: - Vars in Memory
-    // Network variables kept in memory
-    /// - Session manager used to communicate with the Piwigo server
-//    var sessionManager: AFHTTPSessionManager?
-    
-    /// - Session manager used to download images
-//    var imagesSessionManager: AFHTTPSessionManager?
-    
-    // - Image and thumbnail caches
-//    var imageCache: URLCache?
-//    var thumbnailCache: AFAutoPurgingImageCache?
-    
+    // Network variables kept in memory    
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
     public static var usesCommunityPluginV29 = false
     

@@ -152,9 +152,6 @@ extension AlbumViewController
                 task.cancel()
             }
         })
-        NetworkVarsObjc.sessionManager!.tasks.forEach { task in
-            task.cancel()
-        }
         
         // Update login HUD
         navigationController?.showPiwigoHUD(

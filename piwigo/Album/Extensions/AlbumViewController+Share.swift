@@ -54,31 +54,33 @@ extension AlbumViewController
         var excludedActivityTypes = [UIActivity.ActivityType]()
 
         // Create new activity provider items to pass to the activity view controller
-        totalNumberOfImages = selectedImageData.count
+        totalNumberOfImages = selectedImageIds.count
         var itemsToShare: [UIActivityItemProvider] = []
-        for imageData in selectedImageData {
-            if imageData.isVideo {
+        for selectedImageId in selectedImageIds {
+            guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
+                else { continue }
+            if selectedImage.isVideo {
                 // Case of a video
-//                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
+                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: selectedImage)
 
                 // Use delegation to monitor the progress of the item method
-//                videoItemProvider.delegate = self
+                videoItemProvider.delegate = self
 
                 // Add to list of items to share
-//                itemsToShare.append(videoItemProvider)
+                itemsToShare.append(videoItemProvider)
 
                 // Exclude "assign to contact" activity
                 excludedActivityTypes.append(.assignToContact)
                 
             } else {
                 // Case of an image
-//                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
+                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: selectedImage)
 
                 // Use delegation to monitor the progress of the item method
-//                imageItemProvider.delegate = self
+                imageItemProvider.delegate = self
 
                 // Add to list of items to share
-//                itemsToShare.append(imageItemProvider)
+                itemsToShare.append(imageItemProvider)
             }
         }
 
@@ -175,7 +177,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
             presentedViewController?.hidePiwigoHUD { }
         } else if selectedImageIds.contains(imageId) {
             // Remove image from selection
-            selectedImageIds.removeAll(where: {$0 == imageId})
+            selectedImageIds.remove(imageId)
             updateButtonsInSelectionMode()
 
             // Close HUD if last image
