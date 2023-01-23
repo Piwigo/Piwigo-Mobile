@@ -31,12 +31,12 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     weak var delegate: ShareImageActivityItemProviderDelegate?
 
     private var imageData: Image                        // Core Data image
-    private var task: URLSessionDownloadTask?           // Download task
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
     private var imageFileURL: URL                       // Shared image file URL
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
-    
+    private var download: ImageDownload?
+
     // MARK: - Progress Faction
     private var _progressFraction: Float = 0.0
     private var progressFraction: Float {
@@ -61,15 +61,19 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // We use the thumbnail image stored in cache
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
+        guard let serverID = imageData.server?.uuid else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
         
-        // Use cached image
-        imageFileURL = imageURL as URL
-        if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
+        // Retrieve URL of image in cache
+        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        imageFileURL = cacheDir.appendingPathComponent(size.path)
+            .appendingPathComponent(String(imageData.pwgID))
+        
+        // Retrieve image in cache
+        if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
             let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
@@ -107,8 +111,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // Get the maximum accepted image size (infinity for largest)
         let maxSize = activityType?.imageMaxSize() ?? Int.max
 
-        // Determine the URL request of the image stored on the piwigo server
-        guard let (imageURL, fileURL) = ShareUtilities.getURLs(imageData, ofMaxSize: maxSize) else {
+        // Get the server ID and optimum available image size
+        guard let serverID = imageData.server?.uuid,
+              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: maxSize) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -117,32 +122,23 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             preprocessingDidEnd()
             return placeholderItem!
         }
-
-        // Retrieve image from cache or download it
-        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                     placeHolder: placeholderItem as! UIImage) { [self] cachedImage in
-            // Create file URL where the shared file is expected to be found
-            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL as URL)
-            
-            // Deletes temporary image file if it exists
-            try? FileManager.default.removeItem(at: imageFileURL)
-
-            // Store a copy of the cached image into /tmp directory
-            do {
-                try FileManager.default.copyItem(at: fileURL, to: imageFileURL)
-                // Notify the delegate on the main thread to show how it makes progress.
-                progressFraction = 0.75
-            }
-            catch let error as NSError {
-                // Will notify the delegate on the main thread that the processing is cancelled
-                alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
-                alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-            }
-        } failure: { [self] error in
+        
+        // Download image synchronously if not in cache
+        let sema = DispatchSemaphore(value: 0)
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: imageSize, atURL: imageURL as URL,
+                                 fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+            // Notify the delegate on the main thread to show how it makes progress.
+            self.progressFraction = Float((0.75 * fractionCompleted))
+        } completion: { _ in
+            sema.signal()
+        } failure: { error in
             // Will notify the delegate on the main thread that the processing is cancelled
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error?.localizedDescription ?? "-?-")
+            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
+            sema.signal()
         }
+        download?.getImage()
+        let _ = sema.wait(timeout: .distantFuture)
 
         // Cancel item task if image could not be retrieved
         if alertTitle != nil {
@@ -153,6 +149,40 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
         
+        // Check that we have the URL of the cached image
+        guard let cachedFileURL = download?.fileURL else {
+            // Will notify the delegate on the main thread that the processing is cancelled
+            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            self.alertMessage = NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!")
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled.
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+
+        // Shared files are stored in the /tmp directory and will be deleted:
+        // - by the app if the user kills it
+        // - by the system after a certain amount of time
+        imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL as URL)
+
+        // Deletes temporary image file if it exists
+        try? FileManager.default.removeItem(at: imageFileURL)
+
+        // Copy original file to /tmp directly with appropriate file name
+        do {
+            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+        }
+        catch {
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled.
+            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+
         // Should we strip GPS metadata (yes by default)?
         if !(activityType?.shouldStripMetadata() ?? true) {
             // Notify the delegate on the main thread to show how it makes progress.
@@ -174,10 +204,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let newSourceURL = tempDirectoryUrl.appendingPathComponent(newSourceFileName)
 
         // Deletes temporary image file if it exists
-        do {
-            try FileManager.default.removeItem(at: newSourceURL)
-        } catch {
-        }
+        try? FileManager.default.removeItem(at: newSourceURL)
 
         // Rename temporary original image file
         do {
@@ -288,62 +315,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         return imageFileURL
     }
 
-    private func downloadSynchronouslyImage(with urlRequest: URLRequest) {
-//        let sema = DispatchSemaphore(value: 0)
-//        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
-//            onProgress: { [unowned self] progress in
-//                // Notify the delegate on the main thread to show how it makes progress.
-//                self.progressFraction = Float((0.75 * (progress?.fractionCompleted ?? 0.0)))
-//            },
-//            completionHandler: { response, fileURL, error in
-//                // Any error ?
-//                if let error = error {
-//                    // Will notify the delegate on the main thread that the processing is cancelled
-//                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-//                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-//                    sema.signal()
-//                }
-//                else {
-//                    // Get response
-//                    if let fileURL = fileURL, let response = response {
-//                        do {
-//                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
-//                            let data = try Data(contentsOf: fileURL)
-//
-//                            // Check content
-//                            if data.isEmpty {
-//                                // Will notify the delegate on the main thread that the processing is cancelled
-//                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-//                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
-//                                sema.signal()
-//                            }
-//                            else {
-//                                // Store image in cache
-//                                let cachedResponse = CachedURLResponse(response: response, data: data)
-//                                if let cache = NetworkVarsObjc.imageCache {
-//                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
-//                                }
-//
-//                                // Set image file URL
-//                                self.imageFileURL = fileURL
-//
-//                                // Store image data for future use
-//                                self.imageFileData = data
-//                                sema.signal()
-//                            }
-//                        }
-//                        catch let error as NSError {
-//                            // Will notify the delegate on the main thread that the processing is cancelled
-//                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-//                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
-//                            sema.signal()
-//                        }
-//                    }
-//                }
-//            })
-//        let _ = sema.wait(timeout: .distantFuture)
-    }
-
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
@@ -355,7 +326,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        task?.cancel()
+        download?.task?.cancel()
     }
 
     @objc func didFinishSharingImage() {
@@ -388,17 +359,25 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
+        // Initialisation
         let linkMetaData = LPLinkMetadata()
-        
+
         // We use the thumbnail in cache
-        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        if let fileURL = ImageUtilities.getURLs(imageData, ofMinSize: size)?.1 {
-            // Retrieve thumbnail image
-            if let thumbnailImage = UIImage(contentsOfFile: fileURL.path) {
-                linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
+        if let serverID = imageData.server?.uuid {
+            // Retrieve URL of image in cache
+            let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+            let fileURL = cacheDir.appendingPathComponent(size.path)
+                .appendingPathComponent(String(imageData.pwgID))
+
+            // Retrieve image in cache
+            if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
+                linkMetaData.imageProvider = NSItemProvider(object: cachedImage)
             } else {
                 linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
             }
+        } else {
+            linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
         }
         
         // Title

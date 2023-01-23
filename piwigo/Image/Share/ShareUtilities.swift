@@ -14,36 +14,31 @@ class ShareUtilities {
     // MARK: - Image Download
     /** Returns:
      - the URL of the image file stored on the Piwigo server
-       whose resolution matches the one expected by the activity type
+     whose resolution matches the one expected by the activity type
      - the URL of that image stored in cache.
      **/
-    // URL request of image to download
-    class func getURLs(_ imageData: Image, ofMaxSize wantedSize: Int) -> (NSURL, URL)? {
-        // Retrieve server cache directory
-        guard let serverID = imageData.server?.uuid else { return nil }
-        let serverURL = DataController.cacheDirectory.appendingPathComponent(serverID)
-        let imageID = String(imageData.pwgID)
-
-        // ATTENTION: Some URLs may not be available!
+    // Returns the size and Piwigo URL of the image of max wantedd size
+    class func getOptimumSizeAndURL(_ imageData: Image, ofMaxSize wantedSize: Int) -> (pwgImageSize, NSURL)? {
+        // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
-        var pwgURL: NSURL?, pathURL: URL?
-
+        var pwgSize: pwgImageSize?, pwgURL: NSURL?
+        
         // If this is a video, always select the full resolution file, i.e. the video.
         if imageData.isVideo {
             // NOP if no image can be downloaded
             pwgURL = imageData.fullRes?.url
-            pathURL = serverURL.appendingPathComponent(pwgImageSize.fullRes.path)
-            guard let pwgURL = pwgURL, let pathURL = pathURL else {
+            pwgSize = .fullRes
+            guard let pwgSize = pwgSize, let pwgURL = pwgURL else {
                 return nil
             }
-            return (pwgURL, pathURL.appendingPathComponent(imageID))
+            return (pwgSize, pwgURL)
         }
         
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
         /// - Note: image.width and .height are always > 1
         var selectedSize = Int.zero
-
+        
         // Square Size (should always be available)
         if AlbumVars.shared.hasSquareSizeImages,
            let imageURL = imageData.squareRes?.url {
@@ -51,176 +46,161 @@ class ShareUtilities {
             let size = max(imageData.squareRes?.width ?? 1, imageData.squareRes?.height ?? 1)
             // Ensure that at least an URL will be returned
             if pwgURL == nil {
+                pwgSize = .square
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // Thumbnail Size (should always be available)
         if AlbumVars.shared.hasThumbSizeImages,
            let imageURL = imageData.thumbRes?.url {
             // Max dimension of this image
             let size = max(imageData.thumbRes?.width ?? 1, imageData.thumbRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .thumb
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // XX Small Size
         if AlbumVars.shared.hasXXSmallSizeImages,
            let imageURL = imageData.xxsmallRes?.url {
             // Max dimension of this image
             let size = max(imageData.xxsmallRes?.width ?? 1, imageData.xxsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .xxSmall
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // X Small Size
         if AlbumVars.shared.hasXSmallSizeImages,
            let imageURL = imageData.xsmallRes?.url {
             // Max dimension of this image
             let size = max(imageData.xsmallRes?.width ?? 1, imageData.xsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .xSmall
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // Small Size
         if AlbumVars.shared.hasSmallSizeImages,
            let imageURL = imageData.smallRes?.url {
             // Max dimension of this image
             let size = max(imageData.smallRes?.width ?? 1, imageData.smallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .small
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // Medium Size (should always be available)
         if AlbumVars.shared.hasMediumSizeImages,
            let imageURL = imageData.mediumRes?.url {
             // Max dimension of this image
             let size = max(imageData.mediumRes?.width ?? 1, imageData.mediumRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .medium
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // Large Size
         if AlbumVars.shared.hasLargeSizeImages,
            let imageURL = imageData.largeRes?.url {
             // Max dimension of this image
             let size = max(imageData.largeRes?.width ?? 1, imageData.largeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .large
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // X Large Size
         if AlbumVars.shared.hasXLargeSizeImages,
            let imageURL = imageData.xlargeRes?.url {
             // Max dimension of this image
             let size = max(imageData.xlargeRes?.width ?? 1, imageData.xlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .xLarge
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // XX Large Size
         if AlbumVars.shared.hasXXLargeSizeImages,
            let imageURL = imageData.xxlargeRes?.url {
             // Max dimension of this image
             let size = max(imageData.xxlargeRes?.width ?? 1, imageData.xxlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .xxLarge
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // Full Resolution
         if let imageURL = imageData.fullRes?.url {
             // Max dimension of this image
             let size = max(imageData.fullRes?.width ?? 1, imageData.fullRes?.height ?? 1)
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgURL = imageURL
-                selectedSize = size
-            }
-            // Is this resolution more appropriate?
-            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+            // and check if this size is more appropriate
+            if (pwgURL == nil) ||
+                ((size < wantedSize) && (abs(wantedSize - size) < abs(wantedSize - selectedSize))) {
+                pwgSize = .fullRes
                 pwgURL = imageURL
                 selectedSize = size
             }
         }
-
+        
         // NOP if no image can be downloaded
-        guard let pwgURL = pwgURL, let pathURL = pathURL else {
+        guard let pwgSize = pwgSize, let pwgURL = pwgURL else {
             return nil
         }
-        return (pwgURL, pathURL.appendingPathComponent(imageID))
+        return (pwgSize, pwgURL)
     }
-    
     
     // Returns the URL of the image file stored in /tmp before the share
     class func getFileUrl(ofImage image: Image?, withURL imageUrl: URL?) -> URL {
-        // Get filename from URL request
+        // Get filename from image data or URL request
         var fileName = imageUrl?.lastPathComponent
-
+        if let name = image?.fileName, !name.isEmpty {
+            fileName = name
+        }
+        
         // Is filename of original image a PHP request?
         if fileName?.contains(".php") ?? false {
             // The URL does not contain a file name but a PHP request
@@ -261,31 +241,12 @@ class ShareUtilities {
             }
         }
         
-        // Shared files are saved in the /Share directory and will be deleted:
+        // Shared files are saved in the /temp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
         let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory())
         return tempDirectoryUrl.appendingPathComponent(fileName ?? "PiwigoImage.jpg")
     }
-
-    
-    // Download image from the Piwigo server
-//    class func downloadImage(with imageData: Image, at urlRequest: URLRequest,
-//                             onProgress progress: @escaping (Progress?) -> Void,
-//                             completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
-//                             ) -> URLSessionDownloadTask? {
-//        // Download and save image in /tmp directory
-//        guard let manager = NetworkVarsObjc.imagesSessionManager else { return nil}
-//        let task = manager.downloadTask(
-//            with: urlRequest,
-//            progress: progress,
-//            destination: { targetPath, response in
-//                return self.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
-//            },
-//            completionHandler: completionHandler)
-//        task.resume()
-//        return task
-//    }
 }
 
 

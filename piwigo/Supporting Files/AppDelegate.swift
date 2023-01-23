@@ -149,12 +149,6 @@ import piwigoKit
         print("••> App will enter foreground.")
         // Called when the app is about to enter the foreground.
         // This call is then followed by a call to applicationDidBecomeActive().
-
-        // Enable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = true
-        
-        // Enable network reachability monitoring
-        AFNetworkReachabilityManager.shared().startMonitoring()
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -243,12 +237,6 @@ import piwigoKit
         // Save cached data in the main thread
         DataController.shared.saveMainContext()
 
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
     }
@@ -265,12 +253,6 @@ import piwigoKit
         PwgSession.shared.dataSession.invalidateAndCancel()
         ImageSession.shared.dataSession.invalidateAndCancel()
 
-        // Disable network activity indicator
-//        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-        
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
 

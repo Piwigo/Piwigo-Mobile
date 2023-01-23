@@ -130,9 +130,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
         
-        // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
@@ -149,9 +146,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
-        // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Unregister Low Power Mode status
         NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
@@ -289,7 +283,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     @objc func mainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.wifiOnlyUploading {
+            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.width,

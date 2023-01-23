@@ -173,16 +173,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         introAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: introRange)
         aboutAttributedString.append(introAttributedString)
 
-        // AFNetworking Licence — Bundle string
-        let afnString = NSLocalizedString("licenceAFN_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
-        let afnAttributedString = NSMutableAttributedString(string: afnString)
-        var afnTitleRange = NSRange(location: 0, length: afnString.count)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: afnTitleRange)
-        afnTitleRange = NSRange(location: 0, length: (afnString as NSString).range(of: "\n").location)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: afnTitleRange)
-        aboutAttributedString.append(afnAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
-
         // IQKeyboardManager Licence — Bundle string
         let iqkmString = NSLocalizedString("licenceIQkeyboard_text", tableName: "About", bundle: Bundle.main, value: "", comment: "IQKeyboardManager licence text")
         let iqkmAttributedString = NSMutableAttributedString(string: iqkmString)

@@ -799,9 +799,9 @@ extension ImageViewController: UIPageViewControllerDataSource
 // MARK: - ImagePreviewDelegate Methods
 extension ImageViewController: ImagePreviewDelegate
 {
-    func downloadProgress(_ progress: CGFloat) {
+    func downloadProgress(_ progress: Float) {
         if (progress < 1.0) {
-            progressBar.setProgress(Float(progress), animated: true)
+            progressBar.setProgress(progress, animated: true)
         } else {
             progressBar.isHidden = true
         }

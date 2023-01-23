@@ -160,7 +160,7 @@ extension SelectCategoryViewController {
             if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                 albumData.thumbnailId = imageData.pwgID
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
+                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
             }
             completion(true)
         } failure: { error in
@@ -254,7 +254,7 @@ extension SelectCategoryViewController {
             if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
                 albumData.thumbnailId = imageData.pwgID
                 let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
+                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
             }
 
             // Remove image from source album

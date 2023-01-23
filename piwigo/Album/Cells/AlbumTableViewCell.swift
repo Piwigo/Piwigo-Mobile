@@ -22,6 +22,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var handleButton: UIButton!
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
+    
+    private var download: ImageDownload?
 
     func config(withAlbumData albumData: Album?) {
         // General settings
@@ -118,41 +120,48 @@ class AlbumTableViewCell: MGSwipeTableCell {
             return
         }
 
-        // Retrieve image in cache or download it
-        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
-        let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        let fileUrl = cacheDir.appendingPathComponent(imageSize.path)
-            .appendingPathComponent(String(thumbID))
-        let size: CGSize = self.backgroundImage.bounds.size
-        let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
-        ImageSession.shared.setImage(withURL: thumbUrl as URL, cachedAt: fileUrl,
-                                     placeHolder: placeHolder) { [self] cachedImage in
-            DispatchQueue.global(qos: .userInitiated).async {
-                // Process saliency
-                var finalImage:UIImage = cachedImage
-                if #available(iOS 13.0, *) {
-                    if let croppedImage = cachedImage.processSaliency() {
-                        finalImage = croppedImage
-                    }
-                }
-                
-                // Reduce size?
-                let imageSize: CGSize = finalImage.size
-                if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
-                    let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
-                    DispatchQueue.main.async { [self] in
-                        self.backgroundImage.image = albumImage
-                    }
-                } else {
-                    DispatchQueue.main.async { [self] in
-                        self.backgroundImage.image = finalImage
-                    }
-                }
+        // Retrieve image from cache or download it
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        download = ImageDownload(imageID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
+                                 fromServer: serverID, placeHolder: placeHolder) { cachedImage in
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
             }
         } failure: { _ in
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
                 // No album thumbnail URL
                 self.backgroundImage.image = placeHolder
+            }
+        }
+        download?.getImage()
+    }
+    
+    func configImage(_ image: UIImage) {
+        // Initialisation
+        let size: CGSize = self.backgroundImage.bounds.size
+        let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
+
+        // Process image in the background
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Process saliency
+            var finalImage:UIImage = image
+            if #available(iOS 13.0, *) {
+                if let croppedImage = image.processSaliency() {
+                    finalImage = croppedImage
+                }
+            }
+            
+            // Reduce size?
+            let imageSize: CGSize = finalImage.size
+            if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
+                let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
+                DispatchQueue.main.async { [self] in
+                    self.backgroundImage.image = albumImage
+                }
+            } else {
+                DispatchQueue.main.async { [self] in
+                    self.backgroundImage.image = finalImage
+                }
             }
         }
     }
@@ -160,7 +169,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        backgroundImage.cancelImageDownloadTask()
+        download?.task?.cancel()
+        download = nil
         backgroundImage.image = UIImage(named: "placeholder")
         albumName.text = ""
         numberOfImages.text = ""

@@ -150,12 +150,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
-
-        // Enable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = true
-
-        // Enable network reachability monitoring
-        AFNetworkReachabilityManager.shared().startMonitoring()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -262,12 +256,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the app's managed object context when the app transitions to the background.
         DataController.shared.saveMainContext()
         
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
         if NetworkVars.usesUploadAsync {

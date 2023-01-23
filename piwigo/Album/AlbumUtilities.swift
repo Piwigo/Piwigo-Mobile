@@ -483,7 +483,7 @@ class AlbumUtilities: NSObject {
                     // Album thumbnail successfully changed ▶ Update catagory in cache
                     albumData.thumbnailId = imageData.pwgID
                     let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize)?.0
+                    albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
                     completion()
                 }
                 else {

@@ -14,6 +14,7 @@ import piwigoKit
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageData: Image!
+    private var download: ImageDownload?
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -150,78 +151,83 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Retrieve image URLs (Piwigo server and cache)
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
+        guard let serverID = imageData.server?.uuid,
+              let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
             self.noDataLabel?.isHidden = false
             applyColorPalette()
             return
         }
 
-        // Get image from cache or download it
+        // Retrieve image from cache or download it
         let placeHolder = UIImage(named: "placeholderImage")!
-        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                     placeHolder: placeHolder) { cachedImage in
-            // Display
-            DispatchQueue.main.async { [self] in
-                // Downsample image if necessary
-                var displayedImage = cachedImage
-                let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-                let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
-                if CGFloat(max(cachedImage.size.width, cachedImage.size.height)) > maxDimensionInPixels {
-                    displayedImage = ImageUtilities.downsample(image: cachedImage,
-                                                                to: self.bounds.size, scale: scale)
-                }
-                self.cellImage?.image = displayedImage
-                
-                // Favorite image position depends on device
-                self.deltaX = self.margin
-                self.deltaY = self.margin
-                let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
-                                                self.bounds.size.height / displayedImage.size.height))
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    // Case of an iPad: respect aspect ratio
-                    // Image width smaller than collection view cell?
-                    let imageWidth = displayedImage.size.width * imageScale
-                    if imageWidth < self.bounds.size.width {
-                        // The image does not fill the cell horizontally
-                        self.darkImgWidth?.constant = imageWidth
-                        self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
-                    }
-                    // Image height smaller than collection view cell?
-                    let imageHeight = displayedImage.size.height * imageScale
-                    if imageHeight < self.bounds.size.height {
-                        // The image does not fill the cell vertically
-                        self.darkImgHeight?.constant = imageHeight
-                        self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
-                    }
-                }
-                // Update horizontal constraints
-                self.selImgRight?.constant = self.deltaX
-                self.favLeft?.constant = self.deltaX
-                self.playLeft?.constant = self.deltaX
-                // Update vertical constraints
-                self.selImgTop?.constant = self.deltaY + 2 * margin
-                self.playTop?.constant = self.deltaY
-                if self.bottomLayer?.isHidden ?? false {
-                    // The title is not displayed
-                    self.favBottom?.constant = self.deltaY
-                } else {
-                    // The title is displayed
-                    let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
-                    self.favBottom?.constant = deltaY
-                }
-                applyColorPalette()
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: size, atURL: imageURL as URL, fromServer: serverID, fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImage in
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
             }
-        } failure: { _ in
+        } failure: { error in
             // No image available
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
                 self.noDataLabel?.isHidden = false
-                applyColorPalette()
+                self.applyColorPalette()
             }
         }
+        download?.getImage()
+    }
+
+    func configImage(_ image: UIImage) {
+        // Downsample image if necessary
+        var displayedImage = image
+        let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
+        let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
+        if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
+            displayedImage = ImageUtilities.downsample(image: image,
+                                                        to: self.bounds.size, scale: scale)
+        }
+        self.cellImage?.image = displayedImage
+        
+        // Favorite image position depends on device
+        self.deltaX = self.margin
+        self.deltaY = self.margin
+        let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
+                                        self.bounds.size.height / displayedImage.size.height))
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Case of an iPad: respect aspect ratio
+            // Image width smaller than collection view cell?
+            let imageWidth = displayedImage.size.width * imageScale
+            if imageWidth < self.bounds.size.width {
+                // The image does not fill the cell horizontally
+                self.darkImgWidth?.constant = imageWidth
+                self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
+            }
+            // Image height smaller than collection view cell?
+            let imageHeight = displayedImage.size.height * imageScale
+            if imageHeight < self.bounds.size.height {
+                // The image does not fill the cell vertically
+                self.darkImgHeight?.constant = imageHeight
+                self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
+            }
+        }
+        // Update horizontal constraints
+        self.selImgRight?.constant = self.deltaX
+        self.favLeft?.constant = self.deltaX
+        self.playLeft?.constant = self.deltaX
+        // Update vertical constraints
+        self.selImgTop?.constant = self.deltaY + 2 * margin
+        self.playTop?.constant = self.deltaY
+        if self.bottomLayer?.isHidden ?? false {
+            // The title is not displayed
+            self.favBottom?.constant = self.deltaY
+        } else {
+            // The title is displayed
+            let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
+            self.favBottom?.constant = deltaY
+        }
+        applyColorPalette()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        download = nil
         imageData = nil
         cellImage?.image = nil
         deltaX = margin

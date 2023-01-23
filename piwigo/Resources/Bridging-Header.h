@@ -3,8 +3,5 @@
 //
 
 #import <Availability.h>
-#import <AFNetworking.h>
-#import "AFNetworkActivityIndicatorManager.h"
 #import <MBProgressHUD.h>
 #import <MGSwipeTableCell.h>
-#import <UIImageView+AFNetworking.h>

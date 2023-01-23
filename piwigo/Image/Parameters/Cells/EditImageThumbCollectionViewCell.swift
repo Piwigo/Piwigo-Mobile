@@ -37,6 +37,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     private var imageId = Int64.zero
     private var renameFileNameAction: UIAlertAction?
     private var oldFileName: String?
+    private var download: ImageDownload?
 
     override func awakeFromNib() {
 
@@ -119,8 +120,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                                        dateStyle: .none, timeStyle: .medium)
 
         // Retrieve image thumbnail from Piwigo server
-        let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: albumThumbnailSize) else {
+        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
+        guard let serverID = imageData.server?.uuid,
+              let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: thumbnailSize) else {
             return
         }
 
@@ -129,9 +131,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let placeHolder = UIImage(named: "placeholder")!
         let size: CGSize = imageThumbnail.bounds.size
         let scale = CGFloat(fmax(1.0, imageThumbnail.traitCollection.displayScale))
-        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                     placeHolder: placeHolder) { cachedImage in
-            // Display
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL as URL,
+                                 fromServer: serverID, placeHolder: placeHolder) { cachedImage in
             DispatchQueue.global(qos: .userInitiated).async {
                 let imageSize: CGSize = cachedImage.size
                 if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
@@ -146,17 +147,14 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                     }
                 }
             }
-        } failure: { _ in
-            // No image available
-            DispatchQueue.main.async { [self] in
-                imageThumbnail.image = UIImage(named: "placeholder")
-            }
         }
+        download?.getImage()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
 
+        download = nil
         imageFile.text = ""
         imageSize.text = ""
         imageDate.text = ""

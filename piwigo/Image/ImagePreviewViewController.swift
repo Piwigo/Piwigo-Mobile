@@ -13,7 +13,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol ImagePreviewDelegate: NSObjectProtocol {
-    func downloadProgress(_ progress: CGFloat)
+    func downloadProgress(_ progress: Float)
 }
 
 class ImagePreviewViewController: UIViewController
@@ -31,7 +31,7 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
-    private var downloadTask: URLSessionDataTask?
+    private var download: ImageDownload?
     private var userdidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
 
@@ -40,114 +40,61 @@ class ImagePreviewViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Retrieve server ID
+        let placeHolder = UIImage(named: "placeholderImage")!
+        guard let serverID = imageData.server?.uuid else {
+            // Configure the description view before layouting subviews
+            descContainer.configDescription(with: imageData.comment) {
+                self.configScrollView(with: placeHolder)
+            }
+            return
+        }
+
         // Thumbnail image should be available in cache
-        var thumbnailImage: UIImage? = nil
-        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        if let thumbnailURL = ImageUtilities.getURLs(imageData, ofMinSize: thumbnailSize)?.1 {
-            thumbnailImage = UIImage(contentsOfFile: thumbnailURL.path)
-        }
-        guard let imageThumbnail = thumbnailImage ?? UIImage(named: "placeholderImage") else {
-            fatalError("!!! No placeholder image available !!!")
-        }
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        let fileURL = cacheDir.appendingPathComponent(thumbSize.path).appendingPathComponent(String(imageData.pwgID))
         
         // Configure the description view before layouting subviews
+        let thumbImage = UIImage(contentsOfFile: fileURL.path) ?? placeHolder
         descContainer.configDescription(with: imageData.comment) {
-            self.configScrollView(with: imageThumbnail)
+            self.configScrollView(with: thumbImage)
         }
 
         // Previewed image
-        let imagePreviewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        guard let (imageURL, fileURL) = ImageUtilities.getURLs(imageData, ofMinSize: imagePreviewSize) else {
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        guard let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: previewSize) else {
             return
         }
-        ImageSession.shared.setImage(withURL: imageURL as URL, cachedAt: fileURL,
-                                     placeHolder: imageThumbnail) { [self] cachedImage in
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: previewSize, atURL: imageURL as URL,
+                                 fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
             DispatchQueue.main.async {
-                // Set image view content
-                self.configScrollView(with: cachedImage)
-                // Layout subviews
-                self.view.layoutIfNeeded()
-                
-                // Hide progress bar
-                self.imageLoaded = true
-                self.imagePreviewDelegate?.downloadProgress(1.0)
-                
-                // Display "play" button if video
-                self.playImage.isHidden = !self.imageData.isVideo
+                self.imagePreviewDelegate?.downloadProgress(fractionCompleted)
             }
-        } failure: { error in
-            print("••> Could not load image at \(imageURL.relativeString): \(String(describing: error))")
+        } completion: { cachedImage in
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
         }
+        download?.getImage()
         
-//        let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
-//        var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
-//        if previewStr == nil {
-//            // Image URL unknown => default to medium image size
-//            previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeMedium)
-//            // After an upload, the server only returns the Square and Thumbnail sizes
-//            if previewStr == nil {
-//                previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeThumb)
-//            }
-//        }
-//        guard let path = previewStr, path.isEmpty == false,
-//              let previewURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(path)" )
-//        else {return }
-//        weak var weakSelf = self
-
-//        downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
-//            previewURL.absoluteString,
-//            parameters: [],
-//            headers: [:],
-//            progress: { progress in
-//                DispatchQueue.main.async(
-//                    execute: {
-//                        // Update progress bar
-//                        if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-//                            weakSelf?.imagePreviewDelegate?.downloadProgress(CGFloat(progress.fractionCompleted))
-//                        }
-//                    })
-//            },
-//            success: { task, image in
-//                if let image = image as? UIImage {
-//                    // Set image view content
-//                    weakSelf?.configScrollView(with: image)
-//                    // Layout subviews
-//                    weakSelf?.view.layoutIfNeeded()
-//
-//                    // Hide progress bar
-//                    weakSelf?.imageLoaded = true
-//                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-//                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
-//                    }
-//
-//                    // Display "play" button if video
-//                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
-//
-//                    // Store image in cache
-//                    var cachedResponse: CachedURLResponse? = nil
-//                    if let response = task.response,
-//                        let image1 = image.jpegData(compressionQuality: 0.9) {
-//                        cachedResponse = CachedURLResponse(response: response, data: image1)
-//                    }
-//                    if let cachedResponse = cachedResponse, let downloadTask1 = weakSelf?.downloadTask {
-//                        NetworkVarsObjc.imageCache?.storeCachedResponse(cachedResponse, for: downloadTask1)
-//                    }
-//                } else {
-//                    // Keep thumbnail or placeholder if image could not be loaded
-//                    debugPrint("setImageScrollViewWithImageData: loaded image is nil!")
-//                }
-//            },
-//            failure: { task, error in
-//                if let error = error as NSError? {
-//                    debugPrint("setImageScrollViewWithImageData/GET Error: \(error)")
-//                }
-//            })
-//
-//        downloadTask?.resume()
-
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
+    }
+    
+    func configImage(_ image: UIImage) {
+        // Set image view content
+        self.configScrollView(with: image)
+        // Layout subviews
+        self.view.layoutIfNeeded()
+        
+        // Hide progress bar
+        self.imageLoaded = true
+        self.imagePreviewDelegate?.downloadProgress(1.0)
+        
+        // Display "play" button if video
+        self.playImage.isHidden = !self.imageData.isVideo
     }
     
     @objc func applyColorPalette() {
@@ -187,6 +134,9 @@ class ImagePreviewViewController: UIViewController
     }
 
     deinit {
+        // Cancel download if needed
+        download = nil
+        
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }

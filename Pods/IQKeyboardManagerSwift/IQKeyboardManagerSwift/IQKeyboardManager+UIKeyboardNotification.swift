@@ -28,12 +28,65 @@ import UIKit
 @available(iOSApplicationExtension, unavailable)
 public extension IQKeyboardManager {
 
+    typealias SizeBlock = (_ size: CGSize) -> Void
+
+    private final class KeyboardSizeObserver: NSObject {
+        weak var observer: NSObject?
+        var sizeHandler: (_ size: CGSize) -> Void
+
+        init(observer: NSObject?, sizeHandler: @escaping (_ size: CGSize) -> Void) {
+            self.observer = observer
+            self.sizeHandler = sizeHandler
+        }
+    }
+
     private struct AssociatedKeys {
+        static var keyboardSizeObservers = "keyboardSizeObservers"
+        static var keyboardLastNotifySize = "keyboardLastNotifySize"
         static var keyboardShowing = "keyboardShowing"
         static var keyboardShowNotification = "keyboardShowNotification"
         static var keyboardFrame = "keyboardFrame"
         static var animationDuration = "animationDuration"
         static var animationCurve = "animationCurve"
+    }
+
+    private var keyboardLastNotifySize: CGSize {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.keyboardLastNotifySize) as? CGSize ?? .zero
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &AssociatedKeys.keyboardLastNotifySize, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    private var keyboardSizeObservers: [AnyHashable: SizeBlock] {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.keyboardSizeObservers) as? [AnyHashable: SizeBlock] ?? [:]
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &AssociatedKeys.keyboardSizeObservers, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    @objc func registerKeyboardSizeChange(identifier: AnyHashable, sizeHandler: @escaping SizeBlock) {
+        keyboardSizeObservers[identifier] = sizeHandler
+    }
+
+    @objc func unregisterKeyboardSizeChange(identifier: AnyHashable) {
+        keyboardSizeObservers[identifier] = nil
+    }
+
+    internal func notifyKeyboardSize(size: CGSize) {
+
+        guard !size.equalTo(keyboardLastNotifySize) else {
+            return
+        }
+
+        keyboardLastNotifySize = size
+
+        for block in keyboardSizeObservers.values {
+            block(size)
+        }
     }
 
     /**
@@ -59,7 +112,7 @@ public extension IQKeyboardManager {
     }
 
     /** To save keyboard rame. */
-    internal var keyboardFrame: CGRect {
+    @objc private(set) var keyboardFrame: CGRect {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.keyboardFrame) as? CGRect ?? .zero
         }
@@ -89,7 +142,7 @@ public extension IQKeyboardManager {
     }
 
     /*  UIKeyboardWillShowNotification. */
-    @objc internal func keyboardWillShow(_ notification: Notification?) {
+    @objc internal func keyboardWillShow(_ notification: Notification) {
 
         keyboardShowNotification = notification
 
@@ -98,7 +151,7 @@ public extension IQKeyboardManager {
 
         let oldKBFrame = keyboardFrame
 
-        if let info = notification?.userInfo {
+        if let info = notification.userInfo {
 
             //  Getting keyboard animation.
             if let curve = info[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
@@ -114,6 +167,7 @@ public extension IQKeyboardManager {
             if let kbFrame = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
 
                 keyboardFrame = kbFrame
+                notifyKeyboardSize(size: keyboardFrame.size)
                 showLog("UIKeyboard Frame: \(keyboardFrame)")
             }
         }
@@ -125,7 +179,9 @@ public extension IQKeyboardManager {
         }
 
         let startTime = CACurrentMediaTime()
-        showLog("****** \(#function) started ******", indentation: 1)
+        showLog("⌨️>>>>> \(#function) started >>>>>", indentation: 1)
+
+        showLog("Notification Object:\(notification.object ?? "NULL")")
 
         //  (Bug ID: #5)
         if let textFieldView = textFieldView, topViewBeginOrigin.equalTo(IQKeyboardManager.kIQCGPointInvalid) {
@@ -162,11 +218,11 @@ public extension IQKeyboardManager {
         }
 
         let elapsedTime = CACurrentMediaTime() - startTime
-        showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
+        showLog("⌨️<<<<< \(#function) ended: \(elapsedTime) seconds <<<<<", indentation: -1)
     }
 
     /*  UIKeyboardDidShowNotification. */
-    @objc internal func keyboardDidShow(_ notification: Notification?) {
+    @objc internal func keyboardDidShow(_ notification: Notification) {
 
         guard privateIsEnabled(),
             let textFieldView = textFieldView,
@@ -176,12 +232,13 @@ public extension IQKeyboardManager {
         }
 
         let startTime = CACurrentMediaTime()
-        showLog("****** \(#function) started ******", indentation: 1)
+        showLog("⌨️>>>>> \(#function) started >>>>>", indentation: 1)
+        showLog("Notification Object:\(notification.object ?? "NULL")")
 
         self.optimizedAdjustPosition()
 
         let elapsedTime = CACurrentMediaTime() - startTime
-        showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
+        showLog("⌨️<<<<< \(#function) ended: \(elapsedTime) seconds <<<<<", indentation: -1)
     }
 
     /*  UIKeyboardWillHideNotification. So setting rootViewController to it's default frame. */
@@ -214,7 +271,8 @@ public extension IQKeyboardManager {
         }
 
         let startTime = CACurrentMediaTime()
-        showLog("****** \(#function) started ******", indentation: 1)
+        showLog("⌨️>>>>> \(#function) started >>>>>", indentation: 1)
+        showLog("Notification Object:\(notification?.object ?? "NULL")")
 
         //Commented due to #56. Added all the conditions below to handle WKWebView's textFields.    (Bug ID: #56)
         //  We are unable to get textField object while keyboard showing on WKWebView's textField.  (Bug ID: #11)
@@ -280,25 +338,28 @@ public extension IQKeyboardManager {
         //Reset all values
         lastScrollView = nil
         keyboardFrame = CGRect.zero
+        notifyKeyboardSize(size: keyboardFrame.size)
         startingContentInsets = UIEdgeInsets()
         startingScrollIndicatorInsets = UIEdgeInsets()
         startingContentOffset = CGPoint.zero
         //    topViewBeginRect = CGRectZero    //Commented due to #82
 
         let elapsedTime = CACurrentMediaTime() - startTime
-        showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
+        showLog("⌨️<<<<< \(#function) ended: \(elapsedTime) seconds <<<<<", indentation: -1)
     }
 
     @objc internal func keyboardDidHide(_ notification: Notification) {
 
         let startTime = CACurrentMediaTime()
-        showLog("****** \(#function) started ******", indentation: 1)
+        showLog("⌨️>>>>> \(#function) started >>>>>", indentation: 1)
+        showLog("Notification Object:\(notification.object ?? "NULL")")
 
         topViewBeginOrigin = IQKeyboardManager.kIQCGPointInvalid
 
         keyboardFrame = CGRect.zero
+        notifyKeyboardSize(size: keyboardFrame.size)
 
         let elapsedTime = CACurrentMediaTime() - startTime
-        showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
+        showLog("⌨️<<<<< \(#function) ended: \(elapsedTime) seconds <<<<<", indentation: -1)
     }
 }

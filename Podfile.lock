@@ -1,42 +1,24 @@
 PODS:
-  - AFNetworking (4.0.1):
-    - AFNetworking/NSURLSession (= 4.0.1)
-    - AFNetworking/Reachability (= 4.0.1)
-    - AFNetworking/Security (= 4.0.1)
-    - AFNetworking/Serialization (= 4.0.1)
-    - AFNetworking/UIKit (= 4.0.1)
-  - AFNetworking/NSURLSession (4.0.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (4.0.1)
-  - AFNetworking/Security (4.0.1)
-  - AFNetworking/Serialization (4.0.1)
-  - AFNetworking/UIKit (4.0.1):
-    - AFNetworking/NSURLSession
-  - IQKeyboardManagerSwift (6.5.10)
+  - IQKeyboardManagerSwift (6.5.11)
   - MBProgressHUD (1.2.0)
   - MGSwipeTableCell (1.6.14)
 
 DEPENDENCIES:
-  - AFNetworking
   - IQKeyboardManagerSwift
   - MBProgressHUD
   - MGSwipeTableCell
 
 SPEC REPOS:
   trunk:
-    - AFNetworking
     - IQKeyboardManagerSwift
     - MBProgressHUD
     - MGSwipeTableCell
 
 SPEC CHECKSUMS:
-  AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
-  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MGSwipeTableCell: d99ed6466f393b71cd488c6f798ba112ff5d1d01
 
-PODFILE CHECKSUM: fea073de0e208b2823f95abf35a0670e6316790e
+PODFILE CHECKSUM: 7326c690f70dd069c0315437b981ea71e143bc6c
 
 COCOAPODS: 1.11.3

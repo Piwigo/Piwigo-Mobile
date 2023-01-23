@@ -13,7 +13,7 @@ import UniformTypeIdentifiers
 class ImageSession: NSObject {
     
     // Singleton
-    static var shared = ImageSession()
+    static let shared = ImageSession()
     
     // Create single instance
     lazy var dataSession: URLSession = {
@@ -60,82 +60,31 @@ class ImageSession: NSObject {
         /// Allows a seamless handover from Wi-Fi to cellular
         config.multipathServiceType = .handover
         
+        // Do not store images in URLCache
+        config.urlCache = nil
+        
         /// Create the main session and set its description
         let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-        session.sessionDescription = "Image Session"
+        session.sessionDescription = "Image Download Session"
         
         return session
     }()
     
+    // Active downloads
+    lazy var activeDownloads: [URL : ImageDownload] = [ : ]
 
-    // MARK: - Session Methods
-    func setImage(withURL imageURL: URL, cachedAt fileURL: URL, placeHolder: UIImage,
-                  success: @escaping (UIImage) -> Void,
-                  failure: @escaping (Error?) -> Void) {
-        // Get cached image
-        if let cachedImage: UIImage = UIImage(contentsOfFile: fileURL.path),
-           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           cachedImage != placeHolder {
-            print("••> Image \(fileURL.lastPathComponent) retrieved from cache.")
-            success(cachedImage)
-            return
-        }
+    
+    // MARK: - Asynchronous Methods
+    func startDownload(_ download: ImageDownload) {
+        // Create the download request
+        let request = URLRequest(url: download.imageURL)
 
-        // Retrieve the image file
-        downloadImage(atURL: imageURL, cachingAtURL: fileURL) { downloadedImage in
-            success(downloadedImage)
-        } failure: { error in
-            failure(error)
-        }
-    }
-
-    public func downloadImage(atURL imageURL: URL, cachingAtURL fileURL: URL,
-                              fileSize: Int64 = NSURLSessionTransferSizeUnknown,
-                              success: @escaping (UIImage) -> Void,
-                              failure: @escaping (Error?) -> Void) {
-        // Create download task
-        let request = URLRequest(url: imageURL)
-        let task = dataSession.dataTask(with: request) { data, response, error in
-            // Check returned image data
-            guard let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                  let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                  let data = data, error == nil, let image = UIImage(data: data) else {
-                print("••> Could not download image from \(imageURL.absoluteString): \(error?.localizedDescription ?? "Unknown!")")
-                failure(error)
-                return
-            }
-            
-            // Store image in cache (in the background)
-            DispatchQueue.global(qos: .background).async {
-                // Create parent directories if needed
-                let fm = FileManager.default
-                let dirURL = fileURL.deletingLastPathComponent()
-                if fm.fileExists(atPath: dirURL.path) == false {
-                    print("••> Create directory \(dirURL.path)")
-                    try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
-                                            attributes: nil)
-                }
-
-                // Delete already existing file if it exists (incomplete previous attempt?)
-                try? FileManager.default.removeItem(at: fileURL)
-
-                // Store image data
-                let success = FileManager.default.createFile(atPath: fileURL.path, contents: data)
-                print("••> Image \(fileURL.lastPathComponent) stored in cache: \(success ? "YES" : "NO")")
-            }
-            
-            // Return image object
-            success(image)
-        }
-        
-        // Tell the system how many bytes are expected to be exchanged
-        task.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-        task.countOfBytesClientExpectsToReceive = fileSize
-        
-        // Launch download in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            task.resume()
-        }
+        // Download this image
+        download.task = ImageSession.shared.dataSession.downloadTask(with: request)
+        download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
+        download.task?.countOfBytesClientExpectsToReceive = download.fileSize
+        download.task?.resume()
+        activeDownloads[download.imageURL] = download
     }
 }
 
@@ -145,6 +94,7 @@ extension ImageSession: URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The data session has been invalidated")
+        activeDownloads = [ : ]
     }
     
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
@@ -200,7 +150,7 @@ extension ImageSession: URLSessionDelegate {
 
 
 // MARK: - Session Task Delegate
-extension ImageSession: URLSessionDataDelegate {
+extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Task-level authentication request from the remote server")
@@ -227,16 +177,90 @@ extension ImageSession: URLSessionDataDelegate {
         completionHandler(.useCredential, credential)
     }
     
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        print("    > Data task has received some of the expected data")
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        // Retrieve the original URL of this task
+        print("••> Did complete task #\(task.taskIdentifier) with error: \(String(describing: error))")
+        guard let imageURL = task.originalRequest?.url,
+              let download = activeDownloads[imageURL] else {
+            return
+        }
+
+        if let error = error {
+            // Return error with failureHandler
+            if let failure = download.failureHandler {
+                failure(error)
+            }
+        } else {
+            // Return cached image with completionHandler
+            if let completion = download.completionHandler,
+               let fileURL = download.fileURL {
+                if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
+                    completion(cachedImage)             // Cached image
+                } else {
+                    completion(download.placeHolder)    // Cached video
+                }
+            }
+        }
         
-        // Update UI
-//        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-//                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-//                                          "progressFraction" : progressFraction]
-//        DispatchQueue.main.async {
-//            // Update UploadQueue cell and button shown in root album (or default album)
-//            NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
-//        }
+        // Remove task from active downloads
+        activeDownloads.removeValue(forKey: imageURL)
+    }
+}
+
+
+// MARK: Session Download Delegate
+extension ImageSession: URLSessionDownloadDelegate {
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
+                    didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
+                    totalBytesExpectedToWrite: Int64) {
+        // Retrieve the original URL of this task
+        guard let imageURL = downloadTask.originalRequest?.url,
+              let download = activeDownloads[imageURL] else {
+            return
+        }
+
+        // Update progress bar if any
+        if let progressHandler = download.progressHandler {
+            let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+            progressHandler(progress)
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        // Retrieve the original URL of this task
+        print("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
+        guard let imageURL = downloadTask.originalRequest?.url,
+              let download = activeDownloads[imageURL],
+              let fileURL = download.fileURL else {
+            return
+        }
+
+        // Create parent directories if needed
+        do {
+            let fm = FileManager.default
+            let dirURL = fileURL.deletingLastPathComponent()
+            if fm.fileExists(atPath: dirURL.path) == false {
+                print("••> Create directory \(dirURL.path)")
+                try fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
+                                       attributes: nil)
+            }
+            
+            // Delete already existing file if it exists (incomplete previous attempt?)
+            try? fm.removeItem(at: fileURL)
+            
+            // Store image
+            try fm.copyItem(at: location, to: fileURL)
+            print("••> Image \(fileURL.lastPathComponent) stored in cache")
+        } catch {
+            // Return error with failureHandler
+            if let failure = download.failureHandler {
+                failure(error)
+            }
+            
+            // Remove task from active downloads
+            activeDownloads.removeValue(forKey: imageURL)
+        }
     }
 }

@@ -170,7 +170,7 @@ public extension IQKeyboardManager {
         }
 
         let startTime = CACurrentMediaTime()
-        showLog("****** \(#function) started ******", indentation: 1)
+        showLog(">>>>> \(#function) started >>>>>", indentation: 1)
 
         //  Getting RootViewOrigin.
         var rootViewOrigin = rootController.view.frame.origin
@@ -204,26 +204,52 @@ public extension IQKeyboardManager {
 
         let statusBarHeight: CGFloat
 
-        #if swift(>=5.1)
-        if #available(iOS 13, *) {
-            statusBarHeight = window.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        let navigationBarAreaHeight: CGFloat
+        if let navigationController = rootController.navigationController {
+            navigationBarAreaHeight = navigationController.navigationBar.frame.maxY
         } else {
+#if swift(>=5.1)
+            if #available(iOS 13, *) {
+                statusBarHeight = window.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+            } else {
+                statusBarHeight = UIApplication.shared.statusBarFrame.height
+            }
+#else
             statusBarHeight = UIApplication.shared.statusBarFrame.height
+#endif
+            navigationBarAreaHeight = statusBarHeight
         }
-        #else
-        statusBarHeight = UIApplication.shared.statusBarFrame.height
-        #endif
 
-        let navigationBarAreaHeight: CGFloat = statusBarHeight + ( rootController.navigationController?.navigationBar.frame.height ?? 0)
         let layoutAreaHeight: CGFloat = rootController.view.layoutMargins.bottom
 
+        let isTextView: Bool
+        let isNonScrollableTextView: Bool
+
+        if let textView = textFieldView as? UIScrollView, textFieldView.responds(to: #selector(getter: UITextView.isEditable)) {
+
+            isTextView = true
+            isNonScrollableTextView = !textView.isScrollEnabled
+        } else {
+            isTextView = false
+            isNonScrollableTextView = false
+        }
+
         let topLayoutGuide: CGFloat = max(navigationBarAreaHeight, layoutAreaHeight) + 5
-        let bottomLayoutGuide: CGFloat = (textFieldView is UIScrollView && textFieldView.responds(to: #selector(getter: UITextView.isEditable))) ? 0 : rootController.view.layoutMargins.bottom  //Validation of textView for case where there is a tab bar at the bottom or running on iPhone X and textView is at the bottom.
+
+        let bottomLayoutGuide: CGFloat = (isTextView && !isNonScrollableTextView) ? 0 : rootController.view.layoutMargins.bottom  //Validation of textView for case where there is a tab bar at the bottom or running on iPhone X and textView is at the bottom.
+        let visibleHeight: CGFloat = window.frame.height-kbSize.height
 
         //  Move positive = textField is hidden.
         //  Move negative = textField is showing.
         //  Calculating move position.
-        var move: CGFloat = min(textFieldViewRectInRootSuperview.minY-(topLayoutGuide), textFieldViewRectInWindow.maxY-(window.frame.height-kbSize.height)+bottomLayoutGuide)
+        var move: CGFloat
+
+        //Special case: when the textView is not scrollable, then we'll be scrolling to the bottom part and let hide the top part above
+        if isNonScrollableTextView {
+            move = textFieldViewRectInWindow.maxY - visibleHeight + bottomLayoutGuide
+        } else {
+            move = min(textFieldViewRectInRootSuperview.minY-(topLayoutGuide), textFieldViewRectInWindow.maxY - visibleHeight + bottomLayoutGuide)
+        }
 
         showLog("Need to move: \(move)")
 
@@ -374,10 +400,18 @@ public extension IQKeyboardManager {
                     }
                 } else {
 
-                    shouldContinue = textFieldViewRectInRootSuperview.origin.y < topLayoutGuide
+                    if isNonScrollableTextView {
+                        shouldContinue = textFieldViewRectInWindow.maxY < visibleHeight + bottomLayoutGuide
 
-                    if shouldContinue {
-                        move = min(0, textFieldViewRectInRootSuperview.origin.y - topLayoutGuide)
+                        if shouldContinue {
+                            move = min(0,  textFieldViewRectInWindow.maxY -  visibleHeight + bottomLayoutGuide)
+                        }
+                    } else {
+                        shouldContinue = textFieldViewRectInRootSuperview.minY < topLayoutGuide
+
+                        if shouldContinue {
+                            move = min(0, textFieldViewRectInRootSuperview.minY - topLayoutGuide)
+                        }
                     }
                 }
 
@@ -403,13 +437,18 @@ public extension IQKeyboardManager {
                         var shouldOffsetY = scrollView.contentOffset.y - min(scrollView.contentOffset.y, -move)
 
                         //Rearranging the expected Y offset according to the view.
-                        shouldOffsetY = min(shouldOffsetY, lastViewRect.origin.y)
+
+                        if isNonScrollableTextView {
+                            shouldOffsetY = min(shouldOffsetY, lastViewRect.maxY - visibleHeight + bottomLayoutGuide)
+                        } else {
+                            shouldOffsetY = min(shouldOffsetY, lastViewRect.minY)
+                        }
 
                         //[_textFieldView isKindOfClass:[UITextView class]] If is a UITextView type
                         //nextScrollView == nil    If processing scrollView is last scrollView in upper hierarchy (there is no other scrollView upper hierrchy.)
                         //[_textFieldView isKindOfClass:[UITextView class]] If is a UITextView type
                         //shouldOffsetY >= 0     shouldOffsetY must be greater than in order to keep distance from navigationBar (Bug ID: #92)
-                        if (textFieldView is UIScrollView && textFieldView.responds(to: #selector(getter: UITextView.isEditable))),
+                        if isTextView, !isNonScrollableTextView,
                             nextScrollView == nil,
                             shouldOffsetY >= 0 {
 
@@ -417,7 +456,7 @@ public extension IQKeyboardManager {
                             if let currentTextFieldViewRect = textFieldView.superview?.convert(textFieldView.frame, to: window) {
 
                                 //Calculating expected fix distance which needs to be managed from navigation bar
-                                let expectedFixDistance = currentTextFieldViewRect.minY - topLayoutGuide
+                                let expectedFixDistance: CGFloat = currentTextFieldViewRect.minY - topLayoutGuide
 
                                 //Now if expectedOffsetY (superScrollView.contentOffset.y + expectedFixDistance) is lower than current shouldOffsetY, which means we're in a position where navigationBar up and hide, then reducing shouldOffsetY with expectedOffsetY (superScrollView.contentOffset.y + expectedFixDistance)
                                 shouldOffsetY = min(shouldOffsetY, scrollView.contentOffset.y + expectedFixDistance)
@@ -634,7 +673,7 @@ public extension IQKeyboardManager {
         }
 
         let elapsedTime = CACurrentMediaTime() - startTime
-        showLog("****** \(#function) ended: \(elapsedTime) seconds ******", indentation: -1)
+        showLog("<<<<< \(#function) ended: \(elapsedTime) seconds <<<<<", indentation: -1)
     }
 
     internal func restorePosition() {
