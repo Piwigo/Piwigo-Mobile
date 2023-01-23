@@ -11,7 +11,7 @@ import Foundation
 public class UploadSessions: NSObject {
                 
     // Singleton
-    public static var shared = UploadSessions()
+    public static let shared = UploadSessions()
 
     // Session identifiers / descriptions
     public let uploadSessionIdentifier:String! = "org.piwigo.uploadSession"

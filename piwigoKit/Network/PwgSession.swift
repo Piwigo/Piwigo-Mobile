@@ -11,7 +11,7 @@ import Foundation
 public class PwgSession: NSObject {
     
     // Singleton
-    public static var shared = PwgSession()
+    public static let shared = PwgSession()
     
     // Create single instance
     public lazy var dataSession: URLSession = {
