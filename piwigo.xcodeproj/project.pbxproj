@@ -209,7 +209,6 @@
 		AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
-		AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */; };
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
 		AD94F643266D6E1D00EFC6A9 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationProvider.swift */; };
 		AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
@@ -716,7 +715,6 @@
 		AD91127B28146B6C002FB78F /* SceneConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneConfigurations.swift; sourceTree = "<group>"; };
 		AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SceneDelegate+StateRestoration.swift"; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
-		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
 		AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
 		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
@@ -1863,7 +1861,6 @@
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				ADC339FB26A7EC8500173F8A /* In-App Intents */,
-				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
 				ADA6DA4621B2AD9900F941F1 /* Settings.bundle */,
@@ -1881,6 +1878,7 @@
 				ADC709C425115943009CA711 /* SceneDelegate.swift */,
 				AD91127B28146B6C002FB78F /* SceneConfigurations.swift */,
 				AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */,
+				AD074F6523F8498A00D6016A /* ClearCache.swift */,
 				AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */,
 			);
 			path = "Supporting Files";
@@ -1992,15 +1990,6 @@
 				AD8709B0259A8F83008C4E4C /* Help */,
 			);
 			path = Settings;
-			sourceTree = "<group>";
-		};
-		D8D3F7621A7AF27C00AEA7F1 /* Data Cache */ = {
-			isa = PBXGroup;
-			children = (
-				AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */,
-				AD074F6523F8498A00D6016A /* ClearCache.swift */,
-			);
-			path = "Data Cache";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2711,7 +2700,6 @@
 				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADBABA362847F4FF00EF39B0 /* AlbumViewController+Search.swift in Sources */,
-				AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */,
 				ADC69F25285DF50C009BF9AF /* TagSelectorViewController+Search.swift in Sources */,
 				ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
