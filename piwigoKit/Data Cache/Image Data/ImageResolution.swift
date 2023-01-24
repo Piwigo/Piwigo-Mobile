@@ -22,13 +22,13 @@ public class Resolution: NSObject, NSSecureCoding {
         case url = "url"
     }
 
-    init(imageWidth: Int, imageHeight: Int, imageURL: NSURL?, imageID: String? = nil) {
+    init(imageWidth: Int, imageHeight: Int, imageURL: NSURL?) {
         width = imageWidth
         height = imageHeight
         url = imageURL
     }
 
-    init(imageWidth: Int, imageHeight: Int, imagePath: String?, imageID: String? = nil) {
+    init(imageWidth: Int, imageHeight: Int, imagePath: String?) {
         width = imageWidth
         height = imageHeight
         url = NSURL(string: imagePath ?? "")
