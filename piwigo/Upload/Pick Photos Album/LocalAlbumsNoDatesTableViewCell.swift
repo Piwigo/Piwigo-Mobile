@@ -29,10 +29,10 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != Int64.min {
-            numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
-        } else {
+        if [Int64.min, Int64.max].contains(nberPhotos) {
             numberLabel.text = ""
+        } else {
+            numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         }
     }
 
