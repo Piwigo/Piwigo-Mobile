@@ -28,7 +28,7 @@ class LoginUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 32500) { jsonData in
             // Decode the JSON object and set variables.
             do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
+                // Decode the JSON into codable type ReflectionGetMethodListJSON.
                 let decoder = JSONDecoder()
                 let methodsJSON = try decoder.decode(ReflectionGetMethodListJSON.self, from: jsonData)
 
@@ -78,7 +78,7 @@ class LoginUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in
             // Decode the JSON object and check if the login was successful
             do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
+                // Decode the JSON into codable type SessionLoginJSON.
                 let decoder = JSONDecoder()
                 let loginJSON = try decoder.decode(SessionLoginJSON.self, from: jsonData)
 
@@ -118,7 +118,7 @@ class LoginUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 2100) { jsonData in
             // Decode the JSON object and retrieve the status
             do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
+                // Decode the JSON into codable type CommunitySessionGetStatusJSON.
                 let decoder = JSONDecoder()
                 let statusJSON = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
 
@@ -163,7 +163,7 @@ class LoginUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 7400) { jsonData in
             // Decode the JSON object and retrieve the status
             do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
+                // Decode the JSON into codable type SessionGetStatusJSON.
                 let decoder = JSONDecoder()
                 let statusJSON = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
 
@@ -471,7 +471,7 @@ class LoginUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in
             // Decode the JSON object and check if the logout was successful
             do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
+                // Decode the JSON into codable type SessionLogoutJSON.
                 let decoder = JSONDecoder()
                 let loginJSON = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
 
