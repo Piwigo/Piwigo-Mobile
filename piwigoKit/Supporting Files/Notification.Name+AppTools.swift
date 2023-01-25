@@ -43,7 +43,4 @@ public extension Notification.Name {
 
     /// - Displays error when appendAutoUploadRequests() fails and resume upload manager operations
     static let pwgAppendAutoUploadRequestsFailed = Notification.Name("kPiwigoNotificationAppendAutoUploadRequestsFail")
-    
-    /// - Adds image uploaded with pwg.images.upload to CategoriesData cache
-//    static let pwgAddUploadedImageToCache = Notification.Name("kPiwigoNotificationAddUploadedImageToCache")
 }

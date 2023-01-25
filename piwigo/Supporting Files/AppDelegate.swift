@@ -108,10 +108,6 @@ import piwigoKit
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
                                                name: .pwgAppendAutoUploadRequestsFailed, object: nil)
-
-        // Register uploaded image notification appending image to CategoriesData cache
-//        NotificationCenter.default.addObserver(self, selector: #selector(addImage),
-//                                               name: .pwgAddUploadedImageToCache, object: nil)
         return true
     }
 
@@ -261,9 +257,6 @@ import piwigoKit
         
         // Unregister auto-upload appender failures
         NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
-        
-        // Unregister uploaded image notification appending image to CategoriesData cache
-//        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
     }
     
 
