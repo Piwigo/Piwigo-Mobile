@@ -11,7 +11,7 @@
 import UIKit
 import piwigoKit
 
-enum kPiwigoEditOption : Int {
+enum pwgEditOption : Int {
     case none
     case add
     case remove
@@ -22,7 +22,7 @@ class TagTableViewCell: UITableViewCell {
     @IBOutlet weak var rightAddImage: UIImageView!
     @IBOutlet weak var rightRemoveImage: UIImageView!
 
-    func configure(with tag: Tag, andEditOption option: kPiwigoEditOption) {
+    func configure(with tag: Tag, andEditOption option: pwgEditOption) {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
