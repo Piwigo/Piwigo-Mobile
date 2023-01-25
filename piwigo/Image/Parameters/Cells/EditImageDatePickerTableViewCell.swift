@@ -39,7 +39,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 
     private let pwgPickerMinDate = "1922-01-01 00:00:00" // UTC
     private let pwgPickerMaxDate = "2100-01-01 00:00:00" // UTC
-    private let kPiwigoComponentWidthLimit: CGFloat = 375 // i.e. larger than iPhones 6,7,8 screen width
+    private let pwgPickerWidthLimit: CGFloat = 375 // i.e. larger than iPhones 6,7,8 screen width
     private let pwgPicker1Day: Int = 24 * 60 * 60
     private let pwgPicker12Hours: Int = 12
     private let pwgPicker24Hours: Int = 24
@@ -315,7 +315,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         // Widths contants
         var dayWidth: CGFloat = 106.0
-        dayWidth += datePicker.bounds.size.width > kPiwigoComponentWidthLimit ? 60.0 : 0.0
+        dayWidth += datePicker.bounds.size.width > pwgPickerWidthLimit ? 60.0 : 0.0
         let sepDay: CGFloat = 10.0
         let time: CGFloat = 26.0
         let sepTime: CGFloat = 8.0
@@ -364,7 +364,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
                 if let pickerRefDate = pickerRefDate {
                     dateOfDay = Date(timeInterval: TimeInterval(row * pwgPicker1Day), since: pickerRefDate)
                 }
-                if datePicker.bounds.size.width > kPiwigoComponentWidthLimit {
+                if datePicker.bounds.size.width > pwgPickerWidthLimit {
                     if let dateOfDay = dateOfDay {
                         label?.text = formatterLong.string(from: dateOfDay)
                     }
