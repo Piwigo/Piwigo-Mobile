@@ -475,15 +475,9 @@ public class UploadProvider: NSObject {
             sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
             fetchRequest.sortDescriptors = sortDescriptors
 
-            // OR subpredicates
-            var orSubpredicates = [NSPredicate]()
-            states.forEach { (state) in
-                orSubpredicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
-            }
-            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates)
-            
             // AND subpredicates
-            var andPredicates:[NSPredicate] = [statesPredicate]
+            var andPredicates:[NSPredicate] = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
             andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
             if markedForAutoUpload {
