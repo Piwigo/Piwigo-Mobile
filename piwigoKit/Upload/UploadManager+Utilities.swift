@@ -113,7 +113,7 @@ extension UploadManager {
                                                 .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
-            UploadManager.shared.nberOfUploadsToComplete = uploadsProvider.getRequests(inStates: states).0.count
+            UploadManager.shared.nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
 
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])

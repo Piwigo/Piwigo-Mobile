@@ -137,7 +137,7 @@ extension UploadManager {
 
         // Task now resumed -> Update upload request status
         if chunk == 0 {
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
         }
         
         // Release memory
@@ -314,27 +314,21 @@ extension UploadManager {
             }
 
             // Add image to cache when uploaded by admin users
-            if NetworkVars.hasAdminRights {
-                // Get Upload properties
-                var userInfo = [String : Any](minimumCapacity: 12)
-                userInfo["datePosted"]      = Date()
-                userInfo["fileSize"]        = Int64.min // will trigger pwg.images.getInfo
-                userInfo["imageTitle"]      = uploadProperties.imageTitle
-                userInfo["categoryId"]      = uploadProperties.category
-                userInfo["fileName"]        = uploadProperties.fileName
-                userInfo["isVideo"]         = uploadProperties.isVideo
-                userInfo["dateCreated"]     = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
-                userInfo["author"]          = uploadProperties.author
-                userInfo["privacyLevel"]    = Int32(uploadProperties.privacyLevel.rawValue)
-
-                // Get data returned by the server
-                userInfo["imageId"]         = uploadJSON.data.image_id!
-                userInfo["squarePath"]      = uploadJSON.data.square_src
-                userInfo["thumbPath"]       = uploadJSON.data.src
-
-                // Add image to CategoriesData cache
-//                NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
-//                                                object: nil, userInfo: userInfo)
+            if NetworkVars.hasAdminRights,
+               let imageID = uploadJSON.data.image_id {
+                // Create ImageGetInfo object
+                let created = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
+                let square = Derivative(url: uploadJSON.data.square_src, width: nil, height: nil)
+                let thumb = Derivative(url: uploadJSON.data.src, width: nil, height: nil)
+                let newImage = ImagesGetInfo(id: imageID, title: uploadProperties.imageTitle,
+                                             fileName: uploadProperties.fileName,
+                                             datePosted: Date(), dateCreated: created,
+                                             author: uploadProperties.author,
+                                             privacyLevel: String(uploadProperties.privacyLevel.rawValue),
+                                             squareImage: square, thumbImage: thumb)
+                // Add image to cache
+                imageProvider.didUploadImage(newImage, asVideo: uploadProperties.isVideo,
+                                             inCategoryId: uploadProperties.category)
             }
 
             // Update state of upload
@@ -505,7 +499,7 @@ extension UploadManager {
         }
 
         // All tasks are now resumed -> Update upload request status
-        uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
+        uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
         
         // Release memory
         imageData.removeAll()
@@ -705,7 +699,7 @@ extension UploadManager {
             UploadSessions.shared.removeCounter(withID: identifier)
 
             // Collect image data
-            if let getInfos = uploadJSON.data, let imageId = getInfos.id,
+            if var getInfos = uploadJSON.data, let imageId = getInfos.id,
                imageId != Int64.zero {
 
                 // Update UI (fill progress bar)
@@ -714,10 +708,6 @@ extension UploadManager {
                                stateLabel: kPiwigoUploadState.uploading.stateInfo,
                                photoMaxSize: nil, progress: Float(1), errorMsg: nil)
                 }
-
-                // Prepare image for cache
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
                 // Get data returned by the server
                 uploadProperties.imageId    = imageId
@@ -735,58 +725,9 @@ extension UploadManager {
                 
                 // Add uploaded image to cache and update UI if needed
                 if NetworkVars.hasAdminRights {
-                    var userInfo = [String : Any](minimumCapacity: 1)
-                    userInfo["isVideo"]         = uploadProperties.isVideo
-                    userInfo["categoryId"]      = uploadProperties.category
-
-                    userInfo["imageId"]         = imageId
-                    userInfo["imageTitle"]      = uploadProperties.imageTitle
-                    userInfo["author"]          = uploadProperties.author
-                    userInfo["privacyLevel"]    = Int32(uploadProperties.privacyLevel.rawValue)
-                    userInfo["comment"]         = uploadProperties.comment
-                    userInfo["visits"]          = getInfos.visits ?? 0
-                    userInfo["ratingScore"]     = getInfos.ratingScore  ?? 0.0
-                    userInfo["tags"]            = getInfos.tags
-
-                    userInfo["fileName"]        = getInfos.fileName ?? uploadProperties.fileName
-                    userInfo["fileSize"]        = getInfos.fileSize ?? Int64.min // Will trigger pwg.images.getInfo
-                    userInfo["datePosted"]      = dateFormatter.date(from: getInfos.datePosted ?? "") ?? Date()
-                    userInfo["dateCreated"]     = dateFormatter.date(from: getInfos.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
-                    userInfo["md5checksum"]     = getInfos.md5checksum ?? uploadProperties.md5Sum
-
-                    userInfo["fullResPath"]     = NetworkUtilities.encodedImageURL(getInfos.fullResPath)
-                    userInfo["fullResWidth"]    = getInfos.fullResWidth ?? 1
-                    userInfo["fullResHeight"]   = getInfos.fullResHeight ?? 1
-                    userInfo["squarePath"]      = NetworkUtilities.encodedImageURL(getInfos.derivatives.squareImage?.url)
-                    userInfo["squareWidth"]     = getInfos.derivatives.squareImage?.width ?? 1
-                    userInfo["squareHeight"]    = getInfos.derivatives.squareImage?.height ?? 1
-                    userInfo["thumbPath"]       = NetworkUtilities.encodedImageURL(getInfos.derivatives.thumbImage?.url)
-                    userInfo["thumbWidth"]      = getInfos.derivatives.thumbImage?.width ?? 1
-                    userInfo["thumbHeight"]     = getInfos.derivatives.thumbImage?.height ?? 1
-                    userInfo["mediumPath"]      = NetworkUtilities.encodedImageURL(getInfos.derivatives.mediumImage?.url)
-                    userInfo["mediumWidth"]     = getInfos.derivatives.mediumImage?.width ?? 1
-                    userInfo["mediumHeight"]    = getInfos.derivatives.mediumImage?.height ?? 1
-                    userInfo["xxSmallPath"]     = NetworkUtilities.encodedImageURL(getInfos.derivatives.xxSmallImage?.url)
-                    userInfo["xxSmallWidth"]    = getInfos.derivatives.xxSmallImage?.width ?? 1
-                    userInfo["xxSmallHeight"]   = getInfos.derivatives.xxSmallImage?.height ?? 1
-                    userInfo["xSmallPath"]      = NetworkUtilities.encodedImageURL(getInfos.derivatives.xSmallImage?.url)
-                    userInfo["xSmallWidth"]     = getInfos.derivatives.xSmallImage?.width ?? 1
-                    userInfo["xSmallHeight"]    = getInfos.derivatives.xSmallImage?.height ?? 1
-                    userInfo["smallPath"]       = NetworkUtilities.encodedImageURL(getInfos.derivatives.smallImage?.url)
-                    userInfo["smallWidth"]      = getInfos.derivatives.smallImage?.width ?? 1
-                    userInfo["smallHeight"]     = getInfos.derivatives.smallImage?.height ?? 1
-                    userInfo["largePath"]       = NetworkUtilities.encodedImageURL(getInfos.derivatives.largeImage?.url)
-                    userInfo["largeWidth"]      = getInfos.derivatives.largeImage?.width ?? 1
-                    userInfo["largeHeight"]     = getInfos.derivatives.largeImage?.height ?? 1
-                    userInfo["xLargePath"]      = NetworkUtilities.encodedImageURL(getInfos.derivatives.xLargeImage?.url)
-                    userInfo["xLargeWidth"]     = getInfos.derivatives.xLargeImage?.width ?? 1
-                    userInfo["xLargeHeight"]    = getInfos.derivatives.xLargeImage?.height ?? 1
-                    userInfo["xxLargePath"]     = NetworkUtilities.encodedImageURL(getInfos.derivatives.xxLargeImage?.url)
-                    userInfo["xxLargeWidth"]    = getInfos.derivatives.xxLargeImage?.width ?? 1
-                    userInfo["xxLargeHeight"]   = getInfos.derivatives.xxLargeImage?.height ?? 1
-
-//                    NotificationCenter.default.post(name: .pwgAddUploadedImageToCache,
-//                                                    object: nil, userInfo: userInfo)
+                    getInfos.fixingUnknowns()
+                    imageProvider.didUploadImage(getInfos, asVideo: uploadProperties.isVideo,
+                                                 inCategoryId: uploadProperties.category)
                 }
             }
 
@@ -835,8 +776,8 @@ extension UploadManager {
             }
 
             // Update state of upload request
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: properties.requestState,
-                                                 error: properties.requestError) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: properties.requestState,
+                                                error: properties.requestError) { [unowned self] (_) in
                 // Update UI
                 let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
                                                   "stateLabel" : properties.requestState.stateInfo,
@@ -855,7 +796,7 @@ extension UploadManager {
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation())")
-        uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { [unowned self] (_) in
+        uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { [unowned self] (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
             let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
@@ -863,7 +804,7 @@ extension UploadManager {
                                                 .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
-            self.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
+            self.nberOfUploadsToComplete = self.uploadProvider.getRequests(inStates: states).0.count
 
             // Consider next image?
             self.didEndTransfer(for: uploadID)

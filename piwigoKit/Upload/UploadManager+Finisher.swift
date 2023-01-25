@@ -161,7 +161,7 @@ extension UploadManager {
 
         // Update state of finished upload
         print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
-        uploadsProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
+        uploadProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
             // Consider next image
             self.didFinishTransfer()
         }

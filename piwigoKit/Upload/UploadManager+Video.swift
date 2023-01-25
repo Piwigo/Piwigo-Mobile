@@ -185,7 +185,7 @@ extension UploadManager {
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
-        uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
+        uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
             self.didEndPreparation()
         }

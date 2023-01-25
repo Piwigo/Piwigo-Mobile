@@ -40,7 +40,7 @@ extension UploadManager {
             .compactMap{ $0 }
         
         // Record upload requests in database
-        uploadsProvider.importUploads(from: uploadRequestsToAppend) { error in
+        uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 
@@ -90,7 +90,7 @@ extension UploadManager {
                                             .uploading, .uploadingError, .uploadingFail, .uploaded,
                                             .finishing, .finishingError, .finished,
                                             .moderated, .deleted]
-        let imageIDs = uploadsProvider.getRequests(inStates: states).0
+        let imageIDs = uploadProvider.getRequests(inStates: states).0
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
@@ -139,10 +139,10 @@ extension UploadManager {
                                             .preparingFail, .formatError, .prepared,
                                             .uploadingError, .uploadingFail, .uploaded,
                                             .finishingError]
-        let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
+        let objectIDs = uploadProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        uploadsProvider.delete(uploadRequests: objectIDs) { [unowned self] error in
+        uploadProvider.delete(uploadRequests: objectIDs) { [unowned self] error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 

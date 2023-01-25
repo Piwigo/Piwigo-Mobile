@@ -83,12 +83,20 @@ public class UploadManager: NSObject {
     }
     
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    var uploadsProvider: UploadProvider = {
+    // MARK: - Core Data Object Contexts
+    lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider()
+        return provider
+    }()
+
+    lazy var uploadProvider: UploadProvider = {
         let provider : UploadProvider = UploadProvider()
         return provider
     }()
@@ -166,7 +174,7 @@ public class UploadManager: NSObject {
                                                 .preparingFail, .formatError, .prepared,
                                                 .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                 .finishing, .finishingError]
-            nberOfUploadsToComplete = uploadsProvider.getRequests(inStates: states).0.count
+            nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
     //        return // for debugging background tasks
 
             // Pause upload manager if:
@@ -187,36 +195,36 @@ public class UploadManager: NSObject {
 
             // Interrupted work should be set as if an error was encountered
             /// - case of finishes
-            let finishingIDs = uploadsProvider.getRequests(inStates: [.finishing]).1
+            let finishingIDs = uploadProvider.getRequests(inStates: [.finishing]).1
             if !isFinishing {
                 // Transfers encountered an error
                 for uploadID in finishingIDs {
                     print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
-                    uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
+                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                         self.findNextImageToUpload()
                         return
                     }
                 }
             }
             /// - case of transfers (a few transfers may be running in parallel)
-            let uploadingIDs = uploadsProvider.getRequests(inStates: [.uploading]).1
+            let uploadingIDs = uploadProvider.getRequests(inStates: [.uploading]).1
             for uploadID in uploadingIDs {
                 if !isUploading.contains(uploadID) {
                     // Transfer encountered an error
                     print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
-                    uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
+                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                         self.findNextImageToUpload()
                         return
                     }
                 }
             }
             /// - case of preparations
-            let preparingIDs = uploadsProvider.getRequests(inStates: [.preparing]).1
+            let preparingIDs = uploadProvider.getRequests(inStates: [.preparing]).1
             if !isPreparing {
                 // Preparations encountered an error
                 for uploadID in preparingIDs {
                     print("\(debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID.uriRepresentation())")
-                    uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingError, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingError, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                         self.findNextImageToUpload()
                         return
                     }
@@ -224,7 +232,7 @@ public class UploadManager: NSObject {
             }
 
             // How many upload requests did fail?
-            let failedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+            let failedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                        .uploadingError, .uploadingFail]).1.count
             // Too many failures?
             if failedUploads >= maxNberOfFailedUploads { return }
@@ -234,7 +242,7 @@ public class UploadManager: NSObject {
             /// - uploading with pwg.images.upload because the title cannot be set during the upload.
             /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
             if !isFinishing,
-               let uploadID = uploadsProvider.getRequests(inStates: [.uploaded]).1.first {
+               let uploadID = uploadProvider.getRequests(inStates: [.uploaded]).1.first {
                 
                 // Pause upload manager if the app is not in the foreground anymore
                 if isPaused { return }
@@ -246,7 +254,7 @@ public class UploadManager: NSObject {
 
             // Not transferring and file ready for transfer?
             if isUploading.count < maxNberOfTransfers,
-               let uploadID = uploadsProvider.getRequests(inStates: [.prepared]).1.first {
+               let uploadID = uploadProvider.getRequests(inStates: [.prepared]).1.first {
 
                 // Pause upload manager if the app is not in the foreground anymore
                 if isPaused { return }
@@ -257,9 +265,9 @@ public class UploadManager: NSObject {
             }
             
             // Not preparing and upload request waiting?
-            let nberPrepared = uploadsProvider.getRequests(inStates: [.prepared]).0.count
+            let nberPrepared = uploadProvider.getRequests(inStates: [.prepared]).0.count
             if !isPreparing, nberPrepared < maxNberPreparedUploads,
-               let uploadID = uploadsProvider.getRequests(inStates: [.waiting]).1.first {
+               let uploadID = uploadProvider.getRequests(inStates: [.waiting]).1.first {
 
                 // Pause upload manager if the app is not in the foreground anymore
                 if isPaused { return }
@@ -272,7 +280,7 @@ public class UploadManager: NSObject {
             // No more image to transfer ;-)
             // Moderate images uploaded by Community regular user
             // Considers only uploads to the server to which the user is logged in
-            let finishedUploads = uploadsProvider.getRequests(inStates: [.finished]).1
+            let finishedUploads = uploadProvider.getRequests(inStates: [.finished]).1
             if NetworkVars.userStatus == .normal,
                NetworkVars.usesCommunityPluginV29, finishedUploads.count > 0 {
 
@@ -289,11 +297,11 @@ public class UploadManager: NSObject {
             // Note that some uploads may have failed and waiting a user decision.
             states = [.waiting, .preparing, .prepared,
                       .uploading, .uploaded, .finishing]
-            if uploadsProvider.getRequests(inStates: states).0.count > 0 { return }
+            if uploadProvider.getRequests(inStates: states).0.count > 0 { return }
             
             // Upload requests are completed
             // Considers only uploads to the server to which the user is logged in
-            let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
+            let (imageIDs, uploadIDs) = uploadProvider.getRequests(inStates: [.finished, .moderated],
                                                                     markedForDeletion: true)
             if imageIDs.isEmpty == false, uploadIDs.isEmpty == false {
                 print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
@@ -344,7 +352,7 @@ public class UploadManager: NSObject {
         uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
         // First, find upload requests whose transfer did fail
-        let failedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+        let failedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                    .uploadingError, .uploadingFail],
                                                         markedForAutoUpload: autoUploadOnly).1
         // Too many failures?
@@ -358,7 +366,7 @@ public class UploadManager: NSObject {
         }
         
         // Second, find upload requests ready for transfer
-        let preparedUploads = uploadsProvider.getRequests(inStates: [.prepared],
+        let preparedUploads = uploadProvider.getRequests(inStates: [.prepared],
                                                           markedForAutoUpload: autoUploadOnly).1
         if preparedUploads.count > 0 {
             // Will then launch transfers of prepared uploads
@@ -370,7 +378,7 @@ public class UploadManager: NSObject {
         // Finally, get list of upload requests to prepare
         let diff = maxNberPreparedUploads - uploadRequestsToTransfer.count
         if diff <= 0 { return }
-        let requestsToPrepare = uploadsProvider.getRequests(inStates: [.waiting],
+        let requestsToPrepare = uploadProvider.getRequests(inStates: [.waiting],
                                                             markedForAutoUpload: autoUploadOnly).1
         print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
@@ -485,9 +493,8 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.bckgContext
         do {
-            let upload = try taskContext.existingObject(with: uploadID)
+            let upload = try bckgContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
@@ -500,7 +507,7 @@ public class UploadManager: NSObject {
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
             // Request not available…!?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -554,7 +561,7 @@ public class UploadManager: NSObject {
         }
         guard files.count > 0, let fileURL = files.filter({$0.lastPathComponent.hasPrefix(uploadProperties.localIdentifier)}).first else {
             // File not available… deleted?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
 
                 // Update UI
                 updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
@@ -583,7 +590,7 @@ public class UploadManager: NSObject {
 
             // Update state of upload
             uploadProperties.requestState = .preparing
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Launch preparation job
                 self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
             }
@@ -608,7 +615,7 @@ public class UploadManager: NSObject {
         }
         guard files.count > 0, let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
             // File not available… deleted?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
 
                 // Update UI
                 updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
@@ -654,7 +661,7 @@ public class UploadManager: NSObject {
                 // Image file format accepted by the Piwigo server
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
@@ -669,7 +676,7 @@ public class UploadManager: NSObject {
                 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
@@ -684,7 +691,7 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -716,7 +723,7 @@ public class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.prepareVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
@@ -731,7 +738,7 @@ public class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.convertVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
@@ -746,7 +753,7 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -760,7 +767,7 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -776,7 +783,7 @@ public class UploadManager: NSObject {
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadProperties.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -842,7 +849,7 @@ public class UploadManager: NSObject {
         }
         else {
             // Asset not available… deleted?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -881,7 +888,7 @@ public class UploadManager: NSObject {
                 // Image file format accepted by the Piwigo server
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.prepareImage(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
                 }
@@ -895,7 +902,7 @@ public class UploadManager: NSObject {
                 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
                     self.convertImage(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
                 }
@@ -910,7 +917,7 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -925,7 +932,7 @@ public class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
 //                    self.prepareVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
                     self.prepareVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
@@ -940,7 +947,7 @@ public class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
 //                    self.convertVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
                     self.convertVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
@@ -955,7 +962,7 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -964,7 +971,7 @@ public class UploadManager: NSObject {
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
             uploadProperties.requestState = .formatError
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -975,7 +982,7 @@ public class UploadManager: NSObject {
         default:
             // Update state of upload request: Unknown format
             uploadProperties.requestState = .formatError
-            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -987,8 +994,8 @@ public class UploadManager: NSObject {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
-                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                let preparedUploadRequests = uploadProvider.getRequests(inStates: [.prepared]).1
+                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                                  .uploadingError, .uploadingFail,
                                                                                  .finishingError]).1.count
                 if isUploading.count < maxNberOfTransfers,
@@ -1024,9 +1031,8 @@ public class UploadManager: NSObject {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.bckgContext
         do {
-            let upload = try taskContext.existingObject(with: uploadID)
+            let upload = try bckgContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
@@ -1039,7 +1045,7 @@ public class UploadManager: NSObject {
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
             // Request not available…!?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploadingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndTransfer(for: uploadID)
             }
@@ -1068,11 +1074,11 @@ public class UploadManager: NSObject {
             if self.isExecutingBackgroundUploadTask { return }
 
             // Stop here if there no image to prepare
-            if uploadsProvider.getRequests(inStates: [.waiting]).0.count == 0 { return }
+            if uploadProvider.getRequests(inStates: [.waiting]).0.count == 0 { return }
 
             // Should we prepare the next image in parallel?
-            let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
-            let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+            let uploadIDsToPrepare = uploadProvider.getRequests(inStates: [.waiting]).1
+            let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                              .uploadingError, .uploadingFail,
                                                                              .finishingError]).1.count
             if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
@@ -1086,16 +1092,16 @@ public class UploadManager: NSObject {
         }
         else {
             // Update state of upload request and start transfer
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
                 // Transfer image
                 self.transferImage(for: uploadID, with: uploadProperties)
 
                 // Stop here if there no image to prepare
-                if uploadsProvider.getRequests(inStates: [.waiting]).1.count == 0 { return }
+                if uploadProvider.getRequests(inStates: [.waiting]).1.count == 0 { return }
 
                 // Should we prepare the next image in parallel?
-                let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
-                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                let uploadIDsToPrepare = uploadProvider.getRequests(inStates: [.waiting]).1
+                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                                  .uploadingError, .uploadingFail,
                                                                                  .finishingError]).1.count
                 if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
@@ -1120,8 +1126,8 @@ public class UploadManager: NSObject {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
-                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                let preparedUploadRequests = uploadProvider.getRequests(inStates: [.prepared]).1
+                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
                                                                                  .uploadingError, .uploadingFail,
                                                                                  .finishingError]).1.count
                 if isUploading.count < maxNberOfTransfers,
@@ -1161,9 +1167,8 @@ public class UploadManager: NSObject {
         
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.shared.bckgContext
         do {
-            let upload = try taskContext.existingObject(with: uploadID)
+            let upload = try bckgContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
@@ -1176,7 +1181,7 @@ public class UploadManager: NSObject {
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
             // Request not available…!?
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+            uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didFinishTransfer()
             }
@@ -1192,7 +1197,7 @@ public class UploadManager: NSObject {
         }
         
         // Update state of upload resquest and finish upload
-        uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
+        uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
             [unowned self] (_) in
             // Work depends on Piwigo server version
             if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
@@ -1259,7 +1264,7 @@ public class UploadManager: NSObject {
 //                var count = 0
 //                categoryImages.forEach { (uploadRequest) in
 //                    // Update upload requests to remember that the moderation was requested
-//                    self.uploadsProvider.updateStatusOfUpload(with: uploadRequest.0,
+//                    self.uploadProvider.updateStatusOfUpload(with: uploadRequest.0,
 //                                                              to: .finished, error: "") { [unowned self] _ in
 //                        // Did we update all requests?
 //                        count += 1
@@ -1280,9 +1285,8 @@ public class UploadManager: NSObject {
         completedRequests.forEach { (uploadID) in
             // Retrieve upload request properties
             var uploadProperties: UploadProperties!
-            let taskContext = DataController.shared.bckgContext
             do {
-                let upload = try taskContext.existingObject(with: uploadID)
+                let upload = try bckgContext.existingObject(with: uploadID)
                 if upload.isFault {
                     // The upload request is not fired yet.
                     upload.willAccessValue(forKey: nil)
@@ -1317,8 +1321,8 @@ public class UploadManager: NSObject {
                 var count = 0
                 categoryImages.forEach { (moderatedUpload) in
                     // Update upload requests to remember that the moderation was requested
-                    self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0,
-                                                              to: .moderated, error: "") { [unowned self] _ in
+                    self.uploadProvider.updateStatusOfUpload(with: moderatedUpload.0,
+                                                             to: .moderated, error: "") { [unowned self] _ in
                         // Did we update all requests?
                         count += 1
                         if count == categoryImages.count {
@@ -1345,7 +1349,7 @@ public class UploadManager: NSObject {
             }, completionHandler: { [unowned self] success, error in
                 if success == true {
                     // Delete upload requests in the main thread
-                    self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
+                    self.uploadProvider.delete(uploadRequests: uploadIDs) { _ in }
                 }
             })
         }
@@ -1353,7 +1357,7 @@ public class UploadManager: NSObject {
     
     public func didDeletePiwigoImage(withID imageId: Int) {
         // Mark this uploaded image as deleted from the Piwigo server
-        uploadsProvider.markAsDeletedPiwigoImage(withID: Int64(imageId))
+        uploadProvider.markAsDeletedPiwigoImage(withID: Int64(imageId))
     }
     
    
@@ -1368,7 +1372,6 @@ public class UploadManager: NSObject {
         print("••> Resume upload operations…")
 
         // Get active upload tasks
-        let taskContext = DataController.shared.bckgContext
         let uploadSession: URLSession = UploadSessions.shared.bckgSession
         uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
@@ -1381,7 +1384,7 @@ public class UploadManager: NSObject {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                    guard let uploadID = self.bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
@@ -1397,7 +1400,7 @@ public class UploadManager: NSObject {
             self.backgroundQueue.async { [unowned self] in
                 // Considers only uploads to the server to which the user is logged in
                 let states: [kPiwigoUploadState] = [.preparingError, .uploadingError, .finishingError]
-                let failedUploads = self.uploadsProvider.getRequests(inStates: states).1
+                let failedUploads = self.uploadProvider.getRequests(inStates: states).1
                 if failedUploads.count > 0 {
                     // Resume failed uploads
                     self.resume(failedUploads: failedUploads) { [unowned self] (_) in
@@ -1406,7 +1409,7 @@ public class UploadManager: NSObject {
                     }
                 } else {
                     // Clean cache from completed uploads whose images do not exist in Photo Library
-                    self.uploadsProvider.clearCompletedUploads()
+                    self.uploadProvider.clearCompletedUploads()
                     // Resume operations
                     self.resumeOperations()
                 }
@@ -1425,8 +1428,8 @@ public class UploadManager: NSObject {
         // Propose to delete uploaded image of the photo Library once a day maximum
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.kPiwigoOneDay {
             // Are there images to delete from the Photo Library?
-            let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
-                                                                    markedForDeletion: true)
+            let (imageIDs, uploadIDs) = uploadProvider.getRequests(inStates: [.finished, .moderated],
+                                                                   markedForDeletion: true)
             if imageIDs.count > 0 {
                 // Store date of last deletion
                 UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
@@ -1441,7 +1444,7 @@ public class UploadManager: NSObject {
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
                                             .uploadingFail]
-        let imagesToUpload = uploadsProvider.getRequests(inStates: states)
+        let imagesToUpload = uploadProvider.getRequests(inStates: states)
         var assetIDsToDelete: [String] = imagesToUpload.0
         var objectIDsToDelete: [NSManagedObjectID] = imagesToUpload.1
         
@@ -1463,7 +1466,7 @@ public class UploadManager: NSObject {
         }
         
         // Delete upload requests of assets that have become unavailable
-        uploadsProvider.delete(uploadRequests: objectIDsToDelete) { [unowned self] _ in
+        uploadProvider.delete(uploadRequests: objectIDsToDelete) { [unowned self] _ in
             self.findNextImageToUpload()
         }
     }
@@ -1473,14 +1476,11 @@ public class UploadManager: NSObject {
         // Initialisation
         var uploadsToUpdate = [UploadProperties]()
         
-        // Create a private queue context.
-        let taskContext = DataController.shared.bckgContext
-
         // Loop over the failed uploads
         for failedUploadID in failedUploads {
             do {
                 // Get upload request
-                let object = try taskContext.existingObject(with: failedUploadID)
+                let object = try bckgContext.existingObject(with: failedUploadID)
                 let failedUpload = object as! Upload
 
                 // Create upload properties cancelling error
@@ -1508,7 +1508,7 @@ public class UploadManager: NSObject {
         }
         
         // Update failed uploads
-        self.uploadsProvider.importUploads(from: uploadsToUpdate) { (error) in
+        self.uploadProvider.importUploads(from: uploadsToUpdate) { (error) in
             // No need to update app badge and Upload button in root/default album
             completionHandler(error)
         }
