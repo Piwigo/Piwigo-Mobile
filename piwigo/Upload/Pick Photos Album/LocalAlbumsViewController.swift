@@ -28,12 +28,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     var userHasUploadRights: Bool = false
 
     // Actions to perform after selection
-    private enum kPiwigoCategorySelectAction : Int {
+    private enum pwgAlbumSelectAction : Int {
         case none
         case presentLocalAlbum
         case setAutoUploadAlbum
     }
-    private var wantedAction: kPiwigoCategorySelectAction = .none
+    private var wantedAction: pwgAlbumSelectAction = .none
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
