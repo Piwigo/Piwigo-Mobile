@@ -30,7 +30,9 @@ public class Upload: NSManagedObject {
         
         // Category to upload the image to
         let newCategory = uploadProperties.category
-        if category != newCategory { category = newCategory }
+        if category != newCategory {
+            category = newCategory
+        }
         
         // Date of upload request defaults to now
         if requestDate != uploadProperties.requestDate {
@@ -39,11 +41,15 @@ public class Upload: NSManagedObject {
         
         // State of upload request defaults to "waiting"
         let newState = Int16(uploadProperties.requestState.rawValue)
-        if requestState != newState { requestState = newState }
+        if requestState != newState {
+            requestState = newState
+        }
         
         // Section key corresponding to the request state
         let newSection = uploadProperties.requestState.sectionKey
-        if requestSectionKey != newSection { requestSectionKey = newSection }
+        if requestSectionKey != newSection {
+            requestSectionKey = newSection
+        }
 
         // Error message description
         if requestError != uploadProperties.requestError {
@@ -74,7 +80,9 @@ public class Upload: NSManagedObject {
         
         // Privacy level is the lowest one if not provided
         let newLevel = Int16(uploadProperties.privacyLevel.rawValue)
-        if privacyLevel != newLevel { privacyLevel = newLevel }
+        if privacyLevel != newLevel {
+            privacyLevel = newLevel
+        }
 
         // Other image properties
         if imageName != uploadProperties.imageTitle {
@@ -84,10 +92,14 @@ public class Upload: NSManagedObject {
             comment = uploadProperties.comment
         }
         let newImageId = Int64(uploadProperties.imageId)
-        if imageId != newImageId { imageId = newImageId }
+        if imageId != newImageId {
+            imageId = newImageId
+        }
         let newTagIds = tags.map { $0.objectID }
         let tagIds = Array(self.tags ?? Set<Tag>()).map {$0.objectID }
-        if tagIds != newTagIds { self.tags = Set(tags)}
+        if tagIds != newTagIds {
+            self.tags = Set(tags)
+        }
         
         // Upload settings
         if stripGPSdataOnUpload != uploadProperties.stripGPSdataOnUpload {
@@ -121,10 +133,10 @@ public class Upload: NSManagedObject {
             markedForAutoUpload = uploadProperties.markedForAutoUpload
         }
         
-        // User account
-        let newId = user?.objectID
-        let id = self.user?.objectID
-        if id != newId { self.user = user }
+        // User account associated to this request
+        if self.user == nil {
+            self.user = user
+        }
     }
     
     /**
