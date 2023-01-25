@@ -1025,7 +1025,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if let author = imageParameters["author"] as? String {
                     updatedRequest.author = author
                 }
-                if let privacy = imageParameters["privacy"] as? kPiwigoPrivacy {
+                if let privacy = imageParameters["privacy"] as? pwgPrivacy {
                     updatedRequest.privacyLevel = privacy
                 }
                 if let tagIds = imageParameters["tagIds"] as? String {

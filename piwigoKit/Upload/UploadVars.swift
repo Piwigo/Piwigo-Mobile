@@ -108,7 +108,7 @@ public class UploadVars: NSObject {
     public static var defaultAuthor: String
     
     /// - Default privacy level
-    @UserDefault("defaultPrivacyLevel", defaultValue: kPiwigoPrivacy.everybody.rawValue, userDefaults: UserDefaults.dataSuite)
+    @UserDefault("defaultPrivacyLevel", defaultValue: pwgPrivacy.everybody.rawValue, userDefaults: UserDefaults.dataSuite)
     public static var defaultPrivacyLevel: Int16
     
     /// - Strip GPS metadata before uploading

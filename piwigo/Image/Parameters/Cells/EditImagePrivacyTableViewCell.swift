@@ -26,7 +26,7 @@ class EditImagePrivacyTableViewCell: UITableViewCell {
         label.textColor = .piwigoColorLeftLabel()
     }
 
-    func setPrivacyLevel(with privacy: kPiwigoPrivacy, inColor color: UIColor?) {
+    func setPrivacyLevel(with privacy: pwgPrivacy, inColor color: UIColor?) {
         list.text = privacy.name
         list.textColor = color
     }

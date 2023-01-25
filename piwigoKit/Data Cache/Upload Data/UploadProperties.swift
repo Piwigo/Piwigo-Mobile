@@ -28,7 +28,7 @@ public struct UploadProperties
     public var isVideo: Bool                       // true/false
     
     public var author: String                      // "Author"
-    public var privacyLevel: kPiwigoPrivacy        // 0
+    public var privacyLevel: pwgPrivacy        // 0
     public var imageTitle: String                  // "Image title"
     public var comment: String                     // "A comment…"
     public var tagIds: String                      // List of tag IDs
@@ -69,7 +69,7 @@ extension UploadProperties {
             author: UploadVars.defaultAuthor,
             
             // Privacy level defaults to level selected in Settings
-            privacyLevel: kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody,
+            privacyLevel: pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody,
             
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: Int64.min,

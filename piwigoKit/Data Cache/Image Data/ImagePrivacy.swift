@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Privacy Levels
-public enum kPiwigoPrivacy : Int16, CaseIterable {
+public enum pwgPrivacy : Int16, CaseIterable {
     case everybody = 0
     case adminsFamilyFriendsContacts = 1
     case adminsFamilyFriends = 2
@@ -19,7 +19,7 @@ public enum kPiwigoPrivacy : Int16, CaseIterable {
     case unknown = -1
 }
 
-extension kPiwigoPrivacy {
+extension pwgPrivacy {
     public var name: String {
         switch self {
         case .everybody:

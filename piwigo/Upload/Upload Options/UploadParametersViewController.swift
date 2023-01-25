@@ -24,7 +24,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     private var shouldUpdateTitle = false
     var commonAuthor = UploadVars.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
+    var commonPrivacyLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
     private var shouldUpdatePrivacyLevel = false
     var commonTags = Set<Tag>()
     private var shouldUpdateTags = false
@@ -352,7 +352,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
 // MARK: - SelectPrivacyDelegate Methods
 extension UploadParametersViewController: SelectPrivacyDelegate {
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Update image parameter
         commonPrivacyLevel = privacyLevel
 

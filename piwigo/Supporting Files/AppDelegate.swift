@@ -877,7 +877,7 @@ import piwigoKit
 //
 //        imageData.imageTitle = notification.userInfo?["imageTitle"] as? String ?? ""
 //        imageData.author = notification.userInfo?["author"] as? String ?? ""
-////        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
+////        imageData.privacyLevel = pwgPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(pwgPrivacy.unknown.rawValue))
 //        imageData.comment = notification.userInfo?["comment"] as? String ?? ""
 //        imageData.visits = notification.userInfo?["visits"] as? Int ?? 0
 //        imageData.ratingScore = notification.userInfo?["ratingScore"] as? Float ?? 0.0

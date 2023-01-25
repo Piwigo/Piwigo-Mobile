@@ -714,8 +714,8 @@ extension UploadManager {
                 uploadProperties.imageTitle = NetworkUtilities.utf8mb4String(from: getInfos.title ?? "")
                 uploadProperties.author     = NetworkUtilities.utf8mb4String(from: getInfos.author ?? "")
                 if let privacyLevelStr = getInfos.privacyLevel {
-                    let privacyLevelRaw = Int16(privacyLevelStr) ?? kPiwigoPrivacy.unknown.rawValue
-                    uploadProperties.privacyLevel = kPiwigoPrivacy(rawValue: privacyLevelRaw) ?? kPiwigoPrivacy.unknown
+                    let privacyLevelRaw = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
+                    uploadProperties.privacyLevel = pwgPrivacy(rawValue: privacyLevelRaw) ?? pwgPrivacy.unknown
                 }
                 uploadProperties.comment    = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
                 if let tags = getInfos.tags {

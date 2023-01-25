@@ -840,7 +840,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
+                let defaultLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6,7 Plus screen width
@@ -1656,7 +1656,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.privacy = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
+                privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 4 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
@@ -2011,9 +2011,9 @@ extension SettingsViewController: SelectCategoryDelegate {
 
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Do nothing if privacy level is unchanged
-        if privacyLevel == kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
+        if privacyLevel == pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
         
         // Save new choice
         UploadVars.defaultPrivacyLevel = privacyLevel.rawValue
@@ -2022,7 +2022,7 @@ extension SettingsViewController: SelectPrivacyDelegate {
         let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
+            cell.detailLabel.text = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
         }
     }
 }

@@ -44,7 +44,7 @@ class EditImageParamsViewController: UIViewController
     private var timeOffset = TimeInterval.zero
 
     private var shouldUpdatePrivacyLevel = false
-    private var commonPrivacyLevel = kPiwigoPrivacy.everybody.rawValue
+    private var commonPrivacyLevel = pwgPrivacy.everybody.rawValue
     
     private var shouldUpdateTags = false
     private var commonTags = Set<Tag>()
@@ -226,7 +226,7 @@ class EditImageParamsViewController: UIViewController
         commonPrivacyLevel = images[0].privacyLevel
         if images.contains(where: { $0.privacyLevel != commonPrivacyLevel}) {
             // Images privacy levels are different, display no level
-            commonPrivacyLevel = kPiwigoPrivacy.unknown.rawValue
+            commonPrivacyLevel = pwgPrivacy.unknown.rawValue
         }
         
         // Common tags?
@@ -313,7 +313,7 @@ class EditImageParamsViewController: UIViewController
 
             // Update image privacy level?
 //            if shouldUpdatePrivacyLevel,
-//                (commonPrivacyLevel != kPiwigoPrivacyObjcUnknown) {
+//                (commonPrivacyLevel != pwgPrivacyObjcUnknown) {
 //                imageData.privacyLevel = commonPrivacyLevel
 //            }
 //
@@ -451,7 +451,7 @@ class EditImageParamsViewController: UIViewController
 
         // Update image privacy level?
         if shouldUpdatePrivacyLevel,
-           commonPrivacyLevel != kPiwigoPrivacy.unknown.rawValue {
+           commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
             paramsDict["level"] = commonPrivacyLevel
         }
 
@@ -494,7 +494,7 @@ class EditImageParamsViewController: UIViewController
 
                 // Update image privacy level?
                 if shouldUpdatePrivacyLevel,
-                   commonPrivacyLevel != kPiwigoPrivacy.unknown.rawValue {
+                   commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
                     imageData.privacyLevel = commonPrivacyLevel
                 }
 
@@ -657,7 +657,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImagePrivacyTableViewCell()
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-            cell.setPrivacyLevel(with: kPiwigoPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
+            cell.setPrivacyLevel(with: pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
                                  inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
@@ -738,7 +738,7 @@ extension EditImageParamsViewController: UITableViewDelegate
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
             guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
             privacyVC.delegate = self
-            privacyVC.privacy = kPiwigoPrivacy(rawValue: commonPrivacyLevel) ?? .everybody
+            privacyVC.privacy = pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody
             navigationController?.pushViewController(privacyVC, animated: true)
             
         case .tags:
@@ -1006,7 +1006,7 @@ extension EditImageParamsViewController: EditImageShiftPickerDelegate
 // MARK: - SelectPrivacyObjcDelegate Methods
 extension EditImageParamsViewController: SelectPrivacyDelegate
 {
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
             // Return updated parameters

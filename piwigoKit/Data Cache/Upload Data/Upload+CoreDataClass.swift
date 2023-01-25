@@ -203,21 +203,21 @@ extension Upload {
         return state.stateInfo
     }
 
-    public var privacy: kPiwigoPrivacy {
+    public var privacy: pwgPrivacy {
         switch self.privacyLevel {
-        case kPiwigoPrivacy.everybody.rawValue:
+        case pwgPrivacy.everybody.rawValue:
             return .everybody
-        case kPiwigoPrivacy.adminsFamilyFriendsContacts.rawValue:
+        case pwgPrivacy.adminsFamilyFriendsContacts.rawValue:
         return .adminsFamilyFriendsContacts
-        case kPiwigoPrivacy.adminsFamilyFriends.rawValue:
+        case pwgPrivacy.adminsFamilyFriends.rawValue:
         return .adminsFamilyFriends
-        case kPiwigoPrivacy.adminsFamily.rawValue:
+        case pwgPrivacy.adminsFamily.rawValue:
         return .adminsFamily
-        case kPiwigoPrivacy.admins.rawValue:
+        case pwgPrivacy.admins.rawValue:
         return .admins
-        case kPiwigoPrivacy.count.rawValue:
+        case pwgPrivacy.count.rawValue:
         return .count
-        case kPiwigoPrivacy.unknown.rawValue:
+        case pwgPrivacy.unknown.rawValue:
         return .unknown
         default:
             return .unknown
