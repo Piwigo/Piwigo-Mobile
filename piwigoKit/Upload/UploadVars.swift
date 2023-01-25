@@ -198,7 +198,7 @@ public class UploadVars: NSObject {
     public static var autoUploadComments: String
     
     /// - When the latest deletion of Photo Library images was accomplished
-    static let kPiwigoOneDay = (TimeInterval)(24 * 60 * 60)     // i.e. 1 day
+    static let pwgOneDay = (TimeInterval)(24 * 60 * 60)     // i.e. 1 day
     @UserDefault("dateOfLastPhotoLibraryDeletion", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate, userDefaults: UserDefaults.dataSuite)
     public static var dateOfLastPhotoLibraryDeletion: TimeInterval
 

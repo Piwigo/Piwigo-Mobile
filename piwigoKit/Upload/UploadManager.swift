@@ -1426,7 +1426,7 @@ public class UploadManager: NSObject {
         }
         
         // Propose to delete uploaded image of the photo Library once a day maximum
-        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.kPiwigoOneDay {
+        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.pwgOneDay {
             // Are there images to delete from the Photo Library?
             let (imageIDs, uploadIDs) = uploadProvider.getRequests(inStates: [.finished, .moderated],
                                                                    markedForDeletion: true)

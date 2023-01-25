@@ -195,7 +195,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 //            print("=> langCode: ", String(describing: langCode))
 //            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
             let now: Double = Date().timeIntervalSinceReferenceDate
-            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.kPiwigoOneMonth
+            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
             if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
                 // Store date of last translation request
                 AppVars.shared.dateOfLastTranslationRequest = now

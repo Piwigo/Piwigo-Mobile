@@ -23,7 +23,7 @@ import piwigoKit
     private let k1WeekInDays: TimeInterval  = 60 * 60 * 24 *  7.0
     private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
     private let k3WeeksInDays: TimeInterval = 60 * 60 * 24 * 21.0
-    private let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
+    private let pwgBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
     var privacyView: UIView?
@@ -296,7 +296,7 @@ import piwigoKit
     @available(iOS 13.0, *)
     private func registerBgTasks() {
         // Register background upload task
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: kPiwigoBackgroundTaskUpload, using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundTaskUpload, using: nil) { task in
              self.handleNextUpload(task: task as! BGProcessingTask)
         }
     }
@@ -305,7 +305,7 @@ import piwigoKit
     func scheduleNextUpload() {
         // Schedule upload not earlier than 1 minute from now
         // Uploading requires network connectivity and external power
-        let request = BGProcessingTaskRequest.init(identifier: kPiwigoBackgroundTaskUpload)
+        let request = BGProcessingTaskRequest.init(identifier: pwgBackgroundTaskUpload)
         request.earliestBeginDate = Date.init(timeIntervalSinceNow: 1 * 60)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = true

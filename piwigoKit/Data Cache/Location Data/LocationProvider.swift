@@ -10,7 +10,7 @@
 import CoreData
 import CoreLocation
 
-let kPiwigoMaxNberOfLocationsToDecode: Int = 10
+let pwgMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
@@ -323,7 +323,7 @@ public class LocationProvider: NSObject {
         }
         
         // Add operation to queue if possible
-        if queue.operationCount < kPiwigoMaxNberOfLocationsToDecode {
+        if queue.operationCount < pwgMaxNberOfLocationsToDecode {
             // Add location to queue
             queuedLocations.append(newLocation)
             
