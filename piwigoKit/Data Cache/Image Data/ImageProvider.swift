@@ -187,6 +187,14 @@ public class ImageProvider: NSObject {
     }
     
     /**
+     Imports uploaded image data into Core Data.
+     */
+    public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inCategoryId albumId: Int32) {
+        // Import the image data into Core Data.
+        try? self.importImages([imageData], inAlbum: albumId)
+    }
+
+    /**
      Retrieves the complete image feed from the remote Piwigo server, and imports it into Core Data.
      */
     public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
