@@ -11,12 +11,12 @@
 import UIKit
 import piwigoKit
 
-let kPiwigoActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
-let kPiwigoActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
-let kPiwigoActivityTypePostToSignal = UIActivity.ActivityType(rawValue: "org.whispersystems.signal.shareextension")
-let kPiwigoActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.toyopagroup.picaboo.share")
-let kPiwigoActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
-let kPiwigoActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
+let pwgActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
+let pwgActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
+let pwgActivityTypePostToSignal = UIActivity.ActivityType(rawValue: "org.whispersystems.signal.shareextension")
+let pwgActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.toyopagroup.picaboo.share")
+let pwgActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
+let pwgActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
 
 class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -306,9 +306,9 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(.postToFacebook)
         }
         if ImageVars.shared.shareMetadataTypeMessenger {
-            activitiesSharing.append(kPiwigoActivityTypeMessenger)
+            activitiesSharing.append(pwgActivityTypeMessenger)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypeMessenger)
+            activitiesNotSharing.append(pwgActivityTypeMessenger)
         }
         if ImageVars.shared.shareMetadataTypePostToFlickr {
             activitiesSharing.append(.postToFlickr)
@@ -316,19 +316,19 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(.postToFlickr)
         }
         if ImageVars.shared.shareMetadataTypePostInstagram {
-            activitiesSharing.append(kPiwigoActivityTypePostInstagram)
+            activitiesSharing.append(pwgActivityTypePostInstagram)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypePostInstagram)
+            activitiesNotSharing.append(pwgActivityTypePostInstagram)
         }
         if ImageVars.shared.shareMetadataTypePostToSignal {
-            activitiesSharing.append(kPiwigoActivityTypePostToSignal)
+            activitiesSharing.append(pwgActivityTypePostToSignal)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypePostToSignal)
+            activitiesNotSharing.append(pwgActivityTypePostToSignal)
         }
         if ImageVars.shared.shareMetadataTypePostToSnapchat {
-            activitiesSharing.append(kPiwigoActivityTypePostToSnapchat)
+            activitiesSharing.append(pwgActivityTypePostToSnapchat)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypePostToSnapchat)
+            activitiesNotSharing.append(pwgActivityTypePostToSnapchat)
         }
         if ImageVars.shared.shareMetadataTypePostToTencentWeibo {
             activitiesSharing.append(.postToTencentWeibo)
@@ -351,9 +351,9 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(.postToWeibo)
         }
         if ImageVars.shared.shareMetadataTypePostToWhatsApp {
-            activitiesSharing.append(kPiwigoActivityTypePostToWhatsApp)
+            activitiesSharing.append(pwgActivityTypePostToWhatsApp)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypePostToWhatsApp)
+            activitiesNotSharing.append(pwgActivityTypePostToWhatsApp)
         }
         if ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
             activitiesSharing.append(.saveToCameraRoll)
@@ -361,9 +361,9 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(.saveToCameraRoll)
         }
         if ImageVars.shared.shareMetadataTypeOther {
-            activitiesSharing.append(kPiwigoActivityTypeOther)
+            activitiesSharing.append(pwgActivityTypeOther)
         } else {
-            activitiesNotSharing.append(kPiwigoActivityTypeOther)
+            activitiesNotSharing.append(pwgActivityTypeOther)
         }
         
         activitiesSharingMetadata = activitiesSharing.sorted()
@@ -385,15 +385,15 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             ImageVars.shared.shareMetadataTypeMessage = newState
         case .postToFacebook:
             ImageVars.shared.shareMetadataTypePostToFacebook = newState
-        case kPiwigoActivityTypeMessenger:
+        case pwgActivityTypeMessenger:
             ImageVars.shared.shareMetadataTypeMessenger = newState
         case .postToFlickr:
             ImageVars.shared.shareMetadataTypePostToFlickr = newState
-        case kPiwigoActivityTypePostInstagram:
+        case pwgActivityTypePostInstagram:
             ImageVars.shared.shareMetadataTypePostInstagram = newState
-        case kPiwigoActivityTypePostToSignal:
+        case pwgActivityTypePostToSignal:
             ImageVars.shared.shareMetadataTypePostToSignal = newState
-        case kPiwigoActivityTypePostToSnapchat:
+        case pwgActivityTypePostToSnapchat:
             ImageVars.shared.shareMetadataTypePostToSnapchat = newState
         case .postToTencentWeibo:
             ImageVars.shared.shareMetadataTypePostToTencentWeibo = newState
@@ -403,11 +403,11 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             ImageVars.shared.shareMetadataTypePostToVimeo = newState
         case .postToWeibo:
             ImageVars.shared.shareMetadataTypePostToWeibo = newState
-        case kPiwigoActivityTypePostToWhatsApp:
+        case pwgActivityTypePostToWhatsApp:
             ImageVars.shared.shareMetadataTypePostToWhatsApp = newState
         case .saveToCameraRoll:
             ImageVars.shared.shareMetadataTypeSaveToCameraRoll = newState
-        case kPiwigoActivityTypeOther:
+        case pwgActivityTypeOther:
             ImageVars.shared.shareMetadataTypeOther = newState
             default:
                 print("Error: Unknown activity \(String(describing: activity))")
@@ -440,19 +440,19 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         case .postToFacebook:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Facebook>375px", comment: "Post images to Facebook")
                                : NSLocalizedString("shareActivityCode_Facebook", comment: "Post to Facebook")
-        case kPiwigoActivityTypeMessenger:
+        case pwgActivityTypeMessenger:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Messenger>375px", comment: "Post images with the Messenger app")
                                : NSLocalizedString("shareActivityCode_Messenger", comment: "Post with Messenger")
         case .postToFlickr:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Flickr>375px", comment: "Post images to Flickr")
                                : NSLocalizedString("shareActivityCode_Flickr", comment: "Post to Flickr")
-        case kPiwigoActivityTypePostInstagram:
+        case pwgActivityTypePostInstagram:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Instagram>375px", comment: "Post images to Instagram")
                                : NSLocalizedString("shareActivityCode_Instagram", comment: "Post to Instagram")
-        case kPiwigoActivityTypePostToSignal:
+        case pwgActivityTypePostToSignal:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Signal>375px", comment: "Post images with the Signal app")
                                : NSLocalizedString("shareActivityCode_Signal", comment: "Post with Signal")
-        case kPiwigoActivityTypePostToSnapchat:
+        case pwgActivityTypePostToSnapchat:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Snapchat>375px", comment: "Post images to Snapchat app")
                                : NSLocalizedString("shareActivityCode_Snapchat", comment: "Post to Snapchat")
         case .postToTencentWeibo:
@@ -467,13 +467,13 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         case .postToWeibo:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Weibo>375px", comment: "Post images to Weibo")
                                : NSLocalizedString("shareActivityCode_Weibo", comment: "Post to Weibo")
-        case kPiwigoActivityTypePostToWhatsApp:
+        case pwgActivityTypePostToWhatsApp:
             name = width > 375 ? NSLocalizedString("shareActivityCode_WhatsApp>375px", comment: "Post images with the WhatsApp app")
                                : NSLocalizedString("shareActivityCode_WhatsApp", comment: "Post with WhatsApp")
         case .saveToCameraRoll:
             name = width > 375 ? NSLocalizedString("shareActivityCode_CameraRoll>375px", comment: "Save images to Camera Roll")
                                : NSLocalizedString("shareActivityCode_CameraRoll", comment: "Save to Camera Roll")
-        case kPiwigoActivityTypeOther:
+        case pwgActivityTypeOther:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Other>375px", comment: "Share images with other apps")
                                : NSLocalizedString("shareActivityCode_Other", comment: "Share with other apps")
             default:

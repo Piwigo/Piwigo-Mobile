@@ -276,13 +276,13 @@ extension UIActivity.ActivityType: Comparable {
                 maxSize = 880 // 4 images max
             case .postToWeibo:
                 maxSize = 640 // 9 images max + 1 video
-            case kPiwigoActivityTypePostToWhatsApp:
+            case pwgActivityTypePostToWhatsApp:
                 maxSize = 1920
-            case kPiwigoActivityTypePostToSignal:
+            case pwgActivityTypePostToSignal:
                 maxSize = 1920
-            case kPiwigoActivityTypeMessenger:
+            case pwgActivityTypeMessenger:
                 maxSize = 1920
-            case kPiwigoActivityTypePostInstagram:
+            case pwgActivityTypePostInstagram:
                 maxSize = 1080
             default:
                 maxSize = Int.max
@@ -320,7 +320,7 @@ extension UIActivity.ActivityType: Comparable {
                 if !ImageVars.shared.shareMetadataTypePostToFacebook {
                     return true
                 }
-            case kPiwigoActivityTypeMessenger:
+            case pwgActivityTypeMessenger:
                 if !ImageVars.shared.shareMetadataTypeMessenger {
                     return true
                 }
@@ -328,15 +328,15 @@ extension UIActivity.ActivityType: Comparable {
                 if !ImageVars.shared.shareMetadataTypePostToFlickr {
                     return true
                 }
-            case kPiwigoActivityTypePostInstagram:
+            case pwgActivityTypePostInstagram:
                 if !ImageVars.shared.shareMetadataTypePostInstagram {
                     return true
                 }
-            case kPiwigoActivityTypePostToSignal:
+            case pwgActivityTypePostToSignal:
                 if !ImageVars.shared.shareMetadataTypePostToSignal {
                     return true
                 }
-            case kPiwigoActivityTypePostToSnapchat:
+            case pwgActivityTypePostToSnapchat:
                 if !ImageVars.shared.shareMetadataTypePostToSnapchat {
                     return true
                 }
@@ -356,7 +356,7 @@ extension UIActivity.ActivityType: Comparable {
                 if !ImageVars.shared.shareMetadataTypePostToWeibo {
                     return true
                 }
-            case kPiwigoActivityTypePostToWhatsApp:
+            case pwgActivityTypePostToWhatsApp:
                 if !ImageVars.shared.shareMetadataTypePostToWhatsApp {
                     return true
                 }
