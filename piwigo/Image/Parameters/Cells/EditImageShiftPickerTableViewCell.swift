@@ -23,13 +23,13 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
     @IBOutlet private weak var addRemoveTimeButton: UISegmentedControl!
     @IBOutlet private weak var shiftPicker: UIPickerView!
     
-    private let kPiwigoPickerNberOfYears = 200 // i.e. ±200 years in picker
-    private let kPiwigoPickerMonthsPerYear = 12
-    private let kPiwigoPickerDaysPerMonth = 32
-    private let kPiwigoPickerHoursPerDay = 24
-    private let kPiwigoPickerMinutesPerHour = 60
-    private let kPiwigoPickerSecondsPerMinute = 60
-    private let kPiwigoPickerNberOfLoops = 2 * 1000 // i.e. ±1000 loops of picker
+    private let pwgPickerNberOfYears = 200 // i.e. ±200 years in picker
+    private let pwgPickerMonthsPerYear = 12
+    private let pwgPickerDaysPerMonth = 32
+    private let pwgPickerHoursPerDay = 24
+    private let pwgPickerMinutesPerHour = 60
+    private let pwgPickerSecondsPerMinute = 60
+    private let pwgPickerNberOfLoops = 2 * 1000 // i.e. ±1000 loops of picker
 
     enum PickerComponents : Int {
         case year
@@ -76,15 +76,15 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
 
         // Start with zero date interval
         shiftPicker.selectRow(0, inComponent: PickerComponents.year.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMonthsPerYear / 2,
+        shiftPicker.selectRow(pwgPickerNberOfLoops * pwgPickerMonthsPerYear / 2,
                               inComponent: PickerComponents.month.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerDaysPerMonth / 2,
+        shiftPicker.selectRow(pwgPickerNberOfLoops * pwgPickerDaysPerMonth / 2,
                               inComponent: PickerComponents.day.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay / 2,
+        shiftPicker.selectRow(pwgPickerNberOfLoops * pwgPickerHoursPerDay / 2,
                               inComponent: PickerComponents.hour.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2,
+        shiftPicker.selectRow(pwgPickerNberOfLoops * pwgPickerMinutesPerHour / 2,
                               inComponent: PickerComponents.minute.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2,
+        shiftPicker.selectRow(pwgPickerNberOfLoops * pwgPickerSecondsPerMinute / 2,
                               inComponent: PickerComponents.second.rawValue, animated: false)
 
         // Consider removing time
@@ -96,16 +96,16 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
         let operationSign = addRemoveTimeButton.selectedSegmentIndex == 0 ? -1 : 1
 
         // Add seconds
-        let days = shiftPicker.selectedRow(inComponent: PickerComponents.day.rawValue) % kPiwigoPickerDaysPerMonth
-        let hours = shiftPicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % kPiwigoPickerHoursPerDay
-        let minutes = shiftPicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % kPiwigoPickerMinutesPerHour
-        let seconds = shiftPicker.selectedRow(inComponent: PickerComponents.second.rawValue) % kPiwigoPickerSecondsPerMinute
+        let days = shiftPicker.selectedRow(inComponent: PickerComponents.day.rawValue) % pwgPickerDaysPerMonth
+        let hours = shiftPicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % pwgPickerHoursPerDay
+        let minutes = shiftPicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % pwgPickerMinutesPerHour
+        let seconds = shiftPicker.selectedRow(inComponent: PickerComponents.second.rawValue) % pwgPickerSecondsPerMinute
         let daysInSeconds = pickerRefDate.addingTimeInterval(TimeInterval(operationSign * (((days * 24 + hours) * 60 + minutes) * 60 + seconds)))
 
         // Add months
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
-        comp.month = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.month.rawValue) % kPiwigoPickerMonthsPerYear
+        comp.month = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.month.rawValue) % pwgPickerMonthsPerYear
         comp.year = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.year.rawValue)
         let newDate = gregorian.date(byAdding: comp, to: daysInSeconds, wrappingComponents: false)
 
@@ -135,27 +135,27 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDataSource
         var nberOfRows = 0
         switch PickerComponents(rawValue: component) {
         case .year:
-            nberOfRows = kPiwigoPickerNberOfYears
+            nberOfRows = pwgPickerNberOfYears
         case .sepYM:
             nberOfRows = 1
         case .month:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerMonthsPerYear
+            nberOfRows = pwgPickerNberOfLoops * pwgPickerMonthsPerYear
         case .sepMD:
             nberOfRows = 1
         case .day:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay
+            nberOfRows = pwgPickerNberOfLoops * pwgPickerHoursPerDay
         case .sepDH:
             nberOfRows = 1
         case .hour:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay
+            nberOfRows = pwgPickerNberOfLoops * pwgPickerHoursPerDay
         case .sepHM:
             nberOfRows = 1
         case .minute:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour
+            nberOfRows = pwgPickerNberOfLoops * pwgPickerMinutesPerHour
         case .sepMS:
             nberOfRows = 1
         case .second:
-            nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute
+            nberOfRows = pwgPickerNberOfLoops * pwgPickerSecondsPerMinute
         default:
             break
         }
@@ -210,31 +210,31 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
             label?.text = "-"
             label?.textAlignment = .center
         case .month:
-            label?.text = String(format: "%02ld", row % kPiwigoPickerMonthsPerYear)
+            label?.text = String(format: "%02ld", row % pwgPickerMonthsPerYear)
             label?.textAlignment = .center
         case .sepMD:
             label?.text = "-"
             label?.textAlignment = .center
         case .day:
-            label?.text = String(format: "%02ld", row % kPiwigoPickerDaysPerMonth)
+            label?.text = String(format: "%02ld", row % pwgPickerDaysPerMonth)
             label?.textAlignment = .center
         case .sepDH:
             label?.text = "|"
             label?.textAlignment = .center
         case .hour:
-            label?.text = String(format: "%02ld", row % kPiwigoPickerHoursPerDay)
+            label?.text = String(format: "%02ld", row % pwgPickerHoursPerDay)
             label?.textAlignment = .center
         case .sepHM:
             label?.text = ":"
             label?.textAlignment = .center
         case .minute:
-            label?.text = String(format: "%02ld", row % kPiwigoPickerMinutesPerHour)
+            label?.text = String(format: "%02ld", row % pwgPickerMinutesPerHour)
             label?.textAlignment = .center
         case .sepMS:
             label?.text = ":"
             label?.textAlignment = .center
         case .second:
-            label?.text = String(format: "%02ld", row % kPiwigoPickerSecondsPerMinute)
+            label?.text = String(format: "%02ld", row % pwgPickerSecondsPerMinute)
             label?.textAlignment = .center
         default:
             break
@@ -248,15 +248,15 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
         var newRow = row
         switch PickerComponents(rawValue: component) {
         case .month:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerMonthsPerYear / 2 + row % kPiwigoPickerMonthsPerYear
+            newRow = pwgPickerNberOfLoops * pwgPickerMonthsPerYear / 2 + row % pwgPickerMonthsPerYear
         case .day:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerDaysPerMonth / 2 + row % kPiwigoPickerDaysPerMonth
+            newRow = pwgPickerNberOfLoops * pwgPickerDaysPerMonth / 2 + row % pwgPickerDaysPerMonth
         case .hour:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay / 2 + row % kPiwigoPickerHoursPerDay
+            newRow = pwgPickerNberOfLoops * pwgPickerHoursPerDay / 2 + row % pwgPickerHoursPerDay
         case .minute:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2 + row % kPiwigoPickerMinutesPerHour
+            newRow = pwgPickerNberOfLoops * pwgPickerMinutesPerHour / 2 + row % pwgPickerMinutesPerHour
         case .second:
-            newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2 + row % kPiwigoPickerSecondsPerMinute
+            newRow = pwgPickerNberOfLoops * pwgPickerSecondsPerMinute / 2 + row % pwgPickerSecondsPerMinute
         default:
             break
         }
