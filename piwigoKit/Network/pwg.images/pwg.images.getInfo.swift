@@ -44,25 +44,7 @@ public struct ImagesGetInfoJSON: Decodable {
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Adopt default values when data are not provided
-            if data.title == nil { data.title = "" }
-            if data.comment == nil { data.comment = "" }
-            if data.visits == nil { data.visits = 0 }
-            if data.fileName == nil { data.fileName = "" }
-            if data.datePosted == nil {
-                // Adopts now
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-                data.datePosted = dateFormatter.string(from: Date())
-            }
-            if data.dateCreated == nil {
-                // Adopts the posted date when the creation date is unknown.
-                data.dateCreated = data.datePosted
-            }
-            if data.privacyLevel == nil { data.privacyLevel = "0" }
-            if data.tags == nil { data.tags = [TagProperties]() }
-            if data.ratingScore == nil { data.ratingScore = "0.0" }
-            if data.fileSize == nil { data.fileSize = Int64.zero }
-            if data.md5checksum == nil { data.md5checksum = "" }
+            data.fixingUnknowns()
         }
         else if status == "fail"
         {
@@ -136,6 +118,51 @@ public struct ImagesGetInfo: Decodable
     }
 }
 
+extension ImagesGetInfo {
+    public init(id: Int64, title: String, fileName: String,
+                datePosted: Date, dateCreated: Date,
+                author: String, privacyLevel: String,
+                squareImage: Derivative, thumbImage: Derivative) {
+        // Date posted is now (called after uploading in the foreground
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+        let posted = dateFormatter.string(from: datePosted)
+        let created = dateFormatter.string(from: dateCreated)
+        let derivatives = Derivatives(squareImage: squareImage, thumbImage: thumbImage)
+        
+        self.init(id: id, title: title, comment: "", visits: 0,
+                  fileName: fileName, datePosted: posted, dateCreated: created,
+                  fullResWidth: 0, fullResHeight: 0, fullResPath: "",
+                  author: author, privacyLevel: privacyLevel,
+                  tags: nil, ratingScore: nil,
+                  fileSize: nil, md5checksum: nil,
+                  categories: nil, derivatives: derivatives)
+        self.fixingUnknowns()
+    }
+    
+    mutating func fixingUnknowns() {
+        if self.title == nil { self.title = "" }
+        if self.comment == nil { self.comment = "" }
+        if self.visits == nil { self.visits = 0 }
+        if self.fileName == nil { self.fileName = "" }
+        if self.datePosted == nil {
+            // Adopts now
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+            self.datePosted = dateFormatter.string(from: Date())
+        }
+        if self.dateCreated == nil {
+            // Adopts the posted date when the creation date is unknown.
+            self.dateCreated = self.datePosted
+        }
+        if self.privacyLevel == nil { self.privacyLevel = "0" }
+        if self.tags == nil { self.tags = [TagProperties]() }
+        if self.ratingScore == nil { self.ratingScore = "0.0" }
+        if self.fileSize == nil { self.fileSize = Int64.zero }
+        if self.md5checksum == nil { self.md5checksum = "" }
+    }
+}
+
 
 // MARK: - Derivatives
 public struct Derivatives: Decodable {
@@ -166,8 +193,22 @@ public struct Derivatives: Decodable {
     }
 }
 
+extension Derivatives {
+    public init(squareImage: Derivative, thumbImage: Derivative) {
+        self.init(squareImage: squareImage, thumbImage: thumbImage, mediumImage: Derivative(),
+                  smallImage: Derivative(), xSmallImage: Derivative(), xxSmallImage: Derivative(),
+                  largeImage: Derivative(), xLargeImage: Derivative(), xxLargeImage: Derivative())
+    }
+}
+
 public struct Derivative: Decodable {
     public let url: String?
     public let width: StringOrInt?
     public let height: StringOrInt?
+}
+
+extension Derivative {
+    public init() {
+        self.init(url: nil, width: nil, height: nil)
+    }
 }
