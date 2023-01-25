@@ -16,16 +16,6 @@ let pwgPadSubViewWidth = CGFloat(375.0)
 ///- Preferred Settings view width on iPad
 let pwgPadSettingsWidth = CGFloat(512.0)
 
-/// - Memory cache size
-let kPiwigoMemoryCacheInc = 8            // Slider increment
-let kPiwigoMemoryCacheMin = 0            // Minimum size
-let kPiwigoMemoryCacheMax = 256          // Maximum size
-
-/// - Disk cache size
-let kPiwigoDiskCacheInc   = 64;          // Slider increment
-let kPiwigoDiskCacheMin   = 128;         // Minimum size
-let kPiwigoDiskCacheMax   = 2048;        // Maximum size
-
 
 class AppVars: NSObject {
     
