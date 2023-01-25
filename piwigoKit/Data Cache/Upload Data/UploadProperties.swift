@@ -18,7 +18,7 @@ public struct UploadProperties
     public let serverPath: String                  // URL path of Piwigo server
     public var serverFileTypes: String             // File formats accepted by the server
     public let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
-    public var requestState: kPiwigoUploadState    // See enum above
+    public var requestState: pwgUploadState        // See enum above
     public var requestError: String
 
     public var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
@@ -28,7 +28,7 @@ public struct UploadProperties
     public var isVideo: Bool                       // true/false
     
     public var author: String                      // "Author"
-    public var privacyLevel: pwgPrivacy        // 0
+    public var privacyLevel: pwgPrivacy            // 0
     public var imageTitle: String                  // "Image title"
     public var comment: String                     // "A comment…"
     public var tagIds: String                      // List of tag IDs

@@ -309,7 +309,7 @@ extension UploadSessions: URLSessionTaskDelegate {
         
         // Update UI
         let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                          "stateLabel" : pwgUploadState.uploading.stateInfo,
                                           "progressFraction" : progressFraction]
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)

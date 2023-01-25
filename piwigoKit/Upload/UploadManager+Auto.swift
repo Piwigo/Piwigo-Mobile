@@ -85,11 +85,11 @@ extension UploadManager {
         }
 
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                            .finishing, .finishingError, .finished,
-                                            .moderated, .deleted]
+        let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                        .preparingFail, .formatError, .prepared,
+                                        .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                        .finishing, .finishingError, .finished,
+                                        .moderated, .deleted]
         let imageIDs = uploadProvider.getRequests(inStates: states).0
 
         // Determine which local images are still not considered for upload
@@ -135,10 +135,10 @@ extension UploadManager {
         }
 
         // Collect objectIDs of images being considered for auto-uploading
-        let states: [kPiwigoUploadState] = [.waiting, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploadingError, .uploadingFail, .uploaded,
-                                            .finishingError]
+        let states: [pwgUploadState] = [.waiting, .preparingError,
+                                        .preparingFail, .formatError, .prepared,
+                                        .uploadingError, .uploadingFail, .uploaded,
+                                        .finishingError]
         let objectIDs = uploadProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue

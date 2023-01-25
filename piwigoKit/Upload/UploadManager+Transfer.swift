@@ -705,7 +705,7 @@ extension UploadManager {
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
                     updateCell(with: identifier,
-                               stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                               stateLabel: pwgUploadState.uploading.stateInfo,
                                photoMaxSize: nil, progress: Float(1), errorMsg: nil)
                 }
 
@@ -799,10 +799,10 @@ extension UploadManager {
         uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { [unowned self] (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                .finishing, .finishingError]
+            let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                            .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
             self.nberOfUploadsToComplete = self.uploadProvider.getRequests(inStates: states).0.count
 

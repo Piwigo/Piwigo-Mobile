@@ -239,7 +239,7 @@ public class UploadProvider: NSObject {
     }
 
     public func updateStatusOfUpload(with ID: NSManagedObjectID,
-                                     to status: kPiwigoUploadState, error: String?,
+                                     to status: pwgUploadState, error: String?,
                                      completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
         print("••> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
@@ -325,7 +325,7 @@ public class UploadProvider: NSObject {
             if let cachedUpload = controller.fetchedObjects?.first
             {
                 // Mark image as deleted
-                cachedUpload.requestState = kPiwigoUploadState.deleted.rawValue
+                cachedUpload.requestState = pwgUploadState.deleted.rawValue
                 
                 // Save all insertions and deletions from the context to the store.
                 if bckgContext.hasChanges {
@@ -447,7 +447,7 @@ public class UploadProvider: NSObject {
     /**
      Fetches upload requests synchronously in the background
      */
-    public func getRequests(inStates states: [kPiwigoUploadState],
+    public func getRequests(inStates states: [pwgUploadState],
                             markedForDeletion: Bool = false,
                             markedForAutoUpload: Bool = false) -> ([String], [NSManagedObjectID]) {
         // Check that states is not empty
@@ -614,7 +614,7 @@ public class UploadProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.deleted.rawValue))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -664,9 +664,9 @@ public class UploadProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue))
-        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue))
-        andPredicates.append(NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.finished.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.moderated.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.deleted.rawValue))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)

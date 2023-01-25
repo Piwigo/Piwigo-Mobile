@@ -79,10 +79,10 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             self.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
                 // Update app badge and Upload button in root/default album
                 // Considers only uploads to the server to which the user is logged in
-                let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                    .preparingFail, .formatError, .prepared,
-                                                    .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                    .finishing, .finishingError]
+                let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
+                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                                .finishing, .finishingError]
                 UploadManager.shared.nberOfUploadsToComplete = self.uploadProvider.getRequests(inStates: states).0.count
 
                 // Show an alert if there was an error.

@@ -108,10 +108,10 @@ extension UploadManager {
 
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                .finishing, .finishingError]
+            let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                            .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
             UploadManager.shared.nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
 

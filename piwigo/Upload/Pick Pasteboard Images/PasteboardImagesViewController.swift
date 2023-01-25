@@ -37,8 +37,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     // Cached data
     private let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
-    private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
-    private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    private var uploadsInQueue = [(String?,pwgUploadState?)?]()         // Array of uploads in queue at start
+    private var indexedUploadsInQueue = [(String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     
     // Selection data
     private var selectedImages = [UploadProperties?]()                      // Array of images to upload
@@ -223,8 +223,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Prevent device from sleeping if uploads are in progress
-        let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
-                                                    .uploading, .uploaded, .finishing]
+        let uploading: Array<pwgUploadState> = [.waiting, .preparing, .prepared,
+                                                .uploading, .uploaded, .finishing]
         let uploadsToPerform:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
@@ -489,8 +489,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     private func getUploadStateOfImage(at index: Int,
-                                       for cell: LocalImageCollectionViewCell) -> kPiwigoUploadState? {
-        var state: kPiwigoUploadState? = nil
+                                       for cell: LocalImageCollectionViewCell) -> pwgUploadState? {
+        var state: pwgUploadState? = nil
         if pendingOperations.preparationsInProgress.isEmpty,
            index < indexedUploadsInQueue.count {
             // Indexed uploads available
@@ -1110,9 +1110,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    uploadsInQueue[index] = (upload.localIdentifier, pwgUploadState(rawValue: upload.requestState))
                 } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)))
+                    uploadsInQueue.append((upload.localIdentifier, pwgUploadState(rawValue: upload.requestState)))
                 }
                 
                 // Get index of selected image, deselect it and add request to cache
@@ -1120,7 +1120,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
                     // Add upload request to cache
-                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, pwgUploadState(rawValue: upload.requestState))
                 }
                 
                 // Update corresponding cell
@@ -1150,11 +1150,11 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
                 if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, pwgUploadState(rawValue: upload.requestState))
                 }
                 // Update upload in indexed upload queue
                 if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, pwgUploadState(rawValue: upload.requestState))
                 }
                 // Update corresponding cell
                 updateCell(for: upload)

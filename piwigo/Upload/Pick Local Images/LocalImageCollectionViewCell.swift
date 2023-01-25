@@ -152,7 +152,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func update(selected: Bool, state: kPiwigoUploadState? = nil) {
+    func update(selected: Bool, state: pwgUploadState? = nil) {
         // Selection mode
         selectedImage?.isHidden = !selected
         darkenView?.isHidden = !selected

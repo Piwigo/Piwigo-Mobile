@@ -150,7 +150,7 @@ extension UploadManager {
     private func didFinishTransfer(for uploadID: NSManagedObjectID, error: Error?) {
 
         // Initialisation
-        var newState: kPiwigoUploadState = .finished
+        var newState: pwgUploadState = .finished
         var errorMsg = ""
         
         // Error?

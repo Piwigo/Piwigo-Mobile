@@ -142,7 +142,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the status of an Upload instance.
      */
-    func updateStatus(with state: kPiwigoUploadState?, error: String?) throws {
+    func updateStatus(with state: pwgUploadState?, error: String?) throws {
         // Update the upload request only if a new state has a value.
         guard let newStatus = state else {
             throw UploadError.missingData
@@ -160,43 +160,8 @@ public class Upload: NSManagedObject {
 }
 
 extension Upload {
-    public var state: kPiwigoUploadState {
-        switch self.requestState {
-        case kPiwigoUploadState.waiting.rawValue:
-            return .waiting
-            
-        case kPiwigoUploadState.preparing.rawValue:
-            return .preparing
-        case kPiwigoUploadState.preparingError.rawValue:
-            return .preparingError
-        case kPiwigoUploadState.preparingFail.rawValue:
-            return .preparingFail
-        case kPiwigoUploadState.formatError.rawValue:
-            return .formatError
-        case kPiwigoUploadState.prepared.rawValue:
-            return .prepared
-
-        case kPiwigoUploadState.uploading.rawValue:
-            return .uploading
-        case kPiwigoUploadState.uploadingError.rawValue:
-            return .uploadingError
-        case kPiwigoUploadState.uploadingFail.rawValue:
-            return .uploadingFail
-        case kPiwigoUploadState.uploaded.rawValue:
-            return .uploaded
-
-        case kPiwigoUploadState.finishing.rawValue:
-            return .finishing
-        case kPiwigoUploadState.finishingError.rawValue:
-            return .finishingError
-        case kPiwigoUploadState.finished.rawValue:
-            return .finished
-        case kPiwigoUploadState.moderated.rawValue:
-            return .moderated
-
-        default:
-            return .waiting
-        }
+    public var state: pwgUploadState {
+        return pwgUploadState(rawValue: self.requestState) ?? .waiting
     }
 
     public var stateLabel: String {
@@ -204,24 +169,7 @@ extension Upload {
     }
 
     public var privacy: pwgPrivacy {
-        switch self.privacyLevel {
-        case pwgPrivacy.everybody.rawValue:
-            return .everybody
-        case pwgPrivacy.adminsFamilyFriendsContacts.rawValue:
-        return .adminsFamilyFriendsContacts
-        case pwgPrivacy.adminsFamilyFriends.rawValue:
-        return .adminsFamilyFriends
-        case pwgPrivacy.adminsFamily.rawValue:
-        return .adminsFamily
-        case pwgPrivacy.admins.rawValue:
-        return .admins
-        case pwgPrivacy.count.rawValue:
-        return .count
-        case pwgPrivacy.unknown.rawValue:
-        return .unknown
-        default:
-            return .unknown
-        }
+        return pwgPrivacy(rawValue: self.privacyLevel) ?? .unknown
     }
 
     public func getProperties() -> UploadProperties {
@@ -252,7 +200,7 @@ extension Upload {
             markedForAutoUpload: self.markedForAutoUpload)
     }
 
-    public func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
+    public func getProperties(with state: pwgUploadState, error: String) -> UploadProperties {
         let tags = self.tags?.compactMap({$0}) ?? []
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         return UploadProperties(localIdentifier: self.localIdentifier,
@@ -319,7 +267,7 @@ extension SectionKeys {
 
 
 // MARK: - Upload States
-public enum kPiwigoUploadState : Int16 {
+public enum pwgUploadState : Int16 {
     case waiting
     
     case preparing
@@ -342,7 +290,7 @@ public enum kPiwigoUploadState : Int16 {
     case finishingFail
 }
 
-extension kPiwigoUploadState {
+extension pwgUploadState {
     public var stateInfo: String {
         switch self {
         case .waiting:

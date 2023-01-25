@@ -170,10 +170,10 @@ public class UploadManager: NSObject {
         autoreleasepool {
             // Update app badge and Upload button in root/default album
             // Considers only uploads to the server to which the user is logged in
-            var states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                .finishing, .finishingError]
+            var states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                            .finishing, .finishingError]
             nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
     //        return // for debugging background tasks
 
@@ -517,7 +517,7 @@ public class UploadManager: NSObject {
         // Update UI
         if !isExecutingBackgroundUploadTask {
             updateCell(with: uploadProperties.localIdentifier,
-                       stateLabel: kPiwigoUploadState.preparing.stateInfo,
+                       stateLabel: pwgUploadState.preparing.stateInfo,
                        photoMaxSize: Int16(uploadProperties.photoMaxSize),
                        progress: nil, errorMsg: "")
         }
@@ -565,7 +565,7 @@ public class UploadManager: NSObject {
 
                 // Update UI
                 updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                           photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.preparingFail.stateInfo)
+                           photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
  
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -619,7 +619,7 @@ public class UploadManager: NSObject {
 
                 // Update UI
                 updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                           photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.preparingFail.stateInfo)
+                           photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
  
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -688,7 +688,7 @@ public class UploadManager: NSObject {
 
             // Update UI
             updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
             uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -750,7 +750,7 @@ public class UploadManager: NSObject {
 
             // Update UI
             updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
             uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -764,7 +764,7 @@ public class UploadManager: NSObject {
 
             // Update UI
             updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
             uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -914,7 +914,7 @@ public class UploadManager: NSObject {
 
             // Update UI
             updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
             uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -959,7 +959,7 @@ public class UploadManager: NSObject {
 
             // Update UI
             updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
             uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -1059,7 +1059,7 @@ public class UploadManager: NSObject {
         if !isExecutingBackgroundUploadTask {
             // Initialise the progress bar
             updateCell(with: uploadProperties.localIdentifier,
-                       stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                       stateLabel: pwgUploadState.uploading.stateInfo,
                        photoMaxSize: nil, progress: Float(0), errorMsg: nil)
         }
 
@@ -1191,7 +1191,7 @@ public class UploadManager: NSObject {
         // Update UI
         if !isExecutingBackgroundUploadTask {
             updateCell(with: uploadProperties.localIdentifier,
-                       stateLabel: kPiwigoUploadState.finishing.stateInfo,
+                       stateLabel: pwgUploadState.finishing.stateInfo,
                        photoMaxSize: Int16(uploadProperties.photoMaxSize),
                        progress: nil, errorMsg: "")
         }
@@ -1399,7 +1399,7 @@ public class UploadManager: NSObject {
             // Resume failed uploads and pursue the work
             self.backgroundQueue.async { [unowned self] in
                 // Considers only uploads to the server to which the user is logged in
-                let states: [kPiwigoUploadState] = [.preparingError, .uploadingError, .finishingError]
+                let states: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
                 let failedUploads = self.uploadProvider.getRequests(inStates: states).1
                 if failedUploads.count > 0 {
                     // Resume failed uploads
@@ -1441,9 +1441,9 @@ public class UploadManager: NSObject {
         }
 
         // Remove upload requests of assets that have become unavailable
-        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploadingFail]
+        let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                        .preparingFail, .formatError, .prepared,
+                                        .uploadingFail]
         let imagesToUpload = uploadProvider.getRequests(inStates: states)
         var assetIDsToDelete: [String] = imagesToUpload.0
         var objectIDsToDelete: [NSManagedObjectID] = imagesToUpload.1

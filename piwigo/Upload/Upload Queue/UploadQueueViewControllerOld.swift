@@ -165,10 +165,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
-        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossible: Array<pwgUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
         let impossibleUploads:Int = uploadProvider.fetchedNonCompletedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
+        let resumable: Array<pwgUploadState> = [.preparingError, .uploadingError, .finishingError]
         let failedUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
 
@@ -187,7 +187,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
-        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
+        let resumable: Array<pwgUploadState> = [.preparingError, .uploadingError, .finishingError]
         let failedUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
             if failedUploads > 0 {
@@ -227,7 +227,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 		}
 
         // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
-        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossible: Array<pwgUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
         let impossibleUploads:Int = uploadProvider.fetchedResultsController
             .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
     	if impossibleUploads > 0 {
@@ -300,8 +300,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             else {
                 // Prevent device from sleeping if uploads are in progress
                 self.queueTableView.tableHeaderView = nil
-                let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
-                                                            .uploading, .uploaded, .finishing]
+                let uploading: Array<pwgUploadState> = [.waiting, .preparing, .prepared,
+                                                        .uploading, .uploaded, .finishing]
                 let uploadsToPerform:Int = self.uploadProvider.fetchedResultsController
                     .fetchedObjects?.map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
                 if uploadsToPerform > 0 {
