@@ -241,12 +241,11 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-//                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-//                    let isFavorite = CategoriesData.sharedInstance()
-//                        .category(withId: kPiwigoFavoritesCategoryId,
-//                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-//                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-//                }
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                    let isFavorite = (imageData?.albums ?? Set<Album>())
+                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+                }
             }
             return
         }
@@ -266,12 +265,11 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
-//                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-//                    let isFavorite = CategoriesData.sharedInstance()
-//                        .category(withId: kPiwigoFavoritesCategoryId,
-//                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-//                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-//                }
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                    let isFavorite = (imageData?.albums ?? Set<Album>())
+                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+                }
             }
             return
         }
