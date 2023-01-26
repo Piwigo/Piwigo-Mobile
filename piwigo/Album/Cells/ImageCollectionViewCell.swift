@@ -122,19 +122,22 @@ class ImageCollectionViewCell: UICollectionViewCell {
             nameLabel?.isHidden = false
             if categoryId == pwgSmartAlbum.visits.rawValue {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
-            } else if categoryId == pwgSmartAlbum.best.rawValue {
+            }
+            else if categoryId == pwgSmartAlbum.best.rawValue {
 //            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
                 if imageData.title.string.isEmpty == false {
-                    nameLabel?.attributedText = imageData.title
+                    nameLabel?.attributedText = attributedTitle(imageData.title)
                 } else {
                     nameLabel?.text = imageData.fileName
                 }
-            } else if categoryId == pwgSmartAlbum.recent.rawValue {
+            }
+            else if categoryId == pwgSmartAlbum.recent.rawValue {
                 nameLabel?.text = DateFormatter.localizedString(from: imageData.dateCreated,
                                                                 dateStyle: .medium, timeStyle: .none)
-            } else {
+            }
+            else {
                 if imageData.title.string.isEmpty == false {
-                    nameLabel?.attributedText = imageData.title
+                    nameLabel?.attributedText = attributedTitle(imageData.title)
                 } else {
                     nameLabel?.text = imageData.fileName
                 }
@@ -172,6 +175,15 @@ class ImageCollectionViewCell: UICollectionViewCell {
             }
         }
         download?.getImage()
+    }
+    
+    private func attributedTitle(_ title: NSAttributedString) -> NSAttributedString {
+        let wholeRange = NSRange(location: 0, length: title.string.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributedStr = NSMutableAttributedString(attributedString: title)
+        attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+        return attributedStr
     }
 
     func configImage(_ image: UIImage) {
