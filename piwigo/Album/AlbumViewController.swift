@@ -1144,9 +1144,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 cell.isSelection = selectedImageIds.contains(image.pwgID)
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-//                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-//                    cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
-//                }
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                    cell.isFavorite = (image.albums ?? Set<Album>())
+                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                }
 
                 // Add pan gesture recognition
                 let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
