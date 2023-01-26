@@ -230,9 +230,9 @@ extension AlbumViewController
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)})
-                    .map({$0.albums ?? Set<Album>()})
-                    .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) ==  false}) == nil
+                let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
+                let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
+                let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
                 favoriteBarButton?.setFavoriteImage(for: areFavorites)
                 favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
@@ -250,11 +250,12 @@ extension AlbumViewController
             /// — non-guest users can set favorites in addition
             shareBarButton?.isEnabled = hasImagesSelected
             if NetworkVars.userStatus != .guest,
+               // pwg.users.favorites… methods available from Piwigo version 2.10
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)})
-                    .map({$0.albums ?? Set<Album>()})
-                    .first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) ==  false}) == nil
+                let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
+                let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
+                let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
                 favoriteBarButton?.setFavoriteImage(for: areFavorites)
                 favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
