@@ -42,7 +42,7 @@ extension ImageViewController
         // Add actions
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-        if categoryId > 0, let albums = imageData?.albums, albums.count > 1 {
+        if categoryId > 0, let albums = imageData?.albums?.filter({$0.pwgID > 0}), albums.count > 1 {
             // This image is used in another album
             // Proposes to remove it from the current album, unless it was selected from a smart album
             alert.addAction(removeAction)

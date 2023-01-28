@@ -23,7 +23,7 @@ extension AlbumViewController
         for selectedImageId in selectedImageIds {
             guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
                 else { continue }
-            if (selectedImage.albums ?? Set<Album>()).map({$0.pwgID}).count == 1 {
+            if (selectedImage.albums ?? Set<Album>()).filter({$0.pwgID > 0}).count == 1 {
                 toDelete.insert(selectedImage)
             } else {
                 toRemove.insert(selectedImage)
