@@ -35,12 +35,22 @@ class AlbumTableViewCell: MGSwipeTableCell {
 
         // Album name
         albumName.text = albumData?.name ?? "—?—"
-        albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
+        let fontSize = fontSizeFor(label: albumName, nberLines: 2)
+        albumName.font = UIFont.systemFont(ofSize: fontSize)
 
         // Album description
         if let description = albumData?.comment, description.string.isEmpty == false {
-            albumComment.attributedText = description
-            albumComment.textColor = UIColor.piwigoColorText()
+            let desc = NSMutableAttributedString(attributedString: description)
+            let wholeRange = NSRange(location: 0, length: desc.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+            albumComment.attributedText = desc
         }
         else {  // No description
             if NetworkVars.hasAdminRights {
@@ -135,6 +145,42 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
         download?.getImage()
     }
+    
+    private func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
+        // Check label is not nil
+        guard let label = label else { return 17.0 }
+        let font = UIFont.systemFont(ofSize: 17)
+        
+        // Check that we can adjust the font
+        if (label.adjustsFontSizeToFitWidth == false) ||
+            (label.minimumScaleFactor >= 1.0) {
+            // Font adjustment is disabled
+            return font.pointSize
+        }
+
+        // Should we scale the font?
+        var unadjustedWidth: CGFloat = 1.0
+        if let text = label.text {
+            unadjustedWidth = text.size(withAttributes: [NSAttributedString.Key.font: font]).width
+        }
+        let width: CGFloat = label.frame.size.width
+        let height: CGFloat = unadjustedWidth / CGFloat(nberLines)
+        var scaleFactor: CGFloat = width / height
+        if scaleFactor >= 1.0 {
+            // The text already fits at full font size
+            return font.pointSize
+        }
+
+        // Respect minimumScaleFactor
+        scaleFactor = fmax(scaleFactor, label.minimumScaleFactor)
+        let newFontSize: CGFloat = font.pointSize * scaleFactor
+
+        // Uncomment this if you insist on integer font sizes
+        //newFontSize = floor(newFontSize);
+
+        return newFontSize
+    }
+
     
     func configImage(_ image: UIImage) {
         // Initialisation

@@ -28,13 +28,13 @@ class Help05ViewController: UIViewController {
         // Title of legend above images
         let titleString = "\(NSLocalizedString("help05_header", comment: "Upload Photos"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontBold() : UIFont.piwigoFontSemiBold(), range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold), range: NSRange(location: 0, length: titleString.count))
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
         var textString = NSLocalizedString("help05_text", comment: "Submit requests and let go")
         var textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
         legendTopAttributedString.append(textAttributedString)
 
         // Set legend at top of screen
@@ -43,7 +43,7 @@ class Help05ViewController: UIViewController {
         // Text of legend between images
         textString = NSLocalizedString("help05_text2", comment: "Access the UploadQueue.")
         textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
         legendBotAttributedString.append(textAttributedString)
 
         // Set legend

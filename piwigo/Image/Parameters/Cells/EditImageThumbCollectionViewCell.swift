@@ -95,12 +95,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Show button for removing image from selection if needed
         removeButtonView.isHidden = !hasRemove
 
-        // Image size in pixels
+        // Image size in pixels, file size, date and time
         self.imageSize?.text = imageData.fullRes?.pixels ?? "— pixels"
-        
-        // Image file size
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
-
         imageDate.text = ""
         if bounds.size.width > CGFloat(320) {
             // i.e. larger than iPhone 5 screen width

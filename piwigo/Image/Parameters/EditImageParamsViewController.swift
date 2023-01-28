@@ -75,7 +75,7 @@ class EditImageParamsViewController: UIViewController
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -479,7 +479,8 @@ class EditImageParamsViewController: UIViewController
             DispatchQueue.main.async { [self] in
                 // Update image title?
                 if shouldUpdateTitle {
-                    imageData.title = commonTitle
+                    let newTitle = NetworkUtilities.utf8mb4String(from: (paramsDict["name"] as! String))
+                    imageData.title = newTitle.htmlToAttributedString
                 }
 
                 // Update image author? (We should never set NSNotFound in the database)
@@ -512,7 +513,8 @@ class EditImageParamsViewController: UIViewController
 
                 // Update image description?
                 if shouldUpdateComment {
-                    imageData.comment = commonComment
+                    let newComment = NetworkUtilities.utf8mb4String(from: (paramsDict["comment"] as! String))
+                    imageData.comment = newComment.htmlToAttributedString
                 }
 
                 // Notify album/image view of modification
@@ -590,7 +592,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.right
             let attributes = [
-                NSAttributedString.Key.font: UIFont.piwigoFontNormal(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             let detail = NSMutableAttributedString(attributedString: commonTitle)
@@ -675,7 +677,16 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                 return EditImageTextViewTableViewCell()
             }
-            cell.config(withText: commonComment,
+            let wholeRange = NSRange(location: 0, length: commonComment.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.left
+            let attributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let detail = NSMutableAttributedString(attributedString: commonComment)
+            detail.addAttributes(attributes, range: wholeRange)
+            cell.config(withText: detail,
                         inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
@@ -940,9 +951,6 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 
     func didRenameFileOfImage(_ imageData: Image) {
         // Update data source
-//        if let index = images.firstIndex(where: { $0.imageId == imageData.imageId }) {
-//            images[index] = imageData
-//        }
         do {
             try savingContext?.save()
         } catch let error as NSError {

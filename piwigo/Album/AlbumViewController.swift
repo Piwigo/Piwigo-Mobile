@@ -286,7 +286,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         imagesCollection?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
         let attributesRefresh = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-            NSAttributedString.Key.font: UIFont.piwigoFontLight()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
         imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
 
@@ -348,11 +348,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         let attributesLarge = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
         ]
         if categoryId == AlbumVars.shared.defaultCategory {
             // Title
@@ -925,7 +925,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 style.alignment = NSTextAlignment.center
                 let attributes = [
                     NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                    NSAttributedString.Key.font: UIFont.piwigoFontNormal(),
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
                     NSAttributedString.Key.paragraphStyle: style
                 ]
                 desc.addAttributes(attributes, range: wholeRange)
@@ -973,7 +973,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                NSAttributedString.Key.font: UIFont.piwigoFontNormal(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
@@ -1003,7 +1003,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             let footer = AlbumUtilities.footerLegend(allShown, total)
             if footer.count > 0,
                collectionView.frame.size.width - 30.0 > 0 {
-                let attributes = [NSAttributedString.Key.font: UIFont.piwigoFontLight()]
+                let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)]
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
                 let footerRect = footer.boundingRect(
@@ -1546,7 +1546,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             return
         }
         if let image = anObject as? Image, let albums = image.albums,
-           albums.contains(where: { $0.pwgID == categoryId }) == false {
+           albums.contains(where: { $0.pwgID == categoryId }) == false, type != .delete {
             return
         }
         

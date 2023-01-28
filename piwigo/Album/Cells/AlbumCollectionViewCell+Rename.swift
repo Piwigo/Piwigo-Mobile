@@ -36,10 +36,14 @@ extension AlbumCollectionViewCell {
             textField.placeholder = NSLocalizedString("createNewAlbumDescription_placeholder", comment: "Description")
             let attributedStr = NSMutableAttributedString(attributedString: albumData.comment)
             let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
-            attributedStr.addAttribute(.foregroundColor, value: AppVars.shared.isDarkPaletteActive ? UIColor.white : UIColor.black, range: wholeRange)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.left
-            attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.font: renameAlert?.textFields?.first?.font ?? UIFont.systemFont(ofSize: 13),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            attributedStr.addAttributes(attributes, range: wholeRange)
             textField.attributedText = attributedStr
             textField.clearButtonMode = .always
             textField.keyboardType = .default

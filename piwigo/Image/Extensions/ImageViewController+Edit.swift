@@ -49,10 +49,10 @@ extension ImageViewController: EditImageParamsDelegate
         setTitleViewFromImageData()
         
         // Update image metadata
-//        if let pVC = pageViewController,
-//           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-//            imagePVC.updateImageMetadata(with: imageData)
-//        }
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.updateImageMetadata(with: params)
+        }
 
         // Update cached image data
         /// Note: the current category might be a smart album.

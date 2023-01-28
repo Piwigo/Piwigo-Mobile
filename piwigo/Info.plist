@@ -47,14 +47,6 @@
 	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>OpenSansLight.TTF</string>
-		<string>OpenSansRegular.TTF</string>
-		<string>OpenSansSemiBold.TTF</string>
-		<string>OpenSansBold.TTF</string>
-		<string>OpenSansExtraBold.TTF</string>
-	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

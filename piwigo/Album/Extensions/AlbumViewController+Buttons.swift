@@ -175,7 +175,7 @@ extension AlbumViewController
     func getNberOfUploadsLabel() -> UILabel {
         let label = UILabel(frame: CGRect.zero)
         label.text = ""
-        label.font = UIFont(name: "OpenSans-Semibold", size: 24.0)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         label.adjustsFontSizeToFitWidth = false
         label.textAlignment = .center
         label.backgroundColor = UIColor.clear

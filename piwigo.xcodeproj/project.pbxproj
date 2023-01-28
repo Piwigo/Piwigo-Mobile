@@ -161,7 +161,6 @@
 		AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
-		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE42849252F00171592 /* pwg.categories.move.json */; };
 		AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */; };
 		AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */; };
@@ -234,7 +233,6 @@
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
 		ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */; };
 		ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */; };
-		ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */; };
 		ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */; };
 		ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
@@ -383,9 +381,6 @@
 		ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23A1F22427D2D900F662AB /* UploadProvider.swift */; };
 		ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23A1F02427C95700F662AB /* UploadError.swift */; };
 		ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadVars.swift */; };
-		ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */; };
-		ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */; };
-		ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */; };
 		ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */; };
 		ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */; };
 		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
@@ -644,7 +639,6 @@
 		AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsRelease.entitlements; sourceTree = "<group>"; };
 		AD778368267E384500317F36 /* UploadPhotosHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPhotosHandler.swift; sourceTree = "<group>"; };
 		AD7783B1267E4AB700317F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
-		AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansRegular.TTF; sourceTree = "<group>"; };
 		AD7A8FE42849252F00171592 /* pwg.categories.move.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.move.json; sourceTree = "<group>"; };
 		AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setRepresentative.swift; sourceTree = "<group>"; };
 		AD7A8FE8284944B200171592 /* pwg.categories.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.delete.json; sourceTree = "<group>"; };
@@ -742,7 +736,6 @@
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageSizeViewController.swift; sourceTree = "<group>"; };
-		ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansSemiBold.TTF; sourceTree = "<group>"; };
 		ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSettingsViewController.swift; sourceTree = "<group>"; };
 		ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadParametersViewController.swift; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -925,9 +918,6 @@
 		ADF3EC0B2516515500379E53 /* Device+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Device+Model.swift"; sourceTree = "<group>"; };
 		ADF6264626B9ED410085A299 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF6264826B9ED4A0085A299 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansBold.TTF; sourceTree = "<group>"; };
-		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
-		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
 		ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ShareMetadataViewController.storyboard; sourceTree = "<group>"; };
 		ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.uploadCompleted.json; sourceTree = "<group>"; };
@@ -1296,18 +1286,6 @@
 				AD6759AD28D770BB009C69EC /* pwg.categories.getImages.json */,
 			);
 			path = pwg.categories;
-			sourceTree = "<group>";
-		};
-		AD5C14B7266C2E3E007E8C99 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */,
-				AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */,
-				ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */,
-				ADF88E762066D04600D1CE26 /* OpenSansBold.TTF */,
-				ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */,
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 		AD5F64E624C601B500660BE3 /* pwg.tags */ = {
@@ -1936,7 +1914,6 @@
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */,
 				AD8D214D26B0A53C0008E907 /* Images */,
-				AD5C14B7266C2E3E007E8C99 /* Fonts */,
 				AD224022267B7D8800269B84 /* Strings */,
 			);
 			path = Resources;
@@ -2311,14 +2288,9 @@
 				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
 				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
 				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
-				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */,
-				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
-				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
 				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
-				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
-				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,

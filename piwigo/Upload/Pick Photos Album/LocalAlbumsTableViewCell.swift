@@ -21,12 +21,12 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         tintColor = .piwigoColorOrange()
 
         // Title
-        titleLabel.font = .piwigoFontNormal()
+        titleLabel.font = .systemFont(ofSize: 17)
         titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .piwigoFontSmall()
+        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -116,7 +116,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 subtitle.append(String(format: "%@", startString))
             }
         }
-        subtitleLabel.font = .piwigoFontSmall()
+        subtitleLabel.font = .systemFont(ofSize: 13)
         subtitleLabel.textColor = .piwigoColorLeftLabel()
         subtitleLabel.text = subtitle
     }

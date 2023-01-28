@@ -47,7 +47,7 @@ class ImageDescriptionView: UIVisualEffectView {
         style.alignment = NSTextAlignment.center
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-            NSAttributedString.Key.font: UIFont.piwigoFontSmallSemiBold(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let desc = NSMutableAttributedString(attributedString: comment)
@@ -66,7 +66,7 @@ class ImageDescriptionView: UIVisualEffectView {
         // Calculate the required number of lines, corners'width deducted
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
+        let lineHeight = (descTextView.font ?? UIFont.systemFont(ofSize: 13)).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
         let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
                                                                          height: CGFloat.greatestFiniteMagnitude),

@@ -40,7 +40,7 @@ class ReleaseNotesViewController: UIViewController {
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -263,13 +263,13 @@ class ReleaseNotesViewController: UIViewController {
                                         bundle: Bundle.main, value: "", comment: comment)
         let vAttributedString = NSMutableAttributedString(string: vString)
         var vRange = NSRange(location: 0, length: vString.count)
-        vAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: vRange)
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
-        vAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: vRange)
         if lineFeed {
             let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
             let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-            spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
+            spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 10), range: spacerRange)
             vAttributedString.append(spacerAttributedString)
         }
         return vAttributedString

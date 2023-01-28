@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="OpenSansLight.TTF">
-            <string>OpenSans-Light</string>
-        </array>
-    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -25,27 +20,33 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dkQ-wh-KaZ">
                         <rect key="frame" x="142" y="15" width="198" height="122"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PnP-Wk-ap6">
-                                <rect key="frame" x="18" y="20" width="172" height="18"/>
-                                <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="file" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uU3-Mu-0Lu">
+                                <rect key="frame" x="18" y="21" width="172" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="file" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uU3-Mu-0Lu">
-                                <rect key="frame" x="18" y="40" width="172" height="18"/>
-                                <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PnP-Wk-ap6">
+                                <rect key="frame" x="18" y="37" width="172" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="file size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C8e-wE-jT7">
+                                <rect key="frame" x="18" y="53" width="172" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpx-uG-d2M">
-                                <rect key="frame" x="18" y="60" width="172" height="18"/>
-                                <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                                <rect key="frame" x="18" y="69" width="172" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e98-0S-OgA">
-                                <rect key="frame" x="18" y="80" width="172" height="18"/>
-                                <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                                <rect key="frame" x="18" y="85" width="172" height="16"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -54,16 +55,19 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="e98-0S-OgA" secondAttribute="trailing" constant="8" id="3XN-FG-t6B"/>
                             <constraint firstAttribute="trailing" secondItem="cpx-uG-d2M" secondAttribute="trailing" constant="8" id="6VH-hv-Bzg"/>
+                            <constraint firstItem="C8e-wE-jT7" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="6dL-Tb-NUP"/>
                             <constraint firstItem="PnP-Wk-ap6" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="Aw9-so-9UC"/>
-                            <constraint firstItem="e98-0S-OgA" firstAttribute="firstBaseline" secondItem="cpx-uG-d2M" secondAttribute="baseline" constant="24" symbolType="layoutAnchor" id="Mk0-d2-z8G"/>
-                            <constraint firstItem="uU3-Mu-0Lu" firstAttribute="firstBaseline" secondItem="PnP-Wk-ap6" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="PYS-7I-RFa"/>
-                            <constraint firstItem="uU3-Mu-0Lu" firstAttribute="centerY" secondItem="dkQ-wh-KaZ" secondAttribute="centerY" constant="-12" id="YuS-iD-dz9"/>
+                            <constraint firstItem="C8e-wE-jT7" firstAttribute="firstBaseline" secondItem="PnP-Wk-ap6" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="DMg-kc-mOU"/>
+                            <constraint firstItem="e98-0S-OgA" firstAttribute="firstBaseline" secondItem="cpx-uG-d2M" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="Mk0-d2-z8G"/>
+                            <constraint firstAttribute="trailing" secondItem="C8e-wE-jT7" secondAttribute="trailing" constant="8" id="Q8J-py-4gj"/>
+                            <constraint firstItem="C8e-wE-jT7" firstAttribute="centerY" secondItem="dkQ-wh-KaZ" secondAttribute="centerY" id="SEn-Ge-sx6"/>
                             <constraint firstItem="cpx-uG-d2M" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="erL-1m-igc"/>
                             <constraint firstAttribute="trailing" secondItem="PnP-Wk-ap6" secondAttribute="trailing" constant="8" id="ezU-W4-mem"/>
                             <constraint firstItem="e98-0S-OgA" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="g2a-ZE-mW6"/>
+                            <constraint firstItem="PnP-Wk-ap6" firstAttribute="firstBaseline" secondItem="uU3-Mu-0Lu" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="hrK-ug-sE0"/>
                             <constraint firstAttribute="trailing" secondItem="uU3-Mu-0Lu" secondAttribute="trailing" constant="8" id="tgV-3y-1fN"/>
-                            <constraint firstItem="cpx-uG-d2M" firstAttribute="firstBaseline" secondItem="uU3-Mu-0Lu" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="vZV-Gf-2bH"/>
                             <constraint firstItem="uU3-Mu-0Lu" firstAttribute="leading" secondItem="dkQ-wh-KaZ" secondAttribute="leading" constant="18" id="xel-gO-Ief"/>
+                            <constraint firstItem="cpx-uG-d2M" firstAttribute="firstBaseline" secondItem="C8e-wE-jT7" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="zuX-Ot-T2t"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MuK-OP-2Zd">
@@ -157,6 +161,7 @@
                 <outlet property="imageDate" destination="cpx-uG-d2M" id="zjW-QE-hKh"/>
                 <outlet property="imageDetails" destination="dkQ-wh-KaZ" id="RBP-Bb-JN2"/>
                 <outlet property="imageFile" destination="uU3-Mu-0Lu" id="CKg-fB-SHf"/>
+                <outlet property="imageFileSize" destination="C8e-wE-jT7" id="YK4-sO-3ft"/>
                 <outlet property="imageSize" destination="PnP-Wk-ap6" id="TQC-hS-RON"/>
                 <outlet property="imageThumbnail" destination="XOv-xv-XJn" id="w3y-qu-zg2"/>
                 <outlet property="imageThumbnailView" destination="Ecd-nM-hAy" id="Xk4-UV-qg1"/>

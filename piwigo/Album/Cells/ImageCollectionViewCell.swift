@@ -178,11 +178,16 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
     
     private func attributedTitle(_ title: NSAttributedString) -> NSAttributedString {
-        let wholeRange = NSRange(location: 0, length: title.string.count)
+        let attributedStr = NSMutableAttributedString(attributedString: title)
+        let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
-        let attributedStr = NSMutableAttributedString(attributedString: title)
-        attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .medium),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        attributedStr.addAttributes(attributes, range: wholeRange)
         return attributedStr
     }
 

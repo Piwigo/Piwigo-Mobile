@@ -73,7 +73,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false

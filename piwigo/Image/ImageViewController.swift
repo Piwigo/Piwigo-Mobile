@@ -165,7 +165,7 @@ class ImageViewController: UIViewController {
 
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
         setTitleViewFromImageData()
@@ -263,7 +263,7 @@ class ImageViewController: UIViewController {
         titleLabel.textColor = .piwigoColorWhiteCream()
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.piwigoFontSmallSemiBold()
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
@@ -274,7 +274,7 @@ class ImageViewController: UIViewController {
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-                NSAttributedString.Key.font: UIFont.piwigoFontSmallSemiBold(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             let attTitle = NSMutableAttributedString(attributedString: title)
@@ -306,7 +306,7 @@ class ImageViewController: UIViewController {
             subTitleLabel.textAlignment = .center
             subTitleLabel.numberOfLines = 1
             subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .piwigoFontTiny()
+            subTitleLabel.font = .systemFont(ofSize: 10)
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true

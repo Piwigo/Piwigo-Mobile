@@ -43,7 +43,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         albumData = album
         
         // Is this a sub-category?
-        albumLabel.font = .piwigoFontNormal()
+        albumLabel.font = .systemFont(ofSize: 17)
         albumLabel.textColor = .piwigoColorLeftLabel()
         albumLabel.text = albumData.name
         if depth == 0 {

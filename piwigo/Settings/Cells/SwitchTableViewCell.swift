@@ -25,7 +25,7 @@ class SwitchTableViewCell: UITableViewCell {
         backgroundColor = .piwigoColorCellBackground()
 
         // Switch name
-        switchName.font = .piwigoFontNormal()
+        switchName.font = .systemFont(ofSize: 17)
         switchName.textColor = .piwigoColorLeftLabel()
         switchName.text = title
 

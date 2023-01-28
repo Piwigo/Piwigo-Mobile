@@ -47,7 +47,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -137,7 +137,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .piwigoFontNormal()
+        cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = privacyLevel.name

@@ -32,7 +32,7 @@ class UploadImageHeaderView: UITableViewHeaderFooterView {
         // Title
         let headerAttributedString = NSMutableAttributedString(string: "")
         let titleAttributedString = NSMutableAttributedString(string: sectionKey.name)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: sectionKey.name.count))
+        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: NSRange(location: 0, length: sectionKey.name.count))
         headerAttributedString.append(titleAttributedString)
 
         // Header label

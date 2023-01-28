@@ -41,7 +41,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -123,7 +123,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         // Name of the image size
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .piwigoFontNormal()
+        cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 

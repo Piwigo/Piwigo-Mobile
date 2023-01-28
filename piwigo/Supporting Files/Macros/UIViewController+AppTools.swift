@@ -65,13 +65,13 @@ extension UIViewController {
             // Set title if needed
             if title.count > 0 {
                 hud?.label.text = title
-                hud?.label.font = .piwigoFontNormal()
+                hud?.label.font = .systemFont(ofSize: 17)
             }
             
             // Set details label if needed
             if detail.count > 0 {
                 hud?.detailsLabel.text = detail
-                hud?.detailsLabel.font = .piwigoFontSmall()
+                hud?.detailsLabel.font = .systemFont(ofSize: 13)
             }
             
             // Set button if needed

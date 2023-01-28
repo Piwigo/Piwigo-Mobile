@@ -25,13 +25,13 @@ class Help03ViewController: UIViewController {
         // Title
         let titleString = "\(NSLocalizedString("help03_header", comment: "Administrators"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontBold() : UIFont.piwigoFontSemiBold(), range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold), range: NSRange(location: 0, length: titleString.count))
         legendAttributedString.append(titleAttributedString)
 
         // Text
         let textString = NSLocalizedString("help03_text", comment: "Create, delete, move and rename albums.")
         let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
         legendAttributedString.append(textAttributedString)
 
         // Set legend

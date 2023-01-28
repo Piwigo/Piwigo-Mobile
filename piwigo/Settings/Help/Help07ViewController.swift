@@ -28,19 +28,19 @@ class Help07ViewController: UIViewController {
         // Title of legend above images
         let titleString = "\(NSLocalizedString("help07_header", comment: "Auto-Uploading"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontBold() : UIFont.piwigoFontSemiBold(), range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold), range: NSRange(location: 0, length: titleString.count))
         legendTopAttributedString.append(titleAttributedString)
 
         // Comment below title
         var textString = "\(NSLocalizedString("help02_text3", comment: "(requires the uploadAsync extension or Piwigo 11)"))\n"
         var textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontSmall() : UIFont.piwigoFontTiny(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 13) : UIFont.systemFont(ofSize: 10), range: NSRange(location: 0, length: textString.count))
         legendTopAttributedString.append(textAttributedString)
 
         // Text of legend above images
         textString = NSLocalizedString("help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
         textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
         legendTopAttributedString.append(textAttributedString)
 
         // Set legend at top of screen
@@ -49,7 +49,7 @@ class Help07ViewController: UIViewController {
         // Text of legend between images
         textString = NSLocalizedString("help02_text2", comment: "Plug the device to its charger and let iOS launch the uploads whenever appropriate.")
         textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
         legendBotAttributedString.append(textAttributedString)
 
         // Set top image view

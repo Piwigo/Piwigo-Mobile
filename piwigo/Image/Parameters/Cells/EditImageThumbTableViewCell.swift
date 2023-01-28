@@ -99,9 +99,9 @@ extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
     @objc
     func didDeselectImage(withId imageId: Int64) {
         // Update data source
-//        let newImages = images?.filter({ $0.imageId != imageId })
-//        images = newImages
-//        editImageThumbCollectionView.reloadData()
+        let newImages = images?.filter({ $0.pwgID != imageId })
+        images = newImages
+        editImageThumbCollectionView.reloadData()
 
         // Deselect image in parent view
         delegate?.didDeselectImage(withId: imageId)

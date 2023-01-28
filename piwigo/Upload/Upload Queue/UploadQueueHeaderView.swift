@@ -19,7 +19,7 @@ class UploadQueueHeaderView: UIView {
         backgroundColor = .piwigoColorOrange()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .piwigoFontSemiBold()
+        label.font = .systemFont(ofSize: 17, weight: .semibold)
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center
@@ -36,7 +36,7 @@ class UploadQueueHeaderView: UIView {
     func configure(width: CGFloat, text: String) {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
         var titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
                                                        height: CGFloat.greatestFiniteMagnitude),
                                           options: .usesLineFragmentOrigin,

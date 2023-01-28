@@ -19,7 +19,7 @@ class SelectCategoryHeaderView: UIView {
         backgroundColor = UIColor.clear
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .piwigoFontSmall()
+        label.font = .systemFont(ofSize: 13)
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center
@@ -36,7 +36,7 @@ class SelectCategoryHeaderView: UIView {
     func configure(width: CGFloat, text: String) {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
         var titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
                                                        height: CGFloat.greatestFiniteMagnitude),
                                           options: .usesLineFragmentOrigin,

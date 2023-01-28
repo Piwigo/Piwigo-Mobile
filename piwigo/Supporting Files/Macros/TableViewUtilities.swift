@@ -36,14 +36,14 @@ class TableViewUtilities: NSObject {
 
         // Add title height
         if title.isEmpty == false {
-            let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
+            let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
             height += title.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                          attributes: titleAttributes, context: context).height
         }
 
         // Add text height
         if text.isEmpty == false {
-            let textAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
+            let textAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
             height += text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                            attributes: textAttributes, context: context).height
         }
@@ -61,7 +61,7 @@ class TableViewUtilities: NSObject {
         // Add title attributed string
         if title.isEmpty == false {
             let titleAttributedString = NSMutableAttributedString(string: title)
-            titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(),
+            titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
                                                range: NSRange(location: 0, length: title.count))
             headerAttributedString.append(titleAttributedString)
         }
@@ -69,7 +69,7 @@ class TableViewUtilities: NSObject {
         // Add text attributed string
         if text.isEmpty == false {
             let textAttributedString = NSMutableAttributedString(string: text)
-            textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(),
+            textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
                                               range: NSRange(location: 0, length: text.count))
             headerAttributedString.append(textAttributedString)
         }
@@ -116,7 +116,7 @@ class TableViewUtilities: NSObject {
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
         let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                                 attributes: titleAttributes, context: context).height
 
@@ -132,7 +132,7 @@ class TableViewUtilities: NSObject {
         
         // Add text attributed string
         let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(),
+        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
                                           range: NSRange(location: 0, length: text.count))
         footerAttributedString.append(textAttributedString)
                 
