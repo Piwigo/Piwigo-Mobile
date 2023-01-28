@@ -319,15 +319,10 @@ class ImagePreviewViewController: UIViewController
     }
     
     func updateImageMetadata(with data: Image) {
-        // Update Piwigo data
-//        imageData = data
-
-        // Should we update the image description?
-//        if descContainer.descTextView.text != data.comment {
-//            descContainer.configDescription(with: data.comment) {
-//                self.view.layoutIfNeeded()
-//            }
-//        }
+        // Update image description
+        descContainer.configDescription(with: data.comment) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
