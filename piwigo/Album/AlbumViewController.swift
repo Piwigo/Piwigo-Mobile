@@ -579,9 +579,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Hide HUD
             self.navigationController?.hidePiwigoHUD { }
             // Update title
-            if categoryId != 0 {
-                self.setTitleViewFromAlbumData(whileUpdating: false)
-            }
+            self.setTitleViewFromAlbumData(whileUpdating: false)
             // Set navigation bar buttons
             if isSelect {
                 self.updateButtonsInSelectionMode()
