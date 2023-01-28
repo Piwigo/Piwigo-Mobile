@@ -49,7 +49,7 @@ public class Image: NSManagedObject {
         }
         
         // Image file size, name and MD5 checksum
-        let newSize = imageData.fileSize ?? Int64.zero
+        let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
         if newSize != Int64.zero, fileSize != newSize {
             fileSize = newSize
         }
