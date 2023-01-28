@@ -25,8 +25,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     @IBOutlet private weak var imageThumbnailView: UIView!
     @IBOutlet private weak var imageThumbnail: UIImageView!
     @IBOutlet private weak var imageDetails: UIView!
-    @IBOutlet private weak var imageSize: UILabel!
     @IBOutlet private weak var imageFile: UILabel!
+    @IBOutlet private weak var imageSize: UILabel!
+    @IBOutlet private weak var imageFileSize: UILabel!
     @IBOutlet private weak var imageDate: UILabel!
     @IBOutlet private weak var imageTime: UILabel!
     @IBOutlet private weak var editButtonView: UIView!
@@ -68,6 +69,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Image size, file name, date and time
         imageSize.textColor = .piwigoColorLeftLabel()
         imageFile.textColor = .piwigoColorLeftLabel()
+        imageFileSize.textColor = .piwigoColorLeftLabel()
         imageDate.textColor = .piwigoColorLeftLabel()
         imageTime.textColor = .piwigoColorLeftLabel()
     }
@@ -93,19 +95,11 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Show button for removing image from selection if needed
         removeButtonView.isHidden = !hasRemove
 
-        // Image from Piwigo server…
-        if let imageWidth = imageData.fullRes?.width, imageWidth > 0,
-           let imageHeight = imageData.fullRes?.height, imageHeight > 0 {
-            if bounds.size.width > CGFloat(299) {
-                // i.e. larger than iPhone 5 screen width
-                self.imageSize?.text = String(format: "%ldx%ld pixels, %.2f MB",
-                                              imageWidth, imageHeight,
-                                              Double(imageData.fileSize) / 1024.0)
-            } else {
-                self.imageSize?.text = String(format: "%ldx%ld pixels", 
-                                              imageWidth, imageHeight)
-            }
-        }
+        // Image size in pixels
+        self.imageSize?.text = imageData.fullRes?.pixels ?? "— pixels"
+        
+        // Image file size
+        self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
 
         imageDate.text = ""
         if bounds.size.width > CGFloat(320) {

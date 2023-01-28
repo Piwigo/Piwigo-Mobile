@@ -58,4 +58,8 @@ extension Resolution {
         }
         return false
     }
+    
+    public var pixels: String {
+        return String(format: "%ldx%ld pixels", self.width, self.height)
+    }
 }
