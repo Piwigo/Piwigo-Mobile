@@ -403,12 +403,107 @@ extension AlbumViewController
 
     
     // MARK: - Buttons in Preview mode
+    func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
+        // Get album name
+        let albumName = albumData?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
+        if #available(iOS 13.0, *) {
+            self.view?.window?.windowScene?.title = albumName
+        }
+
+        // Create label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = .piwigoColorWhiteCream()
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        let wholeRange = NSRange(location: 0, length: albumName.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let attTitle = NSMutableAttributedString(string: albumName)
+        attTitle.addAttributes(attributes, range: wholeRange)
+        titleLabel.attributedText = attTitle
+        titleLabel.sizeToFit()
+
+        // There is no subtitle in landscape mode on iPhone
+        if let lastDate = albumData?.dateLast,
+           (UIDevice.current.userInterfaceIdiom == .phone &&
+            !UIApplication.shared.statusBarOrientation.isLandscape) {
+            // Get last updated date
+            var lastUpdated: String
+            if #available(iOS 13.0, *) {
+                let formatter = RelativeDateTimeFormatter()
+                formatter.dateTimeStyle = .named
+                lastUpdated = formatter.localizedString(for: lastDate, relativeTo: Date())
+            } else {
+                lastUpdated = DateFormatter.localizedString(from: lastDate,
+                                                            dateStyle: .short, timeStyle: .short)
+            }
+            
+            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            subTitleLabel.backgroundColor = UIColor.clear
+            subTitleLabel.textColor = .piwigoColorWhiteCream()
+            subTitleLabel.textAlignment = .center
+            subTitleLabel.numberOfLines = 1
+            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subTitleLabel.font = .systemFont(ofSize: 10)
+            subTitleLabel.adjustsFontSizeToFitWidth = false
+            subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.allowsDefaultTighteningForTruncation = true
+            if isUpdating {
+                subTitleLabel.text = NSLocalizedString("categoryUpdating", comment: "Updating…")
+            } else {
+                subTitleLabel.text = String(format: NSLocalizedString("categoryEdited", comment: "Edited %@"), lastUpdated)
+            }
+            subTitleLabel.sizeToFit()
+            
+            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+            navigationItem.titleView = twoLineTitleView
+            
+            twoLineTitleView.addSubview(titleLabel)
+            twoLineTitleView.addSubview(subTitleLabel)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+            
+            let views = ["title": titleLabel,
+                         "subtitle": subTitleLabel]
+            twoLineTitleView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                               options: [], metrics: nil, views: views))
+        } else {
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+            navigationItem.titleView = oneLineTitleView
+
+            oneLineTitleView.addSubview(titleLabel)
+            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+        }
+    }
+    
     func initButtonsInPreviewMode() {
         // Title is name of category
         if categoryId == 0 {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            if #available(iOS 13.0, *) {
+                view?.window?.windowScene?.title = self.title
+            }
         } else {
-            title = albumData?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
+            setTitleViewFromAlbumData(whileUpdating: false)
         }
 
         // When using several scenes on iPad, buttons might have to be relocated.

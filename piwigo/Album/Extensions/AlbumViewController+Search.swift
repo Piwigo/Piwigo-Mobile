@@ -91,7 +91,7 @@ extension AlbumViewController: UISearchControllerDelegate
         albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
 
         // Update albums and images
-        updateDataSource()
+        changeAlbumID()
 
         // Reload collection
         imagesCollection?.reloadData()

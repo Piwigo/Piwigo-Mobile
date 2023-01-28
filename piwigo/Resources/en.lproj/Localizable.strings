@@ -143,6 +143,8 @@
 "severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
+"categoryUpdating" = "Updating…";
+"categoryEdited" = "Edited %@";
 "categoryMainEmtpy" = "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.";
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_deselectButton" = "Deselect";
