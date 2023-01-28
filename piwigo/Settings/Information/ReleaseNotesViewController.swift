@@ -13,7 +13,6 @@ import piwigoKit
 
 class ReleaseNotesViewController: UIViewController {
     
-    @IBOutlet private weak var piwigoTitle: UILabel!
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
@@ -68,9 +67,6 @@ class ReleaseNotesViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Piwigo app
-        piwigoTitle.text = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
 
         // Piwigo authors
         updateAuthorsLabel()
