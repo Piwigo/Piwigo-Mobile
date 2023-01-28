@@ -405,6 +405,13 @@ extension AlbumViewController
     // MARK: - Buttons in Preview mode
     func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
         // Get album name
+        if categoryId == 0 {
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            if #available(iOS 13.0, *) {
+                view?.window?.windowScene?.title = self.title
+            }
+            return
+        }
         let albumName = albumData?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
         if #available(iOS 13.0, *) {
             self.view?.window?.windowScene?.title = albumName
@@ -497,14 +504,7 @@ extension AlbumViewController
     
     func initButtonsInPreviewMode() {
         // Title is name of category
-        if categoryId == 0 {
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
-            if #available(iOS 13.0, *) {
-                view?.window?.windowScene?.title = self.title
-            }
-        } else {
-            setTitleViewFromAlbumData(whileUpdating: false)
-        }
+        setTitleViewFromAlbumData(whileUpdating: false)
 
         // When using several scenes on iPad, buttons might have to be relocated.
         if #available(iOS 13.0, *) {
