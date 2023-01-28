@@ -68,7 +68,7 @@ extension ImageViewController
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
-              var catIDs = imageData.albums?.compactMap({$0.pwgID}) else {
+              var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
                 self.hidePiwigoHUD { [unowned self] in
