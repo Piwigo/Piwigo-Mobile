@@ -289,9 +289,9 @@ public class UploadProvider: NSObject {
      Update a single upload request on the private queue when an image is deleted from the Piwigo server.
      After saving, resets the context to clean up the cache and lower the memory footprint.
     */
-    public func markAsDeletedPiwigoImage(withID imageId: Int64) {
+    public func markAsDeletedPiwigoImages(withIDs imageIDs: [Int64]) {
         // Check current queue
-//        print("••> didDeleteImageWithId()", queueName())
+        print("••> didDeleteImageWithId()", queueName())
 
         // taskContext.performAndWait
         bckgContext.performAndWait {
@@ -300,11 +300,10 @@ public class UploadProvider: NSObject {
             // Create a fetch request for the image ID uploaded to the albumId
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.imageId), ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "imageId == %ld", imageId)
 
             // Select upload request:
             /// — for the current server and user only
-            var andPredicates = [NSPredicate]()
+            var andPredicates = [NSPredicate(format: "imageId IN %@", imageIDs)]
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
             andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -321,28 +320,27 @@ public class UploadProvider: NSObject {
                 fatalError("Unresolved error \(error)")
             }
             
-            // Update cached upload
-            if let cachedUpload = controller.fetchedObjects?.first
-            {
-                // Mark image as deleted
-                cachedUpload.requestState = pwgUploadState.deleted.rawValue
+            // Mark images as deleted from Piwigo server
+            let cachedUpload = controller.fetchedObjects ?? []
+            cachedUpload.forEach { upload in
+                upload.requestState = pwgUploadState.deleted.rawValue
+            }
                 
-                // Save all insertions and deletions from the context to the store.
-                if bckgContext.hasChanges {
-                    do {
-                        try bckgContext.save()
-                        if Thread.isMainThread == false {
-                            DispatchQueue.main.async {
-                                DataController.shared.saveMainContext()
-                            }
+            // Save all insertions and deletions from the context to the store.
+            if bckgContext.hasChanges {
+                do {
+                    try bckgContext.save()
+                    if Thread.isMainThread == false {
+                        DispatchQueue.main.async {
+                            DataController.shared.saveMainContext()
                         }
                     }
-                    catch {
-                        fatalError("Failure to save context: \(error)")
-                    }
-                    // Reset the taskContext to free the cache and lower the memory footprint.
-                    bckgContext.reset()
                 }
+                catch {
+                    fatalError("Failure to save context: \(error)")
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
             }
         }
     }

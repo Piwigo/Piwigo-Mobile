@@ -13,9 +13,13 @@ import UIKit
 class ClearCache: NSObject {
     
     static func closeSessionAndClearCache(completion: @escaping () -> Void) {
-        // Session closed
-        PwgSession.shared.dataSession.invalidateAndCancel()
-        ImageSession.shared.dataSession.invalidateAndCancel()
+        // Cancel tasks
+        PwgSession.shared.dataSession.getAllTasks { tasks in
+            tasks.forEach({$0.cancel()})
+        }
+        ImageSession.shared.dataSession.getAllTasks { tasks in
+            tasks.forEach({$0.cancel()})
+        }
 
         // Back to default values
         AlbumVars.shared.defaultCategory = 0

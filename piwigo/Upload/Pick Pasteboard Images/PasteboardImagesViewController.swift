@@ -17,7 +17,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
     // MARK: - Core Data Providers
     private lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadProvider()
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
@@ -1070,16 +1070,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
         
         // Add selected images to upload queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
+        UploadManager.shared.backgroundQueue.async {
+            self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
-                    // Restart UploadManager activities
+                    // Restart UploadManager activities if needed
                     if UploadManager.shared.isPaused {
                         UploadManager.shared.isPaused = false
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.findNextImageToUpload()
-                        }
+                        UploadManager.shared.findNextImageToUpload()
                     }
                     return
                 }

@@ -1487,6 +1487,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             for operation: BlockOperation in self.updateOperations {
                 operation.start()
             }
+            // Update footer
+            if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
+               footers.contains(where: {$0 is NberImagesFooterCollectionReusableView}) {
+                imagesCollection?.reloadSections(IndexSet(integer: 1))
+            }
         })
     }
 }

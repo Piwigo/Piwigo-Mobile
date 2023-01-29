@@ -177,6 +177,12 @@ extension ImageViewController
                 print("Could not save albums after image deletion \(error), \(error.userInfo)")
             }
 
+            // If this image was uploaded with the iOS app,
+            // update cache so that it can re-uploaded.
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageData.pwgID])
+            }
+
             // Hide HUD
             self.updatePiwigoHUDwithSuccess { [self] in
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in

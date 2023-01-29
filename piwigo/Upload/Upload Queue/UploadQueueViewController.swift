@@ -23,7 +23,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Core Data Providers
     private lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadProvider()
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         provider.fetchedNonCompletedResultsControllerDelegate = self
         return provider
     }()

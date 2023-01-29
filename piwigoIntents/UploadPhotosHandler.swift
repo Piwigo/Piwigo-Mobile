@@ -18,8 +18,8 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
-    lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    lazy var uploadsProvider: UploadProvider = {
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         return provider
     }()
 

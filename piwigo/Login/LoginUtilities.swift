@@ -17,12 +17,13 @@ enum pwgLoginContext {
 
 class LoginUtilities: NSObject {
     
+    static let JSONsession = PwgSession.shared
+    
     // MARK: - Piwigo Server Methods
     static func getMethods(completion: @escaping () -> Void,
                            failure: @escaping (NSError) -> Void) {
         print("••> Get methods…")
         // Launch request
-        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
                                 countOfBytesClientExpectsToReceive: 32500) { jsonData in
@@ -72,7 +73,6 @@ class LoginUtilities: NSObject {
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
         // Launch request
-        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in
@@ -112,7 +112,6 @@ class LoginUtilities: NSObject {
                                    failure: @escaping (NSError) -> Void) {
         print("••> Get community status…")
         // Launch request
-        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
                                 countOfBytesClientExpectsToReceive: 2100) { jsonData in
@@ -157,7 +156,6 @@ class LoginUtilities: NSObject {
                                  failure: @escaping (NSError) -> Void) {
         print("••> Get session status…")
         // Launch request
-        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
                                 countOfBytesClientExpectsToReceive: 7400) { jsonData in
@@ -465,7 +463,6 @@ class LoginUtilities: NSObject {
                               failure: @escaping (NSError) -> Void) {
         print("••> Session logout…")
         // Launch request
-        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
                                 countOfBytesClientExpectsToReceive: 620) { jsonData in

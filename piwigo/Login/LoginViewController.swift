@@ -188,12 +188,15 @@ class LoginViewController: UIViewController {
         let acceptAction = UIAlertAction(
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
-                // Cancel task
-                PwgSession.shared.dataSession.invalidateAndCancel()
-                // Will accept certificate
-                NetworkVars.didApproveCertificate = true
-                // Try logging in with approved certificate
-                launchLogin()
+                // Cancel task and relaunch login
+                PwgSession.shared.dataSession.getAllTasks { tasks in
+                    // Cancel task
+                    tasks.forEach({ $0.cancel() })
+                    // Will accept certificate
+                    NetworkVars.didApproveCertificate = true
+                    // Try logging in with approved certificate
+                    self.launchLogin()
+                }
             })
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, acceptAction])
     }

@@ -142,6 +142,24 @@ public class Upload: NSManagedObject {
     /**
      Updates the status of an Upload instance.
      */
+    func setState(_ state: pwgUploadState, error: Error?) {
+        // State of upload request
+        requestState = state.rawValue
+        
+        // Section into which the upload request belongs to
+        requestSectionKey = state.sectionKey
+
+        // Error message description
+        if let error = error {
+            requestError = error.localizedDescription
+        } else {
+            requestError = ""
+        }
+    }
+
+    /**
+     Updates the status of an Upload instance.
+     */
     func updateStatus(with state: pwgUploadState?, error: String?) throws {
         // Update the upload request only if a new state has a value.
         guard let newStatus = state else {
@@ -268,26 +286,26 @@ extension SectionKeys {
 
 // MARK: - Upload States
 public enum pwgUploadState : Int16 {
-    case waiting
+    case waiting            /*  0 */
     
-    case preparing
-    case preparingError
-    case preparingFail
-    case formatError
-    case prepared
+    case preparing          /*  1 */
+    case preparingError     /*  2 */
+    case preparingFail      /*  3 */
+    case formatError        /*  4 */
+    case prepared           /*  5 */
 
-    case uploading
-    case uploadingError
-    case uploaded
+    case uploading          /*  6 */
+    case uploadingError     /*  7 */
+    case uploaded           /*  8 */
 
-    case finishing
-    case finishingError
-    case finished
-    case moderated
+    case finishing          /*  9 */
+    case finishingError     /* 10 */
+    case finished           /* 11 */
+    case moderated          /* 12 */
     
-    case deleted
-    case uploadingFail
-    case finishingFail
+    case deleted            /* 13 */
+    case uploadingFail      /* 14 */
+    case finishingFail      /* 15 */
 }
 
 extension pwgUploadState {

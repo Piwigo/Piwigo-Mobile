@@ -17,80 +17,85 @@ extension UploadManager {
     
     // MARK: - Image preparation
     /// Case of an image format accepted by the server
-    func prepareImage(atURL originalFileURL: URL,
-                      for uploadID: NSManagedObjectID, with properties: UploadProperties) -> Void {
+    func prepareImage(atURL originalFileURL: URL, for upload: Upload) -> Void {
         
         // Upload the file as is if the user did not request any modification of the photo
-        if (!properties.resizeImageOnUpload || properties.photoMaxSize == 0),
-           !properties.compressImageOnUpload, !properties.stripGPSdataOnUpload
+        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
+           !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
         {
             // Get MD5 checksum and MIME type, update counter
-            finalizeImageFile(atURL: originalFileURL, with: properties) { [unowned self] finalProperties, error in
-                // Update upload request
-                self.didPrepareImage(for: uploadID, with: finalProperties, nil)
+            finalizeImageFile(atURL: originalFileURL, with: upload) {
+                self.didPrepareImage(for: upload, nil)
+            } failure: { error in
+                self.didPrepareImage(for: upload, error)
             }
             return
         }
         
         // The user only requested a removal of private metadata
         // We do it w/o recompression of the image.
-        if (!properties.resizeImageOnUpload || properties.photoMaxSize == 0),
-           !properties.compressImageOnUpload
+        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
+           !upload.compressImageOnUpload
         {
-            stripMetadataOfImage(atURL: originalFileURL, with: properties) { fileURL, error in
+            stripMetadataOfImage(atURL: originalFileURL, with: upload) { fileURL in
                 // Get MD5 checksum and MIME type, update counter
-                self.finalizeImageFile(atURL: fileURL, with: properties) { finalProperties, error in
+                self.finalizeImageFile(atURL: fileURL, with: upload) {
                     // Update upload request
-                    self.didPrepareImage(for: uploadID, with: finalProperties, error)
+                    self.didPrepareImage(for: upload, nil)
+                } failure: { error in
+                    self.didPrepareImage(for: upload, error)
                 }
+            } failure: { error in
+                self.didPrepareImage(for: upload, error)
             }
             return
         }
         
         // The user requested a resize and/or compression
-        modifyImage(atURL: originalFileURL, with: properties) { [unowned self] fileURL, error in
+        modifyImage(atURL: originalFileURL, with: upload) { fileURL in
             // Get MD5 checksum and MIME type, update counter
-            self.finalizeImageFile(atURL: fileURL, with: properties) { finalProperties, error in
+            self.finalizeImageFile(atURL: fileURL, with: upload) {
                 // Update upload request
-                self.didPrepareImage(for: uploadID, with: finalProperties, error)
+                self.didPrepareImage(for: upload, nil)
+            } failure: { error in
+                self.didPrepareImage(for: upload, error)
             }
+        } failure: { error in
+            self.didPrepareImage(for: upload, error)
         }
     }
     
     /// Case of an image format not accepted by the server
-    func convertImage(atURL originalFileURL: URL,
-                      for uploadID: NSManagedObjectID, with properties: UploadProperties) -> Void {
+    func convertImage(atURL originalFileURL: URL, for upload: Upload) -> Void {
         // Convert image to JPEG format
-        convertImage(atURL: originalFileURL, with: properties) { [unowned self] updatedProperties, fileURL, error in
+        convertImage(atURL: originalFileURL, with: upload) { fileURL in
             // Get MD5 checksum and MIME type, update counter
-            self.finalizeImageFile(atURL: fileURL, with: updatedProperties) { finalProperties, error in
+            self.finalizeImageFile(atURL: fileURL, with: upload) {
                 // Update upload request
-                self.didPrepareImage(for: uploadID, with: finalProperties, error)
+                self.didPrepareImage(for: upload, nil)
+            } failure: { error in
+                self.didPrepareImage(for: upload, error)
             }
+        } failure: { error in
+            self.didPrepareImage(for: upload, error)
         }
     }
     
-    private func didPrepareImage(for uploadID: NSManagedObjectID,
-                                 with properties: UploadProperties, _ error: Error?) {
-        // Initialisation
-        var newProperties = properties
-        newProperties.requestState = .prepared
-        var errorMsg = ""
-        
+    private func didPrepareImage(for upload: Upload, _ error: Error?) {
         // Error?
         if let error = error {
-            newProperties.requestState = .preparingError
-            errorMsg = error.localizedDescription
+            upload.setState(.preparingError, error: error)
+            // Update UI
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
+                       photoMaxSize: nil, progress: nil, errorMsg: error.localizedDescription)
+        } else {
+            upload.setState(.prepared, error: nil)
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
+                       photoMaxSize: nil, progress: nil, errorMsg: "")
         }
 
-        // Update UI
-        updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel,
-                   photoMaxSize: nil, progress: nil, errorMsg: errorMsg)
-
-        // Update state of upload request
-        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName) \(errorMsg)")
-        uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
-            // Upload ready for transfer
+        // Upload ready for transfer
+        self.backgroundQueue.async {
             self.didEndPreparation()
         }
     }
@@ -99,8 +104,9 @@ extension UploadManager {
     // MARK: - Utilities    
     /// - Strip private metadata w/o recompression
     /// -> Return file URL w/ or w/o error
-    private func stripMetadataOfImage(atURL originalFileURL:URL, with properties: UploadProperties,
-                                      completionHandler: @escaping (URL, Error?) -> Void) {
+    private func stripMetadataOfImage(atURL originalFileURL:URL, with upload: Upload,
+                                      completion: @escaping (URL) -> Void,
+                                      failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
             let imageSourceOptions = [kCGImageSourceShouldCache      : false,
@@ -108,7 +114,7 @@ extension UploadManager {
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(originalFileURL, error)
+                failure(error)
                 return
             }
 
@@ -117,19 +123,19 @@ extension UploadManager {
             if nberOfImages == 0 {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(originalFileURL, error)
+                failure(error)
                 return
             }
 
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: properties, deleted: true)
+            let fileURL = getUploadFileURL(from: upload, deleted: true)
 
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(fileURL, error)
+                failure(error)
                 return
             }
 
@@ -148,10 +154,10 @@ extension UploadManager {
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(fileURL, error)
+                failure(error)
                 return
             }
-            completionHandler(fileURL, nil)
+            completion(fileURL)
         }
     }
     
@@ -160,8 +166,9 @@ extension UploadManager {
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    private func modifyImage(atURL originalFileURL:URL, with properties: UploadProperties,
-                             completionHandler: @escaping (URL, Error?) -> Void) {
+    private func modifyImage(atURL originalFileURL:URL, with upload: Upload,
+                             completion: @escaping (URL) -> Void,
+                             failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
             let imageSourceOptions = [kCGImageSourceShouldCacheImmediately : false,
@@ -169,7 +176,7 @@ extension UploadManager {
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(originalFileURL, error)
+                failure(error)
                 return
             }
             
@@ -178,19 +185,19 @@ extension UploadManager {
             if nberOfImages == 0 {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(originalFileURL, error)
+                failure(error)
                 return
             }
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: properties, deleted: true)
+            let fileURL = getUploadFileURL(from: upload, deleted: true)
 
             // Prepare destination file of same type with same number of images
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(fileURL, error)
+                failure(error)
                 return
             }
 
@@ -199,7 +206,7 @@ extension UploadManager {
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, imageSourceOptions) as? [CFString : Any] {
                 // Should we remove private metadata?
                 var options: [CFString : Any] = [:]
-                if properties.stripGPSdataOnUpload {
+                if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     options = containerProperties.stripPrivateProperties()
                 } else {
@@ -218,9 +225,9 @@ extension UploadManager {
             for imageIndex in 0..<nberOfImages {
                 // Should we resize the images?
                 var image:CGImage
-                if properties.resizeImageOnUpload, properties.photoMaxSize != 0 {
+                if upload.resizeImageOnUpload, upload.photoMaxSize != 0 {
                     // Set options for retrieving the primary image
-                    let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
+                    let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                          kCGImageSourceCreateThumbnailWithTransform   : false,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -229,7 +236,7 @@ extension UploadManager {
                                                                             resizeOptions as CFDictionary) else {
                         // Could not retrieve primary image
                         let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                        completionHandler(originalFileURL, error)
+                        failure(error)
                         return
                     }
                     image = resized
@@ -238,7 +245,7 @@ extension UploadManager {
                     guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                         // Could not retrieve primary image
                         let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                        completionHandler(originalFileURL, error)
+                        failure(error)
                         return
                     }
                     image = copied
@@ -249,7 +256,7 @@ extension UploadManager {
                 if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex,
                                                                             imageSourceOptions) as? [CFString : Any] {
                     // Should we remove private metadata?
-                    if properties.stripGPSdataOnUpload {
+                    if upload.stripGPSdataOnUpload {
                         // Removes private metadata attributed to this image
                         imageOptions = imageProperties.stripPrivateProperties()
                     }
@@ -263,8 +270,8 @@ extension UploadManager {
                 }
                 
                 // Should we compress the image?
-                if properties.compressImageOnUpload {
-                    let quality = CGFloat(properties.photoQuality) / 100.0
+                if upload.compressImageOnUpload {
+                    let quality = CGFloat(upload.photoQuality) / 100.0
                     imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
                 }
                         
@@ -276,10 +283,10 @@ extension UploadManager {
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(fileURL, error)
+                failure(error)
                 return
             }
-            completionHandler(fileURL, nil)
+            completion(fileURL)
         }
     }
 
@@ -288,8 +295,9 @@ extension UploadManager {
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
     /// -> Return file URL w/ or w/o error
-    private func convertImage(atURL originalFileURL:URL, with properties: UploadProperties,
-                              completionHandler: @escaping (UploadProperties, URL, Error?) -> Void) {
+    private func convertImage(atURL originalFileURL:URL, with upload: Upload,
+                              completion: @escaping (URL) -> Void,
+                              failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
             let imageSourceOptions = [kCGImageSourceShouldCacheImmediately : false,
@@ -297,7 +305,7 @@ extension UploadManager {
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(properties, originalFileURL, error)
+                failure(error)
                 return
             }
             
@@ -309,9 +317,9 @@ extension UploadManager {
             
             // Should we resize the image?
             var image:CGImage
-            if properties.resizeImageOnUpload, properties.photoMaxSize != 0 {
+            if upload.resizeImageOnUpload, upload.photoMaxSize != 0 {
                 // Set options for retrieving the primary image
-                let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
+                let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                      kCGImageSourceCreateThumbnailWithTransform   : false,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -320,7 +328,7 @@ extension UploadManager {
                                                                         resizeOptions as CFDictionary) else {
                     // Could not retrieve primary image
                     let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    completionHandler(properties, originalFileURL, error)
+                    failure(error)
                     return
                 }
                 image = resized
@@ -329,7 +337,7 @@ extension UploadManager {
                 guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                     // Could not retrieve primary image
                     let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    completionHandler(properties, originalFileURL, error)
+                    failure(error)
                     return
                 }
                 image = copied
@@ -337,7 +345,6 @@ extension UploadManager {
             
             // Prepare conversion to JPEG format
             var UTI: CFString, fileExt: String
-            var uploadProperties = properties
             if #available(iOSApplicationExtension 14.0, *) {
                 UTI = UTType.jpeg.identifier as CFString
                 fileExt = UTType.jpeg.preferredFilenameExtension!
@@ -346,16 +353,17 @@ extension UploadManager {
                 UTI = kUTTypeJPEG as CFString
                 fileExt = "jpeg"
             }
-            uploadProperties.fileName = URL(fileURLWithPath: properties.fileName).deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
+            upload.fileName = URL(fileURLWithPath: upload.fileName)
+                .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: properties, deleted: true)
+            let fileURL = getUploadFileURL(from: upload, deleted: true)
 
             // Prepare destination file of JPEG type with a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(uploadProperties, fileURL, error)
+                failure(error)
                 return
             }
             
@@ -364,7 +372,7 @@ extension UploadManager {
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, imageSourceOptions) as? [CFString : Any] {
                 // Should we remove private metadata?
                 var options: [CFString : Any] = [:]
-                if properties.stripGPSdataOnUpload {
+                if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     options = containerProperties.stripPrivateProperties()
                 } else {
@@ -384,7 +392,7 @@ extension UploadManager {
             if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex,
                                                                         imageSourceOptions) as? [CFString : Any] {
                 // Should we remove private metadata?
-                if properties.stripGPSdataOnUpload {
+                if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     imageOptions = imageProperties.stripPrivateProperties()
                 }
@@ -398,8 +406,8 @@ extension UploadManager {
             }
             
             // Should we compress the image?
-            if properties.compressImageOnUpload {
-                let quality = CGFloat(properties.photoQuality) / 100.0
+            if upload.compressImageOnUpload {
+                let quality = CGFloat(upload.photoQuality) / 100.0
                 imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
             }
                     
@@ -410,10 +418,10 @@ extension UploadManager {
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(uploadProperties, fileURL, error)
+                failure(error)
                 return
             }
-            completionHandler(uploadProperties, fileURL, nil)
+            completion(fileURL)
         }
     }
 }

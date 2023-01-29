@@ -242,6 +242,33 @@ extension AlbumViewController
 
         // Let's delete all images at once
         ImageUtilities.delete(toDelete) { [self] in
+            // Remove images from cache
+            for imageData in toDelete {
+                // Delete image from cache (also deletes image files)
+                self.mainContext.delete(imageData)
+
+                // Retrieve albums associated to the deleted image
+                if let albums = imageData.albums {
+                    // Remove image from cached albums
+                    albums.forEach { album in
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                    }
+                }
+            }
+            
+            // Save changes
+            do {
+                try self.mainContext.save()
+            } catch let error as NSError {
+                print("Could not save albums after image deletion \(error), \(error.userInfo)")
+            }
+
+            // Update cache so that these images can re-uploaded.
+            UploadManager.shared.backgroundQueue.async {
+                let imageIDs = Array(toDelete).map({$0.pwgID})
+                UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: imageIDs)
+            }
+
             // Hide HUD
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in

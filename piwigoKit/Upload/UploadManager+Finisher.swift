@@ -12,29 +12,29 @@ import Photos
 extension UploadManager {
     
     // MARK: - Finish Uploading Image
-    func setImageParameters(for uploadID: NSManagedObjectID,
-                            with uploadProperties: UploadProperties) {
+    func setImageParameters(for upload: Upload) {
         print("\(debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
         
         // Prepare creation date
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
+        let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
         let creationDate = dateFormat.string(from: date)
 
         // Prepare parameters for setting the image/video data
-        let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
-        let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
-        let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
+        let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
+        let author = NetworkUtilities.utf8mb3String(from: upload.author)
+        let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
+        let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         let paramsDict: [String : Any] = [
-            "image_id"            : "\(NSNumber(value: uploadProperties.imageId))",
-            "file"                : uploadProperties.fileName,
+            "image_id"            : "\(NSNumber(value: upload.imageId))",
+            "file"                : upload.fileName,
             "name"                : imageTitle,
             "author"              : author,
             "date_creation"       : creationDate,
-            "level"               : "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
+            "level"               : "\(NSNumber(value: upload.privacyLevel))",
             "comment"             : comment,
-            "tag_ids"             : uploadProperties.tagIds,
+            "tag_ids"             : tagIDs,
             "single_value_mode"   : "replace",
             "multiple_value_mode" : "replace"]
         
@@ -54,32 +54,32 @@ extension UploadManager {
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
-                    self.didFinishTransfer(for: uploadID, error: error)
+                    self.didFinishTransfer(for: upload, error: error)
                     return
                 }
 
                 // Successful?
                 if uploadJSON.success {
                     // Image successfully uploaded and set
-                    self.didFinishTransfer(for: uploadID, error: nil)
+                    self.didFinishTransfer(for: upload, error: nil)
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    self.didFinishTransfer(for: uploadID, error: error)
+                    self.didFinishTransfer(for: upload, error: error)
                     return
                 }
             } catch {
                 // Data cannot be digested, upload still ready for finish
                 let error = error as NSError
-                self.didFinishTransfer(for: uploadID, error: error)
+                self.didFinishTransfer(for: upload, error: error)
                 return
             }
         } failure: { error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            self.didFinishTransfer(for: uploadID, error: error)
+            self.didFinishTransfer(for: upload, error: error)
         }
     }
 
@@ -88,13 +88,12 @@ extension UploadManager {
      and one must trigger manually their addition to the database.
      If not, they will be added after some delay (12 minutes).
      */
-    func emptyLounge(for uploadID: NSManagedObjectID,
-                     with uploadProperties: UploadProperties) {
+    func emptyLounge(for upload: Upload) {
         print("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
         
-        processImages(withIds: "\(uploadProperties.imageId)",
-                      inCategory: uploadProperties.category) { [unowned self] error in
-            self.didFinishTransfer(for: uploadID, error: error)
+        processImages(withIds: "\(upload.imageId)",
+                      inCategory: upload.category) { [unowned self] error in
+            self.didFinishTransfer(for: upload, error: error)
         }
     }
 
@@ -147,22 +146,16 @@ extension UploadManager {
         }
     }
 
-    private func didFinishTransfer(for uploadID: NSManagedObjectID, error: Error?) {
-
-        // Initialisation
-        var newState: pwgUploadState = .finished
-        var errorMsg = ""
-        
+    private func didFinishTransfer(for upload: Upload, error: Error?) {
         // Error?
         if let error = error {
-            newState = .finishingError
-            errorMsg = error.localizedDescription
+            upload.setState(.finishingError, error: error)
+        } else {
+            upload.setState(.finished, error: nil)
         }
 
-        // Update state of finished upload
-        print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
-        uploadProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
-            // Consider next image
+        // Consider next image
+        backgroundQueue.async {
             self.didFinishTransfer()
         }
     }

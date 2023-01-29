@@ -28,15 +28,15 @@ public class UploadManager: NSObject {
     /// - image formats which can be converted with iOS
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
-    @nonobjc let acceptedImageFormats: String = {
+    let acceptedImageFormats: String = {
         return "heic,heif,png,gif,jpg,jpeg,webp,tif,tiff,bmp,raw,ico,icns"
     }()
-    @nonobjc let acceptedMovieFormats: String = {
+    let acceptedMovieFormats: String = {
         return "mov,mpg,mpeg,mpeg2,mp4,avi"
     }()
 
     // For logs
-    @nonobjc let debugFormatter: DateFormatter = {
+    let debugFormatter: DateFormatter = {
         var formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.ssssss"
@@ -73,6 +73,8 @@ public class UploadManager: NSObject {
         return anURL
     }()
     
+    let frgdSession: URLSession = UploadSessions.shared.frgdSession
+    let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()
     
     deinit {
@@ -96,9 +98,47 @@ public class UploadManager: NSObject {
         return provider
     }()
 
-    lazy var uploadProvider: UploadProvider = {
+    public lazy var uploadProvider: UploadProvider = {
         let provider : UploadProvider = UploadProvider()
         return provider
+    }()
+
+
+    // MARK: - Core Data Source
+    lazy var predicates: [NSPredicate] = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return andPredicates
+    }()
+
+    lazy var fetchUploadsRequest: NSFetchRequest = {
+        // Sort uploads by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Upload.fetchRequest()
+
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves only non-completed upload requests
+        var andPredicates = predicates
+        let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                        .preparingFail, .formatError, .prepared,
+                                        .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                        .finishing, .finishingError]
+        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var uploads: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchUploadsRequest,
+                                                 managedObjectContext: self.bckgContext,
+                                                 sectionNameKeyPath: nil, cacheName: nil)
+//        uploads.delegate = self
+        return uploads
     }()
 
     
@@ -153,7 +193,7 @@ public class UploadManager: NSObject {
     // MARK: - Foreground Upload Task Manager
     // Images are uploaded as follows:
     /// - Photos are prepared with appropriate metadata in a format accepted by the server
-    /// - Videos are exported in MP4 fomat and uploaded (VideoJS plugin expected)
+    /// - Videos are exported in MP4 fomat and uploaded if the VideoJS plugin is installed
     /// - Images are uploaded with one of the following methods:
     ///      - pwg.images.upload: old method unable to set the image title
     ///        This requires a call to pwg.images.setInfo to set the title after the transfer.
@@ -166,147 +206,148 @@ public class UploadManager: NSObject {
         // Check current queue
         print("\(debugFormatter.string(from: Date())) > findNextImageToUpload() in", queueName())
         print("\(debugFormatter.string(from: Date())) > preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
+        
+        // Perform fetch
+        do {
+            try uploads.performFetch()
+        }
+        catch {
+            print("Error: \(error)")
+        }
 
-        autoreleasepool {
-            // Update app badge and Upload button in root/default album
-            // Considers only uploads to the server to which the user is logged in
-            var states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                            .finishing, .finishingError]
-            nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
-    //        return // for debugging background tasks
+        // Update app badge and Upload button in root/default album
+        // Considers only uploads to the server to which the user is logged in
+        var states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
+                                        .preparingFail, .formatError, .prepared,
+                                        .uploading, .uploadingError, .uploadingFail, .uploaded,
+                                        .finishing, .finishingError]
+        nberOfUploadsToComplete = uploads.fetchedObjects?.count ?? 0
+//        return // for debugging background tasks
 
-            // Pause upload manager if:
-            /// - app not in the foreground anymore
-            /// - executing a background task
-            if isPaused || isExecutingBackgroundUploadTask { return }
+        // Pause upload manager if:
+        /// - app not in the foreground anymore
+        /// - executing a background task
+        /// - in Low Power mode
+        /// - Wi-Fi required but unavailable
+        if isPaused || isExecutingBackgroundUploadTask ||
+            ProcessInfo.processInfo.isLowPowerModeEnabled ||
+            (UploadVars.wifiOnlyUploading && !NetworkVars.isConnectedToWiFi()) {
+            return
+        }
 
-            // Determine the Power State and if it should wait
-            if ProcessInfo.processInfo.isLowPowerModeEnabled || isPaused {
-                // Low Power Mode is enabled. Stop transferring images.
-                return
-            }
-            
-            // Check network access and status
-            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
-                return
-            }
-
-            // Interrupted work should be set as if an error was encountered
-            /// - case of finishes
-            let finishingIDs = uploadProvider.getRequests(inStates: [.finishing]).1
-            if !isFinishing {
-                // Transfers encountered an error
-                for uploadID in finishingIDs {
-                    print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
-                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
-                        self.findNextImageToUpload()
-                        return
-                    }
-                }
-            }
-            /// - case of transfers (a few transfers may be running in parallel)
-            let uploadingIDs = uploadProvider.getRequests(inStates: [.uploading]).1
-            for uploadID in uploadingIDs {
-                if !isUploading.contains(uploadID) {
+        // Interrupted work should be set as if an error was encountered
+        /// - case of finishing uploads
+        let finishing = uploads.fetchedObjects?.filter({$0.state == .finishing}) ?? []
+        if !isFinishing, finishing.count > 0 {
+            // Transfers encountered an error
+            finishing.forEach({ upload in
+                upload.setState(.finishingError, error: JsonError.networkUnavailable)
+            })
+            findNextImageToUpload()
+            return
+        }
+        /// - case of transfers (a few transfers may be running in parallel)
+        let uploading = uploads.fetchedObjects?.filter({$0.state == .uploading}) ?? []
+        if isUploading.isEmpty == false, uploading.count > 0 {
+            for upload in uploading {
+                if isUploading.contains(upload.objectID) == false {
                     // Transfer encountered an error
-                    print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
-                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
-                        self.findNextImageToUpload()
-                        return
-                    }
+                    upload.setState(.uploadingError, error: JsonError.networkUnavailable)
+                    findNextImageToUpload()
                 }
             }
-            /// - case of preparations
-            let preparingIDs = uploadProvider.getRequests(inStates: [.preparing]).1
-            if !isPreparing {
-                // Preparations encountered an error
-                for uploadID in preparingIDs {
-                    print("\(debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID.uriRepresentation())")
-                    uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingError, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
-                        self.findNextImageToUpload()
-                        return
-                    }
-                }
+            return
+        }
+        /// - case of upload preparation
+        let preparing = uploads.fetchedObjects?.filter({$0.state == .preparing}) ?? []
+        if isPreparing == false, preparing.count > 0 {
+            // Preparations encountered an error
+            preparing.forEach { upload in
+                upload.setState(.preparingError, error: UploadError.missingAsset)
             }
+            findNextImageToUpload()
+            return
+        }
 
-            // How many upload requests did fail?
-            let failedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                       .uploadingError, .uploadingFail]).1.count
-            // Too many failures?
-            if failedUploads >= maxNberOfFailedUploads { return }
+        // How many upload requests did fail?
+        let failedUploads = uploads.fetchedObjects?
+            .filter({[.preparingError, .preparingFail,
+                      .uploadingError, .uploadingFail].contains($0.state)}).count ?? 0
 
-            // Not finishing and upload request to finish?
-            /// Called when:
-            /// - uploading with pwg.images.upload because the title cannot be set during the upload.
-            /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
-            if !isFinishing,
-               let uploadID = uploadProvider.getRequests(inStates: [.uploaded]).1.first {
-                
-                // Pause upload manager if the app is not in the foreground anymore
-                if isPaused { return }
-                
-                // Upload file ready, so we start the transfer
-                self.finishTransfer(of: uploadID)
-                return
-            }
+        // Too many failures?
+        if failedUploads >= maxNberOfFailedUploads {
+            return
+        }
 
-            // Not transferring and file ready for transfer?
-            if isUploading.count < maxNberOfTransfers,
-               let uploadID = uploadProvider.getRequests(inStates: [.prepared]).1.first {
-
-                // Pause upload manager if the app is not in the foreground anymore
-                if isPaused { return }
-
-                // Upload file ready, so we start the transfer
-                self.launchTransfer(of: uploadID)
-                return
-            }
+        // Not finishing and upload request to finish?
+        /// Called when:
+        /// - uploading with pwg.images.upload because the title cannot be set during the upload.
+        /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
+        if !isFinishing,
+           let uploaded = uploads.fetchedObjects?.first(where: {$0.state == .uploaded}) {
             
-            // Not preparing and upload request waiting?
-            let nberPrepared = uploadProvider.getRequests(inStates: [.prepared]).0.count
-            if !isPreparing, nberPrepared < maxNberPreparedUploads,
-               let uploadID = uploadProvider.getRequests(inStates: [.waiting]).1.first {
-
-                // Pause upload manager if the app is not in the foreground anymore
-                if isPaused { return }
-
-                // Prepare the next upload
-                self.prepare(for: uploadID)
-                return
-            }
+            // Pause upload manager if the app is not in the foreground anymore
+            if isPaused { return }
             
-            // No more image to transfer ;-)
-            // Moderate images uploaded by Community regular user
-            // Considers only uploads to the server to which the user is logged in
-            let finishedUploads = uploadProvider.getRequests(inStates: [.finished]).1
-            if NetworkVars.userStatus == .normal,
-               NetworkVars.usesCommunityPluginV29, finishedUploads.count > 0 {
+            // Upload file ready, so we start the transfer
+            self.finishTransfer(of: uploaded)
+            return
+        }
 
-                // Pause upload manager if the app is not in the foreground anymore
-                if isPaused { return }
+        // Not transferring and file ready for transfer?
+        if isUploading.count < maxNberOfTransfers,
+           let prepared = uploads.fetchedObjects?.first(where: {$0.state == .prepared}) {
 
-                // Moderate uploaded images
-                self.moderate(completedRequests: finishedUploads)
-                return
-            }
+            // Pause upload manager if the app is not in the foreground anymore
+            if isPaused { return }
 
-            // Suggest to delete images from the Photo Library if the user wanted it.
-            // The deletion is suggested when there is no more upload to perform.
-            // Note that some uploads may have failed and waiting a user decision.
-            states = [.waiting, .preparing, .prepared,
-                      .uploading, .uploaded, .finishing]
-            if uploadProvider.getRequests(inStates: states).0.count > 0 { return }
-            
-            // Upload requests are completed
-            // Considers only uploads to the server to which the user is logged in
-            let (imageIDs, uploadIDs) = uploadProvider.getRequests(inStates: [.finished, .moderated],
-                                                                    markedForDeletion: true)
-            if imageIDs.isEmpty == false, uploadIDs.isEmpty == false {
-                print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
-                self.delete(uploadedImages: imageIDs, with: uploadIDs)
-            }
+            // Upload file ready, so we start the transfer
+            self.launchTransfer(of: prepared)
+            return
+        }
+        
+        // Not preparing and upload request waiting?
+        let nberPrepared = uploads.fetchedObjects?.filter({$0.state == .prepared}).count ?? 0
+        if !isPreparing, nberPrepared < maxNberPreparedUploads,
+           let waiting = uploads.fetchedObjects?.first(where: {$0.state == .waiting}) {
+
+            // Pause upload manager if the app is not in the foreground anymore
+            if isPaused { return }
+
+            // Prepare the next upload
+            self.prepare(waiting)
+            return
+        }
+        
+        // No more image to transfer ;-)
+        // Moderate images uploaded by Community regular user
+        // Considers only uploads to the server to which the user is logged in
+        let finished = uploads.fetchedObjects?.filter({$0.state == .finished}) ?? []
+        if NetworkVars.userStatus == .normal,
+           NetworkVars.usesCommunityPluginV29, finished.count > 0 {
+
+            // Pause upload manager if the app is not in the foreground anymore
+            if isPaused { return }
+
+            // Moderate uploaded images
+            self.moderate(completedRequests: finished.map({$0.objectID}))
+            return
+        }
+
+        // Suggest to delete images from the Photo Library if the user wanted it.
+        // The deletion is suggested when there is no more upload to perform.
+        // Note that some uploads may have failed and waiting a user decision.
+        states = [.waiting, .preparing, .prepared,
+                  .uploading, .uploaded, .finishing]
+        if uploads.fetchedObjects?.filter({states.contains($0.state)}).count ?? 0 > 0 { return }
+        
+        // Upload requests are completed
+        // Considers only uploads to the server to which the user is logged in
+        let (imageIDs, uploadIDs) = uploadProvider.getRequests(inStates: [.finished, .moderated],
+                                                                markedForDeletion: true)
+        if imageIDs.isEmpty == false, uploadIDs.isEmpty == false {
+            print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
+            self.delete(uploadedImages: imageIDs, with: uploadIDs)
         }
     }
 
@@ -334,6 +375,14 @@ public class UploadManager: NSObject {
 
     public func initialiseBckgTask(autoUploadOnly: Bool = false,
                                    triggeredByExtension: Bool = false) -> Void {
+        // Perform fetch
+        do {
+            try uploads.performFetch()
+        }
+        catch {
+            print("Error: \(error)")
+        }
+
         // Decisions will be taken for a background task
         isExecutingBackgroundUploadTask = true
         
@@ -352,44 +401,44 @@ public class UploadManager: NSObject {
         uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
         // First, find upload requests whose transfer did fail
-        let failedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                   .uploadingError, .uploadingFail],
-                                                        markedForAutoUpload: autoUploadOnly).1
+        let states: [pwgUploadState] = [.preparingError, .preparingFail,
+                                        .uploadingError, .uploadingFail]
+        let failedUploads = uploads.fetchedObjects?
+            .filter({states.contains($0.state) && $0.markedForAutoUpload == autoUploadOnly}) ?? []
+
         // Too many failures?
         if failedUploads.count >= maxNberOfFailedUploads { return }
 
         // Will retry a few…
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
-            uploadRequestsToTransfer = Set(failedUploads)
+            uploadRequestsToTransfer = Set(failedUploads.map({$0.objectID}))
             print("\(debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
         }
         
         // Second, find upload requests ready for transfer
-        let preparedUploads = uploadProvider.getRequests(inStates: [.prepared],
-                                                          markedForAutoUpload: autoUploadOnly).1
+        let preparedUploads = uploads.fetchedObjects?
+            .filter({$0.state == .prepared && $0.markedForAutoUpload == autoUploadOnly}) ?? []
         if preparedUploads.count > 0 {
             // Will then launch transfers of prepared uploads
+            let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
-                .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
-            print("\(debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads")
+                .union(Set(prepared[..<min(maxNberOfUploadsPerBckgTask,prepared.count)]))
+            print("\(debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
         }
         
         // Finally, get list of upload requests to prepare
         let diff = maxNberPreparedUploads - uploadRequestsToTransfer.count
         if diff <= 0 { return }
-        let requestsToPrepare = uploadProvider.getRequests(inStates: [.waiting],
-                                                            markedForAutoUpload: autoUploadOnly).1
+        let requestsToPrepare = uploads.fetchedObjects?
+            .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly}) ?? []
         print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
-        uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        let toPrepare = preparedUploads.map({$0.objectID})
+        uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
     
     public func resumeTransfers() -> Void {
         // Get active upload tasks and initialise isUploading
-        let taskContext = DataController.shared.bckgContext
-        let frgdSession: URLSession = UploadSessions.shared.frgdSession
-        let bckgSession: URLSession = UploadSessions.shared.bckgSession
-
         frgdSession.getAllTasks { [unowned self] uploadTasks in
             // Loop over the tasks launched in the foreground
             for task in uploadTasks {
@@ -401,7 +450,7 @@ public class UploadManager: NSObject {
                         print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                    guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                         print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
@@ -431,7 +480,7 @@ public class UploadManager: NSObject {
                             print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                             continue
                         }
-                        guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                        guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                             print("\(debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                             continue
                         }
@@ -451,9 +500,10 @@ public class UploadManager: NSObject {
 
                 // Relaunch transfers if necessary and possible
                 if self.isUploading.count < maxNberOfTransfers,
-                   let uploadID = self.uploadRequestsToTransfer.first {
+                   let uploadID = self.uploadRequestsToTransfer.first,
+                   let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) {
                     // Launch transfer
-                    self.launchTransfer(of: uploadID)
+                    self.launchTransfer(of: upload)
                 }
             }
         }
@@ -462,9 +512,10 @@ public class UploadManager: NSObject {
     public func appendUploadRequestsToPrepareToBckgTask() -> Void {
         // Add image preparation followed by transfer operations
         if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
-           let uploadID = uploadRequestsToPrepare.first {
+           let uploadID = uploadRequestsToPrepare.first,
+           let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) {
             // Prepare image for transfer
-            prepare(for: uploadID)
+            prepare(upload)
         }
         if uploadRequestsToPrepare.isEmpty == false {
             // Remove objectID
@@ -474,56 +525,27 @@ public class UploadManager: NSObject {
     
     
     // MARK: - Prepare image
-    public let maxNberPreparedUploads = 10
-    private var _isPreparing = false
-    private var isPreparing: Bool {
-        get {
-            return _isPreparing
-        }
-        set(isPreparing) {
-            _isPreparing = isPreparing
-        }
-    }
+    /// - One image at once
+    /// - Maximum of 10 images prepared in advance
+    private let maxNberPreparedUploads = 10
+    private var isPreparing = false
 
-    func prepare(for uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) >> prepare \(uploadID.uriRepresentation())")
+    func prepare(_ upload: Upload) -> Void {
+        print("\(debugFormatter.string(from: Date())) > prepare \(upload.objectID.uriRepresentation())")
 
         // Update upload status
         isPreparing = true
 
-        // Retrieve upload request properties
-        var uploadProperties: UploadProperties!
-        do {
-            let upload = try bckgContext.existingObject(with: uploadID)
-            if upload.isFault {
-                // The upload request is not fired yet.
-                upload.willAccessValue(forKey: nil)
-                uploadProperties = (upload as! Upload).getProperties()
-                upload.didAccessValue(forKey: nil)
-            } else {
-                uploadProperties = (upload as! Upload).getProperties()
-            }
-        }
-        catch {
-            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
-            // Request not available…!?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
-            return
-        }
-
         // Update UI
         if !isExecutingBackgroundUploadTask {
-            updateCell(with: uploadProperties.localIdentifier,
+            updateCell(with: upload.localIdentifier,
                        stateLabel: pwgUploadState.preparing.stateInfo,
-                       photoMaxSize: Int16(uploadProperties.photoMaxSize),
+                       photoMaxSize: upload.photoMaxSize,
                        progress: nil, errorMsg: "")
         }
         
         // Add category to list of recent albums
-        let userInfo = ["categoryId": uploadProperties.category]
+        let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Determine from where the file comes from:
@@ -532,22 +554,19 @@ public class UploadManager: NSObject {
         //    where "typ" is "img" (photo) or "mov" (video).
         // => Intent: use identifier of type "Intent-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if uploadProperties.localIdentifier.hasPrefix(kIntentPrefix) {
+        if upload.localIdentifier.hasPrefix(kIntentPrefix) {
             // Case of an image submitted by an intent
-            prepareImageFromIntent(for: uploadID, with: uploadProperties)
-        } else if uploadProperties.localIdentifier.hasPrefix(kClipboardPrefix) {
+            prepareImageFromIntent(for: upload)
+        } else if upload.localIdentifier.hasPrefix(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
-            prepareImageInPasteboard(for: uploadID, with: uploadProperties)
+            prepareImageInPasteboard(for: upload)
         } else {
             // Case of an image from the local Photo Library
-            prepareImageInPhotoLibrary(for: uploadID, with: uploadProperties)
+            prepareImageInPhotoLibrary(for: upload)
         }
     }
     
-    private func prepareImageFromIntent(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
-        // Will update upload properties
-        var uploadProperties = properties
-
+    private func prepareImageFromIntent(for upload: Upload) {
         // Determine non-empty unique file name and extension from identifier
         var files = [URL]()
         do {
@@ -559,49 +578,43 @@ public class UploadManager: NSObject {
         catch {
             files = []
         }
-        guard files.count > 0, let fileURL = files.filter({$0.lastPathComponent.hasPrefix(uploadProperties.localIdentifier)}).first else {
+        guard files.count > 0,
+              let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            upload.setState(.preparingFail, error: UploadError.missingAsset)
+            
+            // Update UI
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
 
-                // Update UI
-                updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                           photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
- 
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
             return
         }
         
         // Add prefix if requested by user
-        var fileName = uploadProperties.fileName
-        if uploadProperties.prefixFileNameBeforeUpload {
-            if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
-                fileName = uploadProperties.defaultPrefix + fileName
+        var fileName = upload.fileName
+        if upload.prefixFileNameBeforeUpload {
+            if !fileName.hasPrefix(upload.defaultPrefix) {
+                fileName = upload.defaultPrefix + fileName
             }
         }
         
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        uploadProperties.fileName = NetworkUtilities.utf8mb3String(from: fileName)
+        upload.fileName = NetworkUtilities.utf8mb3String(from: fileName)
 
         // Launch preparation job (limited to stripping metadata)
         if fileURL.lastPathComponent.contains("img") {
-            uploadProperties.isVideo = false
+            upload.isVideo = false
 
-            // Update state of upload
-            uploadProperties.requestState = .preparing
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Launch preparation job
-                self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
-            }
+            // Update state of upload and launch preparation job
+            upload.setState(.preparing, error: nil)
+            prepareImage(atURL: fileURL, for: upload)
             return
         }
     }
     
-    private func prepareImageInPasteboard(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
-        // Will update upload properties
-        var uploadProperties = properties
-
+    private func prepareImageInPasteboard(for upload: Upload) {
         // Determine non-empty unique file name and extension from identifier
         var files = [URL]()
         do {
@@ -613,31 +626,31 @@ public class UploadManager: NSObject {
         catch {
             files = []
         }
-        guard files.count > 0, let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
+        guard files.count > 0,
+              let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+            upload.setState(.preparingFail, error: UploadError.missingAsset)
+            
+            // Update UI
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
+                       photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
 
-                // Update UI
-                updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
-                           photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.preparingFail.stateInfo)
- 
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
             return
         }
         var fileName = fileURL.lastPathComponent
 
         // Check/update serverFileTypes if possible
-        let fileTypes = UploadVars.serverFileTypes
-        if fileTypes.isEmpty == false {
-            uploadProperties.serverFileTypes = fileTypes
-        }
+//        let fileTypes = UploadVars.serverFileTypes
+//        if fileTypes.isEmpty == false {
+//            uploadProperties.serverFileTypes = fileTypes
+//        }
 
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = fileURL.pathExtension.lowercased()
         if fileName.contains("img") {
-            uploadProperties.isVideo = false
+            upload.isVideo = false
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
@@ -649,55 +662,50 @@ public class UploadManager: NSObject {
             }
 
             // Add prefix if requested by user
-            if uploadProperties.prefixFileNameBeforeUpload {
-                if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
-                    fileName = uploadProperties.defaultPrefix + fileName
+            if upload.prefixFileNameBeforeUpload {
+                if !fileName.hasPrefix(upload.defaultPrefix) {
+                    fileName = upload.defaultPrefix + fileName
                 }
             }
-            uploadProperties.fileName = fileName
+            upload.fileName = fileName
 
             // Chek that the image format is accepted by the Piwigo server
-            if uploadProperties.serverFileTypes.contains(fileExt) {
+            if UploadVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
-                // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+                
+                // Launch preparation job
+                prepareImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg"),
+            if UploadVars.serverFileTypes.contains("jpg"),
                acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > converting photo \(upload.fileName)…")
                 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+                try? bckgContext.save()
+                
+                // Launch preparation job
+                prepareImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            uploadProperties.requestState = .formatError
+            upload.setState(.formatError, error: nil)
 
             // Update UI
-            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
                        photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
             // Update upload request
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            didEndPreparation()
         }
         else if fileName.contains("mov") {
-            uploadProperties.isVideo = true
+            upload.isVideo = true
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
@@ -709,97 +717,79 @@ public class UploadManager: NSObject {
             }
 
             // Add prefix if requested by user
-            if uploadProperties.prefixFileNameBeforeUpload {
-                if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
-                    fileName = uploadProperties.defaultPrefix + fileName
+            if upload.prefixFileNameBeforeUpload {
+                if !fileName.hasPrefix(upload.defaultPrefix) {
+                    fileName = upload.defaultPrefix + fileName
                 }
             }
-            uploadProperties.fileName = fileName
+            upload.fileName = fileName
 
             // Chek that the video format is accepted by the Piwigo server
-            if uploadProperties.serverFileTypes.contains(fileExt) {
+            if UploadVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > preparing video \(upload.fileName)…")
 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.prepareVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+                prepareVideo(atURL: fileURL, for: upload)
                 return
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4"),
+            if UploadVars.serverFileTypes.contains("mp4"),
                acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > converting video \(upload.fileName)…")
 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.convertVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+                convertVideo(atURL: fileURL, for: upload)
                 return
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            uploadProperties.requestState = .formatError
+            upload.setState(.formatError, error: nil)
 
             // Update UI
-            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
                        photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
-            // Update upload request
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
         }
         else {
             // Unknown type
-            uploadProperties.requestState = .formatError
+            upload.setState(.formatError, error: nil)
 
             // Update UI
-            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
                        photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
-            // Update upload request
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
         }
     }
     
-    private func prepareImageInPhotoLibrary(for uploadID: NSManagedObjectID,
-                                            with properties: UploadProperties) {
-        // Will update upload properties
-        var uploadProperties = properties
-
+    private func prepareImageInPhotoLibrary(for upload: Upload) {
         // Retrieve image asset
-        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadProperties.localIdentifier], options: nil)
+        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            upload.setState(.preparingFail, error: UploadError.missingAsset)
+            self.didEndPreparation()
             return
         }
 
         // Retrieve creation date
         if let creationDate = originalAsset.creationDate {
-            uploadProperties.creationDate = creationDate.timeIntervalSinceReferenceDate
+            upload.creationDate = creationDate.timeIntervalSinceReferenceDate
         } else {
-            uploadProperties.creationDate = Date().timeIntervalSinceReferenceDate
+            upload.creationDate = Date().timeIntervalSinceReferenceDate
         }
         
         // Get URL of image file to be stored into Piwigo/Uploads directory
         // and deletes temporary image file if exists (incomplete previous attempt?)
-        let fileURL = getUploadFileURL(from: uploadProperties, withSuffix: kOriginalSuffix, deleted: true)
+        let fileURL = getUploadFileURL(from: upload, withSuffix: kOriginalSuffix, deleted: true)
 
         // Retrieve asset resources
         var resources = PHAssetResource.assetResources(for: originalAsset)
@@ -842,166 +832,155 @@ public class UploadManager: NSObject {
                     }
                 }
                 
-                uploadProperties.fileName = utf8mb3Filename
-                self.dispatchImage(asset: originalAsset, atURL:fileURL,
-                                   for: uploadID, with: uploadProperties)
+                upload.fileName = utf8mb3Filename
+                self.dispatchImage(asset: originalAsset, atURL:fileURL, for: upload)
             }
         }
         else {
             // Asset not available… deleted?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            upload.setState(.preparingFail, error: UploadError.missingAsset)
+            
+            // Investigate next upload request?
+            self.didEndPreparation()
         }
         
         // Release memory
         resources.removeAll(keepingCapacity: false)
     }
     
-    private func dispatchImage(asset originalAsset:PHAsset, atURL uploadFileURL:URL,
-                               for uploadID:NSManagedObjectID, with properties:UploadProperties) {
-        // Will update upload properties
-        var uploadProperties = properties
-
+    private func dispatchImage(asset originalAsset:PHAsset, atURL uploadFileURL:URL, for upload: Upload) {
         // Append prefix provided by user if requested
-        let fileName = properties.fileName
-        if uploadProperties.prefixFileNameBeforeUpload {
-            if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
-                uploadProperties.fileName = uploadProperties.defaultPrefix + fileName
+        let fileName = upload.fileName
+        if upload.prefixFileNameBeforeUpload {
+            if !fileName.hasPrefix(upload.defaultPrefix) {
+                upload.fileName = upload.defaultPrefix + fileName
             }
         }
         
         // Check/update serverFileTypes if possible
-        let fileTypes = UploadVars.serverFileTypes
-        if fileTypes.isEmpty == false {
-            uploadProperties.serverFileTypes = fileTypes
-        }
+//        let fileTypes = UploadVars.serverFileTypes
+//        if fileTypes.isEmpty == false {
+//            uploadProperties.serverFileTypes = fileTypes
+//        }
         
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         switch originalAsset.mediaType {
         case .image:
-            uploadProperties.isVideo = false
+            upload.isVideo = false
             // Chek that the image format is accepted by the Piwigo server
-            if uploadProperties.serverFileTypes.contains(fileExt) {
+            if UploadVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.prepareImage(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+                
+                // Launch preparation job
+                self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg"),
+            if UploadVars.serverFileTypes.contains("jpg"),
                acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > converting photo \(upload.fileName)…")
                 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-                    self.convertImage(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+
+                // Launch preparation job
+                self.convertImage(atURL: uploadFileURL, for: upload)
                 return
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            uploadProperties.requestState = .formatError
+            upload.setState(.formatError, error: nil)
 
             // Update UI
-            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
                        photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
-            // Update upload request
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
         case .video:
-            uploadProperties.isVideo = true
+            upload.isVideo = true
             // Chek that the video format is accepted by the Piwigo server
-            if uploadProperties.serverFileTypes.contains(fileExt) {
+            if UploadVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > preparing video \(upload.fileName)…")
 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-//                    self.prepareVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
-                    self.prepareVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+
+                // Launch preparation job
+//                self.prepareVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
+                self.prepareVideo(ofAsset: originalAsset, for: upload)
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4"),
+            if UploadVars.serverFileTypes.contains("mp4"),
                acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
+                print("\(debugFormatter.string(from: Date())) > converting video \(upload.fileName)…")
 
                 // Update state of upload
-                uploadProperties.requestState = .preparing
-                uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                    // Launch preparation job
-//                    self.convertVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
-                    self.convertVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
-                }
+                upload.setState(.preparing, error: nil)
+
+                // Launch preparation job
+//                self.convertVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
+                self.convertVideo(ofAsset: originalAsset, for: upload)
                 return
             }
+            
             // Video file format cannot be accepted by the Piwigo server
-            uploadProperties.requestState = .formatError
+            upload.setState(.formatError, error: nil)
 
             // Update UI
-            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
                        photoMaxSize: nil, progress: nil, errorMsg: pwgUploadState.formatError.stateInfo)
             
-            // Update upload request
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            // Investigate next upload request?
+            self.didEndPreparation()
 //                showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .\(fileExt.uppercased()) are not accepted by the Piwigo server."), forRetrying: false, withImage: uploadToPrepare)
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            uploadProperties.requestState = .formatError
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            upload.setState(.formatError, error: nil)
+
+            // Investigate next upload request?
+            self.didEndPreparation()
 //            showError(withTitle: NSLocalizedString("audioUploadError_title", comment: "Audio Upload Error"), andMessage: NSLocalizedString("audioUploadError_format", comment: "Sorry, audio files are not supported by Piwigo Mobile yet."), forRetrying: false, withImage: uploadToPrepare)
 
         case .unknown:
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            uploadProperties.requestState = .formatError
-            uploadProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndPreparation()
-            }
+            upload.setState(.formatError, error: nil)
+
+            // Investigate next upload request?
+            self.didEndPreparation()
         }
     }
 
     func didEndPreparation() {
-        _isPreparing = false
+        // Save Upload requests
+        try? bckgContext.save()
+        
+        // Running in background or foreground?
+        isPreparing = false
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadProvider.getRequests(inStates: [.prepared]).1
-                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                                 .uploadingError, .uploadingFail,
-                                                                                 .finishingError]).1.count
+                let prepared = uploads.fetchedObjects?.filter({$0.state == .prepared}) ?? []
+                let states: [pwgUploadState] = [.preparingError, .preparingFail,
+                                                .uploadingError, .uploadingFail,
+                                                .finishingError]
+                let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
                 if isUploading.count < maxNberOfTransfers,
-                   nberOfFailedUploads < maxNberOfFailedUploads,
-                   let uploadID = preparedUploadRequests.first {
-                    launchTransfer(of: uploadID)
+                   failed.count < maxNberOfFailedUploads,
+                   let upload = prepared.first {
+                    launchTransfer(of: upload)
                 }
             }
         } else {
@@ -1016,109 +995,68 @@ public class UploadManager: NSObject {
     // MARK: - Transfer image
     let maxNberOfTransfers = 1
     public let maxNberOfFailedUploads = 5
-    private var _isUploading = Set<NSManagedObjectID>()
-    public var isUploading: Set<NSManagedObjectID> {
-        get { return _isUploading }
-        set(isUploading) { _isUploading = isUploading }
-    }
+    public var isUploading = Set<NSManagedObjectID>()
 
-    public func launchTransfer(of uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) >> launch transfer of \(uploadID.uriRepresentation())")
+    public func launchTransfer(of upload: Upload) -> Void {
+        print("\(debugFormatter.string(from: Date())) > launch transfer of \(upload.objectID.uriRepresentation())")
 
         // Update list of transfers
-        if isUploading.contains(uploadID) { return }
-        isUploading.insert(uploadID)
-
-        // Retrieve upload request properties
-        var uploadProperties: UploadProperties!
-        do {
-            let upload = try bckgContext.existingObject(with: uploadID)
-            if upload.isFault {
-                // The upload request is not fired yet.
-                upload.willAccessValue(forKey: nil)
-                uploadProperties = (upload as! Upload).getProperties()
-                upload.didAccessValue(forKey: nil)
-            } else {
-                uploadProperties = (upload as! Upload).getProperties()
-            }
-        }
-        catch {
-            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
-            // Request not available…!?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploadingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didEndTransfer(for: uploadID)
-            }
-            return
-        }
+        if isUploading.contains(upload.objectID) { return }
+        isUploading.insert(upload.objectID)
 
         // Reset counter of progress bar in case we repeat the transfer
-        UploadSessions.shared.clearCounter(withID: uploadProperties.localIdentifier)
+        UploadSessions.shared.clearCounter(withID: upload.localIdentifier)
 
         // Update UI
         if !isExecutingBackgroundUploadTask {
             // Initialise the progress bar
-            updateCell(with: uploadProperties.localIdentifier,
+            updateCell(with: upload.localIdentifier,
                        stateLabel: pwgUploadState.uploading.stateInfo,
                        photoMaxSize: nil, progress: Float(0), errorMsg: nil)
         }
+
+        // Update state of upload request and start transfer
+        upload.setState(.uploading, error: nil)
 
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
         /// - Community users as from Piwigo 12.
         if NetworkVars.usesUploadAsync || isExecutingBackgroundUploadTask {
             // Prepare transfer
-            self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
-
-            // Do not prepare next image in background task (already scheduled)
-            if self.isExecutingBackgroundUploadTask { return }
-
-            // Stop here if there no image to prepare
-            if uploadProvider.getRequests(inStates: [.waiting]).0.count == 0 { return }
-
-            // Should we prepare the next image in parallel?
-            let uploadIDsToPrepare = uploadProvider.getRequests(inStates: [.waiting]).1
-            let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                             .uploadingError, .uploadingFail,
-                                                                             .finishingError]).1.count
-            if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
-               nberOfFailedUploads < maxNberOfFailedUploads {
-
-                // Prepare the next upload
-                self.isPreparing = true
-                self.prepare(for: uploadID)
-                return
-            }
+            self.transferInBackgroundImage(for: upload)
+        } else {
+            // Transfer image
+            self.transferImage(for: upload)
         }
-        else {
-            // Update state of upload request and start transfer
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
-                // Transfer image
-                self.transferImage(for: uploadID, with: uploadProperties)
+        
+        // Do not prepare next image in background task (already scheduled)
+        if self.isExecutingBackgroundUploadTask { return }
 
-                // Stop here if there no image to prepare
-                if uploadProvider.getRequests(inStates: [.waiting]).1.count == 0 { return }
+        // Stop here if there no image to prepare
+        let waiting = uploads.fetchedObjects?.filter({$0.state == .waiting}) ?? []
+        if waiting.isEmpty { return }
 
-                // Should we prepare the next image in parallel?
-                let uploadIDsToPrepare = uploadProvider.getRequests(inStates: [.waiting]).1
-                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                                 .uploadingError, .uploadingFail,
-                                                                                 .finishingError]).1.count
-                if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
-                   nberOfFailedUploads < maxNberOfFailedUploads {
+        // Should we prepare the next image in parallel?
+        let states: [pwgUploadState] = [.preparingError, .preparingFail,
+                                        .uploadingError, .uploadingFail,
+                                        .finishingError]
+        let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+        if !self.isPreparing, failed.count < maxNberOfFailedUploads,
+           let upload = waiting.first {
 
-                    // Prepare the next upload
-                    self.isPreparing = true
-                    self.prepare(for: uploadID)
-                    return
-                }
-            }
+            // Prepare the next upload
+            self.isPreparing = true
+            self.prepare(upload)
+            return
         }
     }
 
-    func didEndTransfer(for uploadID: NSManagedObjectID) {
+    func didEndTransfer(for upload: Upload) {
+        // Save Upload requests
+        try? bckgContext.save()
+        
         // Update list of current uploads
-        if let index = isUploading.firstIndex(where: {$0 == uploadID}) {
+        if let index = isUploading.firstIndex(where: {$0 == upload.objectID}) {
             isUploading.remove(at: index)
         }
         
@@ -1126,14 +1064,15 @@ public class UploadManager: NSObject {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadProvider.getRequests(inStates: [.prepared]).1
-                let nberOfFailedUploads = uploadProvider.getRequests(inStates: [.preparingError, .preparingFail,
-                                                                                 .uploadingError, .uploadingFail,
-                                                                                 .finishingError]).1.count
+                let prepared = uploads.fetchedObjects?.filter({$0.state == .prepared}) ?? []
+                let states: [pwgUploadState] = [.preparingError, .preparingFail,
+                                               .uploadingError, .uploadingFail,
+                                               .finishingError]
+                let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
                 if isUploading.count < maxNberOfTransfers,
-                   nberOfFailedUploads < maxNberOfFailedUploads,
-                   let uploadID = preparedUploadRequests.first {
-                    launchTransfer(of: uploadID)
+                   failed.count < maxNberOfFailedUploads,
+                   let upload = prepared.first {
+                    launchTransfer(of: upload)
                 }
             } else {
                 debugPrint("\(debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
@@ -1148,70 +1087,40 @@ public class UploadManager: NSObject {
 
     
     // MARK: - Finish transfer
+    private var isFinishing = false
 
-    private var _isFinishing = false
-    private var isFinishing: Bool {
-        get {
-            return _isFinishing
-        }
-        set(isFinishing) {
-            _isFinishing = isFinishing
-        }
-    }
-
-    private func finishTransfer(of uploadID: NSManagedObjectID) {
-        print("\(debugFormatter.string(from: Date())) >> finish transfers of \(uploadID.uriRepresentation())")
+    private func finishTransfer(of upload: Upload) {
+        print("\(debugFormatter.string(from: Date())) > finish transfers of \(upload.objectID.uriRepresentation())")
 
         // Update upload status
         isFinishing = true
         
-        // Retrieve upload request properties
-        var uploadProperties: UploadProperties!
-        do {
-            let upload = try bckgContext.existingObject(with: uploadID)
-            if upload.isFault {
-                // The upload request is not fired yet.
-                upload.willAccessValue(forKey: nil)
-                uploadProperties = (upload as! Upload).getProperties()
-                upload.didAccessValue(forKey: nil)
-            } else {
-                uploadProperties = (upload as! Upload).getProperties()
-            }
-        }
-        catch {
-            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
-            // Request not available…!?
-            uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
-                // Investigate next upload request?
-                self.didFinishTransfer()
-            }
-            return
-        }
-
         // Update UI
         if !isExecutingBackgroundUploadTask {
-            updateCell(with: uploadProperties.localIdentifier,
+            updateCell(with: upload.localIdentifier,
                        stateLabel: pwgUploadState.finishing.stateInfo,
-                       photoMaxSize: Int16(uploadProperties.photoMaxSize),
+                       photoMaxSize: upload.photoMaxSize,
                        progress: nil, errorMsg: "")
         }
         
         // Update state of upload resquest and finish upload
-        uploadProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
-            [unowned self] (_) in
-            // Work depends on Piwigo server version
-            if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                // Uploaded with pwg.images.uploadAsync -> Empty the lounge
-                self.emptyLounge(for: uploadID, with: uploadProperties)
-            } else {
-                // Uploaded with pwg.images.upload -> Set image title.
-                self.setImageParameters(for: uploadID, with: uploadProperties)
-            }
+        upload.setState(.finishing, error: nil)
+        
+        // Work depends on Piwigo server version
+        if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+            // Uploaded with pwg.images.uploadAsync -> Empty the lounge
+            emptyLounge(for: upload)
+        } else {
+            // Uploaded with pwg.images.upload -> Set image title.
+            setImageParameters(for: upload)
         }
     }
 
     func didFinishTransfer() {
-        _isFinishing = false
+        // Save Upload requests
+        try? bckgContext.save()
+        
+        isFinishing = false
         if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
         }
@@ -1355,11 +1264,6 @@ public class UploadManager: NSObject {
         }
     }
     
-    public func didDeletePiwigoImage(withID imageId: Int) {
-        // Mark this uploaded image as deleted from the Piwigo server
-        uploadProvider.markAsDeletedPiwigoImage(withID: Int64(imageId))
-    }
-    
    
     // MARK: - Failed Uploads Management
     
@@ -1372,8 +1276,7 @@ public class UploadManager: NSObject {
         print("••> Resume upload operations…")
 
         // Get active upload tasks
-        let uploadSession: URLSession = UploadSessions.shared.bckgSession
-        uploadSession.getAllTasks { uploadTasks in
+        bckgSession.getAllTasks { uploadTasks in
             // Loop over the tasks
             for task in uploadTasks {
                 switch task.state {

@@ -14,7 +14,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     
     // MARK: - Core Data Providers
     private lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadProvider()
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         return provider
     }()
 

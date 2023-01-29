@@ -15,10 +15,10 @@ extension UploadManager {
     // MARK: - Upload File Utilities
     /// - Get URL of final upload file to be stored into Piwigo/Uploads directory
     /// - Delete existing file if demanded (failed previous attempt?)
-    public func getUploadFileURL(from properties:UploadProperties, withSuffix suffix:String = "",
-                                  deleted deleteIt:Bool = false) -> URL {
+    public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
+                                  deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileName = properties.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
         if fileName.count ==  0 { fatalError("!!!! No Upload Filename !!!!")}
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
@@ -35,11 +35,12 @@ extension UploadManager {
     /// - Get MD5 checksum and MIME type
     /// - Update upload session counter
     /// -> return updated upload properties w/ or w/o error
-    public func finalizeImageFile(atURL originalFileURL:URL, with properties: UploadProperties,
-                                  completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+    public func finalizeImageFile(atURL originalFileURL: URL, with upload: Upload,
+                                  completion: @escaping () -> Void,
+                                  failure: @escaping (Error?) -> Void) {
 
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileURL = getUploadFileURL(from: properties)
+        let fileURL = getUploadFileURL(from: upload)
 
         // Should we rename the file to adopt the Upload Manager convention?
         if originalFileURL != fileURL {
@@ -52,39 +53,38 @@ extension UploadManager {
             }
             catch {
                 // Update upload request
-                completionHandler(properties, error)
+                failure(error)
             }
         }
         
         // Determine MD5 checksum of image file to upload
         let error: NSError?
-        var uploadProperties = properties
-        (uploadProperties.md5Sum, error) = fileURL.MD5checksum()
-        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: uploadProperties.md5Sum))")
+        (upload.md5Sum, error) = fileURL.MD5checksum()
+        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: upload.md5Sum))")
         if error != nil {
             // Could not determine the MD5 checksum
-            completionHandler(uploadProperties, error)
+            failure(error)
             return
         }
 
         // Get MIME type from file extension
-        let fileExt = (URL(fileURLWithPath: properties.fileName).pathExtension).lowercased()
+        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
         guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() else {
             let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            completionHandler(uploadProperties, error)
+            failure(error)
             return
         }
         guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
             let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            completionHandler(uploadProperties, error)
+            failure(error)
             return
         }
         print("\(debugFormatter.string(from: Date())) > MIME type: \(String(describing: mimeType))")
-        uploadProperties.mimeType = mimeType
+        upload.mimeType = mimeType
 
         // Done -> append file size to counter
         countOfBytesPrepared += UInt64(fileURL.fileSize)
-        completionHandler(uploadProperties, nil)
+        completion()
     }
 
     /// - Delete Upload files w/ or w/o prefix
