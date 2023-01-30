@@ -242,6 +242,9 @@ extension AlbumViewController
 
         // Let's delete all images at once
         ImageUtilities.delete(toDelete) { [self] in
+            // Save image IDs for marking Upload requests in the background
+            let imageIDs = Array(toDelete).map({$0.pwgID})
+
             // Remove images from cache
             for imageData in toDelete {
                 // Delete image from cache (also deletes image files)
@@ -263,9 +266,8 @@ extension AlbumViewController
                 print("Could not save albums after image deletion \(error), \(error.userInfo)")
             }
 
-            // Update cache so that these images can re-uploaded.
+            // Update cache so that these images can be re-uploaded.
             UploadManager.shared.backgroundQueue.async {
-                let imageIDs = Array(toDelete).map({$0.pwgID})
                 UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: imageIDs)
             }
 

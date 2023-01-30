@@ -159,6 +159,9 @@ extension ImageViewController
         
         // Send request to Piwigo server
         ImageUtilities.delete(Set([imageData])) { [self] in
+            // Save image ID for marking Upload request in the background
+            let imageID = imageData.pwgID
+            
             // Delete image from cache (also deletes image files)
             self.savingContext.delete(imageData)
             
@@ -178,9 +181,9 @@ extension ImageViewController
             }
 
             // If this image was uploaded with the iOS app,
-            // update cache so that it can re-uploaded.
+            // update cache so that it can be re-uploaded.
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageData.pwgID])
+                UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageID])
             }
 
             // Hide HUD
