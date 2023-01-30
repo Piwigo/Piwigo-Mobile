@@ -44,25 +44,25 @@
                                                     </constraints>
                                                 </imageView>
                                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O9O-5W-5gQ">
-                                                    <rect key="frame" x="70" y="38" width="284" height="4"/>
+                                                    <rect key="frame" x="70" y="36.5" width="284" height="4"/>
                                                     <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </progressView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBc-tg-fEn">
-                                                    <rect key="frame" x="70" y="43" width="33" height="16"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hI6-46-Use">
+                                                    <rect key="frame" x="70" y="16.5" width="38" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hI6-46-Use">
-                                                    <rect key="frame" x="70" y="18" width="38" height="18"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBc-tg-fEn">
+                                                    <rect key="frame" x="70" y="41.5" width="30.5" height="14.5"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="lZk-jx-7Go" firstAttribute="leading" secondItem="hDM-1S-cbv" secondAttribute="leading" constant="4" id="2e7-bQ-NeH"/>
-                                                <constraint firstItem="mBc-tg-fEn" firstAttribute="bottom" secondItem="lZk-jx-7Go" secondAttribute="bottom" id="7Jg-Ki-rwQ"/>
+                                                <constraint firstItem="mBc-tg-fEn" firstAttribute="bottom" secondItem="lZk-jx-7Go" secondAttribute="bottom" constant="-3" id="7Jg-Ki-rwQ"/>
                                                 <constraint firstAttribute="trailing" secondItem="O9O-5W-5gQ" secondAttribute="trailing" constant="20" id="7rI-0C-Pe2"/>
                                                 <constraint firstItem="lZk-jx-7Go" firstAttribute="top" secondItem="AE1-nk-RlX" secondAttribute="top" constant="-2" id="Aab-Tu-l12"/>
                                                 <constraint firstItem="mBc-tg-fEn" firstAttribute="top" secondItem="O9O-5W-5gQ" secondAttribute="bottom" constant="1" id="Ffh-nb-huF"/>
