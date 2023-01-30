@@ -310,7 +310,7 @@ extension UploadManager {
                                                  squareImage: square, thumbImage: thumb)
                     // Add image to cache
                     imageProvider.didUploadImage(newImage, asVideo: upload.isVideo,
-                                                 inCategoryId: upload.category)
+                                                 inAlbumId: upload.category)
                 }
 
                 // Update state of upload
@@ -695,7 +695,7 @@ extension UploadManager {
                 if NetworkVars.hasAdminRights {
                     getInfos.fixingUnknowns()
                     imageProvider.didUploadImage(getInfos, asVideo: upload.isVideo,
-                                                 inCategoryId: upload.category)
+                                                 inAlbumId: upload.category)
                 }
             }
 

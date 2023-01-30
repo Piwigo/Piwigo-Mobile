@@ -189,9 +189,9 @@ public class ImageProvider: NSObject {
     /**
      Imports uploaded image data into Core Data.
      */
-    public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inCategoryId albumId: Int32) {
+    public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inAlbumId albumId: Int32) {
         // Import the image data into Core Data.
-        try? self.importImages([imageData], inAlbum: albumId)
+        try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true)
     }
 
     /**
@@ -245,7 +245,8 @@ public class ImageProvider: NSObject {
      processing the record in batches to avoid a high memory footprint.
      */
     private let batchSize = 256
-    private func importImages(_ imageArray: [ImagesGetInfo], inAlbum albumId: Int32) throws {
+    private func importImages(_ imageArray: [ImagesGetInfo],
+                              inAlbum albumId: Int32, withAlbumUpdate: Bool = false) throws {
         // Get current user object (will create server object if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             fatalError("Unresolved error — Could not get user object!")
@@ -280,7 +281,8 @@ public class ImageProvider: NSObject {
             let imagesBatch = Array(imageArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(imagesBatch, inAlbum: album, user: user) {
+            if !importOneBatch(imagesBatch, inAlbum: album,
+                               withAlbumUpdate: withAlbumUpdate, user: user) {
                 return
             }
         }
@@ -295,7 +297,9 @@ public class ImageProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
      */
-    private func importOneBatch(_ imagesBatch: [ImagesGetInfo], inAlbum album: Album, user: User) -> Bool {
+    private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
+                                inAlbum album: Album, withAlbumUpdate: Bool = false,
+                                user: User) -> Bool {
         var success = false
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
@@ -352,6 +356,14 @@ public class ImageProvider: NSObject {
                     // Populate the Image's properties using the raw data.
                     do {
                         try image.update(with: imageData, user: user, albums: albums)
+                        
+                        // Update album data if asked
+                        if withAlbumUpdate {
+                            // Add image to cached albums
+                            albums.forEach { album in
+                                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: album)
+                            }
+                        }
                     }
                     catch ImageError.missingData {
                         // Delete invalid Image from the private queue context.
