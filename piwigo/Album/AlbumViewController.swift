@@ -1482,15 +1482,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Any update to perform?
         if updateOperations.isEmpty || view.window == nil { return }
 
+        // Will update footer of image collection at the end
+        updateOperations.append(BlockOperation(block: { [weak self] in
+            // Update footer
+            self?.updateNberOfImagesInFooter()
+        }))
+
         // Perform all updates
         imagesCollection?.performBatchUpdates({ () -> Void  in
             for operation: BlockOperation in self.updateOperations {
                 operation.start()
-            }
-            // Update footer
-            if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
-               footers.contains(where: {$0 is NberImagesFooterCollectionReusableView}) {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
             }
         })
     }
