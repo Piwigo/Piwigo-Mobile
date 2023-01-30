@@ -410,8 +410,8 @@ extension AlbumViewController
             self.view?.window?.windowScene?.title = albumName
         }
 
-        // Do not present a custom title view if this is the default album
-        if categoryId == AlbumVars.shared.defaultCategory {
+        // Do not present a custom title view for the default album or a smart album
+        if categoryId < 0 || categoryId == AlbumVars.shared.defaultCategory {
             if categoryId == 0 {
                 title = NSLocalizedString("tabBar_albums", comment: "Albums")
             } else {
