@@ -325,22 +325,18 @@ public class UploadProvider: NSObject {
             cachedUpload.forEach { upload in
                 upload.requestState = pwgUploadState.deleted.rawValue
             }
-//            // Save all insertions and deletions from the context to the store.
-//            if bckgContext.hasChanges {
-//                do {
-//                    try bckgContext.save()
-//                    if Thread.isMainThread == false {
-//                        DispatchQueue.main.async {
-//                            DataController.shared.saveMainContext()
-//                        }
-//                    }
-//                }
-//                catch {
-//                    fatalError("Failure to save context: \(error)")
-//                }
-//                // Reset the taskContext to free the cache and lower the memory footprint.
-//                bckgContext.reset()
-//            }
+            
+            // Save all insertions and deletions from the context to the store.
+            if bckgContext.hasChanges {
+                do {
+                    try bckgContext.save()
+                }
+                catch {
+                    fatalError("Failure to save context: \(error)")
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+            }
         }
     }
 
