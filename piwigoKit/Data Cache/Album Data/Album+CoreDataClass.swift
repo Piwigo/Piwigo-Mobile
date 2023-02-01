@@ -84,6 +84,7 @@ public class Album: NSManagedObject {
         /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         let newDateLast = dateFormatter.date(from: albumData.dateLast ?? "") ?? .distantPast
         if dateLast != newDateLast {
             dateLast = newDateLast

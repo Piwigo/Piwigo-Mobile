@@ -72,6 +72,7 @@ public class Image: NSManagedObject {
         // Image dates
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         let unknownDate = dateFormatter.date(from: "1900-01-01 00:00:00")!
         let newPosted = dateFormatter.date(from: imageData.datePosted ?? "1900-01-01 00:00:00")!
         if newPosted > unknownDate, datePosted != newPosted {
