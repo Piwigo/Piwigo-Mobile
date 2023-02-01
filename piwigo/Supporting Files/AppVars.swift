@@ -23,12 +23,15 @@ class AppVars: NSObject {
     @objc static let shared = AppVars()
 
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
+    override init() {
+        // Deprecated data?
+        if let _ = UserDefaults.dataSuite.object(forKey: "memoryCache") {
+            UserDefaults.dataSuite.removeObject(forKey: "memoryCache")
+        }
+        if let _ = UserDefaults.dataSuite.object(forKey: "diskCache") {
+            UserDefaults.dataSuite.removeObject(forKey: "diskCache")
+        }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
@@ -56,12 +59,6 @@ class AppVars: NSObject {
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     @objc var clearClipboardDelay: Int
 
-    @UserDefault("memoryCache", defaultValue: 32)   // 4 x min = 32 MB
-    @objc var memoryCache: Int
-
-    @UserDefault("diskCache", defaultValue: 512)    // 4 x min = 512 MB
-    @objc var diskCache: Int
-    
     /// - Remember which help views were watched
     @UserDefault("didWatchHelpViews", defaultValue: 0b00000000_00000000)
     @objc var didWatchHelpViews: UInt16

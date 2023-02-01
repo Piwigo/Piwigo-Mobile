@@ -1161,40 +1161,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
-
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-//                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-//                    return SliderTableViewCell()
-//                }
-//                // Slider value
-//                let value = Float(AppVars.shared.diskCache)
-//
-//                // Slider configuration
-//                let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
-//                let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
-//                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-//                var prefix:String
-//                if view.bounds.size.width > 375 {
-//                    // i.e. larger than iPhones 6,7 screen width
-//                    prefix = String(format: "%.1f/", currentDiskSizeInMB)
-//                } else {
-//                    prefix = String(format: "%ld/", lroundf(currentDiskSizeInMB))
-//                }
-//                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-//                cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
-//                               value: value,
-//                               increment: Float(kPiwigoDiskCacheInc),
-//                               minValue: Float(kPiwigoDiskCacheMin),
-//                               maxValue: Float(kPiwigoDiskCacheMax),
-//                               prefix: prefix, suffix: suffix)
-//                cell.cellSliderBlock = { newValue in
-//                    // Update settings
-//                    AppVars.shared.diskCache = Int(newValue)
-//                    // Update disk cache size
-//                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
-//                }
-//                cell.accessibilityIdentifier = "diskCache"
-//                tableViewCell = cell
                 
             case 1 /* Photos and Videos */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
@@ -1206,40 +1172,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
-
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-//                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-//                    return SliderTableViewCell()
-//                }
-//                // Slider value
-//                let value = Float(AppVars.shared.memoryCache)
-//
-//                // Slider configuration
-//                let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
-//                let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
-//                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-//                var prefix:String
-//                if view.bounds.size.width > 375 {
-//                    // i.e. larger than iPhone 6,7 screen width
-//                    prefix = String(format: "%.1f/", currentMemSizeInMB)
-//                } else {
-//                    prefix = String(format: "%ld/", lroundf(currentMemSizeInMB))
-//                }
-//                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-//                cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
-//                               value: value,
-//                               increment: Float(kPiwigoMemoryCacheInc),
-//                               minValue: Float(kPiwigoMemoryCacheMin),
-//                               maxValue: Float(kPiwigoMemoryCacheMax),
-//                               prefix: prefix, suffix: suffix)
-//                cell.cellSliderBlock = { newValue in
-//                    // Update settings
-//                    AppVars.shared.memoryCache = Int(newValue)
-//                    // Update memory cache size
-//                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
-//                }
-//                cell.accessibilityIdentifier = "memoryCache"
-//                tableViewCell = cell
                 
             default:
                 break
