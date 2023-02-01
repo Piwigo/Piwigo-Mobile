@@ -587,6 +587,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 self.updateButtonsInPreviewMode()
             }
         }
+        
+        // Fetch favorites in the background if needed
+        if categoryId != pwgSmartAlbum.favorites.rawValue {
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                self.loadFavoritesInBckg()
+            }
+        }
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator

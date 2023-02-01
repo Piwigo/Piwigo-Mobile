@@ -338,4 +338,83 @@ extension AlbumViewController
             }
         }
     }
+    
+    
+    // MARK: - Fetch Favorites in the background
+    func loadFavoritesInBckg() {
+        DispatchQueue.global(qos: .default).async {
+            // Should we load favorites?
+            if NetworkVars.userStatus == .guest { return }
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
+
+            // Check that an album of favorites exists in cache (create it if necessary)
+            guard let album = self.albumProvider.getAlbum(inContext: self.bckgContext,
+                                                          withId: pwgSmartAlbum.favorites.rawValue) else {
+                return
+            }
+
+            // Remember which images belong to this album
+            // from main context before calling background tasks
+            let oldImageIds = Set(album.images?.map({$0.pwgID}) ?? [])
+
+            // Load favorites data in the background
+            // Use the ImageProvider to fetch image data. On completion,
+            // handle general UI updates and error alerts on the main queue.
+            let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+            let albumNbImages = album.nbImages
+            let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+            let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
+            self.fetchFavorites(ofAlbum: album, imageIds: oldImageIds,
+                                fromPage: 0, toPage: lastPage, perPage: perPage)
+        }
+    }
+    
+    private func fetchFavorites(ofAlbum album: Album, imageIds: Set<Int64>,
+                                fromPage onPage: Int, toPage lastPage: Int, perPage: Int) {
+        // Use the ImageProvider to fetch image data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "",
+                                  sort: .dateCreatedAscending,
+                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
+            // Any error?
+            if error != nil {
+                return
+            }
+            
+            // No error
+            var newLastPage = lastPage
+            // Re-calculate number of pages
+            newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+
+            // Update smart album data
+            if album.nbImages != totalCount {
+                album.nbImages = totalCount
+            }
+            if album.totalNbImages != totalCount {
+                album.totalNbImages = totalCount
+            }
+
+            // Will not remove fetched images from album image list
+            let newImageIds = imageIds.subtracting(fetchedImageIds)
+            
+            // Should we continue?
+            if onPage < newLastPage {
+                // Load next page of images
+                self.fetchFavorites(ofAlbum: album, imageIds: newImageIds,
+                                    fromPage: onPage + 1, toPage: newLastPage, perPage: perPage)
+                return
+            }
+            
+            // Done fetching images ► Remove non-fetched images
+            let images = imageProvider.getImages(inContext: bckgContext, withIds: newImageIds)
+            album.removeFromImages(images)
+            
+            // Save changes
+            do {
+                try bckgContext.save()
+            } catch let error as NSError {
+                print("Could not fetch \(error), \(error.userInfo)")
+            }
+        }
+    }
 }

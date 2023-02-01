@@ -886,32 +886,4 @@ class AlbumUtilities: NSObject {
         }
         return legend
     }
-    
-    
-    // MARK: - Favorites
-    static func loadFavoritesInBckg() {
-        DispatchQueue.global(qos: .default).async {
-            // Should we load favorites?
-            if NetworkVars.userStatus == .guest { return }
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
-
-//            // Check that an album of favorites exists in cache (create it if necessary)
-//            guard let _ = albumProvider.getAlbum(inContext: mainContext,
-//                                                 withId: pwgSmartAlbum.favorites.rawValue) else {
-//                return
-//            }
-
-//            // Initialise favorites album
-//            if let favoritesAlbum = PiwigoAlbumData(id: kPiwigoFavoritesCategoryId, andQuery: "") {
-//                CategoriesData.sharedInstance().updateCategories([favoritesAlbum])
-//            }
-//
-//            // Load favorites data in the background with dedicated URL session
-//            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId).loadAllCategoryImageData(
-//                withSort: kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort.rawValue)),
-//                forProgress: nil,
-//                onCompletion: nil,
-//                onFailure: nil)
-        }
-    }
 }
