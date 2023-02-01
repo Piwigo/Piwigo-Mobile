@@ -460,15 +460,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         super.viewDidAppear(animated)
         print(String(format: "viewDidAppear     => ID:%ld", categoryId))
 
+        // How long has it been since we reloaded the album and image data?
+        var timeSinceLastLoad: TimeInterval = -.infinity
+        if let lastLoad = CacheVars.shared.dateLoaded[categoryId] {
+            timeSinceLastLoad = lastLoad.timeIntervalSinceNow
+        }
+
         // Connected as guest?
         if NetworkVars.serverPath.isEmpty == false,
-           NetworkVars.username.isEmpty == true {
-            DispatchQueue.main.async {
-                self.setTitleViewFromAlbumData(whileUpdating: true)
-            }
-            fetchAlbumsAndImages { [self] in
-                fetchCompleted()
-            }
+           timeSinceLastLoad < TimeInterval(-600) {
+            startFetchingAlbumAndImages()
             return
         }
 
@@ -480,19 +481,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
                 (timeSinceLastLogin < TimeInterval(-1800)) {
                 // Re-login before fetching album and image data
-                DispatchQueue.main.async {
-                    self.setTitleViewFromAlbumData(whileUpdating: true)
-                }
-                reloginAndReloadAlbumData { [self] in
-                    fetchCompleted()
+                performRelogin { [self] in
+                    if timeSinceLastLoad < TimeInterval(-600) {
+                        self.startFetchingAlbumAndImages()
+                    }
                 }
             } else {
-                // Fetch album and image data
-                DispatchQueue.main.async {
-                    self.setTitleViewFromAlbumData(whileUpdating: true)
-                }
-                fetchAlbumsAndImages { [self] in
-                    fetchCompleted()
+                if timeSinceLastLoad < TimeInterval(-600) {
+                    // Fetch album and image data
+                    self.startFetchingAlbumAndImages()
                 }
             }
         } failure: { _ in
@@ -519,13 +516,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Inform user why the app crashed at start
-        if CacheVars.couldNotMigrateCoreDataStore {
+        if CacheVars.shared.couldNotMigrateCoreDataStore {
             dismissPiwigoError(
                 withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
                 message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
                 errorMessage: "") {
                 // Reset flag
-                CacheVars.couldNotMigrateCoreDataStore = false
+                CacheVars.shared.couldNotMigrateCoreDataStore = false
             }
             return
         }
@@ -574,36 +571,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     }
 
-    func fetchCompleted() {
-        DispatchQueue.main.async { [self] in
-            // Hide HUD
-            self.navigationController?.hidePiwigoHUD { }
-            // Update title
-            self.setTitleViewFromAlbumData(whileUpdating: false)
-            // Set navigation bar buttons
-            if isSelect {
-                self.updateButtonsInSelectionMode()
-            } else {
-                self.updateButtonsInPreviewMode()
-            }
-        }
-        
-        // Fetch favorites in the background if needed
-        if categoryId != pwgSmartAlbum.favorites.rawValue {
-            DispatchQueue.global(qos: .background).async { [unowned self] in
-                self.loadFavoritesInBckg()
-            }
-        }
-
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
-        }
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -720,83 +687,67 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         try? images.performFetch()
     }
     
-    @objc func refresh(_ refreshControl: UIRefreshControl?) {
-        // Re-login and then fetch album and image data
-        reloginAndReloadAlbumData { [self] in
-            // End refreshing
-            DispatchQueue.main.async { [self] in
-                imagesCollection?.refreshControl?.endRefreshing()
-            }
+    func startFetchingAlbumAndImages() {
+        DispatchQueue.main.async {
+            self.setTitleViewFromAlbumData(whileUpdating: true)
+        }
+        fetchAlbumsAndImages { [self] in
+            fetchCompleted()
         }
     }
 
-//    @objc
-//    func updateSubCategory(withId albumId: Int) {
-//        // Get index of updated category
-//        if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-//           let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == albumId}) {
-//            // Update cell of corresponding category
-//            let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
-//            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-//                imagesCollection?.reloadItems(at: [indexPath])
-//            }
-//        }
-//    }
+    @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        // Pause upload manager
+        UploadManager.shared.isPaused = true
+        
+        // Re-login and then fetch album and image data
+        performRelogin { [self] in
+            startFetchingAlbumAndImages()
+        }
+    }
+    
+    func fetchCompleted() {
+        DispatchQueue.main.async { [self] in
+            // Hide HUD
+            self.navigationController?.hidePiwigoHUD { }
+            // Update title
+            self.setTitleViewFromAlbumData(whileUpdating: false)
+            // Set navigation bar buttons
+            if isSelect {
+                self.updateButtonsInSelectionMode()
+            } else {
+                self.updateButtonsInPreviewMode()
+            }
+            // End refreshing if needed
+            self.imagesCollection?.refreshControl?.endRefreshing()
+        }
+        
+        // Remember when album and image data were loaded
+        CacheVars.shared.dateLoaded[categoryId] = Date()
+        
+        // How long has it been since we reloaded the favorites?
+        var timeSinceLastLoad: TimeInterval = .infinity
+        if let lastLoad = CacheVars.shared.dateLoaded[pwgSmartAlbum.favorites.rawValue] {
+            timeSinceLastLoad = lastLoad.timeIntervalSinceNow
+        }
 
-//    @objc
-//    func addImage(withId imageId: Int) {
-//        // Retrieve images from cache
-//        guard let newImages = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList else { return }
-//        if let indexOfNewItem = newImages.firstIndex(where: {$0.imageId == imageId}),
-//           newImages.count > (albumData?.images.count ?? 0) {
-//            // Add image to data source
-//            albumData?.images = newImages
-//            // Insert corresponding cell
-//            let indexPath = IndexPath(item: indexOfNewItem, section: 1)
-//            imagesCollection?.insertItems(at: [indexPath])
-//
-//            // Update footer if visible
-//            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-//                imagesCollection?.reloadSections(IndexSet(integer: 1))
-//            }
-//        }
+        // Fetch favorites in the background if needed
+        if categoryId != pwgSmartAlbum.favorites.rawValue,
+           timeSinceLastLoad < TimeInterval(600) {
+            DispatchQueue.global(qos: .background).async { [unowned self] in
+                self.loadFavoritesInBckg()
+            }
+        }
 
-//        // Display Select button if there was no image in the album
-//        if newImages.count == 1 {
-//            // Display Select button
-//            if isSelect == false {
-//                updateButtonsInPreviewMode()
-//            }
-//        }
-//    }
-
-//    @objc
-//    func removeImage(withId imageId: Int) {
-//        // Remove image from the selection if needed
-//        let imageIdObject = NSNumber(value: imageId)
-//        if selectedImageIds.contains(imageIdObject) {
-//            selectedImageIds.removeAll { $0 === imageIdObject }
-//        }
-//
-//        // Get index of deleted image
-//        if let indexOfExistingItem = albumData?.images.firstIndex(where: {$0.imageId == imageId}) {
-//            // Remove image from data source
-//            var imageList = albumData?.images
-//            imageList?.remove(at: indexOfExistingItem)
-//            albumData?.images = imageList
-//            // Delete corresponding cell
-//            let indexPath = IndexPath(item: indexOfExistingItem, section: 1)
-//            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-//                imagesCollection?.deleteItems(at: [indexPath])
-//            }
-//
-//            // Update footer if visible
-//            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-//                imagesCollection?.reloadSections(IndexSet(integer: 1))
-//            }
-//        }
-//    }
-
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
+        }
+    }
+    
 
     // MARK: - Default Category Management
     @objc func returnToDefaultCategory() {

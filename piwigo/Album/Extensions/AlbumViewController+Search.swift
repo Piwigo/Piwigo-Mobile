@@ -187,8 +187,10 @@ extension AlbumViewController: UISearchResultsUpdating
                 if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
                     (timeSinceLastLogin < TimeInterval(-1800)) {
                     // Re-login before fetching album and image data
-                    reloginAndReloadAlbumData { [self] in
-                        fetchCompleted()
+                    performRelogin { [self] in
+                        fetchAlbumsAndImages { [self] in
+                            fetchCompleted()
+                        }
                     }
                 } else {
                     // Fetch album and image data

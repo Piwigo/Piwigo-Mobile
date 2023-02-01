@@ -13,7 +13,7 @@ import piwigoKit
 extension AlbumViewController
 {
     // MARK: - Login / Relogin
-    func reloginAndReloadAlbumData(completion: @escaping () -> Void) {
+    func performRelogin(completion: @escaping () -> Void) {
         /// - Pause upload operations
         /// - Perform relogin
         /// - Reload album data
@@ -132,12 +132,10 @@ extension AlbumViewController
             return
         }
         
-        LoginUtilities.sessionGetStatus { [self] in
-            DispatchQueue.main.async { [unowned self] in
-                print("••> Reload album and image data…")
-                fetchAlbumsAndImages {
-                    completion()
-                }
+        LoginUtilities.sessionGetStatus {
+            DispatchQueue.main.async {
+                print("••> Done re-login…")
+                completion()
             }
         } failure: { [self]  error in
             showError(error)
@@ -415,6 +413,9 @@ extension AlbumViewController
             } catch let error as NSError {
                 print("Could not fetch \(error), \(error.userInfo)")
             }
+            
+            // Remember when album and image data were loaded
+            CacheVars.shared.dateLoaded[pwgSmartAlbum.favorites.rawValue] = Date()
         }
     }
 }
