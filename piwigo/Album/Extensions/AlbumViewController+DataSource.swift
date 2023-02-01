@@ -298,7 +298,7 @@ extension AlbumViewController
                 updateNberOfImagesInFooter()
 
                 // Will not remove fetched images from album image list
-                let newImageIds = imageIds.subtracting(fetchedImageIds)
+                let oldImageIds = imageIds.subtracting(fetchedImageIds)
                 
                 // Should we continue?
                 if onPage < newLastPage {
@@ -307,7 +307,7 @@ extension AlbumViewController
                         navigationController?.hidePiwigoHUD { }
                     }
                     // Load next page of images
-                    self.fetchImages(ofAlbumWithId: albumId, imageIds: newImageIds,
+                    self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
                                      fromPage: onPage + 1, toPage: newLastPage,
                                      perPage: perPage, completion: completion)
                     return
@@ -315,7 +315,7 @@ extension AlbumViewController
                 
                 // Done fetching images ► Remove non-fetched images
                 DispatchQueue.main.async { [self] in
-                    let images = imageProvider.getImages(inContext: mainContext, withIds: newImageIds)
+                    let images = imageProvider.getImages(inContext: mainContext, withIds: oldImageIds)
                     albumData?.removeFromImages(images)
                 }
                 
