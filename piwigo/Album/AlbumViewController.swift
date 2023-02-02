@@ -439,19 +439,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                name: .pwgUploadProgress, object: nil)
-
-        // Display HUD when loading images for the first time
-        let noRootAlbumData = categoryId == 0 && albums.fetchedObjects?.isEmpty ?? true
-        let nbImages = images.fetchedObjects?.count ?? Int.zero
-        let expectedNbImages = albumData?.nbImages ?? Int64.zero
-        if noRootAlbumData || (nbImages != expectedNbImages) {
-            // Display HUD while downloading album data
-            navigationController?.showPiwigoHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("severalImages", comment: "Photos"),
-                buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-        }
-        
         // Display albums and images
         imagesCollection?.reloadData()
     }
@@ -468,33 +455,35 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Connected as guest?
         if NetworkVars.serverPath.isEmpty == false,
+           NetworkVars.username.isEmpty == true,
            timeSinceLastLoad < TimeInterval(-600) {
             startFetchingAlbumAndImages()
             return
         }
 
-        // Determine if the session is active and for how long before fetching
+        // Check for how long the session is active
         let pwgToken = NetworkVars.pwgToken
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        LoginUtilities.sessionGetStatus { [self] in
-            print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
-            if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
-                (timeSinceLastLogin < TimeInterval(-1800)) {
-                // Re-login before fetching album and image data
-                performRelogin { [self] in
+        if timeSinceLastLogin < TimeInterval(-1800) {
+            LoginUtilities.sessionGetStatus { [self] in
+                print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
+                if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken {
+                    // Re-login before fetching album and image data
+                    performRelogin { [self] in
+                        if timeSinceLastLoad < TimeInterval(-600) {
+                            self.startFetchingAlbumAndImages()
+                        }
+                    }
+                } else {
                     if timeSinceLastLoad < TimeInterval(-600) {
+                        // Fetch album and image data
                         self.startFetchingAlbumAndImages()
                     }
                 }
-            } else {
-                if timeSinceLastLoad < TimeInterval(-600) {
-                    // Fetch album and image data
-                    self.startFetchingAlbumAndImages()
-                }
+            } failure: { _ in
+                print("••> Failed to check session status…")
+                // Will re-check later…
             }
-        } failure: { _ in
-            print("••> Failed to check session status…")
-            // Will re-check later…
         }
 
         // Should we highlight the image of interest?
@@ -568,7 +557,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         //        [SKStoreReviewController requestReview];
         //    }
         //#endif
-
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -688,8 +676,21 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     func startFetchingAlbumAndImages() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
+            // Display "loading" in title view
             self.setTitleViewFromAlbumData(whileUpdating: true)
+
+            // Display HUD in addition when loading images for the first time
+            let noRootAlbumData = self.categoryId == 0 && self.albums.fetchedObjects?.isEmpty ?? true
+            let nbImages = self.images.fetchedObjects?.count ?? Int.zero
+            let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
+            if noRootAlbumData || (nbImages != expectedNbImages) {
+                // Display HUD while downloading album data
+                self.navigationController?.showPiwigoHUD(
+                    withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                    detail: NSLocalizedString("severalImages", comment: "Photos"),
+                    buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+            }
         }
         fetchAlbumsAndImages { [self] in
             fetchCompleted()
