@@ -78,6 +78,7 @@ class ClearCache: NSObject {
 
         // Album data
         if !exceptCategories {
+            CacheVars.shared.dateLoaded = [:]
             AlbumProvider().clearAll()
             ImageProvider().clearAll()
         }
