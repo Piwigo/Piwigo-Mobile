@@ -337,7 +337,6 @@ extension SceneDelegate: AppLockDelegate {
             let child = rootVC.children.first, child is LoginViewController {
             // Is user logging out?
             if AppVars.shared.isLoggingOut {
-                AppVars.shared.isLoggingOut = true
                 return
             }
             
