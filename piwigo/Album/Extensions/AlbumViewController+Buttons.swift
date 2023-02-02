@@ -472,7 +472,7 @@ extension AlbumViewController
             if isUpdating {
                 subTitleLabel.text = NSLocalizedString("categoryUpdating", comment: "Updating…")
             } else {
-                subTitleLabel.text = String(format: NSLocalizedString("categoryEdited", comment: "Edited %@"), lastUpdated)
+                subTitleLabel.text = lastUpdated
             }
             subTitleLabel.sizeToFit()
             

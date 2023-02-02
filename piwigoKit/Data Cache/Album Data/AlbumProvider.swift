@@ -238,7 +238,7 @@ public class AlbumProvider: NSObject {
                     let error = PwgSession.shared.localizedError(for: albumsJSON.errorCode,
                                                                  errorMessage: albumsJSON.errorMessage)
                     print("••> fetchCommunityAlbums error: \(error as NSError)")
-                    try self.importAlbums(albums, inParent: parentId)
+                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
                 }
@@ -290,17 +290,21 @@ public class AlbumProvider: NSObject {
      */
     private let batchSize = 256
     public func importAlbums(_ albumArray: [CategoryData], recursively: Bool = false,
-                             inParent parentId: Int32, delete: Bool = true) throws {
+                             inParent parentId: Int32) throws {
         // Get current user object (will create server object if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             fatalError("Unresolved error!")
         }
-        
+
+        // We keep album IDs of albums to delete
+        // Initialised and then updated at each iteration
+        var albumToDeleteIDs: Set<Int32>? = nil
+
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
             _ = importOneBatch([CategoryData](), recursively: recursively,
-                               inParent: parentId, for: user, delete: delete)
+                               inParent: parentId, for: user, albumIDs: albumToDeleteIDs)
             return
         }
         
@@ -323,10 +327,11 @@ public class AlbumProvider: NSObject {
             let albumsBatch = Array(albumArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(albumsBatch, recursively: recursively,
-                               inParent: parentId, for: user, delete: delete) {
-                return
-            }
+            let (success, albumIDs) = importOneBatch(albumsBatch, recursively: recursively,
+                                                     inParent: parentId, for: user,
+                                                     albumIDs: albumToDeleteIDs)
+            if success ==  false { return }
+            albumToDeleteIDs = albumIDs
         }
     }
     
@@ -340,9 +345,11 @@ public class AlbumProvider: NSObject {
      whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryData], recursively: Bool = false,
-                                inParent parentId: Int32, for user: User, delete: Bool) -> Bool {
+                                inParent parentId: Int32, for user: User,
+                                albumIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
         var success = false
-        
+        var albumToDeleteIDs = Set<Int32>()
+
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
@@ -377,6 +384,15 @@ public class AlbumProvider: NSObject {
             }
             let cachedAlbums:[Album] = controller.fetchedObjects ?? []
             
+            // Initialise set of album IDs during the first iteration
+            if albumIDs == nil {
+                // Store IDs of present list of albums
+                albumToDeleteIDs = Set(cachedAlbums.filter({$0.parentId == parentId}).map({$0.pwgID}))
+            } else {
+                // Resume IDs of albums to delete
+                albumToDeleteIDs = albumIDs ?? Set<Int32>()
+            }
+            
             // Loop over new albums
             for albumData in albumsBatch {
                 
@@ -394,6 +410,9 @@ public class AlbumProvider: NSObject {
                         if albumData.hasUploadRights {
                             user.addAlbumWithUploadRights(ID)
                         }
+                        
+                        // Do not delete this album during the last interation of the import
+                        albumToDeleteIDs.remove(ID)
                     }
                     catch AlbumError.missingData {
                         // Could not perform the update
@@ -429,21 +448,19 @@ public class AlbumProvider: NSObject {
                 }
             }
             
-            // Determine albums to delete
-            if delete, parentId > 0 {   // Smart albums should not be deleted here
-                let newAlbumIds = albumsBatch.compactMap({$0.id})
-                let cachedAlbumsToDelete = cachedAlbums.filter({newAlbumIds.contains($0.pwgID) == false})
-                let cachedAlbumIdsToDelete = cachedAlbumsToDelete.compactMap({$0.pwgID})
-                
+            // Delete remaining albums if this is the last iteration
+            if albumsBatch.count < batchSize,
+               albumToDeleteIDs.isEmpty == false {
                 // Check whether the auto-upload category will be deleted
-                if cachedAlbumIdsToDelete.contains(UploadVars.autoUploadCategoryId) {
+                if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
                     UploadManager.shared.disableAutoUpload()
                 }
-                
+
                 // Delete albums
-                cachedAlbumsToDelete.forEach { cachedAlbum in
-                    print("••> delete album with ID:\(cachedAlbum.pwgID) and name:\(cachedAlbum.name)")
-                    bckgContext.delete(cachedAlbum)
+                let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
+                albumsToDelete.forEach { album in
+                    print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
+                    bckgContext.delete(album)
                 }
             }
             
@@ -465,7 +482,7 @@ public class AlbumProvider: NSObject {
             
             success = true
         }
-        return success
+        return (success, albumToDeleteIDs)
     }
     
     
@@ -720,9 +737,7 @@ public class AlbumProvider: NSObject {
         album.totalNbImages += nbImages
 
         // Keep 'date_last' set as expected by the server
-        let tz = NSTimeZone.default as NSTimeZone
-        let seconds = -TimeInterval(tz.secondsFromGMT(for: Date()))
-        album.dateLast = max(Date(timeInterval: seconds, since: Date()), album.dateLast)
+        album.dateLast = max(Date(), album.dateLast)
 
         // Update album and its parent albums in the background
         updateParents(ofAlbum: album, nbImages: +(nbImages))
