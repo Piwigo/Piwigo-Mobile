@@ -340,6 +340,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        setTitleViewFromAlbumData(whileUpdating: false)
 
         // Toolbar appearance
         let toolbar = navigationController?.toolbar
