@@ -297,7 +297,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 @available(iOS 13.0, *)
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
-        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene will login/relogin if needed and resume uploads.")
+        print("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene presents the login view or resume uploads.")
         // Remove privacy view
         privacyView?.removeFromSuperview()
         
@@ -326,10 +326,7 @@ extension SceneDelegate: AppLockDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         let availableCategories = audioSession.availableCategories
         if availableCategories.contains(AVAudioSession.Category.playback) {
-            do {
-                try audioSession.setCategory(.playback)
-            } catch {
-            }
+            try? audioSession.setCategory(.playback)
         }
 
         // Should we log in?
