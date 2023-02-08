@@ -68,12 +68,6 @@ extension AlbumViewController
     }
     
     func performLogin(completion: @escaping () -> Void) {
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            showError(nil)
-            return
-        }
-        
         // Perform login if username exists
         let username = NetworkVars.username
         if username.isEmpty {
@@ -92,18 +86,13 @@ extension AlbumViewController
                 }
             } failure: { [unowned self] error in
                 // Login request failed
-                showError(NetworkVars.userCancelledCommunication ? nil : error)
+                showError(error)
             }
         }
     }
     
     func getCommunityStatus(completion: @escaping () -> Void) {
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            showError(nil)
-            return
-        }
-        
+        // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
             // Community extension installed
             LoginUtilities.communityGetStatus { [unowned self] in
@@ -113,7 +102,7 @@ extension AlbumViewController
                 }
             } failure: { [unowned self] error in
                 // Inform user that server failed to retrieve Community parameters
-                showError(NetworkVars.userCancelledCommunication ? nil : error)
+                showError(error)
             }
         } else {
             // Community extension not installed
@@ -122,16 +111,10 @@ extension AlbumViewController
                 completion()
             }
         }
-        
     }
     
     func getSessionStatus(completion: @escaping () -> Void) {
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            showError(nil)
-            return
-        }
-        
+        // Get session status
         LoginUtilities.sessionGetStatus {
             DispatchQueue.main.async {
                 print("••> Done re-login…")
@@ -144,12 +127,9 @@ extension AlbumViewController
     
     @objc func cancelLoggingIn() {
         // Propagate user's request
-        NetworkVars.userCancelledCommunication = true
-        PwgSession.shared.dataSession.getAllTasks(completionHandler: { tasks in
-            tasks.forEach { task in
-                task.cancel()
-            }
-        })
+        PwgSession.shared.dataSession.getAllTasks() { tasks in
+            tasks.forEach { $0.cancel() }
+        }
         
         // Update login HUD
         navigationController?.showPiwigoHUD(
@@ -185,9 +165,6 @@ extension AlbumViewController
     }
     
     @objc func hideLoading() {
-        // Reinitialise flag
-        NetworkVars.userCancelledCommunication = false
-        
         // Hide HUD
         navigationController?.hidePiwigoHUD() {
             // Return to login view
@@ -249,7 +226,7 @@ extension AlbumViewController
                 let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
                 let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
                 self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
-                                 fromPage: 0, toPage: lastPage, perPage: perPage,
+                                 fromPage: 0, toPage: lastPage - 1, perPage: perPage,
                                  completion: completion)
                 return
             }

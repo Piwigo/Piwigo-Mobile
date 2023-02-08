@@ -122,7 +122,6 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         NetworkVars.userStatus = pwgUserStatus.guest
         NetworkVars.usesCommunityPluginV29 = false
-        NetworkVars.userCancelledCommunication = false
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
@@ -158,19 +157,29 @@ class LoginViewController: UIViewController {
         // Collect list of methods supplied by Piwigo server
         LoginUtilities.requestServerMethods { [self] in
             // Pursue logging in…
-            performLogin()
+            DispatchQueue.main.async {
+                self.performLogin()
+            }
         } didRejectCertificate: { [self] error in
             // The SSL certificate is not trusted
-            requestCertificateApproval(afterError: error)
+            DispatchQueue.main.async {
+                self.requestCertificateApproval(afterError: error)
+            }
         } didFailHTTPauthentication: { [self] error in
             // Without prior knowledge, the app already tried Piwigo credentials
             // but unsuccessfully, so we request HTTP credentials
-            requestHttpCredentials(afterError: error)
+            DispatchQueue.main.async {
+                self.requestHttpCredentials(afterError: error)
+            }
         } didFailSecureConnection: { [self] error in
             // Suggest HTTP connection if HTTPS attempt failed
-            requestNonSecuredAccess(afterError: error)
+            DispatchQueue.main.async {
+                self.requestNonSecuredAccess(afterError: error)
+            }
         } failure: { [self] error in
-            logging(inConnectionError: error)
+            DispatchQueue.main.async {
+                self.logging(inConnectionError: error)
+            }
         }
     }
 
@@ -265,13 +274,6 @@ class LoginViewController: UIViewController {
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
-
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
@@ -285,23 +287,20 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Perform login
-            LoginUtilities.sessionLogin(
-                withUsername: username, password: password,
-                completion: { [self] in         // Session now opened
+            LoginUtilities.sessionLogin(withUsername: username, password: password) { [self] in
+                    // Session now opened
                     // Create User account in persistent cache if necessary
                     createUserAccountIfNeedded(username)
 
                     // First determine user rights if Community extension installed
-                    getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
-
-                },
-                failure: { [self] error in
+                    getCommunityStatus()
+                } failure: { [self] error in
                     // Don't keep unaccepted credentials
                     KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
                                                      account: username)
                     // Login request failed
-                    logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-                })
+                    logging(inConnectionError: error)
+                }
         } else {
             // Reset keychain and credentials
             KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
@@ -312,7 +311,7 @@ class LoginViewController: UIViewController {
             createUserAccountIfNeedded("guest")
 
             // Check Piwigo version, get token, available sizes, etc.
-            getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
+            getCommunityStatus()
         }
     }
     
@@ -336,18 +335,10 @@ class LoginViewController: UIViewController {
     }
 
     // Determine true user rights when Community extension installed
-    func getCommunityStatus(atFirstLogin isFirstLogin: Bool,
-                            withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func getCommunityStatus() {
         print(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
-        
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
-
+        // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
             // Update HUD during login
             showPiwigoHUD(
@@ -360,34 +351,23 @@ class LoginViewController: UIViewController {
             // Community extension installed
             LoginUtilities.communityGetStatus { [self] in
                 // Check Piwigo version, get token, available sizes, etc.
-                getSessionStatus(atFirstLogin: isFirstLogin,
-                                 withReloginCompletion: reloginCompletion)
+                getSessionStatus()
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
                 isAlreadyTryingToLogin = false
-                logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                logging(inConnectionError: error)
             }
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus(atFirstLogin: isFirstLogin,
-                             withReloginCompletion: reloginCompletion)
+            getSessionStatus()
         }
     }
 
     // Check Piwigo version, get token, available sizes, etc.
-    func getSessionStatus(atFirstLogin isFirstLogin: Bool,
-                          withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func getSessionStatus() {
         print(
             "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
-
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
-
         // Update HUD during login
         showPiwigoHUD(
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -396,12 +376,9 @@ class LoginViewController: UIViewController {
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
 
-        LoginUtilities.sessionGetStatus(completion: { [self] in
+        LoginUtilities.sessionGetStatus() { [self] in
             if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                 // They need to update, ask user what to do
-                // Reinitialise flag
-                NetworkVars.userCancelledCommunication = false
-
                 // Close loading or re-login view and ask what to do
                 DispatchQueue.main.async { [self] in
                     hidePiwigoHUD() { [self] in
@@ -416,46 +393,31 @@ class LoginViewController: UIViewController {
                             style: .destructive,
                             handler: { [self] action in
                                 // Proceed at their own risk
-                                launchApp(atFirstLogin: isFirstLogin,
-                                          withReloginCompletion: reloginCompletion)
+                                launchApp()
                             })
                         presentPiwigoAlert(withTitle: NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVars.pwgVersion), actions: [defaultAction, continueAction])
                     }
                 }
             } else {
                 // Their version is Ok. Close HUD.
-                launchApp(atFirstLogin: isFirstLogin,
-                          withReloginCompletion: reloginCompletion)
+                launchApp()
             }
-        }, failure: { [self] error in
+        } failure: { [self] error in
             isAlreadyTryingToLogin = false
             // Display error message
-            logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-        })
+            logging(inConnectionError: error)
+        }
     }
 
-    func launchApp(atFirstLogin isFirstLogin: Bool,
-                   withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func launchApp() {
         isAlreadyTryingToLogin = false
-
-        // Load navigation if needed
-        if isFirstLogin {
-            // Reinitialise flag
-            NetworkVars.userCancelledCommunication = false
-
-            // Hide HUD and present root album
-            DispatchQueue.main.async { [unowned self] in
-                // Present Album/Images view and resume uploads
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                hidePiwigoHUD() {
-                    // Present Album/Images view and resume uploads
-                    appDelegate?.loadNavigation(in: self.view.window)
-                }
-            }
-        } else {
-            // Hide HUD if needed
+        // Hide HUD and present root album
+        DispatchQueue.main.async { [unowned self] in
+            // Present Album/Images view and resume uploads
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
             hidePiwigoHUD() {
-                reloginCompletion()
+                // Present Album/Images view and resume uploads
+                appDelegate?.loadNavigation(in: self.view.window)
             }
         }
     }
@@ -472,12 +434,9 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         // Propagate user's request
-        NetworkVars.userCancelledCommunication = true
-        PwgSession.shared.dataSession.getAllTasks(completionHandler: { tasks in
-            tasks.forEach { task in
-                task.cancel()
-            }
-        })
+        PwgSession.shared.dataSession.getAllTasks() { tasks in
+            tasks.forEach { $0.cancel() }
+        }
     }
 
     func logging(inConnectionError error: Error?) {
@@ -509,9 +468,6 @@ class LoginViewController: UIViewController {
     }
 
     @objc func hideLoading() {
-        // Reinitialise flag
-        NetworkVars.userCancelledCommunication = false
-
         // Hide and remove login HUD
         hidePiwigoHUD() { }
     }

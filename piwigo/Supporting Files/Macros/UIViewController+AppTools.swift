@@ -146,6 +146,25 @@ extension UIViewController {
                                 actions: [dismissAction])
     }
 
+    func cancelDismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                                  cancel: @escaping () -> Void, dismiss: @escaping () -> Void) {
+        // Prepare message
+        var wholeMessage = message
+        if errorMessage.count > 0 {
+            wholeMessage.append("\n(" + errorMessage + ")")
+        }
+        
+        // Prepare actions
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+                                         style: .cancel) { _ in cancel() }
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                          style: .default) { _ in dismiss() }
+
+        // Present alert
+        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                actions: [cancelAction, dismissAction])
+    }
+
     func dismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                                  dismiss: @escaping () -> Void, retry: @escaping () -> Void) {
         // Prepare message

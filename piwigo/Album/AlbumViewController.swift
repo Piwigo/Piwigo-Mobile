@@ -445,7 +445,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(String(format: "viewDidAppear     => ID:%ld", categoryId))
+        print("••> viewDidAppear     => ID:\(categoryId)")
 
         // How long has it been since we reloaded the album and image data?
         var timeSinceLastLoad: TimeInterval = -.infinity
@@ -453,36 +453,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             timeSinceLastLoad = lastLoad.timeIntervalSinceNow
         }
 
-        // Connected as guest?
-        if NetworkVars.serverPath.isEmpty == false,
-           NetworkVars.username.isEmpty == true,
-           timeSinceLastLoad < TimeInterval(-600) {
-            startFetchingAlbumAndImages()
-            return
-        }
-
-        // Check for how long the session is active
-        let pwgToken = NetworkVars.pwgToken
-        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if timeSinceLastLogin < TimeInterval(-1800) {
-            LoginUtilities.sessionGetStatus { [self] in
-                print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
-                if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken {
-                    // Re-login before fetching album and image data
-                    performRelogin { [self] in
-                        if timeSinceLastLoad < TimeInterval(-600) {
-                            self.startFetchingAlbumAndImages()
-                        }
-                    }
-                } else {
-                    if timeSinceLastLoad < TimeInterval(-600) {
-                        // Fetch album and image data
-                        self.startFetchingAlbumAndImages()
-                    }
-                }
-            } failure: { _ in
-                print("••> Failed to check session status…")
-                // Will re-check later…
+        // Check session status before loading album and image data
+        if timeSinceLastLoad < TimeInterval(-600) {
+            print("••> Album data loaded \(timeSinceLastLoad) seconds ago")
+            LoginUtilities.checkSession {
+                self.startFetchingAlbumAndImages()
+            } failure: { error in
+                print("••> Error \(error.code): \(error.localizedDescription)")
+                // TO DO…
             }
         }
 
@@ -734,7 +712,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Fetch favorites in the background if needed
         if categoryId != pwgSmartAlbum.favorites.rawValue,
-           timeSinceLastLoad < TimeInterval(600) {
+           timeSinceLastLoad < TimeInterval(-600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
             }

@@ -107,9 +107,6 @@ public class NetworkVars: NSObject {
     /// - Remembers certificate information
     public static var certificateInformation = ""
 
-    /// - Remembers that the user cancelled login attempt
-    public static var userCancelledCommunication = false
-    
     /// - Remembers when the user logged in
     public static var dateOfLastLogin: Date = .distantPast
     

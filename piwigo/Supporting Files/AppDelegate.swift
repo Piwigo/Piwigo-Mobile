@@ -614,7 +614,7 @@ import piwigoKit
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            LoginUtilities.reloginAndRetry() {
+            LoginUtilities.checkSession {
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator
                 UploadManager.shared.backgroundQueue.async {

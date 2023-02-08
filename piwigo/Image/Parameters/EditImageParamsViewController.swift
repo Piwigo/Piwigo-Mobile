@@ -372,12 +372,19 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: images[index]) { [self] in
-            // Next image?
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(index + 1) / Float(images.count))
-            self.updateImageProperties(fromIndex: index + 1)
-        }
-        failure: { [unowned self] error in
+        LoginUtilities.checkSession { [self] in
+            setProperties(ofImage: images[index]) { [self] in
+                // Next image?
+                self.updatePiwigoHUD(withProgress: 1.0 - Float(index + 1) / Float(images.count))
+                self.updateImageProperties(fromIndex: index + 1)
+            }
+            failure: { [self] error in
+                // Display error
+                self.hidePiwigoHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
+            }
+        } failure: { [self] error in
             // Display error
             self.hidePiwigoHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
@@ -388,39 +395,21 @@ class EditImageParamsViewController: UIViewController
     private func showUpdatePropertiesError(_ error: NSError, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
-        var message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?")
+        let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
         if index + 1 < images.count {
-            cancelDismissRetryPiwigoError(withTitle: title, message: message,
-                                          errorMessage: error.localizedDescription, cancel: {
-            }, dismiss: { [self] in
+            cancelDismissPiwigoError(withTitle: title, message: message,
+                                     errorMessage: error.localizedDescription) {
+            } dismiss: { [self] in
                 // Bypass this image
                 if index + 1 < images.count {
                     // Next image
                     updateImageProperties(fromIndex: index + 1)
                 }
-            }, retry: { [self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [self] in
-                    updateImageProperties(fromIndex: index)
-                } failure: { [self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { }
-                }
-            })
+            }
         } else {
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: {
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    updateImageProperties(fromIndex: index)
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { }
-                }
-            })
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) {
+            }
         }
     }
     

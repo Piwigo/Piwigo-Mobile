@@ -75,39 +75,35 @@ extension AlbumViewController
         }
 
         // Add image to favorites
-        ImageUtilities.addToFavorites(imageData) { [self] in
-            // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+        LoginUtilities.checkSession { [self] in
+            ImageUtilities.addToFavorites(imageData) { [self] in
+                // Update HUD
+                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
-            // Image added to favorites
-            selectedImageIds.removeFirst()
+                // Image added to favorites
+                selectedImageIds.removeFirst()
 
-            // Next image
-            addImageToFavorites()
+                // Next image
+                addImageToFavorites()
 
+            } failure: { [self] error in
+                self.addImageToFavoritesError(error)
+            }
         } failure: { [self] error in
-            // Failed — Ask user if he/she wishes to retry
+            self.addImageToFavoritesError(error)
+        }
+    }
+    
+    private func addImageToFavoritesError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            var message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: { [self] in
+            let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [self] in
                 hidePiwigoHUD() { [self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    addImageToFavorites()
-                } failure: { [self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [self] in
-                        hidePiwigoHUD() { [self] in
-                            updateButtonsInSelectionMode()
-                        }
-                    }
-                }
-            })
+            }
         }
     }
     
@@ -151,39 +147,35 @@ extension AlbumViewController
         }
 
         // Remove image to favorites
-        ImageUtilities.removeFromFavorites(imageData) { [self] in
-            // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+        LoginUtilities.checkSession { [self] in
+            ImageUtilities.removeFromFavorites(imageData) { [self] in
+                // Update HUD
+                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
-            // Image removed from the favorites
-            selectedImageIds.removeFirst()
+                // Image removed from the favorites
+                selectedImageIds.removeFirst()
 
-            // Next image
-            removeImageFromFavorites()
+                // Next image
+                removeImageFromFavorites()
 
+            } failure: { [unowned self] error in
+                self.removeFromFavoritesError(error)
+            }
         } failure: { [unowned self] error in
-            // Failed — Ask user if he/she wishes to retry
+            self.removeFromFavoritesError(error)
+        }
+    }
+    
+    private func removeFromFavoritesError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            var message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [unowned self] in
                 hidePiwigoHUD() { [unowned self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    removeImageFromFavorites()
-                } failure: { [self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD() { [unowned self] in
-                            updateButtonsInSelectionMode()
-                        }
-                    }
-                }
-            })
+            }
         }
     }
 }

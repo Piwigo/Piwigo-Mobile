@@ -88,56 +88,52 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [self] in
-            // Retrieve album
-            if let albums = imageData.albums,
-               let album = albums.first(where: {$0.pwgID == categoryId}) {
-                // Remove image from album
-                album.removeFromImages(imageData)
+        LoginUtilities.checkSession { [self] in
+            ImageUtilities.setInfos(with: paramsDict) { [self] in
+                // Retrieve album
+                if let albums = imageData.albums,
+                   let album = albums.first(where: {$0.pwgID == categoryId}) {
+                    // Remove image from album
+                    album.removeFromImages(imageData)
 
-                // Update albums
-                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                    // Update albums
+                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
 
-                // Save changes
-                do {
-                    try self.savingContext.save()
-                } catch let error as NSError {
-                    print("Could not save copied images \(error), \(error.userInfo)")
+                    // Save changes
+                    do {
+                        try self.savingContext.save()
+                    } catch let error as NSError {
+                        print("Could not save copied images \(error), \(error.userInfo)")
+                    }
                 }
-            }
 
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage()
+                // Hide HUD
+                self.updatePiwigoHUDwithSuccess { [unowned self] in
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                        // Display preceding/next image or return to album view
+                        self.didRemoveImage()
+                    }
                 }
+            } failure: { [self] error in
+                self.removeImageFromAlbumError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
+            self.removeImageFromAlbumError(error)
+        }
+    }
+    
+    private func removeImageFromAlbumError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            self.dismissPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
                 hidePiwigoHUD { [unowned self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    removeImageFromAlbum()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD { [unowned self] in
-                            // Re-enable buttons
-                            setEnableStateOfButtons(true)
-                        }
-                    }
-                }
-            })
+            }
         }
     }
     
@@ -158,66 +154,62 @@ extension ImageViewController
         showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
-        ImageUtilities.delete(Set([imageData])) { [self] in
-            // Save image ID for marking Upload request in the background
-            let imageID = imageData.pwgID
-            
-            // Delete image from cache (also deletes image files)
-            self.savingContext.delete(imageData)
-            
-            // Retrieve albums associated to the deleted image
-            if let albums = imageData.albums {
-                // Remove image from cached albums
-                albums.forEach { album in
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+        LoginUtilities.checkSession { [self] in
+            ImageUtilities.delete(Set([imageData])) { [self] in
+                // Save image ID for marking Upload request in the background
+                let imageID = imageData.pwgID
+                
+                // Delete image from cache (also deletes image files)
+                self.savingContext.delete(imageData)
+                
+                // Retrieve albums associated to the deleted image
+                if let albums = imageData.albums {
+                    // Remove image from cached albums
+                    albums.forEach { album in
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                    }
                 }
-            }
-            
-            // Save changes
-            do {
-                try self.savingContext.save()
-            } catch let error as NSError {
-                print("Could not save albums after image deletion \(error), \(error.userInfo)")
-            }
-
-            // If this image was uploaded with the iOS app,
-            // update cache so that it can be re-uploaded.
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageID])
-            }
-
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage()
+                
+                // Save changes
+                do {
+                    try self.savingContext.save()
+                } catch let error as NSError {
+                    print("Could not save albums after image deletion \(error), \(error.userInfo)")
                 }
+
+                // If this image was uploaded with the iOS app,
+                // update cache so that it can be re-uploaded.
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageID])
+                }
+
+                // Hide HUD
+                self.updatePiwigoHUDwithSuccess { [self] in
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                        // Display preceding/next image or return to album view
+                        self.didRemoveImage()
+                    }
+                }
+            } failure: { [self] error in
+                self.deleteImageFromDatabaseError(error)
             }
         } failure: { [self] error in
+            self.deleteImageFromDatabaseError(error)
+        }
+    }
+    
+    private func deleteImageFromDatabaseError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            self.dismissPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
                 hidePiwigoHUD { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
-            }, retry: { [self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [self] in
-                    deleteImageFromDatabase()
-                } failure: { [self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD { [self] in
-                            // Re-enable buttons
-                            setEnableStateOfButtons(true)
-                        }
-                    }
-                }
-            })
+            }
         }
     }
 }

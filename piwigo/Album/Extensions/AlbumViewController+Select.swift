@@ -477,39 +477,34 @@ extension AlbumViewController
         }
                         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        self.imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) { [self] in
-            // Image info retrieved
-            selectedImageIdsLoop.removeFirst()
+        LoginUtilities.checkSession {  [self] in
+            imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
+                // Image info retrieved
+                selectedImageIdsLoop.removeFirst()
 
-            // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
+                // Update HUD
+                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
 
-            // Next image
-            retrieveImageData(beforeAction: action)
-            
+                // Next image
+                retrieveImageData(beforeAction: action)
+            } failure: { [unowned self] error in
+                retrieveImageDataError(error)
+            }
         } failure: { [unowned self] error in
-            // Failed — Ask user if he/she wishes to retry
+            retrieveImageDataError(error)
+        }
+    }
+    
+    private func retrieveImageDataError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [unowned self] in
                 hidePiwigoHUD() { [unowned self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    retrieveImageData(beforeAction: action)
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD() { [unowned self] in
-                            updateButtonsInSelectionMode()
-                        }
-                    }
-                }
-            })
+            }
         }
     }
 }

@@ -159,7 +159,6 @@
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* PhoneTableViewCell.swift */; };
 		AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD76646A298867FC00CFD66F /* AlbumDeletion.swift */; };
-		AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
 		AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE42849252F00171592 /* pwg.categories.move.json */; };
@@ -632,7 +631,6 @@
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
 		AD76646A298867FC00CFD66F /* AlbumDeletion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDeletion.swift; sourceTree = "<group>"; };
-		AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilitiesObjc.swift; sourceTree = "<group>"; };
 		AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParamsViewController.storyboard; sourceTree = "<group>"; };
 		AD778356267E34F800317F36 /* piwigoIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = piwigoIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD778359267E34F800317F36 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
@@ -1865,7 +1863,6 @@
 				AD91127B28146B6C002FB78F /* SceneConfigurations.swift */,
 				AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */,
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
-				AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -2686,7 +2683,6 @@
 				AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */,
 				ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */,
 				ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */,
-				AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */,
 				AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */,
 				ADEEC5D328560DF00065BA6D /* AlbumViewController.swift in Sources */,
 				AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */,

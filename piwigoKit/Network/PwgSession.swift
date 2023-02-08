@@ -131,7 +131,7 @@ public class PwgSession: NSObject {
                         // Invalid JSON data
 						#if DEBUG
 						let dataStr = String(decoding: jsonData, as: UTF8.self)
-						print(" > JSON: \(dataStr)")
+						print("••> JSON: \(dataStr)")
 						#endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
@@ -172,7 +172,7 @@ public class PwgSession: NSObject {
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON — \(countsOfByte) bytes received:\r \(dataStr)")
+            print("••> JSON — \(countsOfByte) bytes received:\r \(dataStr)")
             #endif
             
             // Return Piwigo error if no error and no data returned.

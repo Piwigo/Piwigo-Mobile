@@ -527,84 +527,41 @@ class ImageViewController: UIViewController {
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
-                // Update image data
-                self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
-                
-                // Disable HUD if needed
-                self.hidePiwigoHUD {
-                    // Set favorite button
+            LoginUtilities.checkSession { [self] in
+                self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
+                    // Update image data
+                    self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
+                    
+                    // Disable HUD if needed
+                    self.hidePiwigoHUD {
+                        // Set favorite button
 
-                    // Refresh image if needed
-                    if shouldUpdateImage {
-                        for childVC in self.children {
-                            if let previewVC = childVC as? ImagePreviewViewController,
-                               previewVC.imageIndex == self.imageIndex {
-                                previewVC.imageData = self.imageData
+                        // Refresh image if needed
+                        if shouldUpdateImage {
+                            for childVC in self.children {
+                                if let previewVC = childVC as? ImagePreviewViewController,
+                                   previewVC.imageIndex == self.imageIndex {
+                                    previewVC.imageData = self.imageData
+                                }
                             }
                         }
                     }
+                } failure: { error in
+                    self.retrieveImageDataError(error)
                 }
-            } failure: { error in
-                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-                self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                             errorMessage: error.localizedDescription, dismiss: {
-                }, retry: { [unowned self] in
-                    // Relogin and retry
-                    LoginUtilities.reloginAndRetry() { [unowned self] in
-                        retrieveImageData(imageData)
-                    } failure: { [self] error in
-                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                        dismissPiwigoError(withTitle: title, message: message,
-                                           errorMessage: error?.localizedDescription ?? "") { }
-                    }
-                })
+            } failure: { [self] error in
+                self.retrieveImageDataError(error)
             }
+        }
+    }
 
-//            ImageUtilities.getInfos(imageData.pwgID) { [unowned self] retrievedData in
-//                self.imageData = retrievedData
-//                // Disable HUD if needed
-//                self.hidePiwigoHUD {
-//                    if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
-//                        self.images[index] = self.imageData
-//
-//                        // Set favorite button
-//                        let isFavorite = CategoriesData.sharedInstance()
-//                            .category(withId: kPiwigoFavoritesCategoryId,
-//                                      containsImagesWithId: [NSNumber(value: imageData.imageId)])
-//                        self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-//
-//                        // Refresh image if needed
-//                        if shouldUpdateImage {
-//                            for childVC in self.children {
-//                                if let previewVC = childVC as? ImagePreviewViewController,
-//                                   previewVC.imageIndex == index {
-//                                    previewVC.imageData = self.imageData
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    // Enable actions
-//                    self.setEnableStateOfButtons(true)
-//                }
-//            } failure: { error in
-//                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-//                var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-//                self.dismissRetryPiwigoError(withTitle: title, message: message,
-//                                             errorMessage: error.localizedDescription, dismiss: {
-//                }, retry: { [unowned self] in
-//                    // Relogin and retry
-//                    LoginUtilities.reloginAndRetry() { [unowned self] in
-//                        retrieveImageData(imageData)
-//                    } failure: { [self] error in
-//                        message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-//                        dismissPiwigoError(withTitle: title, message: message,
-//                                           errorMessage: error?.localizedDescription ?? "") { }
-//                    }
-//                })
-//            }
+    private func retrieveImageDataError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
+            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) {
+            }
         }
     }
 

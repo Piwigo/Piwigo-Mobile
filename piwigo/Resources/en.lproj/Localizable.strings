@@ -346,9 +346,9 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";
-"editImageDetailsError_message" = "Failed to update your changes with your server. Try again?";
+"editImageDetailsError_message" = "Failed to update your changes with your server.";
 "imageDetailsFetchError_title" = "Photo Details Fetch Failed";
-"imageDetailsFetchError_retryMessage" = "Fetching the photo data failed. Try again?";
+"imageDetailsFetchError_message" = "Fetching the photo data failed.";
 "imageDetailsFetchError_continueMessage" = "Fetching the photo data failed. Continue?";
 
 // Image privacy levels

@@ -129,36 +129,47 @@ extension AlbumCollectionViewCell {
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Rename album, modify comment
-        AlbumUtilities.setInfos(albumId, withName: albumName, description: albumComment) { [self] in
-            DispatchQueue.main.async { [self] in
-                // Update album in cache and cell
-                if albumData?.name != albumName {
-                    albumData?.name = albumName
-                }
-                if albumData?.comment.string != albumComment {
-                    albumData?.comment = albumComment.htmlToAttributedString
-                }
-                do {
-                    try savingContext?.save()
-                } catch let error as NSError {
-                    print("Could not fetch \(error), \(error.userInfo)")
-                }
-                
-                // Hide HUD and swipe button
-                topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                    topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                        // Update cell and hide swipe buttons
-                        let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
-                        cell?.hideSwipe(animated: true)
+        LoginUtilities.checkSession {
+            AlbumUtilities.setInfos(albumId, withName: albumName, description: albumComment) { [self] in
+                DispatchQueue.main.async { [self] in
+                    // Update album in cache and cell
+                    if albumData?.name != albumName {
+                        albumData?.name = albumName
+                    }
+                    if albumData?.comment.string != albumComment {
+                        albumData?.comment = albumComment.htmlToAttributedString
+                    }
+                    do {
+                        try savingContext?.save()
+                    } catch let error as NSError {
+                        print("Could not save context, \(error.userInfo)")
+                    }
+                    
+                    // Hide HUD and swipe button
+                    topViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                            // Update cell and hide swipe buttons
+                            let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                            cell?.hideSwipe(animated: true)
+                        }
                     }
                 }
+            } failure: { error in
+                self.renameCategoryError(error, viewController: topViewController)
             }
         } failure: { error in
+            self.renameCategoryError(error, viewController: topViewController)
+        }
+    }
+    
+    private func renameCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
+        DispatchQueue.main.async {
+            let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
+            let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
             topViewController?.hidePiwigoHUD() {
-                topViewController?.dismissPiwigoError(withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"), message: NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album"), errorMessage: error.localizedDescription) {
-                }
+                topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                      errorMessage: error.localizedDescription) { }
             }
         }
     }
 }
-

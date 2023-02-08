@@ -27,21 +27,32 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        ImageUtilities.addToFavorites(imageData) {
-            DispatchQueue.main.async { [self] in
-                if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
-                                                         withId: pwgSmartAlbum.favorites.rawValue) {
-                    favAlbum.addToImages(imageData)
-                }
-                favoriteBarButton?.setFavoriteImage(for: true)
-                favoriteBarButton?.action = #selector(self.removeFromFavorites)
-                favoriteBarButton?.isEnabled = true
-            }
-        } failure: { error in
-            DispatchQueue.main.async { [self] in
-                dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites."), errorMessage: error.localizedDescription) { [self] in
+        LoginUtilities.checkSession {
+            ImageUtilities.addToFavorites(imageData) {
+                DispatchQueue.main.async { [self] in
+                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
+                                                             withId: pwgSmartAlbum.favorites.rawValue) {
+                        favAlbum.addToImages(imageData)
+                    }
+                    favoriteBarButton?.setFavoriteImage(for: true)
+                    favoriteBarButton?.action = #selector(self.removeFromFavorites)
                     favoriteBarButton?.isEnabled = true
                 }
+            } failure: { error in
+                self.addToFavoritesError(error)
+            }
+        } failure: { error in
+            self.addToFavoritesError(error)
+        }
+    }
+    
+    private func addToFavoritesError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
+            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+            let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [self] in
+                favoriteBarButton?.isEnabled = true
             }
         }
     }
@@ -52,24 +63,35 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
-            DispatchQueue.main.async { [self] in
-                if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
-                                                         withId: pwgSmartAlbum.favorites.rawValue) {
-                    favAlbum.removeFromImages(imageData)
+        LoginUtilities.checkSession {
+            ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
+                DispatchQueue.main.async { [self] in
+                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
+                                                             withId: pwgSmartAlbum.favorites.rawValue) {
+                        favAlbum.removeFromImages(imageData)
+                    }
+                    if self.categoryId != pwgSmartAlbum.favorites.rawValue {
+                        // Update favorite button
+                        self.favoriteBarButton?.setFavoriteImage(for: false)
+                        self.favoriteBarButton?.action = #selector(self.addToFavorites)
+                        self.favoriteBarButton?.isEnabled = true
+                    }
                 }
-                if self.categoryId != pwgSmartAlbum.favorites.rawValue {
-                    // Update favorite button
-                    self.favoriteBarButton?.setFavoriteImage(for: false)
-                    self.favoriteBarButton?.action = #selector(self.addToFavorites)
-                    self.favoriteBarButton?.isEnabled = true
-                }
+            } failure: { error in
+                self.removeFromFavoritesError(error)
             }
         } failure: { error in
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites."), errorMessage: error.localizedDescription) {
-                    self.favoriteBarButton?.isEnabled = true
-                }
+            self.removeFromFavoritesError(error)
+        }
+    }
+    
+    private func removeFromFavoritesError(_ error: NSError) {
+        DispatchQueue.main.async {
+            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+            let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+            self.dismissPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription) {
+                self.favoriteBarButton?.isEnabled = true
             }
         }
     }

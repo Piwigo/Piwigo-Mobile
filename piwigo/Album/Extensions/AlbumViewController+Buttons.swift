@@ -445,7 +445,7 @@ extension AlbumViewController
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone
-        if let lastDate = albumData?.dateLast,
+        if let lastDate = albumData?.dateLast, lastDate != .distantPast,
            (UIDevice.current.userInterfaceIdiom == .phone &&
             !UIApplication.shared.statusBarOrientation.isLandscape) {
             // Get last updated date

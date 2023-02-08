@@ -497,71 +497,67 @@ class LoginUtilities: NSObject {
     }
 
 
-    // MARK: - Login business
+    // MARK: - Login Business
     static func requestServerMethods(completion: @escaping () -> Void,
                                      didRejectCertificate: @escaping (NSError) -> Void,
                                      didFailHTTPauthentication: @escaping (NSError) -> Void,
                                      didFailSecureConnection: @escaping (NSError) -> Void,
-                                     failure: @escaping (NSError?) -> Void) {
+                                     failure: @escaping (NSError) -> Void) {
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         LoginUtilities.getMethods {
             // Known methods, pursue logging in…
-            DispatchQueue.main.async {
-                completion()
-            }
+            completion()
         } failure: { error in
-            DispatchQueue.main.async {
-                // If Piwigo uses a non-trusted certificate, ask permission
-                if NetworkVars.didRejectCertificate {
-                    // The SSL certificate is not trusted
-                    didRejectCertificate(error)
-                    return
-                }
-
-                // HTTP Basic authentication required?
-                if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.didFailHTTPauthentication {
-                    // Without prior knowledge, the app already tried Piwigo credentials
-                    // but unsuccessfully, so we request HTTP credentials
-                    didFailHTTPauthentication(error)
-                    return
-                }
-
-                switch (error as NSError).code {
-                case NSURLErrorUserAuthenticationRequired:
-                    // Without prior knowledge, the app already tried Piwigo credentials
-                    // but unsuccessfully, so must now request HTTP credentials
-                    didFailHTTPauthentication(error)
-                    return
-                case NSURLErrorUserCancelledAuthentication:
-                    failure(nil)
-                    return
-                case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive, NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData, NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired, NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed, NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation, NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL, NSURLErrorZeroByteResource:
-                    failure(NetworkVars.userCancelledCommunication ? nil : error)
-                    return
-                case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
-                    NSURLErrorSecureConnectionFailed:
-                    // HTTPS request failed ?
-                    if (NetworkVars.serverProtocol == "https://") && !NetworkVars.userCancelledCommunication {
-                        // Suggest HTTP connection if HTTPS attempt failed
-                        didFailSecureConnection(error)
-                        return
-                    }
-                    return
-                case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid, NSURLErrorServerCertificateUntrusted:
-                    // The SSL certificate is not trusted
-                    didRejectCertificate(error)
-                    return
-                default:
-                    break
-                }
-
-                // Display error message
-                failure(NetworkVars.userCancelledCommunication ? nil : error)
+            // If Piwigo uses a non-trusted certificate, ask permission
+            if NetworkVars.didRejectCertificate {
+                // The SSL certificate is not trusted
+                didRejectCertificate(error)
+                return
             }
+
+            // HTTP Basic authentication required?
+            if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.didFailHTTPauthentication {
+                // Without prior knowledge, the app already tried Piwigo credentials
+                // but unsuccessfully, so we request HTTP credentials
+                didFailHTTPauthentication(error)
+                return
+            }
+
+            switch (error as NSError).code {
+            case NSURLErrorUserAuthenticationRequired:
+                // Without prior knowledge, the app already tried Piwigo credentials
+                // but unsuccessfully, so must now request HTTP credentials
+                didFailHTTPauthentication(error)
+                return
+            case NSURLErrorUserCancelledAuthentication:
+                failure(error)
+                return
+            case NSURLErrorBadServerResponse, NSURLErrorBadURL, NSURLErrorCallIsActive, NSURLErrorCannotDecodeContentData, NSURLErrorCannotDecodeRawData, NSURLErrorCannotFindHost, NSURLErrorCannotParseResponse, NSURLErrorClientCertificateRequired, NSURLErrorDataLengthExceedsMaximum, NSURLErrorDataNotAllowed, NSURLErrorDNSLookupFailed, NSURLErrorHTTPTooManyRedirects, NSURLErrorInternationalRoamingOff, NSURLErrorNetworkConnectionLost, NSURLErrorNotConnectedToInternet, NSURLErrorRedirectToNonExistentLocation, NSURLErrorRequestBodyStreamExhausted, NSURLErrorTimedOut, NSURLErrorUnknown, NSURLErrorUnsupportedURL, NSURLErrorZeroByteResource:
+                failure(error)
+                return
+            case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
+                NSURLErrorSecureConnectionFailed:
+                // HTTPS request failed ?
+                if NetworkVars.serverProtocol == "https://" {
+                    // Suggest HTTP connection if HTTPS attempt failed
+                    didFailSecureConnection(error)
+                    return
+                }
+                return
+            case NSURLErrorClientCertificateRejected, NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot, NSURLErrorServerCertificateNotYetValid, NSURLErrorServerCertificateUntrusted:
+                // The SSL certificate is not trusted
+                didRejectCertificate(error)
+                return
+            default:
+                break
+            }
+
+            // Display error message
+            failure(error)
         }
     }
-        
+    
     static func getHttpCredentialsAlert(textFieldDelegate: UITextFieldDelegate?,
                                         username: String, password: String,
                                         cancelAction: @escaping ((UIAlertAction) -> Void),
@@ -612,37 +608,23 @@ class LoginUtilities: NSObject {
         return alert
     }
     
-    // Used for retrying failing operations
-    static func reloginAndRetry(completion: @escaping () -> Void,
-                                failure: @escaping (NSError?) -> Void) {
-        let server = NetworkVars.serverPath
-        let user = NetworkVars.username
-        if server.isEmpty == false, user.isEmpty == false {
-            // Re-login before retrying
-            performRelogin() {
-                completion()
-            } failure: { error in
-                failure(error)
-            }
-        } else if server.isEmpty == false {
-            // Only retry
+    // Re-login 30 min after the latest login
+    static func checkSession(completion: @escaping () -> Void,
+                             failure: @escaping (NSError) -> Void) {
+        // How long has it been since we last logged in?
+        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
+        if timeSinceLastLogin > TimeInterval(-1800) {
+            // No need to check sessions…
             completion()
-        } else {
-            // Return to login view (all scenes in foreground)
-            ClearCache.closeSessionAndClearCache() { }
+            return
         }
-    }
-    
-    static func performRelogin(completion: @escaping () -> Void,
-                               failure: @escaping (NSError?) -> Void) {
-        print("••> perform re-login before retrying…")
 
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         requestServerMethods { [self] in
             // Known methods, perform re-login
-            let username = NetworkVars.username
-            if username.isEmpty {
+            if NetworkVars.userStatus == .guest {
+                print("••> Checking guest session…")
                 // Check Piwigo version, get token, available sizes, etc.
                 if NetworkVars.usesCommunityPluginV29 {
                     communityGetStatus {
@@ -663,6 +645,8 @@ class LoginUtilities: NSObject {
                 }
             } else {
                 // Perform login
+                print("••> Checking user session…")
+                let username = NetworkVars.username
                 let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
                 sessionLogin(withUsername: username, password: password) {
                     // Session now opened
