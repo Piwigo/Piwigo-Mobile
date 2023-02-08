@@ -16,8 +16,7 @@ enum LocalAlbumType {
     case otherAlbums
 }
 
-@objc
-protocol LocalAlbumsProviderDelegate: NSObjectProtocol {
+@objc protocol LocalAlbumsProviderDelegate: NSObjectProtocol {
     func didChangePhotoLibrary()
 }
 

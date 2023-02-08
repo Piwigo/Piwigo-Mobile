@@ -20,7 +20,6 @@ enum SectionType: Int {
     case all
 }
 
-@objc
 class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, LocalImagesHeaderDelegate, UploadSwitchDelegate {
     
     // MARK: - Core Data Providers

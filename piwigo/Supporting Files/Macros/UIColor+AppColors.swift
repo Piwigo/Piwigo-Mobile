@@ -8,7 +8,6 @@
 
 import UIKit
 
-@objc
 extension UIColor {
 
     // MARK: - Text Color

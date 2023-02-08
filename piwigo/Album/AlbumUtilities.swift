@@ -15,7 +15,6 @@ enum pwgImageCollectionType {
     case popup, full
 }
 
-@objc
 class AlbumUtilities: NSObject {
     
     // MARK: - Constants
@@ -512,7 +511,6 @@ class AlbumUtilities: NSObject {
         return pageSize
     }
     
-    @objc
     static func minNberOfImagesPerRow() -> Int {   // => 3 on iPhone, 5 on iPad
         return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
     }
@@ -633,7 +631,6 @@ class AlbumUtilities: NSObject {
         return imagesPerRowInPortrait(forView: nil, maxWidth: forMaxWidth)
     }
 
-    @objc
     static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
         // We display at least 3 thumbnails per row and images never exceed the thumbnails size
         return imagesPerRowInPortrait(forView: view, maxWidth: maxWidth, collectionType: .full)
@@ -687,7 +684,6 @@ class AlbumUtilities: NSObject {
                          collectionType: .full)
     }
 
-    @objc
     static func numberOfImagesToDownloadPerPage() -> Int {
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(AlbumVars.shared.thumbnailsPerRowInPortrait)

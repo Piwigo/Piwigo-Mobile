@@ -22,10 +22,9 @@ enum pwgImageAction {
     case addToFavorites, removeFromFavorites
 }
 
-@objc
 class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
-    @objc var categoryId = Int32.zero
+    var categoryId = Int32.zero
     var query = ""
     var totalNumberOfImages = 0
     var selectedImageIds = Set<Int64>()

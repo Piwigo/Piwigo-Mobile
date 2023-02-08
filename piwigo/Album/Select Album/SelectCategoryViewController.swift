@@ -19,32 +19,28 @@ enum pwgCategorySelectAction {
     case copyImage, moveImage, copyImages, moveImages
 }
 
-@objc
 protocol SelectCategoryDelegate: NSObjectProtocol {
     func didSelectCategory(withId category: Int32)
 }
 
-@objc
-protocol SelectCategoryAlbumMovedDelegate {
+protocol SelectCategoryAlbumMovedDelegate: NSObjectProtocol {
     func didMoveCategory()
 }
 
-@objc
 protocol SelectCategoryImageCopiedDelegate: NSObjectProtocol {
     func didCopyImage()
 }
 
-@objc
-protocol SelectCategoryImageRemovedDelegate {
+protocol SelectCategoryImageRemovedDelegate: NSObjectProtocol {
     func didRemoveImage()
 }
 
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @objc weak var delegate: SelectCategoryDelegate?
-    @objc weak var albumMovedDelegate: SelectCategoryAlbumMovedDelegate?
-    @objc weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
-    @objc weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
+    weak var delegate: SelectCategoryDelegate?
+    weak var albumMovedDelegate: SelectCategoryAlbumMovedDelegate?
+    weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
+    weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
     private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min

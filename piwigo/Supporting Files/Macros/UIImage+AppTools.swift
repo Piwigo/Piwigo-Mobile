@@ -9,7 +9,6 @@
 import Vision
 import UIKit
 
-@objc
 extension UIImage {
     
     // MARK: - Saliency Analysis

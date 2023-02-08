@@ -12,7 +12,6 @@ import UIKit
     func didSelectImagesOfSection()
 }
 
-@objc
 class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     
     // MARK: - View

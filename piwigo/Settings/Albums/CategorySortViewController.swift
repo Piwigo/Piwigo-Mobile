@@ -35,8 +35,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         applyColorPalette()
     }
 
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 

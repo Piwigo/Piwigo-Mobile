@@ -20,7 +20,7 @@ let pwgPadSettingsWidth = CGFloat(512.0)
 class AppVars: NSObject {
     
     // Singleton
-    @objc static let shared = AppVars()
+    static let shared = AppVars()
 
     // Remove deprecated stored objects if needed
     override init() {
@@ -37,15 +37,15 @@ class AppVars: NSObject {
     // Application variables stored in UserDefaults / Standard
     /// - App color palette (adopts light/dark modes as from iOS 13)
     @UserDefault("isDarkPaletteActive", defaultValue: false)
-    @objc var isDarkPaletteActive: Bool
+    var isDarkPaletteActive: Bool
     @UserDefault("switchPaletteAutomatically", defaultValue: true)
-    @objc var switchPaletteAutomatically: Bool
+    var switchPaletteAutomatically: Bool
     @UserDefault("switchPaletteThreshold", defaultValue: 40)
-    @objc var switchPaletteThreshold: Int
+    var switchPaletteThreshold: Int
     @UserDefault("isDarkPaletteModeActive", defaultValue: false)
-    @objc var isDarkPaletteModeActive: Bool
+    var isDarkPaletteModeActive: Bool
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
-    @objc var isLightPaletteModeActive: Bool
+    var isLightPaletteModeActive: Bool
     
     /// - App Lock option
     @UserDefault("isAppLockActive", defaultValue: false)
@@ -57,16 +57,16 @@ class AppVars: NSObject {
     
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
-    @objc var clearClipboardDelay: Int
+    var clearClipboardDelay: Int
 
     /// - Remember which help views were watched
     @UserDefault("didWatchHelpViews", defaultValue: 0b00000000_00000000)
-    @objc var didWatchHelpViews: UInt16
+    var didWatchHelpViews: UInt16
     
     /// - Request help for translating Piwigo once a month max
     let pwgOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
     @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
-    @objc var dateOfLastTranslationRequest: TimeInterval
+    var dateOfLastTranslationRequest: TimeInterval
     
     
     // MARK: - Vars in UserDefaults / App Group
@@ -77,10 +77,10 @@ class AppVars: NSObject {
     // MARK: - Vars in Memory
     // Application variables kept in memory
     /// - Directionality of the language in the user interface of the app?
-    @objc var isAppLanguageRTL = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+    var isAppLanguageRTL = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
     
     /// - Is system dark palette active?
-    @objc var isSystemDarkModeActive = false
+    var isSystemDarkModeActive = false
     
     /// - Check for haptics compatibility at the app’s launch
     var supportsHaptics: Bool = false

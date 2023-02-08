@@ -8,7 +8,6 @@
 
 import UIKit
 
-@objc
 class TableViewUtilities: NSObject {
     
     // Singleton

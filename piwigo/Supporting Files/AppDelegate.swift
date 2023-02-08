@@ -18,7 +18,7 @@ import IQKeyboardManagerSwift
 import piwigoKit
 
 @UIApplicationMain
-@objc class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
         
     private let k1WeekInDays: TimeInterval  = 60 * 60 * 24 *  7.0
     private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
@@ -626,7 +626,7 @@ import piwigoKit
 
     
     // MARK: - Album Navigator
-    @objc func loadNavigation(in window: UIWindow?) {
+    func loadNavigation(in window: UIWindow?) {
         guard let window = window else { return }
         
         // Display default album

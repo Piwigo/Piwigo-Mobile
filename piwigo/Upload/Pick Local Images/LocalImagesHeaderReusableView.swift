@@ -22,7 +22,6 @@ enum SelectButtonState : Int {
     func didSelectImagesOfSection(_ section: Int)
 }
 
-@objc
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     private var dateLabelText: String = ""
@@ -109,7 +108,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         selectButton.accessibilityIdentifier = "SelectAll"
     }
 
-    @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
+    private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
         guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
             placeLabel.text = dateLabelText

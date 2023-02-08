@@ -58,7 +58,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private let playRatio: CGFloat = 0.9 // was 58/75 = 0.7733;
 
     private var _isSelection = false
-    @objc var isSelection: Bool {
+    var isSelection: Bool {
         get {
             _isSelection
         }
@@ -71,7 +71,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
 
     private var _isFavorite = false
-    @objc var isFavorite: Bool {
+    var isFavorite: Bool {
         get {
             _isFavorite
         }
@@ -94,7 +94,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
     }
         
-    @objc func applyColorPalette() {
+    func applyColorPalette() {
         bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)

@@ -8,7 +8,6 @@
 
 import UIKit
 
-@objc
 extension UIFont {
 
 //    class func piwigoFontLight() -> UIFont {

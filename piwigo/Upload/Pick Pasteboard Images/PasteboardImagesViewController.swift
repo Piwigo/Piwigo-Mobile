@@ -12,7 +12,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
     // MARK: - Core Data Providers

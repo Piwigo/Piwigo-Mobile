@@ -9,7 +9,6 @@
 import Foundation
 import piwigoKit
 
-@objc
 extension AlbumViewController
 {
     // MARK: Discover Menu (iOS 9.3 to 13.x)

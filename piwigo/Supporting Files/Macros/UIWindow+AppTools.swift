@@ -11,7 +11,6 @@ import Foundation
 extension UIWindow {
     
     // MARK: - Top Most View Controller
-    @objc
     func topMostViewController() -> UIViewController? {
         // Get the rootViewController of the associated window
         var rootViewController: UIViewController? = nil

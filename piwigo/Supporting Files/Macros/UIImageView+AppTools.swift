@@ -13,7 +13,6 @@ import UIKit
 // Constants
 let playRatio: CGFloat = 0.9 // was 58/75
 
-@objc
 extension UIImageView {
     
     // MARK: - Movie Icon

@@ -30,8 +30,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         doneBarButton?.accessibilityIdentifier = "Done"
     }
     
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 

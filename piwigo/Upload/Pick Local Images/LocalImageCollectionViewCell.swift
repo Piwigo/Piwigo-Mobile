@@ -12,11 +12,10 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class LocalImageCollectionViewCell: UICollectionViewCell {
 
     private var _localIdentifier = ""
-    @objc var localIdentifier: String {
+    var localIdentifier: String {
         get {
             _localIdentifier
         }
@@ -26,7 +25,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     private var _md5sum = ""
-    @objc var md5sum: String {
+    var md5sum: String {
         get {
             _md5sum
         }
@@ -36,7 +35,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     private var _progress: Float = 0.0
-    @objc var progress: Float {
+    var progress: Float {
         get {
             _progress
         }

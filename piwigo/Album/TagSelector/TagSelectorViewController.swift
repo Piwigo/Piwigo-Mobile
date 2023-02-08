@@ -12,8 +12,7 @@ import UIKit
 import CoreData
 import piwigoKit
 
-@objc
-protocol TagSelectorViewDelegate {
+protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 

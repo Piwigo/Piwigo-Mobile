@@ -12,7 +12,7 @@ import AVKit
 import UIKit
 import piwigoKit
 
-@objc protocol ImagePreviewDelegate: NSObjectProtocol {
+protocol ImagePreviewDelegate: NSObjectProtocol {
     func downloadProgress(_ progress: Float)
 }
 

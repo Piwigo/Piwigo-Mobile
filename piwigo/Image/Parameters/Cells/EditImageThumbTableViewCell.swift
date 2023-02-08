@@ -96,8 +96,7 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 // MARK: - EditImageThumbnailDelegate Methods
 extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 {
-    @objc
-    func didDeselectImage(withId imageId: Int64) {
+    @objc func didDeselectImage(withId imageId: Int64) {
         // Update data source
         let newImages = images?.filter({ $0.pwgID != imageId })
         images = newImages
@@ -107,8 +106,7 @@ extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
         delegate?.didDeselectImage(withId: imageId)
     }
 
-    @objc
-    func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String) {
+    @objc func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String) {
         // Retrieve image data from cache
         guard let imageToUpdate = images?.first(where: {$0.pwgID == imageId}) else { return }
         

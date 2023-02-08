@@ -9,16 +9,14 @@
 import UIKit
 import piwigoKit
 
-@objc
-protocol UploadSwitchDelegate: NSObjectProtocol {
+@objc protocol UploadSwitchDelegate: NSObjectProtocol {
     func uploadSettingsDidDisappear()
     func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
 }
 
-@objc
 class UploadSwitchViewController: UIViewController {
     
-    @objc weak var delegate: UploadSwitchDelegate?
+    weak var delegate: UploadSwitchDelegate?
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
@@ -28,7 +26,7 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var settingsView: UIView!
 
     private var _canDeleteImages = false
-    @objc var canDeleteImages: Bool {
+    var canDeleteImages: Bool {
         get {
             _canDeleteImages
         }
@@ -38,7 +36,7 @@ class UploadSwitchViewController: UIViewController {
     }
 
     private var _hasTagCreationRights = false
-    @objc var hasTagCreationRights: Bool {
+    var hasTagCreationRights: Bool {
         get {
             _hasTagCreationRights
         }

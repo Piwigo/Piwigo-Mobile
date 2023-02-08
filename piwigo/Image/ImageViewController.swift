@@ -11,7 +11,7 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc protocol ImageDetailDelegate: NSObjectProtocol {
+protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int64)
 //    func didUpdateImage(withData imageData: PiwigoImageData)
 //    func needToLoadMoreImages()

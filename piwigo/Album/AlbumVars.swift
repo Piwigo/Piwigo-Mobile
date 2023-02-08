@@ -12,7 +12,7 @@ import piwigoKit
 class AlbumVars: NSObject {
         
     // Singleton
-    @objc static let shared = AlbumVars()
+    static let shared = AlbumVars()
     
     // Remove deprecated stored objects if needed
     override init() {
@@ -30,19 +30,19 @@ class AlbumVars: NSObject {
     // Album variables stored in UserDefaults / Standard
     /// - Default root album, 0 by default
     @UserDefault("defaultCategory", defaultValue: Int32.zero)
-    @objc var defaultCategory: Int32
+    var defaultCategory: Int32
 
     /// - Default album thumbnail size determined from the available image sizes to present 144x144 pixel thumbnails
     @UserDefault("defaultAlbumThumbnailSize", defaultValue: AlbumUtilities.optimumAlbumThumbnailSizeForDevice().rawValue)
-    @objc var defaultAlbumThumbnailSize: Int16
+    var defaultAlbumThumbnailSize: Int16
 
     /// - List of albums recently visited / used
     @UserDefault("recentCategories", defaultValue: "0")
-    @objc var recentCategories: String
+    var recentCategories: String
     
     /// - Maximum number of recent categories  presented to the user
     @UserDefault("maxNberRecentCategories", defaultValue: 5)
-    @objc var maxNberRecentCategories: Int
+    var maxNberRecentCategories: Int
 
     /// - Default image sort option
     @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.dateCreatedAscending.rawValue)
@@ -58,15 +58,15 @@ class AlbumVars: NSObject {
 
     /// - Display images titles in collection views
     @UserDefault("displayImageTitles", defaultValue: true)
-    @objc var displayImageTitles: Bool
+    var displayImageTitles: Bool
 
     /// - Image thumbnail size determined from the available image sizes
     @UserDefault("defaultThumbnailSize", defaultValue: AlbumUtilities.optimumThumbnailSizeForDevice().rawValue)
-    @objc var defaultThumbnailSize: Int16
+    var defaultThumbnailSize: Int16
 
     /// - Number of images per row in portrait mode
     @UserDefault("thumbnailsPerRowInPortrait", defaultValue: UIDevice.current.userInterfaceIdiom == .phone ? 4 : 6)
-    @objc var thumbnailsPerRowInPortrait: Int
+    var thumbnailsPerRowInPortrait: Int
 
     /// - Recent period in number of days
     let recentPeriodKey = 594 // i.e. key used to detect the behaviour of the slider (sum of all periods)
@@ -83,13 +83,13 @@ class AlbumVars: NSObject {
     // MARK: - Vars in Memory
     // Album variables kept in memory
     /// - Available image sizes
-    @objc var hasSquareSizeImages = true
-    @objc var hasThumbSizeImages = true
-    @objc var hasXXSmallSizeImages = false
-    @objc var hasXSmallSizeImages = false
-    @objc var hasSmallSizeImages = false
-    @objc var hasMediumSizeImages = true
-    @objc var hasLargeSizeImages = false
-    @objc var hasXLargeSizeImages = false
-    @objc var hasXXLargeSizeImages = false
+    var hasSquareSizeImages = true
+    var hasThumbSizeImages = true
+    var hasXXSmallSizeImages = false
+    var hasXSmallSizeImages = false
+    var hasSmallSizeImages = false
+    var hasMediumSizeImages = true
+    var hasLargeSizeImages = false
+    var hasXLargeSizeImages = false
+    var hasXXLargeSizeImages = false
 }

@@ -8,7 +8,6 @@
 
 import UIKit
 
-@objc
 extension UIBarButtonItem {
     
     // MARK: - System Based Bar Button Items

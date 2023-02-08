@@ -15,7 +15,6 @@ enum pwgCategoryCellButtonState : Int {
     case hideSubAlbum
 }
 
-@objc
 protocol CategoryCellDelegate: NSObjectProtocol {
     func tappedDisclosure(of categoryTapped: Album)
 }

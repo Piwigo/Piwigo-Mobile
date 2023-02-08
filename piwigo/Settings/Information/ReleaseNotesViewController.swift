@@ -31,8 +31,7 @@ class ReleaseNotesViewController: UIViewController {
         doneBarButton?.accessibilityIdentifier = "Done"
     }
 
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 

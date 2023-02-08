@@ -44,16 +44,15 @@ extension AlbumViewController
 
 
 // MARK: - EditImageParamsDelegate Methods
-@objc
 extension AlbumViewController: EditImageParamsDelegate
 {
-    @objc func didDeselectImage(withId imageId: Int64) {
+    func didDeselectImage(withId imageId: Int64) {
         // Deselect image
         selectedImageIds.remove(imageId)
         imagesCollection?.reloadSections(IndexSet(integer: 1))
     }
 
-    @objc func didChangeImageParameters(_ params: Image) {
+    func didChangeImageParameters(_ params: Image) {
 //        // Update cached image data
 //        /// Note: the current category cannot be a smart album.
 //        if let categoryIds = params.categoryIds {
@@ -73,7 +72,7 @@ extension AlbumViewController: EditImageParamsDelegate
 //        }
     }
 
-    @objc func didFinishEditingParameters() {
+    func didFinishEditingParameters() {
         cancelSelect()
     }
 }

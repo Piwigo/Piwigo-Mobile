@@ -12,8 +12,7 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
-protocol EditImageThumbnailDelegate: NSObjectProtocol {
+@objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int64)
     func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String)
 }

@@ -100,8 +100,7 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
         applyColorPalette()
     }
 
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 
