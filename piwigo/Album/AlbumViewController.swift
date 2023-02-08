@@ -868,7 +868,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 style.alignment = NSTextAlignment.center
                 let attributes = [
                     NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
                     NSAttributedString.Key.paragraphStyle: style
                 ]
                 desc.addAttributes(attributes, range: wholeRange)
@@ -916,7 +916,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
