@@ -662,7 +662,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             let noRootAlbumData = self.categoryId == 0 && self.albums.fetchedObjects?.isEmpty ?? true
             let nbImages = self.images.fetchedObjects?.count ?? Int.zero
             let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
-            if noRootAlbumData || (nbImages != expectedNbImages) {
+            if noRootAlbumData || (nbImages == 0 && expectedNbImages > 0) {
                 // Display HUD while downloading album data
                 self.navigationController?.showPiwigoHUD(
                     withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
