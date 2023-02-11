@@ -209,20 +209,21 @@ extension AlbumViewController
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Fetch image data?
-                if self.categoryId == 0 {
+                let albumNbImages = self.albumData?.nbImages ?? 0
+                if self.categoryId == 0 || albumNbImages == 0 {
                     completion()
                     return
                 }
                 
                 // Check that we have an album with ID
                 guard let albumId = albumData?.pwgID else {
+                    completion()
                     return
                 }
                 
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                let albumNbImages = self.albumData?.nbImages ?? 0
                 let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
                 let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
                 self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
