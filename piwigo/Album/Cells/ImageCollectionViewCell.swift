@@ -124,11 +124,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
             }
             else if categoryId == pwgSmartAlbum.best.rawValue {
-//            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
                 if imageData.title.string.isEmpty == false {
                     nameLabel?.attributedText = attributedTitle(imageData.title)
+                    // Rate score unknown until pwg.images.getInfo is called
+//                    nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.title.string)
                 } else {
+                    // Rate score unknown until pwg.images.getInfo is called
                     nameLabel?.text = imageData.fileName
+//                    nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
                 }
             }
             else if categoryId == pwgSmartAlbum.recent.rawValue {
