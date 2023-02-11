@@ -224,8 +224,8 @@ extension AlbumViewController
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
-                let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
+                let (quotient, remainder) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+                let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
                 self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
                                  fromPage: 0, toPage: lastPage - 1, perPage: perPage,
                                  completion: completion)
