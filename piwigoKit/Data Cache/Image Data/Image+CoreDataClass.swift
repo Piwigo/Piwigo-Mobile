@@ -74,11 +74,11 @@ public class Image: NSManagedObject {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         let unknownDate = dateFormatter.date(from: "1900-01-01 00:00:00")!
-        let newPosted = dateFormatter.date(from: imageData.datePosted ?? "1900-01-01 00:00:00")!
+        let newPosted = dateFormatter.date(from: imageData.datePosted ?? "") ?? unknownDate
         if newPosted > unknownDate, datePosted != newPosted {
             datePosted = newPosted
         }
-        let newCreated = dateFormatter.date(from: imageData.dateCreated ?? "") ?? datePosted
+        let newCreated = dateFormatter.date(from: imageData.dateCreated ?? "") ?? unknownDate
         if newCreated > unknownDate, dateCreated != newCreated {
             dateCreated = newCreated
         }
