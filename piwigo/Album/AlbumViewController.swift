@@ -271,7 +271,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     override func viewDidLoad() {
         super.viewDidLoad()
         print("===============================")
-        print(String(format: "viewDidLoad       => ID:%ld", categoryId))
+        print("••> viewDidLoad       => ID:\(categoryId)")
 
         // Initialise data source
         do {
@@ -434,7 +434,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(String(format: "viewWillAppear    => ID:%ld", categoryId))
+        print("••> viewWillAppear    => ID:\(categoryId)")
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -696,11 +696,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Display "loading" in title view
             self.setTitleViewFromAlbumData(whileUpdating: true)
 
-            // Display HUD in addition when loading images for the first time
+            // Display HUD when loading images for the first time
+            // or when we have less than half of the images in cache
             let noRootAlbumData = self.categoryId == 0 && self.albums.fetchedObjects?.isEmpty ?? true
             let nbImages = self.images.fetchedObjects?.count ?? Int.zero
             let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
-            if noRootAlbumData || (nbImages == 0 && expectedNbImages > 0) {
+            if noRootAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
                 // Display HUD while downloading album data
                 self.navigationController?.showPiwigoHUD(
                     withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
