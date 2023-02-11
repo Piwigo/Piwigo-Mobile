@@ -521,10 +521,6 @@ class ImageViewController: UIViewController {
         // Image data is not complete when retrieved using pwg.categories.getImages
         setEnableStateOfButtons(false)
 
-        // Image data is not complete after an upload with pwg.images.upload
-        let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        let shouldUpdateImage = ImageUtilities.getURLs(imageData, ofMinSize: imageSize) == nil
-
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             LoginUtilities.checkSession { [self] in
@@ -532,17 +528,12 @@ class ImageViewController: UIViewController {
                     // Update image data
                     self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
                     
-                    // Disable HUD if needed
-                    self.hidePiwigoHUD {
-                        // Set favorite button
-
-                        // Refresh image if needed
-                        if shouldUpdateImage {
-                            for childVC in self.children {
-                                if let previewVC = childVC as? ImagePreviewViewController,
-                                   previewVC.imageIndex == self.imageIndex {
-                                    previewVC.imageData = self.imageData
-                                }
+                    // Update image data
+                    DispatchQueue.main.async {
+                        for childVC in self.pageViewController?.viewControllers ?? [] {
+                            if let previewVC = childVC as? ImagePreviewViewController,
+                               previewVC.imageIndex == self.imageIndex {
+                                previewVC.imageData = self.imageData
                             }
                         }
                     }
@@ -666,24 +657,6 @@ class ImageViewController: UIViewController {
 // MARK: - UIPageViewControllerDelegate
 extension ImageViewController: UIPageViewControllerDelegate
 {
-    // Called before a gesture-driven transition begins
-    func pageViewController(_ pageViewController: UIPageViewController,
-                            willTransitionTo pendingViewControllers: [UIViewController]) {
-
-        // Retrieve complete image data if needed
-        for pendingVC in pendingViewControllers {
-            if let previewVC = pendingVC as? ImagePreviewViewController,
-               previewVC.imageIndex < images?.fetchedObjects?.count ?? 0 {
-                if let imageData = images?.object(at: IndexPath(item: previewVC.imageIndex, section: 0)),
-                   imageData.fileSize == Int64.zero {
-                    // Retrieve image data in case user will want to copy,
-                    // edit, move, etc. the image
-                    retrieveImageData(imageData)
-                }
-            }
-        }
-    }
-
     // Called after a gesture-driven transition completes
     func pageViewController(_ pageViewController: UIPageViewController,
                             didFinishAnimating finished: Bool,
@@ -719,8 +692,14 @@ extension ImageViewController: UIPageViewControllerDataSource
     // Create view controller for presenting the image at the provided index
     func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+
+        // Retrieve up-to-date complete image data
+        guard let imageData = images?.object(at: IndexPath(item: index, section: 0)) else { return nil }
+        retrieveImageData(imageData)
+
+        // Create image preview
         imagePage.imageIndex = index
-        imagePage.imageData = images?.object(at: IndexPath(item: index, section: 0))
+        imagePage.imageData = imageData
         imagePage.imageLoaded = false
         return imagePage
     }
