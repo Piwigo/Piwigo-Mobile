@@ -107,7 +107,8 @@ public class AlbumProvider: NSObject {
                     print("Error: \(error)\nCould not save Core Data context.")
                 }
             } else {
-                // This album should not exist!
+                // This album does not exist!
+                // Will select the default album or root album
             }
         }
         
