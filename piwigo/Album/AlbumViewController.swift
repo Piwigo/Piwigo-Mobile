@@ -200,10 +200,24 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return currentAlbumData()
     }()
     private func currentAlbumData() -> Album? {
-        if categoryId != 0 {
-            return albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
+        // Did someone delete this album?
+        if let album = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) {
+            // Album available ► Job done
+            return album
         }
-        return nil
+        
+        // Album not available anymore ► Back to default album?
+        categoryId = AlbumVars.shared.defaultCategory
+        if let defaultAlbum = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) {
+            changeAlbumID()
+            return defaultAlbum
+        }
+
+        // Default album deleted ► Back to root album
+        categoryId = Int32.zero
+        let rootAlbum = albumProvider.getAlbum(inContext: mainContext, withId: Int32.zero)
+        changeAlbumID()
+        return rootAlbum
     }
     
     lazy var predicates: [NSPredicate] = {
@@ -454,8 +468,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Check session status before loading album and image data
+        print("••> Album data loaded \(timeSinceLastLoad) seconds ago")
         if timeSinceLastLoad < TimeInterval(-600) {
-            print("••> Album data loaded \(timeSinceLastLoad) seconds ago")
             LoginUtilities.checkSession {
                 self.startFetchingAlbumAndImages()
             } failure: { error in
@@ -640,6 +654,30 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - Category Data
     func changeAlbumID() {
+        // Reset upload rights
+        userHasUploadRights = getUserHasUploadRights()
+
+        // Add/remove search bar
+        if categoryId == 0 {
+            // Initialise search bar
+            initSearchBar()
+        } else {
+            // Remove search bar from the navigation bar
+            navigationItem.searchController = nil
+        }
+
+        // Reset predicates and reload albums and images
+        resetPredicatesAndPerformFetch()
+
+        // Reload album
+        imagesCollection?.reloadData()
+        
+        // Reset buttons and menus
+        initButtonsInPreviewMode()
+        updateButtonsInPreviewMode()
+    }
+    
+    func resetPredicatesAndPerformFetch() {
         // Update albums
         var andPredicates = predicates
         andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
@@ -1200,26 +1238,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Change default album
         categoryId = AlbumVars.shared.defaultCategory
         albumData = currentAlbumData()
-        userHasUploadRights = getUserHasUploadRights()
-
-        // Add/remove search bar
-        if categoryId == 0 {
-            // Initialise search bar
-            initSearchBar()
-        } else {
-            // Remove search bar from the navigation bar
-            navigationItem.searchController = nil
-        }
-
-        // Update albums and images
         changeAlbumID()
-
-        // Reload album
-        imagesCollection?.reloadData()
-        
-        // Reset buttons and menus
-        initButtonsInPreviewMode()
-        updateButtonsInPreviewMode()
     }
 
     func didChangeRecentPeriod() {
