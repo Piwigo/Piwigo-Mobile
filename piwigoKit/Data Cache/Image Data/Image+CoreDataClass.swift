@@ -15,7 +15,8 @@ public class Image: NSManagedObject {
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
      */
-    func update(with imageData: ImagesGetInfo, user: User, albums: Set<Album>) throws {
+    func update(with imageData: ImagesGetInfo, sort: pwgImageSort, rank: Int64,
+                user: User, albums: Set<Album>) throws {
 
         // Update the image only if the Id has a value.
         guard let newPwgID = imageData.id else {
@@ -204,6 +205,20 @@ public class Image: NSManagedObject {
                                     imagePath: xxlargeUrl?.absoluteString ?? "")
         if xxlargeRes == nil || xxlargeRes?.isEqual(newXxlarge) == false {
             xxlargeRes = newXxlarge
+        }
+        
+        // Rank of image in album
+        switch sort {
+        case .manual:
+            if rank != Int64.min, rankManual != rank {
+                rankManual = rank
+            }
+        case .random:
+            if rank != Int64.min, rankRandom != rank {
+                rankRandom = rank
+            }
+        default:
+            break
         }
         
         // This image of the current server is accessible to the user

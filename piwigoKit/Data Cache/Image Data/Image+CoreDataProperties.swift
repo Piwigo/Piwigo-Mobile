@@ -35,6 +35,9 @@ extension Image {
     @NSManaged public var ratingScore: Float
     @NSManaged public var fileSize: Int64
     @NSManaged public var md5sum: String
+    
+    @NSManaged public var rankManual: Int64
+    @NSManaged public var rankRandom: Int64
 
     @NSManaged public var squareRes: Resolution?
     @NSManaged public var thumbRes: Resolution?

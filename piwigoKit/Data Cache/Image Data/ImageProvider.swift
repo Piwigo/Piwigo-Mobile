@@ -163,7 +163,13 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Import the imageJSON into Core Data.
-                    try self.importImages(imageJSON.data, inAlbum: albumId)
+                    if [.manual, .random].contains(sort) {
+                        let startRank = Int64(page * perPage)
+                        try self.importImages(imageJSON.data, inAlbum: albumId,
+                                              sort: sort, fromRank: startRank)
+                    } else {
+                        try self.importImages(imageJSON.data, inAlbum: albumId)
+                    }
                     
                     // Retrieve total number of images
                     if albumId == pwgSmartAlbum.favorites.rawValue {
@@ -255,7 +261,9 @@ public class ImageProvider: NSObject {
      */
     private let batchSize = 256
     private func importImages(_ imageArray: [ImagesGetInfo],
-                              inAlbum albumId: Int32, withAlbumUpdate: Bool = false) throws {
+                              inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
+                              sort: pwgImageSort = .dateCreatedDescending,
+                              fromRank rank: Int64 = Int64.min) throws {
         // Get current user object (will create server object if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             fatalError("Unresolved error — Could not get user object!")
@@ -290,8 +298,11 @@ public class ImageProvider: NSObject {
             let imagesBatch = Array(imageArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
+            let startRank = rank + Int64(batchStart)
             if !importOneBatch(imagesBatch, inAlbum: album,
-                               withAlbumUpdate: withAlbumUpdate, user: user) {
+                               withAlbumUpdate: withAlbumUpdate,
+                               sort: sort, fromRank: startRank,
+                               user: user) {
                 return
             }
         }
@@ -308,6 +319,8 @@ public class ImageProvider: NSObject {
      */
     private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
                                 inAlbum album: Album, withAlbumUpdate: Bool = false,
+                                sort: pwgImageSort = .dateCreatedDescending,
+                                fromRank startRank: Int64 = Int64.min,
                                 user: User) -> Bool {
         var success = false
         
@@ -328,6 +341,7 @@ public class ImageProvider: NSObject {
             let cachedImages:[Image] = controller.fetchedObjects ?? []
             
             // Loop over new images
+            var rank = startRank
             for imageData in imagesBatch {
                 
                 // Check that this image belongs at least to the current album
@@ -337,6 +351,9 @@ public class ImageProvider: NSObject {
                     albums.formUnion(allAlbums)
                 }
                 
+                // Rank of image in album
+                rank = startRank == Int64.min ? Int64.min : rank + 1
+                
                 // Index of this new image in cache
                 guard let ID = imageData.id else { continue }
                 if let index = cachedImages.firstIndex(where: { $0.pwgID == ID }) {
@@ -344,7 +361,9 @@ public class ImageProvider: NSObject {
                     do {
                         // The current user will be added so that we know which images
                         // are accessible to that user.
-                        try cachedImages[index].update(with: imageData, user: user, albums: albums)
+                        try cachedImages[index].update(with: imageData,
+                                                       sort: sort, rank: rank,
+                                                       user: user, albums: albums)
                     }
                     catch ImageError.missingData {
                         // Could not perform the update
@@ -364,7 +383,9 @@ public class ImageProvider: NSObject {
                     
                     // Populate the Image's properties using the raw data.
                     do {
-                        try image.update(with: imageData, user: user, albums: albums)
+                        try image.update(with: imageData,
+                                         sort:sort, rank: rank,
+                                         user: user, albums: albums)
                         
                         // Update album data if asked
                         if withAlbumUpdate {
@@ -402,11 +423,11 @@ public class ImageProvider: NSObject {
             if bckgContext.hasChanges {
                 do {
                     try bckgContext.save()
-                    //                    if Thread.isMainThread == false {
-                    //                        DispatchQueue.main.async {
-                    //                            DataController.shared.saveMainContext()
-                    //                        }
-                    //                    }
+                    if Thread.isMainThread == false {
+                        DispatchQueue.main.async {
+                            DataController.shared.saveMainContext()
+                        }
+                    }
                 }
                 catch {
                     print("Error: \(error)\nCould not save Core Data context.")

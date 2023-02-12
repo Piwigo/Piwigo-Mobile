@@ -38,6 +38,8 @@
         <attribute name="mediumRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pwgID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rankManual" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
+        <attribute name="rankRandom" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
         <attribute name="ratingScore" attributeType="Float" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="smallRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="squareRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
