@@ -518,12 +518,13 @@ class ImageViewController: UIViewController {
     }
 
     private func retrieveImageData(_ imageData: Image) {
-        // Image data is not complete when retrieved using pwg.categories.getImages
+        // Disable buttons until image data are up-to-date
         setEnableStateOfButtons(false)
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             LoginUtilities.checkSession { [self] in
+                print("••> Retrieving data of image #\(imageData.pwgID)")
                 self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
                     // Update image data
                     self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
@@ -534,6 +535,7 @@ class ImageViewController: UIViewController {
                             if let previewVC = childVC as? ImagePreviewViewController,
                                previewVC.imageIndex == self.imageIndex {
                                 previewVC.imageData = self.imageData
+                                self.setEnableStateOfButtons(true)
                             }
                         }
                     }
