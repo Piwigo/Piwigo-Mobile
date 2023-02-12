@@ -246,7 +246,7 @@ extension AlbumViewController
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         imageProvider.fetchImages(ofAlbumWithId: albumId, withQuery: self.query,
-                                  sort: .dateCreatedAscending,
+                                  sort: AlbumVars.shared.defaultSort,
                                   fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
             guard let error = error else {
                 // No error ► Smart album?
