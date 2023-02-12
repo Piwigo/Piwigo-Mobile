@@ -58,6 +58,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     private var imageDetailView: ImageViewController?
     private var updateOperations: [BlockOperation] = [BlockOperation]()
+    private var moveOperations: [BlockOperation] = [BlockOperation]()
+    private var deleteOperations: [BlockOperation] = [BlockOperation]()
+    private var insertOperations: [BlockOperation] = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -1381,11 +1384,17 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateOperations.removeAll(keepingCapacity: false)
+        moveOperations.removeAll(keepingCapacity: false)
+        insertOperations.removeAll(keepingCapacity: false)
+        deleteOperations.removeAll(keepingCapacity: false)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         // Check that this update should be managed by this view controller
+        if view.window == nil {
+            return
+        }
         if let album = anObject as? Album, album.parentId != categoryId {
             return
         }
@@ -1399,7 +1408,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if anObject is Image { newIndexPath.section = 1 }
-            updateOperations.append( BlockOperation { [weak self] in
+            insertOperations.append( BlockOperation { [weak self] in
                 print("••> Insert imagesCollection item at \(newIndexPath)")
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
@@ -1416,14 +1425,14 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
+            moveOperations.append( BlockOperation {  [weak self] in
                 print("••> Move imagesCollection item from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if anObject is Image { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
+            deleteOperations.append( BlockOperation {  [weak self] in
                 print("••> Delete imagesCollection item at \(indexPath)")
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
@@ -1434,22 +1443,42 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Do not update items if the album is not presented.
-        if view.window == nil { return }
+        if view.window == nil {
+            updateOperations.removeAll(keepingCapacity: false)
+            moveOperations.removeAll(keepingCapacity: false)
+            insertOperations.removeAll(keepingCapacity: false)
+            deleteOperations.removeAll(keepingCapacity: false)
+            return
+        }
         
         // Any update to perform?
-        if updateOperations.isEmpty || view.window == nil { return }
+        if updateOperations.isEmpty, moveOperations.isEmpty,
+           insertOperations.isEmpty, deleteOperations.isEmpty{ return }
 
+        // Insert objects
+        imagesCollection?.performBatchUpdates({ [weak self] in
+            self?.insertOperations.forEach({ $0.start()})
+        })
+
+        // Move objects
+        imagesCollection?.performBatchUpdates({ [weak self] in
+            self?.moveOperations.forEach({ $0.start() })
+        })
+
+        // Update objects
+        imagesCollection?.performBatchUpdates({ [weak self] in
+            self?.updateOperations.forEach({ $0.start() })
+        })
+        
         // Will update footer of image collection at the end
-        updateOperations.append(BlockOperation(block: { [weak self] in
+        deleteOperations.append(BlockOperation(block: { [weak self] in
             // Update footer
             self?.updateNberOfImagesInFooter()
         }))
 
-        // Perform all updates
-        imagesCollection?.performBatchUpdates({ () -> Void  in
-            for operation: BlockOperation in self.updateOperations {
-                operation.start()
-            }
+        // Delete objects
+        imagesCollection?.performBatchUpdates({ [weak self] in
+            self?.deleteOperations.forEach({ $0.start()})
         })
     }
 }
