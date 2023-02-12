@@ -43,8 +43,8 @@ public class Image: NSManagedObject {
         if visits != newVisits {
             visits = newVisits
         }
-        let newScore = Float(imageData.ratingScore ?? "") ?? Float.zero
-        if ratingScore != newScore {
+        let newScore = Float(imageData.ratingScore ?? "") ?? Float.nan
+        if !newScore.isNaN, ratingScore != newScore {
             ratingScore = newScore
         }
         

@@ -157,7 +157,7 @@ extension ImagesGetInfo {
         }
         if self.privacyLevel == nil { self.privacyLevel = "0" }
         if self.tags == nil { self.tags = [TagProperties]() }
-        if self.ratingScore == nil { self.ratingScore = "0.0" }
+        if self.ratingScore == nil { self.ratingScore = "" }
         if self.fileSize == nil { self.fileSize = Int64.zero }
         if self.md5checksum == nil { self.md5checksum = "" }
     }
