@@ -38,13 +38,16 @@ public class Image: NSManagedObject {
             comment = description
         }
         
-        // Image visits and rate
+        // Image visits (returned by pwg.category.getImages)
         let newVisits = imageData.visits ?? Int32.zero
         if visits != newVisits {
             visits = newVisits
         }
-        let newScore = Float(imageData.ratingScore ?? "") ?? Float.nan
-        if !newScore.isNaN, ratingScore != newScore {
+        
+        // Image rating score (returned by pwg.images.getInfo)
+        // Should not be NaN because it can be used as a sorting criterion
+        let newScore = Float(imageData.ratingScore ?? "") ?? -1.0
+        if newScore != -1.0, ratingScore != newScore {
             ratingScore = newScore
         }
         

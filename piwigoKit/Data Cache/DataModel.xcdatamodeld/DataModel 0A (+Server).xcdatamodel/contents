@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName=".Album" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
         <attribute name="dateLast" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
@@ -38,7 +38,7 @@
         <attribute name="mediumRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="pwgID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="ratingScore" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="ratingScore" attributeType="Float" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="smallRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="squareRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="thumbRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
