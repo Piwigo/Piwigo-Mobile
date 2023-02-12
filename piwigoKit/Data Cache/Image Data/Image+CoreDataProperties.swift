@@ -20,6 +20,7 @@ extension Image {
     @NSManaged public var uuid: String
     @NSManaged public var pwgID: Int64
     @NSManaged public var title: NSAttributedString
+    @NSManaged public var titleStr: String
     @NSManaged public var comment: NSAttributedString
     @NSManaged public var visits: Int32
     @NSManaged public var fileName: String

@@ -32,6 +32,7 @@ public class Image: NSManagedObject {
         let imageTitle = NetworkUtilities.utf8mb4String(from: imageData.title ?? "").htmlToAttributedString
         if title.string != imageTitle.string {
             title = imageTitle
+            titleStr = imageTitle.string
         }
         let description = NetworkUtilities.utf8mb4String(from: imageData.comment ?? "").htmlToAttributedString
         if comment.string != description.string {

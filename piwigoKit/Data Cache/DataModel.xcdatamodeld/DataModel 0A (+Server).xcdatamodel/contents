@@ -43,6 +43,7 @@
         <attribute name="squareRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="thumbRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="title" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
+        <attribute name="titleStr" attributeType="String" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
         <attribute name="visits" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="xlargeRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
