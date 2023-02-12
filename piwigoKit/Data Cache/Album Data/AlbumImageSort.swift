@@ -77,7 +77,7 @@ extension pwgImageSort {
             return String(format: "%@ %@", pwgImageOrderVisits, pwgImageOrderDescending)
 
         case .manual:               // Manual order
-            return ""
+            return pwgImageOrderAscending
         case .random:               // Random order
             return pwgImageOrderRandom
         }
