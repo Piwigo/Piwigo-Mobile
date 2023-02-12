@@ -335,7 +335,7 @@ public class TagProvider: NSObject {
     /**
      Clears all Core Data tag entries of the current server.
     */
-    public func clearTags() {
+    public func clearAll() {
         
         // Create a fetch request for the Tag entity
         let fetchRequest = Tag.fetchRequest()

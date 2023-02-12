@@ -1159,7 +1159,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let title = NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails")
                 cell.configure(with: title, detail: self.thumbCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-                cell.accessibilityIdentifier = "diskCache"
+                cell.accessibilityIdentifier = "thumbnailCache"
                 tableViewCell = cell
                 
             case 1 /* Photos and Videos */:
@@ -1170,7 +1170,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let title = NSLocalizedString("severalImages", comment: "Photos")
                 cell.configure(with: title, detail: self.photoCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
-                cell.accessibilityIdentifier = "memoryCache"
+                cell.accessibilityIdentifier = "photoCache"
                 tableViewCell = cell
                 
             default:
@@ -1648,32 +1648,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
-                #if DEBUG
                 let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
-                #else
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
-                #endif
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
-                var title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
-                let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
-                    // Delete all thumbnails in background queue
-                    DispatchQueue.global(qos: .userInteractive).async { [self] in
-                        let bckgContext = DataController.shared.bckgContext
-                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-                           let server = user.server {
-                            var sizes = Set<pwgImageSize>()
-                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
-                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
-                            server.clearCachedImages(ofSizes: sizes)
-                            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                        }
-                    }
-                })
-                alert.addAction(clearThumbCacheAction)
-                
-                title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
+                var title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
                 let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                     // Delete full resolution images in background queue
                     DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -1685,10 +1664,41 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             sizes.insert(pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes)
                             server.clearCachedImages(ofSizes: sizes)
                             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+                            DispatchQueue.main.async {
+                                let indexPath = IndexPath(row: 0, section: SettingsSection.cache.rawValue)
+                                if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+                                   let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+                                    cell.detailLabel.text = self.photoCacheSize
+                                }
+                            }
                         }
                     }
                 })
                 alert.addAction(clearPhotoCacheAction)
+                
+                title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
+                let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+                    // Delete all thumbnails in background queue
+                    DispatchQueue.global(qos: .userInteractive).async { [self] in
+                        let bckgContext = DataController.shared.bckgContext
+                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
+                           let server = user.server {
+                            var sizes = Set<pwgImageSize>()
+                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
+                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
+                            server.clearCachedImages(ofSizes: sizes)
+                            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                            DispatchQueue.main.async {
+                                let indexPath = IndexPath(row: 1, section: SettingsSection.cache.rawValue)
+                                if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+                                   let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+                                    cell.detailLabel.text = self.thumbCacheSize
+                                }
+                            }
+                        }
+                    }
+                })
+                alert.addAction(clearThumbCacheAction)
                 
 #if DEBUG
                 let clearAlbumsAction = UIAlertAction(title: "Album Data",
@@ -1708,7 +1718,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearTagsAction = UIAlertAction(title: "Tag Data",
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
-                    TagProvider().clearTags()
+                    TagProvider().clearAll()
                 })
                 alert.addAction(clearTagsAction)
                 
@@ -1716,7 +1726,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearLocationsAction = UIAlertAction(title: titleClearLocations,
                                                          style: .default, handler: { action in
                     // Delete all locations in background queue
-                    LocationProvider.shared.clearLocations()
+                    LocationProvider.shared.clearAll()
                 })
                 alert.addAction(clearLocationsAction)
                 

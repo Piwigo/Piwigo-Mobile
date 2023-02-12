@@ -71,19 +71,17 @@ class ClearCache: NSObject {
                              completion: @escaping () -> Void) {
         
         // Tags
-        TagProvider().clearTags()
+        TagProvider().clearAll()
 
         // Locations with place names
-        LocationProvider.shared.clearLocations()
+        LocationProvider.shared.clearAll()
 
-        // Album data
+        // Album and image data
         if !exceptCategories {
             CacheVars.shared.dateLoaded = [:]
             AlbumProvider().clearAll()
             ImageProvider().clearAll()
         }
-
-        // Image data
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

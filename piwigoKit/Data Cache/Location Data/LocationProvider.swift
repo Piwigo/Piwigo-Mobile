@@ -239,7 +239,7 @@ public class LocationProvider: NSObject {
     /**
      Clear cached Core Data location entry
     */
-    public func clearLocations() {
+    public func clearAll() {
         
         // Create a fetch request for the Tag entity
         let fetchRequest = Location.fetchRequest()
