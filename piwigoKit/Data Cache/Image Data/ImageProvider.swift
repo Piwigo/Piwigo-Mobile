@@ -107,13 +107,16 @@ public class ImageProvider: NSObject {
         case pwgSmartAlbum.search.rawValue:
             method = pwgImagesSearch
             paramsDict["query"] = query
-            
+            paramsDict["order"] = "date_available desc, id desc"
+
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
+            paramsDict["order"] = "hit desc, id desc"
             paramsDict["f_min_hit"] = 1
             
         case pwgSmartAlbum.best.rawValue:
             paramsDict["recursive"] = true
+            paramsDict["order"] = "rating_score desc, id desc"
             paramsDict["f_min_rate"] = 1
             
         case pwgSmartAlbum.recent.rawValue:
@@ -122,6 +125,7 @@ public class ImageProvider: NSObject {
             let threeMonthsAgo = Date(timeIntervalSinceNow: TimeInterval(-3600*24*31*3))
             let dateAvailableString = dateFormatter.string(from: threeMonthsAgo)
             paramsDict["recursive"] = true
+            paramsDict["order"] = "date_available desc, id desc"
             paramsDict["f_min_date_available"] = dateAvailableString
             
         case pwgSmartAlbum.favorites.rawValue:
@@ -130,7 +134,6 @@ public class ImageProvider: NSObject {
         case Int32.min...pwgSmartAlbum.tagged.rawValue:
             method = pwgTagsGetImages
             paramsDict["tag_id"] = pwgSmartAlbum.tagged.rawValue - albumId
-            paramsDict["order"] = "rank asc, id desc"
             
         default:    // Standard Piwigo album
             paramsDict["cat_id"] = albumId
@@ -166,7 +169,13 @@ public class ImageProvider: NSObject {
                     if albumId == pwgSmartAlbum.favorites.rawValue {
                         totalCount = imageJSON.paging?.count ?? Int64.zero
                     } else {
-                        totalCount = imageJSON.paging?.totalCount?.int64Value ?? Int64.zero
+                        if "13.5.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedSame {
+                            // Bug leading to server providing wrong total_count value
+                            // Discovered in Piwigo 13.5.0, may have appeared in earlier version
+                            totalCount = imageJSON.paging?.count ?? Int64.zero
+                        } else {
+                            totalCount = imageJSON.paging?.totalCount?.int64Value ?? Int64.zero
+                        }
                     }
                     
                     // Retrieve IDs of fetched images
