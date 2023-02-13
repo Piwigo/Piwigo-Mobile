@@ -623,7 +623,8 @@ class LoginUtilities: NSObject {
         // => Determine if Community extension 2.9a or later is installed and active
         requestServerMethods { [self] in
             // Known methods, perform re-login
-            if NetworkVars.userStatus == .guest {
+            // Don't use userStatus as it may not be known after Core Data migration
+            if NetworkVars.username.isEmpty {
                 print("••> Checking guest session…")
                 // Check Piwigo version, get token, available sizes, etc.
                 if NetworkVars.usesCommunityPluginV29 {

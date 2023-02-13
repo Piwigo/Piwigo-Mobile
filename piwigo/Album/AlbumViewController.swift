@@ -31,7 +31,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var selectedImageIdsLoop = Set<Int64>()
 
     var imagesCollection: UICollectionView?
-//    private var didScrollToImageIndex = 0
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
     var settingsBarButton: UIBarButtonItem!
