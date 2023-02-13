@@ -41,7 +41,6 @@
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */; };
-		AD129E6828C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		AD18C73C27F1005B002CD05C /* UIApplication+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73B27F1005B002CD05C /* UIApplication+AppTools.swift */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
@@ -274,6 +273,7 @@
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */; };
+		ADC52049299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADC69F19285A38A5009BF9AF /* AlbumViewController+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F18285A38A5009BF9AF /* AlbumViewController+Delete.swift */; };
 		ADC69F1B285A4C30009BF9AF /* AlbumViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */; };
 		ADC69F1D285B6859009BF9AF /* AlbumViewController+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F1C285B6859009BF9AF /* AlbumViewController+Add.swift */; };
@@ -494,7 +494,6 @@
 		AD11E46224A930B000C8876F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD11E46824A9319C00C8876F /* pwg.images.upload.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload.json; sourceTree = "<group>"; };
 		AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+AppTools.swift"; sourceTree = "<group>"; };
-		AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		AD18C73B27F1005B002CD05C /* UIApplication+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+AppTools.swift"; sourceTree = "<group>"; };
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
@@ -798,6 +797,7 @@
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadIntenthandler.swift; sourceTree = "<group>"; };
+		ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		ADC69F18285A38A5009BF9AF /* AlbumViewController+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Delete.swift"; sourceTree = "<group>"; };
 		ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Favorites.swift"; sourceTree = "<group>"; };
 		ADC69F1C285B6859009BF9AF /* AlbumViewController+Add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Add.swift"; sourceTree = "<group>"; };
@@ -1082,7 +1082,7 @@
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				AD129E6728C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel */,
+				ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 			);
@@ -2441,7 +2441,6 @@
 				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
 				ADDC36CC28CCEA9C00E5AE4B /* AlbumProvider.swift in Sources */,
 				AD23882328F8914A0037696E /* pwg.users.favorites.getList.swift in Sources */,
-				AD129E6828C3C180007A2A52 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */,
 				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
 				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
@@ -2465,6 +2464,7 @@
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
+				ADC52049299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,

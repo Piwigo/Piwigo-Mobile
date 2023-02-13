@@ -13,7 +13,8 @@ let tagErrorDomain = "Tag Migration"
 class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
 
     /**
-     If possible, creates a Server instance of the currently used server before migrating Tag entities.
+     If needed, creates a Server instance of the currently used server before migrating Tag entities.
+     This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
      */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Check current server path
