@@ -24,17 +24,32 @@ public class User: NSManagedObject {
             throw UserError.unknownUserStatus
         }
         
-        // Server and username
-        if self.server == nil { self.server = server }
-        if self.username != username { self.username = username }
+        // Server
+        if self.server == nil {
+            self.server = server
+        }
         
+        // Username
+        if self.username != username {
+            self.username = username
+        }
+        
+        // User status
+        if self.status != userStatus.rawValue {
+            self.status = userStatus.rawValue
+        }
+
         // When the name is not provided, build name from the path
         let login = username.isEmpty ? pwgUserStatus.guest.rawValue : username
         let newName = name.isEmpty ? login + " @ " + server.path : name
-        if self.name != newName { self.name = newName }
+        if self.name != newName {
+            self.name = newName
+        }
         
         // Last time the user used this account
-        if self.lastUsed != lastUsed { self.lastUsed = lastUsed }
+        if self.lastUsed != lastUsed {
+            self.lastUsed = lastUsed
+        }
     }
     
     func addUploadRightsToAlbum(withID ID: Int32) {
