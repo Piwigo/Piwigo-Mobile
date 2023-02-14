@@ -409,7 +409,9 @@ public class AlbumProvider: NSObject {
                         // IDs of albums to which the user has upload access
                         // are stored in the uploadRights attribute.
                         if albumData.hasUploadRights {
-                            user.addAlbumWithUploadRights(ID)
+                            user.addUploadRightsToAlbum(withID: ID)
+                        } else {
+                            user.removeUploadRightsToAlbum(withID: ID)
                         }
                         
                         // Do not delete this album during the last interation of the import

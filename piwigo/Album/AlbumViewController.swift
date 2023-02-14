@@ -193,9 +193,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
     private func getUserHasUploadRights() -> Bool {
         // Case of Community user?
+        if NetworkVars.userStatus != .normal { return false }
         let userUploadRights = user?.uploadRights ?? ""
-        return (NetworkVars.userStatus == .normal) &&
-                userUploadRights.components(separatedBy: ",").contains(String(categoryId))
+        return userUploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
     
     lazy var albumData: Album? = {

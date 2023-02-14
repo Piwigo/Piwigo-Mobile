@@ -12,7 +12,7 @@ import CoreData
 
 
 public class User: NSManagedObject {
-
+    
     /**
      Updates the attributes of a User Account instance.
      */
@@ -24,7 +24,7 @@ public class User: NSManagedObject {
             throw UserError.unknownUserStatus
         }
         
-        // Server andd username
+        // Server and username
         if self.server == nil { self.server = server }
         if self.username != username { self.username = username }
         
@@ -37,12 +37,15 @@ public class User: NSManagedObject {
         if self.lastUsed != lastUsed { self.lastUsed = lastUsed }
     }
     
-    func addAlbumWithUploadRights(_ id: Int32) {
-        let IDstr = String(id)
-        var idList = self.uploadRights.components(separatedBy: ",")
-        if idList.contains(IDstr) == false {
-            idList.append(IDstr)
-            self.uploadRights = String(idList.map({"\($0),"}).reduce("", +).dropLast(1))
-        }
+    func addUploadRightsToAlbum(withID ID: Int32) {
+        var setOfIDs = Set(self.uploadRights.components(separatedBy: ","))
+        setOfIDs.insert(String(ID))
+        self.uploadRights = String(setOfIDs.map({$0 + ","}).reduce("", +).dropLast(1))
+    }
+    
+    func removeUploadRightsToAlbum(withID ID: Int32) {
+        var setOfIDs = Set(self.uploadRights.components(separatedBy: ","))
+        setOfIDs.remove(String(ID))
+        self.uploadRights = String(setOfIDs.map({$0 + ","}).reduce("", +).dropLast(1))
     }
 }
