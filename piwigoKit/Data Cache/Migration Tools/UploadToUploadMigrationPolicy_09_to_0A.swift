@@ -64,25 +64,49 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             // Set attribute value
             newUpload.setValue(destinationValue, forKey: destinationName)
         }
+        
+        // Replace "NSNotFound" author names with ""
+        if newUpload.value(forKey: "author") as? String == "NSNotFound" {
+            newUpload.setValue("", forKey: "author")
+        }
 
         // Check server data stored in the source instance
         guard let serverPath = sInstance.value(forKeyPath: "serverPath") as? String,
+              let serverFileTypes = sInstance.value(forKeyPath: "serverFileTypes") as? String,
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
             debugPrint("••> Error: Upload request instance w/ wrong serverPath!")
             return
         }
         
+        // Did we create a record of the currently used server?
+        guard var userInfo = manager.userInfo else {
+            debugPrint("••> Should have been created in TagToTagMigrationPolicy_09_to_0A!")
+            return
+        }
+
+        // Is this a known server?
+        if userInfo[serverPath] == nil {
+            // Create instance for this additional server
+            let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
+            let newServer = Server(entity: description!, insertInto: manager.destinationContext)
+            newServer.setValue(UUID().uuidString, forKey: "uuid")
+            newServer.setValue(serverPath, forKey: "path")
+            newServer.setValue(serverFileTypes, forKey: "fileTypes")
+
+            // Store new server instance in userInfo for reuse.
+            userInfo[serverPath] = newServer
+            manager.userInfo = userInfo
+        }
+        
         // Can we reuse the user account?
-        guard var userInfo = manager.userInfo else { return }
         let userAccountKey = NetworkVars.username + " @ " + serverPath
         if let user = userInfo[userAccountKey] as? NSManagedObject {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
         }
-        else if serverPath == NetworkVars.serverPath,
-                NetworkVars.username.isEmpty == false,
+        else if NetworkVars.username.isEmpty == false,
                 let server = userInfo[serverPath] as? NSManagedObject {
             // Create User destination instance…
             // …assuming that the current user account is the appropriate one.
@@ -105,17 +129,6 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(newUser, forKey: "user")
-        }
-        else if userInfo[serverPath] == nil {
-            // Create instance of this server for later use
-            let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
-            let newServer = Server(entity: description!, insertInto: manager.destinationContext)
-            newServer.setValue(serverPath, forKey: "path")
-            newServer.setValue(UploadVars.serverFileTypes, forKey: "fileTypes")
-
-            // Store new server instance in userInfo for reuse.
-            userInfo[NetworkVars.serverPath] = newServer
-            manager.userInfo = userInfo
         }
         
         // Are there Tags of the current server associated to this Upload request?
