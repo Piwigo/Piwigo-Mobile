@@ -437,7 +437,9 @@ public class AlbumProvider: NSObject {
                     do {
                         try album.update(with: albumData, user: user)
                         if albumData.hasUploadRights {
-                            user.addAlbumWithUploadRights(ID)
+                            user.addUploadRightsToAlbum(withID: ID)
+                        } else {
+                            user.removeUploadRightsToAlbum(withID: ID)
                         }
                     }
                     catch AlbumError.missingData {
@@ -523,7 +525,9 @@ public class AlbumProvider: NSObject {
             do {
                 try album.update(with: newCat, user: user)
                 if newCat.hasUploadRights {
-                    user.addAlbumWithUploadRights(catID)
+                    user.addUploadRightsToAlbum(withID: catID)
+                } else {
+                    user.removeUploadRightsToAlbum(withID: catID)
                 }
                 
                 // Update parent and sub-albums albums
