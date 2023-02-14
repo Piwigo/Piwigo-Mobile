@@ -14,7 +14,7 @@ class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
 
     /**
      If needed, creates a Server instance of the currently used server before migrating Tag entities.
-     This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
+     ATTENTION: This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
      */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Check current server path
@@ -23,6 +23,7 @@ class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         // Create instance for the currently used server if needed
         let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
         let newServer = Server(entity: description!, insertInto: manager.destinationContext)
+        newServer.setValue(UUID().uuidString, forKey: "uuid")
         newServer.setValue(NetworkVars.serverPath, forKey: "path")
         newServer.setValue(UploadVars.serverFileTypes, forKey: "fileTypes")
 
