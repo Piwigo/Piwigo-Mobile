@@ -234,7 +234,7 @@
 		ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */; };
 		ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */; };
 		ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD074F6523F8498A00D6016A /* ClearCache.swift */; };
-		ADA5FA40299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
+		ADA5FA4229A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -736,7 +736,7 @@
 		ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageSizeViewController.swift; sourceTree = "<group>"; };
 		ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSettingsViewController.swift; sourceTree = "<group>"; };
 		ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadParametersViewController.swift; sourceTree = "<group>"; };
-		ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
+		ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		ADA6F18A21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADA6F18B21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/About.strings; sourceTree = "<group>"; };
@@ -1082,7 +1082,7 @@
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
+				ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 			);
@@ -2464,7 +2464,7 @@
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
-				ADA5FA40299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
+				ADA5FA4229A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
