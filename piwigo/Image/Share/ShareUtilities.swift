@@ -41,7 +41,7 @@ class ShareUtilities {
         
         // Square Size (should always be available)
         if AlbumVars.shared.hasSquareSizeImages,
-           let imageURL = imageData.squareRes?.url {
+           let imageURL = imageData.squareRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.squareRes?.width ?? 1, imageData.squareRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -54,7 +54,7 @@ class ShareUtilities {
         
         // Thumbnail Size (should always be available)
         if AlbumVars.shared.hasThumbSizeImages,
-           let imageURL = imageData.thumbRes?.url {
+           let imageURL = imageData.thumbRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.thumbRes?.width ?? 1, imageData.thumbRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -69,7 +69,7 @@ class ShareUtilities {
         
         // XX Small Size
         if AlbumVars.shared.hasXXSmallSizeImages,
-           let imageURL = imageData.xxsmallRes?.url {
+           let imageURL = imageData.xxsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.xxsmallRes?.width ?? 1, imageData.xxsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -84,7 +84,7 @@ class ShareUtilities {
         
         // X Small Size
         if AlbumVars.shared.hasXSmallSizeImages,
-           let imageURL = imageData.xsmallRes?.url {
+           let imageURL = imageData.xsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.xsmallRes?.width ?? 1, imageData.xsmallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -99,7 +99,7 @@ class ShareUtilities {
         
         // Small Size
         if AlbumVars.shared.hasSmallSizeImages,
-           let imageURL = imageData.smallRes?.url {
+           let imageURL = imageData.smallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.smallRes?.width ?? 1, imageData.smallRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -114,7 +114,7 @@ class ShareUtilities {
         
         // Medium Size (should always be available)
         if AlbumVars.shared.hasMediumSizeImages,
-           let imageURL = imageData.mediumRes?.url {
+           let imageURL = imageData.mediumRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.mediumRes?.width ?? 1, imageData.mediumRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -129,7 +129,7 @@ class ShareUtilities {
         
         // Large Size
         if AlbumVars.shared.hasLargeSizeImages,
-           let imageURL = imageData.largeRes?.url {
+           let imageURL = imageData.largeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.largeRes?.width ?? 1, imageData.largeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -144,7 +144,7 @@ class ShareUtilities {
         
         // X Large Size
         if AlbumVars.shared.hasXLargeSizeImages,
-           let imageURL = imageData.xlargeRes?.url {
+           let imageURL = imageData.xlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.xlargeRes?.width ?? 1, imageData.xlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -159,7 +159,7 @@ class ShareUtilities {
         
         // XX Large Size
         if AlbumVars.shared.hasXXLargeSizeImages,
-           let imageURL = imageData.xxlargeRes?.url {
+           let imageURL = imageData.xxlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.xxlargeRes?.width ?? 1, imageData.xxlargeRes?.height ?? 1)
             // Ensure that at least an URL will be returned
@@ -173,7 +173,7 @@ class ShareUtilities {
         }
         
         // Full Resolution
-        if let imageURL = imageData.fullRes?.url {
+        if let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = max(imageData.fullRes?.width ?? 1, imageData.fullRes?.height ?? 1)
             // Ensure that at least an URL will be returned
