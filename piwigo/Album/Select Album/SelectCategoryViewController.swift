@@ -187,13 +187,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         
         // Only show albums at the root at start
-        let nonSmartAlbumPredicate = NSPredicate(format: "pwgID > 0")
-        var orPredicates = [NSPredicate(format: "parentId == 0")]
-        for albumId in albumsShowingSubAlbums {
-            orPredicates.append(NSPredicate(format: "parentId == %i", albumId))
-        }
-        let parentPredicates = NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
-        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: [nonSmartAlbumPredicate, parentPredicates])
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "pwgID > 0"))
+        var parentIDs = albumsShowingSubAlbums
+        parentIDs.insert(Int32.zero)
+        andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
+        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // The root album is proposed for some actions
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
@@ -1106,13 +1105,12 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         }
 
         // Show albums at the root + those demanded
-        let nonSmartAlbumPredicate = NSPredicate(format: "pwgID > 0")
-        var orPredicates = [NSPredicate(format: "parentId == 0")]
-        for albumId in albumsShowingSubAlbums {
-            orPredicates.append(NSPredicate(format: "parentId == %i", albumId))
-        }
-        let parentPredicates = NSCompoundPredicate(orPredicateWithSubpredicates: orPredicates)
-        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: [nonSmartAlbumPredicate, parentPredicates])
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "pwgID > 0"))
+        var parentIDs = albumsShowingSubAlbums
+        parentIDs.insert(Int32.zero)
+        andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
+        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // The root album is proposed for some actions
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
