@@ -245,7 +245,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     let isFavorite = (imageData?.albums ?? Set<Album>())
                         .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+                    self.favoriteBarButton.setFavoriteImage(for: isFavorite)
                 }
             }
             return
@@ -269,7 +269,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     let isFavorite = (imageData?.albums ?? Set<Album>())
                         .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+                    self.favoriteBarButton.setFavoriteImage(for: isFavorite)
                 }
             }
             return

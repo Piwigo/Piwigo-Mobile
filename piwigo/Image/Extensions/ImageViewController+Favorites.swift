@@ -24,7 +24,7 @@ extension ImageViewController
     @objc func addToFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action
-        favoriteBarButton?.isEnabled = false
+        favoriteBarButton.isEnabled = false
 
         // Send request to Piwigo server
         LoginUtilities.checkSession(ofUser: user) {
@@ -34,9 +34,9 @@ extension ImageViewController
                                                              withId: pwgSmartAlbum.favorites.rawValue) {
                         favAlbum.addToImages(imageData)
                     }
-                    favoriteBarButton?.setFavoriteImage(for: true)
-                    favoriteBarButton?.action = #selector(self.removeFromFavorites)
-                    favoriteBarButton?.isEnabled = true
+                    favoriteBarButton.setFavoriteImage(for: true)
+                    favoriteBarButton.action = #selector(self.removeFromFavorites)
+                    favoriteBarButton.isEnabled = true
                 }
             } failure: { error in
                 self.addToFavoritesError(error)
@@ -52,7 +52,7 @@ extension ImageViewController
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [self] in
-                favoriteBarButton?.isEnabled = true
+                favoriteBarButton.isEnabled = true
             }
         }
     }
@@ -60,7 +60,7 @@ extension ImageViewController
     @objc func removeFromFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action
-        favoriteBarButton?.isEnabled = false
+        favoriteBarButton.isEnabled = false
 
         // Send request to Piwigo server
         LoginUtilities.checkSession(ofUser: user) {
@@ -72,9 +72,9 @@ extension ImageViewController
                     }
                     if self.categoryId != pwgSmartAlbum.favorites.rawValue {
                         // Update favorite button
-                        self.favoriteBarButton?.setFavoriteImage(for: false)
-                        self.favoriteBarButton?.action = #selector(self.addToFavorites)
-                        self.favoriteBarButton?.isEnabled = true
+                        self.favoriteBarButton.setFavoriteImage(for: false)
+                        self.favoriteBarButton.action = #selector(self.addToFavorites)
+                        self.favoriteBarButton.isEnabled = true
                     }
                 }
             } failure: { error in
@@ -91,7 +91,7 @@ extension ImageViewController
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) {
-                self.favoriteBarButton?.isEnabled = true
+                self.favoriteBarButton.isEnabled = true
             }
         }
     }
