@@ -176,7 +176,7 @@ extension AlbumViewController: UISearchResultsUpdating
             // Display "Loading..."
             if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
                let footer = footers.first as? NberImagesFooterCollectionReusableView {
-                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(false, Int64.min)
+                footer.noImagesLabel?.text = getImageCount()
             }
             
             // Determine if the session is active and for how long before fetching

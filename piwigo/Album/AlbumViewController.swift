@@ -515,8 +515,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         print("••> viewDidAppear     => ID:\(categoryId)")
 
         // Check session status before loading album and image data
-        if let lastLoad = albumData?.dateFetchedImages,
-           lastLoad.timeIntervalSinceNow < TimeInterval(-600) {
+        let lastLoad = albumData?.dateFetchedImages ?? .distantPast
+        let noSmartAlbumData = self.categoryId <= 0 && self.albums.fetchedObjects?.isEmpty ?? true
+        let nbImages = self.images.fetchedObjects?.count ?? Int.zero
+        let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
+        if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
+            lastLoad.timeIntervalSinceNow < TimeInterval(-600) {
             LoginUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages()
             } failure: { error in
@@ -775,14 +779,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         DispatchQueue.main.async { [self] in
             // Hide HUD
             self.navigationController?.hidePiwigoHUD { }
+
             // Update title
             self.setTitleViewFromAlbumData(whileUpdating: false)
+
             // Set navigation bar buttons
             if isSelect {
                 self.updateButtonsInSelectionMode()
             } else {
                 self.updateButtonsInPreviewMode()
             }
+
+            // Update number of images in footer
+            self.updateNberOfImagesInFooter()
+
             // End refreshing if needed
             self.imagesCollection?.refreshControl?.endRefreshing()
         }
@@ -915,21 +925,42 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - UICollectionView Headers & Footers
-    func getImageCounts() -> (Bool, Int64) {
+    func getImageCount() -> String {
+        // Get total number of images
+        var totalCount = Int64.zero
         if categoryId == 0 {
             // Only albums in Root Album => calculate total number of images
-            var total = Int64.zero
             albums.fetchedObjects?.forEach({ album in
-                total += album.totalNbImages
+                totalCount += album.totalNbImages
             })
-            return (true, total)
         } else {
             // Number of images in current album
-            let nber = Int(albumData?.nbImages ?? Int64.zero)
-            let shown = albumData?.images?.count ?? 0
-            let total = albumData?.totalNbImages ?? Int64.zero
-            return (nber >= shown, total)
+            totalCount = albumData?.totalNbImages ?? Int64.zero
         }
+        
+        // Build footer content
+        var legend = ""
+        if totalCount == Int64.min {
+            // Is loading…
+            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
+        }
+        else if totalCount == Int64.zero {
+            // Not loading and no images
+            legend = NSLocalizedString("noImages", comment:"No Images")
+        }
+        else {
+            // Display number of images…
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
+                let format:String = totalCount > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
+                legend = String(format: format, number)
+            }
+            else {
+                legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
+            }
+        }
+        return legend
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -959,9 +990,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "NberImagesFooterCollection", for: indexPath) as? NberImagesFooterCollectionReusableView else {
                     fatalError("No NberImagesFooterCollectionReusableView!")
                 }
-                let (allShown, total) = getImageCounts()
                 footer.noImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(allShown, total)
+                footer.noImagesLabel?.text = getImageCount()
                 return footer
             }
         default:
@@ -1020,8 +1050,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 1 /* Section 1 — Image collection */:
             // Get number of images and status
-            let (allShown, total) = getImageCounts()
-            let footer = AlbumUtilities.footerLegend(allShown, total)
+            let footer = getImageCount()
             if footer.count > 0,
                collectionView.frame.size.width - 30.0 > 0 {
                 let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)]

@@ -760,36 +760,4 @@ class AlbumUtilities: NSObject {
         // Width of albums for that number
         return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
     }
-
-    
-    // MARK: - Album/Images Collections | Headers & Footers
-    static func footerLegend(_ allShown: Bool, _ totalCount: Int64) -> String {
-        var legend = ""
-        if totalCount == Int64.min {
-            // Is loading…
-            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
-        }
-        else if totalCount == Int64.zero {
-            // Not loading and no images
-            legend = NSLocalizedString("noImages", comment:"No Images")
-        }
-        else {
-            // Display number of images…
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
-                let format:String = totalCount > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
-                legend = String(format: format, number)
-            }
-            else {
-                legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
-            }
-            
-            // Do we have all images?
-            if allShown == false {
-                legend.append("\r" + NSLocalizedString("loadingHUD_label", comment:"Loading…"))
-            }
-        }
-        return legend
-    }
 }

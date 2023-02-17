@@ -272,9 +272,6 @@ extension AlbumViewController
                     }
                 }
                 
-                // Update number of images in footer
-                updateNberOfImagesInFooter()
-
                 // Will not remove fetched images from album image list
                 let oldImageIds = imageIds.subtracting(fetchedImageIds)
                 
@@ -313,8 +310,7 @@ extension AlbumViewController
         DispatchQueue.main.async { [self] in
             let indexPath = IndexPath(item: 0, section: 1)
             if let footer = self.imagesCollection?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? NberImagesFooterCollectionReusableView {
-                let (shown, total) = getImageCounts()
-                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(shown, total)
+                footer.noImagesLabel?.text = getImageCount()
             }
         }
     }
