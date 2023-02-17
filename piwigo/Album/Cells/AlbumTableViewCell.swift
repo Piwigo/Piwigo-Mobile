@@ -46,7 +46,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
@@ -93,7 +93,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
             numberOfImages.text = nberOfImages
         }
-        numberOfImages.font = numberOfImages.font.withSize(UIFont.fontSizeFor(label: numberOfImages, nberLines: 1))
+        numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
         // Add renaming, moving and deleting capabilities when user has admin rights
         if let _ = albumData, NetworkVars.hasAdminRights {

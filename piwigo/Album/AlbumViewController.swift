@@ -977,7 +977,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 style.alignment = NSTextAlignment.center
                 let attributes = [
                     NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                     NSAttributedString.Key.paragraphStyle: style
                 ]
                 desc.addAttributes(attributes, range: wholeRange)

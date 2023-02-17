@@ -24,7 +24,7 @@ class AlbumHeaderReusableView: UICollectionReusableView {
         commentLabel?.adjustsFontSizeToFitWidth = false
         commentLabel?.lineBreakMode = .byWordWrapping
         commentLabel?.textAlignment = .center
-        commentLabel?.font = .systemFont(ofSize: 17)
+        commentLabel?.font = .systemFont(ofSize: 13, weight: .light)
         commentLabel?.attributedText = NSAttributedString()
 
         if let commentLabel = commentLabel {

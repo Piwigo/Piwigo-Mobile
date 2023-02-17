@@ -47,7 +47,7 @@ class ImageDescriptionView: UIVisualEffectView {
         style.alignment = NSTextAlignment.center
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let desc = NSMutableAttributedString(attributedString: comment)
