@@ -30,7 +30,7 @@ extension AlbumViewController
             fatalError("No SettingsViewController")
         }
         settingsVC.settingsDelegate = self
-        settingsVC.userProvider = userProvider
+        settingsVC.user = user
         settingsVC.albumProvider = albumProvider
         settingsVC.savingContext = mainContext
         let navController = UINavigationController(rootViewController: settingsVC)
@@ -44,6 +44,21 @@ extension AlbumViewController
             width: pwgPadSettingsWidth,
             height: ceil(mainScreenBounds.size.height * 2 / 3))
         present(navController, animated: true)
+    }
+    
+    
+    // MARK: "Discover" button
+    func getDiscoverButton() -> UIBarButtonItem {
+        var button: UIBarButtonItem!
+        if #available(iOS 14.0, *) {
+            // Menu
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+        } else {
+            // Fallback on earlier versions
+            button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
+        }
+        button.accessibilityIdentifier = "discover"
+        return button
     }
 
 
@@ -576,7 +591,7 @@ extension AlbumViewController
         } else if albumData?.nbImages ?? 0 > 0 {
             // Button for activating the selection mode
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton?.isEnabled = (images.fetchedObjects?.count ?? 0) > 0
+            selectBarButton.isEnabled = (images.fetchedObjects?.count ?? 0) > 0
         } else {
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)

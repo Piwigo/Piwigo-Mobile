@@ -32,7 +32,7 @@ extension AlbumViewController
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else {
             fatalError("No EditImageParamsViewController!")
         }
-//        editImageVC.imageProvider = imageProvider
+        editImageVC.user = user
         editImageVC.savingContext = mainContext
         editImageVC.images = (images.fetchedObjects ?? [Image]())
             .filter({selectedImageIds.contains($0.pwgID)})

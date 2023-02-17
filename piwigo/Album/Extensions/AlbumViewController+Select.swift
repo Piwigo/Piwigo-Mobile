@@ -223,7 +223,7 @@ extension AlbumViewController
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
         if NetworkVars.hasAdminRights || userHasUploadRights {
-            cancelBarButton?.isEnabled = true
+            cancelBarButton.isEnabled = true
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton?.isEnabled = hasImagesSelected
             deleteBarButton?.isEnabled = hasImagesSelected
@@ -243,7 +243,7 @@ extension AlbumViewController
             }
         } else {
             // Left side of navigation bar
-            cancelBarButton?.isEnabled = true
+            cancelBarButton.isEnabled = true
 
             // Right side of navigation bar
             /// — guests can share photo of high-resolution or not
@@ -265,7 +265,7 @@ extension AlbumViewController
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
     func setEnableStateOfButtons(_ state: Bool) {
-        cancelBarButton?.isEnabled = state
+        cancelBarButton.isEnabled = state
         actionBarButton?.isEnabled = state
         deleteBarButton?.isEnabled = state
         moveBarButton?.isEnabled = state
@@ -477,7 +477,7 @@ extension AlbumViewController
         }
                         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        LoginUtilities.checkSession {  [self] in
+        LoginUtilities.checkSession(ofUser: user) {  [self] in
             imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
                 // Image info retrieved
                 selectedImageIdsLoop.removeFirst()

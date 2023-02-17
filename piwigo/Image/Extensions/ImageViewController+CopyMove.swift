@@ -15,7 +15,7 @@ extension ImageViewController
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
-        copyVC.userProvider = userProvider
+        copyVC.user = user
         copyVC.albumProvider = albumProvider
         copyVC.imageProvider = imageProvider
         copyVC.savingContext = savingContext

@@ -46,9 +46,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     weak var settingsDelegate: ChangedSettingsDelegate?
 
     @IBOutlet var settingsTableView: UITableView!
-    var userProvider: UserProvider!
-    var albumProvider: AlbumProvider!
-    var savingContext: NSManagedObjectContext!
 
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
@@ -57,6 +54,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var thumbCacheSize = ""
     private var photoCacheSize = ""
     
+    // MARK: - Core Data
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
+    var user: User?
+    var albumProvider: AlbumProvider!
+    var savingContext: NSManagedObjectContext!
+
 
     // MARK: - View Lifecycle
 
@@ -310,15 +317,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func loginLogout() {
+        // Set date of use of server and user
+        let now = Date()
+        user?.lastUsed = now
+        user?.server?.lastUsed = now
+        if savingContext.hasChanges {
+            try? savingContext.save()
+        }
+        
+        // Guest user?
         if NetworkVars.username.isEmpty {
-            // Update Server.lastUsed attributes in persistent cache
-            DispatchQueue.global(qos: .background).async { [unowned self] in
-                self.userProvider.setLastUsedDate()
-            }
-            // Clear caches and display login view
-            DispatchQueue.main.async {
-                ClearCache.closeSessionAndClearCache() { }
-            }
             return
         }
         
@@ -330,13 +338,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             LoginUtilities.sessionLogout {
-                // Update Server.lastUsed and User.lastUsed attributes in persistent cache
-                DispatchQueue.global(qos: .background).async { [unowned self] in
-                    self.userProvider.setLastUsedDate()
-                }
                 // Close session and clear cache
                 DispatchQueue.main.async {
-                    ClearCache.closeSessionAndClearCache() { }
+                    ClearCache.closeSession { }
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
@@ -344,7 +348,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // or simply a connection drop.
                 self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
                                         message: error.localizedDescription) {
-                    ClearCache.closeSessionAndClearCache() { }
+                    ClearCache.closeSession { }
                 }
             }
         })
@@ -1740,7 +1744,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
                     // Delete image cache
-                    ClearCache.clearAllCache(exceptCategories: true) {
+                    ClearCache.clearAllCache() {
                         // Reload tableView
                         self.settingsTableView?.reloadData()
                     }

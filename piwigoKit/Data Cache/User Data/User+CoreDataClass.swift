@@ -16,7 +16,7 @@ public class User: NSManagedObject {
     /**
      Updates the attributes of a User Account instance.
      */
-    func update(username: String, onServer server: Server,
+    func update(username: String, ofServer server: Server,
                 userStatus: pwgUserStatus = NetworkVars.userStatus,
                 withName name: String = "", lastUsed: Date = Date()) throws {
         // Check user's status
@@ -53,14 +53,14 @@ public class User: NSManagedObject {
     }
     
     func addUploadRightsToAlbum(withID ID: Int32) {
-        var setOfIDs = Set(self.uploadRights.components(separatedBy: ","))
-        setOfIDs.insert(String(ID))
-        self.uploadRights = String(setOfIDs.map({$0 + ","}).reduce("", +).dropLast(1))
+        var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
+        setOfIDs.insert(ID)
+        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
     }
     
     func removeUploadRightsToAlbum(withID ID: Int32) {
-        var setOfIDs = Set(self.uploadRights.components(separatedBy: ","))
-        setOfIDs.remove(String(ID))
-        self.uploadRights = String(setOfIDs.map({$0 + ","}).reduce("", +).dropLast(1))
+        var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
+        setOfIDs.remove(ID)
+        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
     }
 }

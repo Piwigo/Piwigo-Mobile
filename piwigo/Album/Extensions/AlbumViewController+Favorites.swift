@@ -75,7 +75,7 @@ extension AlbumViewController
         }
 
         // Add image to favorites
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 // Update HUD
                 updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
@@ -147,7 +147,7 @@ extension AlbumViewController
         }
 
         // Remove image to favorites
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 // Update HUD
                 updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))

@@ -34,6 +34,12 @@ public class UserProvider: NSObject {
     
     
     // MARK: - Get/Create User Account Object
+    public func createUpdateUserAccount(_ username: String) {
+        // Add User and Server objects to persistent cache if necessary
+        let _ = getUserAccount(inContext: bckgContext,
+                               withUsername: username, afterUpdate: true)
+    }
+
     /**
      Returns a User Account instance
      - Will create a Server object if it does not already exist.
@@ -41,7 +47,8 @@ public class UserProvider: NSObject {
      */
     public func getUserAccount(inContext taskContext: NSManagedObjectContext,
                                atPath path: String = NetworkVars.serverPath,
-                               withUsername username: String = NetworkVars.username) -> User? {
+                               withUsername username: String = NetworkVars.username,
+                               afterUpdate doUpdate: Bool = false) -> User? {
         // Initialisation
         var currentUser: User?
         
@@ -72,6 +79,12 @@ public class UserProvider: NSObject {
             
             // Did we find a User instance?
             if let cachedUser: User = controller.fetchedObjects?.first {
+                if doUpdate {
+                    let now = Date()
+                    cachedUser.lastUsed = now
+                    cachedUser.server?.lastUsed = now
+                    cachedUser.status = NetworkVars.userStatus.rawValue
+                }
                 currentUser = cachedUser
             } else {
                 // Get the Server managed object on the current queue context.
@@ -85,43 +98,32 @@ public class UserProvider: NSObject {
                 
                 // Populate the User's properties using the data.
                 do {
-                    try user.update(username: username, onServer: server)
+                    try user.update(username: username, ofServer: server)
                     currentUser = user
                 }
                 catch {
                     print(error.localizedDescription)
                     taskContext.delete(user)
                 }
-                
-                // Save all insertions from the context to the store.
-                if taskContext.hasChanges {
-                    do {
-                        try taskContext.save()
-                        if Thread.isMainThread == false {
-                            DispatchQueue.main.async {
-                                DataController.shared.saveMainContext()
-                            }
+            }
+            
+            // Save all insertions from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                    if Thread.isMainThread == false {
+                        DispatchQueue.main.async {
+                            DataController.shared.saveMainContext()
                         }
                     }
-                    catch {
-                        print("Error: \(error)\nCould not save Core Data context.")
-                        return
-                    }
+                }
+                catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                    return
                 }
             }
         }
         
         return currentUser
-    }
-    
-    public func setLastUsedDate() {
-        let user = getUserAccount(inContext: bckgContext)
-        let lastUsedNow = Date()
-        user?.lastUsed = lastUsedNow
-        user?.server?.lastUsed = lastUsedNow
-        try? bckgContext.save()
-        DispatchQueue.main.async {
-            DataController.shared.saveMainContext()
-        }
     }
 }

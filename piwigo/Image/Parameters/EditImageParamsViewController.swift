@@ -24,7 +24,7 @@ class EditImageParamsViewController: UIViewController
     var hasTagCreationRights = false
     weak var delegate: EditImageParamsDelegate?
     
-//    var imageProvider: ImageProvider!
+    var user: User?
     var savingContext: NSManagedObjectContext!
 
     @IBOutlet private weak var editImageParamsTableView: UITableView!
@@ -372,7 +372,7 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             setProperties(ofImage: images[index]) { [self] in
                 // Next image?
                 self.updatePiwigoHUD(withProgress: 1.0 - Float(index + 1) / Float(images.count))

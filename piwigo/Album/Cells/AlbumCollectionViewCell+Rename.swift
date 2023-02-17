@@ -129,7 +129,7 @@ extension AlbumCollectionViewCell {
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Rename album, modify comment
-        LoginUtilities.checkSession {
+        LoginUtilities.checkSession(ofUser: user) {
             AlbumUtilities.setInfos(albumId, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update album in cache and cell

@@ -88,7 +88,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -154,7 +154,7 @@ extension ImageViewController
         showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 // Save image ID for marking Upload request in the background
                 let imageID = imageData.pwgID
@@ -201,7 +201,7 @@ extension ImageViewController
     private func deleteImageFromDatabaseError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD

@@ -609,7 +609,8 @@ class LoginUtilities: NSObject {
     }
     
     // Re-login 30 min after the latest login
-    static func checkSession(completion: @escaping () -> Void,
+    static func checkSession(ofUser user: User?,
+                             completion: @escaping () -> Void,
                              failure: @escaping (NSError) -> Void) {
         // How long has it been since we last logged in?
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
@@ -626,6 +627,11 @@ class LoginUtilities: NSObject {
             // Don't use userStatus as it may not be known after Core Data migration
             if NetworkVars.username.isEmpty {
                 print("••> Checking guest session…")
+                // Update date of accesss to the server by the user
+                user?.lastUsed = NetworkVars.dateOfLastLogin
+                user?.server?.lastUsed = NetworkVars.dateOfLastLogin
+                user?.status = NetworkVars.userStatus.rawValue
+
                 // Check Piwigo version, get token, available sizes, etc.
                 if NetworkVars.usesCommunityPluginV29 {
                     communityGetStatus {
@@ -650,6 +656,11 @@ class LoginUtilities: NSObject {
                 let username = NetworkVars.username
                 let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
                 sessionLogin(withUsername: username, password: password) {
+                    // Update date of accesss to the server by the user
+                    user?.lastUsed = NetworkVars.dateOfLastLogin
+                    user?.server?.lastUsed = NetworkVars.dateOfLastLogin
+                    user?.status = NetworkVars.userStatus.rawValue
+                    
                     // Session now opened
                     if NetworkVars.usesCommunityPluginV29 {
                         communityGetStatus {

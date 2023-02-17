@@ -48,7 +48,7 @@ extension SelectCategoryViewController {
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-        LoginUtilities.checkSession { [self] in
+        LoginUtilities.checkSession(ofUser: user) { [self] in
             imageProvider.getInfos(forID: imageId,
                                    inCategoryId: inputAlbum.pwgID) { [self] in
                 // Image info retrieved

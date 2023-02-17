@@ -45,7 +45,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
 
-    var userProvider: UserProvider!
     var albumProvider: AlbumProvider!
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
@@ -136,8 +135,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     
     // MARK: - Core Data Source
-    lazy var user = userProvider?.getUserAccount(inContext: savingContext)
-    
+    lazy var user: User? = inputAlbum?.users?.first(where: {$0.username == NetworkVars.username})
+
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
         if NetworkVars.userStatus != .normal { return [] }

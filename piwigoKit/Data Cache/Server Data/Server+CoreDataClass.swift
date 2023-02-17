@@ -24,15 +24,25 @@ public class Server: NSManagedObject {
               let _ = URL(string: NetworkVars.serverPath) else {
             throw ServerError.wrongURL
         }
-        if uuid.isEmpty { uuid = UUID().uuidString }
-        if self.path != path { self.path = path }
+        if self.path != path {
+            self.path = path
+        }
         
+        // UUID
+        if uuid.isEmpty {
+            uuid = UUID().uuidString
+        }
+
         // File types accepted by the server
         let newFileTypes = fileTypes.isEmpty ? "jpg,jpeg,png,gif" : fileTypes
-        if self.fileTypes != newFileTypes { self.fileTypes = newFileTypes }
+        if self.fileTypes != newFileTypes {
+            self.fileTypes = newFileTypes
+        }
         
         // Last time the user used this server
-        if self.lastUsed != lastUsed { self.lastUsed = lastUsed }
+        if self.lastUsed != lastUsed {
+            self.lastUsed = lastUsed
+        }
     }
     
     

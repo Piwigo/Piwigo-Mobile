@@ -33,9 +33,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var imagesCollection: UICollectionView?
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
-    var settingsBarButton: UIBarButtonItem!
-    var discoverBarButton: UIBarButtonItem?                 // Calls discover alert on iOS 9.x —> 13.x
-    var actionBarButton: UIBarButtonItem?                   // Menu presented on iOS 14.x —>
+    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
+    lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
+    var actionBarButton: UIBarButtonItem?
     var moveBarButton: UIBarButtonItem?
     var deleteBarButton: UIBarButtonItem?
     var shareBarButton: UIBarButtonItem?
@@ -43,8 +43,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var isSelect = false
     var touchedImageIds = [Int64]()
-    var cancelBarButton: UIBarButtonItem!
-    var selectBarButton: UIBarButtonItem!
+    lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
+    lazy var selectBarButton: UIBarButtonItem = getSelectBarButton()
 
     var addButton: UIButton!
     var createAlbumButton: UIButton!
@@ -72,34 +72,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Store album ID
         categoryId = albumId
         
-        // Will present Settings icon if root or default album
-        if [0, AlbumVars.shared.defaultCategory].contains(albumId) {
-            // Navigation bar buttons
-            settingsBarButton = getSettingsBarButton()
-        }
-        
-        // Will present Discover menu and Search bar if root
+        // Place search bar in navigation bar of root album
         if albumId == 0 {
-            // Discover menu
-            if #available(iOS 14.0, *) {
-                // Menu
-                discoverBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
-            } else {
-                // Fallback on earlier versions
-                discoverBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
-            }
-            discoverBarButton?.accessibilityIdentifier = "discover"
-
-            // Place search bar in navigation bar of root album
             initSearchBar()
         }
         
         // Initialise selection mode
         isSelect = false
-
-        // Navigation bar and toolbar buttons
-        selectBarButton = getSelectBarButton()
-        cancelBarButton = getCancelBarButton()
 
         // Hide toolbar
         navigationController?.isToolbarHidden = true
@@ -169,11 +148,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Core Data Providers
-    lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
-        return provider
-    }()
-
     lazy var albumProvider: AlbumProvider = {
         let provider : AlbumProvider = AlbumProvider()
         return provider
@@ -186,18 +160,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Core Data Source
-    lazy var user = userProvider.getUserAccount(inContext: mainContext)
-    
-    lazy var userHasUploadRights: Bool = {
-        return getUserHasUploadRights()
-    }()
-    private func getUserHasUploadRights() -> Bool {
-        // Case of Community user?
-        if NetworkVars.userStatus != .normal { return false }
-        let userUploadRights = user?.uploadRights ?? ""
-        return userUploadRights.components(separatedBy: ",").contains(String(categoryId))
-    }
-    
     lazy var albumData: Album? = {
         return currentAlbumData()
     }()
@@ -220,6 +182,19 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let rootAlbum = albumProvider.getAlbum(inContext: mainContext, withId: Int32.zero)
         changeAlbumID()
         return rootAlbum
+    }
+    
+    lazy var user: User? = albumData?.users?.first(where: {$0.username == NetworkVars.username})
+    
+    lazy var userHasUploadRights: Bool = {
+        return getUserHasUploadRights()
+    }()
+    private func getUserHasUploadRights() -> Bool {
+        // Case of Community user?
+        if NetworkVars.userStatus != .normal { return false }
+        let user = albumData?.users?.first(where: {$0.username == NetworkVars.username})
+        let userUploadRights = user?.uploadRights ?? ""
+        return userUploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
     
     lazy var predicates: [NSPredicate] = {
@@ -554,16 +529,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         super.viewDidAppear(animated)
         print("••> viewDidAppear     => ID:\(categoryId)")
 
-        // How long has it been since we reloaded the album and image data?
-        var timeSinceLastLoad: TimeInterval = -.infinity
-        if let lastLoad = CacheVars.shared.dateLoaded[categoryId] {
-            timeSinceLastLoad = lastLoad.timeIntervalSinceNow
-        }
-
         // Check session status before loading album and image data
-        print("••> Album data loaded \(timeSinceLastLoad) seconds ago")
-        if timeSinceLastLoad < TimeInterval(-600) {
-            LoginUtilities.checkSession {
+        if let lastLoad = albumData?.dateFetchedImages,
+           lastLoad.timeIntervalSinceNow < TimeInterval(-600) {
+            LoginUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages()
             } failure: { error in
                 print("••> Error \(error.code): \(error.localizedDescription)")
@@ -791,10 +760,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Display HUD when loading images for the first time
             // or when we have less than half of the images in cache
-            let noRootAlbumData = self.categoryId == 0 && self.albums.fetchedObjects?.isEmpty ?? true
+            let noSmartAlbumData = self.categoryId <= 0 && self.albums.fetchedObjects?.isEmpty ?? true
             let nbImages = self.images.fetchedObjects?.count ?? Int.zero
             let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
-            if noRootAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
+            if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
                 // Display HUD while downloading album data
                 self.navigationController?.showPiwigoHUD(
                     withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
@@ -833,18 +802,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             self.imagesCollection?.refreshControl?.endRefreshing()
         }
         
-        // Remember when album and image data were loaded
-        CacheVars.shared.dateLoaded[categoryId] = Date()
-        
-        // How long has it been since we reloaded the favorites?
-        var timeSinceLastLoad: TimeInterval = .infinity
-        if let lastLoad = CacheVars.shared.dateLoaded[pwgSmartAlbum.favorites.rawValue] {
-            timeSinceLastLoad = lastLoad.timeIntervalSinceNow
-        }
-
         // Fetch favorites in the background if needed
         if categoryId != pwgSmartAlbum.favorites.rawValue,
-           timeSinceLastLoad < TimeInterval(-600) {
+           let favAlbum = albumProvider.getAlbum(inContext: bckgContext, withId: pwgSmartAlbum.favorites.rawValue),
+           favAlbum.dateFetchedImages.timeIntervalSinceNow < TimeInterval(-600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
             }
@@ -1273,7 +1234,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = images
                 imageDetailView?.userHasUploadRights = userHasUploadRights
-                imageDetailView?.userProvider = userProvider
                 imageDetailView?.albumProvider = albumProvider
                 imageDetailView?.imageProvider = imageProvider
                 imageDetailView?.savingContext = mainContext

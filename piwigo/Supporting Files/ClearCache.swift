@@ -12,7 +12,7 @@ import UIKit
 
 class ClearCache: NSObject {
     
-    static func closeSessionAndClearCache(completion: @escaping () -> Void) {
+    static func closeSession(completion: @escaping () -> Void) {
         // Cancel tasks
         PwgSession.shared.dataSession.getAllTasks { tasks in
             tasks.forEach({$0.cancel()})
@@ -34,42 +34,38 @@ class ClearCache: NSObject {
         UploadVars.autoUploadTagIds = ""
         UploadVars.autoUploadComments = ""
 
-        // Erase cache
-        self.clearAllCache(exceptCategories: false) {
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            if #available(iOS 13.0, *) {
-                // Disconnect inactive scenes
-                let scenesInBackground = UIApplication.shared.connectedScenes
-                    .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
-                for scene in scenesInBackground {
+        // Display login view
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        if #available(iOS 13.0, *) {
+            // Disconnect inactive scenes
+            let scenesInBackground = UIApplication.shared.connectedScenes
+                .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
+            for scene in scenesInBackground {
+                UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+            }
+            
+            // Disconnect supplementary active scenes
+            var connectedScenes = UIApplication.shared.connectedScenes
+            while connectedScenes.count > 1 {
+                if let scene = connectedScenes.first {
                     UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                    connectedScenes.removeFirst()
                 }
-                
-                // Disconnect supplementary active scenes
-                var connectedScenes = UIApplication.shared.connectedScenes
-                while connectedScenes.count > 1 {
-                    if let scene = connectedScenes.first {
-                        UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                        connectedScenes.removeFirst()
-                    }
-                }
-                
-                // Present login view in the remaining scene
-                if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window {
-                    AppVars.shared.isLoggingOut = true
-                    appDelegate?.loadLoginView(in: window)
-                }
-            } else {
-                // Fallback on earlier versions
-                let window = UIApplication.shared.keyWindow
+            }
+            
+            // Present login view in the remaining scene
+            if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window {
+                AppVars.shared.isLoggingOut = true
                 appDelegate?.loadLoginView(in: window)
             }
+        } else {
+            // Fallback on earlier versions
+            let window = UIApplication.shared.keyWindow
+            appDelegate?.loadLoginView(in: window)
         }
     }
 
-    static func clearAllCache(exceptCategories: Bool,
-                             completion: @escaping () -> Void) {
-        
+    static func clearAllCache(completion: @escaping () -> Void) {
         // Tags
         TagProvider().clearAll()
 
@@ -77,11 +73,8 @@ class ClearCache: NSObject {
         LocationProvider.shared.clearAll()
 
         // Album and image data
-        if !exceptCategories {
-            CacheVars.shared.dateLoaded = [:]
-            AlbumProvider().clearAll()
-            ImageProvider().clearAll()
-        }
+        AlbumProvider().clearAll()
+        ImageProvider().clearAll()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

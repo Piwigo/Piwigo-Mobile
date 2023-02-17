@@ -33,11 +33,6 @@ class LoginViewController: UIViewController {
 
     
     // MARK: - Core Data Providers
-    private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider()
-        return provider
-    }()
-
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider()
         return provider
@@ -288,49 +283,35 @@ class LoginViewController: UIViewController {
 
             // Perform login
             LoginUtilities.sessionLogin(withUsername: username, password: password) { [self] in
-                    // Session now opened
-                    // Create User account in persistent cache if necessary
-                    createUserAccountIfNeedded(username)
-
-                    // First determine user rights if Community extension installed
-                    getCommunityStatus()
-                } failure: { [self] error in
-                    // Don't keep unaccepted credentials
-                    KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
-                                                     account: username)
-                    // Login request failed
-                    logging(inConnectionError: error)
+                // Session now opened
+                // Create or update User account in persistent cache
+                DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                    self.userProvider.createUpdateUserAccount(username)
                 }
+
+                // First determine user rights if Community extension installed
+                getCommunityStatus()
+            } failure: { [self] error in
+                // Don't keep unaccepted credentials
+                KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
+                                                 account: username)
+                // Login request failed
+                logging(inConnectionError: error)
+            }
         } else {
             // Reset keychain and credentials
             KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
-                                             account: NetworkVars.username)
+                                             account: username)
             NetworkVars.username = ""
+            NetworkVars.dateOfLastLogin = Date()
 
-            // Create User account in persistent cache if necessary
-            createUserAccountIfNeedded("guest")
+            // Create or update User account in persistent cache
+            DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                self.userProvider.createUpdateUserAccount("")
+            }
 
             // Check Piwigo version, get token, available sizes, etc.
             getCommunityStatus()
-        }
-    }
-    
-    private func createUserAccountIfNeedded(_ username: String) {
-        // Add User and Server objects to persistent cache if necessary
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            let bckgContext = DataController.shared.bckgContext
-            let user = self.userProvider.getUserAccount(inContext: bckgContext,
-                                                        withUsername: username)
-            let lastUsedNow = Date()
-            user?.lastUsed = lastUsedNow
-            user?.server?.lastUsed = lastUsedNow
-            user?.server?.fileTypes = UploadVars.serverFileTypes
-            user?.status = NetworkVars.userStatus.rawValue
-            
-            try? bckgContext.save()
-            DispatchQueue.main.async {
-                DataController.shared.saveMainContext()
-            }
         }
     }
 

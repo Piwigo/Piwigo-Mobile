@@ -25,12 +25,12 @@ class ImageViewController: UIViewController {
     var imageIndex = 0
     var userHasUploadRights = false
 
-    var userProvider: UserProvider!
     var albumProvider: AlbumProvider!
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
 
     var imageData: Image?
+    lazy var user = imageData?.users?.first(where: {$0.username == NetworkVars.username})
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var pageViewController: UIPageViewController?
@@ -80,14 +80,12 @@ class ImageViewController: UIViewController {
         }
         
         // Fetch favorite images in the background if needed
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.userStatus != .guest {
-            DispatchQueue.global(qos: .default).async {
-
-            }
-        }
-        
-        
+//        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+//           NetworkVars.userStatus != .guest {
+//            DispatchQueue.global(qos: .default).async {
+//
+//            }
+//        }
         // Did we already load the list of favorite images?
 //        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
 //           NetworkVars.userStatus != .guest,
@@ -523,7 +521,7 @@ class ImageViewController: UIViewController {
 
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            LoginUtilities.checkSession { [self] in
+            LoginUtilities.checkSession(ofUser: user) { [self] in
                 print("••> Retrieving data of image #\(imageData.pwgID)")
                 self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
                     // Update image data

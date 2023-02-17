@@ -614,13 +614,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            LoginUtilities.checkSession {
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.resumeAll()
-                }
-            } failure: { _ in }
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
         }
     }
 

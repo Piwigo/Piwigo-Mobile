@@ -158,7 +158,7 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        LoginUtilities.checkSession {  [self] in
+        LoginUtilities.checkSession(ofUser: user) {  [self] in
             ImageUtilities.setInfos(with: paramsDict) { [self] in
                 if let albumData = albumData {
                     // Remove image from source album
@@ -222,7 +222,7 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        LoginUtilities.checkSession { [unowned self] in
+        LoginUtilities.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.delete(toDelete) { [unowned self] in
                 // Save image IDs for marking Upload requests in the background
                 let imageIDs = Array(toDelete).map({$0.pwgID})
@@ -270,7 +270,7 @@ extension AlbumViewController
     private func deleteImagesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 hidePiwigoHUD() { [self] in
                     updateButtonsInSelectionMode()

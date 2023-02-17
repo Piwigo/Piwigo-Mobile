@@ -87,7 +87,7 @@ extension AlbumViewController
         showPiwigoHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Create album
-        LoginUtilities.checkSession {
+        LoginUtilities.checkSession(ofUser: user) {
             AlbumUtilities.create(withName: albumName, description: albumComment,
                                   status: "public", inParentWithId: parentId) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums

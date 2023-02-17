@@ -12,7 +12,6 @@
 		AD018D8028D728A40003D5DB /* ImageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D7F28D728A40003D5DB /* ImageError.swift */; };
 		AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */; };
 		AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */; };
-		AD074F6623F8498B00D6016A /* ClearCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD074F6523F8498A00D6016A /* ClearCache.swift */; };
 		AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAB526DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift */; };
 		AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAB726DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift */; };
 		AD07CABA26DBD82700BEAEFB /* EditImagePrivacyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAB926DBD82700BEAEFB /* EditImagePrivacyTableViewCell.swift */; };
@@ -234,6 +233,8 @@
 		ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */; };
 		ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */; };
 		ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */; };
+		ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD074F6523F8498A00D6016A /* ClearCache.swift */; };
+		ADA5FA40299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -273,7 +274,6 @@
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */; };
-		ADC52049299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADC69F19285A38A5009BF9AF /* AlbumViewController+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F18285A38A5009BF9AF /* AlbumViewController+Delete.swift */; };
 		ADC69F1B285A4C30009BF9AF /* AlbumViewController+Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */; };
 		ADC69F1D285B6859009BF9AF /* AlbumViewController+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC69F1C285B6859009BF9AF /* AlbumViewController+Add.swift */; };
@@ -736,6 +736,7 @@
 		ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageSizeViewController.swift; sourceTree = "<group>"; };
 		ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSettingsViewController.swift; sourceTree = "<group>"; };
 		ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadParametersViewController.swift; sourceTree = "<group>"; };
+		ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		ADA6F18A21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADA6F18B21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/About.strings; sourceTree = "<group>"; };
@@ -797,7 +798,6 @@
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadIntenthandler.swift; sourceTree = "<group>"; };
-		ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		ADC69F18285A38A5009BF9AF /* AlbumViewController+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Delete.swift"; sourceTree = "<group>"; };
 		ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Favorites.swift"; sourceTree = "<group>"; };
 		ADC69F1C285B6859009BF9AF /* AlbumViewController+Add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Add.swift"; sourceTree = "<group>"; };
@@ -1082,7 +1082,7 @@
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				ADC52048299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel */,
+				ADA5FA3F299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 			);
@@ -2464,7 +2464,7 @@
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
-				ADC52049299AD5C000328C95 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
+				ADA5FA40299FEB28004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
@@ -2558,7 +2558,6 @@
 				AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
-				AD074F6623F8498B00D6016A /* ClearCache.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
@@ -2656,6 +2655,7 @@
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
+				ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */,
 				AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,

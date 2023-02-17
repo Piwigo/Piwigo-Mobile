@@ -168,7 +168,7 @@ extension AlbumViewController
         // Hide HUD
         navigationController?.hidePiwigoHUD() {
             // Return to login view
-            ClearCache.closeSessionAndClearCache { }
+            ClearCache.closeSession {}
         }
     }
     
@@ -291,11 +291,15 @@ extension AlbumViewController
                     return
                 }
                 
-                // Done fetching images ► Remove non-fetched images
-                DispatchQueue.main.async { [self] in
-                    let images = imageProvider.getImages(inContext: mainContext, withIds: oldImageIds)
-                    albumData?.removeFromImages(images)
-                }
+                // Done fetching images ► Remove non-fetched images from album
+                let images = imageProvider.getImages(inContext: bckgContext, withIds: oldImageIds)
+                albumData?.removeFromImages(images)
+                
+                // Remember when images were fetched
+                albumData?.dateFetchedImages = Date()
+                
+                // Delete orphaned images
+                imageProvider.purgeOrphans()
                 
                 completion()
                 return
@@ -381,9 +385,12 @@ extension AlbumViewController
                 return
             }
             
-            // Done fetching images ► Remove non-fetched images
+            // Done fetching images ► Remove non-fetched images from album
             let images = imageProvider.getImages(inContext: bckgContext, withIds: newImageIds)
             album.removeFromImages(images)
+                        
+            // Remember when favorites were fetched
+            album.dateFetchedImages = Date()
             
             // Save changes
             do {
@@ -391,9 +398,6 @@ extension AlbumViewController
             } catch let error as NSError {
                 print("Could not fetch \(error), \(error.userInfo)")
             }
-            
-            // Remember when album and image data were loaded
-            CacheVars.shared.dateLoaded[pwgSmartAlbum.favorites.rawValue] = Date()
         }
     }
 }

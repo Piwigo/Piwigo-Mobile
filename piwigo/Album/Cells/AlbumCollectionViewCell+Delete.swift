@@ -191,7 +191,7 @@ extension AlbumCollectionViewCell {
         guard let albumData = albumData else { return }
 
         // Delete the category
-        LoginUtilities.checkSession {
+        LoginUtilities.checkSession(ofUser: user) {
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) {
 
                 // Remove this album from the auto-upload destination

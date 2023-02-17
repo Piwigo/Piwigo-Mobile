@@ -35,6 +35,5 @@ public class CacheVars: NSObject {
 
     // MARK: - Vars in Memory
     // Variables kept in memory
-    /// - Stores the last time albums were loaded in the dictionary format [pwgID : date]
-    public var dateLoaded = [Int32 : Date]()
+    /// - none
 }

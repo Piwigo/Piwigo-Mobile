@@ -21,6 +21,7 @@ extension Album {
     @NSManaged public var pwgID: Int32
     @NSManaged public var comment: NSAttributedString
     @NSManaged public var dateLast: Date
+    @NSManaged public var dateFetchedImages: Date
     @NSManaged public var globalRank: String
     @NSManaged public var name: String
     @NSManaged public var nbImages: Int64

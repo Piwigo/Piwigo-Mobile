@@ -20,7 +20,7 @@ public class Album: NSManagedObject {
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
               let newName = albumData.name else {
-                throw AlbumError.missingData
+            throw AlbumError.missingData
         }
         if uuid.isEmpty {
             uuid = UUID().uuidString

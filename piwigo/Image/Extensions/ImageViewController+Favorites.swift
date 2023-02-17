@@ -27,7 +27,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        LoginUtilities.checkSession {
+        LoginUtilities.checkSession(ofUser: user) {
             ImageUtilities.addToFavorites(imageData) {
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
@@ -63,7 +63,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        LoginUtilities.checkSession {
+        LoginUtilities.checkSession(ofUser: user) {
             ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
