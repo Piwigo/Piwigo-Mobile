@@ -36,24 +36,24 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     var actionBarButton: UIBarButtonItem?
-    var moveBarButton: UIBarButtonItem?
-    var deleteBarButton: UIBarButtonItem?
-    var shareBarButton: UIBarButtonItem?
-    var favoriteBarButton: UIBarButtonItem?
+    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
+    lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
+    lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
+    lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
 
     var isSelect = false
     var touchedImageIds = [Int64]()
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
     lazy var selectBarButton: UIBarButtonItem = getSelectBarButton()
 
-    var addButton: UIButton!
-    var createAlbumButton: UIButton!
+    lazy var addButton: UIButton = getAddButton()
+    lazy var createAlbumButton: UIButton = getCreateAlbumButton()
     var createAlbumAction: UIAlertAction!
-    var homeAlbumButton: UIButton!
-    var uploadImagesButton: UIButton!
-    var uploadQueueButton: UIButton!
-    var progressLayer: CAShapeLayer!
-    var nberOfUploadsLabel: UILabel!
+    lazy var homeAlbumButton: UIButton = getHomeButton()
+    lazy var uploadImagesButton: UIButton = getUploadImagesButton()
+    lazy var uploadQueueButton: UIButton = getUploadQueueButton()
+    lazy var progressLayer: CAShapeLayer = getProgressLayer()
+    lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
     private var imageDetailView: ImageViewController?
     private var updateOperations: [BlockOperation] = [BlockOperation]()
@@ -107,30 +107,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         imagesCollection?.contentInsetAdjustmentBehavior = .always
 
-        // "Add" button above collection view and other buttons
-        addButton = getAddButton()
+        // Add buttons above collection view and other buttons
         if let imagesCollection = imagesCollection {
             view.insertSubview(addButton, aboveSubview: imagesCollection)
         }
-
-        // "Upload Queue" button above collection view
-        uploadQueueButton = getUploadQueueButton()
-        progressLayer = getProgressLayer()
-        uploadQueueButton?.layer.addSublayer(progressLayer)
-        nberOfUploadsLabel = getNberOfUploadsLabel()
-        uploadQueueButton?.addSubview(nberOfUploadsLabel)
+        uploadQueueButton.layer.addSublayer(progressLayer)
+        uploadQueueButton.addSubview(nberOfUploadsLabel)
         view.insertSubview(uploadQueueButton, belowSubview: addButton)
-
-        // "Home" album button above collection view
-        homeAlbumButton = getHomeButton()
         view.insertSubview(homeAlbumButton, belowSubview: addButton)
-
-        // "Create Album" button above collection view
-        createAlbumButton = getCreateAlbumButton()
         view.insertSubview(createAlbumButton, belowSubview: addButton)
-
-        // "Upload Images" button above collection view
-        uploadImagesButton = getUploadImagesButton()
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
     }
 
@@ -374,46 +359,46 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Buttons
         addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
 
-        createAlbumButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadImagesButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        createAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        uploadImagesButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
 
-        uploadQueueButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadQueueButton?.backgroundColor = UIColor.piwigoColorRightLabel()
-        nberOfUploadsLabel?.textColor = UIColor.piwigoColorBackground()
-        progressLayer?.strokeColor = UIColor.piwigoColorBackground().cgColor
+        uploadQueueButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        uploadQueueButton.backgroundColor = UIColor.piwigoColorRightLabel()
+        nberOfUploadsLabel.textColor = UIColor.piwigoColorBackground()
+        progressLayer.strokeColor = UIColor.piwigoColorBackground().cgColor
 
-        homeAlbumButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        homeAlbumButton?.backgroundColor = UIColor.piwigoColorRightLabel()
-        homeAlbumButton?.tintColor = UIColor.piwigoColorBackground()
+        homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
+        homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
 
         if AppVars.shared.isDarkPaletteActive {
             addButton.layer.shadowRadius = 1.0
             addButton.layer.shadowOffset = CGSize.zero
 
-            createAlbumButton?.layer.shadowRadius = 1.0
-            createAlbumButton?.layer.shadowOffset = CGSize.zero
-            uploadImagesButton?.layer.shadowRadius = 1.0
-            uploadImagesButton?.layer.shadowOffset = CGSize.zero
+            createAlbumButton.layer.shadowRadius = 1.0
+            createAlbumButton.layer.shadowOffset = CGSize.zero
+            uploadImagesButton.layer.shadowRadius = 1.0
+            uploadImagesButton.layer.shadowOffset = CGSize.zero
 
-            uploadQueueButton?.layer.shadowRadius = 1.0
-            uploadQueueButton?.layer.shadowOffset = CGSize.zero
+            uploadQueueButton.layer.shadowRadius = 1.0
+            uploadQueueButton.layer.shadowOffset = CGSize.zero
 
-            homeAlbumButton?.layer.shadowRadius = 1.0
-            homeAlbumButton?.layer.shadowOffset = CGSize.zero
+            homeAlbumButton.layer.shadowRadius = 1.0
+            homeAlbumButton.layer.shadowOffset = CGSize.zero
         } else {
             addButton.layer.shadowRadius = 3.0
             addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            createAlbumButton?.layer.shadowRadius = 3.0
-            createAlbumButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            uploadImagesButton?.layer.shadowRadius = 3.0
-            uploadImagesButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            createAlbumButton.layer.shadowRadius = 3.0
+            createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            uploadImagesButton.layer.shadowRadius = 3.0
+            uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            uploadQueueButton?.layer.shadowRadius = 3.0
-            uploadQueueButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            uploadQueueButton.layer.shadowRadius = 3.0
+            uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            homeAlbumButton?.layer.shadowRadius = 3.0
-            homeAlbumButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            homeAlbumButton.layer.shadowRadius = 3.0
+            homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
         }
 
         // Navigation bar appearance
@@ -626,11 +611,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 initButtonsInSelectionMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
-                addButton?.frame = getAddButtonFrame()
-                homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton?.isHidden ?? true)
-                uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton?.isHidden ?? true)
-                createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton?.isHidden ?? true)
-                uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton?.isHidden ?? true)
+                addButton.frame = getAddButtonFrame()
+                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
             }
         })
     }

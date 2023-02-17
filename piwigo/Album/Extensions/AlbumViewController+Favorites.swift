@@ -12,7 +12,7 @@ import piwigoKit
 extension AlbumViewController
 {
     // MARK: Favorites Utilities
-    func getFavoriteBarButton() -> UIBarButtonItem? {
+    func getFavoriteBarButton() -> UIBarButtonItem {
         let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
         let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
         let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
@@ -47,8 +47,8 @@ extension AlbumViewController
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Update button
-                    favoriteBarButton?.setFavoriteImage(for: true)
-                    favoriteBarButton?.action = #selector(removeFromFavorites)
+                    favoriteBarButton.setFavoriteImage(for: true)
+                    favoriteBarButton.action = #selector(removeFromFavorites)
                     
                     // Deselect images
                     cancelSelect()
@@ -119,8 +119,8 @@ extension AlbumViewController
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Update button
-                    favoriteBarButton?.setFavoriteImage(for: false)
-                    favoriteBarButton?.action = #selector(addToFavorites)
+                    favoriteBarButton.setFavoriteImage(for: false)
+                    favoriteBarButton.action = #selector(addToFavorites)
                     
                     // Deselect images
                     cancelSelect()

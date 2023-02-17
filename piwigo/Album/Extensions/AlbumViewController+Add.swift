@@ -14,7 +14,7 @@ extension AlbumViewController
     // MARK: - Create Sub-Album
     @objc func addAlbum() {
         // Change colour of Upload Images button
-        createAlbumButton?.backgroundColor = UIColor.gray
+        createAlbumButton.backgroundColor = UIColor.gray
 
         // Start creating album
         showCreateCategoryDialog()
@@ -52,7 +52,7 @@ extension AlbumViewController
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Cancel action
-                if homeAlbumButton?.isHidden ?? false {
+                if homeAlbumButton.isHidden {
                     didCancelTapAddButton()
                 }
         })
