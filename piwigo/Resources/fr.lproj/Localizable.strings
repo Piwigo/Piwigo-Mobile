@@ -54,6 +54,22 @@
 "CoreDataStore_WarningMessage" = "Une erreur sérieuse s'est produite pendant que Piwigo tentait de lire le cache de données. Un nouveau cache a donc été créé.";
 "CoreDataFetch_DigestError" = "Impossible de digérer les données récupérées.";
 
+// User objects
+"CoreDataFetch_UserMissingData" = "Jettera un compte utilisateur manquant un nom d'utilisateur valide.";
+"CoreDataFetch_UserUnknownStatus" = "Échec de la récupération des réglages de l’extension Community.\nEssayez de vous connecter à nouveau.";
+"CoreData_UserCreateFailed" = "Impossible de créer un nouvel objet User.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Échec de la récupération des albums !";
+"CoreDataFetch_AlbumMissingData" = "A trouvé et supprimera un album ne disposant pas d'une ID ou d'un nom valide.";
+"CoreDataFetch_AlbumCreateFailed" = "Impossible de créer un nouvel objet Album.";
+"CoreData_AlbumNotFound" = "L'album n'est pas dans le cache persistant.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Échec de la récupération des photos/vidéos!";
+"CoreDataFetch_ImageMissingData" = "A trouvé et supprimera une photo/vidéo ne disposant pas d'une ID ou URL valide.";
+"CoreDataFetch_ImageCreateFailed" = "Impossible de créer un nouvel objet Image.";
+
 // Tag objects
 "CoreDataFetch_TagError" = "Echec de la récupération des tags!";
 "CoreDataFetch_TagMissingData" = "Trouvé et supprimera un tag n'ayant pas d'identité ou de nom valide.";
@@ -110,9 +126,6 @@
 "sessionStatusError_title" = "Échec d'authentification";
 "sessionStatusError_message" = "L’authentification avec le serveur a échoué. Essayez de vous connecter à nouveau.";
 
-"serverCommunityError_title" = "Erreur avec Community";
-"serverCommunityError_message" = "Impossible d’obtenir les réglages de l’extension Community. Essayez de vous connecter à nouveau.";
-
 // Logout
 "logoutConfirmation_title" = "Déconnexion";
 "logoutConfirmation_message" = "Êtes-vous sûr de vouloir vous déconnecter ?";
@@ -130,6 +143,7 @@
 "severalSubAlbumsCount" = "%@ sous-albums";
 
 // Albums view
+"categoryUpdating" = "Mise à jour…";
 "categoryMainEmtpy" = "Pas encore d'albums dans votre Piwigo.\nVous pouvez tirer vers le bas pour actualiser ou vous reconnecter.";
 "categoryImageList_selectButton" = "Sélectionner";
 "categoryImageList_deselectButton" = "Désélectionner";
@@ -235,6 +249,8 @@
 "deleteCategory_empty" = "Effacer album vide";
 "deleteCategory_noImages" = "Conserver les photos";
 "deleteCategory_orphanedImages" = "Effacer images orphelines";
+"deleteCategory_singleOrphanedImage" = "Effacer l'image orpheline";
+"deleteCategory_severalOrphanedImages" = "Effacer %@ images orphelines";
 "deleteCategory_allImages" = "Effacer %@ photos";
 "deleteCategoryConfirm_title" = "Etes-vous sûr ?";
 "deleteCategoryConfirm_message" = "Veuillez entrer le nombre de photos afin de supprimer cet album. Nombre de photos : %@";
@@ -330,9 +346,9 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Échec de la modification";
-"editImageDetailsError_message" = "Echec de l'enregistrement des modifications sur votre serveur. Ré-essayez ?";
+"editImageDetailsError_message" = "Échec de l'enregistrement des modifications sur votre serveur.";
 "imageDetailsFetchError_title" = "Échec de la récupération des propriétés";
-"imageDetailsFetchError_retryMessage" = "La récupération des données de la photo a échoué. Ré-essayer ?";
+"imageDetailsFetchError_message" = "La récupération des données de la photo a échoué.";
 "imageDetailsFetchError_continueMessage" = "La récupération des données de la photo a échoué. Continuer ?";
 
 // Image privacy levels
@@ -748,9 +764,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Paramètres de cache (utilisé/total)";
-"settings_cacheDisk" = "Disque";
-"settings_cacheMemory" = "Mémoire";
-"settings_cacheMegabytes" = "Mo";
 "settings_cacheClear" = "Vider le cache";
 "settings_cacheClearAll" = "Vider le cache des photos";
 "settings_cacheClearMsg" = "Êtes-vous sûr de vouloir effacer le cache des photos? Les photos et les albums mettront un certain temps à se recharger.";

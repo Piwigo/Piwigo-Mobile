@@ -14,8 +14,6 @@
 
 "about_text" = "Este software contiene otro software de terceros que se redistribuye bajo los términos y condiciones de sus licencias originales.\n\n";
 
-"licenceAFN_text" = "AFNetworking\nLicencia MIT (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
-
 "licenceIQkeyboard_text" = "IQKeyboardManager\nLicencia MIT (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
 
 "licenceMBProgHUD_text" = "MBProgressHUD\nLicencia MIT (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";

@@ -54,6 +54,22 @@
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
 
+// User objects
+"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
+"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fetch albums error!";
+"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
+"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
+"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
+"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
+"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
+
 // Tag objects
 "CoreDataFetch_TagError" = "タグ取得エラー！";
 "CoreDataFetch_TagMissingData" = "有効なコードや名前のないタグを見つけて捨てる。";
@@ -110,9 +126,6 @@
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";
 
-"serverCommunityError_title" = "Communityエラー";
-"serverCommunityError_message" = "Community拡張パラメータを取得できませんでした。もう一度ログインしてください。";
-
 // Logout
 "logoutConfirmation_title" = "ログアウト";
 "logoutConfirmation_message" = "本当にログアウトしますか？";
@@ -130,6 +143,7 @@
 "severalSubAlbumsCount" = "%@ サブアルバム";
 
 // Albums view
+"categoryUpdating" = "Updating…";
 "categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
 "categoryImageList_selectButton" = "選択";
 "categoryImageList_deselectButton" = "選択を解除";
@@ -235,6 +249,8 @@
 "deleteCategory_empty" = "空のアルバムを削除します";
 "deleteCategory_noImages" = "写真を保存します";
 "deleteCategory_orphanedImages" = "孤立画像を削除します";
+"deleteCategory_singleOrphanedImage" = "Delete Orphan";
+"deleteCategory_severalOrphanedImages" = "Delete %@ Orphans";
 "deleteCategory_allImages" = "写真%@を削除します";
 "deleteCategoryConfirm_title" = "本当によろしいですか？";
 "deleteCategoryConfirm_message" = "このアルバムを削除するには写真の数を入力して下さい。写真の数：%@";
@@ -332,7 +348,7 @@
 "editImageDetailsError_title" = "更新に失敗しました";
 "editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
 "imageDetailsFetchError_title" = "写真詳細の取得に失敗しました";
-"imageDetailsFetchError_retryMessage" = "写真データの取得に失敗しました。もう一度やり直しますか？";
+"imageDetailsFetchError_message" = "Fetching the photo data failed.";
 "imageDetailsFetchError_continueMessage" = "写真データの取得に失敗しました。続行しますか？";
 
 // Image privacy levels
@@ -748,9 +764,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
-"settings_cacheDisk" = "ディスク";
-"settings_cacheMemory" = "メモリ";
-"settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "キャッシュをクリア";
 "settings_cacheClearAll" = "写真キャッシュをクリア";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";

@@ -14,8 +14,6 @@
 
 "about_text" = "本软件所包含的部分其他第三方软件将按照它们的原始协议进行重发行。\n\n";
 
-"licenceAFN_text" = "AFNetworking\n\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)\n________________________________________\n\n";
-
 "licenceIQkeyboard_text" = "IQKeyboardManager\nThe MIT License (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
 
 "licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";

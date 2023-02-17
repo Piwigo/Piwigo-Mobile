@@ -14,8 +14,6 @@
 
 "about_text" = "このソフトウェアには、個別のライセンスの諸条件下で再配布されているサードパーティ製ソフトウェアが含まれています。\n\n";
 
-"licenceAFN_text" = "AFNetworking\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
-
 "licenceIQkeyboard_text" = "IQKeyboardManager\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2013-2017 Iftekhar Qurashi";
 
 "licenceMBProgHUD_text" = "MBProgressHUD\nマサチューセッツ工科大学ライセンス (MIT)\n\n著作権 © 2009-2016 Matej Bukovinski";

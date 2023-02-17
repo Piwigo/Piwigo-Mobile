@@ -54,6 +54,22 @@
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 
+// User objects
+"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
+"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fetch albums error!";
+"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
+"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
+"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
+"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
+"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
+
 // Tag objects
 "CoreDataFetch_TagError" = "Błąd pobierania znaczników!";
 "CoreDataFetch_TagMissingData" = "Znaleziono i będzie usunięty znacznik bez poprawnego kodu lub nazwy.";
@@ -110,9 +126,6 @@
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
 "sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie.";
 
-"serverCommunityError_title" = "Błąd rozszerzenia Community";
-"serverCommunityError_message" = "Nie udało się ustalić parametrów rozszerzenia Community. Spróbuj zalogować się ponownie.";
-
 // Logout
 "logoutConfirmation_title" = "Wyloguj";
 "logoutConfirmation_message" = "Czy na pewno chcesz się wylogować?";
@@ -130,6 +143,7 @@
 "severalSubAlbumsCount" = "%@ podalbumów";
 
 // Albums view
+"categoryUpdating" = "Updating…";
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";
 "categoryImageList_selectButton" = "Wybierz";
 "categoryImageList_deselectButton" = "Odznacz";
@@ -235,6 +249,8 @@
 "deleteCategory_empty" = "Usuń pusty Album";
 "deleteCategory_noImages" = "Zachowaj zdjęcia";
 "deleteCategory_orphanedImages" = "Usunąć sieroty";
+"deleteCategory_singleOrphanedImage" = "Delete Orphan";
+"deleteCategory_severalOrphanedImages" = "Delete %@ Orphans";
 "deleteCategory_allImages" = "Usuń %@ zdjęć";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
 "deleteCategoryConfirm_message" = "Proszę podać liczbę zdjęć, aby usunąć ten album. Liczba zdjęć: %@";
@@ -332,7 +348,7 @@
 "editImageDetailsError_title" = "Aktualizacja nieudana";
 "editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze. Spróbować ponownie?";
 "imageDetailsFetchError_title" = "Nie udało się pobrać informacji o zdjęciu";
-"imageDetailsFetchError_retryMessage" = "Nie udało się pobrać informacji o zdjęciu. Spróbować ponownie?";
+"imageDetailsFetchError_message" = "Fetching the photo data failed.";
 "imageDetailsFetchError_continueMessage" = "Nie udało się pobrać informacji o zdjęciu. Kontynuować?";
 
 // Image privacy levels
@@ -748,9 +764,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
-"settings_cacheDisk" = "Dysk";
-"settings_cacheMemory" = "Pamięć";
-"settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "Wyczyść pamięć podręczną";
 "settings_cacheClearAll" = "Wyczyść pamięć podręczną zdjęć";
 "settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";

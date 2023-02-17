@@ -6,7 +6,7 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android und Piwigo-Mobile sind kostenlose, freie, Open Source Programme (Apps) um auf eine Piwigo-Gallerie zuzugreifen. Diese Datenschutzerklärung gilt für diese nativen Android- und iOS-Anwendungen, welche eine Verbindung zu Piwigo-Gallerie-Seiten aufbauen, die außerhalb der Kontrolle der Autoren sind. Konsultieren Sie die Datenschutzerklärung der entsprechenden Webseiten, bevor Sie ein Konto in Piwigo-Android oder Piwigo-Mobile konfigurieren um die App mit einer Gallerie zu verbinden.\n\nLetzte Aktualisierung: 25. Oktober 2018";
+"privacy_text" = "Piwigo-Android und Piwigo-Mobile sind kostenlose und freie Open Source Programme (Apps), um auf eine Piwigo-Gallerie zuzugreifen. Diese Datenschutzerklärung gilt für solche nativen Android- und iOS-Anwendungen, die eine Verbindung zu Piwigo-Gallerie-Seiten aufbauen, die außerhalb der Kontrolle der Autoren sind. Konsultieren Sie die Datenschutzerklärung der entsprechenden Webseiten, bevor Sie ein Konto in Piwigo-Android oder Piwigo-Mobile konfigurieren, um die App mit einer Gallerie zu verbinden.\n\nLetzte Aktualisierung: 25. Oktober 2018";
 
 "intro_title" = "Allgemeines";
 

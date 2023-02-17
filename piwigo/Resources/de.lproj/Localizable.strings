@@ -54,6 +54,22 @@
 "CoreDataStore_WarningMessage" = "Ein schwerwiegender Anwendungsfehler trat auf, während Piwigo versuchte, den Daten-Cache zu lesen. Daher wurde ein neuer Cache angelegt.";
 "CoreDataFetch_DigestError" = "Konnte die abgerufenen Daten nicht verarbeiten.";
 
+// User objects
+"CoreDataFetch_UserMissingData" = "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen.";
+"CoreDataFetch_UserUnknownStatus" = "Die Parameter der Community-Erweiterung konnten nicht abgerufen werden.\nVersuchen Sie, sich erneut anzumelden.";
+"CoreData_UserCreateFailed" = "Das Erstellen eines neuen Benutzerobjekts ist fehlgeschlagen.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fehler beim Abrufen von Alben!";
+"CoreDataFetch_AlbumMissingData" = "Gefunden und verwirft ein Album, dem eine gültige ID oder ein Name fehlt.";
+"CoreDataFetch_AlbumCreateFailed" = "Es konnte kein neues Album-Objekt erstellt werden.";
+"CoreData_AlbumNotFound" = "Album nicht im persistenten Cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fehler beim Abrufen von Fotos/Videos!";
+"CoreDataFetch_ImageMissingData" = "Gefunden und verwirft ein Foto/Video ohne gültige ID oder URL.";
+"CoreDataFetch_ImageCreateFailed" = "Es konnte kein neues Bildobjekt erstellt werden.";
+
 // Tag objects
 "CoreDataFetch_TagError" = "Schlagwort-Fehler abrufen!";
 "CoreDataFetch_TagMissingData" = "Ein Tag ohne gültigen Code oder Namen wurde gefunden und verworfen.";
@@ -110,9 +126,6 @@
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";
 "sessionStatusError_message" = "Konnte den Server nicht authentifizieren. Versuche erneute Anmeldung.";
 
-"serverCommunityError_title" = "Community Fehler";
-"serverCommunityError_message" = "Konnte die Parameter der Community Erweiterung nicht abrufen. Versuche erneute Anmeldung.";
-
 // Logout
 "logoutConfirmation_title" = "Abmelden";
 "logoutConfirmation_message" = "Wollen Sie sich wirklich abmelden?";
@@ -130,6 +143,7 @@
 "severalSubAlbumsCount" = "%@ Unter-Alben";
 
 // Albums view
+"categoryUpdating" = "Aktualisierung…";
 "categoryMainEmtpy" = "Bislang keine Alben in Ihrem Piwigo enthalten. Sie können zur Aktualisierung nach unten ziehen oder Sich erneut anmelden.";
 "categoryImageList_selectButton" = "Wählen";
 "categoryImageList_deselectButton" = "Auswahl aufheben";
@@ -235,6 +249,8 @@
 "deleteCategory_empty" = "Lösche leeres Album";
 "deleteCategory_noImages" = "Behalte Fotos";
 "deleteCategory_orphanedImages" = "Lösche verwaiste";
+"deleteCategory_singleOrphanedImage" = "Verwaiste löschen";
+"deleteCategory_severalOrphanedImages" = "%@ verwaiste löschen";
 "deleteCategory_allImages" = "Lösche %@ Fotos";
 "deleteCategoryConfirm_title" = "Sind Sie sicher?";
 "deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Fotos an um dieses Album zu löschen. Anzahl der Fotos: %@";
@@ -330,9 +346,9 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
-"editImageDetailsError_message" = "Übertragen der Änderungen auf Ihren Server fehlgeschlagen. Erneut versuchen?";
+"editImageDetailsError_message" = "Ihre Änderungen konnten nicht mit Ihrem Server aktualisiert werden.";
 "imageDetailsFetchError_title" = "Abrufen der Fotoinformationen fehlgeschlagen";
-"imageDetailsFetchError_retryMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Erneut versuchen?";
+"imageDetailsFetchError_message" = "Das Abrufen der Fotodaten ist fehlgeschlagen.";
 "imageDetailsFetchError_continueMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Fortsetzen?";
 
 // Image privacy levels
@@ -748,9 +764,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
-"settings_cacheDisk" = "Festplatte";
-"settings_cacheMemory" = "Speicher";
-"settings_cacheMegabytes" = "MB";
 "settings_cacheClear" = "Zwischenspeicher leeren";
 "settings_cacheClearAll" = "Zwischenspeicher für Fotos leeren";
 "settings_cacheClearMsg" = "Sind Sie sicher, dass Sie den Foto-Cache löschen möchten? Alben und Fotos werden eine Weile benötigen, um erneut geladen zu werden.";
