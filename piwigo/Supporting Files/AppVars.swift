@@ -63,6 +63,10 @@ class AppVars: NSObject {
     @UserDefault("didWatchHelpViews", defaultValue: 0b00000000_00000000)
     var didWatchHelpViews: UInt16
     
+    /// - Remember when the last help view was presented
+    @UserDefault("dateOfLastHelpView", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate)
+    var dateOfLastHelpView: TimeInterval
+    
     /// - Request help for translating Piwigo once a month max
     let pwgOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
     @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
