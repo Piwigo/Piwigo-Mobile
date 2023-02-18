@@ -11,11 +11,16 @@ import Foundation
 import CoreData
 import UIKit
 
+/* Album instances represent albums of a Piwigo server.
+    - Each instance is associated to a Server and a User because album contents depend on user rights.
+    - Instances share images belonging to a server.
+    - Smart albums are defined with pwgSmartAlbum and have Piwigo IDs <= 0.
+ */
 public class Album: NSManagedObject {
     /**
      Updates an Album instance with the values from a CategoryData struct.
      */
-    func update(with albumData: CategoryData, user: User) throws {
+    func update(with albumData: CategoryData, userInstance: User) throws {
         
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
@@ -90,12 +95,9 @@ public class Album: NSManagedObject {
             dateLast = newDateLast
         }
 
-        // This album of the current server is accessible to the user
-        if server == nil {
-            server = user.server
-        }
-        if users == nil || users?.contains(where: { $0.objectID == user.objectID }) == false {
-            addToUsers(user)
+        // This album belongs the provided user
+        if user == nil {
+            user = userInstance
         }
     }
 }

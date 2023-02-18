@@ -68,7 +68,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
         
         // Retrieve URL of image in cache
-        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
         imageFileURL = cacheDir.appendingPathComponent(size.path)
             .appendingPathComponent(String(imageData.pwgID))
         
@@ -366,7 +366,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         if let serverID = imageData.server?.uuid {
             // Retrieve URL of image in cache
             let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+            let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
             let fileURL = cacheDir.appendingPathComponent(size.path)
                 .appendingPathComponent(String(imageData.pwgID))
 

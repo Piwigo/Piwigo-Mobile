@@ -55,7 +55,7 @@ public class UploadManager: NSObject {
     /// Uploads directory into which image/video files are temporarily stored
     public let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
-        let anURL = DataMigrator.appGroupDirectory.appendingPathComponent("Uploads")
+        let anURL = DataDirectories.shared.appGroupDirectory.appendingPathComponent("Uploads")
 
         // Create the Piwigo/Uploads directory if needed
         if !fm.fileExists(atPath: anURL.path) {

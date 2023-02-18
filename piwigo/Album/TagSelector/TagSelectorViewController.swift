@@ -40,10 +40,10 @@ class TagSelectorViewController: UITableViewController {
     }()
 
 
-    // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
+    var user: User!
 
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
@@ -72,6 +72,8 @@ class TagSelectorViewController: UITableViewController {
         return tags
     }()
 
+    
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -208,7 +210,8 @@ class TagSelectorViewController: UITableViewController {
         let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(inContext: mainContext, withId: catID) else {
+        guard let _ = albumProvider.getAlbum(inContext: mainContext,
+                                             ofUser: user, withId: catID) else {
             return
         }
         

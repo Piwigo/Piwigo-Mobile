@@ -30,7 +30,7 @@ extension ImageViewController
         LoginUtilities.checkSession(ofUser: user) {
             ImageUtilities.addToFavorites(imageData) {
                 DispatchQueue.main.async { [self] in
-                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
+                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext, ofUser: user,
                                                              withId: pwgSmartAlbum.favorites.rawValue) {
                         favAlbum.addToImages(imageData)
                     }
@@ -66,7 +66,7 @@ extension ImageViewController
         LoginUtilities.checkSession(ofUser: user) {
             ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
                 DispatchQueue.main.async { [self] in
-                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext,
+                    if let favAlbum = albumProvider.getAlbum(inContext: savingContext, ofUser: user,
                                                              withId: pwgSmartAlbum.favorites.rawValue) {
                         favAlbum.removeFromImages(imageData)
                     }

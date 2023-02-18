@@ -10,7 +10,12 @@
 import Foundation
 import CoreData
 
-
+/* User instances represent user accounts of a Piwigo server.
+    - Instances are associated to a Server instance and differentiate with usernames.
+    - Because album contents depend on user rights, each instance contains albums only belong to it.
+    - Instances share images whose access is defined by album data.
+    - Each instance contains upload requests only belonging to it.
+ */
 public class User: NSManagedObject {
     
     /**

@@ -27,7 +27,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             tableView?.reloadData()
         }
     }
-    lazy var user: User? = albumData?.users?.first(where: {$0.username == NetworkVars.username})
+    lazy var user: User? = albumData?.user
     var albumProvider: AlbumProvider!
     var savingContext: NSManagedObjectContext?
     

@@ -46,21 +46,20 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
+        albumData = albumProvider.getAlbum(inContext: mainContext,
+                                           ofUser: user, withId: categoryId)
         albumData?.query = ""
         albumData?.nbImages = Int64.min
         albumData?.totalNbImages = Int64.min
         albumData?.images = Set<Image>()
 
         // Update albums
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
+        var andPredicates = getAlbumPredicates()
         fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? albums.performFetch()
 
         // Update images
-        andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
+        andPredicates = getImagePredicates()
         fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? images.performFetch()
         
@@ -88,8 +87,8 @@ extension AlbumViewController: UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
         debugPrint("didDismissSearchController…")
         // Update albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext, withId: categoryId)
-
+        albumData = albumProvider.getAlbum(inContext: mainContext,
+                                           ofUser: user, withId: categoryId)
         // Update albums and images
         resetPredicatesAndPerformFetch()
 

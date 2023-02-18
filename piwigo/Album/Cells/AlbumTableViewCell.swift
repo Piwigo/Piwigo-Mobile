@@ -124,7 +124,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
         // Do we have an URL? and all IDs for storing it (we should)?
         guard let thumbUrl = albumData?.thumbnailUrl,
               let thumbID = albumData?.thumbnailId,
-              let serverID = albumData?.server?.uuid else {
+              let serverID = albumData?.user?.server?.uuid else {
             // No album thumbnail URL
             backgroundImage.image = placeHolder
             return

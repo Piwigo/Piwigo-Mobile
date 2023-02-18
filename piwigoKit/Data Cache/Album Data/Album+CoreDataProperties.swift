@@ -33,25 +33,8 @@ extension Album {
     @NSManaged public var totalNbImages: Int64
     @NSManaged public var upperIds: String
     @NSManaged public var server: Server?
-    @NSManaged public var users: Set<User>?
+    @NSManaged public var user: User?
     @NSManaged public var images: Set<Image>?
-
-}
-
-// MARK: Generated accessors for users
-extension Album {
-
-    @objc(addUsersObject:)
-    @NSManaged public func addToUsers(_ value: User)
-
-    @objc(removeUsersObject:)
-    @NSManaged public func removeFromUsers(_ value: User)
-
-    @objc(addUsers:)
-    @NSManaged public func addToUsers(_ values: Set<User>)
-
-    @objc(removeUsers:)
-    @NSManaged public func removeFromUsers(_ values: Set<User>)
 
 }
 

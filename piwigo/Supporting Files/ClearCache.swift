@@ -65,16 +65,13 @@ class ClearCache: NSObject {
         }
     }
 
-    static func clearAllCache(completion: @escaping () -> Void) {
-        // Tags
-        TagProvider().clearAll()
-
-        // Locations with place names
+    static func clearData(completion: @escaping () -> Void) {
+        // Erase database
+        UploadProvider().clearAll()
         LocationProvider.shared.clearAll()
-
-        // Album and image data
-        AlbumProvider().clearAll()
+        TagProvider().clearAll()
         ImageProvider().clearAll()
+        AlbumProvider().clearAll()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

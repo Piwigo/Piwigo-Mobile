@@ -12,6 +12,11 @@ import Foundation
 import CoreData
 import CoreLocation
 
+/* Locations instances describe locations of photos shot with the device.
+   They are identified with a unique couple:
+    - an UUID which is later used to store images in cache,
+    - the server path e.g. "mywebsite.com/piwigo".
+ */
 public class Location: NSManagedObject {
 
     /**

@@ -11,6 +11,10 @@
 import Foundation
 import CoreData
 
+/* Tag instances represent tags of a Piwigo server.
+    - Each instance belongs to a Server.
+    - Instances are associated to Images and Upload requests.
+ */
 public class Tag: NSManagedObject {
 
     /**

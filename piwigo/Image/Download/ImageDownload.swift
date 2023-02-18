@@ -29,7 +29,7 @@ class ImageDownload {
          completion: @escaping (UIImage) -> Void, failure: ((Error) -> Void)? = nil) {
         
         // Set URLs of image in cache
-        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
         self.fileURL = cacheDir.appendingPathComponent(imageSize.path)
             .appendingPathComponent(String(imageID))
         

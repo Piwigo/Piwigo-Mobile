@@ -11,6 +11,11 @@
 import Foundation
 import CoreData
 
+/* Server instances represent Piwigo servers.
+   They are identified with a unique couple:
+    - an UUID which is later used to store images in cache,
+    - the server path e.g. "mywebsite.com/piwigo".
+ */
 public class Server: NSManagedObject {
 
     /**
@@ -49,7 +54,7 @@ public class Server: NSManagedObject {
     // MARK: - Cache Management
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
         var folderSize = UInt64.zero
-        let serverUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach({ size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
             folderSize += cacheUrl.folderSize
@@ -58,7 +63,7 @@ public class Server: NSManagedObject {
     }
 
     public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>) {
-        let serverUrl = DataController.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach { size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
             try? FileManager.default.removeItem(at: cacheUrl)

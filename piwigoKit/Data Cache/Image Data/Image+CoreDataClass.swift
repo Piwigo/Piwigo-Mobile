@@ -11,6 +11,11 @@ import CoreData
 import Foundation
 import MobileCoreServices
 
+/* Image instances represent photos and videos of a Piwigo server.
+    - Each instance belongs to a Server.
+    - Image files are stored in cache, in a folder belonging to the appropriate server.
+    - Image files are automatically deleted from the cache when deleting an instance.
+ */
 public class Image: NSManagedObject {
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
@@ -247,7 +252,8 @@ public class Image: NSManagedObject {
         // Delete cached image files in background queue
         guard let serverUUID = self.server?.uuid else { return }
         let fm = FileManager.default
-        let cacheUrl = DataController.cacheDirectory.appendingPathComponent(serverUUID)
+        let cacheUrl = DataDirectories.shared.cacheDirectory
+            .appendingPathComponent(serverUUID)
 
         // Square resolution
         var fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.square.path)

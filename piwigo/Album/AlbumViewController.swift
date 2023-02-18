@@ -133,6 +133,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Core Data Providers
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
     lazy var albumProvider: AlbumProvider = {
         let provider : AlbumProvider = AlbumProvider()
         return provider
@@ -145,31 +150,39 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - Core Data Source
+    lazy var user: User = {
+        guard let user = userProvider.getUserAccount(inContext: mainContext) else {
+            fatalError("••> Unknown user instance!")
+        }
+        return user
+    }()
+    
     lazy var albumData: Album? = {
         return currentAlbumData()
     }()
     private func currentAlbumData() -> Album? {
         // Did someone delete this album?
-        if let album = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) {
+        if let album = albumProvider.getAlbum(inContext: mainContext,
+                                              ofUser: user, withId: categoryId) {
             // Album available ► Job done
             return album
         }
         
         // Album not available anymore ► Back to default album?
         categoryId = AlbumVars.shared.defaultCategory
-        if let defaultAlbum = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) {
+        if let defaultAlbum = albumProvider.getAlbum(inContext: mainContext,
+                                                     ofUser: user, withId: categoryId) {
             changeAlbumID()
             return defaultAlbum
         }
 
         // Default album deleted ► Back to root album
         categoryId = Int32.zero
-        let rootAlbum = albumProvider.getAlbum(inContext: mainContext, withId: Int32.zero)
+        let rootAlbum = albumProvider.getAlbum(inContext: mainContext,
+                                               ofUser: user, withId: Int32.zero)
         changeAlbumID()
         return rootAlbum
     }
-    
-    lazy var user: User? = albumData?.users?.first(where: {$0.username == NetworkVars.username})
     
     lazy var userHasUploadRights: Bool = {
         return getUserHasUploadRights()
@@ -177,25 +190,23 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     private func getUserHasUploadRights() -> Bool {
         // Case of Community user?
         if NetworkVars.userStatus != .normal { return false }
-        let user = albumData?.users?.first(where: {$0.username == NetworkVars.username})
-        let userUploadRights = user?.uploadRights ?? ""
-        return userUploadRights.components(separatedBy: ",").contains(String(categoryId))
+        return user.uploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
     
-    lazy var predicates: [NSPredicate] = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
-        return andPredicates
-    }()
-
+    func getAlbumPredicates() -> [NSPredicate] {
+        var predicates = [NSPredicate]()
+        predicates.append(NSPredicate(format: "parentId == %i", categoryId))
+        predicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        predicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return predicates
+    }
+    
     lazy var fetchAlbumsRequest: NSFetchRequest = {
         // Sort albums by globalRank i.e. the order in which they are presented in the web UI
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
+        var andPredicates = getAlbumPredicates()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
@@ -208,6 +219,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         albums.delegate = self
         return albums
     }()
+    
+    func getImagePredicates() -> [NSPredicate] {
+        var predicates = [NSPredicate]()
+        predicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        predicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
+        predicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
+        return predicates
+    }
     
     lazy var fetchImagesRequest: NSFetchRequest = {
         // Sort images according to default settings
@@ -304,8 +323,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 fetchRequest.sortDescriptors = [sortByRank, sortByIdDesc]
             }
         }
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
+        var andPredicates = getImagePredicates()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = AlbumUtilities.numberOfImagesToDownloadPerPage()
         return fetchRequest
@@ -730,14 +748,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     func resetPredicatesAndPerformFetch() {
         // Update albums
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "parentId == %i", categoryId))
+        var andPredicates = getAlbumPredicates()
         fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? albums.performFetch()
 
         // Update images
-        andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
+        andPredicates = getImagePredicates()
         fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? images.performFetch()
     }
@@ -799,7 +815,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Fetch favorites in the background if needed
         if categoryId != pwgSmartAlbum.favorites.rawValue,
-           let favAlbum = albumProvider.getAlbum(inContext: bckgContext, withId: pwgSmartAlbum.favorites.rawValue),
+           let user = userProvider.getUserAccount(inContext: bckgContext),
+           let favAlbum = albumProvider.getAlbum(inContext: bckgContext, ofUser: user,
+                                                 withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateFetchedImages.timeIntervalSinceNow < TimeInterval(-600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
@@ -1247,6 +1265,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.imageIndex = indexPath.row
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = images
+                imageDetailView?.user = user
                 imageDetailView?.userHasUploadRights = userHasUploadRights
                 imageDetailView?.albumProvider = albumProvider
                 imageDetailView?.imageProvider = imageProvider
@@ -1456,17 +1475,9 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         // Check that this update should be managed by this view controller
-        if view.window == nil {
-            return
-        }
-        if let album = anObject as? Album, album.parentId != categoryId {
-            return
-        }
-        if let image = anObject as? Image, let albums = image.albums,
-           albums.contains(where: { $0.pwgID == categoryId }) == false, type != .delete {
-            return
-        }
-        
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+
         // Collect operation changes
         switch type {
         case .insert:

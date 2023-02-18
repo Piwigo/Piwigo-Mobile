@@ -36,7 +36,7 @@ public class DataController: NSObject {
         let model = NSManagedObjectModel.managedObjectModel(forVersion: DataMigrationVersion.current)
         let persistentContainer = NSPersistentContainer(name: "DataModel", managedObjectModel: model)
         let description = persistentContainer.persistentStoreDescriptions.first
-        description?.url = DataMigrator.appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+        description?.url = DataDirectories.shared.appGroupDirectory.appendingPathComponent("DataModel.sqlite")
         description?.shouldAddStoreAsynchronously = false
         description?.shouldInferMappingModelAutomatically = false
         description?.shouldMigrateStoreAutomatically = false
@@ -61,30 +61,6 @@ public class DataController: NSObject {
 
     
     // MARK: - Core Data Saving
-    // "Library/Caches/Piwigo" in the AppGroup container.
-    /// - Folder in which we store the images referenced in the Core Data store
-    public static var cacheDirectory: URL = {
-        let fm = FileManager.default
-        do {
-            // Get path of the Caches directory in the AppGroup container
-            let cacheDirectory = DataMigrator.containerDirectory.appendingPathComponent("Library")
-                .appendingPathComponent("Caches")
-
-            // Append Piwigo
-            let pwgDirectory = cacheDirectory.appendingPathComponent("Piwigo")
-
-            // Create the Piwigo directory if needed
-            if fm.fileExists(atPath: pwgDirectory.path) == false {
-                try fm.createDirectory(at: pwgDirectory, withIntermediateDirectories: true, attributes: nil)
-            }
-
-            print("••> cacheDirectory: \(pwgDirectory)")
-            return pwgDirectory
-        } catch {
-            fatalError("Unable to create the \"Caches/Piwgo\" directory (\(error.localizedDescription)")
-        }
-    }()
-
     public func saveMainContext() {
         // Anything to save?
         guard mainContext.hasChanges else { return }

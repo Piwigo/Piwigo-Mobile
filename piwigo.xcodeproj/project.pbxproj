@@ -234,7 +234,9 @@
 		ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */; };
 		ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */; };
 		ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD074F6523F8498A00D6016A /* ClearCache.swift */; };
-		ADA5FA4229A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
+		ADA5FA4429A0D9B0004A8A59 /* SettingsViewController+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4329A0D9B0004A8A59 /* SettingsViewController+Cache.swift */; };
+		ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */; };
+		ADA5FA4829A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4729A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -736,7 +738,9 @@
 		ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageSizeViewController.swift; sourceTree = "<group>"; };
 		ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSettingsViewController.swift; sourceTree = "<group>"; };
 		ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadParametersViewController.swift; sourceTree = "<group>"; };
-		ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
+		ADA5FA4329A0D9B0004A8A59 /* SettingsViewController+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Cache.swift"; sourceTree = "<group>"; };
+		ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDirectories.swift; sourceTree = "<group>"; };
+		ADA5FA4729A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0A.xcmappingmodel; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		ADA6F18A21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADA6F18B21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/About.strings; sourceTree = "<group>"; };
@@ -1055,6 +1059,7 @@
 			children = (
 				AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */,
 				AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */,
+				ADA5FA4329A0D9B0004A8A59 /* SettingsViewController+Cache.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1080,9 +1085,10 @@
 			isa = PBXGroup;
 			children = (
 				AD25CA7B286B938100D574C7 /* DataMigrator.swift */,
+				ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */,
 				AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */,
 				AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */,
-				ADA5FA4129A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
+				ADA5FA4729A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 			);
@@ -2409,6 +2415,7 @@
 				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
 				AD865777284D153F00C06EF4 /* pwg.categories.getList.swift in Sources */,
 				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
+				ADA5FA4829A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
 				AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */,
 				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
@@ -2431,6 +2438,7 @@
 				ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */,
 				AD0B6AD7268A21C0007DEE70 /* UploadManager+Auto.swift in Sources */,
 				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
+				ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */,
 				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
 				ADB2C3D3291D9967009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
 				AD0B6AD5268A21B7007DEE70 /* UploadManager+Finisher.swift in Sources */,
@@ -2464,7 +2472,6 @@
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
-				ADA5FA4229A0282D004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
@@ -2622,6 +2629,7 @@
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */,
+				ADA5FA4429A0D9B0004A8A59 /* SettingsViewController+Cache.swift in Sources */,
 				ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */,
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,

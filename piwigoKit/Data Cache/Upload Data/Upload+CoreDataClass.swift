@@ -11,6 +11,11 @@
 import Foundation
 import CoreData
 
+/* Upload instances represent upload requests to Piwigo server.
+    - Each instance belongs to a User.
+    - Tag instances are associated to upload requests.
+    - Image files are stored in a temporary folder until the upload is complete.
+ */
 public class Upload: NSManagedObject {
 
     /**

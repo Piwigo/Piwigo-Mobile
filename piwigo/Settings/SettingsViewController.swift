@@ -51,16 +51,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
-    private var thumbCacheSize = ""
-    private var photoCacheSize = ""
+    var thumbCacheSize = ""
+    var photoCacheSize = ""
+    var dataCacheSize = ""
     
     // MARK: - Core Data
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
-        return provider
-    }()
-
-    var user: User?
+    var user: User!
     var albumProvider: AlbumProvider!
     var savingContext: NSManagedObjectContext!
 
@@ -112,23 +108,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Calculate cache sizes
-        DispatchQueue.global(qos: .userInteractive).async {
-            let bckgContext = DataController.shared.bckgContext
-            if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-               let server = user.server {
-                // Album and photo thumbnails
-                var sizes = Set<pwgImageSize>()
-                sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
-                sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
-                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-
-                // Photos and videos
-                sizes = Set<pwgImageSize>()
-                sizes.insert(.fullRes)
-                sizes.insert(pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes)
-                self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            }
+        guard let server = user.server else {
+            fatalError("••> User not provided!")
         }
+        var sizes = getThumbnailSizes()
+        self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+        sizes = getPhotoSizes()
+        self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+        
+        let test1 = user.albums?.count
+        let test2 = user.images?.count
+        let test3 = server.tags?.count
+        print("••> \(test1) albums, \(test2) images, \(test3) tags")
     }
 
     @objc func applyColorPalette() {
@@ -405,7 +396,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .privacy:
             title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
         case .cache:
-            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
+            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings")
         case .about:
             title = NSLocalizedString("settingsHeader_about", comment: "Information")
         case .logout, .clear:
@@ -1188,13 +1179,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                     return ButtonTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    cell.configure(with: NSLocalizedString("settings_cacheClearAll", comment: "Clear Photo Cache"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
-                }
+                cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
                 cell.accessibilityIdentifier = "clearCache"
                 tableViewCell = cell
                 
@@ -1652,113 +1637,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
-                let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
-
-                let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
-
-                var title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
-                let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
-                    // Delete full resolution images in background queue
-                    DispatchQueue.global(qos: .userInteractive).async { [self] in
-                        let bckgContext = DataController.shared.bckgContext
-                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-                           let server = user.server {
-                            var sizes = Set<pwgImageSize>()
-                            sizes.insert(.fullRes)
-                            sizes.insert(pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes)
-                            server.clearCachedImages(ofSizes: sizes)
-                            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-                            DispatchQueue.main.async {
-                                let indexPath = IndexPath(row: 0, section: SettingsSection.cache.rawValue)
-                                if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-                                   let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-                                    cell.detailLabel.text = self.photoCacheSize
-                                }
-                            }
-                        }
-                    }
-                })
-                alert.addAction(clearPhotoCacheAction)
-                
-                title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
-                let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
-                    // Delete all thumbnails in background queue
-                    DispatchQueue.global(qos: .userInteractive).async { [self] in
-                        let bckgContext = DataController.shared.bckgContext
-                        if let user = self.userProvider.getUserAccount(inContext: bckgContext),
-                           let server = user.server {
-                            var sizes = Set<pwgImageSize>()
-                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium)
-                            sizes.insert(pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb)
-                            server.clearCachedImages(ofSizes: sizes)
-                            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                            DispatchQueue.main.async {
-                                let indexPath = IndexPath(row: 1, section: SettingsSection.cache.rawValue)
-                                if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-                                   let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-                                    cell.detailLabel.text = self.thumbCacheSize
-                                }
-                            }
-                        }
-                    }
-                })
-                alert.addAction(clearThumbCacheAction)
-                
-#if DEBUG
-                let clearAlbumsAction = UIAlertAction(title: "Album Data",
-                                                      style: .default, handler: { action in
-                    // Delete all albums in background queue
-                    AlbumProvider().clearAll()
-                })
-                alert.addAction(clearAlbumsAction)
-                
-                let clearImagesAction = UIAlertAction(title: "Photo Data",
-                                                      style: .default, handler: { action in
-                    // Delete all images in background queue
-                    ImageProvider().clearAll()
-                })
-                alert.addAction(clearImagesAction)
-                
-                let clearTagsAction = UIAlertAction(title: "Tag Data",
-                                                    style: .default, handler: { action in
-                    // Delete all tags in background queue
-                    TagProvider().clearAll()
-                })
-                alert.addAction(clearTagsAction)
-                
-                let titleClearLocations = "Location Data"
-                let clearLocationsAction = UIAlertAction(title: titleClearLocations,
-                                                         style: .default, handler: { action in
-                    // Delete all locations in background queue
-                    LocationProvider.shared.clearAll()
-                })
-                alert.addAction(clearLocationsAction)
-                
-                let clearUploadsAction = UIAlertAction(title: "Upload Requests",
-                                                       style: .default, handler: { action in
-                    // Delete all upload requests in the main thread
-                    UploadProvider().clearUploads()
-                })
-                alert.addAction(clearUploadsAction)
-#endif
-
-                let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
-                    // Delete image cache
-                    ClearCache.clearAllCache() {
-                        // Reload tableView
-                        self.settingsTableView?.reloadData()
-                    }
-                })
-
-                // Add actions
-                alert.addAction(dismissAction)
-                alert.addAction(clearAction)
-
                 // Determine position of cell in table view
                 let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.clear.rawValue)
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
 
                 // Present list of actions
+                let alert = getClearCacheAlert()
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
@@ -1946,8 +1830,10 @@ extension SettingsViewController: SelectCategoryDelegate {
         
         // Default album…
         let mainContext = DataController.shared.mainContext
-        if let albumName = albumProvider.getAlbum(inContext: mainContext, withId: AlbumVars.shared.defaultCategory)?.name, albumName.isEmpty == false {
-            return albumName
+        if let album = albumProvider.getAlbum(inContext: mainContext,
+                                              ofUser: user, withId: AlbumVars.shared.defaultCategory),
+           album.name.isEmpty == false {
+            return album.name
         } else {
             return NSLocalizedString("categorySelection_title", comment: "Album")
         }

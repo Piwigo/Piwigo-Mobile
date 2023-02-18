@@ -45,6 +45,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
 
+    var user: User!
     var albumProvider: AlbumProvider!
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
@@ -65,7 +66,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
-            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(inContext: savingContext,
+                                                     ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -90,7 +92,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             commonCatIDs = Set((imageData.albums ?? Set<Album>()).map({$0.pwgID}))
             inputImages = Set([imageData])
             // Album from which the image has been selected
-            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(inContext: savingContext,
+                                                     ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -114,7 +117,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 return false
             }
             // Album from which the images have been selected
-            guard let album = albumProvider.getAlbum(inContext: savingContext, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(inContext: savingContext,
+                                                     ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -135,19 +139,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     
     // MARK: - Core Data Source
-    lazy var user: User? = inputAlbum?.users?.first(where: {$0.username == NetworkVars.username})
-
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
         if NetworkVars.userStatus != .normal { return [] }
-        let userUploadRights = user?.uploadRights ?? ""
+        let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
         return andPredicates
     }()
 
@@ -219,7 +221,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewDidLoad()
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = albumProvider?.getAlbum(inContext: savingContext,
+        guard let _ = albumProvider?.getAlbum(inContext: savingContext, ofUser: user,
                                               withId: pwgSmartAlbum.root.rawValue) else {
             return
         }
@@ -544,7 +546,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
+                albumData = albumProvider.getAlbum(inContext: savingContext,
+                                                   ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -696,7 +699,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
+                albumData = albumProvider.getAlbum(inContext: savingContext,
+                                                   ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -772,7 +776,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext, withId: catId)!
+                albumData = albumProvider.getAlbum(inContext: savingContext,
+                                                   ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

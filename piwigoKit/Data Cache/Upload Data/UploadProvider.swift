@@ -534,7 +534,7 @@ public class UploadProvider: NSObject {
     /**
      Clear cached Core Data upload entry
     */
-    public func clearUploads() {
+    public func clearAll() {
         
         // Create a fetch request for the Upload entity
         let fetchRequest = Upload.fetchRequest()

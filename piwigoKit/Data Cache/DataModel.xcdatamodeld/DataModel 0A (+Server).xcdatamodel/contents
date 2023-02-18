@@ -17,8 +17,7 @@
         <attribute name="upperIds" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int&gt;"/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="albums" inverseEntity="Image"/>
-        <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="albums" inverseEntity="Server"/>
-        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="albums" inverseEntity="User"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="albums" inverseEntity="User"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -76,7 +75,6 @@
         <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
         <attribute name="path" attributeType="String" minValueString="0" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
-        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Album" inverseName="server" inverseEntity="Album"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Image" inverseName="server" inverseEntity="Image"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Tag" inverseName="server" inverseEntity="Tag"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="User" inverseName="server" inverseEntity="User"/>
@@ -131,7 +129,7 @@
         <attribute name="status" attributeType="String" defaultValueString="guest"/>
         <attribute name="uploadRights" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int32&gt;"/>
         <attribute name="username" attributeType="String" defaultValueString=""/>
-        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="users" inverseEntity="Album"/>
+        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Album" inverseName="user" inverseEntity="Album"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="users" inverseEntity="Image"/>
         <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="users" inverseEntity="Server"/>
         <relationship name="uploads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Upload" inverseName="user" inverseEntity="Upload"/>

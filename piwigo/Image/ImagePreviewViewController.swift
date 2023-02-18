@@ -52,8 +52,9 @@ class ImagePreviewViewController: UIViewController
 
         // Thumbnail image should be available in cache
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        let cacheDir = DataController.cacheDirectory.appendingPathComponent(serverID)
-        let fileURL = cacheDir.appendingPathComponent(thumbSize.path).appendingPathComponent(String(imageData.pwgID))
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let fileURL = cacheDir.appendingPathComponent(thumbSize.path)
+            .appendingPathComponent(String(imageData.pwgID))
         
         // Configure the description view before layouting subviews
         let thumbImage = UIImage(contentsOfFile: fileURL.path) ?? placeHolder

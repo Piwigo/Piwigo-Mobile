@@ -25,12 +25,12 @@ class ImageViewController: UIViewController {
     var imageIndex = 0
     var userHasUploadRights = false
 
+    var user: User!
     var albumProvider: AlbumProvider!
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
 
     var imageData: Image?
-    lazy var user = imageData?.users?.first(where: {$0.username == NetworkVars.username})
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var pageViewController: UIPageViewController?

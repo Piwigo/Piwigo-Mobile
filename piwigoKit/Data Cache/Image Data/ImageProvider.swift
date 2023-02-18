@@ -11,10 +11,10 @@ import CoreData
 public class ImageProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
-    //    private lazy var mainContext: NSManagedObjectContext = {
-    //        let context:NSManagedObjectContext = DataController.shared.mainContext
-    //        return context
-    //    }()
+    private lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.bckgContext
@@ -347,7 +347,7 @@ public class ImageProvider: NSObject {
                 // Check that this image belongs at least to the current album
                 var albums = Set(arrayLiteral: album)
                 if let albumIds = imageData.categories?.compactMap({$0.id}),
-                   let allAlbums = user.server?.albums?.filter({albumIds.contains($0.pwgID)}) {
+                   let allAlbums = user.albums?.filter({albumIds.contains($0.pwgID)}) {
                     albums.formUnion(allAlbums)
                 }
                 
@@ -484,6 +484,6 @@ public class ImageProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 }

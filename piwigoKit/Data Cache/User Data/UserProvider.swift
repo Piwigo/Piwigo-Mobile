@@ -39,7 +39,7 @@ public class UserProvider: NSObject {
         let _ = getUserAccount(inContext: bckgContext,
                                withUsername: username, afterUpdate: true)
     }
-
+    
     /**
      Returns a User Account instance
      - Will create a Server object if it does not already exist.
@@ -61,11 +61,11 @@ public class UserProvider: NSObject {
             
             // Look for a user account of the server at path
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "username == %@", username))
             andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "username == %@", username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             fetchRequest.fetchBatchSize = 1
-
+            
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                         managedObjectContext: taskContext,
@@ -125,5 +125,40 @@ public class UserProvider: NSObject {
         }
         
         return currentUser
+    }
+    
+    /**
+     Returns all User Account instances of a server
+     */
+    public func getUserAccounts(inContext taskContext: NSManagedObjectContext,
+                                atPath path: String = NetworkVars.serverPath) -> Set<User> {
+        var users = Set<User>()
+        
+        // Perform the fetch
+        taskContext.performAndWait {
+            // Create a fetch request for the User entity
+            let fetchRequest = User.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
+                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+            
+            // Look for all user accounts of the server at path
+            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: taskContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            
+            // Return user instances
+            users = Set(controller.fetchedObjects ?? [])
+        }
+        
+        return users
     }
 }

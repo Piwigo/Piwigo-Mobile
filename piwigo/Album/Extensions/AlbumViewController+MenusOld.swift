@@ -30,7 +30,7 @@ extension AlbumViewController
             title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
             style: .default, handler: { [self] action in
                 // Check that an album of favorites exists in cache (create it if necessary)
-                guard let _ = albumProvider.getAlbum(inContext: mainContext,
+                guard let _ = albumProvider.getAlbum(inContext: mainContext, ofUser: user,
                                                      withId: pwgSmartAlbum.favorites.rawValue) else {
                     return
                 }
@@ -92,7 +92,8 @@ extension AlbumViewController
     // MARK: - Discover Images
     func discoverImages(inCategoryId categoryId: Int32) {
         // Check that a discover album exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(inContext: mainContext, withId: categoryId) else {
+        guard let _ = albumProvider.getAlbum(inContext: mainContext,
+                                             ofUser: user, withId: categoryId) else {
             return
         }
         
@@ -107,6 +108,7 @@ extension AlbumViewController
         guard let tagSelectorVC = tagSelectorSB.instantiateViewController(withIdentifier: "TagSelectorViewController") as? TagSelectorViewController else {
             fatalError("No TagSelectorViewController!")
         }
+        tagSelectorVC.user = user
         tagSelectorVC.tagSelectedDelegate = self
         pushView(tagSelectorVC)
     }

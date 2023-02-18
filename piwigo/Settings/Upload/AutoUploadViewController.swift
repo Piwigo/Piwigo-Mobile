@@ -15,6 +15,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
+    var user: User!
     var albumProvider: AlbumProvider!
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
@@ -31,26 +32,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             return true
         case .normal:
             // Community user with upload rights?
-            let fetchRequest = User.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true, selector: nil)]
-
-            // Select album:
-            /// — from the current server and user only
-            /// — whose ID is the ID of the displayed album
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "username == %@", NetworkVars.username))
-            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-            // Create a fetched results controller and set its fetch request and context.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: self.savingContext,
-                                                        sectionNameKeyPath: nil, cacheName: nil)
-
-            // Perform the fetch.
-            try? controller.performFetch()
-            if let user = controller.fetchedObjects?.first,
-               user.uploadRights.components(separatedBy: ",").contains("\(UploadVars.autoUploadCategoryId)")  {
+            if user.uploadRights.components(separatedBy: ",")
+                .contains(String(UploadVars.autoUploadCategoryId)) {
                 return true
             }
         }
@@ -271,7 +254,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.autoUploadCategoryId
-                if let albumData = albumProvider.getAlbum(inContext: savingContext, withId: categoryId) {
+                if let albumData = albumProvider.getAlbum(inContext: savingContext,
+                                                          ofUser: user, withId: categoryId) {
                     detail = albumData.name
                 } else {
                     // Did not find the Piwigo album

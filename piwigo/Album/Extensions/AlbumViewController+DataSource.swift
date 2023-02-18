@@ -324,7 +324,7 @@ extension AlbumViewController
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
 
             // Check that an album of favorites exists in cache (create it if necessary)
-            guard let album = self.albumProvider.getAlbum(inContext: self.bckgContext,
+            guard let album = self.albumProvider.getAlbum(inContext: self.bckgContext, ofUser: self.user,
                                                           withId: pwgSmartAlbum.favorites.rawValue) else {
                 return
             }
