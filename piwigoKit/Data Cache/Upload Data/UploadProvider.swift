@@ -607,9 +607,9 @@ public class UploadProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.deleted.rawValue))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "requestState != %i", pwgUploadState.deleted.rawValue))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -657,11 +657,11 @@ public class UploadProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.finished.rawValue))
-        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.moderated.rawValue))
-        andPredicates.append(NSPredicate(format: "requestState != %d", pwgUploadState.deleted.rawValue))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "requestState != %i", pwgUploadState.finished.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %i", pwgUploadState.moderated.rawValue))
+        andPredicates.append(NSPredicate(format: "requestState != %i", pwgUploadState.deleted.rawValue))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
