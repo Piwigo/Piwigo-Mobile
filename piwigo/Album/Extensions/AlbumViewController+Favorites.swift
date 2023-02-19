@@ -21,20 +21,6 @@ extension AlbumViewController
         return button
     }
 
-    private func refreshFavorites() {
-        // Loop over the visible cells
-        let visibleCells = imagesCollection?.visibleCells ?? []
-        visibleCells.forEach { cell in
-            if let imageCell = cell as? ImageCollectionViewCell {
-                let isFavorite = (imageCell.imageData?.albums ?? Set<Album>())
-                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                imageCell.isFavorite = isFavorite
-                imageCell.setNeedsLayout()
-                imageCell.layoutIfNeeded()
-            }
-        }
-    }
-
 
     // MARK: - Add Images to Favorites
     @objc func addToFavorites() {
@@ -43,18 +29,13 @@ extension AlbumViewController
 
     func addImageToFavorites() {
         if selectedImageIds.isEmpty {
+            // Save changes
+            try? bckgContext.save()
             // Close HUD with success
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Update button
-                    favoriteBarButton.setFavoriteImage(for: true)
-                    favoriteBarButton.action = #selector(removeFromFavorites)
-                    
                     // Deselect images
                     cancelSelect()
-                    
-                    // Update favorite icons
-                    refreshFavorites()
                 }
             }
             return
@@ -80,10 +61,17 @@ extension AlbumViewController
                 // Update HUD
                 updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
-                // Image added to favorites
-                selectedImageIds.removeFirst()
+                // Image added to favorites ► Add it in the background
+                if let image = self.imageProvider.getImages(inContext: self.bckgContext,
+                                                            withIds: Set([imageData.pwgID])).first,
+                   let favAlbum = self.albumProvider.getAlbum(inContext: self.bckgContext, ofUser: self.user,
+                                                              withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Add image to favorites album
+                    image.addToAlbums(favAlbum)
+                }
 
                 // Next image
+                selectedImageIds.removeFirst()
                 addImageToFavorites()
 
             } failure: { [self] error in
@@ -115,18 +103,13 @@ extension AlbumViewController
 
     func removeImageFromFavorites() {
         if selectedImageIds.isEmpty {
+            // Save changes
+            try? bckgContext.save()
             // Close HUD with success
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Update button
-                    favoriteBarButton.setFavoriteImage(for: false)
-                    favoriteBarButton.action = #selector(addToFavorites)
-                    
                     // Deselect images
                     cancelSelect()
-                    
-                    // Hide favorite icons
-                    refreshFavorites()
                 }
             }
             return
@@ -152,10 +135,17 @@ extension AlbumViewController
                 // Update HUD
                 updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
-                // Image removed from the favorites
-                selectedImageIds.removeFirst()
+                // Image removed from favorites ► Remove it in the background
+                if let image = self.imageProvider.getImages(inContext: self.bckgContext,
+                                                            withIds: Set([imageData.pwgID])).first,
+                   let favAlbum = self.albumProvider.getAlbum(inContext: self.bckgContext, ofUser: self.user,
+                                                              withId: pwgSmartAlbum.favorites.rawValue) {
+                    // Remove image from favorites album
+                    image.removeFromAlbums(favAlbum)
+                }
 
                 // Next image
+                selectedImageIds.removeFirst()
                 removeImageFromFavorites()
 
             } failure: { [unowned self] error in

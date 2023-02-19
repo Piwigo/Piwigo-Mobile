@@ -32,11 +32,17 @@ extension ImageViewController
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(inContext: savingContext, ofUser: user,
                                                              withId: pwgSmartAlbum.favorites.rawValue) {
+                        // Add image to favorites album
                         favAlbum.addToImages(imageData)
+                        // Update favorites album data
+                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
+                        // Save changes
+                        try? savingContext.save()
+                        // Set button
+                        favoriteBarButton.setFavoriteImage(for: true)
+                        favoriteBarButton.action = #selector(self.removeFromFavorites)
+                        favoriteBarButton.isEnabled = true
                     }
-                    favoriteBarButton.setFavoriteImage(for: true)
-                    favoriteBarButton.action = #selector(self.removeFromFavorites)
-                    favoriteBarButton.isEnabled = true
                 }
             } failure: { error in
                 self.addToFavoritesError(error)
@@ -68,13 +74,22 @@ extension ImageViewController
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(inContext: savingContext, ofUser: user,
                                                              withId: pwgSmartAlbum.favorites.rawValue) {
+                        // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
-                    }
-                    if self.categoryId != pwgSmartAlbum.favorites.rawValue {
-                        // Update favorite button
-                        self.favoriteBarButton.setFavoriteImage(for: false)
-                        self.favoriteBarButton.action = #selector(self.addToFavorites)
-                        self.favoriteBarButton.isEnabled = true
+                        // Update favorites album data
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
+                        // Save changes
+                        try? savingContext.save()
+                        // Back to favorites album or set favorite button?
+                        if self.categoryId == pwgSmartAlbum.favorites.rawValue {
+                            // Return to favorites album
+                            navigationController?.popViewController(animated: true)
+                        } else {
+                            // Update favorite button
+                            self.favoriteBarButton.setFavoriteImage(for: false)
+                            self.favoriteBarButton.action = #selector(self.addToFavorites)
+                            self.favoriteBarButton.isEnabled = true
+                        }
                     }
                 }
             } failure: { error in
