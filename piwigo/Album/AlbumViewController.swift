@@ -534,7 +534,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Check session status before loading album and image data
         let lastLoad = albumData?.dateFetchedImages ?? .distantPast
-        let noSmartAlbumData = self.categoryId <= 0 && self.albums.fetchedObjects?.isEmpty ?? true
+        let noSmartAlbumData = self.categoryId <= 0 && self.images.fetchedObjects?.isEmpty ?? true
         let nbImages = self.images.fetchedObjects?.count ?? Int.zero
         let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
         if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
