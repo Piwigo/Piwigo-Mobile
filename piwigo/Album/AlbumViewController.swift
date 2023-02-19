@@ -1480,7 +1480,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if anObject is Image { newIndexPath.section = 1 }
-            insertOperations.append( BlockOperation { [weak self] in
+            updateOperations.append( BlockOperation { [weak self] in
                 print("••> Insert imagesCollection item at \(newIndexPath)")
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
