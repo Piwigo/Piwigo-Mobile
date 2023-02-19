@@ -113,9 +113,7 @@ public class UploadManager: NSObject {
     }()
 
     lazy var fetchUploadsRequest: NSFetchRequest = {
-        // Sort uploads by globalRank i.e. the order in which they are presented in the web UI
         let fetchRequest = Upload.fetchRequest()
-
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
