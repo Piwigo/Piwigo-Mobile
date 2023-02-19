@@ -211,6 +211,11 @@ extension AlbumViewController
                 // No error ► Fetch image data?
                 let albumNbImages = self.albumData?.nbImages ?? 0
                 if self.categoryId == 0 || albumNbImages == 0 {
+                    // Done fetching images
+                    DispatchQueue.main.async {
+                        // Remember when images were fetched
+                        self.albumData?.dateFetchedImages = Date()
+                    }
                     completion()
                     return
                 }
@@ -288,15 +293,17 @@ extension AlbumViewController
                     return
                 }
                 
-                // Done fetching images ► Remove non-fetched images from album
-                let images = imageProvider.getImages(inContext: bckgContext, withIds: oldImageIds)
-                albumData?.removeFromImages(images)
-                
-                // Remember when images were fetched
-                albumData?.dateFetchedImages = Date()
-                
-                // Delete orphaned images
+                // Delete orphaned images in background
                 imageProvider.purgeOrphans()
+
+                // Done fetching images ► Remove non-fetched images from album
+                DispatchQueue.main.async {
+                    let images = self.imageProvider.getImages(inContext: self.mainContext, withIds: oldImageIds)
+                    self.albumData?.removeFromImages(images)
+                    
+                    // Remember when images were fetched
+                    self.albumData?.dateFetchedImages = Date()
+                }
                 
                 completion()
                 return
