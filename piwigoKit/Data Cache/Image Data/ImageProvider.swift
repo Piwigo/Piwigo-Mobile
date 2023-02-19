@@ -175,7 +175,8 @@ public class ImageProvider: NSObject {
                     if albumId == pwgSmartAlbum.favorites.rawValue {
                         totalCount = imageJSON.paging?.count ?? Int64.zero
                     } else {
-                        if "13.5.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedSame {
+                        if "13.4.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedSame ||
+                            "13.5.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedSame {
                             // Bug leading to server providing wrong total_count value
                             // Discovered in Piwigo 13.5.0, may have appeared in earlier version
                             totalCount = imageJSON.paging?.count ?? Int64.zero
