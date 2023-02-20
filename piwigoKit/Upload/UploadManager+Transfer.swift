@@ -16,7 +16,7 @@ extension UploadManager {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -59,7 +59,7 @@ extension UploadManager {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -346,7 +346,7 @@ extension UploadManager {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -449,7 +449,7 @@ extension UploadManager {
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
                 let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+                let fileURL = self.uploadsDirectory.appendingPathComponent(chunkFileName)
                 
                 // Deletes temporary image file if exists (incomplete previous attempt?)
                 do { try FileManager.default.removeItem(at: fileURL) } catch { }

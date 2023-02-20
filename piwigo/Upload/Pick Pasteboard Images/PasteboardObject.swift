@@ -178,7 +178,7 @@ class ObjectPreparation : Operation {
         let start = CFAbsoluteTimeGetCurrent()
 
         // Set file URL
-        let fileURL = UploadManager.shared.applicationUploadsDirectory
+        let fileURL = UploadManager.shared.uploadsDirectory
             .appendingPathComponent(pbObject.identifier)
 
         // Delete file if it already exists (incomplete previous attempt?)

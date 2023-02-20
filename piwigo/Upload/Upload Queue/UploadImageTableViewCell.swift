@@ -159,7 +159,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     /// Case of an image from the pasteboard
     private func prepareThumbnailFromFile(for upload:Upload, availableWidth:Int) {
         // Get file URL from identifier
-        let fileURL = UploadManager.shared.applicationUploadsDirectory
+        let fileURL = UploadManager.shared.uploadsDirectory
             .appendingPathComponent(upload.localIdentifier)
         
         // Task depends on file type

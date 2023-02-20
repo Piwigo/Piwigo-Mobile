@@ -52,27 +52,8 @@ public class UploadManager: NSObject {
         return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
     }()
     
-    /// Uploads directory into which image/video files are temporarily stored
-    public let applicationUploadsDirectory: URL = {
-        let fm = FileManager.default
-        let anURL = DataDirectories.shared.appGroupDirectory.appendingPathComponent("Uploads")
-
-        // Create the Piwigo/Uploads directory if needed
-        if !fm.fileExists(atPath: anURL.path) {
-            var errorCreatingDirectory: Error? = nil
-            do {
-                try fm.createDirectory(at: anURL, withIntermediateDirectories: true, attributes: nil)
-            } catch let errorCreatingDirectory {
-            }
-
-            if errorCreatingDirectory != nil {
-                print("Unable to create directory for files to upload.")
-                abort()
-            }
-        }
-        return anURL
-    }()
-    
+    /// Constants
+    public let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
     let frgdSession: URLSession = UploadSessions.shared.frgdSession
     let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()
@@ -569,7 +550,7 @@ public class UploadManager: NSObject {
         var files = [URL]()
         do {
             // Get complete filename by searching in the Uploads directory
-            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
+            files = try FileManager.default.contentsOfDirectory(at: uploadsDirectory,
                         includingPropertiesForKeys: nil,
                         options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }
@@ -617,7 +598,7 @@ public class UploadManager: NSObject {
         var files = [URL]()
         do {
             // Get complete filename by searching in the Uploads directory
-            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
+            files = try FileManager.default.contentsOfDirectory(at: uploadsDirectory,
                         includingPropertiesForKeys: nil,
                         options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }

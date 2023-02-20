@@ -102,7 +102,7 @@ extension UploadManager {
 
             // Prepare URL of temporary file
             let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-            let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
+            let fileURL = self.uploadsDirectory.appendingPathComponent(fileName)
 
             // Deletes temporary video file if it already exists
             try? FileManager.default.removeItem(at: fileURL)

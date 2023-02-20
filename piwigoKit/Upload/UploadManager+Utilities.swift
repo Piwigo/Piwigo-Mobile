@@ -20,7 +20,7 @@ extension UploadManager {
         // File name of image data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
         if fileName.count ==  0 { fatalError("!!!! No Upload Filename !!!!")}
-        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Should we delete it?
         if deleteIt {
@@ -92,7 +92,7 @@ extension UploadManager {
         let fileManager = FileManager.default
         do {
             // Get list of files
-            var filesToDelete = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            var filesToDelete = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             if prefix.isEmpty == false {
                 // Will delete files with given prefix only
                 filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
@@ -116,7 +116,7 @@ extension UploadManager {
             UploadManager.shared.nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
 
             // For debugging
-//            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
         } catch {
             print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")

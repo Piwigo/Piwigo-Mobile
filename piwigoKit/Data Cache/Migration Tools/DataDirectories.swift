@@ -58,6 +58,27 @@ public class DataDirectories
         return piwigoURL
     }()
 
+    // "Library/Application Support/Piwigo" in the AppGroup container.
+    /// - The Uploads directory into which image/video files are temporarily stored.
+    lazy var appUploadsDirectory: URL = {
+        // Get path of Uploads directory
+        let uploadURL = appGroupDirectory.appendingPathComponent("Uploads")
+
+        // Create the Piwigo/Uploads directory if needed
+        let fm = FileManager.default
+        if !fm.fileExists(atPath: uploadURL.path) {
+            var errorCreatingDirectory: Error? = nil
+            do {
+                try fm.createDirectory(at: uploadURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Unable to create the \"Uploads\" directory in the App Group container (\(error.localizedDescription).")
+            }
+        }
+
+        print("••> uploadsDirectory: \(uploadURL)")
+        return uploadURL
+    }()
+
     // "Library/Caches/Piwigo" in the AppGroup container.
     /// - Folder in which we store the images referenced in the Core Data store
     public lazy var cacheDirectory: URL = {

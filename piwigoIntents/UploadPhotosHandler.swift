@@ -42,7 +42,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             if fileTypes.contains(fileUrl.pathExtension.lowercased()) {
 
                 // Delete file of same name in Uploads directory if it already exists (incomplete previous attempt?)
-                let fileUploadsUrl = UploadManager.shared.applicationUploadsDirectory
+                let fileUploadsUrl = UploadManager.shared.uploadsDirectory
                     .appendingPathComponent(fileUrl.lastPathComponent)
                 do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
 
@@ -95,7 +95,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             // Set file URL in Uploads directory
             let identifier = String(format: "%@%@%@%ld", UploadManager.shared.kIntentPrefix,
                                     actionDateTime, UploadManager.shared.kImageSuffix, idx)
-            let fileUploadsUrl = UploadManager.shared.applicationUploadsDirectory
+            let fileUploadsUrl = UploadManager.shared.uploadsDirectory
                 .appendingPathComponent(identifier)
 
             // Delete file if it already exists (incomplete previous attempt?)
