@@ -290,27 +290,29 @@ extension SectionKeys {
 
 
 // MARK: - Upload States
-public enum pwgUploadState : Int16 {
-    case waiting            /*  0 */
+public enum pwgUploadState : Int16, CaseIterable {
+    case waiting        =  0 /* Waiting for preparation */
     
-    case preparing          /*  1 */
-    case preparingError     /*  2 */
-    case preparingFail      /*  3 */
-    case formatError        /*  4 */
-    case prepared           /*  5 */
+    case preparing      =  1 /* Preparinng image/video file */
+    case preparingError =  2 /* Error encountered, should be tried again */
+    case preparingFail  =  3 /* Error encountered, useless to retry */
+    case formatError    =  4 /* Format not accepted by server, cannot be converted… */
+    case prepared       =  5 /* Image/video file to upload ready */
 
-    case uploading          /*  6 */
-    case uploadingError     /*  7 */
-    case uploaded           /*  8 */
+    case uploading      =  6 /* Uploading file to server */
+    case uploadingError =  7 /* Error encountered, should be tried again */
+    case uploadingFail  = 14 /* Error encountered, useless to retry */
+    case uploaded       =  8 /* Image/video file uploaded to the server */
 
-    case finishing          /*  9 */
-    case finishingError     /* 10 */
-    case finished           /* 11 */
-    case moderated          /* 12 */
+    case finishing      =  9 /* Image title being set after uploading with pwg.images.upload
+                                Lounge being emptied after uploading with pwg.images.uploadAsync */
+    case finishingError = 10 /* Error encountered, should be tried again */
+    case finishingFail  = 15 /* Error encountered, useless to retry */
+    case finished       = 11 /* Image title set OR lounged emptied successfully */
     
-    case deleted            /* 13 */
-    case uploadingFail      /* 14 */
-    case finishingFail      /* 15 */
+    case moderated      = 12 /* Images uploaded by a Community user was sent to the moderator
+                                Not a critical step, forces server to treat uploaded image */
+    case deleted        = 13 /* Uploaded file deleted from the server, can be re-uploaded */
 }
 
 extension pwgUploadState {
