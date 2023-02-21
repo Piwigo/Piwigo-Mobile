@@ -176,8 +176,10 @@ public class ImageProvider: NSObject {
                         totalCount = imageJSON.paging?.count ?? Int64.zero
                     } else {
                         // Bug leading to server providing wrong total_count value
-                        // Discovered in Piwigo 13.5.0, appeared in version 13.0.0.
-                        if NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending {
+                        // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
+                        // See https://github.com/Piwigo/Piwigo/issues/1871
+                        if NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                            NetworkVars.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
                             totalCount = imageJSON.paging?.totalCount?.int64Value ?? Int64.zero
                         } else {
                             totalCount = imageJSON.paging?.count ?? Int64.zero
