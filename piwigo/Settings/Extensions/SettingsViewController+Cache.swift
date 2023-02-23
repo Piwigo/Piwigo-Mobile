@@ -44,7 +44,7 @@ extension SettingsViewController
     func getClearCacheAlert() -> UIAlertController {
         let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
 
-        title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
+        var title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Delete album and photo thumbnails in foreground queue
             guard let server = self.user.server else {
@@ -59,7 +59,7 @@ extension SettingsViewController
         })
         alert.addAction(clearThumbCacheAction)
         
-        var title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
+        title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
