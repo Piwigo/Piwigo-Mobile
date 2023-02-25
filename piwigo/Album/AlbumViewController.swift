@@ -162,6 +162,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if let album = albumProvider.getAlbum(inContext: mainContext,
                                               ofUser: user, withId: categoryId) {
             // Album available ► Job done
+            if album.isFault {
+                // The upload request is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
             return album
         }
         
