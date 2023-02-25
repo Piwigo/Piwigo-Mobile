@@ -947,13 +947,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Get total number of images
         var totalCount = Int64.zero
         if categoryId == 0 {
-            // Only albums in Root Album => calculate total number of images
+            // Root Album only contains albums  => calculate total number of images
             albums.fetchedObjects?.forEach({ album in
                 totalCount += album.totalNbImages
             })
         } else {
             // Number of images in current album
-            totalCount = albumData?.totalNbImages ?? Int64.zero
+            totalCount = albumData?.nbImages ?? Int64.zero
         }
         
         // Build footer content
@@ -985,8 +985,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     {
         switch indexPath.section {
         case 0 /* Section 0 — Album collection */:
-            var header:     AlbumHeaderReusableView? = nil
-
+            var header: AlbumHeaderReusableView? = nil
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
                 let desc = NSMutableAttributedString(attributedString: albumData?.comment ?? NSAttributedString())
