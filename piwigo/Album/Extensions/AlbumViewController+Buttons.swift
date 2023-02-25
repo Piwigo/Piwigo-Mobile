@@ -209,7 +209,7 @@ extension AlbumViewController
     
     @objc func updateNberOfUploads(_ notification: Notification?) {
         guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? NSNumber)?.intValue else { return }
+              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
@@ -624,7 +624,7 @@ extension AlbumViewController
                     } else {
                         // Show UploadQueue button if needed
                         let nberOfUploads = UIApplication.shared.applicationIconBadgeNumber
-                        let userInfo = ["nberOfUploadsToComplete": NSNumber(value: nberOfUploads)]
+                        let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
                         NotificationCenter.default.post(name: .pwgLeftUploads,
                                                         object: nil, userInfo: userInfo)
                     }

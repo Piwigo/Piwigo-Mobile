@@ -110,7 +110,7 @@ extension UploadManager {
             // Determine MD5 checksum
             let error: NSError?
             (upload.md5Sum, error) = originalFileURL.MD5checksum()
-            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: upload.md5Sum))")
+            print("\(self.dbg()) MD5: \(String(describing: upload.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: upload, error)
@@ -157,18 +157,16 @@ extension UploadManager {
     }
     
     private func didPrepareVideo(for upload: Upload, _ error: Error?) {
+        // Upload ready for transfer
         // Error?
         if let error = error {
             upload.setState(.preparingError, error: error)
-            // Update UI
-            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: error.localizedDescription)
         } else {
-            upload.setState(.prepared, error: nil)
+            upload.setState(.prepared)
         }
 
-        // Upload ready for transfer
         self.backgroundQueue.async {
+            try? self.bckgContext.save()
             self.didEndPreparation()
         }
     }
@@ -191,7 +189,7 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                        completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("\(debugFormatter.string(from: Date())) > enters retrieveVideoAssetFrom in", queueName())
+        print("\(dbg()) enters retrieveVideoAssetFrom in", queueName())
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -267,7 +265,7 @@ extension UploadManager {
             
             // resultHandler performed on another thread!
             if self.isExecutingBackgroundUploadTask {
-//                print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
+//                print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
                 if info?[PHImageErrorKey] != nil {
                     completionHandler(nil, options, info?[PHImageErrorKey] as? Error)
@@ -276,7 +274,7 @@ extension UploadManager {
                 completionHandler(avasset, options, nil)
             } else {
                 self.backgroundQueue.async {
-//                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
+//                    print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if info?[PHImageErrorKey] != nil {
                         completionHandler(nil, options, info?[PHImageErrorKey] as? Error)

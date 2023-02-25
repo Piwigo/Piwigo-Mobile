@@ -115,11 +115,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
         sizes = getPhotoSizes()
         self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-        
-        let test1 = user.albums?.count
-        let test2 = user.images?.count
-        let test3 = server.tags?.count
-        print("••> \(test1) albums, \(test2) images, \(test3) tags")
     }
 
     @objc func applyColorPalette() {

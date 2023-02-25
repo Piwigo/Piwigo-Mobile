@@ -373,7 +373,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                 }
             }
         default:
-            debugPrint("!!! unexpected session identifier !!!")
+            print("!!! unexpected session identifier !!!")
         }
     }
 }
@@ -394,7 +394,7 @@ extension UploadSessions: URLSessionDataDelegate {
         
         #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        debugPrint("••> JSON: \(dataStr)")
+        print("••> JSON: \(dataStr)")
         #endif
         
         switch dataTask.taskDescription {

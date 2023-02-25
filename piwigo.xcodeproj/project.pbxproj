@@ -210,6 +210,8 @@
 		AD94F643266D6E1D00EFC6A9 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationProvider.swift */; };
 		AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
 		AD95716028A8EF3C0073EA75 /* VideoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */; };
+		AD958B9529A7DC900022AE23 /* UploadManager+Prepare.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */; };
+		AD958B9729A7E2470022AE23 /* UploadManager+Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */; };
 		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
@@ -358,6 +360,7 @@
 		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
+		ADF351D329A422AC009B7CAA /* UploadManager+Resume.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */; };
 		ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */; };
 		ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */; };
@@ -711,6 +714,8 @@
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
 		AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
+		AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Prepare.swift"; sourceTree = "<group>"; };
+		AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Tasks.swift"; sourceTree = "<group>"; };
 		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
 		AD97CFB3265A50EE00719ED5 /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
 		AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppGroups.swift"; sourceTree = "<group>"; };
@@ -903,6 +908,7 @@
 		ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectCategoryViewController.storyboard; sourceTree = "<group>"; };
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
+		ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadManager+Resume.swift"; sourceTree = "<group>"; };
 		ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0A (+Server).xcdatamodel"; sourceTree = "<group>"; };
 		ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -1319,6 +1325,9 @@
 				AD3335442666CA46000A1487 /* UploadVars.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
+				ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */,
+				AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */,
+				AD958B9429A7DC900022AE23 /* UploadManager+Prepare.swift */,
 				AD0B6ACE268A219B007DEE70 /* UploadManager+Image.swift */,
 				AD0B6AD0268A21A4007DEE70 /* UploadManager+Video.swift */,
 				AD0B6AD2268A21AD007DEE70 /* UploadManager+Transfer.swift */,
@@ -2398,11 +2407,13 @@
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
 				AD98E52628BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift in Sources */,
 				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
+				AD958B9529A7DC900022AE23 /* UploadManager+Prepare.swift in Sources */,
 				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
 				AD018D8028D728A40003D5DB /* ImageError.swift in Sources */,
 				AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */,
 				AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */,
 				ADDC36D428D10DD700E5AE4B /* DescriptionValueTransformer.swift in Sources */,
+				AD958B9729A7E2470022AE23 /* UploadManager+Tasks.swift in Sources */,
 				ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */,
 				ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */,
 				ADDC36D228CFC71800E5AE4B /* ImageProvider.swift in Sources */,
@@ -2489,6 +2500,7 @@
 				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
+				ADF351D329A422AC009B7CAA /* UploadManager+Resume.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
 				AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */,
 				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,

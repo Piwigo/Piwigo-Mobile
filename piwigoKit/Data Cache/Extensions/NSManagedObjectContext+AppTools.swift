@@ -23,13 +23,12 @@ extension NSManagedObjectContext {
                 // Merge the deletions into the app's managed object context.
                 NSManagedObjectContext.mergeChanges(
                     fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
-                    into: [DataController.shared.mainContext]
+                    into: [self]
                 )
             }
-        } catch {
+        } catch let error as NSError {
             // Handle any thrown errors.
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            fatalError("Unresolved error \(error), \(error.userInfo)")
         }
     }
 }

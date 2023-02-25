@@ -22,8 +22,8 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
-        debugPrint("    > !!!!!!!!!!!!!!!!!!!!!!!!!")
-        debugPrint("    > In-app intent starting...")
+        print("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("••> In-app intent starting...")
 
         // Is auto-uploading enabled?
         if !UploadVars.isAutoUploadActive {
@@ -77,20 +77,13 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             
             // Append auto-upload requests to database
             self.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
-                // Update app badge and Upload button in root/default album
-                // Considers only uploads to the server to which the user is logged in
-                let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                .finishing, .finishingError]
-                UploadManager.shared.nberOfUploadsToComplete = self.uploadProvider.getRequests(inStates: states).0.count
-
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Initialise upload operations
                     let uploadOperations = self.getUploadOperations()
 
                     // Launch upload operations
+                    // The badge will be updated during execution.
                     let uploadQueue = OperationQueue()
                     uploadQueue.maxConcurrentOperationCount = 1
                     uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)

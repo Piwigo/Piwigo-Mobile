@@ -17,7 +17,7 @@ import CoreData
     - Image files are stored in a temporary folder until the upload is complete.
  */
 public class Upload: NSManagedObject {
-
+    
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
@@ -26,7 +26,7 @@ public class Upload: NSManagedObject {
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
               Int64(uploadProperties.category) != 0 else {
-                throw UploadError.missingData
+            throw UploadError.missingData
         }
         // Local identifier of the image to upload
         if localIdentifier != uploadProperties.localIdentifier {
@@ -55,12 +55,12 @@ public class Upload: NSManagedObject {
         if requestSectionKey != newSection {
             requestSectionKey = newSection
         }
-
+        
         // Error message description
         if requestError != uploadProperties.requestError {
             requestError = uploadProperties.requestError
         }
-
+        
         // Photo creation date, filename and MIME type
         if creationDate != uploadProperties.creationDate {
             creationDate = uploadProperties.creationDate
@@ -77,7 +77,7 @@ public class Upload: NSManagedObject {
         if isVideo != uploadProperties.isVideo {
             isVideo = uploadProperties.isVideo
         }
-
+        
         // Photo author name is empty if not provided
         if author != uploadProperties.author {
             author = uploadProperties.author
@@ -88,7 +88,7 @@ public class Upload: NSManagedObject {
         if privacyLevel != newLevel {
             privacyLevel = newLevel
         }
-
+        
         // Other image properties
         if imageName != uploadProperties.imageTitle {
             imageName = uploadProperties.imageTitle
@@ -145,15 +145,15 @@ public class Upload: NSManagedObject {
     }
     
     /**
-     Updates the status of an Upload instance.
+     Updates the state of an Upload instance.
      */
-    func setState(_ state: pwgUploadState, error: Error?) {
+    func setState(_ state: pwgUploadState, error: Error? = nil) {
         // State of upload request
         requestState = state.rawValue
         
         // Section into which the upload request belongs to
         requestSectionKey = state.sectionKey
-
+        
         // Error message description
         if let error = error {
             requestError = error.localizedDescription
@@ -161,7 +161,7 @@ public class Upload: NSManagedObject {
             requestError = ""
         }
     }
-
+    
     /**
      Updates the status of an Upload instance.
      */
@@ -176,9 +176,35 @@ public class Upload: NSManagedObject {
         
         // Section into which the upload request belongs to
         requestSectionKey = newStatus.sectionKey
-
+        
         // Error message description
         requestError = error ?? ""
+    }
+    
+    /**
+        Delete files before deleting object
+     */
+    public override func prepareForDeletion() {
+        super.prepareForDeletion()
+        
+        // Delete corresponding temporary files if any
+        let prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        if !prefix.isEmpty {
+            // Delete associated files stored in the Upload folder
+            let fm = FileManager.default
+            do {
+                // Get list of files
+                let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
+                var filesToDelete = try fm.contentsOfDirectory(at: uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+
+                // Delete files whose filenames starts with the prefix
+                filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
+                try filesToDelete.forEach({ try fm.removeItem(at: $0) })
+            }
+            catch let error {
+                print("••> could not clear the Uploads folder: \(error)")
+            }
+        }
     }
 }
 

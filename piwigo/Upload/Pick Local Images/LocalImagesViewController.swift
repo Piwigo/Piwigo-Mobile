@@ -54,8 +54,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var selectedSections = [SelectButtonState]()        // State of Select buttons
     private var imagesBeingTouched = [IndexPath]()              // Array of indexPaths of touched images
     
-    private var uploadIDsToDelete = [NSManagedObjectID]()
-    private var imagesToDelete = [String]()
+    private var uploadsToDelete = [Upload]()
     
     private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
     private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
@@ -564,9 +563,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         self.updateActionButton()
         self.updateNavBar()
 
-        // Restart UplaodManager activity if all images are already in the upload queue
-        if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
-           UploadManager.shared.isPaused {
+        // Restart UplaodManager activity
+        if UploadManager.shared.isPaused {
             UploadManager.shared.isPaused = false
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.findNextImageToUpload()
@@ -1170,18 +1168,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     @objc func deleteUploadedImages() {
         // Delete uploaded images (fetched on the main queue)
-        uploadIDsToDelete = [NSManagedObjectID](); imagesToDelete = [String]()
+        uploadsToDelete = [Upload]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         if let allUploads = self.uploadProvider.fetchedResultsController.fetchedObjects {
             let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
-            for index in 0..<indexedUploads.count {
+            for index in 0..<self.indexedUploadsInQueue.count {
                 if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-                   indexedUploads[index].2 {
-                    uploadIDsToDelete.append(upload.objectID)
-                    imagesToDelete.append(indexedUploads[index].0)
+                   let indexedUpload = self.indexedUploadsInQueue[index], indexedUpload.2 {
+                    uploadsToDelete.append(upload)
                 }
             }
-            if imagesToDelete.count > 0 {
+            if uploadsToDelete.count > 0 {
                 // Are you sure?
                 let title = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll")
                 let message = NSLocalizedString("localImages_deleteMessage", comment: "Message explaining what will happen")
@@ -1190,7 +1187,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     style: .cancel, handler: { action in })
                 let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
                     // Delete uploaded images
-                    UploadManager.shared.delete(uploadedImages: self.imagesToDelete, with: self.uploadIDsToDelete)
+                    UploadManager.shared.deleteAssets(associatedToUploads: self.uploadsToDelete)
                 })
                 alert.addAction(defaultAction)
                 alert.addAction(deleteAction)
@@ -1574,17 +1571,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
-           localIdentifier.count > 0,
-           let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-            for indexPath in indexPathsForVisibleItems {
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-                   cell.localIdentifier == localIdentifier {
-                    cell.setProgress(progressFraction, withAnimation: true)
-                    return
-                }
-            }
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
+           let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
+           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
+            cell.setProgress(progressFraction, withAnimation: true)
         }
     }
 
@@ -1740,8 +1731,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         UploadManager.shared.backgroundQueue.async {
             self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
                 guard let error = error else {
-                    // Restart UploadManager activities if needed
-                    if UploadManager.shared.isPaused {
+                    // Restart UploadManager activities
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.isPaused = false
                         UploadManager.shared.findNextImageToUpload()
                     }
@@ -1941,25 +1932,20 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 
     func updateCellAndSectionHeader(for upload: Upload) {
         DispatchQueue.main.async {
-            // Get indices of visible items
-            let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
+            if let visibleCells = self.localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
+               let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
+                // Update cell
+                cell.update(selected: false, state: upload.state)
+                cell.reloadInputViews()
             
-            // Loop over the visible items
-            for indexPath in indexPathsForVisibleItems {
-                // Identify cell to be updated (if presented)
-                if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-                   cell.localIdentifier == upload.localIdentifier {
-                    // Update cell
-                    cell.update(selected: false, state: upload.state)
-                    cell.reloadInputViews()
-                    // The section will be refreshed only if the button content needs to be changed
-                    self.updateSelectButton(ofSection: indexPath.section) {
+                // The section will be refreshed only if the button content needs to be changed
+                if let indexPath = self.localImagesCollection.indexPath(for: cell) {
+                    self.updateSelectButton(ofSection:  indexPath.section) {
                         let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
                         if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
                             self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
                         }
                     }
-                    return
                 }
             }
         }

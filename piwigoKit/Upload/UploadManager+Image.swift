@@ -82,20 +82,16 @@ extension UploadManager {
     }
     
     private func didPrepareImage(for upload: Upload, _ error: Error?) {
+        // Upload ready for transfer
         // Error?
         if let error = error {
             upload.setState(.preparingError, error: error)
-            // Update UI
-            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: error.localizedDescription)
         } else {
-            upload.setState(.prepared, error: nil)
-            updateCell(with: upload.localIdentifier, stateLabel: upload.stateLabel,
-                       photoMaxSize: nil, progress: nil, errorMsg: "")
+            upload.setState(.prepared)
         }
-
-        // Upload ready for transfer
+        
         self.backgroundQueue.async {
+            try? self.bckgContext.save()
             self.didEndPreparation()
         }
     }

@@ -82,26 +82,31 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
                     UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resume(failedUploads: [upload.objectID], completionHandler: { (_) in
-                            UploadManager.shared.findNextImageToUpload()
-                        })
+                        UploadManager.shared.resume(failedUploads: [upload])
+                        UploadManager.shared.findNextImageToUpload()
                     }
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
                     return true
                 })]
         case .waiting, .deleted:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
                     return true
                 })]
         case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
-                    self.uploadProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
                     return true
                 })]
         }
@@ -126,6 +131,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         // Top label
         if let stateLabel: String = userInfo["stateLabel"] as! String? {
             uploadInfoLabel.text = stateLabel
+            self.setNeedsLayout()
         }
 
         // Progress bar
@@ -136,13 +142,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                 let progress = max(uploadingProgress.progress, progressFraction)
                 uploadingProgress?.setProgress(progress, animated: true)
             }
+            self.setNeedsLayout()
         }
 
         // Bottom label
-        if let errorDescription = userInfo["Error"] as? String,
+        if let errorDescription = userInfo["stateError"] as? String,
            errorDescription.isEmpty == false {
             imageInfoLabel.text = errorDescription
+            self.setNeedsLayout()
         }
+        
+        self.layoutIfNeeded()
     }
     
     override func prepareForReuse() {

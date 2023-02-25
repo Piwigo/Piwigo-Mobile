@@ -85,12 +85,8 @@ extension UploadManager {
         }
 
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
-                                        .preparingFail, .formatError, .prepared,
-                                        .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                        .finishing, .finishingError, .finished,
-                                        .moderated, .deleted]
-        let imageIDs = uploadProvider.getRequests(inStates: states).0
+        var imageIDs = uploads.fetchedObjects?.map({$0.localIdentifier}) ?? []
+        imageIDs.append(contentsOf: completed.fetchedObjects?.map({$0.localIdentifier}) ?? [])
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
@@ -119,6 +115,8 @@ extension UploadManager {
     
     // MARK: - Delete Auto-Upload Requests
     public func disableAutoUpload(withTitle title:String = "", message:String = "") {
+        // Something to do?
+        if !UploadVars.isAutoUploadActive { return }
         // Disable auto-uploading
         UploadVars.isAutoUploadActive = false
         
@@ -134,15 +132,9 @@ extension UploadManager {
             }
         }
 
-        // Collect objectIDs of images being considered for auto-uploading
-        let states: [pwgUploadState] = [.waiting, .preparingError,
-                                        .preparingFail, .formatError, .prepared,
-                                        .uploadingError, .uploadingFail, .uploaded,
-                                        .finishingError]
-        let objectIDs = uploadProvider.getRequests(inStates: states, markedForAutoUpload: true).1
-
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        uploadProvider.delete(uploadRequests: objectIDs) { [unowned self] error in
+        let toDelete = uploads.fetchedObjects?.filter({$0.markedForAutoUpload == true}) ?? []
+        uploadProvider.delete(uploadRequests: toDelete) { [unowned self] error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 

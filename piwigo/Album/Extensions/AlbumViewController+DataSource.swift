@@ -212,10 +212,7 @@ extension AlbumViewController
                 let albumNbImages = self.albumData?.nbImages ?? 0
                 if self.categoryId == 0 || albumNbImages == 0 {
                     // Done fetching images
-                    DispatchQueue.main.async {
-                        // Remember when images were fetched
-                        self.albumData?.dateFetchedImages = Date()
-                    }
+                    self.removeImageWithIDs(oldImageIds)
                     completion()
                     return
                 }
@@ -297,18 +294,31 @@ extension AlbumViewController
                 imageProvider.purgeOrphans()
 
                 // Done fetching images ► Remove non-fetched images from album
-                DispatchQueue.main.async {
-                    let images = self.imageProvider.getImages(inContext: self.mainContext, withIds: oldImageIds)
-                    self.albumData?.removeFromImages(images)
-                    
-                    // Remember when images were fetched
-                    self.albumData?.dateFetchedImages = Date()
-                }
+                removeImageWithIDs(oldImageIds)
                 
                 completion()
                 return
             }
             self.showError(error)
+        }
+    }
+    
+    private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
+        // Done fetching images ► Remove non-fetched images from album
+        DispatchQueue.main.async {
+            // Remember when images were fetched
+            self.albumData?.dateFetchedImages = Date()
+            
+            // Remove images if necessary
+            if !imageIDs.isEmpty {
+                let images = self.imageProvider.getImages(inContext: self.mainContext, withIds: imageIDs)
+                self.albumData?.removeFromImages(images)
+            }
+        }
+        
+        // Marked previously uploaded images as deleted from the Piwigo server
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.markAsDeletedPiwigoImages(withIDs: Array(imageIDs))
         }
     }
     

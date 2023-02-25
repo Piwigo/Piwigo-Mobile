@@ -75,13 +75,13 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
               let serverFileTypes = sInstance.value(forKeyPath: "serverFileTypes") as? String,
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
-            debugPrint("••> Error: Upload request instance w/ wrong serverPath!")
+            print("••> Error: Upload request instance w/ wrong serverPath!")
             return
         }
         
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
-            debugPrint("••> Should have been created in TagToTagMigrationPolicy_09_to_0A!")
+            print("••> Should have been created in TagToTagMigrationPolicy_09_to_0A!")
             return
         }
 

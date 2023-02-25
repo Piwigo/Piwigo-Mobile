@@ -185,349 +185,98 @@ public class UploadProvider: NSObject {
     }
     
     
-    // MARK: - Update Single Upload Request
-    /**
-     Updates an upload request, updating the managed object from the new data,
-     and saving it to the persistent store, on a private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-    */
-    public func updatePropertiesOfUpload(with ID: NSManagedObjectID,
-                                         properties: UploadProperties,
-                                         completionHandler: @escaping (Error?) -> Void) -> (Void) {
-        // Check current queue
-//        print("••> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
-
-        // taskContext.performAndWait runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
-        bckgContext.performAndWait {
-            
-            // Retrieve existing upload
-            let cachedUpload = bckgContext.object(with: ID) as! Upload
-            
-            // Update cached upload
-            do {
-                let tags = tagProvider.getTags(withIDs: properties.tagIds,
-                                               taskContext: bckgContext)
-                try cachedUpload.update(with: properties, tags: tags)
-            }
-            catch UploadError.missingData {
-                // Could not perform the update
-                print(UploadError.missingData.localizedDescription)
-            }
-            catch {
-                print(error.localizedDescription)
-            }
-            
-            // Save all insertions and deletions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
-            }
-        }
-        completionHandler(nil)
-    }
-
-    public func updateStatusOfUpload(with ID: NSManagedObjectID,
-                                     to status: pwgUploadState, error: String?,
-                                     completionHandler: @escaping (Error?) -> Void) -> (Void) {
-        // Check current queue
-        print("••> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
-
-        // taskContext.performAndWait runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
-        bckgContext.performAndWait {
-            
-            // Retrieve existing upload
-            let cachedUpload = bckgContext.object(with: ID) as! Upload
-            
-            // Update cached upload
-            do {
-                try cachedUpload.updateStatus(with: status, error: error ?? "")
-            }
-            catch UploadError.missingData {
-                // Could not perform the update
-                print(UploadError.missingData.localizedDescription)
-                completionHandler(UploadError.missingData)
-            }
-            catch {
-                print(error.localizedDescription)
-                completionHandler(error)
-            }
-            
-            // Save all insertions and deletions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
-            }
-        }
-        completionHandler(nil)
-    }
-
-    /**
-     Update a single upload request on the private queue when an image is deleted from the Piwigo server.
-     After saving, resets the context to clean up the cache and lower the memory footprint.
-    */
-    public func markAsDeletedPiwigoImages(withIDs imageIDs: [Int64]) {
-        // Check current queue
-        print("••> didDeleteImageWithId()", queueName())
-
-        // taskContext.performAndWait
-        bckgContext.performAndWait {
-            
-            // Retrieve existing upload (if any)
-            // Create a fetch request for the image ID uploaded to the albumId
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.imageId), ascending: true)]
-
-            // Select upload request:
-            /// — for the current server and user only
-            var andPredicates = [NSPredicate(format: "imageId IN %@", imageIDs)]
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: bckgContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            
-            // Mark images as deleted from Piwigo server
-            let cachedUpload = controller.fetchedObjects ?? []
-            cachedUpload.forEach { upload in
-                upload.requestState = pwgUploadState.deleted.rawValue
-            }
-            
-            // Save all insertions and deletions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
-            }
-        }
-    }
-
-
-    // MARK: - Delete Upload Requests
-    /**
-     Delete a batch of upload requests from the Core Data store on a private or background queue,
-     processing the record in batches to avoid a high memory footprint.
-    */
-    public func delete(uploadRequests: [NSManagedObjectID],
-                       completionHandler: @escaping (Error?) -> Void) {
-        
-        guard uploadRequests.isEmpty == false else {
-            completionHandler(nil)
-            return
-        }
-        
-        // Create the queue context.
-        var taskContext: NSManagedObjectContext
-        if Thread.isMainThread {
-            taskContext = mainContext
-        } else {
-            taskContext = bckgContext
-        }
-        
-        // Process records in batches to avoid a high memory footprint.
-        let batchSize = 256
-        let count = uploadRequests.count
-        
-        // Determine the total number of batches.
-        var numBatches = count / batchSize
-        numBatches += count % batchSize > 0 ? 1 : 0
-        
-        // Loop over the batches
-        for batchNumber in 0 ..< numBatches {
-            
-            // Determine the range for this batch.
-            let batchStart = batchNumber * batchSize
-            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
-            let range = batchStart..<batchEnd
-            
-            // Create a batch for this range.
-            let uploadsBatch = Array(uploadRequests[range])
-            
-            // Stop the entire deletion if any batch is unsuccessful.
-            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
-                completionHandler(UploadError.deletionError)
-            }
-        }
-        completionHandler(nil)
-    }
-    
-    /**
-     Delete one batch of upload requests on a private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-     
-     NSManagedObjectContext.performAndWait doesn't rethrow so this function
-     catches throws within the closure and uses a return value to indicate
-     whether the import is successful.
-    */
-    private func deleteOneBatch(_ uploadsBatch: [NSManagedObjectID],
-                                taskContext: NSManagedObjectContext) -> Bool {
-        // Check current queue
-//        print("••> deleteOneBatch()", queueName())
-
-        var success = false
-        var uploadsToDelete = [NSManagedObjectID]()
-        taskContext.performAndWait {
-            // Loop over uploads to delete
-            for uploadID in uploadsBatch {
-                // Delete corresponding temporary files if any
-                let uploadToDelete = taskContext.object(with: uploadID) as! Upload
-                let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                if filenamePrefix.isEmpty == false {
-                    // Called from main or background thread
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)
-                    }
-                }
-
-                // Append upload to delete
-                uploadsToDelete.append(uploadID)
-            }
-            
-            // Delete upload requests
-            if uploadsToDelete.count > 0 {
-                // Create batch delete request
-                let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsToDelete)
-
-                // Execute batch delete request
-                try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
-            }
-
-            success = true
-        }
-        return success
-    }
-
-
     // MARK: - Get Uploads in Background Queue
     /**
      Fetches upload requests synchronously in the background
      */
-    public func getRequests(inStates states: [pwgUploadState],
-                            markedForDeletion: Bool = false,
-                            markedForAutoUpload: Bool = false) -> ([String], [NSManagedObjectID]) {
-        // Check that states is not empty
-        if states.count == 0 {
-            assertionFailure("!!! getRequests() called with no args !!!")
-            return ([], [NSManagedObjectID]())
-        }
-        
-        // Check current queue
-//        debugPrint("••> getRequests()", queueName())
-
-        // Initialisation
-        var localIdentifiers = [String]()
-        var uploadIDs = [NSManagedObjectID]()
-
-        // Perform the fetch
-        bckgContext.performAndWait {
-
-            // Retrieve existing completed uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = Upload.fetchRequest()
-            
-            // Priority to uploads requested manually, oldest ones first
-            var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
-            sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
-            fetchRequest.sortDescriptors = sortDescriptors
-
-            // AND subpredicates
-            var andPredicates:[NSPredicate] = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-            if markedForAutoUpload {
-                // Only auto-upload requests are wanted
-                andPredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
-            }
-            if markedForDeletion {
-                // Only image marked for deletion are wanted
-                andPredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
-            }
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: bckgContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            
-            // Loop over the fetched upload requests
-            if let uploads = controller.fetchedObjects {
-                for upload in uploads {
-                    // Did we collect upload requests marked for deletion?
-                    if markedForDeletion {
-                        // Reset flag if needed to prevent another deletion request
-                        upload.deleteImageAfterUpload = false
-                    }
-                    // Gather identifiers and objectIDs
-                    localIdentifiers.append(upload.localIdentifier)
-                    uploadIDs.append(upload.objectID)
-                }
-            }
-
-            // Save all modifications from the context to the store.
-            if markedForDeletion, bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-            }
-            
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
-        }
-        return (localIdentifiers, uploadIDs)
-    }
+//    public func getRequests(inStates states: [pwgUploadState],
+//                            markedForDeletion: Bool = false,
+//                            markedForAutoUpload: Bool = false) -> ([String], [NSManagedObjectID]) {
+//        // Check that states is not empty
+//        if states.count == 0 {
+//            assertionFailure("!!! getRequests() called with no args !!!")
+//            return ([], [NSManagedObjectID]())
+//        }
+//        
+//        // Check current queue
+//        print("••> !!!!!!!!! getRequests()", queueName())
+//
+//        // Initialisation
+//        var localIdentifiers = [String]()
+//        var uploadIDs = [NSManagedObjectID]()
+//
+//        // Perform the fetch
+//        bckgContext.performAndWait {
+//
+//            // Retrieve existing completed uploads
+//            // Create a fetch request for the Upload entity sorted by localIdentifier
+//            let fetchRequest = Upload.fetchRequest()
+//            
+//            // Priority to uploads requested manually, oldest ones first
+//            var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+//            sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+//            fetchRequest.sortDescriptors = sortDescriptors
+//
+//            // AND subpredicates
+//            var andPredicates:[NSPredicate] = [NSPredicate]()
+//            andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
+//            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+//            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+//            if markedForAutoUpload {
+//                // Only auto-upload requests are wanted
+//                andPredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
+//            }
+//            if markedForDeletion {
+//                // Only image marked for deletion are wanted
+//                andPredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
+//            }
+//            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+//
+//            // Create a fetched results controller and set its fetch request, context, and delegate.
+//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                                managedObjectContext: bckgContext,
+//                                                  sectionNameKeyPath: nil, cacheName: nil)
+//            // Perform the fetch.
+//            do {
+//                try controller.performFetch()
+//            } catch {
+//                fatalError("Unresolved error \(error)")
+//            }
+//            
+//            // Loop over the fetched upload requests
+//            if let uploads = controller.fetchedObjects {
+//                for upload in uploads {
+//                    // Did we collect upload requests marked for deletion?
+//                    if markedForDeletion {
+//                        // Reset flag if needed to prevent another deletion request
+//                        upload.deleteImageAfterUpload = false
+//                    }
+//                    // Gather identifiers and objectIDs
+//                    localIdentifiers.append(upload.localIdentifier)
+//                    uploadIDs.append(upload.objectID)
+//                }
+//            }
+//
+//            // Save all modifications from the context to the store.
+//            if markedForDeletion, bckgContext.hasChanges {
+//                do {
+//                    try bckgContext.save()
+//                    if Thread.isMainThread == false {
+//                        DispatchQueue.main.async {
+//                            DataController.shared.saveMainContext()
+//                        }
+//                    }
+//                }
+//                catch {
+//                    fatalError("Failure to save context: \(error)")
+//                }
+//            }
+//            
+//            // Reset the taskContext to free the cache and lower the memory footprint.
+//            bckgContext.reset()
+//        }
+//        return (localIdentifiers, uploadIDs)
+//    }
 
     
     // MARK: - Clear Uploads
@@ -554,36 +303,79 @@ public class UploadProvider: NSObject {
     }
     
     /**
-     Remove from cache completed requests whose images do not exist in Photo Library.
+     Delete a batch of upload requests from the Core Data store on a queue,
+     processing the record in batches to avoid a high memory footprint.
     */
-    public func clearCompletedUploads() {
-
-        // Get completed upload requests
-        let (localIds, uploadIds) = getRequests(inStates: [.finished, .moderated])
-
-        // Which one should be deleted?
-        var uploadsToDelete = [NSManagedObjectID]()
-        bckgContext.performAndWait {
-            for index in 0..<localIds.count {
-                // Check presence in Photo Library
-                if let _ = PHAsset.fetchAssets(withLocalIdentifiers: [localIds[index]], options: nil).firstObject {
-                    continue
-                }
-                // Asset not available… will delete it
-                uploadsToDelete.append(uploadIds[index])
+    public func delete(uploadRequests: [Upload],
+                       completion: @escaping (Error?) -> Void) {
+        
+        guard uploadRequests.isEmpty == false else {
+            completion(nil)
+            return
+        }
+        
+        // Create the queue context.
+        guard let taskContext = uploadRequests.first?.managedObjectContext else {
+            completion(UploadError.deletionError)
+            return
+        }
+        
+        // Process records in batches to avoid a high memory footprint.
+        let batchSize = 256
+        let count = uploadRequests.count
+        
+        // Determine the total number of batches.
+        var numBatches = count / batchSize
+        numBatches += count % batchSize > 0 ? 1 : 0
+        
+        // Loop over the batches
+        for batchNumber in 0 ..< numBatches {
+            
+            // Determine the range for this batch.
+            let batchStart = batchNumber * batchSize
+            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
+            let range = batchStart..<batchEnd
+            
+            // Create a batch for this range.
+            let uploadsBatch = Array(uploadRequests[range])
+            
+            // Stop the entire deletion if any batch is unsuccessful.
+            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
+                completion(UploadError.deletionError)
             }
         }
+        completion(nil)
+    }
+    
+    /**
+     Delete one batch of upload requests on a queue. After saving,
+     resets the context to clean up the cache and lower the memory footprint.
+     
+     NSManagedObjectContext.performAndWait doesn't rethrow so this function
+     catches throws within the closure and uses a return value to indicate
+     whether the import is successful.
+    */
+    private func deleteOneBatch(_ uploadBatch: [Upload],
+                                taskContext: NSManagedObjectContext) -> Bool {
+        // Check imput and current queue
+        if uploadBatch.isEmpty { return true }
+        print("••> deleteOneBatch()", queueName())
 
-        if uploadsToDelete.count > 0 {
+        var success = false
+        taskContext.performAndWait {
             // Create batch delete request
-            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsToDelete)
+            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadBatch.map({$0.objectID}))
 
             // Execute batch delete request
-            try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+            // Associated files will be deleted
+            try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
+
+            success = true
         }
+        return success
     }
 
-
+    
     // MARK: - NSFetchedResultsController
     /**
      A fetched results controller delegate to give consumers a chance to upload the next images.
@@ -616,7 +408,7 @@ public class UploadProvider: NSObject {
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil,
-                                                       cacheName: "allUploads")
+                                                       cacheName: nil)
         controller.delegate = fetchedResultsControllerDelegate
         
         // Perform the fetch.

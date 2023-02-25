@@ -180,7 +180,7 @@ extension ImageViewController
                 // If this image was uploaded with the iOS app,
                 // update cache so that it can be re-uploaded.
                 UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: [imageID])
+                    UploadManager.shared.markAsDeletedPiwigoImages(withIDs: [imageID])
                 }
 
                 // Hide HUD
@@ -238,6 +238,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
                 // Update image data
                 self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+                // Set title view
+                self.setTitleViewFromImageData()
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
@@ -263,6 +265,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
                 // Update image data
                 self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+                // Set title view
+                self.setTitleViewFromImageData()
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button

@@ -250,7 +250,7 @@ extension AlbumViewController
 
                 // Update cache so that these images can be re-uploaded.
                 UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.uploadProvider.markAsDeletedPiwigoImages(withIDs: imageIDs)
+                    UploadManager.shared.markAsDeletedPiwigoImages(withIDs: imageIDs)
                 }
 
                 // Hide HUD

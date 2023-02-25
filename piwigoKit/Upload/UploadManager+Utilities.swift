@@ -60,7 +60,7 @@ extension UploadManager {
         // Determine MD5 checksum of image file to upload
         let error: NSError?
         (upload.md5Sum, error) = fileURL.MD5checksum()
-        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: upload.md5Sum))")
+        print("\(dbg()) MD5: \(String(describing: upload.md5Sum))")
         if error != nil {
             // Could not determine the MD5 checksum
             failure(error)
@@ -79,7 +79,7 @@ extension UploadManager {
             failure(error)
             return
         }
-        print("\(debugFormatter.string(from: Date())) > MIME type: \(String(describing: mimeType))")
+        print("\(dbg()) MIME type: \(String(describing: mimeType))")
         upload.mimeType = mimeType
 
         // Done -> append file size to counter
@@ -106,23 +106,23 @@ extension UploadManager {
             // Release memory
             filesToDelete.removeAll()
 
-            // Get uploads to complete in queue
-            // Considers only uploads to the server to which the user is logged in
-            let states: [pwgUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                            .finishing, .finishingError]
-            // Update app badge and Upload button in root/default album
-            UploadManager.shared.nberOfUploadsToComplete = uploadProvider.getRequests(inStates: states).0.count
-
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-//            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
+//            print("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
-            print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
+            print("\(dbg()) could not clear the Uploads folder: \(error)")
         }
     }
-
+    
+    
+    // MARK: - Debug Utilities
+    public func dbg() -> String  {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "'••> 'dd'@'HH:mm:ss |"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter.string(from: Date())
+    }
 }
 
 // MARK: - For checking operation queue
@@ -153,3 +153,4 @@ public extension String {
         }
     }
 }
+

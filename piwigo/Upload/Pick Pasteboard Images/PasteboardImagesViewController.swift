@@ -924,17 +924,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
-           localIdentifier.count > 0,
-           let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-            for indexPath in indexPathsForVisibleItems {
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-                   cell.localIdentifier == localIdentifier {
-                    cell.setProgress(progressFraction, withAnimation: true)
-                    return
-                }
-            }
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
+           let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
+           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
+            cell.setProgress(progressFraction, withAnimation: true)
         }
     }
 
@@ -1071,10 +1065,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Add selected images to upload queue
         UploadManager.shared.backgroundQueue.async {
             self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
-                // Show an alert if there was an error.
                 guard let error = error else {
-                    // Restart UploadManager activities if needed
-                    if UploadManager.shared.isPaused {
+                    // Restart UploadManager activities
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.isPaused = false
                         UploadManager.shared.findNextImageToUpload()
                     }

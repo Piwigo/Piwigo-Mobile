@@ -11,9 +11,40 @@ import Photos
 
 extension UploadManager {
     
-    // MARK: - Finish Uploading Image
+    // MARK: - Tasks Executed after Uploading
+    func finishTransfer(of upload: Upload) {
+        print("\(dbg()) finish transfers of \(upload.objectID.uriRepresentation())")
+
+        // Update upload status
+        isFinishing = true
+        
+        // Update state of upload resquest and finish upload
+        upload.setState(.finishing)
+        try? bckgContext.save()
+        
+        // Work depends on Piwigo server version
+        if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+            // Uploaded with pwg.images.uploadAsync -> Empty the lounge
+            emptyLounge(for: upload)
+        } else {
+            // Uploaded with pwg.images.upload -> Set image title.
+            setImageParameters(for: upload)
+        }
+    }
+
+    func didFinishTransfer() {
+        isFinishing = false
+        if !isPreparing, isUploading.count <= maxNberOfTransfers {
+            findNextImageToUpload()
+        }
+    }
+
+
+    // MARK: - Set Image Title
+    /// — Called after having uploaded with pwg.images.upload
+    /// — pwg.images.upload does not allow to set the image title
     func setImageParameters(for upload: Upload) {
-        print("\(debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
+        print("\(dbg()) setImageParameters() in", queueName())
         
         // Prepare creation date
         let dateFormat = DateFormatter()
@@ -43,7 +74,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
+            print("\(self.dbg()) setImageParameters() in", queueName())
             // Decode the JSON object
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.
@@ -54,55 +85,66 @@ extension UploadManager {
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
-                    self.didFinishTransfer(for: upload, error: error)
+                    self.backgroundQueue.async {
+                        self.didFinishTransfer(for: upload, error: error)
+                    }
                     return
                 }
 
                 // Successful?
                 if uploadJSON.success {
                     // Image successfully uploaded and set
-                    self.didFinishTransfer(for: upload, error: nil)
+                    self.backgroundQueue.async {
+                        self.didFinishTransfer(for: upload, error: nil)
+                    }
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    self.didFinishTransfer(for: upload, error: error)
+                    self.backgroundQueue.async {
+                        self.didFinishTransfer(for: upload, error: error)
+                    }
                     return
                 }
             } catch {
                 // Data cannot be digested, upload still ready for finish
                 let error = error as NSError
-                self.didFinishTransfer(for: upload, error: error)
+                self.backgroundQueue.async {
+                    self.didFinishTransfer(for: upload, error: error)
+                }
                 return
             }
         } failure: { error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            self.didFinishTransfer(for: upload, error: error)
+            self.backgroundQueue.async {
+                self.didFinishTransfer(for: upload, error: error)
+            }
         }
     }
 
+
+    // MARK: - Empty Lounge
     /**
      Since Piwigo server 12.0, uploaded images are gathered in a lounge
      and one must trigger manually their addition to the database.
-     If not, they will be added after some delay (12 minutes).
+     If not, they will be visible after some delay (12 minutes).
      */
     func emptyLounge(for upload: Upload) {
-        print("\(debugFormatter.string(from: Date())) > emptyLounge() in", queueName())
+        print("\(dbg()) emptyLounge() in", queueName())
         
         processImages(withIds: "\(upload.imageId)",
                       inCategory: upload.category) { [unowned self] error in
-            self.didFinishTransfer(for: upload, error: error)
+            self.backgroundQueue.async {
+                self.didFinishTransfer(for: upload, error: error)
+            }
         }
     }
 
     func processImages(withIds imageIds: String,
                        inCategory categoryId: Int32,
                        completionHandler: @escaping (Error?) -> Void) -> (Void) {
-        
-        print("\(debugFormatter.string(from: Date())) > processImages() in", queueName())
-
         // Launch request
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
@@ -111,7 +153,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { jsonData in
-            print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
+            print("\(self.dbg()) moderateImages() in", queueName())
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -151,11 +193,12 @@ extension UploadManager {
         if let error = error {
             upload.setState(.finishingError, error: error)
         } else {
-            upload.setState(.finished, error: nil)
+            upload.setState(.finished)
         }
 
         // Consider next image
         backgroundQueue.async {
+            try? self.bckgContext.save()
             self.didFinishTransfer()
         }
     }
@@ -164,25 +207,14 @@ extension UploadManager {
     // MARK: - Community Moderation
     /**
      When the Community plugin is installed (v2.9+) on the server,
-     one must inform the moderator that a number of images were uploaded.
+     one must inform the moderator that a number of images have been uploaded.
+     This informs the moderator that uploaded images are waiting for a validation.
      */
     func moderateImages(withIds imageIds: String,
-                        inCategory categoryId: Int,
-                        completionHandler: @escaping (Bool, [String]) -> Void) -> (Void) {
-        
-        print("\(debugFormatter.string(from: Date())) > moderateImages() in", queueName())
-        // Check that we have a token
-        guard NetworkVars.pwgToken.isEmpty == false else {
-            // We shall retry later —> Continue in background queue!
-            self.backgroundQueue.async {
-                // Will retry later
-                completionHandler(false, [])
-                return
-            }
-            return
-        }
-        
+                        inCategory categoryId: Int32,
+                        completionHandler: @escaping (Bool, [Int64]) -> Void) -> (Void) {
         // Launch request
+        print("\(dbg()) moderateImages() in", queueName())
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.pwgToken,
@@ -190,7 +222,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
+            print("\(self.dbg()) moderateImages() in", queueName())
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -199,19 +231,20 @@ extension UploadManager {
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     // Will retry later
-                    debugPrint("••> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    print("••> moderateImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
                     completionHandler(false, [])
                     return
                 }
 
-                // Return pending images
-                var pendingIds = [String]()
+                // Return validated image IDs
+                var validatedIDs = [Int64]()
                 uploadJSON.data.forEach { (pendingData) in
-                    if let imageId = pendingData.id {
-                        pendingIds.append(imageId)
+                    if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
+                       let pendingState = pendingData.state, pendingState == "validated" {
+                        validatedIDs.append(imageID)
                     }
                 }
-                completionHandler(true, pendingIds)
+                completionHandler(true, validatedIDs)
             }
             catch {
                 // Will retry later

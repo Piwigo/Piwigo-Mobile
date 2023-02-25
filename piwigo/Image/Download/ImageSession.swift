@@ -179,7 +179,6 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
-        print("••> Did complete task #\(task.taskIdentifier) with error: \(String(describing: error))")
         guard let imageURL = task.originalRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
@@ -187,11 +186,13 @@ extension ImageSession: URLSessionTaskDelegate {
 
         if let error = error {
             // Return error with failureHandler
+            print("••> Did complete task #\(task.taskIdentifier) with error: \(String(describing: error))")
             if let failure = download.failureHandler {
                 failure(error)
             }
         } else {
             // Return cached image with completionHandler
+            print("••> Did complete task #\(task.taskIdentifier)")
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {
                 if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
