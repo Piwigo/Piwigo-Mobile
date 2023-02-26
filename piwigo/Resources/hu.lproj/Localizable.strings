@@ -25,7 +25,6 @@
 "alertRetryButton" = "Újra";
 "alertNextButton" = "Következő fotó";
 "alertTryButton" = "Próba";
-"alertClearButton" = "Törlés";
 
 // HUD views
 "loadingHUD_label" = "Betöltés…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Soha";
 
 // Settings — Cache
-"settingsHeader_cache" = "Gyorsítótár beállításai (Felhasznált/Összes)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Gyorsítótár törlése";
-"settings_cacheClearAll" = "Fotó-gyorsítótár törlése";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Biztosan ki akarod törölni a fotók gyorsítótárát? Ettől átmenetileg lassabb lesz az albumok és fotók betöltése.";
 
 // Settings — Appearance

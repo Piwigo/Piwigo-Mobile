@@ -25,7 +25,6 @@
 "alertRetryButton" = "Повторить";
 "alertNextButton" = "Следующее фото";
 "alertTryButton" = "Попробовать";
-"alertClearButton" = "Очистить";
 
 // HUD views
 "loadingHUD_label" = "Загрузка…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Никогда";
 
 // Settings — Cache
-"settingsHeader_cache" = "Настройки кэша (Использовано/Всего)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Очистить кэш-память";
-"settings_cacheClearAll" = "Очистить кэш фотографий";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 
 // Settings — Appearance

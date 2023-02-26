@@ -25,7 +25,6 @@
 "alertRetryButton" = "再試行";
 "alertNextButton" = "次の写真";
 "alertTryButton" = "試す";
-"alertClearButton" = "クリア";
 
 // HUD views
 "loadingHUD_label" = "読み込み中…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "一度もない";
 
 // Settings — Cache
-"settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "キャッシュをクリア";
-"settings_cacheClearAll" = "写真キャッシュをクリア";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 
 // Settings — Appearance

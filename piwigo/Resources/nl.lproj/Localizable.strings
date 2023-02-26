@@ -25,7 +25,6 @@
 "alertRetryButton" = "Probeer opnieuw";
 "alertNextButton" = "Volgende foto";
 "alertTryButton" = "Probeer";
-"alertClearButton" = "Verwijderen";
 
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Nooit";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Cache wissen";
-"settings_cacheClearAll" = "Wis foto-cache";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 
 // Settings — Appearance

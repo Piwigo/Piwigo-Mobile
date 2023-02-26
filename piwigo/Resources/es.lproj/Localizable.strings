@@ -25,7 +25,6 @@
 "alertRetryButton" = "Reintentar";
 "alertNextButton" = "Siguiente foto";
 "alertTryButton" = "Intentar";
-"alertClearButton" = "Limpiar";
 
 // HUD views
 "loadingHUD_label" = "Cargando…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Nunca";
 
 // Settings — Cache
-"settingsHeader_cache" = "Configuración de caché (Usado/Total)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Limpiar caché";
-"settings_cacheClearAll" = "Borrar caché de fotos";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
 
 // Settings — Appearance

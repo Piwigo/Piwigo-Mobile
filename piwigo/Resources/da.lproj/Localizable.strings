@@ -25,7 +25,6 @@
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Næste billede";
 "alertTryButton" = "Forsøg";
-"alertClearButton" = "Slet";
 
 // HUD views
 "loadingHUD_label" = "Indlæser…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Aldrig";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Ryd cache";
-"settings_cacheClearAll" = "Ryd foto cache";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Er du sikker på du vil slette billedcache? Dette vil bevirke at albums og billeder skal genindlæses ved næste visning.";
 
 // Settings — Appearance

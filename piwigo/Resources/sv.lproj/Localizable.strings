@@ -25,7 +25,6 @@
 "alertRetryButton" = "Försök igen";
 "alertNextButton" = "Nästa bild";
 "alertTryButton" = "Prova";
-"alertClearButton" = "Rensa";
 
 // HUD views
 "loadingHUD_label" = "Laddar…";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Aldrig";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Rensa cache";
-"settings_cacheClearAll" = "Töm bildcache";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 
 // Settings — Appearance

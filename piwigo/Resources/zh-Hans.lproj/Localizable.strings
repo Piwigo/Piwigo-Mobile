@@ -25,7 +25,6 @@
 "alertRetryButton" = "重试";
 "alertNextButton" = "下一张照片";
 "alertTryButton" = "尝试";
-"alertClearButton" = "清除";
 
 // HUD views
 "loadingHUD_label" = "加载中...";
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "绝不";
 
 // Settings — Cache
-"settingsHeader_cache" = "缓存设置 (使用量/总量)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "清除缓存";
-"settings_cacheClearAll" = "清除图像缓存";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
 
 // Settings — Appearance

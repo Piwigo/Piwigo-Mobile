@@ -25,7 +25,6 @@
 "alertRetryButton" = "Ponów";
 "alertNextButton" = "Następne zdjęcie";
 "alertTryButton" = "Wypróbuj";
-"alertClearButton" = "Wyczyść";
 
 // HUD views
 "loadingHUD_label" = "Ładowanie…";
@@ -55,20 +54,20 @@
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 
 // User objects
-"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
-"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
-"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+"CoreDataFetch_UserMissingData" = "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika.";
+"CoreDataFetch_UserUnknownStatus" = "Nie udało się ustalić parametrów rozszerzenia Community. \nSpróbuj zalogować się ponownie.";
+"CoreData_UserCreateFailed" = "Nie udało się utworzyć nowego obiektu Użytkownik.";
 
 // Album objects
-"CoreDataFetch_AlbumError" = "Fetch albums error!";
-"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
-"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
-"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+"CoreDataFetch_AlbumError" = "Błąd pobierania albumów!";
+"CoreDataFetch_AlbumMissingData" = "Znaleziono i będzie usunięty album bez poprawnego identyfikatora lub nazwy.";
+"CoreDataFetch_AlbumCreateFailed" = "Nie udało się utworzyć nowego obiektu Album.";
+"CoreData_AlbumNotFound" = "Albumu nie ma w stałej pamięci podręcznej.";
 
 // Image objects
-"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
-"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
-"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
+"CoreDataFetch_ImageError" = "Błąd pobierania zdjęć/filmów!";
+"CoreDataFetch_ImageMissingData" = "Znaleziono i będzie usunięte zdjęcie/film bez poprawnego identyfikatora lub nazwy.";
+"CoreDataFetch_ImageCreateFailed" = "Nie udało się utworzyć nowego obiektu Zdjęcie.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Błąd pobierania znaczników!";
@@ -143,7 +142,7 @@
 "severalSubAlbumsCount" = "%@ podalbumów";
 
 // Albums view
-"categoryUpdating" = "Updating…";
+"categoryUpdating" = "Aktualizacja…";
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";
 "categoryImageList_selectButton" = "Wybierz";
 "categoryImageList_deselectButton" = "Odznacz";
@@ -249,8 +248,8 @@
 "deleteCategory_empty" = "Usuń pusty Album";
 "deleteCategory_noImages" = "Zachowaj zdjęcia";
 "deleteCategory_orphanedImages" = "Usunąć sieroty";
-"deleteCategory_singleOrphanedImage" = "Delete Orphan";
-"deleteCategory_severalOrphanedImages" = "Delete %@ Orphans";
+"deleteCategory_singleOrphanedImage" = "Usuń osierocone";
+"deleteCategory_severalOrphanedImages" = "Usuń %@ osieroconych";
 "deleteCategory_allImages" = "Usuń %@ zdjęć";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
 "deleteCategoryConfirm_message" = "Proszę podać liczbę zdjęć, aby usunąć ten album. Liczba zdjęć: %@";
@@ -346,9 +345,9 @@
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";
-"editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze. Spróbować ponownie?";
+"editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze.";
 "imageDetailsFetchError_title" = "Nie udało się pobrać informacji o zdjęciu";
-"imageDetailsFetchError_message" = "Fetching the photo data failed.";
+"imageDetailsFetchError_message" = "Nie udało się pobrać informacji o zdjęciu.";
 "imageDetailsFetchError_continueMessage" = "Nie udało się pobrać informacji o zdjęciu. Kontynuować?";
 
 // Image privacy levels
@@ -763,9 +762,9 @@
 "settings_clearClipboardNever" = "Nigdy";
 
 // Settings — Cache
-"settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
+"settingsHeader_cache" = "Cache";
 "settings_cacheClear" = "Wyczyść pamięć podręczną";
-"settings_cacheClearAll" = "Wyczyść pamięć podręczną zdjęć";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 
 // Settings — Appearance
