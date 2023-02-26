@@ -152,6 +152,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
     
     func update(selected: Bool, state: pwgUploadState? = nil) {
+        print("••> Update cell with ID: \(self.localIdentifier) to state: \(state?.stateInfo ?? "nil")")
         // Selection mode
         selectedImage?.isHidden = !selected
         darkenView?.isHidden = !selected
@@ -181,7 +182,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             failedUploadImage?.isHidden = true
         case .uploaded, .finishing:
             darkenView?.isHidden = false
-            waitingActivity?.isHidden = true
+            waitingActivity?.isHidden = false
             uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(1.0, animated: false)
             uploadedImage?.isHidden = true
@@ -189,7 +190,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         case .finished, .moderated:
             darkenView?.isHidden = false
             uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(1, animated: false)
             uploadedImage?.isHidden = false
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = true
@@ -197,7 +197,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
             darkenView?.isHidden = true
             uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(_progress, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false
             waitingActivity?.isHidden = true
@@ -210,6 +209,9 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
+        localIdentifier = ""
+        md5sum = ""
+        progress = Float.zero
         cellImage.image = UIImage(named: "placeholder")
         playBckg.isHidden = true
         playImg.isHidden = true

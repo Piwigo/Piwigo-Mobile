@@ -129,8 +129,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     
     func update(with userInfo: [AnyHashable : Any]) {
         // Top label
-        if let stateLabel: String = userInfo["stateLabel"] as! String? {
-            uploadInfoLabel.text = stateLabel
+        if let state: pwgUploadState = userInfo["state"] as? pwgUploadState {
+            uploadInfoLabel.text = state.stateInfo
             self.setNeedsLayout()
         }
 

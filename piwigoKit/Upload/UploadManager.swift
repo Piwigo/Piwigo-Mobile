@@ -125,7 +125,7 @@ public class UploadManager: NSObject {
         return fetchRequest
     }()
 
-    lazy var uploads: NSFetchedResultsController<Upload> = {
+    public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
                                                  managedObjectContext: self.bckgContext,
                                                  sectionNameKeyPath: nil,
@@ -152,7 +152,7 @@ public class UploadManager: NSObject {
         return fetchRequest
     }()
 
-    lazy var completed: NSFetchedResultsController<Upload> = {
+    public lazy var completed: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
                                                  managedObjectContext: self.bckgContext,
                                                  sectionNameKeyPath: nil,
@@ -171,16 +171,20 @@ extension UploadManager: NSFetchedResultsControllerDelegate {
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
-        case .insert:
+        case .insert:   // i.e. added to pending upload list
             print("\(dbg()) Insert Upload…")
-            
-        case .delete:
-            print("\(dbg()) Delete Upload…")
+            guard let upload = anObject as? Upload else { return }
+            updateCellOfUpload(upload)
 
-        case .move:
+        case .delete:   // i.e. moved to completed upload list
+            print("\(dbg()) Delete Upload…")
+            guard let upload = anObject as? Upload else { return }
+            updateCellOfUpload(upload)
+
+        case .move:     // nothing to do
             print("\(dbg()) Move Upload…")
 
-        case .update:
+        case .update:   // i.e. processed upload changing state
             print("\(dbg()) Update Upload…")
             guard let upload = anObject as? Upload else { return }
             updateCellOfUpload(upload)
@@ -209,7 +213,8 @@ extension UploadManager: NSFetchedResultsControllerDelegate {
         // Update UploadQueue cell and button shown in root album (or default album)
         DispatchQueue.main.async {
             let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
-                                              "stateLabel"      : upload.stateLabel,
+                                              "state"           : upload.state,
+                                              "md5sum"          : upload.md5Sum,
                                               "stateError"      : upload.requestError,
                                               "photoMaxSize"    : upload.photoMaxSize]
             NotificationCenter.default.post(name: .pwgUploadChangedState,

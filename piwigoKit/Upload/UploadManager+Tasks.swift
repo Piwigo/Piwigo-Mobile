@@ -35,8 +35,7 @@ extension UploadManager
 
         // Check current queue
         print("\(dbg()) findNextImageToUpload() in", queueName())
-        print("\(dbg()) \(self.uploads.fetchedObjects?.count ?? 0) pending upload requests in cache")
-        print("\(dbg()) \(self.completed.fetchedObjects?.count ?? 0) completed upload requests in cache")
+        print("\(dbg()) \(self.uploads.fetchedObjects?.count ?? 0) pending and \(self.completed.fetchedObjects?.count ?? 0) completed upload requests in cache")
         print("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
         
         //        return // for debugging background tasks

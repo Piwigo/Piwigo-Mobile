@@ -288,6 +288,11 @@ public class UploadProvider: NSObject {
         // Create a fetch request for the Upload entity
         let fetchRequest = Upload.fetchRequest()
 
+        // Priority to uploads requested manually, recent ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: false))
+        fetchRequest.sortDescriptors = sortDescriptors
+
         // Select upload requests:
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
@@ -377,50 +382,6 @@ public class UploadProvider: NSObject {
 
     
     // MARK: - NSFetchedResultsController
-    /**
-     A fetched results controller delegate to give consumers a chance to upload the next images.
-     */
-    public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
-    
-    /**
-     A fetched results controller to fetch Upload records sorted by local request date in the main queue.
-     */
-    public lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
-        
-        // Create a fetch request for the Upload entity sorted by request date.
-        let fetchRequest = Upload.fetchRequest()
-
-        // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
-        fetchRequest.sortDescriptors = sortDescriptors
-        
-        // Select upload requests:
-        /// — whose image has not been deleted from the Piwigo server
-        /// — for the current server and user only
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        andPredicates.append(NSPredicate(format: "requestState != %i", pwgUploadState.deleted.rawValue))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: mainContext,
-                                              sectionNameKeyPath: nil,
-                                                       cacheName: nil)
-        controller.delegate = fetchedResultsControllerDelegate
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error \(error)")
-        }
-        
-        return controller
-    }()
-
     /**
      A fetched results controller delegate to update the UploadQueue table view
      */
