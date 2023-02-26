@@ -1749,6 +1749,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update the navigation bar
         updateNavBar()
         
+        // Display help views less than once a day
+        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        if diff > UploadVars.pwgOneDay { return }
+            
         // Determine which help pages should be presented
         var displayHelpPagesWithID: [UInt16] = []
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00010000) == 0 {

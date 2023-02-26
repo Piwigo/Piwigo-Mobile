@@ -67,8 +67,9 @@ class Help08ViewController: UIViewController {
         let botImageScale = imageViewBot.traitCollection.displayScale
         imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: botImageSize, scale: botImageScale)
         
-        // Remember that this view was watched
+        // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
+        AppVars.shared.dateOfLastHelpView = Date().timeIntervalSinceReferenceDate
     }
 
     override func viewWillAppear(_ animated: Bool) {
