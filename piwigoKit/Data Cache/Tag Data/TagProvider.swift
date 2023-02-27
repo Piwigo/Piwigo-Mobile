@@ -297,9 +297,9 @@ public class TagProvider: NSObject {
     /**
      Get all Tag instances of the current server matching the list of tag IDs
     */
-    func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> [Tag] {
+    func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> Set<Tag> {
         // Initialisation
-        var tagList = [Tag]()
+        var tagList = Set<Tag>()
         
         taskContext.performAndWait {
             // Retrieve tags in persistent store
@@ -324,7 +324,7 @@ public class TagProvider: NSObject {
             // Tag selection
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
             let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
-            tagList = cachedTags.filter({ listOfIds.contains($0.tagId)})
+            tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
         }
 
         return tagList

@@ -21,7 +21,7 @@ public class Upload: NSManagedObject {
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
-    func update(with uploadProperties: UploadProperties, tags: [Tag], forUser user: User? = nil) throws {
+    func update(with uploadProperties: UploadProperties, tags: Set<Tag>, forUser user: User? = nil) throws {
         
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
@@ -103,7 +103,14 @@ public class Upload: NSManagedObject {
         let newTagIds = tags.map { $0.objectID }
         let tagIds = Array(self.tags ?? Set<Tag>()).map {$0.objectID }
         if tagIds != newTagIds {
-            self.tags = Set(tags)
+            var newTags = Set<Tag>()
+            // Tags retrieved in another context!
+            newTagIds.forEach({
+                if let copy = self.managedObjectContext?.object(with: $0) as? Tag {
+                    newTags.insert(copy)
+                }
+            })
+            self.tags = newTags
         }
         
         // Upload settings

@@ -763,11 +763,17 @@ extension UploadManager {
                     upload.privacyLevel = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
                 }
                 upload.comment    = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
-//                    if let tags = getInfos.tags {
-//                        let tags = tagProvider.getTags(withIDs: tags, taskContext: bckgContext)
-//                        upload.tagIds = String(tags.compactMap({$0.id}).map({"\($0),"})
-//                                                .reduce("", +).dropLast())
-//                    }
+                if let tags = getInfos.tags {
+                    let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
+                    let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: bckgContext).map({$0.objectID})
+                    var newTags = Set<Tag>()
+                    newTagIDs.forEach({
+                        if let copy = upload.managedObjectContext?.object(with: $0) as? Tag {
+                            newTags.insert(copy)
+                        }
+                    })
+                    upload.tags = newTags
+                }
                 
                 // Add uploaded image to cache and update UI if needed
                 if NetworkVars.hasAdminRights {
