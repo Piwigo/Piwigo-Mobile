@@ -32,7 +32,7 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var descContainer: ImageDescriptionView!
     
     private var download: ImageDownload?
-    private var userdidTapOnce: Bool = false        // True if the user did tap the view
+    private var userDidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
 
 
@@ -120,8 +120,8 @@ class ImagePreviewViewController: UIViewController
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if userdidTapOnce {
-            userdidTapOnce = false
+        if userDidTapOnce {
+            userDidTapOnce = false
             return
         }
         
@@ -272,7 +272,7 @@ class ImagePreviewViewController: UIViewController
     // MARK: - Image Metadata
     func didTapOnce() {
         // Remember that user did tap the view
-        userdidTapOnce = true
+        userDidTapOnce = true
         
         // Show/hide the description
         guard let comment = imageData?.comment,
