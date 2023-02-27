@@ -241,6 +241,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             self.settingsTableView?.reloadData()
         })
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Update upload counter in case user cleared the cache
+        UploadManager.shared.updateNberOfUploadsToComplete()
+    }
 
     deinit {
         // Unregister palette changes
