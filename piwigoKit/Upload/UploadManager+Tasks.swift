@@ -33,6 +33,9 @@ extension UploadManager
             print("••> Could not fetch pending uploads: \(error)")
         }
 
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+
         // Check current queue
         print("\(dbg()) findNextImageToUpload() in", queueName())
         print("\(dbg()) \(self.uploads.fetchedObjects?.count ?? 0) pending and \(self.completed.fetchedObjects?.count ?? 0) completed upload requests in cache")
@@ -57,7 +60,7 @@ extension UploadManager
         if !isFinishing, finishing.count > 0 {
             // Transfers encountered an error
             finishing.forEach({ upload in
-                upload.setState(.finishingError, error: JsonError.networkUnavailable)
+                upload.setState(.finishingError, error: JsonError.networkUnavailable, save: false)
             })
             try? bckgContext.save()
             findNextImageToUpload()
@@ -69,8 +72,7 @@ extension UploadManager
             for upload in uploading {
                 if isUploading.contains(upload.objectID) == false {
                     // Transfer encountered an error
-                    upload.setState(.uploadingError, error: JsonError.networkUnavailable)
-                    try? bckgContext.save()
+                    upload.setState(.uploadingError, error: JsonError.networkUnavailable, save: true)
                     findNextImageToUpload()
                 }
             }
@@ -81,7 +83,7 @@ extension UploadManager
         if isPreparing == false, preparing.count > 0 {
             // Preparations encountered an error
             preparing.forEach { upload in
-                upload.setState(.preparingError, error: UploadError.missingAsset)
+                upload.setState(.preparingError, error: UploadError.missingAsset, save: false)
             }
             try? bckgContext.save()
             findNextImageToUpload()
@@ -183,7 +185,7 @@ extension UploadManager
         // Moderate images by category
         for categoryId in categories {
             // Set list of images to moderate in that category
-            let categoryImages = uploads.filter({ $0.category == categoryId})
+            let categoryImages = uploads.filter({$0.category == categoryId})
             let imageIds = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
             
             // Moderate uploaded images
@@ -191,8 +193,7 @@ extension UploadManager
                 if !success { return }    // Will retry later
                 
                 // Update state of upload requests
-                categoryImages.forEach({ $0.setState(.moderated) })
-                try? self.bckgContext.save()
+                categoryImages.forEach({$0.setState(.moderated, save: true)})
                 
                 // Delete image in Photo Library if wanted
                 let toDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
@@ -226,6 +227,9 @@ extension UploadManager
             print("Error: \(error)")
         }
         
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+
         // Decisions will be taken for a background task
         isExecutingBackgroundUploadTask = true
         
@@ -372,7 +376,7 @@ extension UploadManager
         if imageIDs.isEmpty { return }
         var toMark = uploads.fetchedObjects?.filter({imageIDs.contains($0.imageId)}) ?? []
         toMark.append(contentsOf: completed.fetchedObjects?.filter({imageIDs.contains($0.imageId)}) ?? [])
-        toMark.forEach({$0.setState(.deleted)})
+        toMark.forEach({$0.setState(.deleted, save: false)})
         try? bckgContext.save()
     }
     

@@ -63,8 +63,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset)
-            try? bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -87,7 +86,7 @@ extension UploadManager
             upload.isVideo = false
 
             // Update state of upload and launch preparation job
-            upload.setState(.preparing)
+            upload.setState(.preparing, save: true)
             prepareImage(atURL: fileURL, for: upload)
             return
         }
@@ -108,8 +107,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset)
-            try? bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -142,8 +140,7 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if UploadVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
@@ -157,8 +154,7 @@ extension UploadManager
                 print("\(dbg()) converting photo \(upload.fileName)…")
                 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
@@ -166,8 +162,7 @@ extension UploadManager
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Update upload request
             didEndPreparation()
@@ -198,8 +193,7 @@ extension UploadManager
                 print("\(dbg()) preparing video \(upload.fileName)…")
 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 prepareVideo(atURL: fileURL, for: upload)
                 return
@@ -212,24 +206,21 @@ extension UploadManager
                 print("\(dbg()) converting video \(upload.fileName)…")
 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 convertVideo(atURL: fileURL, for: upload)
                 return
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -241,8 +232,7 @@ extension UploadManager
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset)
-            try? bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
             
             self.didEndPreparation()
             return
@@ -306,8 +296,7 @@ extension UploadManager
         }
         else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -335,8 +324,7 @@ extension UploadManager
             if UploadVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 self.prepareImage(atURL: uploadFileURL, for: upload)
@@ -349,8 +337,7 @@ extension UploadManager
                 print("\(dbg()) converting photo \(upload.fileName)…")
                 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? self.bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 self.convertImage(atURL: uploadFileURL, for: upload)
@@ -358,8 +345,7 @@ extension UploadManager
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? self.bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -373,8 +359,7 @@ extension UploadManager
                 print("\(dbg()) preparing video \(upload.fileName)…")
 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
 //                self.prepareVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
@@ -388,8 +373,7 @@ extension UploadManager
                 print("\(dbg()) converting video \(upload.fileName)…")
 
                 // Update state of upload
-                upload.setState(.preparing)
-                try? bckgContext.save()
+                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
 //                self.convertVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
@@ -398,8 +382,7 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -407,8 +390,7 @@ extension UploadManager
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -418,8 +400,7 @@ extension UploadManager
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: UploadError.wrongDataFormat)
-            try? bckgContext.save()
+            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()

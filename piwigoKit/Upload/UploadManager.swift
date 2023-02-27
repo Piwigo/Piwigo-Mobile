@@ -55,7 +55,6 @@ public class UploadManager: NSObject {
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
-    public var nberOfUploadsToComplete = 0                  // Stored and used by AppDelegate
     public var isPaused = false                             // Flag used to pause/resume uploads
     var isPreparing = false                                 // Prepare one image at once
     var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
@@ -78,6 +77,19 @@ public class UploadManager: NSObject {
     let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()
     
+    /// Number of pending upload requests
+    public var nberOfUploadsToComplete = 0                  // Stored and used by the App delegate
+    public func updateNberOfUploadsToComplete() {
+        // Update value
+        nberOfUploadsToComplete = uploads.fetchedObjects?.count ?? 0
+        // Update badge and default album view button
+        DispatchQueue.main.async { [unowned self] in
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
+            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
+        }
+    }
+
     deinit {
 //        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
 
@@ -96,6 +108,11 @@ public class UploadManager: NSObject {
     // MARK: - Core Data Providers
     lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider()
+        return provider
+    }()
+
+    lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider()
         return provider
     }()
 
@@ -130,7 +147,6 @@ public class UploadManager: NSObject {
                                                  managedObjectContext: self.bckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil) // "org.piwigo.bckg.pendingUploads")
-        uploads.delegate = self
         return uploads
     }()
 
@@ -159,71 +175,4 @@ public class UploadManager: NSObject {
                                                  cacheName: nil) // "org.piwigo.frgd.completedUploads")
         return uploads
     }()
-}
-
-
-// MARK: - NSFetchedResultsControllerDelegate
-extension UploadManager: NSFetchedResultsControllerDelegate {
-    
-//    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//    }
-    
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-        switch type {
-        case .insert:   // i.e. added to pending upload list
-            print("\(dbg()) Insert Upload…")
-            guard let upload = anObject as? Upload else { return }
-            updateCellOfUpload(upload)
-
-        case .delete:   // i.e. moved to completed upload list
-            print("\(dbg()) Delete Upload…")
-            guard let upload = anObject as? Upload else { return }
-            updateCellOfUpload(upload)
-
-        case .move:     // nothing to do
-            print("\(dbg()) Move Upload…")
-
-        case .update:   // i.e. processed upload changing state
-            print("\(dbg()) Update Upload…")
-            guard let upload = anObject as? Upload else { return }
-            updateCellOfUpload(upload)
-
-        @unknown default:
-            fatalError("UploadManager: unknown NSFetchedResultsChangeType")
-        }
-    }
-
-    func updateNberOfUploadsToComplete() {
-        // Update value
-        nberOfUploadsToComplete = uploads.fetchedObjects?.count ?? 0
-        // Update badge and default album view button
-        DispatchQueue.main.async { [unowned self] in
-            // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
-            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
-        }
-    }
-    
-    // Update cell displaying an upload request
-    func updateCellOfUpload(_ upload: Upload) {
-        // Background task?
-        if isExecutingBackgroundUploadTask { return }
-        
-        // Update UploadQueue cell and button shown in root album (or default album)
-        DispatchQueue.main.async {
-            let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
-                                              "state"           : upload.state,
-                                              "md5sum"          : upload.md5Sum,
-                                              "stateError"      : upload.requestError,
-                                              "photoMaxSize"    : upload.photoMaxSize]
-            NotificationCenter.default.post(name: .pwgUploadChangedState,
-                                            object: nil, userInfo: uploadInfo)
-        }
-    }
-
-    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Update badge and default album view button
-        updateNberOfUploadsToComplete()
-    }
 }

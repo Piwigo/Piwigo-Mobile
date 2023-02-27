@@ -129,13 +129,13 @@ extension UploadManager
             switch failedUpload.state {
             case .uploadingError:
                 // -> Will retry to transfer the image
-                failedUpload.setState(.prepared)
+                failedUpload.setState(.prepared, save: false)
             case .finishingError:
                 // -> Will retry to finish the upload
-                failedUpload.setState(.uploaded)
+                failedUpload.setState(.uploaded, save: false)
             default:
                 // —> Will retry from scratch
-                failedUpload.setState(.waiting)
+                failedUpload.setState(.waiting, save: false)
             }
         }
         try? bckgContext.save()

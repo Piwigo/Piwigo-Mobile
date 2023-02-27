@@ -154,7 +154,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the state of an Upload instance.
      */
-    func setState(_ state: pwgUploadState, error: Error? = nil) {
+    func setState(_ state: pwgUploadState, error: Error? = nil, save: Bool) {
         // State of upload request
         requestState = state.rawValue
         
@@ -167,25 +167,25 @@ public class Upload: NSManagedObject {
         } else {
             requestError = ""
         }
-    }
-    
-    /**
-     Updates the status of an Upload instance.
-     */
-    func updateStatus(with state: pwgUploadState?, error: String?) throws {
-        // Update the upload request only if a new state has a value.
-        guard let newStatus = state else {
-            throw UploadError.missingData
+        
+        // Should be save changes now?
+        if save {
+            try? self.managedObjectContext?.save()
         }
         
-        // State of upload request
-        requestState = Int16(newStatus.rawValue)
-        
-        // Section into which the upload request belongs to
-        requestSectionKey = newStatus.sectionKey
-        
-        // Error message description
-        requestError = error ?? ""
+        // Is this executed in the foreground?
+        if !UploadManager.shared.isExecutingBackgroundUploadTask {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            DispatchQueue.main.async {
+                let uploadInfo: [String : Any] = ["localIdentifier" : self.localIdentifier,
+                                                  "state"           : self.state,
+                                                  "md5sum"          : self.md5Sum,
+                                                  "stateError"      : self.requestError,
+                                                  "photoMaxSize"    : self.photoMaxSize]
+                NotificationCenter.default.post(name: .pwgUploadChangedState,
+                                                object: nil, userInfo: uploadInfo)
+            }
+        }
     }
     
     /**

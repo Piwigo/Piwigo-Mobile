@@ -19,8 +19,7 @@ extension UploadManager {
         isFinishing = true
         
         // Update state of upload resquest and finish upload
-        upload.setState(.finishing)
-        try? bckgContext.save()
+        upload.setState(.finishing, save: true)
         
         // Work depends on Piwigo server version
         if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
@@ -33,6 +32,9 @@ extension UploadManager {
     }
 
     func didFinishTransfer() {
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+
         isFinishing = false
         if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
@@ -191,9 +193,9 @@ extension UploadManager {
     private func didFinishTransfer(for upload: Upload, error: Error?) {
         // Error?
         if let error = error {
-            upload.setState(.finishingError, error: error)
+            upload.setState(.finishingError, error: error, save: false)
         } else {
-            upload.setState(.finished)
+            upload.setState(.finished, save: false)
         }
 
         // Consider next image

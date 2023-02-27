@@ -23,8 +23,7 @@ extension UploadManager {
         UploadSessions.shared.clearCounter(withID: upload.localIdentifier)
 
         // Update state of upload request and start transfer
-        upload.setState(.uploading)
-        try? bckgContext.save()
+        upload.setState(.uploading, save: true)
 
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
@@ -79,8 +78,7 @@ extension UploadManager {
             let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
-            upload.setState(.preparingFail, error: err)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -93,8 +91,7 @@ extension UploadManager {
            upload.md5Sum.isEmpty, upload.category == 0 {
             let error = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue,
                                 userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
-            upload.setState(.preparingFail, error: error)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: error, save: true)
             self.didEndTransfer(for: upload)
         }
 
@@ -120,8 +117,7 @@ extension UploadManager {
             let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
-            upload.setState(.preparingFail, error: err)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -186,8 +182,7 @@ extension UploadManager {
 
         // Task now resumed -> Update upload request status
         if chunk == 0 {
-            upload.setState(.uploading)
-            try? self.bckgContext.save()
+            upload.setState(.uploading, save: true)
         }
         
         // Release memory
@@ -225,10 +220,11 @@ extension UploadManager {
                 // Update upload request status
                 if let error = error as NSError? {
                     self.backgroundQueue.async {
-                        upload.setState(.uploadingError, error: error)
-                        try? self.bckgContext.save()
-                        
-                        self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
+                        upload.setState(.uploadingError, error: error, save: false)
+                        self.backgroundQueue.async {
+                            try? self.bckgContext.save()
+                            self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
+                        }
                     }
                 }
                 else if let httpResponse = task.response as? HTTPURLResponse {
@@ -236,9 +232,9 @@ extension UploadManager {
                     let error = NSError(domain: "Piwigo", code: httpResponse.statusCode,
                                         userInfo: [NSLocalizedDescriptionKey : msg])
                     if (400...499).contains(httpResponse.statusCode) {
-                        upload.setState(.uploadingFail, error: error)
+                        upload.setState(.uploadingFail, error: error, save: false)
                     } else {
-                        upload.setState(.uploadingError, error: error)
+                        upload.setState(.uploadingError, error: error, save: false)
                     }
                     self.backgroundQueue.async {
                         try? self.bckgContext.save()
@@ -246,7 +242,7 @@ extension UploadManager {
                     }
                 }
                 else {
-                    upload.setState(.uploadingError, error: JsonError.networkUnavailable)
+                    upload.setState(.uploadingError, error: JsonError.networkUnavailable, save: false)
                     self.backgroundQueue.async {
                         try? self.bckgContext.save()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -305,7 +301,7 @@ extension UploadManager {
                 #if DEBUG
                 print("\(dbg()) Empty JSON object!")
                 #endif
-                upload.setState(.uploadingError, error: JsonError.emptyJSONobject)
+                upload.setState(.uploadingError, error: JsonError.emptyJSONobject, save: false)
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -319,7 +315,7 @@ extension UploadManager {
                 let dataStr = String(decoding: data, as: UTF8.self)
                 print("\(dbg()) Invalid JSON object: \(dataStr)")
                 #endif
-                upload.setState(.uploadingError, error: JsonError.invalidJSONobject)
+                upload.setState(.uploadingError, error: JsonError.invalidJSONobject, save: false)
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -337,9 +333,9 @@ extension UploadManager {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                  errorMessage: uploadJSON.errorMessage)
                     if (400...499).contains(uploadJSON.errorCode) {
-                        upload.setState(.uploadingFail, error: error)
+                        upload.setState(.uploadingFail, error: error, save: false)
                     } else {
-                        upload.setState(.uploadingError, error: error)
+                        upload.setState(.uploadingError, error: error, save: false)
                     }
                     self.backgroundQueue.async {
                         try? self.bckgContext.save()
@@ -376,7 +372,7 @@ extension UploadManager {
 
                 // Update state of upload
                 upload.imageId = uploadJSON.data.image_id!
-                upload.setState(.uploaded)
+                upload.setState(.uploaded, save: false)
                 backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload)
@@ -384,7 +380,7 @@ extension UploadManager {
                 return
             } catch {
                 // Data cannot be digested, image still ready for upload
-                upload.setState(.uploadingError, error: UploadError.wrongJSONobject)
+                upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
                 backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload)
@@ -425,8 +421,7 @@ extension UploadManager {
             let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
-            upload.setState(.preparingFail, error: err)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -438,8 +433,7 @@ extension UploadManager {
         let chunksStr = String(format: "%ld", chunks)
         if chunks == 0, upload.fileName.isEmpty,
            upload.md5Sum.isEmpty, upload.category == 0 {
-            upload.setState(.preparingFail, error: UploadError.missingFile)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingFile, save: true)
             self.didEndTransfer(for: upload)
         }
         
@@ -462,8 +456,7 @@ extension UploadManager {
         // Initialise credentials, boundary and upload session
         let username = NetworkVars.username
         guard let serverPath = upload.user?.server?.path else {
-            upload.setState(.preparingFail, error: UploadError.missingData)
-            try? self.bckgContext.save()
+            upload.setState(.preparingFail, error: UploadError.missingData, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -560,8 +553,7 @@ extension UploadManager {
         }
 
         // All tasks are now resumed -> Update upload request status
-        upload.setState(.uploading)
-        try? self.bckgContext.save()
+        upload.setState(.uploading, save: true)
         
         // Release memory
         imageData.removeAll()
@@ -613,7 +605,7 @@ extension UploadManager {
 
             // Update upload request status
             if let error = error as NSError? {
-                upload.setState(.uploadingError, error: error)
+                upload.setState(.uploadingError, error: error, save: false)
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -624,9 +616,9 @@ extension UploadManager {
                 let error = NSError(domain: "Piwigo", code: httpResponse.statusCode,
                                     userInfo: [NSLocalizedDescriptionKey : msg])
                 if (400...499).contains(httpResponse.statusCode) {
-                    upload.setState(.uploadingFail, error: error)
+                    upload.setState(.uploadingFail, error: error, save: false)
                 } else {
-                    upload.setState(.uploadingError, error: error)
+                    upload.setState(.uploadingError, error: error, save: false)
                 }
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
@@ -634,7 +626,7 @@ extension UploadManager {
                 }
             }
             else {
-                upload.setState(.uploadingError, error: JsonError.networkUnavailable)
+                upload.setState(.uploadingError, error: JsonError.networkUnavailable, save: false)
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -687,7 +679,7 @@ extension UploadManager {
             #if DEBUG
             print("\(dbg()) Empty JSON object!")
             #endif
-            upload.setState(.uploadingError, error: JsonError.emptyJSONobject)
+            upload.setState(.uploadingError, error: JsonError.emptyJSONobject, save: false)
             self.backgroundQueue.async {
                 try? self.bckgContext.save()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -701,7 +693,7 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             print("\(dbg()) Invalid JSON object: \(dataStr)")
             #endif
-            upload.setState(.uploadingError, error: JsonError.invalidJSONobject)
+            upload.setState(.uploadingError, error: JsonError.invalidJSONobject, save: false)
             self.backgroundQueue.async {
                 try? self.bckgContext.save()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -720,9 +712,9 @@ extension UploadManager {
                 let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                              errorMessage: uploadJSON.errorMessage)
                 if (400...499).contains(uploadJSON.errorCode) {
-                    upload.setState(.uploadingFail, error: error)
+                    upload.setState(.uploadingFail, error: error, save: false)
                 } else {
-                    upload.setState(.uploadingError, error: error)
+                    upload.setState(.uploadingError, error: error, save: false)
                 }
                 self.backgroundQueue.async {
                     try? self.bckgContext.save()
@@ -744,7 +736,7 @@ extension UploadManager {
             }
             
             // Upload completed
-            // Cancel other tasks related with this request if any
+            // Cancel other tasks related to this request if any
             UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
                                                       exceptedTaskID: task.taskIdentifier)
 
@@ -791,11 +783,12 @@ extension UploadManager {
             /// Since version 12, one must empty the lounge.
             if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 // Uploading with pwg.images.uploadAsync since version 12
-                upload.setState(.uploaded)
+                upload.setState(.uploaded, save: false)
             } else {
                 // Uploading with pwg.images.uploadAsync before version 12
-                upload.setState(.finished)
+                upload.setState(.finished, save: false)
             }
+
             self.backgroundQueue.async {
                 try? self.bckgContext.save()
                 self.didEndTransfer(for: upload)
@@ -804,7 +797,7 @@ extension UploadManager {
         } catch {
             // JSON object cannot be digested, image still ready for upload
             print("\(dbg()) \(md5sum) | wrong JSON object!")
-            upload.setState(.uploadingError, error: UploadError.wrongJSONobject)
+            upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
             self.backgroundQueue.async {
                 try? self.bckgContext.save()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -842,6 +835,9 @@ extension UploadManager {
     }
     
     func didEndTransfer(for upload: Upload) {
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
+
         // Update list of current uploads
         if let index = isUploading.firstIndex(where: {$0 == upload.objectID}) {
             isUploading.remove(at: index)

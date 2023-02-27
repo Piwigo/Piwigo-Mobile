@@ -160,9 +160,9 @@ extension UploadManager {
         // Upload ready for transfer
         // Error?
         if let error = error {
-            upload.setState(.preparingError, error: error)
+            upload.setState(.preparingError, error: error, save: false)
         } else {
-            upload.setState(.prepared)
+            upload.setState(.prepared, save: false)
         }
 
         self.backgroundQueue.async {
