@@ -21,14 +21,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }()
 
 
-    // MARK: - Core Data Providers
-//    private lazy var uploadProvider: UploadProvider = {
-//        let provider : UploadProvider = UploadManager.shared.uploadProvider
-//        provider.fetchedNonCompletedResultsControllerDelegate = self
-//        return provider
-//    }()
-    
-    
     // MARK: - Core Data Source
     lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
@@ -409,20 +401,12 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         let shouldAnimate = queueTableView.numberOfSections != 0
         dataSource.apply(snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>,
                          animatingDifferences: shouldAnimate)
-
-
-
-//        let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
-//        DispatchQueue.main.async {
-//            // Apply modifications
-//            self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
             
-            // Update the navigation bar
-            self.updateNavBar()
-            
-            // Refresh header informing user on network status when UploadManager restarted running
-            self.setTableViewMainHeader()
-//        }
+        // Update the navigation bar
+        self.updateNavBar()
+        
+        // Refresh header informing user on network status when UploadManager restarted running
+        self.setTableViewMainHeader()
         
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {
