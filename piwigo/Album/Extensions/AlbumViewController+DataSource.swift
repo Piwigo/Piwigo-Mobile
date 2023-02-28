@@ -307,7 +307,7 @@ extension AlbumViewController
         // Done fetching images ► Remove non-fetched images from album
         DispatchQueue.main.async {
             // Remember when images were fetched
-            self.albumData?.dateFetchedImages = Date()
+            self.albumData?.dateGetImages = Date()
             
             // Remove images if necessary
             if !imageIDs.isEmpty {
@@ -403,7 +403,7 @@ extension AlbumViewController
             album.removeFromImages(images)
                         
             // Remember when favorites were fetched
-            album.dateFetchedImages = Date()
+            album.dateGetImages = Date()
             
             // Save changes
             do {

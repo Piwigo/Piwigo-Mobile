@@ -45,6 +45,7 @@
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1AC30A29746F9E00CEA7A9 /* ImageSessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */; };
+		AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
 		AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
@@ -506,6 +507,8 @@
 		AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSessionErrors.swift; sourceTree = "<group>"; };
 		AD1B92792703A78D0089C5F4 /* AlbumViewController+TransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+TransitioningDelegate.swift"; sourceTree = "<group>"; };
 		AD1B927B2703AAD90089C5F4 /* ImageAnimatedTransitioning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAnimatedTransitioning.swift; sourceTree = "<group>"; };
+		AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0B (Image).xcdatamodel"; sourceTree = "<group>"; };
+		AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0A_to_0B.xcmappingmodel; sourceTree = "<group>"; };
 		AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+AppTools.swift"; sourceTree = "<group>"; };
 		AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
@@ -1097,6 +1100,7 @@
 				ADA5FA4729A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */,
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
+				AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */,
 			);
 			path = "Migration Tools";
 			sourceTree = "<group>";
@@ -2467,6 +2471,7 @@
 				AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */,
 				AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */,
 				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
+				AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */,
 				AD25CA76286B891300D574C7 /* DataMigrationVersion.swift in Sources */,
 				AD0B6AD1268A21A5007DEE70 /* UploadManager+Video.swift in Sources */,
 				ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */,
@@ -3554,6 +3559,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */,
 				ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */,
 				ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */,
 				ADD981F828737EFD007213AE /* DataModel 08 (Upload).xcdatamodel */,
@@ -3565,7 +3571,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */;
+			currentVersion = AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

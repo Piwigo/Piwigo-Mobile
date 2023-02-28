@@ -530,12 +530,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         print("••> viewDidAppear     => ID:\(categoryId)")
 
         // Check session status before loading album and image data
-        let lastLoad = albumData?.dateFetchedImages ?? .distantPast
+        let lastLoad = albumData?.dateGetImages ?? .distantPast
         let noSmartAlbumData = self.categoryId <= 0 && self.images.fetchedObjects?.isEmpty ?? true
         let nbImages = self.images.fetchedObjects?.count ?? Int.zero
         let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
         if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
-            lastLoad.timeIntervalSinceNow < TimeInterval(-600) {
+            lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             LoginUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages()
             } failure: { error in
@@ -818,7 +818,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            let user = userProvider.getUserAccount(inContext: bckgContext),
            let favAlbum = albumProvider.getAlbum(inContext: bckgContext, ofUser: user,
                                                  withId: pwgSmartAlbum.favorites.rawValue),
-           favAlbum.dateFetchedImages.timeIntervalSinceNow < TimeInterval(-600) {
+           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
             }

@@ -457,33 +457,29 @@ class ImageViewController: UIViewController {
         favoriteBarButton.isEnabled = state
     }
 
-    private func retrieveImageData(_ imageData: Image) {
-        // Disable buttons until image data are up-to-date
-        setEnableStateOfButtons(false)
-
+    private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             LoginUtilities.checkSession(ofUser: user) { [self] in
                 print("••> Retrieving data of image #\(imageData.pwgID)")
                 self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
-                    // Update image data
-                    self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
-                    
-                    // Update image data
                     DispatchQueue.main.async {
-                        for childVC in self.pageViewController?.viewControllers ?? [] {
-                            if let previewVC = childVC as? ImagePreviewViewController,
-                               previewVC.imageIndex == self.imageIndex {
-                                previewVC.imageData = self.imageData
-                                self.setEnableStateOfButtons(true)
-                            }
-                        }
+                        // Update image data
+                        self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
+                        // Enable buttons
+                        self.setEnableStateOfButtons(true)
                     }
                 } failure: { error in
-                    self.retrieveImageDataError(error)
+                    // Display error only when image data is incomplete
+                    if isIncomplete {
+                        self.retrieveImageDataError(error)
+                    }
                 }
             } failure: { [self] error in
-                self.retrieveImageDataError(error)
+                // Display error only when image data is incomplete
+                if isIncomplete {
+                    self.retrieveImageDataError(error)
+                }
             }
         }
     }
@@ -635,9 +631,20 @@ extension ImageViewController: UIPageViewControllerDataSource
     func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
 
-        // Retrieve up-to-date complete image data
+        // Retrieve up-to-date complete image data if needed
         guard let imageData = images?.object(at: IndexPath(item: index, section: 0)) else { return nil }
-        retrieveImageData(imageData)
+        if imageData.fileSize == Int64.zero {
+            // Disable buttons until image data are known
+            setEnableStateOfButtons(false)
+            // Retrieve image data
+            retrieveImageData(imageData, isIncomplete: true)
+        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
+            // Retrieve image data and update cache
+            retrieveImageData(imageData, isIncomplete: false)
+        } else {
+            // Enable buttons
+            setEnableStateOfButtons(true)
+        }
 
         // Create image preview
         imagePage.imageIndex = index

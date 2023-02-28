@@ -21,9 +21,10 @@ enum DataMigrationVersion: String, CaseIterable {
     case version05 = "DataModel 05 (Upload)"        // from v2.6    on 3 March 2021
     case version06 = "DataModel 06 (Upload)"        // from v2.6    on 3 March 2021
     case version07 = "DataModel 07 (Upload)"        // from v2.6.2  on 3 May 2021
-    case version08 = "DataModel 08 (Upload)"        // from v2.7    on 12 August 2021 (=> PiwigoKit)
+    case version08 = "DataModel 08 (Upload)"        // from v2.7    on 12 August 2021 (moved to PiwigoKit)
     case version09 = "DataModel 09 (Upload)"        // from v2.12   on 3 July 2022
-    case version0A = "DataModel 0A (+Server)"       // from v3.00   on … (added on 12 February 2023)
+    case version0A = "DataModel 0A (+Server)"       // from v3.00   on 27 Feb 2023 (added on 21 August 2022)
+    case version0B = "DataModel 0B (Image)"         // from v3.00   on … (added on 28 February 2023)
 
     static var current: DataMigrationVersion {
         guard let current = allCases.last else {
@@ -53,6 +54,8 @@ enum DataMigrationVersion: String, CaseIterable {
         case .version09:
             return .version0A
         case .version0A:
+            return .version0B
+        case .version0B:
             return nil
         }
     }

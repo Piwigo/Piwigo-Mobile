@@ -26,6 +26,7 @@ extension Image {
     @NSManaged public var fileName: String
     @NSManaged public var datePosted: Date
     @NSManaged public var dateCreated: Date
+    @NSManaged public var dateGetInfos: Date
     @NSManaged public var fullRes: Resolution?
     @NSManaged public var isVideo: Bool
 
