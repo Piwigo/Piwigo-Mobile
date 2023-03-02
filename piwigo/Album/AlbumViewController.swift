@@ -1475,12 +1475,39 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         if view.window == nil || fetchDelegate.categoryId != categoryId { return }
 
         // Collect operation changes
-        switch type {
-        case .insert:
+        switch type.rawValue {
+        case NSFetchedResultsChangeType.delete.rawValue:
+            guard var indexPath = indexPath else { return }
+            if anObject is Image { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                self?.imagesCollection?.deleteItems(at: [indexPath])
+            })
+        case NSFetchedResultsChangeType.update.rawValue:
+            guard let indexPath = indexPath else { return }
+            if anObject is Image {
+                let cellIndexPath = IndexPath(item: indexPath.item, section: 1)
+                updateOperations.append( BlockOperation {  [weak self] in
+                    print("••> Update image of album #\(fetchDelegate.categoryId) at \(cellIndexPath)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell,
+                       let image = controller.object(at: indexPath) as? Image {
+                        cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
+                    }
+                })
+            } else {
+                updateOperations.append( BlockOperation {  [weak self] in
+                    print("••> Update album of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+                       let album = controller.object(at: indexPath) as? Album {
+                        cell.albumData = album
+                    }
+                })
+            }
+        case NSFetchedResultsChangeType.insert.rawValue:
             guard var newIndexPath = newIndexPath else { return }
             if anObject is Image { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert imagesCollection item at \(newIndexPath)")
+                print("••> Insert item of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
@@ -1490,31 +1517,18 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                     self?.updateButtonsInPreviewMode()
                 })
             }
-        case .update:
-            guard var indexPath = indexPath else { return }
-            if anObject is Image { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update imagesCollection item at \(indexPath)")
-                self?.imagesCollection?.reloadItems(at: [indexPath])
-            })
-        case .move:
-            guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
+        case NSFetchedResultsChangeType.move.rawValue:
+            guard var indexPath = indexPath,  var newIndexPath = newIndexPath,
+                  indexPath != newIndexPath else { return }
             if anObject is Image {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move imagesCollection item from \(indexPath) to \(newIndexPath)")
+                print("••> Move   item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
-        case .delete:
-            guard var indexPath = indexPath else { return }
-            if anObject is Image { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete imagesCollection item at \(indexPath)")
-                self?.imagesCollection?.deleteItems(at: [indexPath])
-            })
-        @unknown default:
+        default:
             fatalError("AlbumViewController: unknown NSFetchedResultsChangeType")
         }
     }
