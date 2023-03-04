@@ -683,7 +683,8 @@
 		AD8D212726ACC15F0008E907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/InAppIntents.intentdefinition; sourceTree = "<group>"; };
 		AD8D212A26ACC1660008E907 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D212E26ACC1700008E907 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InAppIntents.strings; sourceTree = "<group>"; };
-		AD8D213026ACC1710008E907 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		ADFA64BD29B3B5BB003F1B36 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		AD8D213026ACC1710008E907 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
 		AD8D213226ACC1720008E907 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D213426ACC1720008E907 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D213626ACC1730008E907 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InAppIntents.strings; sourceTree = "<group>"; };
@@ -777,6 +778,12 @@
 		ADAF3B7F23DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AppStore.strings"; sourceTree = "<group>"; };
 		ADAF3B8023DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		ADAF3B8123DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
+		ADAF64A829B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/AppStore.strings"; sourceTree = "<group>"; };
+		ADAF64A929B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		ADAF64AA29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
+		ADAF64AC29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/ReleaseNotes.strings"; sourceTree = "<group>"; };
 		ADB274722676480D0002DD09 /* PwgSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSessionErrors.swift; sourceTree = "<group>"; };
 		ADB27474267661980002DD09 /* ParseXMLData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseXMLData.swift; sourceTree = "<group>"; };
 		ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.calculateOrphans.swift; sourceTree = "<group>"; };
@@ -2172,6 +2179,7 @@
 				ru,
 				"zh-Hans",
 				hu,
+				"zh-Hant",
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -2754,6 +2762,7 @@
 			children = (
 				ADD6AEA322E25DA800347BC8 /* en */,
 				ADAF3B7F23DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64A829B3AEE2005F3501 /* zh-Hant */,
 				AD3FDDEB1F2E23F700F71C81 /* da */,
 				AD8549341FE98CE300155BA1 /* nl */,
 				AD294B2A1F2CE87400CD3769 /* fr */,
@@ -2776,6 +2785,7 @@
 			children = (
 				ADD6AE9F22E25DA800347BC8 /* en */,
 				ADAF3B8123DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64AB29B3AEE2005F3501 /* zh-Hant */,
 				AD3203682184739300BAD372 /* da */,
 				AD32036D2184739600BAD372 /* nl */,
 				AD3203672184739200BAD372 /* fr */,
@@ -2798,6 +2808,7 @@
 			children = (
 				ADD6AEA222E25DA800347BC8 /* en */,
 				ADAF3B7C23DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64AA29B3AEE2005F3501 /* zh-Hant */,
 				AD3FDDE81F2E23F700F71C81 /* da */,
 				AD8549311FE98CE200155BA1 /* nl */,
 				AD6B2E791F0930FD0040EAD9 /* fr */,
@@ -2820,6 +2831,7 @@
 			children = (
 				ADD6AEA022E25DA800347BC8 /* en */,
 				ADAF3B7D23DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64A729B3AEE2005F3501 /* zh-Hant */,
 				AD3FDDE91F2E23F700F71C81 /* da */,
 				AD8549321FE98CE300155BA1 /* nl */,
 				AD6B2E7A1F0930FD0040EAD9 /* fr */,
@@ -2850,7 +2862,8 @@
 			children = (
 				AD8D212726ACC15F0008E907 /* Base */,
 				AD8D212A26ACC1660008E907 /* en */,
-				AD8D213026ACC1710008E907 /* zh-Hans */,
+				ADFA64BD29B3B5BB003F1B36 /* zh-Hans */,
+				AD8D213026ACC1710008E907 /* zh-Hant */,
 				AD8D213226ACC1720008E907 /* da */,
 				AD8D213426ACC1720008E907 /* nl */,
 				AD8D213626ACC1730008E907 /* fr */,
@@ -2873,6 +2886,7 @@
 			children = (
 				ADD6AEA122E25DA800347BC8 /* en */,
 				ADAF3B7E23DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64AC29B3AEE2005F3501 /* zh-Hant */,
 				AD3FDDEA1F2E23F700F71C81 /* da */,
 				AD8549331FE98CE300155BA1 /* nl */,
 				AD92B9011F200092006E5B63 /* fr */,
@@ -2903,6 +2917,7 @@
 			children = (
 				AD5FCE2122EC629D00F37B1E /* en */,
 				ADAF3B8023DDAC6D007B0ABA /* zh-Hans */,
+				ADAF64A929B3AEE2005F3501 /* zh-Hant */,
 				ADC06AE31F40B2BB0081B4FA /* da */,
 				AD8549351FE98CE300155BA1 /* nl */,
 				ADC06AE21F40B1ED0081B4FA /* fr */,
