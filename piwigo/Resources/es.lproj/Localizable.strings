@@ -762,7 +762,7 @@
 "settings_clearClipboardNever" = "Nunca";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache";
+"settingsHeader_cache" = "Memoria caché";
 "settings_cacheClear" = "Limpiar caché";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
