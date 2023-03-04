@@ -25,6 +25,14 @@ public class PwgSession: NSObject {
         /// Network service type for data that the user is actively waiting for.
         config.networkServiceType = .responsiveData
         
+        /// The foreground session should wait for connectivity to become available.
+//        config.waitsForConnectivity = true
+        
+        /// Connections should use the network when the user has specified Low Data Mode
+//        if #available(iOSApplicationExtension 13.0, *) {
+//            config.allowsConstrainedNetworkAccess = true
+//        }
+        
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
 
@@ -205,6 +213,14 @@ public class PwgSession: NSObject {
 
 // MARK: - Session Delegate
 extension PwgSession: URLSessionDelegate {
+
+//    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+//        print("    > The upload session is waiting for connectivity (offline mode)")
+//    }
+        
+//    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
+//        print("    > The upload session will begin delayed request (back to online)")
+//    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The data session has been invalidated")

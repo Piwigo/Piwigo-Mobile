@@ -1540,10 +1540,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
 
-        // Move objects
-        imagesCollection?.performBatchUpdates({ [weak self] in
-            self?.moveOperations.forEach({ $0.start() })
-        })
+        // Move objects if any
+        if moveOperations.isEmpty == false {
+            imagesCollection?.performBatchUpdates({ [weak self] in
+                self?.moveOperations.forEach({ $0.start() })
+            })
+        }
 
         // Update objects
         imagesCollection?.performBatchUpdates({ [weak self] in

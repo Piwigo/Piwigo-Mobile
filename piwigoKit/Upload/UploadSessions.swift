@@ -21,13 +21,22 @@ public class UploadSessions: NSObject {
     public lazy var frgdSession: URLSession = {
         let config = URLSessionConfiguration.default
         
+        /// The foreground session should wait for connectivity to become available (can be retried)
+        /// only when the app uses the pwg.images.uploadAsync method.
+//        config.waitsForConnectivity = NetworkVars.usesUploadAsync
+        
+        /// Connections should not use the network when the user has specified Low Data Mode
+//        if #available(iOSApplicationExtension 13.0, *) {
+//            config.allowsConstrainedNetworkAccess = false
+//        }
+
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 minute)
         config.timeoutIntervalForRequest = 60
         
-        /// How long an upload task should be allowed to be retried or transferred (5 minute).
+        /// How long an upload task should be allowed to be retried or transferred (5 minutes).
         config.timeoutIntervalForResource = 300
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
@@ -185,6 +194,14 @@ public class UploadSessions: NSObject {
 
 // MARK: - Session Delegate
 extension UploadSessions: URLSessionDelegate {
+
+//    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+//        print("    > The upload session is waiting for connectivity (offline mode)")
+//    }
+        
+//    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
+//        print("    > The upload session will begin delayed request (back to online)")
+//    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The upload session has been invalidated")
