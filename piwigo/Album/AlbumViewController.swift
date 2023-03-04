@@ -56,7 +56,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
     private var imageDetailView: ImageViewController?
-    private var updateOperations: [BlockOperation] = [BlockOperation]()
+    private var updateOperations = [BlockOperation]()
+    private var moveOperations = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -312,12 +313,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // 'rankManual' is set by the iOS app when fetching album images (not returned by API)
             case .manual:
                 let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: true)
-                fetchRequest.sortDescriptors = [sortByRank, sortByIdDesc]
+                fetchRequest.sortDescriptors = [sortByRank]
                 
             // 'rankRandom' is set by the iOS app.
             case .random:
                 let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true)
-                fetchRequest.sortDescriptors = [sortByRank, sortByIdDesc]
+                fetchRequest.sortDescriptors = [sortByRank]
             }
         }
         var andPredicates = getImagePredicates()
@@ -1466,6 +1467,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateOperations = []
+        moveOperations = []
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -1524,7 +1526,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
+            moveOperations.append( BlockOperation {  [weak self] in
                 print("••> Move   item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
@@ -1534,15 +1536,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the album is not presented.
-        if view.window == nil || updateOperations.isEmpty { return }
-        
-        // Update objects
+        // Check that this update should be managed by this view controller
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
+
+        // Move objects
         imagesCollection?.performBatchUpdates({ [weak self] in
-            self?.updateOperations.forEach({ $0.start() })
+            self?.moveOperations.forEach({ $0.start() })
         })
 
-        // Delete objects
+        // Update objects
         imagesCollection?.performBatchUpdates({ [weak self] in
             self?.updateOperations.forEach({ $0.start()})
         }) { [weak self] _ in
