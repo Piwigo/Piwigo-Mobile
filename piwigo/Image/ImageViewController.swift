@@ -42,7 +42,7 @@ class ImageViewController: UIViewController {
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
+    var favoriteBarButton: UIBarButtonItem?
     lazy var shareBarButton: UIBarButtonItem = getShareButton()
     lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
@@ -314,7 +314,8 @@ class ImageViewController: UIViewController {
                     var toolBarItems = [shareBarButton, UIBarButtonItem.space(), deleteBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()], at: 2)
+                        favoriteBarButton = getFavoriteBarButton()
+                        toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()], at: 2)
                     }
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -326,7 +327,8 @@ class ImageViewController: UIViewController {
                     var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        rightBarButtonItems.insert(contentsOf: [favoriteBarButton], at: 2)
+                        favoriteBarButton = getFavoriteBarButton()
+                        rightBarButtonItems.insert(contentsOf: [favoriteBarButton!], at: 2)
                     }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
 
@@ -338,6 +340,7 @@ class ImageViewController: UIViewController {
             }
             else if NetworkVars.userStatus != .guest,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                favoriteBarButton = getFavoriteBarButton()
                 if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
                     // No button on the right
                     navigationItem.rightBarButtonItems = []
@@ -346,12 +349,12 @@ class ImageViewController: UIViewController {
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                     setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                                     favoriteBarButton!].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 }
                 else {
                     // All buttons in navigation bar
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+                    navigationItem.setRightBarButtonItems([favoriteBarButton!, shareBarButton].compactMap { $0 }, animated: true)
 
                     // Hide navigation toolbar
                     isToolbarRequired = false
@@ -386,7 +389,8 @@ class ImageViewController: UIViewController {
                                     UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()]
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()]
                         .compactMap { $0 }, at: 4)
                 }
                 isToolbarRequired = true
@@ -408,7 +412,8 @@ class ImageViewController: UIViewController {
                 var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, UIBarButtonItem.space()]
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()]
                         .compactMap { $0 }, at: 2)
                 }
                 isToolbarRequired = true
@@ -418,6 +423,7 @@ class ImageViewController: UIViewController {
             }
             else if NetworkVars.userStatus != .guest,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                favoriteBarButton = getFavoriteBarButton()
                 if orientation.isPortrait {
                     // No button on the right
                     navigationItem.rightBarButtonItems = []
@@ -426,10 +432,10 @@ class ImageViewController: UIViewController {
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                     setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                                     favoriteBarButton!].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 } else {
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+                    navigationItem.setRightBarButtonItems([favoriteBarButton!, shareBarButton].compactMap { $0 }, animated: true)
 
                     // Hide navigation toolbar
                     isToolbarRequired = false
@@ -454,20 +460,27 @@ class ImageViewController: UIViewController {
         moveBarButton.isEnabled = state
         setThumbnailBarButton.isEnabled = state
         deleteBarButton.isEnabled = state
-        favoriteBarButton.isEnabled = state
+        favoriteBarButton?.isEnabled = state
     }
 
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             LoginUtilities.checkSession(ofUser: user) { [self] in
-                print("••> Retrieving data of image #\(imageData.pwgID)")
-                self.imageProvider.getInfos(forID: imageData.pwgID, inCategoryId: self.categoryId) {
+                let imageID = imageData.pwgID
+                print("••> Retrieving data of image \(imageID)")
+                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
                     DispatchQueue.main.async {
-                        // Update image data
-                        self.imageData = self.images?.object(at: IndexPath(item: self.imageIndex, section: 0))
                         // Enable buttons
-                        self.setEnableStateOfButtons(true)
+                        if let vcs = self.pageViewController?.viewControllers as? [ImagePreviewViewController],
+                           let pvc = vcs.first(where: {$0.imageData.pwgID == imageID}) {
+                            // Update image data
+                            let index = pvc.imageIndex
+                            pvc.imageData = self.images?.object(at: IndexPath(item: index, section: 0))
+                            // Update navigation bar
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                        }
                     }
                 } failure: { error in
                     // Display error only when image data is incomplete
@@ -606,6 +619,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         
         // Remember index of presented page
+        print("••> Did finish animating page view controller for image at index \(pvc.imageIndex)")
         imageIndex = pvc.imageIndex
 
         // Sets new image data
@@ -629,6 +643,7 @@ extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
     func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
+        print("••> Create page view controller for image at index \(index)")
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
 
         // Retrieve up-to-date complete image data if needed
