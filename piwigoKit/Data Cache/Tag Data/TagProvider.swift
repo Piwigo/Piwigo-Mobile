@@ -82,15 +82,10 @@ public class TagProvider: NSObject {
     */
     private let batchSize = 256
     private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
-        // Get current server object
-        guard let server = serverProvider.getServer(inContext: bckgContext) else {
-            fatalError("Unresolved error!")
-        }
-        
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
         guard tagPropertiesArray.isEmpty == false else {
-            _ = importOneBatch([TagProperties](), from: server, asAdmin: asAdmin)
+            _ = importOneBatch([TagProperties](), asAdmin: asAdmin)
             return
         }
         
@@ -113,7 +108,7 @@ public class TagProvider: NSObject {
             let tagsBatch = Array(tagPropertiesArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(tagsBatch, from: server, asAdmin: asAdmin) {
+            if !importOneBatch(tagsBatch, asAdmin: asAdmin) {
                 return
             }
         }
@@ -128,13 +123,18 @@ public class TagProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ tagsBatch: [TagProperties], from server: Server, asAdmin: Bool) -> Bool {
+    private func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool) -> Bool {
         
         var success = false
 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
+            
+            // Get current server object
+            guard let server = serverProvider.getServer(inContext: bckgContext) else {
+                fatalError("Unresolved error!")
+            }
             
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
@@ -271,13 +271,11 @@ public class TagProvider: NSObject {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                if let server = self.serverProvider.getServer(inContext: self.bckgContext),
-                   self.importOneBatch([newTag], from: server, asAdmin: true) {
+                if self.importOneBatch([newTag], asAdmin: true) {
                     completionHandler(nil)
                 } else {
                     completionHandler(TagError.creationError)
                 }
-
             } catch {
                 // Alert the user if data cannot be digested.
                 let error = error as NSError

@@ -292,11 +292,6 @@ public class AlbumProvider: NSObject {
     private let batchSize = 256
     public func importAlbums(_ albumArray: [CategoryData], recursively: Bool = false,
                              inParent parentId: Int32) throws {
-        // Get current user object (will create server object if needed)
-        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            fatalError("Unresolved error!")
-        }
-
         // We keep album IDs of albums to delete
         // Initialised and then updated at each iteration
         var albumToDeleteIDs: Set<Int32>? = nil
@@ -305,7 +300,7 @@ public class AlbumProvider: NSObject {
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
             _ = importOneBatch([CategoryData](), recursively: recursively,
-                               inParent: parentId, for: user, albumIDs: albumToDeleteIDs)
+                               inParent: parentId, albumIDs: albumToDeleteIDs)
             return
         }
         
@@ -329,8 +324,7 @@ public class AlbumProvider: NSObject {
             
             // Stop the entire import if any batch is unsuccessful.
             let (success, albumIDs) = importOneBatch(albumsBatch, recursively: recursively,
-                                                     inParent: parentId, for: user,
-                                                     albumIDs: albumToDeleteIDs)
+                                                     inParent: parentId, albumIDs: albumToDeleteIDs)
             if success ==  false { return }
             albumToDeleteIDs = albumIDs
         }
@@ -346,15 +340,19 @@ public class AlbumProvider: NSObject {
      whether the import is successful.
      */
     private func importOneBatch(_ albumsBatch: [CategoryData], recursively: Bool = false,
-                                inParent parentId: Int32, for user: User,
-                                albumIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
+                                inParent parentId: Int32, albumIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
         var success = false
         var albumToDeleteIDs = Set<Int32>()
 
-        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
             
+            // Get current user object (will create server object if needed)
+            guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
+                fatalError("Unresolved error!")
+            }
+
             // Retrieve albums in persistent store
             let fetchRequest = Album.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]

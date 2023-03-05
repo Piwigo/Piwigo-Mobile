@@ -266,18 +266,10 @@ public class ImageProvider: NSObject {
                               inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
                               sort: pwgImageSort = .dateCreatedDescending,
                               fromRank rank: Int64 = Int64.min) throws {
-        // Get current user object (will create server object if needed)
-        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            fatalError("Unresolved error — Could not get user object!")
-        }
-        guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
-            fatalError("Unresolved error — Could not get album object!")
-        }
-        
         // We shall perform at least one import in case where
         // the user did delete all images
         guard imageArray.isEmpty == false else {
-            _ = importOneBatch([ImagesGetInfo](), inAlbum: album, user: user)
+            _ = importOneBatch([ImagesGetInfo](), inAlbum: albumId)
             return
         }
         
@@ -301,10 +293,9 @@ public class ImageProvider: NSObject {
             
             // Stop the entire import if any batch is unsuccessful.
             let startRank = rank + Int64(batchStart)
-            if !importOneBatch(imagesBatch, inAlbum: album,
+            if !importOneBatch(imagesBatch, inAlbum: albumId,
                                withAlbumUpdate: withAlbumUpdate,
-                               sort: sort, fromRank: startRank,
-                               user: user) {
+                               sort: sort, fromRank: startRank) {
                 return
             }
         }
@@ -320,15 +311,22 @@ public class ImageProvider: NSObject {
      whether the import is successful.
      */
     private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
-                                inAlbum album: Album, withAlbumUpdate: Bool = false,
+                                inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
                                 sort: pwgImageSort = .dateCreatedDescending,
-                                fromRank startRank: Int64 = Int64.min,
-                                user: User) -> Bool {
+                                fromRank startRank: Int64 = Int64.min) -> Bool {
         var success = false
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
+            
+            // Get current user object (will create server object if needed)
+            guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
+                fatalError("Unresolved error — Could not get user object!")
+            }
+            guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
+                fatalError("Unresolved error — Could not get album object!")
+            }
             
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let imageIds = Set(imagesBatch.compactMap({$0.id}))

@@ -48,11 +48,6 @@ public class UploadProvider: NSObject {
             return
         }
         
-        // Get current user account
-        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            return
-        }
-        
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
         let count = uploadRequest.count
@@ -72,7 +67,7 @@ public class UploadProvider: NSObject {
             let uploadsBatch = Array(uploadRequest[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(uploadsBatch, for: user) {
+            if !importOneBatch(uploadsBatch) {
                 return
             }
         }
@@ -88,13 +83,18 @@ public class UploadProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ uploadsBatch: [UploadProperties], for user: User) -> Bool {
+    private func importOneBatch(_ uploadsBatch: [UploadProperties]) -> Bool {
         
         var success = false
                 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
+            
+            // Get current user account
+            guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
+                return
+            }
             
             // Retrieve existing uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
