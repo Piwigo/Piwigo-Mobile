@@ -1487,20 +1487,18 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             })
         case NSFetchedResultsChangeType.update.rawValue:
             guard let indexPath = indexPath else { return }
-            if anObject is Image {
+            if let image = anObject as? Image {
                 let cellIndexPath = IndexPath(item: indexPath.item, section: 1)
                 updateOperations.append( BlockOperation {  [weak self] in
-                    print("••> Update image of album #\(fetchDelegate.categoryId) at \(cellIndexPath)")
-                    if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell,
-                       let image = controller.object(at: indexPath) as? Image {
+                    print("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell {
                         cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
                     }
                 })
-            } else {
+            } else if let album = anObject as? Album {
                 updateOperations.append( BlockOperation {  [weak self] in
-                    print("••> Update album of album #\(fetchDelegate.categoryId) at \(indexPath)")
-                    if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
-                       let album = controller.object(at: indexPath) as? Album {
+                    print("••> Update album at \(indexPath) of album #\(fetchDelegate.categoryId)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
                         cell.albumData = album
                     }
                 })
