@@ -455,6 +455,7 @@ class ImageViewController: UIViewController {
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
     func setEnableStateOfButtons(_ state: Bool) {
+        print("••> \(state ? "Enable" : "Disable") buttons")
         actionBarButton?.isEnabled = state
         shareBarButton.isEnabled = state
         moveBarButton.isEnabled = state
@@ -631,6 +632,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
         setTitleViewFromImageData()
         updateNavBar()
+        setEnableStateOfButtons(imageData.fileSize != Int64.zero)
 
         // Scroll album collection view to keep the selected image centered on the screen
         imgDetailDelegate?.didSelectImage(withId: imageData.pwgID)
@@ -648,17 +650,10 @@ extension ImageViewController: UIPageViewControllerDataSource
 
         // Retrieve up-to-date complete image data if needed
         guard let imageData = images?.object(at: IndexPath(item: index, section: 0)) else { return nil }
-        if imageData.fileSize == Int64.zero {
-            // Disable buttons until image data are known
-            setEnableStateOfButtons(false)
-            // Retrieve image data
-            retrieveImageData(imageData, isIncomplete: true)
-        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
+        if imageData.fileSize == Int64.zero ||
+            imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
             // Retrieve image data and update cache
             retrieveImageData(imageData, isIncomplete: false)
-        } else {
-            // Enable buttons
-            setEnableStateOfButtons(true)
         }
 
         // Create image preview
