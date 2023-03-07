@@ -314,7 +314,11 @@ extension AlbumViewController
             if !imageIDs.isEmpty {
                 let images = self.imageProvider.getImages(inContext: self.mainContext, withIds: imageIDs)
                 self.albumData?.removeFromImages(images)
+            } else if self.albumData?.nbImages ?? Int64.zero == Int64.zero {
+                self.albumData?.images = Set<Image>()
             }
+            
+            try? self.mainContext.save()
         }
         
         // Marked previously uploaded images as deleted from the Piwigo server
