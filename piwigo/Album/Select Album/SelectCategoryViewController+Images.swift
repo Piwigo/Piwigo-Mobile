@@ -189,7 +189,7 @@ extension SelectCategoryViewController {
                 // Hide HUD and dismiss album selector
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                     self.dismiss(animated: true) {
-                        // Remove image from ImageDetailImage view
+                        // Remove image from ImageViewController
                         self.imageRemovedDelegate?.didRemoveImage()
                     }
                 }
