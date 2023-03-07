@@ -311,11 +311,13 @@ extension AlbumViewController
             self.albumData?.dateGetImages = Date()
             
             // Remove images if necessary
-            if !imageIDs.isEmpty {
-                let images = self.imageProvider.getImages(inContext: self.mainContext, withIds: imageIDs)
-                self.albumData?.removeFromImages(images)
-            } else if self.albumData?.nbImages ?? Int64.zero == Int64.zero {
-                self.albumData?.images = Set<Image>()
+            if let images = self.albumData.images {
+                if imageIDs.isEmpty == false {
+                    let toRemove = images.filter({ imageIDs.contains($0.pwgID) })
+                    self.albumData.removeFromImages(toRemove)
+                } else if self.albumData.nbImages == Int64.zero {
+                    self.albumData.removeFromImages(images)
+                }
             }
             
             try? self.mainContext.save()
