@@ -178,7 +178,7 @@ extension AlbumViewController
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
         // Remember which images belong to this album
         // from main context before calling background tasks
-        let oldImageIds = Set(albumData?.images?.map({$0.pwgID}) ?? [])
+        let oldImageIds = Set(albumData.images?.map({$0.pwgID}) ?? [])
 
         // Use the AlbumProvider to create the album data. On completion,
         // handle general UI updates and error alerts on the main queue.
@@ -210,16 +210,10 @@ extension AlbumViewController
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Fetch image data?
-                let albumNbImages = self.albumData?.nbImages ?? 0
-                if self.categoryId == 0 || albumNbImages == 0 {
+                let nbImages = self.albumData.nbImages
+                if self.categoryId == 0 || nbImages == 0 {
                     // Done fetching images
                     self.removeImageWithIDs(oldImageIds)
-                    completion()
-                    return
-                }
-                
-                // Check that we have an album with ID
-                guard let albumId = albumData?.pwgID else {
                     completion()
                     return
                 }
@@ -227,9 +221,9 @@ extension AlbumViewController
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                let (quotient, remainder) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+                let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(perPage))
                 let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
-                self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
+                self.fetchImages(ofAlbumWithId: albumData.pwgID, imageIds: oldImageIds,
                                  fromPage: 0, toPage: lastPage - 1, perPage: perPage,
                                  completion: completion)
                 return
@@ -259,11 +253,11 @@ extension AlbumViewController
                     newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
                     // Update smart album data
-                    if albumData?.nbImages != totalCount {
-                        albumData?.nbImages = totalCount
+                    if albumData.nbImages != totalCount {
+                        albumData.nbImages = totalCount
                     }
-                    if albumData?.totalNbImages != totalCount {
-                        albumData?.totalNbImages = totalCount
+                    if albumData.totalNbImages != totalCount {
+                        albumData.totalNbImages = totalCount
                     }
                     // Save changes
                     DispatchQueue.main.async { [self] in
@@ -308,7 +302,7 @@ extension AlbumViewController
         // Done fetching images ► Remove non-fetched images from album
         DispatchQueue.main.async {
             // Remember when images were fetched
-            self.albumData?.dateGetImages = Date()
+            self.albumData.dateGetImages = Date()
             
             // Remove images if necessary
             if let images = self.albumData.images {

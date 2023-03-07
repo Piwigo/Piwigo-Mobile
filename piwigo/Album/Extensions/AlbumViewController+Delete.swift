@@ -160,13 +160,11 @@ extension AlbumViewController
         // Send request to Piwigo server
         LoginUtilities.checkSession(ofUser: user) {  [self] in
             ImageUtilities.setInfos(with: paramsDict) { [self] in
-                if let albumData = albumData {
-                    // Remove image from source album
-                    imageData.removeFromAlbums(albumData)
-                    
-                    // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
-                }
+                // Remove image from source album
+                imageData.removeFromAlbums(albumData)
+                
+                // Update albums
+                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
 
                 // Next image
                 imagesToRemove.removeFirst()

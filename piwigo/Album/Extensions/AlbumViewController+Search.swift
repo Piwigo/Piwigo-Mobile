@@ -47,11 +47,11 @@ extension AlbumViewController: UISearchControllerDelegate
         
         // Initialise albumData
         albumData = albumProvider.getAlbum(inContext: mainContext,
-                                           ofUser: user, withId: categoryId)
-        albumData?.query = ""
-        albumData?.nbImages = Int64.min
-        albumData?.totalNbImages = Int64.min
-        albumData?.images = Set<Image>()
+                                           ofUser: user, withId: categoryId)!
+        albumData.query = ""
+        albumData.nbImages = Int64.min
+        albumData.totalNbImages = Int64.min
+        albumData.images = Set<Image>()
 
         // Update albums
         var andPredicates = getAlbumPredicates()
@@ -88,7 +88,7 @@ extension AlbumViewController: UISearchControllerDelegate
         debugPrint("didDismissSearchController…")
         // Update albumData
         albumData = albumProvider.getAlbum(inContext: mainContext,
-                                           ofUser: user, withId: categoryId)
+                                           ofUser: user, withId: categoryId)!
         // Update albums and images
         resetPredicatesAndPerformFetch()
 
@@ -140,10 +140,10 @@ extension AlbumViewController: UISearchResultsUpdating
             }
             
             // Reset search album
-            albumData?.query = ""
-            albumData?.nbImages = Int64.min
-            albumData?.totalNbImages = Int64.min
-            albumData?.images = Set<Image>()
+            albumData.query = ""
+            albumData.nbImages = Int64.min
+            albumData.totalNbImages = Int64.min
+            albumData.images = Set<Image>()
             do {
                 try mainContext.save()
             } catch let error as NSError {
@@ -155,7 +155,7 @@ extension AlbumViewController: UISearchResultsUpdating
         }
         
         // Resfresh image collection for new query only
-        if albumData?.query != searchString {
+        if albumData.query != searchString {
             // Cancel active image data session if any
             PwgSession.shared.dataSession.getAllTasks { tasks in
                 tasks.forEach { task in

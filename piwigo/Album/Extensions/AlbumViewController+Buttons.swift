@@ -420,9 +420,8 @@ extension AlbumViewController
     // MARK: - Buttons in Preview mode
     func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
         // Get album name
-        let albumName = albumData?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
         if #available(iOS 13.0, *) {
-            self.view?.window?.windowScene?.title = albumName
+            self.view?.window?.windowScene?.title = albumData.name
         }
 
         // Do not present a custom title view for the default album or a smart album
@@ -430,7 +429,7 @@ extension AlbumViewController
             if categoryId == 0 {
                 title = NSLocalizedString("tabBar_albums", comment: "Albums")
             } else {
-                title = albumName
+                title = albumData.name
             }
             return
         }
@@ -446,7 +445,7 @@ extension AlbumViewController
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        let wholeRange = NSRange(location: 0, length: albumName.count)
+        let wholeRange = NSRange(location: 0, length: albumData.name.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
@@ -454,13 +453,13 @@ extension AlbumViewController
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
             NSAttributedString.Key.paragraphStyle: style
         ]
-        let attTitle = NSMutableAttributedString(string: albumName)
+        let attTitle = NSMutableAttributedString(string: albumData.name)
         attTitle.addAttributes(attributes, range: wholeRange)
         titleLabel.attributedText = attTitle
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone
-        if let lastDate = albumData?.dateLast, lastDate != .distantPast,
+        if albumData.dateLast != .distantPast,
            (UIDevice.current.userInterfaceIdiom == .phone &&
             !UIApplication.shared.statusBarOrientation.isLandscape) {
             // Get last updated date
@@ -468,9 +467,9 @@ extension AlbumViewController
             if #available(iOS 13.0, *) {
                 let formatter = RelativeDateTimeFormatter()
                 formatter.dateTimeStyle = .named
-                lastUpdated = formatter.localizedString(for: lastDate, relativeTo: Date())
+                lastUpdated = formatter.localizedString(for: albumData.dateLast, relativeTo: Date())
             } else {
-                lastUpdated = DateFormatter.localizedString(from: lastDate,
+                lastUpdated = DateFormatter.localizedString(from: albumData.dateLast,
                                                             dateStyle: .short, timeStyle: .short)
             }
             
@@ -588,7 +587,7 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if albumData?.nbImages ?? 0 > 0 {
+        } else if albumData.nbImages > 0 {
             // Button for activating the selection mode
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
             selectBarButton.isEnabled = (images.fetchedObjects?.count ?? 0) > 0

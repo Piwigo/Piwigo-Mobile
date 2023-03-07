@@ -155,10 +155,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return user
     }()
     
-    lazy var albumData: Album? = {
+    lazy var albumData: Album = {
         return currentAlbumData()
     }()
-    private func currentAlbumData() -> Album? {
+    private func currentAlbumData() -> Album {
         // Did someone delete this album?
         if let album = albumProvider.getAlbum(inContext: mainContext,
                                               ofUser: user, withId: categoryId) {
@@ -176,8 +176,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Default album deleted ► Back to root album
         categoryId = Int32.zero
-        let rootAlbum = albumProvider.getAlbum(inContext: mainContext,
-                                               ofUser: user, withId: Int32.zero)
+        guard let rootAlbum = albumProvider.getAlbum(inContext: mainContext,
+                                                     ofUser: user, withId: Int32.zero) else {
+            fatalError("••> Could not create root album!")
+        }
         changeAlbumID()
         return rootAlbum
     }
@@ -531,10 +533,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         print("••> viewDidAppear     => ID:\(categoryId)")
 
         // Check session status before loading album and image data
-        let lastLoad = albumData?.dateGetImages ?? .distantPast
+        let lastLoad = albumData.dateGetImages
         let noSmartAlbumData = self.categoryId <= 0 && self.images.fetchedObjects?.isEmpty ?? true
         let nbImages = self.images.fetchedObjects?.count ?? Int.zero
-        let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
+        let expectedNbImages = self.albumData.nbImages
         if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
             lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             LoginUtilities.checkSession(ofUser: user) {
@@ -591,7 +593,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
-        if albumData?.upperIds.count ?? 0 > 3,
+        if albumData.upperIds.count > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
             displayHelpPagesWithID.append(8) // i.e. back to parent album
         }
@@ -768,7 +770,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // or when we have less than half of the images in cache
             let noSmartAlbumData = self.categoryId <= 0 && self.albums.fetchedObjects?.isEmpty ?? true
             let nbImages = self.images.fetchedObjects?.count ?? Int.zero
-            let expectedNbImages = self.albumData?.nbImages ?? Int64.zero
+            let expectedNbImages = self.albumData.nbImages
             if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
                 // Display HUD while downloading album data
                 self.navigationController?.showPiwigoHUD(
@@ -785,6 +787,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Pause upload manager
         UploadManager.shared.isPaused = true
+        
+        // Check that the root album exists
+        // (might have been deleted with a clear of the cache)
+        if categoryId == Int32.zero {
+            albumData = currentAlbumData()
+        }
         
         // Re-login and then fetch album and image data
         performRelogin { [self] in
@@ -954,7 +962,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             })
         } else {
             // Number of images in current album
-            totalCount = albumData?.nbImages ?? Int64.zero
+            totalCount = albumData.nbImages
         }
         
         // Build footer content
@@ -989,7 +997,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             var header: AlbumHeaderReusableView? = nil
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                let desc = NSMutableAttributedString(attributedString: albumData?.comment ?? NSAttributedString())
+                let desc = NSMutableAttributedString(attributedString: albumData.comment)
                 let wholeRange = NSRange(location: 0, length: desc.string.count)
                 let style = NSMutableParagraphStyle()
                 style.alignment = NSTextAlignment.center
@@ -1033,10 +1041,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Section 0 — Album collection */:
             // Header height?
-            guard let comment = albumData?.comment, !comment.string.isEmpty else {
+            guard !albumData.comment.string.isEmpty else {
                 return CGSize.zero
             }
-            let desc = NSMutableAttributedString(attributedString: comment)
+            let desc = NSMutableAttributedString(attributedString: albumData.comment)
             let wholeRange = NSRange(location: 0, length: desc.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
@@ -1129,7 +1137,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             if collectionView.numberOfItems(inSection: section) == 0 {
                 return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
-            } else if albumData?.comment.string.isEmpty ?? true {
+            } else if albumData.comment.string.isEmpty {
                 return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             } else {
