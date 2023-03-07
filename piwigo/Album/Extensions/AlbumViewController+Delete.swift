@@ -123,6 +123,13 @@ extension AlbumViewController
         if imagesToRemove.isEmpty {
             if toDelete.isEmpty {
                 updatePiwigoHUDwithSuccess() { [self] in
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save moved images \(error), \(error.userInfo)")
+                    }
+                    // Hide HUD and deselect images
                     hidePiwigoHUD() { [self] in
                         cancelSelect()
                     }
@@ -191,6 +198,13 @@ extension AlbumViewController
             cancelDismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
                 hidePiwigoHUD() { [unowned self] in
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save moved images \(error), \(error.userInfo)")
+                    }
+                    // Hide HUD and update buttons
                     updateButtonsInSelectionMode()
                 }
             } dismiss: { [unowned self] in
@@ -203,6 +217,13 @@ extension AlbumViewController
             dismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
                 hidePiwigoHUD() { [unowned self] in
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save moved images \(error), \(error.userInfo)")
+                    }
+                    // Hide HUD and update buttons
                     updateButtonsInSelectionMode()
                 }
             }
@@ -212,6 +233,13 @@ extension AlbumViewController
     func deleteImages(_ toDelete: Set<Image>) {
         if toDelete.isEmpty {
             updatePiwigoHUDwithSuccess() { [self] in
+                // Save changes
+                do {
+                    try self.mainContext.save()
+                } catch let error as NSError {
+                    print("Could not save moved images \(error), \(error.userInfo)")
+                }
+                // Hide HUD and deselect images
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     cancelSelect()
                 }
@@ -270,6 +298,13 @@ extension AlbumViewController
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+                // Save changes
+                do {
+                    try self.mainContext.save()
+                } catch let error as NSError {
+                    print("Could not save moved images \(error), \(error.userInfo)")
+                }
+                // Hide HUD and update buttons
                 hidePiwigoHUD() { [self] in
                     updateButtonsInSelectionMode()
                 }
