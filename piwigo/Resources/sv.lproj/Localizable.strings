@@ -142,7 +142,7 @@
 "severalSubAlbumsCount" = "%@ underalbum";
 
 // Albums view
-"categoryUpdating" = "Updating…";
+"categoryUpdating" = "Uppdaterar…";
 "categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
@@ -763,8 +763,9 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "Rensa cache";
-"settings_cacheClearAll" = "Clear All";
+"settings_cacheClearAll" = "Rensa alla";
 "settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 
 // Settings — Appearance

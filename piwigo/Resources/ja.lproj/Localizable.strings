@@ -763,6 +763,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "キャッシュをクリア";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";

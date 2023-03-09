@@ -115,6 +115,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
         sizes = getPhotoSizes()
         self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+        self.dataCacheSize = server.getCoreDataStoreSize()
     }
 
     @objc func applyColorPalette() {
@@ -475,7 +476,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 2
+            nberOfRows = 3
         case .clear:
             nberOfRows = 1
         case .about:
@@ -1145,10 +1146,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             cell.accessibilityIdentifier = "colorPalette"
             tableViewCell = cell
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .cache /* Cache Settings */:
             switch indexPath.row {
-            case 0 /* Album and Photo Thumbnails */:
+            case 0 /* Core Data store */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("settings_database", comment: "Data")
+                cell.configure(with: title, detail: self.dataCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "dataCache"
+                tableViewCell = cell
+                
+            case 1 /* Album and Photo Thumbnails */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -1159,7 +1171,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "thumbnailCache"
                 tableViewCell = cell
                 
-            case 1 /* Photos and Videos */:
+            case 2 /* Photos and Videos */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()

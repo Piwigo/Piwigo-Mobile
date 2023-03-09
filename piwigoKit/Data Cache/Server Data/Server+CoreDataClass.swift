@@ -52,6 +52,12 @@ public class Server: NSManagedObject {
     
     
     // MARK: - Cache Management
+    public func getCoreDataStoreSize() -> String {
+        let dataURL = DataDirectories.shared.appGroupDirectory
+        let folderSize = dataURL.folderSize
+        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
+    }
+
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
         var folderSize = UInt64.zero
         let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)

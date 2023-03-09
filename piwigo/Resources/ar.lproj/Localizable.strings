@@ -763,6 +763,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "Clear Cache";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Are you sure you want to clear the photo cache? This will make albums and photos take a while to load again.";

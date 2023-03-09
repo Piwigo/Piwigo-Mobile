@@ -142,7 +142,7 @@
 "severalSubAlbumsCount" = "%@ подальбомов";
 
 // Albums view
-"categoryUpdating" = "Updating…";
+"categoryUpdating" = "Обновление…";
 "categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
 "categoryImageList_selectButton" = "Выбрать";
 "categoryImageList_deselectButton" = "Отменить выбор";
@@ -762,9 +762,10 @@
 "settings_clearClipboardNever" = "Никогда";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache";
+"settingsHeader_cache" = "Кэш";
+"settings_database" = "Данные";
 "settings_cacheClear" = "Очистить кэш-память";
-"settings_cacheClearAll" = "Clear All";
+"settings_cacheClearAll" = "Очистить все";
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 
 // Settings — Appearance

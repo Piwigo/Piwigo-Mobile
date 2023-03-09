@@ -763,6 +763,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Zwischenspeicher";
+"settings_database" = "Daten";
 "settings_cacheClear" = "Zwischenspeicher leeren";
 "settings_cacheClearAll" = "Alle entfernen";
 "settings_cacheClearMsg" = "Sind Sie sicher, dass Sie den Foto-Cache löschen möchten? Alben und Fotos werden eine Weile benötigen, um erneut geladen zu werden.";

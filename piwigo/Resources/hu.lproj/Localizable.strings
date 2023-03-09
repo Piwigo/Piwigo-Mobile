@@ -142,7 +142,7 @@
 "severalSubAlbumsCount" = "%@ alalbum";
 
 // Albums view
-"categoryUpdating" = "Updating…";
+"categoryUpdating" = "Frissítés…";
 "categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
@@ -762,9 +762,10 @@
 "settings_clearClipboardNever" = "Soha";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache";
+"settingsHeader_cache" = "Gyorsítótár";
+"settings_database" = "Adat";
 "settings_cacheClear" = "Gyorsítótár törlése";
-"settings_cacheClearAll" = "Clear All";
+"settings_cacheClearAll" = "Minden elem törlése";
 "settings_cacheClearMsg" = "Biztosan ki akarod törölni a fotók gyorsítótárát? Ettől átmenetileg lassabb lesz az albumok és fotók betöltése.";
 
 // Settings — Appearance

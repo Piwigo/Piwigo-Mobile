@@ -763,6 +763,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "清除缓存";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
