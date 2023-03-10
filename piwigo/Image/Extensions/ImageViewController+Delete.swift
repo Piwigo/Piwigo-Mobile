@@ -227,56 +227,79 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             return
         }
 
-        // Can we present the next image?
-        if imageIndex < nbImages {
-            // Create view controller for presenting next image
-            guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
-            nextImage.imagePreviewDelegate = self
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
-                // Set title view
-                self.setTitleViewFromImageData()
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = (imageData?.albums ?? Set<Album>())
-                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
+        // Was user scrolling towards next images?
+        if didPresentPageAfter {
+            // Can we present the next image?
+            if imageIndex < nbImages {
+                presentNextImage()
+                return
             }
-            return
+
+            // Can we present the preceding image?
+            if imageIndex > 0 {
+                presentPreviousImage()
+                return
+            }
+        } else {
+            // Can we present the preceding image?
+            if imageIndex > 0 {
+                presentPreviousImage()
+                return
+            }
+
+            // Can we present the next image?
+            if imageIndex < nbImages {
+                presentNextImage()
+                return
+            }
+        }        
+    }
+    
+    private func presentNextImage() {
+        // Create view controller for presenting next image
+        guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
+        nextImage.imagePreviewDelegate = self
+
+        // This changes the View Controller
+        // and calls the presentationIndexForPageViewController datasource method
+        pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+            // Update image data
+            self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+            // Set title view
+            self.setTitleViewFromImageData()
+            // Re-enable buttons
+            self.setEnableStateOfButtons(true)
+            // Reset favorites button
+            // pwg.users.favorites… methods available from Piwigo version 2.10
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                let isFavorite = (imageData?.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+            }
         }
+    }
+    
+    private func presentPreviousImage() {
+        // Create view controller for presenting next image
+        imageIndex -= 1
+        guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
+        prevImage.imagePreviewDelegate = self
 
-        // Can we present the preceding image?
-        if imageIndex > 0 {
-            // Create view controller for presenting next image
-            imageIndex -= 1
-            guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
-            prevImage.imagePreviewDelegate = self
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
-                // Set title view
-                self.setTitleViewFromImageData()
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = (imageData?.albums ?? Set<Album>())
-                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
+        // This changes the View Controller
+        // and calls the presentationIndexForPageViewController datasource method
+        pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+            // Update image data
+            self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+            // Set title view
+            self.setTitleViewFromImageData()
+            // Re-enable buttons
+            self.setEnableStateOfButtons(true)
+            // Reset favorites button
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                let isFavorite = (imageData?.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
             }
-            return
         }
     }
 }

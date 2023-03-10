@@ -13,8 +13,6 @@ import piwigoKit
 
 protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int64)
-//    func didUpdateImage(withData imageData: PiwigoImageData)
-//    func needToLoadMoreImages()
 }
 
 class ImageViewController: UIViewController {
@@ -33,6 +31,7 @@ class ImageViewController: UIViewController {
     var imageData: Image?
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
+    var didPresentPageAfter = true
     var pageViewController: UIPageViewController?
 
     // MARK: - Navigation Bar & Toolbar Buttons
@@ -672,6 +671,9 @@ extension ImageViewController: UIPageViewControllerDataSource
             // Reached the end of the category
             return nil
         }
+        
+        // Remember that the next page was presented
+        didPresentPageAfter = true
 
         // Create view controller for presenting next image
         return imagePageViewController(atIndex: imageIndex + 1)
@@ -684,6 +686,9 @@ extension ImageViewController: UIPageViewControllerDataSource
         if imageIndex - 1 < 0 {
             return nil
         }
+        
+        // Remember that the previous page was presented
+        didPresentPageAfter = false
 
         // Create view controller
         return imagePageViewController(atIndex: imageIndex - 1)
