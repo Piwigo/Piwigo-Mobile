@@ -306,6 +306,7 @@ public class TagProvider: NSObject {
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+            fetchRequest.returnsObjectsAsFaults = false
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

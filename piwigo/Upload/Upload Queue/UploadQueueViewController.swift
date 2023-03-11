@@ -39,6 +39,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 

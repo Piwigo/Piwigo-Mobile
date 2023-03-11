@@ -207,6 +207,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         var andPredicates = getAlbumPredicates()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 
@@ -324,6 +325,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         var andPredicates = getImagePredicates()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = AlbumUtilities.numberOfImagesToDownloadPerPage()
+        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 

@@ -61,6 +61,7 @@ class TagSelectorViewController: UITableViewController {
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         fetchRequest.fetchBatchSize = 20
+        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
     lazy var tags: NSFetchedResultsController<Tag> = {
