@@ -1534,6 +1534,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.user = user
                 categoryVC.albumProvider = albumProvider
                 categoryVC.savingContext = savingContext
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,

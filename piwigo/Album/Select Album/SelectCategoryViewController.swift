@@ -156,15 +156,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
-        var recentCatIds = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)})
+        var recentCatIds = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
         // Root album proposed for some actions, input album not proposed
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
-            recentCatIds.removeAll(where: {$0 == Int32.zero})
+            recentCatIds.remove(Int32.zero)
         }
         // Removes current album
-        recentCatIds.removeAll(where: {$0 == self.inputAlbum.pwgID})
+        recentCatIds.remove(self.inputAlbum.pwgID)
         // Removes parent album
-        recentCatIds.removeAll(where: {$0 == self.inputAlbum.parentId})
+        recentCatIds.remove(self.inputAlbum.parentId)
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.returnsObjectsAsFaults = false
@@ -186,9 +186,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         
-        // Only show albums at the root at start
+        // Don't show smart albums
         var andPredicates = predicates
         andPredicates.append(NSPredicate(format: "pwgID > 0"))
+
+        // Show sub-albums of deployed albums
         var parentIDs = albumsShowingSubAlbums
         parentIDs.insert(Int32.zero)
         andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
@@ -196,8 +198,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // The root album is proposed for some actions
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
-            let rootPredicate = NSPredicate(format: "pwgID == 0")
-            fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicate, albumPredicates])
+            var andPredicates = predicates
+            andPredicates.append(NSPredicate(format: "pwgID == 0"))
+            let rootPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicates, albumPredicates])
         } else {
             fetchRequest.predicate = albumPredicates
         }
@@ -722,31 +726,48 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
-            if albumData.pwgID == inputAlbum.pwgID { return false }
+            print("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
+            if albumData.pwgID == inputAlbum.pwgID {
+                return false
+            }
             
         case .moveAlbum:
             // Do nothing if this is the input category
-            if albumData.pwgID == inputAlbum.pwgID { return false }
+            if albumData.pwgID == inputAlbum.pwgID {
+                return false
+            }
             // User cannot move album to current parent album or in itself
             if albumData.pwgID == 0 {  // upperCategories is nil for root
-                if inputAlbum.parentId == 0 { return false }
+                if inputAlbum.parentId == 0 {
+                    return false
+                }
             } else if (albumData.pwgID == inputAlbum.parentId) ||
                 albumData.upperIds.components(separatedBy: ",")
-                .compactMap({Int32($0)}).contains(inputAlbum.pwgID) { return false }
+                .compactMap({Int32($0)}).contains(inputAlbum.pwgID) {
+                return false
+            }
             
         case .setAlbumThumbnail:
             // The root album is not selectable (should not be presented but in case…)
-            if albumData.pwgID == 0 { return false }
+            if albumData.pwgID == 0 {
+                return false
+            }
 
         case .setAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
-            if albumData.pwgID == 0 { return false }
+            if albumData.pwgID == 0 {
+                return false
+            }
 
         case .copyImage, .copyImages, .moveImage, .moveImages:
             // The root album is not selectable (should not be presented but in case…)
-            if albumData.pwgID == 0 { return false }
+            if albumData.pwgID == 0 {
+                return false
+            }
             // Albums containing all the images are not selectable
-            if commonCatIDs.contains(albumData.pwgID) { return false }
+            if commonCatIDs.contains(albumData.pwgID) {
+                return false
+            }
 
         default:
             return false
@@ -1104,9 +1125,11 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             albumsShowingSubAlbums.insert(parentAlbum.pwgID)
         }
 
-        // Show albums at the root + those demanded
+        // Don't show smart albums
         var andPredicates = predicates
         andPredicates.append(NSPredicate(format: "pwgID > 0"))
+
+        // Show sub-albums of deployed albums
         var parentIDs = albumsShowingSubAlbums
         parentIDs.insert(Int32.zero)
         andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
@@ -1114,8 +1137,10 @@ extension SelectCategoryViewController: CategoryCellDelegate {
 
         // The root album is proposed for some actions
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
-            let rootPredicate = NSPredicate(format: "pwgID == 0")
-            fetchAlbumsRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicate, albumPredicates])
+            var andPredicates = predicates
+            andPredicates.append(NSPredicate(format: "pwgID == 0"))
+            let rootPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchAlbumsRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicates, albumPredicates])
         } else {
             fetchAlbumsRequest.predicate = albumPredicates
         }
