@@ -762,7 +762,7 @@
 "settings_clearClipboardNever" = "Nigdy";
 
 // Settings — Cache
-"settingsHeader_cache" = "Skrzynka";
+"settingsHeader_cache" = "Pamięć podręczna";
 "settings_database" = "Dane";
 "settings_cacheClear" = "Wyczyść pamięć podręczną";
 "settings_cacheClearAll" = "Wyczyść wszystko";

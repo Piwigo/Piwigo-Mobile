@@ -763,7 +763,7 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "快取";
-"settings_database" = "Data";
+"settings_database" = "資料";
 "settings_cacheClear" = "清理快取";
 "settings_cacheClearAll" = "全部清除";
 "settings_cacheClearMsg" = "你確定要清理照片快取嗎? 這樣相簿跟照片會需要花一段時間重新讀取。";
