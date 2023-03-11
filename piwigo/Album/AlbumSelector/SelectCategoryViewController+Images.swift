@@ -151,17 +151,19 @@ extension SelectCategoryViewController {
         
         // Send request to Piwigo server
         ImageUtilities.setInfos(with: paramsDict) { [self] in
-            // Add image to album
-            albumData.addToImages(imageData)
-
-            // Update albums
-            self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-            
-            // Set album thumbnail with first copied image if necessary
-            if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                albumData.thumbnailId = imageData.pwgID
-                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
+            DispatchQueue.main.async {
+                // Add image to album
+                albumData.addToImages(imageData)
+                
+                // Update albums
+                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                
+                // Set album thumbnail with first copied image if necessary
+                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                    albumData.thumbnailId = imageData.pwgID
+                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                    albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
+                }
             }
             completion(true)
         } failure: { error in
@@ -245,24 +247,26 @@ extension SelectCategoryViewController {
         
         // Send request to Piwigo server
         ImageUtilities.setInfos(with: paramsDict) { [self] in
-            // Add image to target album
-            albumData.addToImages(imageData)
+            DispatchQueue.main.async {
+                // Add image to target album
+                albumData.addToImages(imageData)
 
-            // Update target albums
-            self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-            
-            // Set album thumbnail with first copied image if necessary
-            if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                albumData.thumbnailId = imageData.pwgID
-                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
+                // Update target albums
+                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                
+                // Set album thumbnail with first copied image if necessary
+                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                    albumData.thumbnailId = imageData.pwgID
+                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                    albumData.thumbnailUrl = ImageUtilities.getURLs(imageData, ofMinSize: thumnailSize) as NSURL?
+                }
+
+                // Remove image from source album
+                imageData.removeFromAlbums(self.inputAlbum)
+                
+                // Update albums
+                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
             }
-
-            // Remove image from source album
-            imageData.removeFromAlbums(inputAlbum)
-            
-            // Update albums
-            self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: inputAlbum)
             completion(true)
         } failure: { error in
             fail(error)
