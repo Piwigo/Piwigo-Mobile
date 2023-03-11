@@ -149,7 +149,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     // MARK: - Core Data Source
     lazy var user: User = {
         guard let user = userProvider.getUserAccount(inContext: mainContext) else {
-            fatalError("••> Unknown user instance!")
+            // Unknown user instance! —> Back to login view
+            ClearCache.closeSession { }
+            return User()
         }
         return user
     }()
