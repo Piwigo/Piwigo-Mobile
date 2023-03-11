@@ -83,18 +83,25 @@ public class NetworkVars: NSObject {
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var thumbFolderSize: UInt
     
-    
-    // MARK: - Vars in Memory
-    // Network variables kept in memory    
+    /// - Piwigo server version (stored so that the app knows it after a crash and before re-login)
+    @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public static var pwgVersion: String
+
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
-    public static var usesCommunityPluginV29 = false
+    @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesCommunityPluginV29:Bool
     
     /// - pwg.images.uploadAsync method available, false by default (avaiable since Piwigo 11)
-    public static var usesUploadAsync = false
+    @UserDefault("usesUploadAsync", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesUploadAsync: Bool
     
     /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
-    public static var usesCalcOrphans = false
+    @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesCalcOrphans: Bool
+
     
+    // MARK: - Vars in Memory
+    // Network variables kept in memory
     /// - Remembers that the HTTP authentication failed
     public static var didFailHTTPauthentication = false
 
@@ -109,9 +116,6 @@ public class NetworkVars: NSObject {
 
     /// - Remembers when the user logged in
     public static var dateOfLastLogin: Date = .distantPast
-    
-    /// - Piwigor server version
-    public static var pwgVersion = ""
     
     /// - Token returned after login
     public static var pwgToken = ""
