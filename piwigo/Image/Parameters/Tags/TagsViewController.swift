@@ -21,9 +21,9 @@ class TagsViewController: UITableViewController {
     weak var delegate: TagsViewControllerDelegate?
 
     // Called before uploading images (Tag class)
-    private var selectedTagIds = [Int32]()
-    func setPreselectedTagIds(_ preselectedTagIds: [Int32]?) {
-        selectedTagIds = preselectedTagIds ?? [Int32]()
+    private var selectedTagIds = Set<Int32>()
+    func setPreselectedTagIds(_ preselectedTagIds: Set<Int32>?) {
+        selectedTagIds = preselectedTagIds ?? Set<Int32>()
     }
     
     private var hasTagCreationRights:Bool = false
@@ -33,6 +33,7 @@ class TagsViewController: UITableViewController {
     
 
     // MARK: - Core Data Providers
+    var user: User!
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
         provider.fetchedResultsControllerDelegate = self
@@ -71,9 +72,17 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        tagProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
-            guard let error = error else { return }     // Done if no error
+        LoginUtilities.checkSession(ofUser: user) {
+            self.tagProvider.fetchTags(asAdmin: self.hasTagCreationRights) { error in
+                guard let error = error else { return }     // Done if no error
 
+                // Show an alert if there was an error.
+                DispatchQueue.main.async {
+                    self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                            message: error.localizedDescription) { }
+                }
+            }
+        } failure: { error in
             // Show an alert if there was an error.
             DispatchQueue.main.async {
                 self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
@@ -204,7 +213,7 @@ class TagsViewController: UITableViewController {
             let currentTag = selectedTags[indexPath.row]
 
             // Remove tag from list of selected tags
-            selectedTagIds.removeAll(where: {$0 == currentTag.tagId})
+            selectedTagIds.remove(currentTag.tagId)
             
             // Determine new indexPath of deselected tag
             if let indexOfTag = nonSelectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) {
@@ -219,7 +228,7 @@ class TagsViewController: UITableViewController {
             let currentTag = nonSelectedTags[indexPath.row]
 
             // Add tag to list of selected tags
-            selectedTagIds.append(currentTag.tagId)
+            selectedTagIds.insert(currentTag.tagId)
 
             // Determine new indexPath of selected tag
             if let indexOfTag = selectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) {
@@ -260,7 +269,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of selected tags
             if let index = selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
                 // Remove selected tag from data source
-                selectedTagIds.removeAll(where: {$0 == tag.tagId})
+                selectedTagIds.remove(tag.tagId)
                 // Remove selected tag from table view
                 let deleteAtIndexPath = IndexPath(row: index, section: 0)
                 print(".delete =>", deleteAtIndexPath.debugDescription)
@@ -291,7 +300,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
 
         case .move:        // Should never "move"
             // Update tag belonging to the right list
-            print("TagsViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
+            assertionFailure("TagsViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
 
         case .update:      // Will never "move"
             // Update tag belonging to the right list

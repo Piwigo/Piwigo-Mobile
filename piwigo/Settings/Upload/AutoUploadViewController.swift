@@ -421,9 +421,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
                 if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
                     tagsVC.delegate = self
-                    tagsVC.setPreselectedTagIds(UploadVars.autoUploadTagIds
-                                                    .components(separatedBy: ",")
-                                                    .map { Int32($0) ?? nil }.compactMap {$0})
+                    tagsVC.setPreselectedTagIds(Set(UploadVars.autoUploadTagIds
+                                                        .components(separatedBy: ",")
+                                                        .map { Int32($0) ?? nil }.compactMap {$0}))
                     tagsVC.setTagCreationRights(hasTagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
