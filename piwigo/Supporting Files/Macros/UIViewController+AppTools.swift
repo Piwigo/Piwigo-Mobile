@@ -83,7 +83,8 @@ extension UIViewController {
     }
     
     func isShowingPiwigoHUD() -> Bool {
-        if let _ = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
+        if let _ = self.view.window,
+           let _ = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
             return true
         }
         return false
