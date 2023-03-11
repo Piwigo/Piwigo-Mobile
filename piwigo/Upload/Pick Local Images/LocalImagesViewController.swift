@@ -890,7 +890,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             if idx != NSNotFound {
                                 let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
                                 if idx >= indexedUploadsInQueue.count {
-                                    let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil, count: indexedUploadsInQueue.count + 1 - idx)
+                                    let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil, count: idx - (indexedUploadsInQueue.count - 1))
                                     indexedUploadsInQueue.append(contentsOf: newElements)
                                 }
                             	indexedUploadsInQueue[idx] = cachedObject
