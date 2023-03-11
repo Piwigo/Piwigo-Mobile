@@ -57,7 +57,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     private var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
-    private var moveOperations = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
@@ -1474,8 +1473,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updateOperations = []
-        moveOperations = []
+        // Check that this update should be managed by this view controller
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+//        print("••> fetchController will change content: \(controller)")
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -1483,6 +1484,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+//        print("••> fetchController did change: \(controller)")
 
         // Collect operation changes
         switch type.rawValue {
@@ -1532,7 +1534,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            moveOperations.append( BlockOperation {  [weak self] in
+            updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Move   item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
@@ -1545,13 +1547,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
-
-        // Move objects if any
-        if moveOperations.isEmpty == false {
-            imagesCollection?.performBatchUpdates({ [weak self] in
-                self?.moveOperations.forEach({ $0.start() })
-            })
-        }
+//        print("••> fetchController applies change: \(controller)")
 
         // Update objects
         imagesCollection?.performBatchUpdates({ [weak self] in
