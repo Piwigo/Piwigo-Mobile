@@ -226,11 +226,10 @@ class AlbumTableViewCell: MGSwipeTableCell {
         
         download?.task?.cancel()
         download = nil
-        backgroundImage.image = UIImage(named: "placeholder")
-        albumName.text = ""
-        numberOfImages.text = ""
-        recentBckg.isHidden = true
-        recentImage.isHidden = true
-        handleButton.isHidden = true
+//        albumName.text = ""
+//        numberOfImages.text = ""
+//        recentBckg.isHidden = true
+//        recentImage.isHidden = true
+//        handleButton.isHidden = true
     }
 }

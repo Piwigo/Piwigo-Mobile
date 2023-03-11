@@ -209,11 +209,13 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
-        localIdentifier = ""
-        md5sum = ""
-        progress = Float.zero
-        cellImage.image = UIImage(named: "placeholder")
-        playBckg.isHidden = true
-        playImg.isHidden = true
+        super.prepareForReuse()
+        
+//        localIdentifier = ""
+//        md5sum = ""
+//        progress = Float.zero
+//        cellImage.image = UIImage(named: "placeholder")
+//        playBckg.isHidden = true
+//        playImg.isHidden = true
     }
 }

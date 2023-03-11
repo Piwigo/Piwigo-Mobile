@@ -156,12 +156,14 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     }
     
     override func prepareForReuse() {
-        cellImage.image = imagePlaceholder
-        playBckg.isHidden = true
-        playImg.isHidden = true
-        uploadInfoLabel.text = ""
-        uploadingProgress?.setProgress(0, animated: false)
-        imageInfoLabel.text = ""
+        super.prepareForReuse()
+        
+//        cellImage.image = imagePlaceholder
+//        playBckg.isHidden = true
+//        playImg.isHidden = true
+//        uploadInfoLabel.text = ""
+//        uploadingProgress?.setProgress(0, animated: false)
+//        imageInfoLabel.text = ""
     }
 
 

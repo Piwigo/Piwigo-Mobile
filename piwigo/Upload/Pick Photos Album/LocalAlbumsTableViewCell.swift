@@ -123,8 +123,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        titleLabel.text = ""
-        subtitleLabel.text = ""
-        numberLabel.text = ""
+//        titleLabel.text = ""
+//        subtitleLabel.text = ""
+//        numberLabel.text = ""
     }
 }
