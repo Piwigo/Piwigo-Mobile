@@ -121,7 +121,16 @@ class AlbumTableViewCell: MGSwipeTableCell {
         // Display album image
         let placeHolder = UIImage(named: "placeholder")!
 
-        // Do we have an URL? and all IDs for storing it (we should)?
+        // Can we add a representative if needed?
+        if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
+           let images = albumData?.images, let firstImage = images.first {
+            // Set representatives (images uploaded recently)
+            albumData?.thumbnailId = firstImage.pwgID
+            let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+            albumData?.thumbnailUrl = ImageUtilities.getURLs(firstImage, ofMinSize: thumnailSize) as NSURL?
+        }
+        
+        // Do we have a representative?
         guard let thumbUrl = albumData?.thumbnailUrl,
               let thumbID = albumData?.thumbnailId,
               let serverID = albumData?.user?.server?.uuid else {
