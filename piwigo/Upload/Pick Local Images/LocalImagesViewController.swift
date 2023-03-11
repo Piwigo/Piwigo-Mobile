@@ -545,7 +545,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         queue.qualityOfService = .userInteractive
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
 
-        // Hide HUD when Photo Library motifies changes
+        // Hide HUD when Photo Library notifies changes
         DispatchQueue.main.async {
             if self.isShowingPiwigoHUD() {
                 self.updatePiwigoHUDwithSuccess {
@@ -1873,6 +1873,12 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
 
         // This method may be called on a background queue; use the main queue to update the UI.
         DispatchQueue.main.async {
+            // Any photo to insert or delete?
+            if changes.insertedObjects.isEmpty,
+               changes.removedObjects.isEmpty {
+                return
+            }
+
             // Show HUD during update, preventing touches
             self.showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
