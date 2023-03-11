@@ -1843,9 +1843,7 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-        let mainContext = DataController.shared.mainContext
-        if let album = albumProvider.getAlbum(inContext: mainContext,
-                                              ofUser: user, withId: AlbumVars.shared.defaultCategory),
+        if let album = albumProvider.getAlbum(ofUser: user, withId: AlbumVars.shared.defaultCategory),
            album.name.isEmpty == false {
             return album.name
         } else {

@@ -66,8 +66,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
             // Actual default album or actual album in which photos are auto-uploaded
             // to be replaced by the selected one
-            guard let album = albumProvider.getAlbum(inContext: savingContext,
-                                                     ofUser: user, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -92,8 +91,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             commonCatIDs = Set((imageData.albums ?? Set<Album>()).map({$0.pwgID}))
             inputImages = Set([imageData])
             // Album from which the image has been selected
-            guard let album = albumProvider.getAlbum(inContext: savingContext,
-                                                     ofUser: user, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -117,8 +115,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 return false
             }
             // Album from which the images have been selected
-            guard let album = albumProvider.getAlbum(inContext: savingContext,
-                                                     ofUser: user, withId: albumId) else {
+            guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
             inputAlbum = album
@@ -221,8 +218,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewDidLoad()
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = albumProvider?.getAlbum(inContext: savingContext, ofUser: user,
-                                              withId: pwgSmartAlbum.root.rawValue) else {
+        guard let _ = albumProvider?.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return
         }
         
@@ -546,8 +542,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext,
-                                                   ofUser: user, withId: catId)!
+                albumData = albumProvider.getAlbum(ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -699,8 +694,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext,
-                                                   ofUser: user, withId: catId)!
+                albumData = albumProvider.getAlbum(ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)
@@ -776,8 +770,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                    catIds.count > indexPath.row {
                     catId = catIds[indexPath.row]
                 }
-                albumData = albumProvider.getAlbum(inContext: savingContext,
-                                                   ofUser: user, withId: catId)!
+                albumData = albumProvider.getAlbum(ofUser: user, withId: catId)!
             } else if hasRecentAlbums {
                 // Recent albums
                 albumData = recentAlbums.object(at: indexPath)

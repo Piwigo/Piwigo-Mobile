@@ -46,8 +46,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext,
-                                           ofUser: user, withId: categoryId)!
+        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         albumData.query = ""
         albumData.nbImages = Int64.min
         albumData.totalNbImages = Int64.min
@@ -87,8 +86,7 @@ extension AlbumViewController: UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
         debugPrint("didDismissSearchController…")
         // Update albumData
-        albumData = albumProvider.getAlbum(inContext: mainContext,
-                                           ofUser: user, withId: categoryId)!
+        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         // Update albums and images
         resetPredicatesAndPerformFetch()
 

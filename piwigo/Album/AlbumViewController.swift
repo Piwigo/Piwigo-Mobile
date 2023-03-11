@@ -159,24 +159,21 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
     private func currentAlbumData() -> Album {
         // Did someone delete this album?
-        if let album = albumProvider.getAlbum(inContext: mainContext,
-                                              ofUser: user, withId: categoryId) {
+        if let album = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             // Album available ► Job done
             return album
         }
         
         // Album not available anymore ► Back to default album?
         categoryId = AlbumVars.shared.defaultCategory
-        if let defaultAlbum = albumProvider.getAlbum(inContext: mainContext,
-                                                     ofUser: user, withId: categoryId) {
+        if let defaultAlbum = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             changeAlbumID()
             return defaultAlbum
         }
 
         // Default album deleted ► Back to root album
         categoryId = Int32.zero
-        guard let rootAlbum = albumProvider.getAlbum(inContext: mainContext,
-                                                     ofUser: user, withId: Int32.zero) else {
+        guard let rootAlbum = albumProvider.getAlbum(ofUser: user, withId: Int32.zero) else {
             fatalError("••> Could not create root album!")
         }
         changeAlbumID()
@@ -824,8 +821,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Fetch favorites in the background if needed
         if categoryId != pwgSmartAlbum.favorites.rawValue,
            let user = userProvider.getUserAccount(inContext: bckgContext),
-           let favAlbum = albumProvider.getAlbum(inContext: bckgContext, ofUser: user,
-                                                 withId: pwgSmartAlbum.favorites.rawValue),
+           let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
@@ -1502,13 +1498,20 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 updateOperations.append( BlockOperation {  [weak self] in
                     print("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
                     if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell {
+                        // Re-configure image cell
                         cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
+                        // pwg.users.favorites… methods available from Piwigo version 2.10
+                        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                            cell.isFavorite = (image.albums ?? Set<Album>())
+                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                        }
                     }
                 })
             } else if let album = anObject as? Album {
                 updateOperations.append( BlockOperation {  [weak self] in
                     print("••> Update album at \(indexPath) of album #\(fetchDelegate.categoryId)")
                     if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                        // Re-configure album cell
                         cell.albumData = album
                     }
                 })

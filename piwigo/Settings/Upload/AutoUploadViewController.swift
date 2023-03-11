@@ -254,8 +254,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
                 let categoryId = UploadVars.autoUploadCategoryId
-                if let albumData = albumProvider.getAlbum(inContext: savingContext,
-                                                          ofUser: user, withId: categoryId) {
+                if let albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
                     detail = albumData.name
                 } else {
                     // Did not find the Piwigo album

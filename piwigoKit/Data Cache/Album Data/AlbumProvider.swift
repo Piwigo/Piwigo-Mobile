@@ -30,8 +30,7 @@ public class AlbumProvider: NSObject {
     
     
     // MARK: - Get/Create Album
-    func frcOfAlbum(inContext taskContext: NSManagedObjectContext,
-                    ofUser user: User, withId albumId: Int32) -> NSFetchedResultsController<Album> {
+    func frcOfAlbum(withId albumId: Int32, forUser user: User) -> NSFetchedResultsController<Album> {
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
         
@@ -48,21 +47,31 @@ public class AlbumProvider: NSObject {
         
         // Create a fetched results controller and set its fetch request and context.
         let album = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                               managedObjectContext: taskContext,
+                                               managedObjectContext: user.managedObjectContext ?? bckgContext,
                                                sectionNameKeyPath: nil, cacheName: nil)
         return album
     }
     
-    public func getAlbum(inContext taskContext: NSManagedObjectContext,
-                         ofUser user: User, withId albumId: Int32, name: String = "") -> Album? {
+    public func getAlbum(ofUser user: User? = nil, withId albumId: Int32, name: String = "") -> Album? {
         // Initialisation
+        var taskUser: User
         var currentAlbum: Album?
+        var taskContext: NSManagedObjectContext
+        if let user = user, let context = user.managedObjectContext {
+            taskUser = user
+            taskContext = context
+        } else if let user = userProvider.getUserAccount(inContext: bckgContext) {
+            taskUser = user
+            taskContext = bckgContext
+        } else {
+            return nil
+        }
         
         // Does this album exist?
         taskContext.performAndWait {
             
             // Create a fetched results controller and set its fetch request and context.
-            let controller = frcOfAlbum(inContext: taskContext, ofUser: user, withId: albumId)
+            let controller = frcOfAlbum(withId: albumId, forUser: taskUser)
             
             // Perform the fetch.
             do {
@@ -86,7 +95,7 @@ public class AlbumProvider: NSObject {
                 // Populate the Album's properties using the default data.
                 do {
                     let smartAlbum = CategoryData(withId: albumId, albumName: name)
-                    try album.update(with: smartAlbum, userInstance: user)
+                    try album.update(with: smartAlbum, userInstance: taskUser)
                     currentAlbum = album
                 }
                 catch {
@@ -507,7 +516,7 @@ public class AlbumProvider: NSObject {
             // Get current user and parent album objects
             // Create an Album managed object on the private queue context.
             guard let user = userProvider.getUserAccount(inContext: bckgContext),
-                  let parent = getAlbum(inContext: bckgContext, ofUser: user, withId: parentID),
+                  let parent = getAlbum(ofUser: user, withId: parentID),
                   let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                   into: bckgContext) as? Album else {
                 print(AlbumError.creationError.localizedDescription)
@@ -588,8 +597,8 @@ public class AlbumProvider: NSObject {
             // Loop over all users…
             for user in users {
                 // Get album to move and new parent album
-                guard let albumToMove = getAlbum(inContext: bckgContext, ofUser: user, withId: catID),
-                      let parent = getAlbum(inContext: bckgContext, ofUser: user, withId: parentID) else {
+                guard let albumToMove = getAlbum(ofUser: user, withId: catID),
+                      let parent = getAlbum(ofUser: user, withId: parentID) else {
                     return
                 }
                 
@@ -833,7 +842,7 @@ public class AlbumProvider: NSObject {
             
             // Get a parent album
             guard let user = album.user else { return }
-            if let upperAlbum = getAlbum(inContext: bckgContext, ofUser: user, withId: upperID) {
+            if let upperAlbum = getAlbum(ofUser: user, withId: upperID) {
                 // Update number of sub-albums and images
                 upperAlbum.nbSubAlbums += Int32(sign) * (album.nbSubAlbums + 1)
                 upperAlbum.totalNbImages += Int64(sign) * (album.totalNbImages)
@@ -948,8 +957,7 @@ public class AlbumProvider: NSObject {
      N.B.: Task exectued in the background.
      */
     private func updateParents(ofAlbum album: Album, nbImages: Int64) {
-        guard let taskContext = album.managedObjectContext,
-              let user = album.user else { return }
+        guard let user = album.user else { return }
         let parentIDs = album.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})
         for upperID in parentIDs {
@@ -957,7 +965,7 @@ public class AlbumProvider: NSObject {
             if (upperID == 0) || (upperID == album.pwgID) { continue }
 
             // Get a parent album
-            if let upperAlbum =  getAlbum(inContext: taskContext, ofUser: user, withId: upperID) {
+            if let upperAlbum =  getAlbum(ofUser: user, withId: upperID) {
                 // Update number of images
                 upperAlbum.totalNbImages += nbImages
             }

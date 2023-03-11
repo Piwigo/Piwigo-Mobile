@@ -100,8 +100,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Check that an album of favorites exists in cache (create it if necessary)
-            guard let _ = albumProvider.getAlbum(inContext: mainContext, ofUser: user,
-                                                 withId: pwgSmartAlbum.favorites.rawValue) else {
+            guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
                 return
             }
 

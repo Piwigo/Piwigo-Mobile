@@ -58,22 +58,23 @@ extension AlbumViewController
         // Add image to favorites
         LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
-                // Update HUD
-                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
-
-                // Image added to favorites ► Add it in the background
-                if let image = self.imageProvider.getImages(inContext: self.bckgContext,
-                                                            withIds: Set([imageData.pwgID])).first,
-                   let favAlbum = self.albumProvider.getAlbum(inContext: self.bckgContext, ofUser: self.user,
-                                                              withId: pwgSmartAlbum.favorites.rawValue) {
-                    // Add image to favorites album
-                    image.addToAlbums(favAlbum)
+                DispatchQueue.main.async { [self] in
+                    // Update HUD
+                    self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    
+                    // Image added to favorites ► Add it in the background
+                    if let context = user.managedObjectContext,
+                       let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                        // Add image to favorites album
+                        imageData.addToAlbums(favAlbum)
+                        // Save changes
+                        try? context.save()
+                    }
+                    
+                    // Next image
+                    selectedImageIds.removeFirst()
+                    addImageToFavorites()
                 }
-
-                // Next image
-                selectedImageIds.removeFirst()
-                addImageToFavorites()
-
             } failure: { [self] error in
                 self.addImageToFavoritesError(error)
             }
@@ -132,22 +133,23 @@ extension AlbumViewController
         // Remove image to favorites
         LoginUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
-                // Update HUD
-                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
-
-                // Image removed from favorites ► Remove it in the background
-                if let image = self.imageProvider.getImages(inContext: self.bckgContext,
-                                                            withIds: Set([imageData.pwgID])).first,
-                   let favAlbum = self.albumProvider.getAlbum(inContext: self.bckgContext, ofUser: self.user,
-                                                              withId: pwgSmartAlbum.favorites.rawValue) {
-                    // Remove image from favorites album
-                    image.removeFromAlbums(favAlbum)
+                DispatchQueue.main.async { [self] in
+                    // Update HUD
+                    self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    
+                    // Image removed from favorites ► Remove it in the foreground
+                    if let context = user.managedObjectContext,
+                       let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                        // Remove image from favorites album
+                        imageData.removeFromAlbums(favAlbum)
+                        // Save changes
+                        try? context.save()
+                    }
+                    
+                    // Next image
+                    selectedImageIds.removeFirst()
+                    removeImageFromFavorites()
                 }
-
-                // Next image
-                selectedImageIds.removeFirst()
-                removeImageFromFavorites()
-
             } failure: { [unowned self] error in
                 self.removeFromFavoritesError(error)
             }
