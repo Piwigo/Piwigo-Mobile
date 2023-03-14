@@ -785,6 +785,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        // Don't perform a search with an empty quey
+        if categoryId == pwgSmartAlbum.search.rawValue,
+           albumData.query.isEmpty {
+            // End refreshing if needed
+            self.imagesCollection?.refreshControl?.endRefreshing()
+            return
+        }
+        
         // Pause upload manager
         UploadManager.shared.isPaused = true
         
