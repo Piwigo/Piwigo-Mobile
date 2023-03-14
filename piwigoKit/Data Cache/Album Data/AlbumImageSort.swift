@@ -119,11 +119,6 @@ extension pwgImageSort {
             return NSLocalizedString("categorySort_manual", comment: "Manual Order")
         case .random:
             return NSLocalizedString("categorySort_random", comment: "Random Order")
-
-        case .idAscending:          // Piwigo ID, low → high
-            return ""
-        case .idDescending:         // Piwigo ID, high → low
-            return ""
         }
     }
 }
