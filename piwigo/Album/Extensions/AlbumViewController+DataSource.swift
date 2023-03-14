@@ -176,7 +176,7 @@ extension AlbumViewController
     
     // MARK: - Album and Image Data
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
-        // Remember which images belong to this album
+        // Remember which images belong to the album
         // from main context before calling background tasks
         let oldImageIds = Set(albumData.images?.map({$0.pwgID}) ?? [])
 
@@ -189,7 +189,7 @@ extension AlbumViewController
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                self.fetchImages(ofAlbumWithId: self.categoryId, imageIds: oldImageIds,
+                self.fetchImages(withInitialImageIds: oldImageIds,
                                  fromPage: 0, toPage: 0, perPage: perPage) {
                     completion()
                 }
@@ -223,7 +223,7 @@ extension AlbumViewController
                 let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
                 let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(perPage))
                 let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
-                self.fetchImages(ofAlbumWithId: albumData.pwgID, imageIds: oldImageIds,
+                self.fetchImages(withInitialImageIds: oldImageIds,
                                  fromPage: 0, toPage: lastPage - 1, perPage: perPage,
                                  completion: completion)
                 return
@@ -237,18 +237,18 @@ extension AlbumViewController
         }
     }
     
-    private func fetchImages(ofAlbumWithId albumId: Int32, imageIds: Set<Int64>,
+    private func fetchImages(withInitialImageIds oldImageIds: Set<Int64>,
                              fromPage onPage: Int, toPage lastPage: Int,
                              perPage: Int, completion: @escaping () -> Void) {
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        imageProvider.fetchImages(ofAlbumWithId: albumId, withQuery: self.query,
+        imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: albumData.query,
                                   sort: AlbumVars.shared.defaultSort,
                                   fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
             guard let error = error else {
                 // No error ► Smart album?
                 var newLastPage = lastPage
-                if albumId < 0 {
+                if albumData.pwgID < 0 {
                     // Re-calculate number of pages
                     newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
@@ -270,7 +270,7 @@ extension AlbumViewController
                 }
                 
                 // Will not remove fetched images from album image list
-                let oldImageIds = imageIds.subtracting(fetchedImageIds)
+                let imageIds = oldImageIds.subtracting(fetchedImageIds)
                 
                 // Should we continue?
                 if onPage < newLastPage {
@@ -279,7 +279,7 @@ extension AlbumViewController
                         navigationController?.hidePiwigoHUD { }
                     }
                     // Load next page of images
-                    self.fetchImages(ofAlbumWithId: albumId, imageIds: oldImageIds,
+                    self.fetchImages(withInitialImageIds: imageIds,
                                      fromPage: onPage + 1, toPage: newLastPage,
                                      perPage: perPage, completion: completion)
                     return
