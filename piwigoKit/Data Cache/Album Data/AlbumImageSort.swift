@@ -47,7 +47,7 @@ extension pwgImageSort {
 
         switch self {
         case .nameAscending:            // Photo title, A → Z
-            return String(format: "%@ %@", pwgImageOrderId, pwgImageOrderAscending)
+            return String(format: "%@ %@", pwgImageOrderName, pwgImageOrderAscending)
         case .nameDescending:           // Photo title, Z → A
             return String(format: "%@ %@", pwgImageOrderName, pwgImageOrderDescending)
         
@@ -119,6 +119,11 @@ extension pwgImageSort {
             return NSLocalizedString("categorySort_manual", comment: "Manual Order")
         case .random:
             return NSLocalizedString("categorySort_random", comment: "Random Order")
+
+        case .idAscending:          // Piwigo ID, low → high
+            return ""
+        case .idDescending:         // Piwigo ID, high → low
+            return ""
         }
     }
 }
