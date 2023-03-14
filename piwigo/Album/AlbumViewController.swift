@@ -803,8 +803,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Re-login and then fetch album and image data
-        performRelogin { [self] in
-            startFetchingAlbumAndImages()
+        LoginUtilities.checkSession(ofUser: user) {
+            self.startFetchingAlbumAndImages()
+        } failure: { error in
+            print("••> Error \(error.code): \(error.localizedDescription)")
+            // TO DO…
         }
     }
     
