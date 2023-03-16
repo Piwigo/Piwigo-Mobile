@@ -16,7 +16,6 @@ extension AlbumViewController
         let searchController = UISearchController(searchResultsController: nil)
         searchController.delegate = self
         searchController.hidesNavigationBarDuringPresentation = true
-        searchController.searchResultsUpdater = self
 
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.isTranslucent = false
@@ -41,41 +40,37 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func willPresentSearchController(_ searchController: UISearchController) {
-        debugPrint("willPresentSearchController…")
+        //        debugPrint("willPresentSearchController…")
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
         // Initialise albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
-        albumData.query = ""
-        albumData.nbImages = Int64.min
-        albumData.totalNbImages = Int64.min
-        albumData.images = Set<Image>()
-
+        self.resetSearchAlbum(withQuery: "")
+        
         // Update albums
         var andPredicates = getAlbumPredicates()
         fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? albums.performFetch()
-
+        
         // Update images
         andPredicates = getImagePredicates()
         fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         try? images.performFetch()
         
+        // Reload collection
+        imagesCollection?.reloadData()
+        
         // Hide buttons and toolbar
         updateButtonsInPreviewMode()
         navigationController?.setToolbarHidden(true, animated: true)
     }
-    
-    func didPresentSearchController(_ searchController: UISearchController) {
-        debugPrint("didPresentSearchController…")
-    }
-    
+        
     func willDismissSearchController(_ searchController: UISearchController) {
-        debugPrint("willDismissSearchController…")
+        //        debugPrint("willDismissSearchController…")
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
-
+        
         // Title forgotten when searching immediately after launch
         title = NSLocalizedString("tabBar_albums", comment: "Albums")
         
@@ -87,14 +82,32 @@ extension AlbumViewController: UISearchControllerDelegate
         debugPrint("didDismissSearchController…")
         // Update albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
+        
         // Update albums and images
         resetPredicatesAndPerformFetch()
-
+        
         // Reload collection
         imagesCollection?.reloadData()
-
+        
         // Show buttons
         updateButtonsInPreviewMode()
+    }
+    
+    func resetSearchAlbum(withQuery query: String) {
+        // Reset search album
+        albumData.query = query
+        if query.isEmpty {
+            albumData.nbImages = Int64.zero
+            albumData.totalNbImages = Int64.zero
+            if let images = albumData.images {
+                albumData.removeFromImages(images)
+            }
+            // Store changes
+            try? mainContext.save()
+        } else {
+            albumData.nbImages = Int64.min
+            albumData.totalNbImages = Int64.min
+        }
     }
 }
 
@@ -102,133 +115,74 @@ extension AlbumViewController: UISearchControllerDelegate
 // MARK: - UISearchBarDelegate Methods
 extension AlbumViewController: UISearchBarDelegate
 {
-    public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // Animates Cancel button appearance
         searchBar.setShowsCancelButton(true, animated: true)
+        // Pause image loader and store parameters
+        pauseSearch = true
         return true
     }
     
-    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        // Dismiss keyboard
+        return true
     }
-}
-
-
-// MARK: - UISearchResultsUpdating Methods
-extension AlbumViewController: UISearchResultsUpdating
-{
-    public func updateSearchResults(for searchController: UISearchController) {
-        // Query string
-        guard let searchString =  searchController.searchBar.text else { return }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        // Get query string
+        guard let query = searchBar.text else { return }
         
-        // Query string empty?
-        if searchString.isEmpty {
-            // Cancel active image data session if any
-            PwgSession.shared.dataSession.getAllTasks { tasks in
-                tasks.forEach { task in
-                    task.cancel()
-                }
+        // Did the query string change?
+        if albumData.query == query {
+            // Continue downloading images
+            // Load next page of images
+            self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
+                             fromPage: self.onPage + 1, toPage: self.lastPage,
+                             perPage: self.perPage) {
+                self.fetchCompleted()
             }
-            // Cancel active image downloads if any
-            ImageSession.shared.dataSession.getAllTasks { tasks in
-                tasks.forEach { task in
-                    task.cancel()
-                }
-            }
-            
-            // Reset search album
-            albumData.query = ""
-            albumData.nbImages = Int64.min
-            albumData.totalNbImages = Int64.min
-            albumData.images = Set<Image>()
-            do {
-                try mainContext.save()
-            } catch let error as NSError {
-                print("Could not fetch \(error), \(error.userInfo)")
-            }
-
-            imagesCollection?.reloadData()
             return
         }
         
-        // Resfresh image collection for new query only
-        if albumData.query != searchString {
-            // Cancel active image data session if any
-            PwgSession.shared.dataSession.getAllTasks { tasks in
-                tasks.forEach { task in
-                    task.cancel()
+        // Cancel active image data session if any
+        cancelTasks {
+            DispatchQueue.main.async {
+                // Reset search
+                self.pauseSearch = false
+                self.resetSearchAlbum(withQuery: query)
+                
+                // The query string has changed
+                self.updateNberOfImagesInFooter()
+                
+                // Determine if the session is active and for how long before fetching
+                LoginUtilities.checkSession(ofUser: self.user) {
+                    self.startFetchingAlbumAndImages()
+                } failure: { error in
+                    print("••> Error \(error.code): \(error.localizedDescription)")
+                    // TO DO…
                 }
+            }
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        // Animates Cancel button disappearance
+        searchBar.setShowsCancelButton(false, animated: true)
+    }
+    
+    func cancelTasks(completion: @escaping () -> Void) {
+        // Cancel active Piwigo tasks
+        PwgSession.shared.dataSession.getAllTasks { tasks in
+            tasks.forEach { task in
+                task.cancel()
             }
             // Cancel active image downloads if any
             ImageSession.shared.dataSession.getAllTasks { tasks in
                 tasks.forEach { task in
                     task.cancel()
                 }
-            }
-            
-            // Initialise search cache
-            self.query = searchString
-            
-            // Display "Loading..."
-            if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
-               let footer = footers.first as? NberImagesFooterCollectionReusableView {
-                footer.noImagesLabel?.text = getImageCount()
-            }
-            
-            // Determine if the session is active and for how long before fetching
-            let pwgToken = NetworkVars.pwgToken
-            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            LoginUtilities.sessionGetStatus { [self] in
-                print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
-                if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
-                    (timeSinceLastLogin < TimeInterval(-1800)) {
-                    // Re-login before fetching album and image data
-                    performRelogin { [self] in
-                        fetchAlbumsAndImages { [self] in
-                            fetchCompleted()
-                        }
-                    }
-                } else {
-                    // Fetch album and image data
-                    fetchAlbumsAndImages { [self] in
-                        fetchCompleted()
-                    }
-                }
-            } failure: { _ in
-                print("••> Failed to check session status…")
-                // Will re-check later…
+                completion()
             }
         }
-        
-//        if albumData?.searchQuery != searchString || searchString.isEmpty  {
-//            // Cancel active image downloads if any
-//            NetworkVarsObjc.imagesSessionManager?.tasks.forEach({ task in
-//                task.cancel()
-//            })
-//
-//            // Initialise search cache
-//            let searchAlbum = PiwigoAlbumData(id: kPiwigoSearchCategoryId, andQuery: searchString)!
-//            CategoriesData.sharedInstance().updateCategories([searchAlbum])
-//
-//            // Display "Loading..."
-//            if let footers = imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter),
-//               let footer = footers.first as? NberImagesFooterCollectionReusableView {
-//                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(for: Int64.min)
-//            }
-//
-//            // Load, sort images and reload collection
-//            albumData?.searchQuery = searchString
-//            albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
-//                imagesCollection?.reloadData()
-//            },
-//            onFailure: { [self] _, error in
-//                // Did user cancelled the search
-//                if let error = error as? NSError, error.domain == NSURLErrorDomain,
-//                   error.code == NSURLErrorCancelled { return }
-//                // Display the error
-//                dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), errorMessage: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)")) { }
-//            })
-//        }
     }
 }

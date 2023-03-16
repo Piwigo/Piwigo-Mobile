@@ -25,7 +25,6 @@ enum pwgImageAction {
 class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
     var categoryId = Int32.zero
-    var query = ""
     var totalNumberOfImages = 0
     var selectedImageIds = Set<Int64>()
     var selectedImageIdsLoop = Set<Int64>()
@@ -40,6 +39,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
     lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
+
+    var pauseSearch = false
+    var oldImageIds = Set<Int64>()
+    var onPage = 0, lastPage = 0, perPage = 0
 
     var isSelect = false
     var touchedImageIds = [Int64]()
@@ -785,14 +788,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
-        // Don't perform a search with an empty quey
-        if categoryId == pwgSmartAlbum.search.rawValue,
-           albumData.query.isEmpty {
-            // End refreshing if needed
-            self.imagesCollection?.refreshControl?.endRefreshing()
-            return
-        }
-        
         // Pause upload manager
         UploadManager.shared.isPaused = true
         
