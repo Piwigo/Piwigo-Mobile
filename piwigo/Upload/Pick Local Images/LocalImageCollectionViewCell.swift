@@ -74,25 +74,30 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     private func configureIcons() {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
-        waitingActivity.color = UIColor.white
-        uploadingProgress.trackTintColor = UIColor.white
 
         // Selected icon: match size to cell size
         let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
-        selectImgWidth.constant = frame.size.width * selectScale + (scale - 1)
-        selectImgHeight.constant = selectImgWidth.constant * selectRatio
+        let selectWidth = frame.size.width * selectScale + (scale - 1)
+        if selectImgWidth.constant != selectWidth {
+            selectImgWidth.constant = selectWidth
+        }
+        let selectHeight = selectImgWidth.constant * selectRatio
+        if selectImgHeight.constant != selectHeight {
+            selectImgHeight.constant = selectHeight
+        }
 
         // Video icon: match size to cell size
-        let width = frame.size.width * playScale + (scale - 1)
+        let playWidth = frame.size.width * playScale + (scale - 1)
         playBckg.setMovieIconImage()
         playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)
-        playBckgWidth.constant = width + 2*offset
+        playBckgWidth.constant = playWidth + 2*offset
         playBckgHeight.constant = playBckgWidth.constant * playRatio
         playImg.setMovieIconImage()
         playImg.tintColor = UIColor.white
         playBckg.addSubview(playImg)
         playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
-        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: CGSize(width: width, height: width * playRatio))!)
+        let bckgSize = CGSize(width: playWidth, height: playWidth * playRatio)
+        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: bckgSize)!)
         
         // Uploaded icon: match size to cell size
         uploadedImgWidth.constant = frame.size.width * uploadedScale + (scale - 1)
@@ -121,14 +126,14 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             DispatchQueue.main.async(execute: {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
-                        debugPrint("=> Error : \(error.localizedDescription)")
+                        print("••> Error : \(error.localizedDescription)")
                     }
-                    self.cellImage.image = UIImage(named: "placeholder")
+                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
                     return
                 }
                 
-                self.cellImage.image = image
-                if imageAsset.mediaType == .video {
+                self.changeCellImageIfNeeded(withImage: image)
+                if imageAsset.mediaType == .video, self.playImg.isHidden {
                     self.playBckg?.isHidden = false
                     self.playImg.isHidden = false
                 }
@@ -144,8 +149,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         localIdentifier = identifier
         
         // Image: retrieve data of right size and crop image
-        self.cellImage.image = image
-        if identifier.contains("mov") {
+        changeCellImageIfNeeded(withImage: image)
+        if identifier.contains("mov"), self.playImg.isHidden {
             self.playBckg?.isHidden = false
             self.playImg.isHidden = false
         }
@@ -208,14 +213,20 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         uploadingProgress?.setProgress(progress, animated: animate)
     }
 
+    private func changeCellImageIfNeeded(withImage image: UIImage) {
+        if let oldImage = self.cellImage.image {
+            if oldImage.isEqual(image) == false {
+                self.cellImage.image = image
+            }
+        } else {
+            self.cellImage.image = image
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-//        localIdentifier = ""
-//        md5sum = ""
-//        progress = Float.zero
-//        cellImage.image = UIImage(named: "placeholder")
-//        playBckg.isHidden = true
-//        playImg.isHidden = true
+
+        waitingActivity.color = UIColor.white
+        uploadingProgress.trackTintColor = UIColor.white
     }
 }

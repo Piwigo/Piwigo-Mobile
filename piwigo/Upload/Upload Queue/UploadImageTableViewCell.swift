@@ -178,8 +178,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         var image: UIImage!
         if fileURL.lastPathComponent.contains("img") {
             // Case of a photo
-            playBckg.isHidden = true
-            playImg.isHidden = true
+            if playBckg.isHidden == false {
+                playBckg.isHidden = true
+                playImg.isHidden = true
+            }
 
             // Retrieve image data from file stored in the Uploads directory
             var fullResImageData: Data = Data()
@@ -218,22 +220,31 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Scale/crop image
-        cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
-        cellImage.layer.cornerRadius = 10 - 3
+        let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
+        if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
+            cellImage.image = finalImage
+        }
+        if cellImage.layer.cornerRadius != 7 {
+            cellImage.layer.cornerRadius = 10 - 3
+        }
 
         // Image available
+        var text = ""
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            imageInfoLabel.text = errorDescription(for: upload)
+            text = errorDescription(for: upload)
         } else if image == imagePlaceholder {
-            imageInfoLabel.text = ""
+            text = ""
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
-            imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
-                                               for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: maxSize)
+            text = getImageInfo(from: image ?? imagePlaceholder,
+                                for: availableWidth - 2*Int(indentationWidth),
+                                maxSize: maxSize)
+        }
+        if imageInfoLabel.text != text {
+            imageInfoLabel.text = text
         }
     }
 
@@ -250,15 +261,19 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Image asset available
+        var text = ""
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            imageInfoLabel.text = errorDescription(for: upload)
+            text = errorDescription(for: upload)
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: maxSize)
+            text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
+                                maxSize: maxSize)
+        }
+        if imageInfoLabel.text != text {
+            imageInfoLabel.text = text
         }
 
         // Cell image: retrieve data of right size and crop image
@@ -275,16 +290,18 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async(execute: {
-                if info?[PHImageErrorKey] != nil {
-                    let error = info?[PHImageErrorKey] as? Error
-                    if let description = error?.localizedDescription {
-                        print("=> Error : \(description)")
+                guard let image = result else {
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        print("••> Error : \(error.localizedDescription)")
                     }
-                    self.cellImage.image = self.imagePlaceholder
-                } else {
-                    self.cellImage.image = result
+                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
+                    return
                 }
-                self.cellImage.layer.cornerRadius = 10 - 3
+
+                self.changeCellImageIfNeeded(withImage: image)
+                if self.cellImage.layer.cornerRadius != 7 {
+                    self.cellImage.layer.cornerRadius = 10 - 3
+                }
             })
         })
         
@@ -292,8 +309,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         if imageAsset.mediaType == .video {
             addMovieIcon()
         } else {
-            playBckg.isHidden = true
-            playImg.isHidden = true
+            if playBckg.isHidden == false {
+                playBckg.isHidden = true
+                playImg.isHidden = true
+            }
         }
     }
     
@@ -335,7 +354,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: Date())
     }
 
+    private func changeCellImageIfNeeded(withImage image: UIImage) {
+        if let oldImage = self.cellImage.image {
+            if oldImage.isEqual(image) == false {
+                self.cellImage.image = image
+            }
+        } else {
+            self.cellImage.image = image
+        }
+    }
     
+
     // MARK: - Utilities
     private func errorDescription(for upload:Upload) -> String {
         // Display error message
