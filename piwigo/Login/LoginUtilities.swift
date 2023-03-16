@@ -612,83 +612,88 @@ class LoginUtilities: NSObject {
     static func checkSession(ofUser user: User?,
                              completion: @escaping () -> Void,
                              failure: @escaping (NSError) -> Void) {
-        // How long has it been since we last logged in?
+        // Determine if the session is active and for how long before fetching
+        let pwgToken = NetworkVars.pwgToken
         let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        if timeSinceLastLogin > TimeInterval(-1800) {
-            // No need to check sessions…
-            completion()
-            return
-        }
-
-        // Collect list of methods supplied by Piwigo server
-        // => Determine if Community extension 2.9a or later is installed and active
-        requestServerMethods { [self] in
-            // Known methods, perform re-login
-            // Don't use userStatus as it may not be known after Core Data migration
-            if NetworkVars.username.isEmpty {
-                print("••> Checking guest session…")
-                // Update date of accesss to the server by the user
-                user?.lastUsed = NetworkVars.dateOfLastLogin
-                user?.server?.lastUsed = NetworkVars.dateOfLastLogin
-                user?.status = NetworkVars.userStatus.rawValue
-
-                // Check Piwigo version, get token, available sizes, etc.
-                if NetworkVars.usesCommunityPluginV29 {
-                    communityGetStatus {
-                        sessionGetStatus {
-                            completion()
-                        } failure: { error in
-                            failure(error)
-                        }
-                    } failure: { error in
-                        failure(error)
-                    }
-                } else {
-                    sessionGetStatus {
-                        completion()
-                    } failure: { error in
-                        failure(error)
-                    }
-                }
-            } else {
-                // Perform login
-                print("••> Checking user session…")
-                let username = NetworkVars.username
-                let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
-                sessionLogin(withUsername: username, password: password) {
-                    // Update date of accesss to the server by the user
-                    user?.lastUsed = NetworkVars.dateOfLastLogin
-                    user?.server?.lastUsed = NetworkVars.dateOfLastLogin
-                    user?.status = NetworkVars.userStatus.rawValue
-                    
-                    // Session now opened
-                    if NetworkVars.usesCommunityPluginV29 {
-                        communityGetStatus {
+        LoginUtilities.sessionGetStatus { [self] in
+            print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
+            if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken ||
+                (timeSinceLastLogin < TimeInterval(-1800)) {
+                // Collect list of methods supplied by Piwigo server
+                // => Determine if Community extension 2.9a or later is installed and active
+                requestServerMethods { [self] in
+                    // Known methods, perform re-login
+                    // Don't use userStatus as it may not be known after Core Data migration
+                    if NetworkVars.username.isEmpty {
+                        print("••> Checking guest session…")
+                        // Update date of accesss to the server by the user
+                        user?.lastUsed = NetworkVars.dateOfLastLogin
+                        user?.server?.lastUsed = NetworkVars.dateOfLastLogin
+                        user?.status = NetworkVars.userStatus.rawValue
+                        
+                        // Check Piwigo version, get token, available sizes, etc.
+                        if NetworkVars.usesCommunityPluginV29 {
+                            communityGetStatus {
+                                sessionGetStatus {
+                                    completion()
+                                } failure: { error in
+                                    failure(error)
+                                }
+                            } failure: { error in
+                                failure(error)
+                            }
+                        } else {
                             sessionGetStatus {
                                 completion()
                             } failure: { error in
                                 failure(error)
                             }
-                        } failure: { error in
-                            failure(error)
                         }
                     } else {
-                        sessionGetStatus {
-                            completion()
+                        // Perform login
+                        print("••> Checking user session…")
+                        let username = NetworkVars.username
+                        let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
+                        sessionLogin(withUsername: username, password: password) {
+                            // Update date of accesss to the server by the user
+                            user?.lastUsed = NetworkVars.dateOfLastLogin
+                            user?.server?.lastUsed = NetworkVars.dateOfLastLogin
+                            user?.status = NetworkVars.userStatus.rawValue
+                            
+                            // Session now opened
+                            if NetworkVars.usesCommunityPluginV29 {
+                                communityGetStatus {
+                                    sessionGetStatus {
+                                        completion()
+                                    } failure: { error in
+                                        failure(error)
+                                    }
+                                } failure: { error in
+                                    failure(error)
+                                }
+                            } else {
+                                sessionGetStatus {
+                                    completion()
+                                } failure: { error in
+                                    failure(error)
+                                }
+                            }
                         } failure: { error in
                             failure(error)
                         }
                     }
+                } didRejectCertificate: { error in
+                    failure(error)
+                } didFailHTTPauthentication: { error in
+                    failure(error)
+                } didFailSecureConnection: { error in
+                    failure(error)
                 } failure: { error in
                     failure(error)
                 }
+            } else {
+                completion()
             }
-        } didRejectCertificate: { error in
-            failure(error)
-        } didFailHTTPauthentication: { error in
-            failure(error)
-        } didFailSecureConnection: { error in
-            failure(error)
         } failure: { error in
             failure(error)
         }
