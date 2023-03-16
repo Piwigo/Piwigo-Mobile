@@ -253,7 +253,7 @@ extension ImageSession: URLSessionDownloadDelegate {
             
             // Store image
             try fm.copyItem(at: location, to: fileURL)
-            print("••> Image \(fileURL.lastPathComponent) stored in cache")
+//            print("••> Image \(fileURL.lastPathComponent) stored in cache")
         } catch {
             // Return error with failureHandler
             if let failure = download.failureHandler {

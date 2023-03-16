@@ -53,7 +53,7 @@ class ImageDownload {
         if let cachedImage: UIImage = UIImage(contentsOfFile: self.fileURL.path),
            let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
            cachedImage != self.placeHolder {
-            print("••> Image \(fileURL.lastPathComponent) retrieved from cache.")
+//            print("••> Image \(fileURL.lastPathComponent) retrieved from cache.")
             self.completionHandler(cachedImage)
             return
         }
