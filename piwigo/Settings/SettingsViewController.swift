@@ -321,6 +321,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Guest user?
         if NetworkVars.username.isEmpty {
+            ClearCache.closeSession { }
             return
         }
         
@@ -332,7 +333,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
             LoginUtilities.sessionLogout {
-                // Close session and clear cache
+                // Close session
                 DispatchQueue.main.async {
                     ClearCache.closeSession { }
                 }
