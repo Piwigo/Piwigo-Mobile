@@ -146,7 +146,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             return
         }
         switch state {
-        case .waiting, .preparing, .prepared, .deleted:
+        case .waiting, .preparing, .prepared:
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
             uploadingProgress?.isHidden = false
@@ -157,7 +157,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = false
             waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = false
-            uploadingProgress?.setProgress(_progress, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploaded, .finishing:
@@ -180,6 +179,12 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false
             waitingActivity?.isHidden = true
+        case .deleted:
+            darkenView?.isHidden = true
+            uploadingProgress?.isHidden = true
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = true
         }
     }
 
@@ -200,8 +205,5 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-
-        waitingActivity.color = UIColor.white
-        uploadingProgress.trackTintColor = UIColor.white
     }
 }
