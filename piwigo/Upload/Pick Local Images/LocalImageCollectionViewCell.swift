@@ -74,6 +74,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     private func configureIcons() {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
+        waitingActivity.color = UIColor.white
+        uploadingProgress.trackTintColor = UIColor.white
 
         // Selected icon: match size to cell size
         let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
