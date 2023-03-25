@@ -249,6 +249,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     UploadManager.shared.backgroundQueue.async {
                         // Resume all failed uploads
                         UploadManager.shared.resume(failedUploads: nil)
+                        // Relaunch uploads
+                        UploadManager.shared.findNextImageToUpload()
                     }
                 })
                 alert.addAction(resumeAction)
