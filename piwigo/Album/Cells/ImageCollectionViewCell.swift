@@ -290,6 +290,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
+        playImg?.tintColor = UIColor.white
     }
 
     func highlight(onCompletion completion: @escaping () -> Void) {
