@@ -15,7 +15,6 @@ import UIKit
 class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     
     // MARK: - View
-
     @objc weak var headerDelegate: PasteboardImagesHeaderDelegate?
 
     @IBOutlet weak var headerLabel: UILabel!
@@ -32,7 +31,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(for: selectState)
+        setButtonTitle(forState: selectState)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -50,8 +49,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
 
     // MARK: Utilities
-    
-    private func setButtonTitle(for state:SelectButtonState) {
+    func setButtonTitle(forState state:SelectButtonState) {
         let title: String, bckgColor: UIColor
         switch state {
         case .select:

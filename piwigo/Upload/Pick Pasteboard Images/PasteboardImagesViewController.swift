@@ -466,7 +466,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             /// - restart UplaodManager activity
             if self.pendingOperations.preparationsInProgress.isEmpty {
                 DispatchQueue.main.async {
-                    self.localImagesCollection.reloadSections([0])
+                    if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+                        header.setButtonTitle(forState: .select)
+                    }
                 }
                 if UploadManager.shared.isPaused {
                     UploadManager.shared.isPaused = false
@@ -659,8 +661,20 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update navigation bar
         updateNavBar()
 
-        // Update collection
-        localImagesCollection.reloadData()
+        // Deselect visible cells
+        localImagesCollection.visibleCells.forEach { cell in
+            if let cell = cell as? LocalImageCollectionViewCell {
+                cell.update(selected: false)
+            }
+        }
+        
+        // Update button
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? PasteboardImagesHeaderReusableView {
+                header.setButtonTitle(forState: .select)
+            }
+        }
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -738,7 +752,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    func updateSelectButton(completion: @escaping () -> Void) {
+    func updateSelectButton() {
         
         // Number of images in section
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
@@ -746,7 +760,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Job done if there is no image presented
         if nberOfImagesInSection == 0 {
             sectionState = .none
-            completion()
             return
         }
         
@@ -754,20 +767,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
         if nberOfImagesInSection == nberOfSelectedImagesInSection {
             // All images are selected
-            if sectionState != .deselect {
-                sectionState = .deselect
-                completion()
-            }
+            sectionState = .deselect
             return
         }
 
         // Can we calculate the number of images already in the upload queue?
         if pendingOperations.preparationsInProgress.isEmpty == false {
             // Keep Select button disabled
-            if sectionState != .none {
-                sectionState = .none
-                completion()
-            }
+            sectionState = .none
             return
         }
 
@@ -781,22 +788,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update state of Select button only if needed
         if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
             // All images are in the upload queue or already downloaded
-            if sectionState != .none {
-                sectionState = .none
-                completion()
-            }
+            sectionState = .none
         } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
             // All images are either selected or in the upload queue
-            if sectionState != .deselect {
-                sectionState = .deselect
-                completion()
-            }
+            sectionState = .deselect
         } else {
             // Not all images are either selected or in the upload queue
-            if sectionState != .select {
-                sectionState = .select
-                completion()
-            }
+            sectionState = .select
         }
     }
 
@@ -812,12 +810,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 return view
             }
             
-            // Update section if available data
-            updateSelectButton(completion: {})
-            
             // Configure the header
-            let selectState = pendingOperations.preparationsInProgress.isEmpty ? sectionState : .none
-            header.configure(with: selectState)
+            updateSelectButton()
+            header.configure(with: sectionState)
             header.headerDelegate = self
             return header
         }
@@ -958,9 +953,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             }
             
             // Refresh section only if the button content needs to be changed
-            self.updateSelectButton(completion: {
-                self.localImagesCollection.reloadSections(IndexSet(integer: 0))
-            })
+            self.updateSelectButton()
+            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+                header.setButtonTitle(forState: sectionState)
+            }
 
             // Update navigation bar
 //            updateActionButton()
@@ -1012,9 +1008,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         cell.reloadInputViews()
 
         // Update state of Select button if needed
-        updateSelectButton(completion: {
-            self.localImagesCollection.reloadSections(IndexSet(integer: 0))
-        })
+        updateSelectButton()
+        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+            header.setButtonTitle(forState: sectionState)
+        }
     }
 
 
@@ -1044,8 +1041,20 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update navigation bar
         self.updateNavBar()
 
-        // Update collection
-        self.localImagesCollection.reloadSections(IndexSet(integer: 0))
+        // Select visible cells
+        localImagesCollection.visibleCells.forEach { cell in
+            if let cell = cell as? LocalImageCollectionViewCell {
+                cell.update(selected: true)
+            }
+        }
+        
+        // Update button
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? PasteboardImagesHeaderReusableView {
+                header.setButtonTitle(forState: .deselect)
+            }
+        }
     }
 
 
@@ -1217,9 +1226,10 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                     cell.update(selected: false, state: upload.state)
                     cell.reloadInputViews()
                     // The section will be refreshed only if the button content needs to be changed
-                    self.updateSelectButton(completion: {
-                        self.localImagesCollection.reloadSections(IndexSet(integer: 0))
-                    })
+                    self.updateSelectButton()
+                    if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+                        header.setButtonTitle(forState: self.sectionState)
+                    }
                     return
                 }
             }
