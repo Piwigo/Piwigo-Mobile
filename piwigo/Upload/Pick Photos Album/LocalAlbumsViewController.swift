@@ -8,6 +8,7 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 13/04/2020
 //
 
+import CoreData
 import MobileCoreServices
 import Photos
 import PhotosUI
@@ -26,6 +27,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var userHasUploadRights: Bool = false
+    var savingContext: NSManagedObjectContext!
 
     // Actions to perform after selection
     private enum pwgAlbumSelectAction : Int {
@@ -544,6 +546,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
             localImagesVC.categoryId = categoryId
             localImagesVC.userHasUploadRights = userHasUploadRights
+            localImagesVC.savingContext = savingContext
             navigationController?.pushViewController(localImagesVC, animated: true)
             return
         case .localAlbums:
@@ -588,6 +591,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             localImagesVC.categoryId = categoryId
             localImagesVC.imageCollectionId = albumID
             localImagesVC.userHasUploadRights = userHasUploadRights
+            localImagesVC.savingContext = savingContext
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }
