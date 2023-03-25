@@ -69,7 +69,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(for: selectState)
+        setButtonTitle(forState: selectState)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -88,8 +88,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     
     // MARK: Utilities
-    
-    private func setButtonTitle(for state:SelectButtonState) {
+    func setButtonTitle(forState state: SelectButtonState) {
         let title: String, bckgColor: UIColor
         switch state {
         case .select:

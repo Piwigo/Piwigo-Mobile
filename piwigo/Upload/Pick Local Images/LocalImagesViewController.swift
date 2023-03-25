@@ -1262,8 +1262,20 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update navigation bar
         updateNavBar()
 
-        // Update collection
-        localImagesCollection.reloadData()
+        // Deselect visible cells
+        localImagesCollection.visibleCells.forEach { cell in
+            if let cell = cell as? LocalImageCollectionViewCell {
+                cell.update(selected: false)
+            }
+        }
+        
+        // Update button
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? LocalImagesHeaderReusableView {
+                header.setButtonTitle(forState: .select)
+            }
+        }
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -1341,26 +1353,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             imagesBeingTouched = []
 
             // Update state of Select button if needed
-            updateSelectButton(ofSection: indexPath.section, completion: {
-                let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
-                if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
-                    self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
-                }
-            })
+            let selectState = updateSelectButton(ofSection: indexPath.section)
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
+                header.setButtonTitle(forState: selectState)
+            }
         }
     }
 
-    func updateSelectButton(ofSection section: Int, completion: @escaping () -> Void) {
-        
+    func updateSelectButton(ofSection section: Int) -> SelectButtonState {
         // Number of images in section
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         if nberOfImagesInSection == 0 {
-            if section < selectedSections.count,
-               selectedSections[section] != .none {
+            if section < selectedSections.count {
                 selectedSections[section] = .none
-                completion()
             }
-            return
+            return .none
         }
 
         // Get start and last indices of section
@@ -1380,12 +1388,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Can we calculate the number of images already in the upload queue?
         if queue.operationCount != 0 {
             // Keep Select button disabled
-            if section < selectedSections.count,
-               selectedSections[section] != .none {
+            if section < selectedSections.count {
                 selectedSections[section] = .none
-                completion()
             }
-            return
+            return .none
         }
 
         // Number of images already in the upload queue
@@ -1397,25 +1403,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update state of Select button only if needed
         if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
             // All images are in the upload queue or already uploaded
-            if section < selectedSections.count,
-               selectedSections[section] != .none {
+            if section < selectedSections.count {
                 selectedSections[section] = .none
-                completion()
             }
+            return .none
         } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
             // All images are either selected or in the upload queue
-            if section < selectedSections.count,
-               selectedSections[section] != .deselect {
+            if section < selectedSections.count {
                 selectedSections[section] = .deselect
-                completion()
             }
+            return .deselect
         } else {
             // Not all images are either selected or in the upload queue
-            if section < selectedSections.count,
-               selectedSections[section] != .select {
+            if section < selectedSections.count {
                 selectedSections[section] = .select
-                completion()
             }
+            return .select
         }
     }
     
@@ -1431,9 +1434,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return view
             }
                 
-            // Update section if available data
-            updateSelectButton(ofSection: indexPath.section) {}
-            
             // Determine place names from first images
             var imageAssets: [PHAsset] = []
             for row in 0..<min(localImagesCollection.numberOfItems(inSection: indexPath.section), 20) {
@@ -1441,7 +1441,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 imageAssets.append(fetchedImages[index])
             }
             
-            let selectState = queue.operationCount == 0 ? selectedSections[indexPath.section] : .none
+            let selectState = updateSelectButton(ofSection: indexPath.section)
             header.configure(with: imageAssets, section: indexPath.section, selectState: selectState)
             header.headerDelegate = self
             return header
@@ -1675,11 +1675,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.reloadInputViews()
 
         // Update state of Select button if needed
-        updateSelectButton(ofSection: indexPath.section) {
-            let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
-            if self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) != nil {
-                self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
-            }
+        let selectState = updateSelectButton(ofSection: indexPath.section)
+        let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? LocalImagesHeaderReusableView {
+            header.setButtonTitle(forState: selectState)
         }
     }
 
@@ -1721,8 +1720,20 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update navigation bar
         self.updateNavBar()
 
-        // Update collection
-        self.localImagesCollection.reloadSections(IndexSet(integer: section))
+        // Select visible cells
+        localImagesCollection.visibleCells.forEach { cell in
+            if let cell = cell as? LocalImageCollectionViewCell {
+                cell.update(selected: selectedSections[section] == .deselect)
+            }
+        }
+        
+        // Update button
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? LocalImagesHeaderReusableView {
+                header.setButtonTitle(forState: selectedSections[section])
+            }
+        }
     }
 
 
