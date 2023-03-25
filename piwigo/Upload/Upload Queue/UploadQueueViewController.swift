@@ -67,7 +67,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
 
         // Buttons
-        actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        if #available(iOS 14.0, *) {
+            // Menu
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
+        } else {
+            // Fallback on earlier versions
+            actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        }
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
 
@@ -107,8 +113,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadChangedState, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
                                                name: .pwgUploadProgress, object: nil)
     }
@@ -201,7 +205,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadChangedState, object: nil)
         NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
     
@@ -367,10 +370,12 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier = notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
            let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
            let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
-            cell.update(with: notification.userInfo!)
+            print("••> progressFraction = \(progressFraction) in applyUploadProgress()")
+            cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }
 }

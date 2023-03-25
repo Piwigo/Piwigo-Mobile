@@ -55,6 +55,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
                                                  managedObjectContext: self.mainContext,
                                                  sectionNameKeyPath: "requestSectionKey",
                                                  cacheName: "org.piwigo.frgd.pendingUploads")
+        uploads.delegate = self
         return uploads
     }()
 
@@ -180,8 +181,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadChangedState, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
                                                name: .pwgUploadProgress, object: nil)
     }
 
@@ -198,7 +197,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadChangedState, object: nil)
         NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
 
@@ -206,16 +204,16 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     // MARK: - Action Menu
     func updateNavBar() {
         // Title
-        let nberOfImagesInQueue = uploads.fetchedObjects?.count ?? 0
+        let nberOfImagesInQueue = (uploads.fetchedObjects ?? []).count
         title = nberOfImagesInQueue > 1 ?
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
         let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads:Int = uploads.fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
+        let impossibleUploads:Int = (uploads.fetchedObjects ?? []).map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +)
         let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads:Int = uploads.fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
+        let failedUploads:Int = (uploads.fetchedObjects ?? []).map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +)
         if impossibleUploads + failedUploads > 0 {
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
         } else {
@@ -233,7 +231,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads = uploads.fetchedObjects?.filter({ resumable.contains($0.state) == true }) ?? []
+        let failedUploads = (uploads.fetchedObjects ?? []).filter({ resumable.contains($0.state) == true })
         if failedUploads.isEmpty == false {
             let failedCount = failedUploads.count
             let titleResume = failedCount > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedCount), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
@@ -252,7 +250,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
         let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads = uploads.fetchedObjects?.filter({ impossible.contains($0.state) == true}) ?? []
+        let impossibleUploads = (uploads.fetchedObjects ?? []).filter({ impossible.contains($0.state) == true})
         if impossibleUploads.isEmpty == false {
             let impossibleCount = impossibleUploads.count
             let titleClear = impossibleCount > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleCount), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
@@ -312,7 +310,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
                 self.queueTableView.tableHeaderView = nil
                 let states: [pwgUploadState] = [.waiting, .preparing, .prepared,
                                                 .uploading, .uploaded, .finishing]
-                let uploading = self.uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+                let uploading = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
                 if uploading.isEmpty {
                     UIApplication.shared.isIdleTimerDisabled = false
                 } else {
@@ -379,10 +377,11 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier = notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
            let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
            let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
-            cell.update(with: notification.userInfo!)
+            cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }
 }
@@ -429,57 +428,27 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
             print("move… from", oldIndexPath, "to", newIndexPath)
             queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
             queueTableView.insertRows(at: [newIndexPath], with: .fade)
-            guard let upload:Upload = anObject as? Upload else { return }
-            updateCell(at: newIndexPath, with: upload)
         case .update:
             guard let oldIndexPath = indexPath else { return }
             print("update… at", oldIndexPath)
             if newIndexPath == nil {        // Regular update
-                guard let upload:Upload = anObject as? Upload else { break }
-                updateCell(at: oldIndexPath, with: upload)
+                queueTableView.reloadRows(at: [oldIndexPath], with: .automatic)
             } else {                        // Moving update when using iOS 10
-                queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
-                queueTableView.insertRows(at: [newIndexPath!], with: .fade)
+                queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+                queueTableView.insertRows(at: [newIndexPath!], with: .automatic)
             }
         @unknown default:
             fatalError("UploadQueueViewControllerOld: unknown NSFetchedResultsChangeType")
         }
     }
     
-    private func updateCell(at indexPath: IndexPath, with upload: Upload) -> Void {
-        guard let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell else { return }
-        var uploadInfo: [String : Any]
-        switch upload.state {
-        case .waiting,
-             .preparing, .preparingError, .preparingFail, .formatError, .prepared,
-             .uploadingError, .uploadingFail:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError,
-                          "progressFraction" : Float(0.0)]
-        case .uploaded, .finishing, .finishingError, .finished, .moderated, .deleted:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError,
-                          "progressFraction" : Float(1.0)]
-        default:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError]
-        }
-        cell.update(with: uploadInfo)
-    }
-
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Perform tableView updates
         queueTableView.endUpdates()
         queueTableView.layoutIfNeeded()
 
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
-        if uploads.fetchedObjects?.count ?? 0 == 0 {
+        if (uploads.fetchedObjects ?? []).count == 0 {
             // Delete remaining files from Upload directory (if any)
             UploadManager.shared.deleteFilesInUploadsDirectory()
             // Close the view when there is no more upload request to display

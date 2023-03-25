@@ -12,25 +12,9 @@ import piwigoKit
 
 class UploadImageTableViewCell: MGSwipeTableCell {
     
-    // MARK: - Core Data Providers
-    private lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadManager.shared.uploadProvider
-        return provider
-    }()
-
-
     // MARK: - Variables
+    var localIdentifier = ""
     private let imagePlaceholder = UIImage(named: "placeholder")!
-    private var _localIdentifier = ""
-    var localIdentifier: String {
-        get {
-            _localIdentifier
-        }
-        set(localIdentifier) {
-            _localIdentifier = localIdentifier
-        }
-    }
-
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
 
@@ -60,12 +44,12 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         switch upload.state {
         case .waiting,
              .preparing, .preparingError, .preparingFail, .formatError, .prepared,
-             .uploadingError, .uploadingFail:
+             .uploadingError, .uploadingFail, .deleted:
             uploadingProgress?.setProgress(0.0, animated: false)
-        case .uploaded, .finishing, .finishingError, .finished:
+        case .uploaded, .finishing, .finishingError, .finishingFail, .finished, .moderated:
             uploadingProgress?.setProgress(1.0, animated: false)
-        default:
-            uploadingProgress?.setProgress(1.0, animated: false)
+        case .uploading:
+            break
         }
 
         // Right => Left swipe commands
@@ -126,44 +110,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             prepareThumbnailFromAsset(for: upload, availableWidth: availableWidth)
         }
     }
-    
-    func update(with userInfo: [AnyHashable : Any]) {
-        // Top label
-        if let state: pwgUploadState = userInfo["state"] as? pwgUploadState {
-            uploadInfoLabel.text = state.stateInfo
-            self.setNeedsLayout()
-        }
-
-        // Progress bar
-        if let progressFraction = userInfo["progressFraction"] as? Float {
-            if progressFraction == Float(0.0) {
-                uploadingProgress?.setProgress(0.0, animated: true)
-            } else {
-                let progress = max(uploadingProgress.progress, progressFraction)
-                uploadingProgress?.setProgress(progress, animated: true)
-            }
-            self.setNeedsLayout()
-        }
-
-        // Bottom label
-        if let errorDescription = userInfo["stateError"] as? String,
-           errorDescription.isEmpty == false {
-            imageInfoLabel.text = errorDescription
-            self.setNeedsLayout()
-        }
         
-        self.layoutIfNeeded()
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-//        cellImage.image = imagePlaceholder
-//        playBckg.isHidden = true
-//        playImg.isHidden = true
-//        uploadInfoLabel.text = ""
-//        uploadingProgress?.setProgress(0, animated: false)
-//        imageInfoLabel.text = ""
     }
 
 
