@@ -38,7 +38,7 @@ extension UploadManager
 
         // Check current queue
         print("\(dbg()) findNextImageToUpload() in", queueName())
-        print("\(dbg()) \(self.uploads.fetchedObjects?.count ?? 0) pending and \(self.completed.fetchedObjects?.count ?? 0) completed upload requests in cache")
+        print("\(dbg()) \((self.uploads.fetchedObjects ?? []).count) pending and \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
         print("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
         
         //        return // for debugging background tasks
@@ -56,7 +56,7 @@ extension UploadManager
         
         // Interrupted work should be set as if an error was encountered
         /// - case of finishing uploads
-        let finishing = uploads.fetchedObjects?.filter({$0.state == .finishing}) ?? []
+        let finishing = (uploads.fetchedObjects ?? []).filter({$0.state == .finishing})
         if !isFinishing, finishing.count > 0 {
             // Transfers encountered an error
             finishing.forEach({ upload in
@@ -67,7 +67,7 @@ extension UploadManager
             return
         }
         /// - case of transfers (a few transfers may be running in parallel)
-        let uploading = uploads.fetchedObjects?.filter({$0.state == .uploading}) ?? []
+        let uploading = (uploads.fetchedObjects ?? []).filter({$0.state == .uploading})
         if isUploading.isEmpty == false, uploading.count > 0 {
             for upload in uploading {
                 if isUploading.contains(upload.objectID) == false {
@@ -79,7 +79,7 @@ extension UploadManager
             return
         }
         /// - case of upload preparation
-        let preparing = uploads.fetchedObjects?.filter({$0.state == .preparing}) ?? []
+        let preparing = (uploads.fetchedObjects ?? []).filter({$0.state == .preparing})
         if isPreparing == false, preparing.count > 0 {
             // Preparations encountered an error
             preparing.forEach { upload in
@@ -91,9 +91,9 @@ extension UploadManager
         }
         
         // How many upload requests did fail?
-        let failedUploads = uploads.fetchedObjects?
+        let failedUploads = (uploads.fetchedObjects ?? [])
             .filter({[.preparingError, .preparingFail,
-                      .uploadingError, .uploadingFail].contains($0.state)}).count ?? 0
+                      .uploadingError, .uploadingFail].contains($0.state)}).count
         
         // Too many failures?
         if failedUploads >= maxNberOfFailedUploads {
@@ -105,7 +105,7 @@ extension UploadManager
         /// - uploading with pwg.images.upload because the title cannot be set during the upload.
         /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
         if !isFinishing,
-           let uploaded = uploads.fetchedObjects?.first(where: {$0.state == .uploaded}) {
+           let uploaded = (uploads.fetchedObjects ?? []).first(where: {$0.state == .uploaded}) {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused {
@@ -119,7 +119,7 @@ extension UploadManager
         
         // Not transferring and file ready for transfer?
         if isUploading.count < maxNberOfTransfers,
-           let prepared = uploads.fetchedObjects?.first(where: {$0.state == .prepared}) {
+           let prepared = (uploads.fetchedObjects ?? []).first(where: {$0.state == .prepared}) {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused {
@@ -132,9 +132,9 @@ extension UploadManager
         }
         
         // Not preparing and upload request waiting?
-        let nberPrepared = uploads.fetchedObjects?.filter({$0.state == .prepared}).count ?? 0
+        let nberPrepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared}).count
         if !isPreparing, nberPrepared < maxNberPreparedUploads,
-           let waiting = uploads.fetchedObjects?.first(where: {$0.state == .waiting}) {
+           let waiting = (uploads.fetchedObjects ?? []).first(where: {$0.state == .waiting}) {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused {
@@ -149,7 +149,7 @@ extension UploadManager
         // No more image to transfer ;-)
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
-        let finished = uploads.fetchedObjects?.filter({$0.state == .finished}) ?? []
+        let finished = (uploads.fetchedObjects ?? []).filter({$0.state == .finished})
         if NetworkVars.userStatus == .normal,
            NetworkVars.usesCommunityPluginV29, finished.count > 0 {
             
@@ -168,12 +168,12 @@ extension UploadManager
         // Note that some uploads may have failed and wait a user decision.
         let states: [pwgUploadState] = [.waiting, .preparing, .prepared,
                                         .uploading, .uploaded, .finishing]
-        if uploads.fetchedObjects?.filter({states.contains($0.state)}).count ?? 0 > 0 { return }
+        if (uploads.fetchedObjects ?? []).filter({states.contains($0.state)}).count > 0 { return }
         
         // Upload requests are completed
         // Considers only uploads to the server to which the user is logged in
         // Are there images to delete from the Photo Library?
-        let toDelete = completed.fetchedObjects?.filter({$0.deleteImageAfterUpload == true}) ?? []
+        let toDelete = (completed.fetchedObjects ?? []).filter({$0.deleteImageAfterUpload == true})
         deleteAssets(associatedToUploads: toDelete)
     }
     
@@ -250,8 +250,8 @@ extension UploadManager
         // First, find upload requests whose transfer did fail
         let states: [pwgUploadState] = [.preparingError, .preparingFail,
                                         .uploadingError, .uploadingFail]
-        let failedUploads = uploads.fetchedObjects?
-            .filter({states.contains($0.state) && $0.markedForAutoUpload == autoUploadOnly}) ?? []
+        let failedUploads = (uploads.fetchedObjects ?? [])
+            .filter({states.contains($0.state) && $0.markedForAutoUpload == autoUploadOnly})
         
         // Too many failures?
         if failedUploads.count >= maxNberOfFailedUploads { return }
@@ -264,8 +264,8 @@ extension UploadManager
         }
         
         // Second, find upload requests ready for transfer
-        let preparedUploads = uploads.fetchedObjects?
-            .filter({$0.state == .prepared && $0.markedForAutoUpload == autoUploadOnly}) ?? []
+        let preparedUploads = (uploads.fetchedObjects ?? [])
+            .filter({$0.state == .prepared && $0.markedForAutoUpload == autoUploadOnly})
         if preparedUploads.count > 0 {
             // Will then launch transfers of prepared uploads
             let prepared = preparedUploads.map({$0.objectID})
@@ -277,8 +277,8 @@ extension UploadManager
         // Finally, get list of upload requests to prepare
         let diff = maxNberPreparedUploads - uploadRequestsToTransfer.count
         if diff <= 0 { return }
-        let requestsToPrepare = uploads.fetchedObjects?
-            .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly}) ?? []
+        let requestsToPrepare = (uploads.fetchedObjects ?? [])
+            .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
         print("\(dbg()) collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         let toPrepare = preparedUploads.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
@@ -348,7 +348,7 @@ extension UploadManager
                 // Relaunch transfers if necessary and possible
                 if self.isUploading.count < maxNberOfTransfers,
                    let uploadID = self.uploadRequestsToTransfer.first,
-                   let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) {
+                   let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
                     // Launch transfer
                     self.launchTransfer(of: upload)
                 }
@@ -360,7 +360,7 @@ extension UploadManager
         // Add image preparation followed by transfer operations
         if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
            let uploadID = uploadRequestsToPrepare.first,
-           let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) {
+           let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) {
             // Prepare image for transfer
             prepare(upload)
         }
@@ -374,8 +374,8 @@ extension UploadManager
     // MARK: - Task Utilities
     public func markAsDeletedPiwigoImages(withIDs imageIDs: [Int64]) {
         if imageIDs.isEmpty { return }
-        var toMark = uploads.fetchedObjects?.filter({imageIDs.contains($0.imageId)}) ?? []
-        toMark.append(contentsOf: completed.fetchedObjects?.filter({imageIDs.contains($0.imageId)}) ?? [])
+        var toMark = (uploads.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)})
+        toMark.append(contentsOf: (completed.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)}))
         toMark.forEach({$0.setState(.deleted, save: false)})
         try? bckgContext.save()
     }
@@ -383,7 +383,7 @@ extension UploadManager
     public func deleteImpossibleUploads() {
         let states: [pwgUploadState] = [.preparingFail, .formatError,
                                         .uploadingFail, .finishingFail]
-        let toDelete = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+        let toDelete = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
         uploadProvider.delete(uploadRequests: toDelete) { _ in }
     }
 }

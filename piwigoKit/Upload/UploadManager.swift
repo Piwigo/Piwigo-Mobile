@@ -81,7 +81,7 @@ public class UploadManager: NSObject {
     public var nberOfUploadsToComplete = 0                  // Stored and used by the App delegate
     public func updateNberOfUploadsToComplete() {
         // Update value
-        nberOfUploadsToComplete = uploads.fetchedObjects?.count ?? 0
+        nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
         // Update badge and default album view button
         DispatchQueue.main.async { [unowned self] in
             // Update app badge and button of root album (or default album)

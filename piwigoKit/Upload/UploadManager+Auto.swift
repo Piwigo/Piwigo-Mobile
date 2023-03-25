@@ -85,8 +85,8 @@ extension UploadManager {
         }
 
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        var imageIDs = uploads.fetchedObjects?.map({$0.localIdentifier}) ?? []
-        imageIDs.append(contentsOf: completed.fetchedObjects?.map({$0.localIdentifier}) ?? [])
+        var imageIDs = (uploads.fetchedObjects ?? []).map({$0.localIdentifier})
+        imageIDs.append(contentsOf: (completed.fetchedObjects ?? []).map({$0.localIdentifier}))
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
@@ -133,7 +133,7 @@ extension UploadManager {
         }
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
-        let toDelete = uploads.fetchedObjects?.filter({$0.markedForAutoUpload == true}) ?? []
+        let toDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true})
         uploadProvider.delete(uploadRequests: toDelete) { [unowned self] error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }

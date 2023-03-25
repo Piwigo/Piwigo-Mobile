@@ -135,7 +135,7 @@ extension UploadManager {
      */
     func emptyLounge(for upload: Upload) {
         print("\(dbg()) emptyLounge() in", queueName())
-        
+        // Empty lounge without reporting potential error
         processImages(withIds: "\(upload.imageId)",
                       inCategory: upload.category) { [unowned self] error in
             self.backgroundQueue.async {

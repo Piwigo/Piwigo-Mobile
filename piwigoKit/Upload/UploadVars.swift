@@ -211,5 +211,4 @@ public class UploadVars: NSObject {
     static let HTTPchunk    = "X-PWG-chunk"
     static let HTTPchunks   = "X-PWG-chunks"
     static let HTTPmd5sum   = "X-PWG-md5sum"
-    static let HTTPfileSize = "X-PWG-fileSize"
 }

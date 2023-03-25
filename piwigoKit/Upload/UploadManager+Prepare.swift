@@ -17,15 +17,8 @@ extension UploadManager
 
         // Update upload status
         isPreparing = true
+        upload.setState(.preparing, save: true)
 
-        // Update UI
-//        if !isExecutingBackgroundUploadTask {
-//            updateCell(with: upload.localIdentifier,
-//                       stateLabel: pwgUploadState.preparing.stateInfo,
-//                       photoMaxSize: upload.photoMaxSize,
-//                       progress: nil, errorMsg: "")
-//        }
-        
         // Add category to list of recent albums
         let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
@@ -86,7 +79,6 @@ extension UploadManager
             upload.isVideo = false
 
             // Update state of upload and launch preparation job
-            upload.setState(.preparing, save: true)
             prepareImage(atURL: fileURL, for: upload)
             return
         }
@@ -139,9 +131,6 @@ extension UploadManager
 
             // Chek that the image format is accepted by the Piwigo server
             if UploadVars.serverFileTypes.contains(fileExt) {
-                // Image file format accepted by the Piwigo server
-                upload.setState(.preparing, save: true)
-                
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
                 return
@@ -152,9 +141,6 @@ extension UploadManager
                acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
-                
-                // Update state of upload
-                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
@@ -192,9 +178,7 @@ extension UploadManager
                 // Video file format accepted by the Piwigo server
                 print("\(dbg()) preparing video \(upload.fileName)…")
 
-                // Update state of upload
-                upload.setState(.preparing, save: true)
-                
+                // Launch preparation job
                 prepareVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -205,9 +189,7 @@ extension UploadManager
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")
 
-                // Update state of upload
-                upload.setState(.preparing, save: true)
-                
+                // Launch conversion job
                 convertVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -323,9 +305,6 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if UploadVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
-                // Update state of upload
-                upload.setState(.preparing, save: true)
-                
                 // Launch preparation job
                 self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
@@ -335,9 +314,6 @@ extension UploadManager
                acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
-                
-                // Update state of upload
-                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
                 self.convertImage(atURL: uploadFileURL, for: upload)
@@ -357,12 +333,8 @@ extension UploadManager
             if UploadVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 print("\(dbg()) preparing video \(upload.fileName)…")
-
-                // Update state of upload
-                upload.setState(.preparing, save: true)
                 
                 // Launch preparation job
-//                self.prepareVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
                 self.prepareVideo(ofAsset: originalAsset, for: upload)
                 return
             }
@@ -371,12 +343,8 @@ extension UploadManager
                acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")
-
-                // Update state of upload
-                upload.setState(.preparing, save: true)
                 
-                // Launch preparation job
-//                self.convertVideo(atURL: uploadFileURL, for: uploadID, with: uploadProperties)
+                // Launch conversion job
                 self.convertVideo(ofAsset: originalAsset, for: upload)
                 return
             }
@@ -415,11 +383,11 @@ extension UploadManager
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let prepared = uploads.fetchedObjects?.filter({$0.state == .prepared}) ?? []
+                let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
                 let states: [pwgUploadState] = [.preparingError, .preparingFail,
                                                 .uploadingError, .uploadingFail,
                                                 .finishingError]
-                let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+                let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
                 if isUploading.count < maxNberOfTransfers,
                    failed.count < maxNberOfFailedUploads,
                    let upload = prepared.first {

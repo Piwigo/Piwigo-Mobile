@@ -56,8 +56,8 @@ extension UploadManager
                 }
             }
             
-            print("\(self.dbg()) \(self.uploads.fetchedObjects?.count ?? 0) pending upload requests in cache")
-            print("\(self.dbg()) \(self.completed.fetchedObjects?.count ?? 0) completed upload requests in cache")
+            print("\(self.dbg()) \((self.uploads.fetchedObjects ?? []).count) pending upload requests in cache")
+            print("\(self.dbg()) \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
             // Resume operations
             self.resumeOperations()
         }
@@ -77,7 +77,7 @@ extension UploadManager
         // Propose to delete uploaded image of the photo Library once a day
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.pwgOneDay {
             // Are there images to delete from the Photo Library?
-            let toDelete = completed.fetchedObjects?.filter({$0.deleteImageAfterUpload == true}) ?? []
+            let toDelete = (completed.fetchedObjects ?? []).filter({$0.deleteImageAfterUpload == true})
             if toDelete.count > 0 {
                 // Store date of last deletion
                 UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
@@ -90,7 +90,7 @@ extension UploadManager
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard
-        var toDelete = uploads.fetchedObjects?.filter({!$0.localIdentifier.hasPrefix(kIntentPrefix) && !$0.localIdentifier.hasPrefix(kClipboardPrefix)}) ?? []
+        var toDelete = (uploads.fetchedObjects ?? []).filter({!$0.localIdentifier.hasPrefix(kIntentPrefix) && !$0.localIdentifier.hasPrefix(kClipboardPrefix)})
         toDelete.append(contentsOf: completed.fetchedObjects ?? [])
         
         // Fetch assets which are still available
@@ -119,7 +119,7 @@ extension UploadManager
         if failedUploads == nil {
             // Considers all failed uploads to the server to which the user is logged in
             let states: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-            failed = self.uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+            failed = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
         } else {
             failed = failedUploads!
         }

@@ -19,8 +19,8 @@ extension UploadManager {
         if isUploading.contains(upload.objectID) { return }
         isUploading.insert(upload.objectID)
 
-        // Reset counter of progress bar in case we repeat the transfer
-        UploadSessions.shared.clearCounter(withID: upload.localIdentifier)
+        // Initialise or reset counter of progress bar in case we repeat the transfer
+        UploadSessions.shared.initCounter(withID: upload.localIdentifier)
 
         // Update state of upload request and start transfer
         upload.setState(.uploading, save: true)
@@ -40,14 +40,14 @@ extension UploadManager {
         if self.isExecutingBackgroundUploadTask { return }
 
         // Stop here if there no image to prepare
-        let waiting = uploads.fetchedObjects?.filter({$0.state == .waiting}) ?? []
+        let waiting = (uploads.fetchedObjects ?? []).filter({$0.state == .waiting})
         if waiting.isEmpty { return }
 
         // Should we prepare the next image in parallel?
         let states: [pwgUploadState] = [.preparingError, .preparingFail,
                                         .uploadingError, .uploadingFail,
                                         .finishingError]
-        let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+        let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
         if !self.isPreparing, failed.count < maxNberOfFailedUploads,
            let upload = waiting.first {
 
@@ -94,6 +94,9 @@ extension UploadManager {
             upload.setState(.preparingFail, error: error, save: true)
             self.didEndTransfer(for: upload)
         }
+
+        // Set total number of bytes to upload
+        UploadSessions.shared.addBytes(Int64(imageData.count), toCounterWithID: upload.localIdentifier)
 
         // Prepare first chunk
         send(chunk: 0, of: chunks, for: upload)
@@ -166,7 +169,6 @@ extension UploadManager {
         request.addValue(String(chunk), forHTTPHeaderField: UploadVars.HTTPchunk)
         request.addValue(String(chunks), forHTTPHeaderField: UploadVars.HTTPchunks)
         request.addValue(upload.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
-        request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
 
         // As soon as a task is created, the timeout counter starts
         let task = frgdSession.uploadTask(with: request, from: httpBody)
@@ -180,11 +182,6 @@ extension UploadManager {
         print("\(dbg()) \(upload.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
 
-        // Task now resumed -> Update upload request status
-        if chunk == 0 {
-            upload.setState(.uploading, save: true)
-        }
-        
         // Release memory
         httpBody.removeAll()
         chunkData.removeAll()
@@ -530,14 +527,15 @@ extension UploadManager {
                 request.setValue(chunksStr, forHTTPHeaderField: UploadVars.HTTPchunks)
                 request.setValue("1", forHTTPHeaderField: "tries")
                 request.setValue(upload.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
-                request.setValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: UploadVars.HTTPfileSize)
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
                 task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
 
                 // Tell the system how many bytes are expected to be exchanged
-                task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
+                let bytesToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
+                UploadSessions.shared.addBytes(bytesToSend, toCounterWithID: upload.localIdentifier)
+                task.countOfBytesClientExpectsToSend = bytesToSend
                 task.countOfBytesClientExpectsToReceive = 600
                 
                 // Adds bytes expected to be sent to counter
@@ -552,9 +550,6 @@ extension UploadManager {
             }
         }
 
-        // All tasks are now resumed -> Update upload request status
-        upload.setState(.uploading, save: true)
-        
         // Release memory
         imageData.removeAll()
     }
@@ -589,7 +584,7 @@ extension UploadManager {
                 print("\(dbg()) \(md5sum) | no objectID!")
                 return
             }
-            guard let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) else {
+            guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
                 print("\(dbg()) \(md5sum) | missing Core Data object!")
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
@@ -659,7 +654,7 @@ extension UploadManager {
             print("\(dbg()) \(md5sum) | no objectID!")
             return
         }
-        guard let upload = uploads.fetchedObjects?.first(where: {$0.objectID == uploadID}) else {
+        guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
             print("\(dbg()) \(md5sum) | missing Core Data object!")
             // Investigate next upload request?
             if self.isExecutingBackgroundUploadTask {
@@ -847,11 +842,11 @@ extension UploadManager {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let prepared = uploads.fetchedObjects?.filter({$0.state == .prepared}) ?? []
+                let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
                 let states: [pwgUploadState] = [.preparingError, .preparingFail,
                                                .uploadingError, .uploadingFail,
                                                .finishingError]
-                let failed = uploads.fetchedObjects?.filter({states.contains($0.state)}) ?? []
+                let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
                 if isUploading.count < maxNberOfTransfers,
                    failed.count < maxNberOfFailedUploads,
                    let upload = prepared.first {
