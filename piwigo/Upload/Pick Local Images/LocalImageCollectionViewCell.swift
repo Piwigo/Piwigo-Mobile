@@ -14,42 +14,15 @@ import piwigoKit
 
 class LocalImageCollectionViewCell: UICollectionViewCell {
 
-    private var _localIdentifier = ""
-    var localIdentifier: String {
-        get {
-            _localIdentifier
-        }
-        set(localIdentifier) {
-            _localIdentifier = localIdentifier
-        }
-    }
-
-    private var _md5sum = ""
-    var md5sum: String {
-        get {
-            _md5sum
-        }
-        set(md5sum) {
-            _md5sum = md5sum
-        }
-    }
-
-    private var _progress: Float = 0.0
-    var progress: Float {
-        get {
-            _progress
-        }
-        set(progress) {
-            setProgress(progress, withAnimation: true)
-        }
-    }
+    var localIdentifier = ""
+    var md5sum = ""
     
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.16
-    let selectScale: CGFloat = 0.14
-    let selectRatio: CGFloat = 75/53
-    let uploadedScale: CGFloat = 0.16
-    let uploadedRatio: CGFloat = 1.0
+    private let selectScale: CGFloat = 0.14
+    private let selectRatio: CGFloat = 75/53
+    private let uploadedScale: CGFloat = 0.16
+    private let uploadedRatio: CGFloat = 1.0
     
     @IBOutlet weak var cellImage: UIImageView!
     
