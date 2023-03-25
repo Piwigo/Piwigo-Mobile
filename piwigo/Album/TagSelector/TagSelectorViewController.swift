@@ -179,7 +179,7 @@ class TagSelectorViewController: UITableViewController {
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        let nberOfTags = tags.fetchedObjects?.count ?? 0
+        let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
             String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberAsStr) :

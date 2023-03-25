@@ -537,8 +537,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Check session status before loading album and image data
         let lastLoad = albumData.dateGetImages
-        let noSmartAlbumData = self.categoryId <= 0 && self.images.fetchedObjects?.isEmpty ?? true
-        let nbImages = self.images.fetchedObjects?.count ?? Int.zero
+        let noSmartAlbumData = self.categoryId <= 0 && (self.images.fetchedObjects ?? []).isEmpty
+        let nbImages = (self.images.fetchedObjects ?? []).count
         let expectedNbImages = self.albumData.nbImages
         if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
             lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
@@ -551,7 +551,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Should we highlight the image of interest?
-        if categoryId != 0, (images.fetchedObjects?.count ?? 0) > 0,
+        if categoryId != 0, (images.fetchedObjects ?? []).count > 0,
            imageOfInterest.item != 0 {
             // Highlight the cell of interest
             let indexPathsForVisibleItems = imagesCollection?.indexPathsForVisibleItems
@@ -588,11 +588,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
-        if images.fetchedObjects?.count ?? 0 > 5,
+        if (images.fetchedObjects ?? []).count > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if albums.fetchedObjects?.count ?? 0 > 2, NetworkVars.hasAdminRights,
+        if (albums.fetchedObjects ?? []).count > 2, NetworkVars.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
@@ -771,8 +771,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Display HUD when loading images for the first time
             // or when we have less than half of the images in cache
-            let noSmartAlbumData = self.categoryId <= 0 && self.albums.fetchedObjects?.isEmpty ?? true
-            let nbImages = self.images.fetchedObjects?.count ?? Int.zero
+            let noSmartAlbumData = self.categoryId <= 0 && (self.albums.fetchedObjects ?? []).isEmpty
+            let nbImages = (self.images.fetchedObjects ?? []).count
             let expectedNbImages = self.albumData.nbImages
             if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
                 // Display HUD while downloading album data
@@ -897,37 +897,33 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
-                    fatalError("No LocalAlbumsViewController!")
-                }
-                localAlbumsVC.categoryId = categoryId
-                localAlbumsVC.userHasUploadRights = userHasUploadRights
-                let navController = UINavigationController(rootViewController: localAlbumsVC)
-                navController.modalTransitionStyle = .coverVertical
-                navController.modalPresentationStyle = .pageSheet
-                present(navController, animated: true)
-            }, onDeniedAccess: {
-            })
+                self.presentLocalAlbums()
+            }, onDeniedAccess: { })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self, onAuthorizedAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
-                    fatalError("No LocalAlbumsViewController!")
-                }
-                localAlbumsVC.categoryId = categoryId
-                localAlbumsVC.userHasUploadRights = userHasUploadRights
-                let navController = UINavigationController(rootViewController: localAlbumsVC)
-                navController.modalTransitionStyle = .coverVertical
-                navController.modalPresentationStyle = .pageSheet
-                present(navController, animated: true)
+                self.presentLocalAlbums()
             }, onDeniedAccess: { })
         }
 
         // Hide CreateAlbum and UploadImages buttons
         didCancelTapAddButton()
+    }
+    
+    private func presentLocalAlbums() {
+        // Open local albums view controller in new navigation controller
+        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
+            fatalError("No LocalAlbumsViewController!")
+        }
+        localAlbumsVC.categoryId = categoryId
+        localAlbumsVC.userHasUploadRights = userHasUploadRights
+        localAlbumsVC.savingContext = mainContext
+        let navController = UINavigationController(rootViewController: localAlbumsVC)
+        navController.modalTransitionStyle = .coverVertical
+        navController.modalPresentationStyle = .pageSheet
+        present(navController, animated: true)
     }
 
     @objc func didTapUploadQueueButton() {
@@ -962,7 +958,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         var totalCount = Int64.zero
         if categoryId == 0 {
             // Root Album only contains albums  => calculate total number of images
-            albums.fetchedObjects?.forEach({ album in
+            (albums.fetchedObjects ?? []).forEach({ album in
                 totalCount += album.totalNbImages
             })
         } else {
@@ -1217,7 +1213,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 fatalError("No ImageCollectionViewCell!")
             }
 
-            if images.fetchedObjects?.count ?? 0 > indexPath.item {
+            if (images.fetchedObjects ?? []).count > indexPath.item {
                 // Create cell from Piwigo data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
                 let image = images.object(at: imageIndexPath)
@@ -1256,10 +1252,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Avoid rare crashes…
-            if (indexPath.row < 0) || (indexPath.row >= (images.fetchedObjects?.count ?? 0)) {
+            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
                 return
             }
-            if images.fetchedObjects?[indexPath.item].pwgID == 0 {
+            if (images.fetchedObjects ?? [])[indexPath.item].pwgID == 0 {
                 return
             }
 
@@ -1312,7 +1308,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     // MARK: - ImageDetailDelegate Methods
     func didSelectImage(withId imageID: Int64) {
         // Determine index of image
-        guard let indexOfImage = images.fetchedObjects?.firstIndex(where: {$0.pwgID == imageID}) else { return }
+        guard let indexOfImage = (images.fetchedObjects ?? []).firstIndex(where: {$0.pwgID == imageID}) else { return }
 
         // Scroll view to center image
         if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
@@ -1534,7 +1530,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
-            if images.fetchedObjects?.count ?? 0 == 1 {
+            if (images.fetchedObjects ?? []).count == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> First added image ► enable menu")
                     self?.updateButtonsInPreviewMode()

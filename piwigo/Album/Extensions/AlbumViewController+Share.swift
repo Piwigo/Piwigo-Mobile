@@ -57,7 +57,7 @@ extension AlbumViewController
         totalNumberOfImages = selectedImageIds.count
         var itemsToShare: [UIActivityItemProvider] = []
         for selectedImageId in selectedImageIds {
-            guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
+            guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
                 else { continue }
             if selectedImage.isVideo {
                 // Case of a video

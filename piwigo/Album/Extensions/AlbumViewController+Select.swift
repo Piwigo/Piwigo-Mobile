@@ -231,7 +231,7 @@ extension AlbumViewController
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton.isEnabled = hasImagesSelected
-                let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
+                let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
                 let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
                 let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
                 favoriteBarButton.setFavoriteImage(for: areFavorites)
@@ -254,7 +254,7 @@ extension AlbumViewController
                // pwg.users.favorites… methods available from Piwigo version 2.10
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton.isEnabled = hasImagesSelected
-                let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
+                let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
                 let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
                 let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
                 favoriteBarButton.setFavoriteImage(for: areFavorites)
@@ -414,7 +414,7 @@ extension AlbumViewController
             // Remove images fro which we already have complete data
             selectedImageIdsLoop = selectedImageIds
             for selectedImageId in selectedImageIds {
-                guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
+                guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
                     else { continue }
                 if selectedImage.fileSize != Int64.zero {
                     selectedImageIdsLoop.remove(selectedImageId)

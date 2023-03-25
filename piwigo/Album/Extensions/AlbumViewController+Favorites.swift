@@ -13,7 +13,7 @@ extension AlbumViewController
 {
     // MARK: Favorites Utilities
     func getFavoriteBarButton() -> UIBarButtonItem {
-        let selectedImages: [Image] = images.fetchedObjects?.filter({selectedImageIds.contains($0.pwgID)}) ?? []
+        let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
         let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
         let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
         let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
@@ -43,7 +43,7 @@ extension AlbumViewController
 
         // Get image data
         guard let imageId = selectedImageIds.first,
-              let imageData = images.fetchedObjects?.first(where: {$0.pwgID == imageId}) else {
+              let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
             // Forget this image
             selectedImageIds.removeFirst()
 
@@ -118,7 +118,7 @@ extension AlbumViewController
 
         // Get image data
         guard  let imageId = selectedImageIds.first,
-               let imageData = images.fetchedObjects?.first(where: {$0.pwgID == imageId}) else {
+               let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
             // Deselect this image
             selectedImageIds.removeFirst()
 

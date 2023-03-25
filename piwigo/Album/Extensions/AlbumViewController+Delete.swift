@@ -21,7 +21,7 @@ extension AlbumViewController
         var toRemove = Set<Image>()
         var toDelete = Set<Image>()
         for selectedImageId in selectedImageIds {
-            guard let selectedImage = images.fetchedObjects?.first(where: {$0.pwgID == selectedImageId})
+            guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
                 else { continue }
             if (selectedImage.albums ?? Set<Album>()).filter({$0.pwgID > 0}).count == 1 {
                 toDelete.insert(selectedImage)

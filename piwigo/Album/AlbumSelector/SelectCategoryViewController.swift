@@ -474,7 +474,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // 1st section —> Recent albums
             if section == 0 {
                 // Do we have recent albums to show?
-                title = recentAlbums.fetchedObjects?.count ?? 0 > 0 ?
+                title = (recentAlbums.fetchedObjects ?? []).count > 0 ?
                     NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums") :
                     NSLocalizedString("tabBar_albums", comment: "Albums")
             } else {
@@ -514,13 +514,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if section == 0 {
                 return inputImages.first?.albums?.filter({$0.pwgID > 0}).count ?? 0
             } else {
-                return albums.fetchedObjects?.count ?? 0
+                return (albums.fetchedObjects ?? []).count
             }
         default:    // Present recent albums if any
-            if (recentAlbums.fetchedObjects?.count ?? 0 > 0) && (section == 0) {
-                return recentAlbums.fetchedObjects?.count ?? 0
+            if ((recentAlbums.fetchedObjects ?? []).count > 0) && (section == 0) {
+                return (recentAlbums.fetchedObjects ?? []).count
             } else {
-                return albums.fetchedObjects?.count ?? 0
+                return (albums.fetchedObjects ?? []).count
             }
         }
     }
@@ -538,7 +538,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         var depth = 0
         let albumData: Album
-        let hasRecentAlbums = recentAlbums.fetchedObjects?.count ?? 0 > 0
+        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
         switch indexPath.section {
         case 0:
             if wantedAction == .setAlbumThumbnail {
@@ -573,7 +573,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 //            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
 //            categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
 //        }
-//        else if (recentAlbums.fetchedObjects?.count ?? 0 > 0) && (indexPath.section == 0) {
+//        else if ((recentAlbums.fetchedObjects ?? []).count > 0) && (indexPath.section == 0) {
 //            albumData = recentAlbums.object(at: indexPath)
 //        }
 //        else {
@@ -690,7 +690,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Retrieve album data
         let albumData: Album
-        let hasRecentAlbums = recentAlbums.fetchedObjects?.count ?? 0 > 0
+        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
         switch indexPath.section {
         case 0:
             // Provided album
@@ -783,7 +783,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Get selected category
         let albumData: Album
-        let hasRecentAlbums = recentAlbums.fetchedObjects?.count ?? 0 > 0
+        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
         switch indexPath.section {
         case 0:
             // Provided album
@@ -1045,7 +1045,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         // Initialisation
         var hasAlbumsInSection1 = false
         if controller == albums,
-           wantedAction == .setAlbumThumbnail || recentAlbums.fetchedObjects?.count ?? 0 > 0 {
+           wantedAction == .setAlbumThumbnail || (recentAlbums.fetchedObjects ?? []).count > 0 {
             hasAlbumsInSection1 = true
         }
 
