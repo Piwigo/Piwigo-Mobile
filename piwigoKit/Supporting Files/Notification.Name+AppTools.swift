@@ -33,9 +33,6 @@ public extension Notification.Name {
     static let pwgLeftUploads = Notification.Name("pwgNotificationLeftUploads")
     
     /// - Update progress bars of upload requests
-    static let pwgUploadChangedState = Notification.Name("pwgNotificationUploadChangedState")
-
-    /// - Update progress bars of upload requests
     static let pwgUploadProgress = Notification.Name("pwgNotificationUploadProgress")
     
     /// - Notifies that auto-uploading is enabled by user

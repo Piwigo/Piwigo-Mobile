@@ -172,20 +172,6 @@ public class Upload: NSManagedObject {
         if save {
             try? self.managedObjectContext?.save()
         }
-        
-        // Is this executed in the foreground?
-        if !UploadManager.shared.isExecutingBackgroundUploadTask {
-            // Update UploadQueue cell and button shown in root album (or default album)
-            DispatchQueue.main.async {
-                let uploadInfo: [String : Any] = ["localIdentifier" : self.localIdentifier,
-                                                  "state"           : self.state,
-                                                  "md5sum"          : self.md5Sum,
-                                                  "stateError"      : self.requestError,
-                                                  "photoMaxSize"    : self.photoMaxSize]
-                NotificationCenter.default.post(name: .pwgUploadChangedState,
-                                                object: nil, userInfo: uploadInfo)
-            }
-        }
     }
     
     /**

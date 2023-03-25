@@ -44,7 +44,7 @@ public class ServerProvider: NSObject {
             }
 
             // Did we find a Server instance?
-            if let cachedServer: Server = controller.fetchedObjects?.first {
+            if let cachedServer: Server = (controller.fetchedObjects ?? []).first {
                 currentServer = cachedServer
             } else {
                 // Create a Server object on the current queue context.

@@ -81,7 +81,7 @@ public class AlbumProvider: NSObject {
             }
             
             // Did we find an Album instance?
-            if let cachedAlbum: Album = controller.fetchedObjects?.first {
+            if let cachedAlbum: Album = (controller.fetchedObjects ?? []).first {
                 currentAlbum = cachedAlbum
             }
             else if albumId <= 0 {     // We should not create standard albums manually
@@ -139,7 +139,7 @@ public class AlbumProvider: NSObject {
     //            }
     //
     //            // Initialise search album
-    //            guard let searchAlbum = controller.fetchedObjects?.first as? Album else {
+    //            guard let searchAlbum = (controller.fetchedObjects ?? []).first as? Album else {
     //                fatalError("••> No Search album in cache!")
     //            }
     //            searchAlbum.query = ""

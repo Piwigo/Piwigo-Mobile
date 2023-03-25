@@ -79,7 +79,7 @@ public class UserProvider: NSObject {
             }
             
             // Did we find a User instance?
-            if let cachedUser: User = controller.fetchedObjects?.first {
+            if let cachedUser: User = (controller.fetchedObjects ?? []).first {
                 if doUpdate {
                     let now = Date()
                     cachedUser.lastUsed = now
