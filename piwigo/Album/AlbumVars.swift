@@ -82,14 +82,5 @@ class AlbumVars: NSObject {
 
     // MARK: - Vars in Memory
     // Album variables kept in memory
-    /// - Available image sizes
-    var hasSquareSizeImages = true
-    var hasThumbSizeImages = true
-    var hasXXSmallSizeImages = false
-    var hasXSmallSizeImages = false
-    var hasSmallSizeImages = false
-    var hasMediumSizeImages = true
-    var hasLargeSizeImages = false
-    var hasXLargeSizeImages = false
-    var hasXXLargeSizeImages = false
+    /// - None
 }

@@ -155,7 +155,7 @@ extension AlbumViewController: UISearchBarDelegate
                 self.updateNberOfImagesInFooter()
                 
                 // Determine if the session is active and for how long before fetching
-                LoginUtilities.checkSession(ofUser: self.user) {
+                NetworkUtilities.checkSession(ofUser: self.user) {
                     self.startFetchingAlbumAndImages()
                 } failure: { error in
                     print("••> Error \(error.code): \(error.localizedDescription)")

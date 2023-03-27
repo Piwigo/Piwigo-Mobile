@@ -46,9 +46,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Create login view
                 appDelegate.loadLoginView(in: window)
 
-                // We will load album data
-                NetworkVars.dateOfLastLogin = .distantPast
-
                 // Blur views if the App Lock is enabled
                 /// The passcode window is not presented so that the app
                 /// does not request the passcode until it is put into the background.

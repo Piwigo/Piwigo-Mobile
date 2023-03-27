@@ -478,7 +478,7 @@ extension AlbumViewController
         }
                         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        LoginUtilities.checkSession(ofUser: user) {  [self] in
+        NetworkUtilities.checkSession(ofUser: user) {  [self] in
             imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
                 // Image info retrieved
                 selectedImageIdsLoop.removeFirst()

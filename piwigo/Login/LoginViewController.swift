@@ -150,7 +150,7 @@ class LoginViewController: UIViewController {
     
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
-        LoginUtilities.requestServerMethods { [self] in
+        NetworkUtilities.requestServerMethods { [self] in
             // Pursue logging in…
             DispatchQueue.main.async {
                 self.performLogin()
@@ -282,7 +282,7 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Perform login
-            LoginUtilities.sessionLogin(withUsername: username, password: password) { [self] in
+            NetworkUtilities.sessionLogin(withUsername: username, password: password) { [self] in
                 // Session now opened
                 // Create or update User account in persistent cache
                 DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
@@ -303,7 +303,6 @@ class LoginViewController: UIViewController {
             KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
                                              account: username)
             NetworkVars.username = ""
-            NetworkVars.dateOfLastLogin = Date()
 
             // Create or update User account in persistent cache
             DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
@@ -330,7 +329,7 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Community extension installed
-            LoginUtilities.communityGetStatus { [self] in
+            NetworkUtilities.communityGetStatus { [self] in
                 // Check Piwigo version, get token, available sizes, etc.
                 getSessionStatus()
             } failure: { [self] error in
@@ -357,7 +356,8 @@ class LoginViewController: UIViewController {
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
 
-        LoginUtilities.sessionGetStatus() { [self] in
+        NetworkUtilities.sessionGetStatus() { [self] in
+            LoginUtilities.checkAvailableSizes()
             if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                 // They need to update, ask user what to do
                 // Close loading or re-login view and ask what to do

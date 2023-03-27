@@ -106,6 +106,11 @@ public class UploadManager: NSObject {
 
     
     // MARK: - Core Data Providers
+    lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider()
+        return provider
+    }()
+
     lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider()
         return provider
@@ -123,6 +128,10 @@ public class UploadManager: NSObject {
 
 
     // MARK: - Core Data Source
+    lazy var user: User? = {
+        return userProvider.getUserAccount(inContext: bckgContext)
+    }()
+    
     lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first

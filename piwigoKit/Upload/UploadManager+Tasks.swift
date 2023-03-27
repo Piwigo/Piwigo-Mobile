@@ -181,26 +181,36 @@ extension UploadManager
     {
         // Get list of categories
         let categories: Set<Int32> = Set(uploads.map({$0.category}))
-        
-        // Moderate images by category
-        for categoryId in categories {
-            // Set list of images to moderate in that category
-            let categoryImages = uploads.filter({$0.category == categoryId})
-            let imageIds = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
-            
-            // Moderate uploaded images
-            self.moderateImages(withIds: imageIds, inCategory: categoryId) { (success, validatedIDs) in
-                if !success { return }    // Will retry later
-                
-                // Update state of upload requests
-                categoryImages.forEach({$0.setState(.moderated, save: true)})
-                
-                // Delete image in Photo Library if wanted
-                let toDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
-                    .filter({validatedIDs.contains($0.imageId)})
-                self.deleteAssets(associatedToUploads: toDelete)
-            }
+        if categories.isEmpty { return }
+
+        // Check user entity
+        guard let user = user else {
+            // Should never happen
+            // ► The moderator will be informed later
+            return
         }
+
+        // Moderate images by category
+        NetworkUtilities.checkSession(ofUser: user) {
+            for categoryId in categories {
+                // Set list of images to moderate in that category
+                let categoryImages = uploads.filter({$0.category == categoryId})
+                let imageIds = String(categoryImages.map({ "\($0.imageId)," }).reduce("", +).dropLast())
+                
+                // Moderate uploaded images
+                self.moderateImages(withIds: imageIds, inCategory: categoryId) { (success, validatedIDs) in
+                    if !success { return }    // Will retry later
+                    
+                    // Update state of upload requests
+                    categoryImages.forEach({$0.setState(.moderated, save: true)})
+                    
+                    // Delete image in Photo Library if wanted
+                    let toDelete = categoryImages.filter({$0.deleteImageAfterUpload == true})
+                        .filter({validatedIDs.contains($0.imageId)})
+                    self.deleteAssets(associatedToUploads: toDelete)
+                }
+            }
+        } failure: { _ in }
     }
     
     

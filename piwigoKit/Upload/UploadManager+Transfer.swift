@@ -93,13 +93,28 @@ extension UploadManager {
                                 userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
             upload.setState(.preparingFail, error: error, save: true)
             self.didEndTransfer(for: upload)
+            return
         }
 
-        // Set total number of bytes to upload
-        UploadSessions.shared.addBytes(Int64(imageData.count), toCounterWithID: upload.localIdentifier)
+        // Check user entity
+        guard let user = user else {
+            // Should never happen
+            // ► The lounge will be emptied later by the server
+            // ► Stop upload task and return an error
+            upload.setState(.uploadingError, error: UserError.emptyUsername, save: true)
+            self.didEndTransfer(for: upload)
+            return
+        }
 
         // Prepare first chunk
-        send(chunk: 0, of: chunks, for: upload)
+        NetworkUtilities.checkSession(ofUser: user) {
+            // Set total number of bytes to upload
+            UploadSessions.shared.addBytes(Int64(imageData.count), toCounterWithID: upload.localIdentifier)
+            // Start uploading
+            self.send(chunk: 0, of: chunks, for: upload)
+        } failure: { error in
+            upload.requestError = error.localizedDescription
+        }
     }
 
     func send(chunk:Int, of chunks:Int, for upload: Upload) {

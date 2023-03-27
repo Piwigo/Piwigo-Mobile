@@ -542,7 +542,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let expectedNbImages = self.albumData.nbImages
         if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
             lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
-            LoginUtilities.checkSession(ofUser: user) {
+            NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages()
             } failure: { error in
                 print("••> Error \(error.code): \(error.localizedDescription)")
@@ -798,7 +798,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Re-login and then fetch album and image data
-        LoginUtilities.checkSession(ofUser: user) {
+        NetworkUtilities.checkSession(ofUser: user) {
             self.startFetchingAlbumAndImages()
         } failure: { error in
             print("••> Error \(error.code): \(error.localizedDescription)")
@@ -830,7 +830,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Fetch favorites in the background if needed
         if categoryId != pwgSmartAlbum.favorites.rawValue,
-           let user = userProvider.getUserAccount(inContext: bckgContext),
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {
             DispatchQueue.global(qos: .background).async { [unowned self] in

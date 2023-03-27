@@ -332,7 +332,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         })
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-            LoginUtilities.sessionLogout {
+            NetworkUtilities.sessionLogout {
                 // Close session
                 DispatchQueue.main.async {
                     ClearCache.closeSession { }

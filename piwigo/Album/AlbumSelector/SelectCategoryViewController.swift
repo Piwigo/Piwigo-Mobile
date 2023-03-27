@@ -803,16 +803,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let albumIndexPath = IndexPath(item: indexPath.item, section: 0)
             albumData = albums.object(at: albumIndexPath)
         }
-
-//        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-//        }
-//        else if (indexPath.section == 0), !recentCategories.isEmpty {
-//            albumData = recentCategories[indexPath.row]
-//        } else {
-//            albumData = categories[indexPath.row]
-//        }
         
         // Remember the choice
         selectedCategoryId = albumData.pwgID

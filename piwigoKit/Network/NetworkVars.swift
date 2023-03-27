@@ -86,7 +86,7 @@ public class NetworkVars: NSObject {
     /// - Piwigo server version (stored so that the app knows it after a crash and before re-login)
     @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var pwgVersion: String
-
+    
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCommunityPluginV29:Bool
@@ -104,7 +104,7 @@ public class NetworkVars: NSObject {
     // Network variables kept in memory
     /// - Remembers that the HTTP authentication failed
     public static var didFailHTTPauthentication = false
-
+    
     /// - Remembers that the SSL certicate was approved
     public static var didApproveCertificate = false
     
@@ -114,15 +114,23 @@ public class NetworkVars: NSObject {
     /// - Remembers certificate information
     public static var certificateInformation = ""
 
-    /// - Remembers when the user logged in
-    public static var dateOfLastLogin: Date = .distantPast
-    
     /// - Token returned after login
     public static var pwgToken = ""
-
+    
     /// - User's default language
     public static var language = ""
     
     /// - Custom HTTP header field names
     public static let HTTPCatID = "X-PWG-categoryID"
+    
+    /// - Available image sizes
+    public static var hasSquareSizeImages = true
+    public static var hasThumbSizeImages = true
+    public static var hasXXSmallSizeImages = false
+    public static var hasXSmallSizeImages = false
+    public static var hasSmallSizeImages = false
+    public static var hasMediumSizeImages = true
+    public static var hasLargeSizeImages = false
+    public static var hasXLargeSizeImages = false
+    public static var hasXXLargeSizeImages = false
 }

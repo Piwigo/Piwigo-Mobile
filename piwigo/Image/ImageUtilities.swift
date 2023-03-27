@@ -302,39 +302,39 @@ class ImageUtilities: NSObject {
         var pwgURL: NSURL?
         switch size {
         case .square:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasThumbSizeImages,
+            else if NetworkVars.hasThumbSizeImages,
                     let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXSmallSizeImages,
+            else if NetworkVars.hasXXSmallSizeImages,
                     let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXSmallSizeImages,
+            else if NetworkVars.hasXSmallSizeImages,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasSmallSizeImages,
+            else if NetworkVars.hasSmallSizeImages,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasMediumSizeImages,
+            else if NetworkVars.hasMediumSizeImages,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -342,39 +342,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .thumb:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXSmallSizeImages,
+            else if NetworkVars.hasXXSmallSizeImages,
                     let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXSmallSizeImages,
+            else if NetworkVars.hasXSmallSizeImages,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasSmallSizeImages,
+            else if NetworkVars.hasSmallSizeImages,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasMediumSizeImages,
+            else if NetworkVars.hasMediumSizeImages,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -382,39 +382,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .xxSmall:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                 let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                 let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXSmallSizeImages,
+            else if NetworkVars.hasXSmallSizeImages,
                     let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasSmallSizeImages,
+            else if NetworkVars.hasSmallSizeImages,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasMediumSizeImages,
+            else if NetworkVars.hasMediumSizeImages,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -422,39 +422,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .xSmall:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasSmallSizeImages,
+            else if NetworkVars.hasSmallSizeImages,
                     let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasMediumSizeImages,
+            else if NetworkVars.hasMediumSizeImages,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -462,39 +462,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .small:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasMediumSizeImages,
+            else if NetworkVars.hasMediumSizeImages,
                     let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -502,39 +502,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .medium:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasMediumSizeImages,
+            if NetworkVars.hasMediumSizeImages,
                let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasLargeSizeImages,
+            else if NetworkVars.hasLargeSizeImages,
                     let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -542,39 +542,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .large:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasMediumSizeImages,
+            if NetworkVars.hasMediumSizeImages,
                let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasLargeSizeImages,
+            if NetworkVars.hasLargeSizeImages,
                let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXLargeSizeImages,
+            else if NetworkVars.hasXLargeSizeImages,
                     let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -582,39 +582,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .xLarge:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasMediumSizeImages,
+            if NetworkVars.hasMediumSizeImages,
                let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasLargeSizeImages,
+            if NetworkVars.hasLargeSizeImages,
                let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXLargeSizeImages,
+            if NetworkVars.hasXLargeSizeImages,
                let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            else if AlbumVars.shared.hasXXLargeSizeImages,
+            else if NetworkVars.hasXXLargeSizeImages,
                     let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -622,39 +622,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .xxLarge:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasMediumSizeImages,
+            if NetworkVars.hasMediumSizeImages,
                let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasLargeSizeImages,
+            if NetworkVars.hasLargeSizeImages,
                let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXLargeSizeImages,
+            if NetworkVars.hasXLargeSizeImages,
                let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXLargeSizeImages,
+            if NetworkVars.hasXXLargeSizeImages,
                let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }
@@ -662,39 +662,39 @@ class ImageUtilities: NSObject {
                 pwgURL = imageURL
             }
         case .fullRes:
-            if AlbumVars.shared.hasSquareSizeImages,
+            if NetworkVars.hasSquareSizeImages,
                let imageURL = imageData.squareRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasThumbSizeImages,
+            if NetworkVars.hasThumbSizeImages,
                let imageURL = imageData.thumbRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXSmallSizeImages,
+            if NetworkVars.hasXXSmallSizeImages,
                let imageURL = imageData.xxsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXSmallSizeImages,
+            if NetworkVars.hasXSmallSizeImages,
                let imageURL = imageData.xsmallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasSmallSizeImages,
+            if NetworkVars.hasSmallSizeImages,
                let imageURL = imageData.smallRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasMediumSizeImages,
+            if NetworkVars.hasMediumSizeImages,
                let imageURL = imageData.mediumRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasLargeSizeImages,
+            if NetworkVars.hasLargeSizeImages,
                let imageURL = imageData.largeRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXLargeSizeImages,
+            if NetworkVars.hasXLargeSizeImages,
                let imageURL = imageData.xlargeRes?.url {
                 pwgURL = imageURL
             }
-            if AlbumVars.shared.hasXXLargeSizeImages,
+            if NetworkVars.hasXXLargeSizeImages,
                let imageURL = imageData.xxlargeRes?.url {
                 pwgURL = imageURL
             }

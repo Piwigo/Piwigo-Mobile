@@ -165,7 +165,7 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        LoginUtilities.checkSession(ofUser: user) {  [self] in
+        NetworkUtilities.checkSession(ofUser: user) {  [self] in
             ImageUtilities.setInfos(with: paramsDict) { [self] in
                 // Remove image from source album
                 imageData.removeFromAlbums(albumData)
@@ -248,7 +248,7 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        LoginUtilities.checkSession(ofUser: user) { [unowned self] in
+        NetworkUtilities.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.delete(toDelete) { [unowned self] in
                 DispatchQueue.main.async {
                     // Save image IDs for marking Upload requests in the background

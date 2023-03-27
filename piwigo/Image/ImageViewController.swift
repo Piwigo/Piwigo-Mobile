@@ -466,7 +466,7 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            LoginUtilities.checkSession(ofUser: user) { [self] in
+            NetworkUtilities.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
                 print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {

@@ -88,7 +88,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        LoginUtilities.checkSession(ofUser: user) { [self] in
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -154,7 +154,7 @@ extension ImageViewController
         showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
-        LoginUtilities.checkSession(ofUser: user) { [self] in
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 // Save image ID for marking Upload request in the background
                 let imageID = imageData.pwgID

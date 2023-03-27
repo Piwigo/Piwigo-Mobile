@@ -136,10 +136,28 @@ extension UploadManager {
     func emptyLounge(for upload: Upload) {
         print("\(dbg()) emptyLounge() in", queueName())
         // Empty lounge without reporting potential error
-        processImages(withIds: "\(upload.imageId)",
-                      inCategory: upload.category) { [unowned self] error in
+        guard let user = user else {
+            // Should never happen
+            // ► The lounge will be emptied later by the server
+            // ► Continue upload tasks without returning error
             self.backgroundQueue.async {
-                self.didFinishTransfer(for: upload, error: error)
+                self.didFinishTransfer(for: upload, error: nil)
+            }
+            return
+        }
+        NetworkUtilities.checkSession(ofUser: user) {
+            self.processImages(withIds: "\(upload.imageId)",
+                               inCategory: upload.category) { [unowned self] _ in
+                self.backgroundQueue.async {
+                    self.didFinishTransfer(for: upload, error: nil)
+                }
+            }
+        } failure: { _ in
+            // Cannot empty the lounge
+            // ► The lounge will be emptied later by the app or the server
+            // ► Continue upload tasks
+            self.backgroundQueue.async {
+                self.didFinishTransfer(for: upload, error: nil)
             }
         }
     }
