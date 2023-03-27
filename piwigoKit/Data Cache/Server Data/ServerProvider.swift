@@ -29,8 +29,7 @@ public class ServerProvider: NSObject {
 
             // Look for the server located at the provided path
             fetchRequest.predicate = NSPredicate(format: "path == %@", path)
-            fetchRequest.fetchBatchSize = 1
-            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.fetchLimit = 1
 
             // Create a fetched results controller and set its fetch request and context.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

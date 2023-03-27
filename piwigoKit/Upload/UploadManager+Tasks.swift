@@ -372,12 +372,11 @@ extension UploadManager
     
 
     // MARK: - Task Utilities
-    public func markAsDeletedPiwigoImages(withIDs imageIDs: [Int64]) {
+    public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
         if imageIDs.isEmpty { return }
-        var toMark = (uploads.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)})
-        toMark.append(contentsOf: (completed.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)}))
-        toMark.forEach({$0.setState(.deleted, save: false)})
-        try? bckgContext.save()
+        var toDelete = (uploads.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)})
+        toDelete.append(contentsOf: (completed.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)}))
+        uploadProvider.delete(uploadRequests: toDelete) { _ in }
     }
     
     public func deleteImpossibleUploads() {

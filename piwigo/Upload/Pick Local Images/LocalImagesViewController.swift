@@ -29,54 +29,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         return provider
     }()
     
-    lazy var fetchPendingRequest: NSFetchRequest = {
+    lazy var fetchUploadRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
 
-        // Retrieves only non-completed upload requests
+        // Retrieves upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = 20
-        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
-        let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
-                                                 managedObjectContext: self.savingContext,
-                                                 sectionNameKeyPath: nil,
-                                                 cacheName: nil)
-        uploads.delegate = self
-        return uploads
-    }()
-
-    lazy var fetchCompletedRequest: NSFetchRequest = {
-        let fetchRequest = Upload.fetchRequest()
-        // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
-        fetchRequest.sortDescriptors = sortDescriptors
-
-        // Retrieves only completed upload requests
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var states: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = 20
-        return fetchRequest
-    }()
-
-    public lazy var completed: NSFetchedResultsController<Upload> = {
-        let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
+        let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
                                                  managedObjectContext: self.savingContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
@@ -103,7 +72,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var indexOfImageSortedByWeek: [IndexSet] = []       // Indices of images sorted week
     private var indexOfImageSortedByDay: [IndexSet] = []        // Indices of images sorted day
 
-    private var uploadsInQueue = [(String,pwgUploadState)?]()   // Array of uploads in queue at start
     private var indexedUploadsInQueue = [(String,pwgUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
     private var selectedImages = [UploadProperties?]()          // Array of images to upload
     private var selectedSections = [SelectButtonState]()        // State of Select buttons
@@ -163,12 +131,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // and prevent their selection
         do {
             try uploads.performFetch()
-            try completed.performFetch()
         } catch {
             print("Error: \(error)")
         }
-        uploadsInQueue = (uploads.fetchedObjects ?? []).map({($0.localIdentifier, $0.state)})
-        uploadsInQueue.append(contentsOf: (completed.fetchedObjects ?? []).map({($0.localIdentifier, $0.state)}))
                                                                                         
         // Sort images in background
         DispatchQueue.global(qos: .userInitiated).async {
@@ -588,7 +553,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let cacheOperation = BlockOperation {
             // Initialise cached indexed uploads
             self.indexedUploadsInQueue = .init(repeating: nil, count: self.fetchedImages.count)
-            if self.fetchedImages.count > 10 * self.uploadsInQueue.count {
+            if self.fetchedImages.count > 10 * (self.uploads.fetchedObjects ?? []).count {
                 // By iterating uploads in queue
                 self.cachingUploadIndicesIteratingUploadsInQueue()
             } else {
@@ -905,8 +870,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in i*step..<min((i+1)*step,fetchedImages.count) {
                 // Get image identifier
                 let imageId = fetchedImages[index].localIdentifier
-                if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) as? (String, pwgUploadState) {
-                    let cachedObject = (upload.0, upload.1, fetchedImages[index].canPerform(.delete))
+                if uploads.fetchedObjects == nil {
+                    assertionFailure("!!! uploads is nil !!!")
+                }
+                if let upload = (uploads.fetchedObjects ?? []).first(where: {$0.localIdentifier == imageId}) {
+                    let cachedObject = (upload.localIdentifier, upload.state, fetchedImages[index].canPerform(.delete))
                     indexedUploadsInQueue[index] = cachedObject
                 }
             }
@@ -924,10 +892,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         fetchOptions.includeHiddenAssets = false
 
         // Operation done if no stored upload requests
-        if uploadsInQueue.count > 0 {
+        let count = (uploads.fetchedObjects ?? []).count
+        if count > 0 {
             // Check if this operation was cancelled every 100 iterations
             let step = 1_00
-            let iterations = uploadsInQueue.count / step
+            let iterations = count / step
             for i in 0...iterations {
                 // Continue with this operation?
                 if queue.operations.first!.isCancelled {
@@ -937,28 +906,28 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
 
                 // Caching fetched images already in upload queue
-                if i*step >= min((i+1)*step,uploadsInQueue.count) { break }
-                for index in i*step..<min((i+1)*step,uploadsInQueue.count) {
+                if i*step >= min((i+1)*step,count) { break }
+                for index in i*step..<min((i+1)*step,count) {
                     // Get image identifier
-                    if index < uploadsInQueue.count, let imageId = uploadsInQueue[index]?.0 {
-                        fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", imageId)
-                        if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
-                            let idx = fetchedImages.index(of: asset)
-                            if idx != NSNotFound {
-                                let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
-                                if idx >= indexedUploadsInQueue.count {
-                                    let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil, count: idx - (indexedUploadsInQueue.count - 1))
-                                    indexedUploadsInQueue.append(contentsOf: newElements)
-                                }
-                            	indexedUploadsInQueue[idx] = cachedObject
-                                }
-						    }
-					    }
-				    }
+                    let upload = uploads.object(at: IndexPath(index: index))
+                    fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
+                    fetchOptions.fetchLimit = 1
+                    if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
+                        let idx = fetchedImages.index(of: asset)
+                        if idx != NSNotFound {
+                            let cachedObject = (upload.localIdentifier, upload.state, asset.canPerform(.delete))
+                            if idx >= indexedUploadsInQueue.count {
+                                let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil, count: idx - (indexedUploadsInQueue.count - 1))
+                                indexedUploadsInQueue.append(contentsOf: newElements)
+                            }
+                            indexedUploadsInQueue[idx] = cachedObject
+                        }
+                    }
+                }
         	}
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   cached \(uploadsInQueue.count) images by iterating uploads in queue in \(diff) ms")
+        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     private func getUploadStateOfImage(at index: Int,
@@ -969,7 +938,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             state = indexedUploadsInQueue[index]?.1
         } else {
             // Use non-indexed data (might be quite slow)
-            state = uploadsInQueue.first(where: { $0?.0 == cell.localIdentifier })??.1
+            state = (uploads.fetchedObjects ?? []).first(where: {$0.localIdentifier == cell.localIdentifier })?.state
         }
         return state
     }
@@ -1179,21 +1148,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Deselect already uploaded photos if needed
         var didChangeSelection = false
-        for index in 0..<selectedImages.count {
-            if selectedImages[index] == nil { continue }
-            // Can we select this image?
-            if (queue.operationCount == 0) && (index < indexedUploadsInQueue.count) {
-                // Indexed uploads available
+        if (queue.operationCount == 0) && (selectedImages.count < indexedUploadsInQueue.count) {
+            // Indexed uploads available
+            for index in 0..<selectedImages.count {
                 if let upload = indexedUploadsInQueue[index],
                    [.finished, .moderated].contains(upload.1) {
                     // Deselect cell
                     selectedImages[index] = nil
                     didChangeSelection = true
                 }
-            } else {
-                // Use non-indexed data (might be quite slow)
+            }
+        } else {
+            // Use non-indexed data (might be quite slow)
+            let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+            for index in 0..<selectedImages.count {
                 if let localIdentifier = selectedImages[index]?.localIdentifier,
-                   let _ = (completed.fetchedObjects ?? []).firstIndex(where: { $0.localIdentifier == localIdentifier }) {
+                   let _ = completed.firstIndex(where: {$0.localIdentifier == localIdentifier}) {
                     selectedImages[index] = nil
                     didChangeSelection = true
                 }
@@ -1213,9 +1183,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Check if there are uploaded photos to delete
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completedUploads = completed.fetchedObjects ?? []
+        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<indexedUploads.count {
-            if let _ = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
                indexedUploads[index].2 {
                 return true
             }
@@ -1227,9 +1197,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Delete uploaded images (fetched on the main queue)
         uploadsToDelete = [Upload]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completedUploads = completed.fetchedObjects ?? []
+        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<self.indexedUploadsInQueue.count {
-            if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+            if let upload = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
                let indexedUpload = self.indexedUploadsInQueue[index], indexedUpload.2 {
                 uploadsToDelete.append(upload)
             }
@@ -1368,31 +1338,29 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return
             }
 
-            // Get index of image
-            let index = getImageIndex(for: indexPath)
-
             // Update the selection if not already done
             if !imagesBeingTouched.contains(indexPath) {
 
                 // Store that the user touched this cell during this gesture
                 imagesBeingTouched.append(indexPath)
 
+                // Get index and upload state of image
+                let index = getImageIndex(for: indexPath)
+                let uploadState = getUploadStateOfImage(at: index, for: cell)
+
                 // Update the selection state
                 if let _ = selectedImages[index] {
                     // Deselect the cell
                     selectedImages[index] = nil
-                    cell.update(selected: false)
+                    cell.update(selected: false, state: uploadState)
                 } else {
-                    // Can we re-upload this image?
-                    let uploadState = getUploadStateOfImage(at: index, for: cell)
-                    if [.finished, .moderated].contains(uploadState), !reUploadAllowed {
-                        return
+                    // Can we upload or re-upload this image?
+                    if (uploadState == nil) || reUploadAllowed {
+                        // Select the cell
+                        selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                 category: categoryId)
+                        cell.update(selected: true, state: uploadState)
                     }
-                    
-                    // Select the cell
-                    selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                             category: categoryId)
-                    cell.update(selected: true)
                 }
 
                 // Update navigation bar
@@ -1610,7 +1578,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let uploadState = getUploadStateOfImage(at: index, for: cell)
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup))
+        let thumbSize = AlbumUtilities.imageSize(forView: collectionView,
+                                                 imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait,
+                                                 collectionType: .popup)
+        cell.configure(with: imageAsset, thumbnailSize: thumbSize)
         cell.update(selected: selectedImages[index] != nil, state: uploadState)
 
         // Add pan gesture recognition
@@ -1641,24 +1612,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             return
         }
         
-        // Get index of image
+        // Get index and upload state of image
         let index = getImageIndex(for: indexPath)
+        let uploadState = getUploadStateOfImage(at: index, for: cell)
 
         // Update cell and selection
         if let _ = selectedImages[index] {
             // Deselect the cell
             selectedImages[index] = nil
-            cell.update(selected: false)
+            cell.update(selected: false, state: uploadState)
         } else {
-            // Can we re-upload this image?
-            let uploadState = getUploadStateOfImage(at: index, for: cell)
-            if [.finished, .moderated].contains(uploadState), !reUploadAllowed {
-                return
+            // Can we upload or re-upload this image?
+            if (uploadState == nil) || reUploadAllowed {
+                // Select the image
+                selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                         category: categoryId)
+                cell.update(selected: true, state: uploadState)
             }
-            // Select the image
-            selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                     category: categoryId)
-            cell.update(selected: true)
         }
 
         // Update navigation bar
@@ -1713,10 +1683,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update navigation bar
         self.updateNavBar()
 
-        // Select visible cells
-        localImagesCollection.visibleCells.forEach { cell in
-            if let cell = cell as? LocalImageCollectionViewCell {
-                cell.update(selected: selectedSections[section] == .deselect)
+        // Select or deselect visible cells
+        localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
+            // Get cell at index path
+            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
+                // Select or deselect the cell
+                let index = getImageIndex(for: indexPath)
+                let uploadState = getUploadStateOfImage(at: index, for: cell)
+                cell.update(selected: selectedSections[section] == .deselect, state: uploadState)
             }
         }
         
@@ -1918,23 +1892,14 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-            print("••• LocalImagesViewController controller:insert...")
+            print("••> LocalImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
-            // Append upload to non-indexed upload queue
-            let newUpload = (upload.localIdentifier, pwgUploadState(rawValue: upload.requestState)!)
-            if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                uploadsInQueue[index] = newUpload
-            } else {
-                uploadsInQueue.append(newUpload)
-            }
-
-            // Get index of selected image and deselect it
-            if let indexOfUploadedImage = selectedImages
-                .firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+            // Get index of selected image if any and deselect it
+            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
                 // Deselect image
-                selectedImages[indexOfUploadedImage] = nil
+                selectedImages[index] = nil
             }
 
             // Get index of image and update request in cache
@@ -1943,67 +1908,51 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
             fetchOptions.fetchLimit = 1
             if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
-                let idx = fetchedImages.index(of: asset)
-                if idx != NSNotFound {
+                let index = fetchedImages.index(of: asset)
+                if index != NSNotFound {
                     let cachedObject = (upload.localIdentifier, upload.state, asset.canPerform(.delete))
-                    if idx >= indexedUploadsInQueue.count {
-                        let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil, count: idx - indexedUploadsInQueue.count + 1)
+                    if index >= indexedUploadsInQueue.count {
+                        let newElements:[(String,pwgUploadState,Bool)?] = .init(repeating: nil,
+                                count: index - indexedUploadsInQueue.count + 1)
                         indexedUploadsInQueue.append(contentsOf: newElements)
                     }
-                    indexedUploadsInQueue[idx] = cachedObject
+                    indexedUploadsInQueue[index] = cachedObject
                 }
             }
 
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
-
         case .delete:
-            print("••• LocalImagesViewController controller:delete...")
+            print("••> LocalImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
-            // Remove upload from non-indexed upload queue
-            if let index = uploadsInQueue
-                .firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                uploadsInQueue.remove(at: index)
-            }
             // Remove image from indexed upload queue
-            if let index = indexedUploadsInQueue
-                .firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
                 indexedUploadsInQueue[index] = nil
             }
             // Remove image from selection if needed
-            if let index = selectedImages
-                .firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
                 // Deselect image
                 selectedImages[index] = nil
             }
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
-
         case .move:
-            print("••• LocalImagesViewController controller:move...")
-            break
+            assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
             print("••• LocalImagesViewController controller:update...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
-            // Update upload in non-indexed upload queue
-            if let indexInQueue = uploadsInQueue
-                .firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                uploadsInQueue[indexInQueue] = (upload.localIdentifier, upload.state)
-            }
             // Update upload in indexed upload queue
-            if let indexOfUploadedImage = indexedUploadsInQueue
-                .firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+            if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
                 indexedUploadsInQueue[indexOfUploadedImage]?.1 = upload.state
             }
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
-
         @unknown default:
-            fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
+            assertionFailure("••> LocalImagesViewController: unknown NSFetchedResultsChangeType!")
         }
     }
 

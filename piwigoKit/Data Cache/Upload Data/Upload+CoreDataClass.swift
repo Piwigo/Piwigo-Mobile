@@ -331,7 +331,6 @@ public enum pwgUploadState : Int16, CaseIterable {
     
     case moderated      = 12 /* Images uploaded by a Community user was sent to the moderator
                                 Not a critical step, forces server to treat uploaded image */
-    case deleted        = 13 /* Uploaded file deleted from the server, can be re-uploaded */
 }
 
 extension pwgUploadState {
@@ -365,9 +364,6 @@ extension pwgUploadState {
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .finished, .moderated:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
-            
-        case .deleted:      // Image deleted from the Piwigo server
-            return ""
         }
     }
     
@@ -393,8 +389,7 @@ extension pwgUploadState {
             return SectionKeys.Section3.rawValue
             
         case .finished,
-             .moderated,
-             .deleted:
+             .moderated:
             fallthrough
         default:
             return SectionKeys.Section4.rawValue

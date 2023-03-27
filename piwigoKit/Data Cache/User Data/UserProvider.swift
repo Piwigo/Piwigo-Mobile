@@ -64,8 +64,7 @@ public class UserProvider: NSObject {
             andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
             andPredicates.append(NSPredicate(format: "username == %@", username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            fetchRequest.fetchBatchSize = 1
-            fetchRequest.returnsObjectsAsFaults = false
+            fetchRequest.fetchLimit = 1
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -144,7 +143,6 @@ public class UserProvider: NSObject {
             
             // Look for all user accounts of the server at path
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
-            fetchRequest.returnsObjectsAsFaults = false
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

@@ -42,8 +42,7 @@ public class AlbumProvider: NSObject {
         andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
         andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = 1
-        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.fetchLimit = 1
         
         // Create a fetched results controller and set its fetch request and context.
         let album = NSFetchedResultsController(fetchRequest: fetchRequest,

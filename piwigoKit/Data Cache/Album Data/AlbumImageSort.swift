@@ -34,7 +34,6 @@ public enum pwgImageSort: Int16, CaseIterable {
 
 extension pwgImageSort {
     public var param: String {
-        let pwgImageOrderId = "id"
         let pwgImageOrderFileName = "file"
         let pwgImageOrderName = "name"
         let pwgImageOrderVisits = "hit"

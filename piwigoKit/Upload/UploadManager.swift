@@ -134,11 +134,10 @@ public class UploadManager: NSObject {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var unwantedStates: [pwgUploadState] = [.finished, .moderated, .deleted]
+        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
-        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 
@@ -161,7 +160,7 @@ public class UploadManager: NSObject {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var states: [pwgUploadState] = [.finished, .moderated, .deleted]
+        var states: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20

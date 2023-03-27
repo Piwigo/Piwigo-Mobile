@@ -159,9 +159,9 @@ extension AlbumViewController
             try? self.mainContext.save()
         }
         
-        // Marked previously uploaded images as deleted from the Piwigo server
+        // Delete upload requests of images deleted from the Piwigo server
         UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.markAsDeletedPiwigoImages(withIDs: Array(imageIDs))
+            UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: Array(imageIDs))
         }
     }
     

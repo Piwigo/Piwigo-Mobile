@@ -35,11 +35,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var unwantedStates: [pwgUploadState] = [.finished, .moderated, .deleted]
+        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         fetchRequest.fetchBatchSize = 20
-        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 

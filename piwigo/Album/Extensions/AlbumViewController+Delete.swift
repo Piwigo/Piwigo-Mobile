@@ -275,9 +275,9 @@ extension AlbumViewController
                         print("Could not save albums after image deletion \(error), \(error.userInfo)")
                     }
 
-                    // Update cache so that these images can be re-uploaded.
+                    // Delete upload requests of images deleted from the Piwigo server
                     UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.markAsDeletedPiwigoImages(withIDs: imageIDs)
+                        UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: imageIDs)
                     }
 
                     // Hide HUD

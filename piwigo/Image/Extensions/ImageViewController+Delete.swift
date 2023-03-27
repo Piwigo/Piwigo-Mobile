@@ -178,9 +178,9 @@ extension ImageViewController
                 }
 
                 // If this image was uploaded with the iOS app,
-                // update cache so that it can be re-uploaded.
+                // delete upload request from cache so that it can be re-uploaded.
                 UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.markAsDeletedPiwigoImages(withIDs: [imageID])
+                    UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
                 }
 
                 // Hide HUD

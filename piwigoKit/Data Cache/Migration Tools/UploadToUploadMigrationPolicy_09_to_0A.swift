@@ -65,6 +65,12 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             newUpload.setValue(destinationValue, forKey: destinationName)
         }
         
+        // Forget upload requests of images deleted from the Piwigo server
+        if newUpload.value(forKey: "requestState") as? Int16 == 13 {
+            print("••> Upload request of deletedd image are non longer needed.")
+            return
+        }
+        
         // Replace "NSNotFound" author names with ""
         if newUpload.value(forKey: "author") as? String == "NSNotFound" {
             newUpload.setValue("", forKey: "author")

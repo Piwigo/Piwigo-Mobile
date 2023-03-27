@@ -53,7 +53,6 @@ public class ImageProvider: NSObject {
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.returnsObjectsAsFaults = false
 
         // Create a fetched results controller and set its fetch request and context.
         let image = NSFetchedResultsController(fetchRequest: fetchRequest,

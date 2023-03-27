@@ -44,7 +44,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         switch upload.state {
         case .waiting,
              .preparing, .preparingError, .preparingFail, .formatError, .prepared,
-             .uploadingError, .uploadingFail, .deleted:
+             .uploadingError, .uploadingFail:
             uploadingProgress?.setProgress(0.0, animated: false)
         case .uploaded, .finishing, .finishingError, .finishingFail, .finished, .moderated:
             uploadingProgress?.setProgress(1.0, animated: false)
@@ -77,7 +77,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     try? savingContext?.save()
                     return true
                 })]
-        case .waiting, .deleted:
+        case .waiting:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
                     let savingContext = upload.managedObjectContext

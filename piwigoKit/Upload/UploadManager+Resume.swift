@@ -107,6 +107,9 @@ extension UploadManager
             }
         }
         
+        // Delete upload requests of images deleted from the Piwigo server
+        toDelete.append(contentsOf: (uploads.fetchedObjects ?? []).filter({$0.requestState == 13}))
+        
         // Delete upload requests
         uploadProvider.delete(uploadRequests: toDelete) { [unowned self] _ in
             self.findNextImageToUpload()
@@ -156,10 +159,10 @@ extension UploadManager
             PHPhotoLibrary.shared().performChanges({
                 // Delete images from the library
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
-            }, completionHandler: { [unowned self] success, error in
+            }, completionHandler: { success, error in
                 if let taskContext = uploads.first?.managedObjectContext,
-                   taskContext == bckgContext {
-                    DispatchQueue.global(qos: .background).async { [unowned self] in
+                   taskContext == self.bckgContext {
+                    DispatchQueue.global(qos: .background).async {
                         self.uploadProvider.delete(uploadRequests: uploads) { _ in }
                     }
                 } else {

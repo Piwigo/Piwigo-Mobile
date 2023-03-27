@@ -167,7 +167,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         recentCatIds.remove(self.inputAlbum.parentId)
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.fetchLimit = 5
         return fetchRequest
     }()
@@ -206,7 +205,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             fetchRequest.predicate = albumPredicates
         }
         fetchRequest.fetchBatchSize = 20
-        fetchRequest.returnsObjectsAsFaults = false
         return fetchRequest
     }()
 
