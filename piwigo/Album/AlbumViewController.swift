@@ -972,7 +972,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         else if totalCount == Int64.zero {
             // Not loading and no images
-            legend = NSLocalizedString("noImages", comment:"No Images")
+            if categoryId == Int64.zero {
+                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            } else {
+                legend = NSLocalizedString("noImages", comment:"No Images")
+            }
         }
         else {
             // Display number of images…
