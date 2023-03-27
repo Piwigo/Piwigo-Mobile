@@ -207,9 +207,45 @@ extension AlbumViewController
         return layer
     }
     
+    func showUploadQueueButton() {
+        // Show button if needed
+        if uploadQueueButton.isHidden {
+            // Unhide transparent Upload Queue button
+            uploadQueueButton.isHidden = false
+        }
+
+        // Animate appearance / width change of Upload Queue button
+        UIView.animate(withDuration: 0.3, animations: { [self] in
+            // Progressive appearance
+            uploadQueueButton.layer.opacity = 0.8
+            
+            // Depends on number of upload requests and Add button visibility
+            uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: false)
+            uploadQueueButton.setNeedsLayout()
+        })
+    }
+    
+    private func hideUploadQueueButton() {
+        // Hide button if not already hidden
+        if uploadQueueButton.isHidden { return }
+        
+        // Hide Upload Queue button behind Add button
+        UIView.animate(withDuration: 0.3, animations: { [self] in
+            // Progressive disappearance
+            uploadQueueButton.layer.opacity = 0.0
+
+            // Animate displacement towards the Add button if needed
+            uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: true)
+
+        }) { [self] finished in
+            // Hide Home Album button
+            uploadQueueButton.isHidden = true
+        }
+    }
+
     @objc func updateNberOfUploads(_ notification: Notification?) {
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
+        // Check notification data
+        guard let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
@@ -224,43 +260,20 @@ extension AlbumViewController
             nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
 
             // Show button if needed
-            if uploadQueueButton.isHidden {
-                // Unhide transparent Upload Queue button
-                uploadQueueButton.isHidden = false
-            }
-
-            // Animate appearance / width change of Upload Queue button
-            UIView.animate(withDuration: 0.3, animations: { [self] in
-                // Progressive appearance
-                uploadQueueButton.layer.opacity = 0.8
-                
-                // Depends on number of upload requests and Add button visibility
-                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: false)
-                uploadQueueButton.setNeedsLayout()
-            })
+            showUploadQueueButton()
         } else {
             // Hide button if not already hidden
-            if !uploadQueueButton.isHidden {
-                // Hide Upload Queue button behind Add button
-                UIView.animate(withDuration: 0.3, animations: { [self] in
-                    // Progressive disappearance
-                    uploadQueueButton.layer.opacity = 0.0
-
-                    // Animate displacement towards the Add button if needed
-                    uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: true)
-
-                }) { [self] finished in
-                    // Hide Home Album button
-                    uploadQueueButton.isHidden = true
-                }
-            }
+            hideUploadQueueButton()
         }
     }
-
+    
     @objc func updateUploadQueueButton(withProgress notification: Notification?) {
         guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
               let progress = notification?.userInfo?["progressFraction"] as? NSNumber as? CGFloat else { return }
 
+        // Show button is needed
+        showUploadQueueButton()
+        
         // Animate progress layer of Upload Queue button
         if progress > 0.0 {
             let animation = CABasicAnimation(keyPath: "strokeEnd")
