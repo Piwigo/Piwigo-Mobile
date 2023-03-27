@@ -97,6 +97,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
     func applyColorPalette() {
         bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
+        favImg?.tintColor = UIColor.white
+        playImg?.tintColor = UIColor.white
     }
 
     func config(with imageData: Image, inCategoryId categoryId: Int32) {
@@ -288,9 +291,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         download = nil
         isAccessibilityElement = false
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
-        favImg?.tintColor = UIColor.white
-        playImg?.tintColor = UIColor.white
     }
 
     func highlight(onCompletion completion: @escaping () -> Void) {
