@@ -63,12 +63,13 @@ extension AlbumViewController
                     self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image added to favorites ► Add it in the background
-                    if let context = user.managedObjectContext,
-                       let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
-                        // Add image to favorites album
-                        imageData.addToAlbums(favAlbum)
+                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                        // Remove image from favorites album
+                        favAlbum.addToImages(imageData)
+                        // Update favorites album data
+                        self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
                         // Save changes
-                        try? context.save()
+                        try? mainContext.save()
                     }
                     
                     // Next image
@@ -138,12 +139,13 @@ extension AlbumViewController
                     self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image removed from favorites ► Remove it in the foreground
-                    if let context = user.managedObjectContext,
-                       let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
+                    if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
-                        imageData.removeFromAlbums(favAlbum)
+                        favAlbum.removeFromImages(imageData)
+                        // Update favorites album data
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                         // Save changes
-                        try? context.save()
+                        try? mainContext.save()
                     }
                     
                     // Next image
