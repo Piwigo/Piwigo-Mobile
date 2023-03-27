@@ -519,12 +519,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         initButtonsInPreviewMode()
         updateButtonsInPreviewMode()
 
-        // Register upload manager changes
-        NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                               name: .pwgLeftUploads, object: nil)
-        // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
-                                               name: .pwgUploadProgress, object: nil)
+        // Register upload changes and progress if displaying default album
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
+                                                   name: .pwgLeftUploads, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
+                                                   name: .pwgUploadProgress, object: nil)
+        }
+        
         // Display albums and images
         imagesCollection?.reloadData()
     }
@@ -717,11 +719,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
-        // Unregister upload manager changes
-        NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
-
-        // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        // Unregister upload changes and progress if was displaying default album
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        }
     }
 
     
