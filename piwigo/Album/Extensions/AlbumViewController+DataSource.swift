@@ -136,7 +136,12 @@ extension AlbumViewController
                 completion()
                 return
             }
-            self.showError(error)
+            
+            // Show the error
+            DispatchQueue.main.async { [self] in
+                completion()
+                self.showError(error)
+            }
         }
     }
     
