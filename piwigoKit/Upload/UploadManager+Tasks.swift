@@ -393,6 +393,8 @@ extension UploadManager
         let states: [pwgUploadState] = [.preparingFail, .formatError,
                                         .uploadingFail, .finishingFail]
         let toDelete = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-        uploadProvider.delete(uploadRequests: toDelete) { _ in }
+        uploadProvider.delete(uploadRequests: toDelete) { _ in
+            self.updateNberOfUploadsToComplete()
+        }
     }
 }
