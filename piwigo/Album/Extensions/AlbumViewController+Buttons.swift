@@ -268,8 +268,7 @@ extension AlbumViewController
     }
     
     @objc func updateUploadQueueButton(withProgress notification: Notification?) {
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let progress = notification?.userInfo?["progressFraction"] as? NSNumber as? CGFloat else { return }
+        guard let progress = notification?.userInfo?["progressFraction"] as? CGFloat else { return }
 
         // Show button is needed
         showUploadQueueButton()
