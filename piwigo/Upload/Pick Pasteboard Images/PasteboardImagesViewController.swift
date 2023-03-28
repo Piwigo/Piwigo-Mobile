@@ -1014,7 +1014,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update navigation bar
         self.updateNavBar()
 
-        // Select or deselect visible cells
+        // Select or deselect visible cells (only one section shown)
         localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
             // Get cell at index path
             if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
@@ -1024,7 +1024,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             }
         }
         
-        // Update button
+        // Update button (only one section shown)
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         headers.forEach { header in
             if let header = header as? PasteboardImagesHeaderReusableView {

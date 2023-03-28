@@ -909,7 +909,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if i*step >= min((i+1)*step,count) { break }
                 for index in i*step..<min((i+1)*step,count) {
                     // Get image identifier
-                    let upload = uploads.object(at: IndexPath(index: index))
+                    let upload = uploads.object(at: IndexPath(row: index, section: 0))
                     fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
                     fetchOptions.fetchLimit = 1
                     if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
@@ -1685,8 +1685,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Select or deselect visible cells
         localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
-            // Get cell at index path
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
+            // Get cell at index path, updates cells of selected section
+            if indexPath.section == section,
+               let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                 // Select or deselect the cell
                 let index = getImageIndex(for: indexPath)
                 let uploadState = getUploadStateOfImage(at: index, for: cell)
@@ -1695,9 +1696,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Update button
-        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        headers.forEach { header in
-            if let header = header as? LocalImagesHeaderReusableView {
+        localImagesCollection.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader).forEach { indexPath in
+            if indexPath.section == section,
+               let header = localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
                 header.setButtonTitle(forState: selectedSections[section])
             }
         }
