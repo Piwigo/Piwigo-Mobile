@@ -250,7 +250,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     UploadManager.shared.backgroundQueue.async {
                         // Resume all failed uploads
-                        UploadManager.shared.resume(failedUploads: nil)
+                        UploadManager.shared.resumeAllFailedUploads()
                         // Relaunch uploads
                         UploadManager.shared.findNextImageToUpload()
                     }

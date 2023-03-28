@@ -228,8 +228,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             let titleResume = failedCount > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedCount), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
 			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                 // Return to previous state
-                UploadManager.shared.resume(failedUploads: failedUploads)
-                try? self.mainContext.save()
+                UploadManager.shared.resumeFailedUploads(failedUploads)
                 // Resume failed uploads
                 UploadManager.shared.backgroundQueue.async {
                     // Relaunch uploads
@@ -249,6 +248,11 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 				// Delete failed uploads
                 failedUploads.forEach({ self.mainContext.delete($0) })
                 try? self.mainContext.save()
+                // Resume failed uploads
+                UploadManager.shared.backgroundQueue.async {
+                    // Update number of uploads
+                    UploadManager.shared.updateNberOfUploadsToComplete()
+                }
 			})
 			alert.addAction(clearAction)
 		}

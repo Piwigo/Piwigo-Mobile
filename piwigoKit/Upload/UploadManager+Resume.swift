@@ -65,7 +65,7 @@ extension UploadManager
     
     private func resumeOperations() {
         // Resume failed uploads
-        self.resume(failedUploads: nil)
+        self.resumeAllFailedUploads()
 
         // Append auto-upload requests if requested
         if UploadVars.isAutoUploadActive {
@@ -116,19 +116,22 @@ extension UploadManager
         }
     }
     
-    public func resume(failedUploads: [Upload]?) {
-        // Resume failed uploads and pursue the work
-        var failed: [Upload]
-        if failedUploads == nil {
-            // Considers all failed uploads to the server to which the user is logged in
-            let states: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-            failed = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-        } else {
-            failed = failedUploads!
+    public func resumeAllFailedUploads() {
+        // Considers all failed uploads to the server to which the user is logged in
+        let states: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
+        let toResume = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
+        resumeFailedUploads(toResume)
+    }
+    
+    public func resumeFailedUploads(_ toResume: [Upload]) {
+        // Any upload to resume?
+        guard toResume.isEmpty == false,
+              let context = toResume.first?.managedObjectContext else {
+            return
         }
         
         // Loop over the failed uploads
-        for failedUpload in failed {
+        for failedUpload in toResume {
             switch failedUpload.state {
             case .uploadingError:
                 // -> Will retry to transfer the image
@@ -141,7 +144,9 @@ extension UploadManager
                 failedUpload.setState(.waiting, save: false)
             }
         }
-        try? bckgContext.save()
+        
+        // Save changes
+        try? context.save()
     }
     
     
