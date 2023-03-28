@@ -166,7 +166,7 @@ extension AlbumViewController
         let height = nberOfUploadsLabel.bounds.size.height
         let extraWidth = CGFloat(fmax(0, Float((width - 2 * kRadius))))
         nberOfUploadsLabel.frame = CGRect(x: kRadius + (extraWidth / 2.0) - width / 2.0,
-                                           y: kRadius - height / 2.0, width: width, height: height)
+                                          y: kRadius - height / 2.0, width: width, height: height)
 
         progressLayer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
         let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
@@ -268,7 +268,7 @@ extension AlbumViewController
     }
     
     @objc func updateUploadQueueButton(withProgress notification: Notification?) {
-        guard let progress = notification?.userInfo?["progressFraction"] as? CGFloat else { return }
+        guard let progress = notification?.userInfo?["progressFraction"] as? Float else { return }
 
         // Show button is needed
         showUploadQueueButton()
@@ -277,8 +277,8 @@ extension AlbumViewController
         if progress > 0.0 {
             let animation = CABasicAnimation(keyPath: "strokeEnd")
             animation.fromValue = NSNumber(value: Double(progressLayer.strokeEnd))
-            animation.toValue = NSNumber(value: Float(progress))
-            progressLayer.strokeEnd = progress
+            animation.toValue = NSNumber(value: progress)
+            progressLayer.strokeEnd = CGFloat(progress)
             animation.duration = 0.2
             progressLayer.add(animation, forKey: nil)
         } else {
