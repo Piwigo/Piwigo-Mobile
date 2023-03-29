@@ -146,7 +146,6 @@ public class UploadManager: NSObject {
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
 
@@ -172,7 +171,6 @@ public class UploadManager: NSObject {
         var states: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
 
