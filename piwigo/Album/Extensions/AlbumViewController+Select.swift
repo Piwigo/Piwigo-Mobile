@@ -435,11 +435,17 @@ extension AlbumViewController
                 retrieveImageData(beforeAction: action)
             }
             
-        case .addToFavorites /* Add photos to favorites */:
-            addImageToFavorites()
+        case .addToFavorites        /* Add photos to favorites */,
+             .removeFromFavorites   /* Remove photos from favorites */:
+            // Display HUD
+            totalNumberOfImages = selectedImageIds.count
+            let title = totalNumberOfImages > 1 ? NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") : NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
+            showPiwigoHUD(withTitle: title,
+                          detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                          inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
             
-        case .removeFromFavorites /* Remove photos from favorites */:
-            removeImageFromFavorites()
+            // Retrieve image data if needed
+            doAction(action)
         }
     }
     
@@ -451,8 +457,10 @@ extension AlbumViewController
             askDeleteConfirmation()
         case .share     /* Check Photo Library access rights */:
             checkPhotoLibraryAccessBeforeShare()
-        case .addToFavorites, .removeFromFavorites:
-            fatalError("••> Did call retrieveImageData() before adding/removing images!!")
+        case .addToFavorites:
+            addImageToFavorites()
+        case .removeFromFavorites:
+            removeImageFromFavorites()
         }
     }
 
