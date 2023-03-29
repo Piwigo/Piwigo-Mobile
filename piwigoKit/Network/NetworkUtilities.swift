@@ -81,13 +81,12 @@ public class NetworkUtilities: NSObject {
                 // Piwigo error?
                 if loginJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: loginJSON.errorCode,
-                                                                    errorMessage: loginJSON.errorMessage)
+                                                                 errorMessage: loginJSON.errorMessage)
                     failure(error as NSError)
                     return
                 }
 
                 // Login successful
-                NetworkVars.username = username
                 completion()
             }
             catch {
@@ -413,7 +412,7 @@ public class NetworkUtilities: NSObject {
                 requestServerMethods {
                     // Known methods, perform re-login
                     // Don't use userStatus as it may not be known after Core Data migration
-                    if NetworkVars.username.isEmpty {
+                    if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
                         print("••> Checking guest session…")
                         // Update date of accesss to the server by guest
                         user?.lastUsed = dateOfLogin

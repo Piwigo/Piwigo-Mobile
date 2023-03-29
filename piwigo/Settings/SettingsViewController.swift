@@ -320,7 +320,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         // Guest user?
-        if NetworkVars.username.isEmpty {
+        if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
             ClearCache.closeSession { }
             return
         }

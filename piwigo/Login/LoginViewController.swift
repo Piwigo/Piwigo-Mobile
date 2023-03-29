@@ -272,7 +272,7 @@ class LoginViewController: UIViewController {
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
-        if (userTextField.text?.count ?? 0) > 0 {
+        if username.isEmpty == false {
             // Update HUD during login
             showPiwigoHUD(
                 withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -284,6 +284,8 @@ class LoginViewController: UIViewController {
             // Perform login
             NetworkUtilities.sessionLogin(withUsername: username, password: password) { [self] in
                 // Session now opened
+                NetworkVars.username = username
+
                 // Create or update User account in persistent cache
                 DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
                     self.userProvider.createUpdateUserAccount(username)
