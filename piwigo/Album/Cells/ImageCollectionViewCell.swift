@@ -125,18 +125,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
                             [.visits, .best, .recent].contains(albumType)
         if displayTitle {
             let title = getImageTitle(forAlbumType: albumType)
-            if nameLabel?.attributedText != title {
-                nameLabel?.attributedText = title
-            }
+            nameLabel?.attributedText = title
         }
-        if displayTitle, bottomLayer?.isHidden != displayTitle {
-            bottomLayer?.isHidden = displayTitle
-            nameLabel?.isHidden = displayTitle
-        }
+        bottomLayer?.isHidden = !displayTitle
+        nameLabel?.isHidden = !displayTitle
 
         // Thumbnails are not squared on iPad
-        if UIDevice.current.userInterfaceIdiom == .pad,
-           cellImage?.contentMode != .scaleAspectFit {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             cellImage?.contentMode = .scaleAspectFit
         }
         
