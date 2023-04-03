@@ -649,9 +649,11 @@ extension ImageViewController: UIPageViewControllerDataSource
 
         // Retrieve up-to-date complete image data if needed
         guard let imageData = images?.object(at: IndexPath(item: index, section: 0)) else { return nil }
-        if imageData.fileSize == Int64.zero ||
-            imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
-            // Retrieve image data and update cache
+        if imageData.fileSize == Int64.zero {
+            // Retrieve image data
+            retrieveImageData(imageData, isIncomplete: true)
+        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
+            // Retrieve image data
             retrieveImageData(imageData, isIncomplete: false)
         }
 
