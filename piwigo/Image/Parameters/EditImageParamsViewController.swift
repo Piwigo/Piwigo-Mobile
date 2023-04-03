@@ -273,95 +273,16 @@ class EditImageParamsViewController: UIViewController
         // Update all images
         let index = 0
         updateImageProperties(fromIndex: index)
-        
-//        for (index, image) in images.enumerated() {
-//            // Change properties
-//            setProperties(ofImage: image, withTimeOffset: timeInterval) {
-//                DispatchQueue.main.async {
-//                    self.updatePiwigoHUD(withProgress: 1.0 - Float(index) / Float(self.nberOfSelectedImages))
-//                }
-//            } failure: { error in
-//                // Display error
-//                self.hidePiwigoHUD {
-//                    self.showUpdatePropertiesError(error)
-//                }
-//                return
-//            }
-
-            // Update image title?
-//            if shouldUpdateTitle,
-//                let imageTitle = commonTitle {
-//                imageData.imageTitle = imageTitle
-//            }
-
-            // Update image author?
-//            if shouldUpdateAuthor,
-//                let author = commonAuthor {
-//                imageData.author = author
-//            }
-
-            // Update image creation date?
-//            if shouldUpdateDateCreated {
-//                if commonDateCreated == nil {
-//                    imageData.dateCreated = nil
-//                } else if oldCreationDate == nil {
-//                    imageData.dateCreated = commonDateCreated
-//                } else {
-//                    imageData.dateCreated = imageData.dateCreated.addingTimeInterval(timeInterval)
-//                }
-//            }
-
-            // Update image privacy level?
-//            if shouldUpdatePrivacyLevel,
-//                (commonPrivacyLevel != pwgPrivacyObjcUnknown) {
-//                imageData.privacyLevel = commonPrivacyLevel
-//            }
-//
-            // Update image tags?
-//            if shouldUpdateTags {
-//                // Retrieve tags of current image
-//                if var imageTags = imageData.tags
-//                {
-//                    // Loop over the removed tags
-//                    for tag in removedTags {
-//                        imageTags.removeAll(where: { $0.tagId == tag.tagId })
-//                    }
-//
-//                    // Loop over the added tags
-//                    for tag in addedTags {
-//                        if !imageTags.contains(where: { $0.tagId == tag.tagId }) {
-//                            imageTags.append(tag)
-//                        }
-//                    }
-//
-//                    // Update image tags
-//                    imageData.tags = imageTags
-//                }
-//            }
-
-            // Update image description?
-//            if shouldUpdateComment,
-//               let comment = commonComment {
-//                imageData.comment = comment
-//            }
-
-            // Append image data
-//            updatedImages.append(imageData)
-//        }
-//        images = updatedImages
-//        imagesToUpdate = updatedImages.compactMap({$0})
-
-        // Start updating Piwigo database
-//        if imagesToUpdate.isEmpty { return }
-
-//        updateImageProperties()
     }
 
     func updateImageProperties(fromIndex index: Int) {
         // Any further image to update?
-            if index == images.count {
-            // Done, hide HUD and dismiss controller
+        if index == images.count {
+            // Done, save, hide HUD and dismiss controller
             self.updatePiwigoHUDwithSuccess { [self] in
+                // Save changes
+                try? savingContext.save()
+                // Close HUD
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
                     // Return to image preview or album view
                     self.dismiss(animated: true)
@@ -375,7 +296,7 @@ class EditImageParamsViewController: UIViewController
         NetworkUtilities.checkSession(ofUser: user) { [self] in
             setProperties(ofImage: images[index]) { [self] in
                 // Next image?
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(index + 1) / Float(images.count))
+                self.updatePiwigoHUD(withProgress: Float(index + 1) / Float(images.count))
                 self.updateImageProperties(fromIndex: index + 1)
             }
             failure: { [self] error in
