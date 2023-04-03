@@ -801,8 +801,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         NetworkUtilities.checkSession(ofUser: user) {
             self.startFetchingAlbumAndImages()
         } failure: { error in
+            // End refreshing anyway
+            DispatchQueue.main.async {
+                self.imagesCollection?.refreshControl?.endRefreshing()
+            }
             print("••> Error \(error.code): \(error.localizedDescription)")
-            // TO DO…
         }
     }
     
