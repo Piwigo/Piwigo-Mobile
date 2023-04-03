@@ -58,5 +58,9 @@ extension TagsViewController: UISearchBarDelegate
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
+        // Update query
+        searchQuery = ""
+        // Reload tableview
+        tableView.reloadData()
     }
 }
