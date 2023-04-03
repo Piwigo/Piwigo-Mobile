@@ -206,25 +206,18 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
 
     private func configImage(_ image: UIImage) {
-        // Downsample image if necessary
-        var displayedImage = image
-        let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-        let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
-        if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
-            displayedImage = ImageUtilities.downsample(image: image,
-                                                        to: self.bounds.size, scale: scale)
-        }
-        changeCellImageIfNeeded(withImage: displayedImage)
-        
+        // Set image
+        self.cellImage.image = image
+
         // Favorite image position depends on device
         self.deltaX = self.margin
         self.deltaY = self.margin
-        let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
-                                        self.bounds.size.height / displayedImage.size.height))
+        let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
+                                     self.bounds.size.height / image.size.height))
         if UIDevice.current.userInterfaceIdiom == .pad {
             // Case of an iPad: respect aspect ratio
             // Image width smaller than collection view cell?
-            let imageWidth = displayedImage.size.width * imageScale
+            let imageWidth = image.size.width * imageScale
             if imageWidth < self.bounds.size.width {
                 // The image does not fill the cell horizontally
                 if self.darkImgWidth?.constant ?? -1 != imageWidth {
@@ -233,7 +226,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
             }
             // Image height smaller than collection view cell?
-            let imageHeight = displayedImage.size.height * imageScale
+            let imageHeight = image.size.height * imageScale
             if imageHeight < self.bounds.size.height {
                 // The image does not fill the cell vertically
                 if self.darkImgHeight?.constant ?? -1 != imageHeight {
@@ -270,16 +263,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         applyColorPalette()
     }
 
-    private func changeCellImageIfNeeded(withImage image: UIImage) {
-        if let oldImage = self.cellImage.image {
-            if oldImage.isEqual(image) == false {
-                self.cellImage.image = image
-            }
-        } else {
-            self.cellImage.image = image
-        }
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
 

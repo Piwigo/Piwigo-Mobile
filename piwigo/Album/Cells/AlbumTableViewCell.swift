@@ -244,10 +244,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
     }
     
     private func configImage(_ image: UIImage) {
-        // Initialisation
-        let size: CGSize = self.backgroundImage.bounds.size
-        let scale = CGFloat(fmax(1.0, self.backgroundImage.traitCollection.displayScale))
-
         // Process image in the background
         DispatchQueue.global(qos: .userInitiated).async {
             // Process saliency
@@ -258,28 +254,10 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 }
             }
 
-            // Reduce size?
-            let imageSize: CGSize = finalImage.size
-            if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
-                let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
-                DispatchQueue.main.async {
-                    self.changeBckgImageIfNeeded(withImage: albumImage)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.changeBckgImageIfNeeded(withImage: finalImage)
-                }
+            // Set image
+            DispatchQueue.main.async {
+                self.backgroundImage.image = finalImage
             }
-        }
-    }
-    
-    private func changeBckgImageIfNeeded(withImage image: UIImage) {
-        if let oldImage = self.backgroundImage.image {
-            if oldImage.isEqual(image) == false {
-                self.backgroundImage.image = image
-            }
-        } else {
-            self.backgroundImage.image = image
         }
     }
     

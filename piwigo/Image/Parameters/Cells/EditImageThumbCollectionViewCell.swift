@@ -119,23 +119,10 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()
         let placeHolder = UIImage(named: "placeholder")!
-        let size: CGSize = imageThumbnail.bounds.size
-        let scale = CGFloat(fmax(1.0, imageThumbnail.traitCollection.displayScale))
         download = ImageDownload(imageID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL as URL,
                                  fromServer: serverID, placeHolder: placeHolder) { cachedImage in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let imageSize: CGSize = cachedImage.size
-                if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
-                    let thumbnailImage = ImageUtilities.downsample(image: cachedImage,
-                                                                   to: size, scale: scale)
-                    DispatchQueue.main.async {
-                        self.imageThumbnail.image = thumbnailImage
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self.imageThumbnail.image = cachedImage
-                    }
-                }
+            DispatchQueue.main.async {
+                self.imageThumbnail.image = cachedImage
             }
         }
         download?.getImage()
