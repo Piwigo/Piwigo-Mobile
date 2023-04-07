@@ -166,6 +166,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Did someone delete this album?
         if let album = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             // Album available ► Job done
+            if album.isFault {
+                // The upload request is not fired yet.
+                albumData.willAccessValue(forKey: nil)
+                albumData.didAccessValue(forKey: nil)
+            }
             return album
         }
         
@@ -173,6 +178,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         categoryId = AlbumVars.shared.defaultCategory
         if let defaultAlbum = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             changeAlbumID()
+            if defaultAlbum.isFault {
+                // The upload request is not fired yet.
+                defaultAlbum.willAccessValue(forKey: nil)
+                defaultAlbum.didAccessValue(forKey: nil)
+            }
             return defaultAlbum
         }
 
@@ -180,6 +190,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         categoryId = Int32.zero
         guard let rootAlbum = albumProvider.getAlbum(ofUser: user, withId: Int32.zero) else {
             fatalError("••> Could not create root album!")
+        }
+        if rootAlbum.isFault {
+            // The upload request is not fired yet.
+            rootAlbum.willAccessValue(forKey: nil)
+            rootAlbum.didAccessValue(forKey: nil)
         }
         changeAlbumID()
         return rootAlbum

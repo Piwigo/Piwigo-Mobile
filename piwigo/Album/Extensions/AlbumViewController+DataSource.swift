@@ -148,12 +148,6 @@ extension AlbumViewController
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
         // Done fetching images ► Remove non-fetched images from album
         DispatchQueue.main.async {
-            // Check if albumData is fault
-            if self.albumData.isFault {
-                // The upload request is not fired yet.
-                self.albumData.willAccessValue(forKey: nil)
-                self.albumData.didAccessValue(forKey: nil)
-            }
             // Remember when images were fetched
             self.albumData.dateGetImages = Date()
             
