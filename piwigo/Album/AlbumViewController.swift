@@ -168,8 +168,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Album available ► Job done
             if album.isFault {
                 // The upload request is not fired yet.
-                albumData.willAccessValue(forKey: nil)
-                albumData.didAccessValue(forKey: nil)
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
             }
             return album
         }
