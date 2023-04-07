@@ -358,7 +358,7 @@ class LoginViewController: UIViewController {
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
 
-        NetworkUtilities.sessionGetStatus() { [self] in
+        NetworkUtilities.sessionGetStatus() { [self] _ in
             LoginUtilities.checkAvailableSizes()
             if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                 // They need to update, ask user what to do

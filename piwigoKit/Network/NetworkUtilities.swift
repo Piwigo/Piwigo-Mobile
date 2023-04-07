@@ -6,18 +6,24 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 import UIKit
 
 public class NetworkUtilities: NSObject {
     
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: "Networking")
+
     // MARK: - Piwigo Server Methods
     static let JSONsession = PwgSession.shared
 
     public static
     func getMethods(completion: @escaping () -> Void,
                     failure: @escaping (NSError) -> Void) {
-        print("••> Get methods…")
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Retrieve methods…")
+        }
         // Launch request
         JSONsession.postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
@@ -45,6 +51,9 @@ public class NetworkUtilities: NSObject {
                 // Check if the pwg.categories.calculateOrphans method is available
                 NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
 
+                if #available(iOSApplicationExtension 14.0, *) {
+                    logger.notice("Has Community: \(NetworkVars.usesUploadAsync, privacy: .public), uploadAsync: \(NetworkVars.usesUploadAsync, privacy: .public), calcOrphans: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                }
                 completion()
             }
             catch {
@@ -64,7 +73,9 @@ public class NetworkUtilities: NSObject {
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
-        print("••> Session login…")
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Open session for \(username, privacy: .private(mask: .hash))")
+        }
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
@@ -105,7 +116,9 @@ public class NetworkUtilities: NSObject {
     public static
     func communityGetStatus(completion: @escaping () -> Void,
                             failure: @escaping (NSError) -> Void) {
-        print("••> Get community status…")
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Get community status")
+        }
         // Launch request
         JSONsession.postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
@@ -135,7 +148,6 @@ public class NetworkUtilities: NSObject {
             }
             catch {
                 // Data cannot be digested
-                NetworkVars.userStatus = pwgUserStatus.guest
                 let error = error as NSError
                 failure(error)
             }
@@ -148,9 +160,11 @@ public class NetworkUtilities: NSObject {
     }
 
     public static
-    func sessionGetStatus(completion: @escaping () -> Void,
+    func sessionGetStatus(completion: @escaping (String) -> Void,
                           failure: @escaping (NSError) -> Void) {
-        print("••> Get session status…")
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Get session status")
+        }
         // Launch request
         JSONsession.postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -246,7 +260,6 @@ public class NetworkUtilities: NSObject {
                 default:
                     NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
                 }
-                print("    version: \(NetworkVars.pwgVersion), usesUploadAsync: \(NetworkVars.usesUploadAsync ? "\"true\"" : "\"false\""), charset: \(charset)")
 
                 // Upload chunk size is null if not provided by server
                 if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
@@ -280,7 +293,7 @@ public class NetworkUtilities: NSObject {
                 NetworkVars.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
                 NetworkVars.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
                 NetworkVars.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
-                completion()
+                completion(data.userName ?? "")
             }
             catch {
                 // Data cannot be digested
@@ -298,7 +311,9 @@ public class NetworkUtilities: NSObject {
     public static
     func sessionLogout(completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
-        print("••> Session logout…")
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Close session")
+        }
         // Launch request
         JSONsession.postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
@@ -401,11 +416,19 @@ public class NetworkUtilities: NSObject {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            logger.notice("Start checking session…")
+        }
         // Determine if the session is active and for how long before fetching
-        let pwgToken = NetworkVars.pwgToken
-        NetworkUtilities.sessionGetStatus { [self] in
-            print("••> token: \(pwgToken) vs \(NetworkVars.pwgToken)")
-            if pwgToken.isEmpty || NetworkVars.pwgToken != pwgToken {
+        let oldToken = NetworkVars.pwgToken
+        sessionGetStatus { username in
+            if #available(iOSApplicationExtension 14.0, *) {
+                logger.notice("Expected user: \(NetworkVars.username, privacy: .private(mask: .hash))")
+                logger.notice("Current user: \(username, privacy: .private(mask: .hash))")
+                logger.notice("Old token: \(oldToken, privacy: .private(mask: .hash))")
+                logger.notice("New token: \(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+            }
+            if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
                 let dateOfLogin = Date()
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
@@ -413,31 +436,33 @@ public class NetworkUtilities: NSObject {
                     // Known methods, perform re-login
                     // Don't use userStatus as it may not be known after Core Data migration
                     if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
-                        print("••> Checking guest session…")
-                        // Update date of accesss to the server by guest
-                        user?.lastUsed = dateOfLogin
-                        user?.server?.lastUsed = dateOfLogin
-                        user?.status = NetworkVars.userStatus.rawValue
-                        
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            logger.notice("Session opened for Guest")
+                        }
                         // Session now opened
                         getPiwigoConfig {
+                            // Update date of accesss to the server by guest
+                            user?.lastUsed = dateOfLogin
+                            user?.server?.lastUsed = dateOfLogin
+                            user?.status = NetworkVars.userStatus.rawValue
                             completion()
                         } failure: { error in
                             failure(error)
                         }
                     } else {
                         // Perform login
-                        print("••> Checking user session…")
                         let username = NetworkVars.username
                         let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            logger.notice("Create session for \(username, privacy: .private(mask: .hash))")
+                        }
                         NetworkUtilities.sessionLogin(withUsername: username, password: password) {
-                            // Update date of accesss to the server by user
-                            user?.lastUsed = dateOfLogin
-                            user?.server?.lastUsed = dateOfLogin
-                            user?.status = NetworkVars.userStatus.rawValue
-                            
                             // Session now opened
                             getPiwigoConfig {
+                                // Update date of accesss to the server by user
+                                user?.lastUsed = dateOfLogin
+                                user?.server?.lastUsed = dateOfLogin
+                                user?.status = NetworkVars.userStatus.rawValue
                                 completion()
                             } failure: { error in
                                 failure(error)
@@ -468,7 +493,7 @@ public class NetworkUtilities: NSObject {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.usesCommunityPluginV29 {
             NetworkUtilities.communityGetStatus {
-                NetworkUtilities.sessionGetStatus {
+                NetworkUtilities.sessionGetStatus { _ in
                     completion()
                 } failure: { error in
                     failure(error)
@@ -477,7 +502,7 @@ public class NetworkUtilities: NSObject {
                 failure(error)
             }
         } else {
-            NetworkUtilities.sessionGetStatus {
+            NetworkUtilities.sessionGetStatus { _ in
                 completion()
             } failure: { error in
                 failure(error)
