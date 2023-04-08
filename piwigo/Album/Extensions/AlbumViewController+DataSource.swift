@@ -233,6 +233,10 @@ extension AlbumViewController
             guard let album = self.albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue) else {
                 return
             }
+            if album.isFault {
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
 
             // Remember which images belong to this album
             // from main context before calling background tasks
