@@ -32,6 +32,7 @@ class ImageViewController: UIViewController {
     private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var didPresentPageAfter = true
+    var didPresentErrorMessage = false
     var pageViewController: UIPageViewController?
 
     // MARK: - Navigation Bar & Toolbar Buttons
@@ -200,6 +201,10 @@ class ImageViewController: UIViewController {
                 appDelegate?.screenBrightnessChanged()
             }
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        didPresentErrorMessage = false
     }
 
     deinit {
@@ -489,8 +494,8 @@ class ImageViewController: UIViewController {
                     }
                 }
             } failure: { [self] error in
-                // Display error only when image data is incomplete
-                if isIncomplete {
+                // Display error only once and when image data is incomplete
+                if isIncomplete && !didPresentErrorMessage {
                     self.retrieveImageDataError(error)
                 }
             }
@@ -503,6 +508,7 @@ class ImageViewController: UIViewController {
             let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) {
+                self.didPresentErrorMessage = true
             }
         }
     }
