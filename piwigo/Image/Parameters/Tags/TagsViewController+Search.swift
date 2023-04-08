@@ -21,6 +21,7 @@ extension TagsViewController
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
 
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
