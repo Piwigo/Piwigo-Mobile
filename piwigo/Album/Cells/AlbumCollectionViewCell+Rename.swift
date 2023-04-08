@@ -61,7 +61,7 @@ extension AlbumCollectionViewCell {
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Hide swipe buttons
-                let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
                 cell?.hideSwipe(animated: true)
             })
 
@@ -151,7 +151,7 @@ extension AlbumCollectionViewCell {
                     topViewController?.updatePiwigoHUDwithSuccess() { [self] in
                         topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                             // Update cell and hide swipe buttons
-                            let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+                            let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
                             cell?.hideSwipe(animated: true)
                         }
                     }

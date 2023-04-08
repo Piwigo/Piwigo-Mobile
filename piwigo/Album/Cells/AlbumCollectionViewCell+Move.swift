@@ -29,7 +29,7 @@ extension AlbumCollectionViewCell: SelectCategoryAlbumMovedDelegate
 {
     func didMoveCategory() {
         // Hide swipe commands
-        let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+        let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
         cell?.hideSwipe(animated: true) { [self] _ in
             // Remove category from the album/images collection
             categoryDelegate?.didMoveCategory(self)

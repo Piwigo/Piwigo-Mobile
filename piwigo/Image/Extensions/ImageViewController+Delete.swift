@@ -264,7 +264,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
         // and calls the presentationIndexForPageViewController datasource method
         pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons
@@ -289,7 +289,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
         // and calls the presentationIndexForPageViewController datasource method
         pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(row: imageIndex, section: 0))
+            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons

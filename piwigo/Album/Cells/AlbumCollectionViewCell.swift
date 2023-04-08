@@ -77,7 +77,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
         if UploadVars.autoUploadCategoryId != Int(albumData?.pwgID ?? 0)  { return }
 
         // Disallow user to delete the active auto-upload destination album
-        let cell = tableView?.cellForRow(at: IndexPath(row: 0, section: 0)) as? AlbumTableViewCell
+        let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
         cell?.refreshButtons(true)
     }
 

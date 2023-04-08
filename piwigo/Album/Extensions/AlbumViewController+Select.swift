@@ -300,8 +300,9 @@ extension AlbumViewController
         }
 
         // Scroll to position of images if needed
-        if numberOfImageCells == 0 {
-            imagesCollection?.scrollToItem(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
+        if numberOfImageCells == 0, (images.fetchedObjects ?? []).isEmpty == false {
+            let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
+            imagesCollection?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
 
         // Initialisae navigation bar and toolbar
