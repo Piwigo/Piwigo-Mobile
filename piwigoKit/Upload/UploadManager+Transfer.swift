@@ -855,26 +855,10 @@ extension UploadManager {
         
         // Pursue the work…
         if isExecutingBackgroundUploadTask {
-            if countOfBytesToUpload < maxCountOfBytesToUpload {
-                // In background task, launch a transfer if possible
-                let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
-                let states: [pwgUploadState] = [.preparingError, .preparingFail,
-                                               .uploadingError, .uploadingFail,
-                                               .finishingError]
-                let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-                if isUploading.count < maxNberOfTransfers,
-                   failed.count < maxNberOfFailedUploads,
-                   let upload = prepared.first {
-                    launchTransfer(of: upload)
-                }
-            } else {
-                print("\(dbg()) didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
-            }
-        } else {
+            finishTransfer(of: upload)
+        } else if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing {
             // In foreground, always consider next file
-            if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing {
-                findNextImageToUpload()
-            }
+            findNextImageToUpload()
         }
     }
 

@@ -32,13 +32,40 @@ extension UploadManager {
     }
 
     func didFinishTransfer() {
-        // Update counter and app badge
-        self.updateNberOfUploadsToComplete()
-
+        // Update flag
         isFinishing = false
-        if !isPreparing, isUploading.count <= maxNberOfTransfers {
+        
+        // Foreground or background task?
+        if isExecutingBackgroundUploadTask {
+            // Perform fetch
+            do {
+                try uploads.performFetch()
+                try completed.performFetch()
+            }
+            catch {
+                print("••> Could not fetch pending uploads: \(error)")
+            }
+            // In background task, launch a transfer if possible
+            if countOfBytesToUpload < maxCountOfBytesToUpload {
+                let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
+                let states: [pwgUploadState] = [.preparingError, .preparingFail,
+                                               .uploadingError, .uploadingFail,
+                                               .finishingError]
+                let failed = (uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
+                if isUploading.count < maxNberOfTransfers,
+                   failed.count < maxNberOfFailedUploads,
+                   let upload = prepared.first {
+                    launchTransfer(of: upload)
+                }
+            } else {
+                print("\(dbg()) didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+            }
+        } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
         }
+        
+        // Update counter and app badge
+        self.updateNberOfUploadsToComplete()
     }
 
 
@@ -87,42 +114,32 @@ extension UploadManager {
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                                     errorMessage: uploadJSON.errorMessage)
-                    self.backgroundQueue.async {
-                        self.didFinishTransfer(for: upload, error: error)
-                    }
+                    self.didFinishTransfer(for: upload, error: error)
                     return
                 }
 
                 // Successful?
                 if uploadJSON.success {
                     // Image successfully uploaded and set
-                    self.backgroundQueue.async {
-                        self.didFinishTransfer(for: upload, error: nil)
-                    }
+                    self.didFinishTransfer(for: upload, error: nil)
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    self.backgroundQueue.async {
-                        self.didFinishTransfer(for: upload, error: error)
-                    }
+                    self.didFinishTransfer(for: upload, error: error)
                     return
                 }
             } catch {
                 // Data cannot be digested, upload still ready for finish
                 let error = error as NSError
-                self.backgroundQueue.async {
-                    self.didFinishTransfer(for: upload, error: error)
-                }
+                self.didFinishTransfer(for: upload, error: error)
                 return
             }
         } failure: { error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            self.backgroundQueue.async {
-                self.didFinishTransfer(for: upload, error: error)
-            }
+            self.didFinishTransfer(for: upload, error: error)
         }
     }
 
@@ -140,25 +157,19 @@ extension UploadManager {
             // Should never happen
             // ► The lounge will be emptied later by the server
             // ► Continue upload tasks without returning error
-            self.backgroundQueue.async {
-                self.didFinishTransfer(for: upload, error: nil)
-            }
+            self.didFinishTransfer(for: upload, error: nil)
             return
         }
         NetworkUtilities.checkSession(ofUser: user) {
             self.processImages(withIds: "\(upload.imageId)",
                                inCategory: upload.category) { [unowned self] _ in
-                self.backgroundQueue.async {
-                    self.didFinishTransfer(for: upload, error: nil)
-                }
+                self.didFinishTransfer(for: upload, error: nil)
             }
         } failure: { _ in
             // Cannot empty the lounge
             // ► The lounge will be emptied later by the app or the server
             // ► Continue upload tasks
-            self.backgroundQueue.async {
-                self.didFinishTransfer(for: upload, error: nil)
-            }
+            self.didFinishTransfer(for: upload, error: nil)
         }
     }
 

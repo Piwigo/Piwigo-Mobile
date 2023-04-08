@@ -24,6 +24,8 @@ extension UploadManager
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     public func findNextImageToUpload() -> Void {
+        return // for debugging background tasks
+
         // Perform fetch
         do {
             try uploads.performFetch()
@@ -40,9 +42,7 @@ extension UploadManager
         print("\(dbg()) findNextImageToUpload() in", queueName())
         print("\(dbg()) \((self.uploads.fetchedObjects ?? []).count) pending and \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
         print("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
-        
-        //        return // for debugging background tasks
-        
+                
         // Pause upload manager if:
         /// - app not in the foreground anymore
         /// - executing a background task
@@ -223,7 +223,10 @@ extension UploadManager
      - The number of bytes to be transferred is calculated and limited.
      - A delay is set between series of upload tasks to prevent server overloads
      - Failing tasks are automatically retried by iOS
-     Use the following command to test the background task:
+     For testing the background task:
+     - Uncomment the 'return' line at the beginning of findNextImageToUpload()
+     - Build and run the app, then background it to schedule the task.
+     - Bring the app to the foreground again. Then in Xcode, hit the pause button in the debugger and type one of the commands
      - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
      - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
      */
@@ -290,7 +293,7 @@ extension UploadManager
         let requestsToPrepare = (uploads.fetchedObjects ?? [])
             .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
         print("\(dbg()) collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
-        let toPrepare = preparedUploads.map({$0.objectID})
+        let toPrepare = requestsToPrepare.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
     
@@ -381,7 +384,7 @@ extension UploadManager
     }
     
 
-    // MARK: - Task Utilities
+    // MARK: - Delete Upload Requests
     public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
         if imageIDs.isEmpty { return }
         // Collect upload requests of deleted images
