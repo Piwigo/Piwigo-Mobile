@@ -384,8 +384,11 @@ extension UploadManager
     // MARK: - Task Utilities
     public func deleteUploadsOfDeletedImages(withIDs imageIDs: [Int64]) {
         if imageIDs.isEmpty { return }
+        // Collect upload requests of deleted images
         var toDelete = (uploads.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)})
         toDelete.append(contentsOf: (completed.fetchedObjects ?? []).filter({imageIDs.contains($0.imageId)}))
+        // Keep auto-upload requests so that they are not re-uploaded
+        toDelete.removeAll(where: {$0.markedForAutoUpload == true})
         uploadProvider.delete(uploadRequests: toDelete) { _ in }
     }
     
