@@ -24,7 +24,8 @@ extension UploadManager
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     public func findNextImageToUpload() -> Void {
-        return // for debugging background tasks
+        // for debugging background tasks
+//        return
 
         // Perform fetch
         do {

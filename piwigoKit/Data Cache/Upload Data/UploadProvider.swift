@@ -191,6 +191,14 @@ public class UploadProvider: NSObject {
     */
     public func clearAll() {
         
+        // Cancel tasks
+        UploadManager.shared.bckgSession.getAllTasks { tasks in
+            tasks.forEach({$0.cancel()})
+        }
+        UploadManager.shared.frgdSession.getAllTasks { tasks in
+            tasks.forEach({$0.cancel()})
+        }
+
         // Create a fetch request for the Upload entity
         let fetchRequest = Upload.fetchRequest()
 
@@ -214,7 +222,7 @@ public class UploadProvider: NSObject {
 
         // Update badge and upload queue button
         UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.updateNberOfUploadsToComplete()
+            UploadManager.shared.findNextImageToUpload()
         }
     }
     
