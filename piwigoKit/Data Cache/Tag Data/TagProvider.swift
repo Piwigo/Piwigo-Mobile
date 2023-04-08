@@ -123,8 +123,8 @@ public class TagProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool) -> Bool {
-        
+    private func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool,
+                                delete: Bool = true) -> Bool {
         var success = false
 
         // taskContext.performAndWait runs on the URLSession's delegate queue
@@ -143,8 +143,9 @@ public class TagProvider: NSObject {
             // Look for tags belonging to the currently active server
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "server.path == %@", server.path))
+
+            // Look for non-orphaned tags if method called by non-admin user
             if asAdmin == false {
-                // Look for non-orphaned tags if method called by non-admin user
                 andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
                 andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
             }
@@ -205,11 +206,13 @@ public class TagProvider: NSObject {
             }
             
             // Remove deleted tags
-            let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.int32Value})
-            let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
-            cachedTagsToDelete.forEach { cachedTag in
-                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
-                bckgContext.delete(cachedTag)
+            if delete {
+                let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.int32Value})
+                let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
+                cachedTagsToDelete.forEach { cachedTag in
+                    print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
+                    bckgContext.delete(cachedTag)
+                }
             }
             
             // Save all insertions from the context to the store.
@@ -271,7 +274,7 @@ public class TagProvider: NSObject {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                if self.importOneBatch([newTag], asAdmin: true) {
+                if self.importOneBatch([newTag], asAdmin: true, delete: false) {
                     completionHandler(nil)
                 } else {
                     completionHandler(TagError.creationError)

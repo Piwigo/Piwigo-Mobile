@@ -205,6 +205,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
     private func getUserHasUploadRights() -> Bool {
         // Case of Community user?
+        if [.admin, .webmaster].contains(NetworkVars.userStatus) { return true }
         if NetworkVars.userStatus != .normal { return false }
         return user.uploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
