@@ -167,7 +167,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if let album = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             // Album available ► Job done
             if album.isFault {
-                // The upload request is not fired yet.
+                // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
                 album.didAccessValue(forKey: nil)
             }
@@ -179,7 +179,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if let defaultAlbum = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
             changeAlbumID()
             if defaultAlbum.isFault {
-                // The upload request is not fired yet.
+                // The default album is not fired yet.
                 defaultAlbum.willAccessValue(forKey: nil)
                 defaultAlbum.didAccessValue(forKey: nil)
             }
@@ -192,7 +192,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             fatalError("••> Could not create root album!")
         }
         if rootAlbum.isFault {
-            // The upload request is not fired yet.
+            // The root album is not fired yet.
             rootAlbum.willAccessValue(forKey: nil)
             rootAlbum.didAccessValue(forKey: nil)
         }
