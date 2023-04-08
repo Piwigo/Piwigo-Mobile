@@ -168,7 +168,7 @@ public class Upload: NSManagedObject {
             requestError = ""
         }
         
-        // Should be save changes now?
+        // Should we save changes now?
         if save {
             try? self.managedObjectContext?.save()
         }
