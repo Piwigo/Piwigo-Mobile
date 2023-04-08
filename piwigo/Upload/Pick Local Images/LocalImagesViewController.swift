@@ -1198,9 +1198,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         uploadsToDelete = [Upload]()
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<self.indexedUploadsInQueue.count {
+        for index in 0..<indexedUploads.count {
             if let upload = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-               let indexedUpload = self.indexedUploadsInQueue[index], indexedUpload.2 {
+               indexedUploads[index].2 {
                 uploadsToDelete.append(upload)
             }
         }
