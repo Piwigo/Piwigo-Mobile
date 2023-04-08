@@ -938,7 +938,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             state = indexedUploadsInQueue[index]?.1
         } else {
             // Use non-indexed data (might be quite slow)
-            state = (uploads.fetchedObjects ?? []).first(where: {$0.localIdentifier == cell.localIdentifier })?.state
+            state = (uploads.fetchedObjects ?? []).first(where: {
+                let upload = $0
+                if upload.isFault {
+                    // The upload request is not fired yet.
+                    upload.willAccessValue(forKey: nil)
+                    upload.didAccessValue(forKey: nil)
+                }
+                return upload.localIdentifier == cell.localIdentifier })?.state
         }
         return state
     }
