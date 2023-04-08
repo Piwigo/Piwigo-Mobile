@@ -211,6 +211,11 @@ public class UploadProvider: NSObject {
 
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+
+        // Update badge and upload queue button
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.updateNberOfUploadsToComplete()
+        }
     }
     
     /**
