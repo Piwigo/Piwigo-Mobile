@@ -113,7 +113,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: imageSize, atURL: imageURL as URL,
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                  fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
@@ -153,7 +153,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Shared files are stored in the /tmp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
-        imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL as URL)
+        imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
         // Deletes temporary image file if it exists
         try? FileManager.default.removeItem(at: imageFileURL)

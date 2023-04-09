@@ -18,15 +18,15 @@ class ShareUtilities {
      - the URL of that image stored in cache.
      **/
     // Returns the size and Piwigo URL of the image of max wantedd size
-    static func getOptimumSizeAndURL(_ imageData: Image, ofMaxSize wantedSize: Int) -> (pwgImageSize, NSURL)? {
+    static func getOptimumSizeAndURL(_ imageData: Image, ofMaxSize wantedSize: Int) -> (pwgImageSize, URL)? {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
-        var pwgSize: pwgImageSize?, pwgURL: NSURL?
+        var pwgSize: pwgImageSize?, pwgURL: URL?
         
         // If this is a video, always select the full resolution file, i.e. the video.
         if imageData.isVideo {
             // NOP if no image can be downloaded
-            pwgURL = imageData.fullRes?.url
+            pwgURL = imageData.fullRes?.url as? URL
             pwgSize = .fullRes
             guard let pwgSize = pwgSize, let pwgURL = pwgURL else {
                 return nil
@@ -47,7 +47,7 @@ class ShareUtilities {
             // Ensure that at least an URL will be returned
             if pwgURL == nil {
                 pwgSize = .square
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -61,7 +61,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .thumb
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -75,7 +75,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xxSmall
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -89,7 +89,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xSmall
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -103,7 +103,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .small
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -117,7 +117,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .medium
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -131,7 +131,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .large
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -145,7 +145,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xLarge
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -159,7 +159,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .xxLarge
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
@@ -172,7 +172,7 @@ class ShareUtilities {
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .fullRes
-                pwgURL = imageURL
+                pwgURL = imageURL as URL
                 selectedSize = size
             }
         }
