@@ -13,43 +13,39 @@ class ShareUtilities {
     
     // MARK: - Image Download
     /** Returns:
+     - the Piwigo  image size
      - the URL of the image file stored on the Piwigo server
-     whose resolution matches the one expected by the activity type
-     - the URL of that image stored in cache.
+       whose resolution matches the one demaned by the activity type
      **/
     // Returns the size and Piwigo URL of the image of max wantedd size
     static func getOptimumSizeAndURL(_ imageData: Image, ofMaxSize wantedSize: Int) -> (pwgImageSize, URL)? {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
-        var pwgSize: pwgImageSize?, pwgURL: NSURL?
-        
+
         // If this is a video, always select the full resolution file, i.e. the video.
         if imageData.isVideo {
-            // NOP if no image can be downloaded
-            pwgURL = imageData.fullRes?.url
-            pwgSize = .fullRes
-            guard let pwgSize = pwgSize, let pwgURL = pwgURL else {
+            if let pwgURL = imageData.fullRes?.url {
+                return (.fullRes, pwgURL as URL)
+            } else {
                 return nil
             }
-            return (pwgSize, pwgURL as URL)
         }
         
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
         /// - Note: image.width and .height are always > 1
         var selectedSize = Int.zero
-        
+        var pwgSize: pwgImageSize = .square, pwgURL: NSURL?
+
         // Square Size (should always be available)
         if NetworkVars.hasSquareSizeImages,
            let imageURL = imageData.squareRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = imageData.squareRes?.maxSize ?? 1
             // Ensure that at least an URL will be returned
-            if pwgURL == nil {
-                pwgSize = .square
-                pwgURL = imageURL
-                selectedSize = size
-            }
+            pwgSize = .square
+            pwgURL = imageURL
+            selectedSize = size
         }
         
         // Thumbnail Size (should always be available)
@@ -178,7 +174,7 @@ class ShareUtilities {
         }
         
         // NOP if no image can be downloaded
-        guard let pwgSize = pwgSize, let pwgURL = pwgURL else {
+        guard let pwgURL = pwgURL else {
             return nil
         }
         return (pwgSize, pwgURL as URL)
