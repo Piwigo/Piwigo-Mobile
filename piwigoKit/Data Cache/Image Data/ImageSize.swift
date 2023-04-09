@@ -177,4 +177,8 @@ extension pwgImageSize {
             return "FullRes"
         }
     }
+    
+    static public func <=(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue <= right.rawValue
+    }
 }
