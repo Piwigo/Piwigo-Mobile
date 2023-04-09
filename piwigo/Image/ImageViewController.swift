@@ -29,7 +29,6 @@ class ImageViewController: UIViewController {
     var savingContext: NSManagedObjectContext!
 
     var imageData: Image?
-    private var progressBar = UIProgressView()
     var isToolbarRequired = false
     var didPresentPageAfter = true
     var didPresentErrorMessage = false
@@ -53,16 +52,6 @@ class ImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        // Progress bar
-        progressBar.translatesAutoresizingMaskIntoConstraints = false
-        progressBar.setProgress(0.0, animated: false)
-        progressBar.isHidden = false
-        view.addSubview(progressBar)
-        view.addConstraints(NSLayoutConstraint.constraintFillWidth(progressBar)!)
-        progressBar.addConstraint(NSLayoutConstraint.constraintView(progressBar, toHeight: 3)!)
-        view.addConstraint(NSLayoutConstraint(item: progressBar, attribute: .top,
-                                              relatedBy: .equal, toItem: view,
-                                              attribute: .top, multiplier: 1.0, constant: 0))
         // Current image
         var index = max(0, imageIndex)
         index = min(imageIndex, (images?.fetchedObjects?.count ?? 0) - 1)
@@ -75,7 +64,6 @@ class ImageViewController: UIViewController {
 
         // Load initial image preview view controller
         if let startingImage = imagePageViewController(atIndex: index) {
-            startingImage.imagePreviewDelegate = self
             pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
         }
         
@@ -148,10 +136,6 @@ class ImageViewController: UIViewController {
             navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
             toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
         }
-
-        // Progress bar
-        progressBar.progressTintColor = .piwigoColorOrange()
-        progressBar.trackTintColor = .piwigoColorRightLabel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -633,8 +617,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         self.imageData = imageData
 
         // Initialise page view controller
-        pvc.imagePreviewDelegate = self
-        progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
+        pvc.progressView.isHidden = pvc.imageLoaded || imageData.isVideo
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
@@ -700,19 +683,6 @@ extension ImageViewController: UIPageViewControllerDataSource
 
         // Create view controller
         return imagePageViewController(atIndex: imageIndex - 1)
-    }
-}
-
-
-// MARK: - ImagePreviewDelegate Methods
-extension ImageViewController: ImagePreviewDelegate
-{
-    func downloadProgress(_ progress: Float) {
-        if (progress < 1.0) {
-            progressBar.setProgress(progress, animated: true)
-        } else {
-            progressBar.isHidden = true
-        }
     }
 }
 

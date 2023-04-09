@@ -12,13 +12,8 @@ import AVKit
 import UIKit
 import piwigoKit
 
-protocol ImagePreviewDelegate: NSObjectProtocol {
-    func downloadProgress(_ progress: Float)
-}
-
 class ImagePreviewViewController: UIViewController
 {
-    weak var imagePreviewDelegate: ImagePreviewDelegate?
 
     var imageIndex = 0
     var imageLoaded = false
@@ -30,6 +25,7 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
+    @IBOutlet weak var progressView: PieProgressView!
     
     private var download: ImageDownload?
     private var userDidTapOnce: Bool = false        // True if the user did tap the view
@@ -70,10 +66,11 @@ class ImagePreviewViewController: UIViewController
         download = ImageDownload(imageID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                  fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
             DispatchQueue.main.async {
-                self.imagePreviewDelegate?.downloadProgress(fractionCompleted)
+                self.progressView.progress = fractionCompleted
             }
         } completion: { cachedImage in
             DispatchQueue.main.async {
+                self.progressView.progress = 1.0
                 self.configImage(cachedImage)
             }
         }
@@ -90,9 +87,9 @@ class ImagePreviewViewController: UIViewController
         // Layout subviews
         self.view.layoutIfNeeded()
         
-        // Hide progress bar
+        // Hide progress view
         self.imageLoaded = true
-        self.imagePreviewDelegate?.downloadProgress(1.0)
+        self.progressView.isHidden = true
         
         // Display "play" button if video
         self.playImage.isHidden = !self.imageData.isVideo
