@@ -75,6 +75,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     let savingContext = upload.managedObjectContext
                     savingContext?.delete(upload)
                     try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUploads([upload])
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
         case .waiting:
@@ -83,6 +87,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     let savingContext = upload.managedObjectContext
                     savingContext?.delete(upload)
                     try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUploads([upload])
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
         case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
@@ -91,6 +99,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     let savingContext = upload.managedObjectContext
                     savingContext?.delete(upload)
                     try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUploads([upload])
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
         }
