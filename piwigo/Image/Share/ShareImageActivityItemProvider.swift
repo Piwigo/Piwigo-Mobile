@@ -257,7 +257,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             // Set destination options
             let options = [kCGImageDestinationMetadata      : metadata,
                            kCGImageMetadataShouldExcludeGPS : true
-            ] as CFDictionary
+            ] as [CFString : Any] as CFDictionary
             
             // Copy image source w/o private metadata
             if CGImageDestinationCopyImageSource(destinationRef, sourceRef, options, nil) {
