@@ -112,14 +112,14 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Retrieve image thumbnail from Piwigo server
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         guard let serverID = imageData.server?.uuid,
-              let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: thumbnailSize) else {
+              let imageURL = ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize) else {
             return
         }
 
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()
         let placeHolder = UIImage(named: "placeholder")!
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL as URL,
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
                                  fromServer: serverID, placeHolder: placeHolder) { cachedImage in
             DispatchQueue.main.async {
                 self.imageThumbnail.image = cachedImage

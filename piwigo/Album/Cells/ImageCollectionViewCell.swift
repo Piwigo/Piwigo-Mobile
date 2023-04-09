@@ -138,7 +138,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Retrieve image URLs (Piwigo server or cache)
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let serverID = imageData.server?.uuid,
-              let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: size) else {
+              let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size) else {
             self.noDataLabel?.isHidden = false
             applyColorPalette()
             return
@@ -146,7 +146,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Retrieve image from cache or download it
         let placeHolder = UIImage(named: "placeholderImage")!
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: size, atURL: imageURL as URL, fromServer: serverID, fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImage in
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
+                                 fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImage in
             DispatchQueue.main.async {
                 self.configImage(cachedImage)
             }

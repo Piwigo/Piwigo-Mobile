@@ -64,10 +64,10 @@ class ImagePreviewViewController: UIViewController
 
         // Previewed image
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        guard let imageURL = ImageUtilities.getURLs(imageData, ofMinSize: previewSize) else {
+        guard let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) else {
             return
         }
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: previewSize, atURL: imageURL as URL,
+        download = ImageDownload(imageID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                  fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
             DispatchQueue.main.async {
                 self.imagePreviewDelegate?.downloadProgress(fractionCompleted)

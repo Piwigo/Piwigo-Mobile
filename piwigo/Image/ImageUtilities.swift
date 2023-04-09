@@ -296,415 +296,125 @@ class ImageUtilities: NSObject {
         return sizeName
     }
     
-    static func getURLs(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
+    static func getURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
-        // So we go through the whole list of URLs...
+        /// - Check available image sizes from the smallest to the highest resolution
+        /// - The max size of a video thumbnail is xxLarge
         var pwgURL: NSURL?
-        switch size {
-        case .square:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasThumbSizeImages,
-                    let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXSmallSizeImages,
-                    let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXSmallSizeImages,
-                    let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasSmallSizeImages,
-                    let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasMediumSizeImages,
-                    let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .thumb:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXSmallSizeImages,
-                    let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXSmallSizeImages,
-                    let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasSmallSizeImages,
-                    let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasMediumSizeImages,
-                    let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .xxSmall:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-                let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-                let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXSmallSizeImages,
-                    let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasSmallSizeImages,
-                    let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasMediumSizeImages,
-                    let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .xSmall:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasSmallSizeImages,
-                    let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasMediumSizeImages,
-                    let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .small:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasMediumSizeImages,
-                    let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .medium:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasMediumSizeImages,
-               let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasLargeSizeImages,
-                    let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .large:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasMediumSizeImages,
-               let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasLargeSizeImages,
-               let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXLargeSizeImages,
-                    let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .xLarge:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasMediumSizeImages,
-               let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasLargeSizeImages,
-               let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXLargeSizeImages,
-               let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if NetworkVars.hasXXLargeSizeImages,
-                    let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .xxLarge:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasMediumSizeImages,
-               let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasLargeSizeImages,
-               let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXLargeSizeImages,
-               let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXLargeSizeImages,
-               let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            else if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
-        case .fullRes:
-            if NetworkVars.hasSquareSizeImages,
-               let imageURL = imageData.squareRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasThumbSizeImages,
-               let imageURL = imageData.thumbRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXSmallSizeImages,
-               let imageURL = imageData.xxsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXSmallSizeImages,
-               let imageURL = imageData.xsmallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasSmallSizeImages,
-               let imageURL = imageData.smallRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasMediumSizeImages,
-               let imageURL = imageData.mediumRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasLargeSizeImages,
-               let imageURL = imageData.largeRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXLargeSizeImages,
-               let imageURL = imageData.xlargeRes?.url {
-                pwgURL = imageURL
-            }
-            if NetworkVars.hasXXLargeSizeImages,
-               let imageURL = imageData.xxlargeRes?.url {
-                pwgURL = imageURL
-            }
-            if let imageURL = imageData.fullRes?.url {
-                pwgURL = imageURL
-            }
+        
+        // Square Size (should always be available)
+        if NetworkVars.hasSquareSizeImages,
+           let imageURL = imageData.squareRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
         }
-        guard let pwgURL = pwgURL else {
-            return nil
+
+        // Done if wanted size reached
+        if size == .square, let imageURL = pwgURL {
+            return imageURL as URL
         }
-        return pwgURL as URL
+        
+        // Thumbnail Size (should always be available)
+        if NetworkVars.hasThumbSizeImages,
+           let imageURL = imageData.thumbRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .thumb, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+        
+        // XX Small Size
+        if NetworkVars.hasXXSmallSizeImages,
+           let imageURL = imageData.xxsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .xxSmall, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // X Small Size
+        if NetworkVars.hasXSmallSizeImages,
+           let imageURL = imageData.xsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .xSmall, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // Small Size
+        if NetworkVars.hasSmallSizeImages,
+           let imageURL = imageData.smallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .small, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // Medium Size (should always be available)
+        if NetworkVars.hasMediumSizeImages,
+           let imageURL = imageData.mediumRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .medium, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // Large Size
+        if NetworkVars.hasLargeSizeImages,
+           let imageURL = imageData.largeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .large, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // X Large Size
+        if NetworkVars.hasXLargeSizeImages,
+           let imageURL = imageData.xlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached
+        if size <= .xLarge, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // XX Large Size
+        if NetworkVars.hasXXLargeSizeImages,
+           let imageURL = imageData.xxlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+
+        // Done if wanted size reached or video
+        if (size <= .xxLarge) || imageData.isVideo, let imageURL = pwgURL {
+            return imageURL as URL
+        }
+
+        // Full Resolution
+        if let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+            // Ensure that at least an URL will be returned
+            pwgURL = imageURL
+        }
+        return pwgURL as URL?
     }
 }

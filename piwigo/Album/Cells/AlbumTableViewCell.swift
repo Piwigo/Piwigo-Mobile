@@ -90,7 +90,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
             // Set representative (case where images were uploaded recently)
             albumData?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = ImageUtilities.getURLs(firstImage, ofMinSize: thumnailSize) as NSURL?
+            albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
         // Do we have a representative?
