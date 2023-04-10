@@ -46,12 +46,11 @@ public class ImageProvider: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
         // Select images:
-        /// — of the current server accessible to the current user
+        /// — of the current server
         /// — having an ID matching one of the given image IDs
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request and context.
