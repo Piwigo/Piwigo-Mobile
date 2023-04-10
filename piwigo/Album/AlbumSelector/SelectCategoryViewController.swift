@@ -69,6 +69,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
             inputAlbum = album
             
         case .moveAlbum:
@@ -94,6 +99,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
             }
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
             inputAlbum = album
 
         case .copyImages, .moveImages:
@@ -117,6 +127,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Album from which the images have been selected
             guard let album = albumProvider.getAlbum(ofUser: user, withId: albumId) else {
                 return false
+            }
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
             }
             inputAlbum = album
 
@@ -1026,6 +1041,8 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateOperations.removeAll(keepingCapacity: false)
+        // Begin the update
+        categoriesTableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -1033,7 +1050,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         // Initialisation
         var hasAlbumsInSection1 = false
         if controller == albums,
-           wantedAction == .setAlbumThumbnail || (recentAlbums.fetchedObjects ?? []).count > 0 {
+           wantedAction == .setAlbumThumbnail || (recentAlbums.fetchedObjects ?? []).isEmpty == false {
             hasAlbumsInSection1 = true
         }
 
@@ -1043,14 +1060,14 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert imagesCollection item at \(newIndexPath)")
+                print("••> Insert category item at \(newIndexPath)")
                 self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update imagesCollection item at \(indexPath)")
+                print("••> Update category item at \(indexPath)")
                 self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
@@ -1060,18 +1077,18 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move imagesCollection item from \(indexPath) to \(newIndexPath)")
+                print("••> Move category item from \(indexPath) to \(newIndexPath)")
                 self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete imagesCollection item at \(indexPath)")
+                print("••> Delete category item at \(indexPath)")
                 self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:
-            fatalError("AlbumViewController: unknown NSFetchedResultsChangeType")
+            fatalError("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
     }
     
@@ -1088,6 +1105,9 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
                 operation.start()
             }
         })
+        
+        // End updates
+        categoriesTableView.endUpdates()
     }
 }
 
