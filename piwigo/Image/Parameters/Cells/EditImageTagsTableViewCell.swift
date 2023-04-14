@@ -52,6 +52,7 @@ class EditImageTagsTableViewCell: UITableViewCell {
         tagsList.textColor = color
 
         // Compile list of tags
-        tagsString = String(tags.compactMap({"\($0.tagName), "}).reduce("", +).dropLast(2))
+        let tagList = tags.compactMap({"\($0.tagName), "})
+        tagsString = String(tagList.reduce("", +).dropLast(2))
     }
 }
