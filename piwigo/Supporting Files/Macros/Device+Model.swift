@@ -110,6 +110,14 @@ extension UIDevice {
             return "iPhone 13"
         case "iPhone14,6":
             return "iPhone SE (3rd generation)"
+        case "iPhone14,7":
+            return "iPhone 14"
+        case "iPhone14,8":
+            return "iPhone 14 Plus"
+        case "iPhone15,2":
+            return "iPhone 14 Pro"
+        case "iPhone15,3":
+            return "iPhone 14 Pro Max"
 
         // MARK: iPad
         case "iPad1,1":
@@ -122,6 +130,12 @@ extension UIDevice {
             return "iPad 2 (Wi-Fi + 3G CDMA)"
         case "iPad2,4":
             return "iPad 2 (Wi-Fi)"
+        case "iPad2,5":
+            return "iPad Mini (Wi-Fi)"
+        case "iPad2,6":
+            return "iPad Mini (Wi-Fi + Cellular)"
+        case "iPad2,7":
+            return "iPad Mini (Wi-Fi + Cellular MM)"
         case "iPad3,1":
             return "iPad (3rd generation) (Wi-Fi)"
         case "iPad3,2", "iPad3,3":
@@ -130,50 +144,26 @@ extension UIDevice {
             return "iPad (4th generation) (Wi-Fi)"
         case "iPad3,5", "iPad3,6":
             return "iPad (4th generation) (Wi-Fi + Cellular)"
-        case "iPad6,11":
-            return "iPad (5th generation) (Wi-Fi)"
-        case "iPad6,12":
-            return "iPad (5th generation) (Wi-Fi + Cellular)"
-        case "iPad7,5":
-            return "iPad (6th generation) (Wi-Fi)"
-        case "iPad7,6":
-            return "iPad (6th generation) (Wi-Fi + Cellular)"
-        case "iPad7,11":
-            return "iPad (7th generation) (Wi-Fi)"
-        case "iPad7,12":
-            return "iPad (7th generation) (Wi-Fi + Cellular)"
-        case "iPad11,6":
-            return "iPad (8th generation) (Wi-Fi)"
-        case "iPad11,7":
-            return "iPad (8th generation) (Wi-Fi + Cellular)"
-        case "iPad12,1":
-            return "iPad (9th generation) (Wi-Fi)"
-        case "iPad12,2":
-            return "iPad (9th generation) (Wi-Fi + Cellular)"
-
-        // MARK: iPad Air
         case "iPad4,1":
             return "iPad Air (Wi-Fi)"
         case "iPad4,2":
             return "iPad Air (Wi-Fi + Cellular)"
+        case "iPad4,4":
+            return "iPad mini 2 (Wi-Fi)"
+        case "iPad4,5":
+            return "iPad mini 2 (Wi-Fi + Cellular)"
+        case "iPad4,7":
+            return "iPad mini 3 (Wi-Fi)"
+        case "iPad4,8":
+            return "iPad mini 3 (Wi-Fi + Cellular)"
+        case "iPad5,1":
+            return "iPad mini 4 (Wi-Fi)"
+        case "iPad5,2":
+            return "iPad mini 4 (Wi-Fi + Cellular)"
         case "iPad5,3":
             return "iPad Air 2 (Wi-Fi)"
         case "iPad5,4":
             return "iPad Air 2 (Wi-Fi + Cellular)"
-        case "iPad11,3":
-            return "iPad Air (3rd generation) (Wi-Fi)"
-        case "iPad11,4":
-            return "iPad Air (3rd generation) (Wi-Fi + Cellular)"
-        case "iPad13,1":
-            return "iPad Air (4th generation) (Wi-Fi)"
-        case "iPad13,2":
-            return "iPad Air (4th generation) (Wi-Fi + Cellular)"
-        case "iPad13,16":
-            return "iPad Air (5th generation) (Wi-Fi)"
-        case "iPad13,17":
-            return "iPad Air (5th generation) (Wi-Fi + Cellular)"
-
-        // MARK: iPad Pro
         case "iPad6,3":
             return "iPad Pro 9.7-inch (Wi-Fi)"
         case "iPad6,4":
@@ -182,6 +172,10 @@ extension UIDevice {
             return "iPad Pro 12.9-inch (Wi-Fi)"
         case "iPad6,8":
             return "iPad Pro 12.9-inch (Wi-Fi + Cellular)"
+        case "iPad6,11":
+            return "iPad (5th generation) (Wi-Fi)"
+        case "iPad6,12":
+            return "iPad (5th generation) (Wi-Fi + Cellular)"
         case "iPad7,1":
             return "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)"
         case "iPad7,2":
@@ -190,6 +184,14 @@ extension UIDevice {
             return "iPad Pro 10.5 inch (Wi-Fi)"
         case "iPad7,4":
             return "iPad Pro 10.5 inch (Wi-Fi + Cellular)"
+        case "iPad7,5":
+            return "iPad (6th generation) (Wi-Fi)"
+        case "iPad7,6":
+            return "iPad (6th generation) (Wi-Fi + Cellular)"
+        case "iPad7,11":
+            return "iPad (7th generation) (Wi-Fi)"
+        case "iPad7,12":
+            return "iPad (7th generation) (Wi-Fi + Cellular)"
         case "iPad8,1":
             return "iPad Pro 11-inch (Wi-Fi)"
         case "iPad8,2":
@@ -210,6 +212,26 @@ extension UIDevice {
             return "iPad Pro 12.9-inch (4th generation) (Wi-Fi)"
         case "iPad8,12":
             return "iPad Pro 12.9-inch (4th generation) (Wi-Fi + Cellular)"
+        case "iPad11,1":
+            return "iPad mini (5th generation) (Wi-Fi)"
+        case "iPad11,2":
+            return "iPad mini (5th generation) (Wi-Fi + Cellular)"
+        case "iPad11,3":
+            return "iPad Air (3rd generation) (Wi-Fi)"
+        case "iPad11,4":
+            return "iPad Air (3rd generation) (Wi-Fi + Cellular)"
+        case "iPad11,6":
+            return "iPad (8th generation) (Wi-Fi)"
+        case "iPad11,7":
+            return "iPad (8th generation) (Wi-Fi + Cellular)"
+        case "iPad12,1":
+            return "iPad (9th generation) (Wi-Fi)"
+        case "iPad12,2":
+            return "iPad (9th generation) (Wi-Fi + Cellular)"
+        case "iPad13,1":
+            return "iPad Air (4th generation) (Wi-Fi)"
+        case "iPad13,2":
+            return "iPad Air (4th generation) (Wi-Fi + Cellular)"
         case "iPad13,4", "iPad13,5":
             return "iPad Pro 11-inch (3rd generation) (Wi-Fi)"
         case "iPad13,6", "iPad13,7":
@@ -218,34 +240,26 @@ extension UIDevice {
             return "iPad Pro 12.9-inch (5th generation) (Wi-Fi)"
         case "iPad13,10", "iPad13,11":
             return "iPad Pro 12.9-inch (5th generation) (Wi-Fi + Cellular)"
-
-        // MARK: iPad mini
-        case "iPad2,5":
-            return "iPad Mini (Wi-Fi)"
-        case "iPad2,6":
-            return "iPad Mini (Wi-Fi + Cellular)"
-        case "iPad2,7":
-            return "iPad Mini (Wi-Fi + Cellular MM)"
-        case "iPad4,4":
-            return "iPad mini 2 (Wi-Fi)"
-        case "iPad4,5":
-            return "iPad mini 2 (Wi-Fi + Cellular)"
-        case "iPad4,7":
-            return "iPad mini 3 (Wi-Fi)"
-        case "iPad4,8":
-            return "iPad mini 3 (Wi-Fi + Cellular)"
-        case "iPad5,1":
-            return "iPad mini 4 (Wi-Fi)"
-        case "iPad5,2":
-            return "iPad mini 4 (Wi-Fi + Cellular)"
-        case "iPad11,1":
-            return "iPad mini (5th generation) (Wi-Fi)"
-        case "iPad11,2":
-            return "iPad mini (5th generation) (Wi-Fi + Cellular)"
+        case "iPad13,16":
+            return "iPad Air (5th generation) (Wi-Fi)"
+        case "iPad13,17":
+            return "iPad Air (5th generation) (Wi-Fi + Cellular)"
+        case "iPad13,18":
+            return "iPad (10th generation) (Wi-Fi)"
+        case "iPad13,19":
+            return "iPad (10th generation) (Wi-Fi + Cellular)"
         case "iPad14,1":
             return "iPad mini (6th generation) (Wi-Fi)"
         case "iPad14,2":
             return "iPad mini (6th generation) (Wi-Fi + Cellular)"
+        case "iPad14,3":
+            return "iPad Pro 11-inch (4th generation) (Wi-Fi)"
+        case "iPad14,4":
+            return "iPad Pro 11-inch (4th generation) (Wi-Fi + Cellular)"
+        case "iPad14,5":
+            return "iPad Pro 12.9-inch (6th generation) (Wi-Fi)"
+        case "iPad14,6":
+            return "iPad Pro 12.9-inch (6th generation) (Wi-Fi + Cellular)"
 
         // MARK: iPod
         case "iPod1,1":
@@ -293,7 +307,8 @@ extension UIDevice {
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
              "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
-             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6":
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
+             "iPhone14,7", "iPhone14,8":
             return "12 Mpx"
 
         // MARK: iPad
@@ -301,42 +316,26 @@ extension UIDevice {
             return ""
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
             return "0.92 Mpx"
-        case "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6":
+        case "iPad2,5", "iPad2,6", "iPad2,7",
+             "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
+             "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
             return "5 Mpx"
-        case "iPad6,11", "iPad6,12",
+        case "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4",
+             "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
-             "iPad11,6", "iPad11,7":
-            return "8 Mpx"
-        case "iPad12,1", "iPad12,2":
-            return "12 Mpx"
-
-        // MARK: iPad Air
-        case "iPad4,1", "iPad4,2":
-            return "5 Mpx"
-        case "iPad5,3", "iPad5,4",
-             "iPad11,3", "iPad11,4":
-            return "8 Mpx"
-        case "iPad13,1", "iPad13,2", "iPad13,16", "iPad13,17":
-            return "12 Mpx"
-
-        // MARK: iPad Pro
-        case "iPad6,7", "iPad6,8":
+             "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
             return "8 Mpx"
         case "iPad6,3", "iPad6,4",
              "iPad7,1", "iPad7,2", "iPad7,3", "iPad7,4",
              "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5", "iPad8,6",
              "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
-             "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7", "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11":
+             "iPad12,1", "iPad12,2",
+             "iPad13,1", "iPad13,2", "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7", "iPad13,8",
+             "iPad13,9", "iPad13,10", "iPad13,11", "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
+             "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6":
             return "12 Mpx"
-
-        // MARK: iPad mini
-        case "iPad2,5", "iPad2,6", "iPad2,7",
-             "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
-            return "5 Mpx"
-        case "iPad5,1", "iPad5,2", "iPad11,1", "iPad11,2":
-            return "8 Mpx"
-        case "iPad14,1", "iPad14,2":
-            return "12 Mpx"
+        case "iPhone15,2", "iPhone15,3":
+            return "48 Mpx"
 
         // MARK: iPod
         case "iPod1,1", "iPod2,1", "iPod3,1":
@@ -377,60 +376,36 @@ extension UIDevice {
         case "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
-             "iPhone13,1", "iPhone13,2",
-             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6":
+             "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
+             "iPhone14,7", "iPhone14,8", "iPhone15,2", "iPhone15,3":
             return "4K, 60 fps"
-        case "iPhone13,3", "iPhone13,4":
-            return "4K, 120 fps"
 
         // MARK: iPad
         case "iPad1,1":
             return ""
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
             return "VGA, 30 fps"
-        case "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6":
+        case "iPad2,5", "iPad2,6", "iPad2,7",
+             "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
+             "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8",
+             "iPad6,3", "iPad6,4":
             return "HD, 30 fps"
-        case "iPad6,11", "iPad6,12",
+        case "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4",
+             "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
-             "iPad11,6", "iPad11,7":
-            return "Full HD, 30 fps"
-        case "iPad12,1", "iPad12,2":
-            return "4K, 30 fps"
-
-        // MARK: iPad Air
-        case "iPad4,1", "iPad4,2":
-            return "HD, 30 fps"
-        case "iPad5,3", "iPad5,4",
-             "iPad11,3", "iPad11,4":
-            return "Full HD, 30 fps"
-        case "iPad13,1", "iPad13,2":
-            return "4K, 30 fps"
-        case "iPad13,16", "iPad13,17":
-            return "4K, 60 fps"
-
-        // MARK: iPad Pro
-        case "iPad6,3", "iPad6,4":
-            return "HD, 30 fps"
-        case "iPad6,7", "iPad6,8":
+             "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
             return "Full HD, 30 fps"
         case "iPad7,1", "iPad7,2", "iPad7,3", "iPad7,4",
              "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5",
-             "iPad8,6", "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10",
-             "iPad8,11", "iPad8,12":
+             "iPad8,6", "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
+             "iPad12,1", "iPad12,2", "iPad13,1", "iPad13,2":
             return "4K, 30 fps"
         case "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7",
-             "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11":
+             "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11",
+             "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
+             "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6":
             return "4K, 60 fps"
-
-        // MARK: iPad mini
-        case "iPad2,5", "iPad2,6", "iPad2,7",
-             "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
-            return "HD, 30 fps"
-        case "iPad5,1", "iPad5,2",
-             "iPad11,1", "iPad11,2":
-            return "Full HD, 30 fps"
-        case "iPad14,1", "iPad14,2":
-            return "4K, 30 fps"
 
         // MARK: iPod
         case "iPod1,1", "iPod2,1", "iPod3,1":

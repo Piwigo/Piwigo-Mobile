@@ -40,6 +40,7 @@
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */; };
+		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		AD18C73C27F1005B002CD05C /* UIApplication+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73B27F1005B002CD05C /* UIApplication+AppTools.swift */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
@@ -2564,6 +2565,7 @@
 			files = (
 				AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */,
 				AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */,
+				AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
