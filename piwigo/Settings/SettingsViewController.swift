@@ -503,7 +503,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             switch indexPath.row {
             case 0:
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 let title = NSLocalizedString("settings_server", comment: "Address")
                 let detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
                 cell.configure(with: title, detail: detail)
@@ -556,7 +556,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 let defaultSize = AlbumUtilities.albumThumbnailSizeName(for: albumImageSize)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -581,7 +581,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AlbumVars.shared.maxNberRecentCategories)
 
                 // Slider configuration
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String = ""
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -640,10 +640,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 Plus screen width
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images")
                 } else if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -663,7 +663,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 let defaultSize = AlbumUtilities.thumbnailSizeName(for: thumbnailSize)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -699,7 +699,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
 
                 // Slider configuration
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -723,7 +723,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 if view.bounds.size.width > 320 {
                     cell.configure(with: NSLocalizedString("settings_displayTitles>320px", comment: "Display Titles on Thumbnails"))
                 } else {
@@ -746,10 +746,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
                 let defaultSize = ImageUtilities.imageSizeName(for: imageSize)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File")
                 } else if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -768,9 +768,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                         return LabelTableViewCell()
                     }
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if view.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6,7 screen width
+                    // See https://iosref.com/res
+                    if view.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
                     } else {
                         cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
@@ -785,9 +785,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                         return SwitchTableViewCell()
                     }
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if view.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6,7 screen width
+                    // See https://iosref.com/res
+                    if view.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share Private Metadata"))
                     } else {
                         cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Metadata"))
@@ -818,7 +818,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                     return TextFieldTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultAuthor
                 let placeHolder: String = NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name")
@@ -840,9 +840,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return LabelTableViewCell()
                 }
                 let defaultLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 Plus screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("privacyLevel", comment: "Privacy Level"), detail: defaultLevel)
                 } else {
                     cell.configure(with: NSLocalizedString("settings_defaultPrivacy", comment: "Privacy"), detail: defaultLevel)
@@ -856,9 +856,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_stripGPSdata>375px", comment: "Strip Private Metadata Before Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
@@ -923,9 +923,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Photo Before Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
@@ -972,9 +972,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhones 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_prefixFilename>414px", comment: "Prefix Photo Filename Before Upload"))
                 } else if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -1007,7 +1007,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                     return TextFieldTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultPrefix
                 let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
@@ -1051,8 +1051,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return LabelTableViewCell()
                 }
                 let title: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload in the Background")
                 } else {
                     title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
@@ -1073,9 +1073,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))

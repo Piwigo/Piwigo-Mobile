@@ -101,7 +101,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 } else {
                     // Photos from different years
                     let startString: String, endString: String
-                    if contentView.bounds.size.width > 414.0 {
+                    if contentView.bounds.size.width > 430 {
                         startString = DateFormatter.localizedString(from: startDate, dateStyle: .full, timeStyle: .none)
                         endString = DateFormatter.localizedString(from: endDate, dateStyle: .full, timeStyle: .none)
                     } else {

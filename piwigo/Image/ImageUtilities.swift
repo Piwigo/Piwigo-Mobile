@@ -243,7 +243,7 @@ class ImageUtilities: NSObject {
     // MARK: - Image Size, URLs
     static func optimumImageSizeForDevice() -> pwgImageSize {
         // Determine the resolution of the screen
-        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+        // See https://iosref.com/res
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
         let screenSize = UIScreen.main.bounds.size
         let screenWidth = fmin(screenSize.width, screenSize.height)

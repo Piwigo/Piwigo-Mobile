@@ -115,9 +115,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width > 414 {
-                // i.e. larger than iPhones 6,7 screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhones 14 Pro Max screen width
                 cell.configure(with: NSLocalizedString("settings_stripGPSdata>375px", comment: "Strip Private Metadata Before Upload"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
@@ -180,9 +180,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width > 375 {
-                // i.e. larger than iPhones 6,7 screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhones 14 Pro Max screen width
                 cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Image Before Upload"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
@@ -227,9 +227,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width > 414 {
-                // i.e. larger than iPhones 6,7 screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhones 14 Pro Max screen width
                 cell.configure(with: NSLocalizedString("settings_prefixFilename>414px", comment: "Prefix Photo Filename Before Upload"))
             } else if view.bounds.size.width > 375 {
                 // i.e. larger than iPhones 6,7 screen width
@@ -260,7 +260,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                 return TextFieldTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+            // See https://iosref.com/res
             var title: String
             let input: String = defaultPrefix
             let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
@@ -282,9 +282,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width > 414 {
-                // i.e. larger than iPhones 6,7 screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhones 14 Pro Max screen width
                 cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))

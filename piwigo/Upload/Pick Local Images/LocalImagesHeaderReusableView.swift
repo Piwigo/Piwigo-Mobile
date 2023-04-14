@@ -218,7 +218,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 if (firstImageYear == lastImageYear) {
                     // Images taken during the sme year
                     // => Display day/month followed by year
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    // See https://iosref.com/res
                     let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                     dateFormatter1.locale = .current
                     dateFormatter2.locale = .current

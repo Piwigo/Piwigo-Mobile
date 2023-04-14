@@ -685,9 +685,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Keep title
         } else {
             // Do not show album title in backButtonItem of child view to provide enough space for image title
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width <= 414 {
-                // i.e. smaller than iPhones 6,7 Plus screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width <= 430 {
+                // i.e. smaller than iPhone 14 Pro Max screen width
                 title = ""
             }
         }
