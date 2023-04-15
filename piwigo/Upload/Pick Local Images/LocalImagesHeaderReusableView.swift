@@ -179,8 +179,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
                     dateLabelText = dateFormatter1.string(from: dateCreated1) + " - " + dateFormatter2.string(from: dateCreated2)
                     // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
                         optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
                     } else {
@@ -201,8 +201,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
                     dateLabelText = dateFormatter.string(from: dateCreated1)
                     // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
                         optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                     } else {
@@ -222,8 +222,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                     dateFormatter1.locale = .current
                     dateFormatter2.locale = .current
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
                         dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
                         dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
@@ -238,8 +238,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 // => Images taken on several years
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = .current
-                if UIScreen.main.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
+                if UIScreen.main.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
                     dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                 } else {

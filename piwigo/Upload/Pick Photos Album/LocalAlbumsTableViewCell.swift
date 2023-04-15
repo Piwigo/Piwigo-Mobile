@@ -50,7 +50,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         // Photo from the same month
                         if startDateComponents.day == endDateComponents.day {
                             // Photos from the same day
-                            if UIScreen.main.bounds.size.width > 414.0 {
+                            if UIScreen.main.bounds.size.width > 430 {
+                                // i.e. larger than iPhone 14 Pro Max screen width
                                 let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                                 dateFormatter1.locale = .current
                                 dateFormatter2.locale = .current
@@ -71,8 +72,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                             let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                             dateFormatter1.locale = .current
                             dateFormatter2.locale = .current
-                            if UIScreen.main.bounds.size.width > 414.0 {
-                                // i.e. larger than iPhones 6, 7 screen width
+                            if UIScreen.main.bounds.size.width > 430 {
+                                // i.e. larger than iPhone 14 Pro Max screen width
                                 dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
                                 dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd")
                                 subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
@@ -87,8 +88,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                         dateFormatter1.locale = .current
                         dateFormatter2.locale = .current
-                        if UIScreen.main.bounds.size.width > 414.0 {
-                            // i.e. larger than iPhones 6, 7 screen width
+                        if UIScreen.main.bounds.size.width > 430 {
+                            // i.e. larger than iPhone 14 Pro Max screen width
                             dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d MMMM")
                             dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE d MMMM YYYY")
                             subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))

@@ -614,8 +614,8 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         var timeStr = ""
         if let date = date {
-            if view.bounds.size.width > 375 {
-                // i.e. larger than iPhones 6,7,8 screen width
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhone 14 Pro Max screen width
                 dateStr = DateFormatter.localizedString(from: date, dateStyle: .long, timeStyle: .none)
                 timeStr = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .medium)
             } else if view.bounds.size.width > 320 {

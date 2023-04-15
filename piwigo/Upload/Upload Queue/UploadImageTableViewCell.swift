@@ -355,8 +355,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Info depends on table width
-        if availableWidth > 414 {
-            // i.e. larger than iPhones 6,7 screen width
+        if availableWidth > 430 {
+            // i.e. larger than iPhone 14 Pro Max screen width
             return String(format: "%.0fx%.0f pixels - %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
         } else if availableWidth > 375 {
             return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
@@ -380,8 +380,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Info depends on table width
-        if availableWidth > 414 {
-            // i.e. larger than iPhones 6,7 screen width
+        if availableWidth > 430 {
+            // i.e. larger than iPhone 14 Pro Max screen width
             return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
         } else if availableWidth > 375 {
             return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))

@@ -98,13 +98,13 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         self.imageSize?.text = imageData.fullRes?.pixels ?? "— pixels"
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
         imageDate.text = ""
-        if bounds.size.width > CGFloat(320) {
-            // i.e. larger than iPhone 5 screen width
-            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
-                                                           dateStyle: .full, timeStyle: .none)
-        } else {
+        if bounds.size.width > CGFloat(430) {
+            // i.e. larger than iPhone 14 Pro Max screen width
             imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
                                                            dateStyle: .long, timeStyle: .none)
+        } else {
+            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                           dateStyle: .short, timeStyle: .none)
         }
         imageTime.text = DateFormatter.localizedString(from: imageData.dateCreated,
                                                        dateStyle: .none, timeStyle: .medium)
