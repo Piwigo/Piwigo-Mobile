@@ -8,6 +8,7 @@
 //  Converted to Swift 5.4 by Eddy Lelièvre-Berna on 26/02/2022.
 //
 
+import CoreData
 import MessageUI
 import UIKit
 import piwigoKit
@@ -32,6 +33,13 @@ class LoginViewController: UIViewController {
     }
 
     
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider()
@@ -286,9 +294,11 @@ class LoginViewController: UIViewController {
                 // Session now opened
                 NetworkVars.username = username
 
-                // Create or update User account in persistent cache
-                DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-                    self.userProvider.createUpdateUserAccount(username)
+                // Create/update User account in persistent cache, create Server if necessary.
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                DispatchQueue.main.async { [self] in
+                    let _ = self.userProvider.getUserAccount(inContext: mainContext,
+                                                             withUsername: username, afterUpdate: true)
                 }
 
                 // First determine user rights if Community extension installed
@@ -306,9 +316,11 @@ class LoginViewController: UIViewController {
                                              account: username)
             NetworkVars.username = ""
 
-            // Create or update User account in persistent cache
-            DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-                self.userProvider.createUpdateUserAccount("")
+            // Create/update User account in persistent cache, create Server if necessary.
+            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+            DispatchQueue.main.async { [self] in
+                let _ = self.userProvider.getUserAccount(inContext: mainContext,
+                                                         withUsername: username, afterUpdate: true)
             }
 
             // Check Piwigo version, get token, available sizes, etc.
