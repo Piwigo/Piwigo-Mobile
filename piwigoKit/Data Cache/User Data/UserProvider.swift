@@ -34,12 +34,6 @@ public class UserProvider: NSObject {
     
     
     // MARK: - Get/Create User Account Object
-    public func createUpdateUserAccount(_ username: String) {
-        // Add User and Server objects to persistent cache if necessary
-        let _ = getUserAccount(inContext: bckgContext,
-                               withUsername: username, afterUpdate: true)
-    }
-    
     /**
      Returns a User Account instance
      - Will create a Server object if it does not already exist.
