@@ -404,19 +404,6 @@ public class ImageProvider: NSObject {
                 }
             }
             
-            // Determine images to delete
-            //            let newImageIds = imagesBatch.compactMap({$0.id})
-            //            let cachedImagesToDelete = cachedImages.filter({newImageIds.contains($0.id) == false})
-            //            let cachedImageIdsToDelete = cachedImagesToDelete.compactMap({Int($0.id)})
-            
-            // Update uploaded images if needed
-            
-            // Delete images
-            //            cachedImagesToDelete.forEach { cachedImage in
-            //                print("••> delete image with ID:\(cachedImage.id) and name:\(cachedImage.title)")
-            //                bckgContext.delete(cachedImage)
-            //            }
-            
             // Save all insertions from the context to the store.
             if bckgContext.hasChanges {
                 do {
