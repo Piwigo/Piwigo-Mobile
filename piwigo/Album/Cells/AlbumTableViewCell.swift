@@ -228,8 +228,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
     }
 
     private func showHideIsRecent(albumData: Album?) {
-        guard let dateLast = albumData?.dateLast else { return }
-        let timeSinceLastUpload: TimeInterval = dateLast.timeIntervalSinceNow
+        guard let albumData = albumData, albumData.isFault == false else { return }
+        let timeSinceLastUpload: TimeInterval = albumData.dateLast.timeIntervalSinceNow
         var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
