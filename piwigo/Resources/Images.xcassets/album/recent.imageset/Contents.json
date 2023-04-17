@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "recent@1x.png",
+      "filename" : "eyes@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "recent@2x.png",
+      "filename" : "eyes@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "recent@3x.png",
+      "filename" : "eyes@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -21,6 +21,7 @@
     "version" : 1
   },
   "properties" : {
-    "template-rendering-intent" : "template"
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "original"
   }
 }
