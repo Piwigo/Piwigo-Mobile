@@ -551,15 +551,22 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         super.viewDidAppear(animated)
         print("••> viewDidAppear     => ID:\(categoryId)")
 
-        // Check session status before loading album and image data
+        // The user may have cleared the cached data
+        // Display an empty root album in that case
+        if categoryId == Int32.zero, albumData.isFault {
+            return
+        }
+        
+        // Check conditions before loading album and image data
         let lastLoad = albumData.dateGetImages
-        let noSmartAlbumData = self.categoryId <= 0 && (self.images.fetchedObjects ?? []).isEmpty
         let nbImages = (self.images.fetchedObjects ?? []).count
+        let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
-        if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) ||
-            lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
+        let missingImages = expectedNbImages > 0 && nbImages < expectedNbImages / 2
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             NetworkUtilities.checkSession(ofUser: user) {
-                self.startFetchingAlbumAndImages()
+                self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
                 print("••> Error \(error.code): \(error.localizedDescription)")
                 // TO DO…
@@ -780,30 +787,36 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         try? images.performFetch()
     }
     
-    func startFetchingAlbumAndImages() {
+    func startFetchingAlbumAndImages(withHUD: Bool) {
+        // Remember that the app is uploading this album data
+        AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
+        
+        // Inform user
         DispatchQueue.main.async { [self] in
             // Display "loading" in title view
             self.setTitleViewFromAlbumData(whileUpdating: true)
 
             // Display HUD when loading images for the first time
             // or when we have less than half of the images in cache
-            let noSmartAlbumData = self.categoryId <= 0 && (self.albums.fetchedObjects ?? []).isEmpty
-            let nbImages = (self.images.fetchedObjects ?? []).count
-            let expectedNbImages = self.albumData.nbImages
-            if noSmartAlbumData || (expectedNbImages > 0 && nbImages < expectedNbImages / 2) {
-                // Display HUD while downloading album data
-                self.navigationController?.showPiwigoHUD(
-                    withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                    detail: NSLocalizedString("severalImages", comment: "Photos"),
-                    buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-            }
+            if withHUD == false { return }
+            
+            // Display HUD while downloading album data
+            self.navigationController?.showPiwigoHUD(
+                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                detail: NSLocalizedString("severalImages", comment: "Photos"),
+                buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
+        
+        // Fetch album data and then image data
         fetchAlbumsAndImages { [self] in
             fetchCompleted()
         }
     }
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        // Already being fetching album data?
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
+        
         // Pause upload manager
         UploadManager.shared.isPaused = true
         
@@ -815,7 +828,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Re-login and then fetch album and image data
         NetworkUtilities.checkSession(ofUser: user) {
-            self.startFetchingAlbumAndImages()
+            self.startFetchingAlbumAndImages(withHUD: true)
         } failure: { error in
             // End refreshing anyway
             DispatchQueue.main.async {
@@ -848,9 +861,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Fetch favorites in the background if needed
-        if categoryId != pwgSmartAlbum.favorites.rawValue,
+        if NetworkVars.userStatus != .guest,
+           categoryId != pwgSmartAlbum.favorites.rawValue,
+           "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {
+            // Remember that the app is fetching favorites
+            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
+            // Fetch favorites in the background
             DispatchQueue.global(qos: .background).async { [unowned self] in
                 self.loadFavoritesInBckg()
             }

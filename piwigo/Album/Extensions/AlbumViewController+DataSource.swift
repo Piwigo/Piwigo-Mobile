@@ -52,7 +52,11 @@ extension AlbumViewController
                 let nbImages = self.albumData.nbImages
                 if self.categoryId == 0 || nbImages == 0 {
                     // Done fetching images
+                    // ► Remove non-fetched images from album
                     self.removeImageWithIDs(oldImageIds)
+                    // ► Remove current album from list of album being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
                     completion()
                     return
                 }
@@ -70,6 +74,10 @@ extension AlbumViewController
             
             // Show the error
             DispatchQueue.main.async { [self] in
+                // Done fetching album data
+                // ► Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
                 completion()
                 self.showError(error)
             }
@@ -127,10 +135,12 @@ extension AlbumViewController
                     return
                 }
                 
-                // Done fetching images ► Remove non-fetched images from album
+                // Done fetching images
+                // ► Remove non-fetched images from album
                 removeImageWithIDs(imageIds)
-                
-                // Delete orphaned images in background
+                // ► Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+                // ► Delete orphaned images in the background
                 imageProvider.purgeOrphans()
 
                 completion()
@@ -139,6 +149,10 @@ extension AlbumViewController
             
             // Show the error
             DispatchQueue.main.async { [self] in
+                // Done fetching images
+                // ► Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+                
                 completion()
                 self.showError(error)
             }
@@ -225,12 +239,10 @@ extension AlbumViewController
     // MARK: - Fetch Favorites in the background
     func loadFavoritesInBckg() {
         DispatchQueue.global(qos: .default).async {
-            // Should we load favorites?
-            if NetworkVars.userStatus == .guest { return }
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedDescending { return }
-
             // Check that an album of favorites exists in cache (create it if necessary)
             guard let album = self.albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue) else {
+                // Remove favorite album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
                 return
             }
             if album.isFault {
@@ -263,6 +275,8 @@ extension AlbumViewController
                                   fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
             // Any error?
             if error != nil {
+                // Remove favorite album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
                 return
             }
             
@@ -290,17 +304,25 @@ extension AlbumViewController
                 return
             }
             
-            // Done fetching images ► Remove non-fetched images from album
+            // Done fetching images
+            // ► Remove non-fetched images from album
             let images = imageProvider.getImages(inContext: bckgContext, withIds: newImageIds)
             album.removeFromImages(images)
-                        
-            // Remember when favorites were fetched
+            // ► Remember when favorites were fetched
             album.dateGetImages = Date()
+            // ► Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             
             // Save changes
             do {
                 try bckgContext.save()
-            } catch let error as NSError {
+                DispatchQueue.main.async {
+                    try? self.mainContext.save()
+                }
+            }
+            catch let error as NSError {
+                // Remove favorite album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
                 print("Could not fetch \(error), \(error.userInfo)")
             }
         }
