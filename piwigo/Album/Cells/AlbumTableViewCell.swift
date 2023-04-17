@@ -77,10 +77,17 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
 
         // Display recent icon when images have been uploaded recently
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.showHideIsRecent(albumData: albumData)
+        let timeSinceLastUpload: TimeInterval = albumData?.dateLast.timeIntervalSinceNow ?? .greatestFiniteMagnitude
+        var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
+        indexOfPeriod = max(0, indexOfPeriod)
+        let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
+        let isRecent = timeSinceLastUpload > TimeInterval(-24*3600*periodInDays)
+        if self.recentBckg.isHidden == isRecent {
+            self.recentBckg.isHidden = !isRecent
+            self.recentImage.isHidden = !isRecent
         }
-        
+
         // Display album image
         let placeHolder = UIImage(named: "placeholder")!
 
@@ -227,22 +234,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
         return newFontSize
     }
 
-    private func showHideIsRecent(albumData: Album?) {
-        guard let albumData = albumData, albumData.isFault == false else { return }
-        let timeSinceLastUpload: TimeInterval = albumData.dateLast.timeIntervalSinceNow
-        var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
-        indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
-        let isRecent = timeSinceLastUpload > TimeInterval(-24*3600*periodInDays)
-        DispatchQueue.main.async {
-            if self.recentBckg.isHidden == isRecent {
-                self.recentBckg.isHidden = !isRecent
-                self.recentImage.isHidden = !isRecent
-            }
-        }
-    }
-    
     private func configImage(_ image: UIImage) {
         // Process image in the background
         DispatchQueue.global(qos: .userInitiated).async {
