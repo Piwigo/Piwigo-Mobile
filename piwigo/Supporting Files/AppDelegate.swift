@@ -418,20 +418,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Cleaning
     /// Delete files stored in the temporary directory after a week i.e. after the timeout period of the UploadSessionDelegate
     func cleanUpTemporaryDirectory(immediately: Bool) {
-        let fm = FileManager.default
-        do {
-            let tmpDirectory = try fm.contentsOfDirectory(atPath: NSTemporaryDirectory())
-            for file in tmpDirectory {
-                let path = String(format: "%@%@", NSTemporaryDirectory(), file)
-                let attrs = try fm.attributesOfItem(atPath: path)
-                if let fileCreationDate = attrs[FileAttributeKey.creationDate] as? Date,
-                   (fileCreationDate.timeIntervalSinceReferenceDate + k1WeekInDays < Date.timeIntervalSinceReferenceDate) || immediately {
-                    try fm.removeItem(atPath: path)
+        DispatchQueue.global(qos: .background).async { [self] in
+            let fm = FileManager.default
+            do {
+                let tmpDirectory = try fm.contentsOfDirectory(atPath: NSTemporaryDirectory())
+                for file in tmpDirectory {
+                    let path = String(format: "%@%@", NSTemporaryDirectory(), file)
+                    let attrs = try fm.attributesOfItem(atPath: path)
+                    if let fileCreationDate = attrs[FileAttributeKey.creationDate] as? Date,
+                       (fileCreationDate.timeIntervalSinceReferenceDate + k1WeekInDays < Date.timeIntervalSinceReferenceDate) || immediately {
+                        try fm.removeItem(atPath: path)
+                    }
                 }
             }
-        }
-        catch {
-            print("Could not clean up the temporary directory")
+            catch {
+                print("Could not clean up the temporary directory")
+            }
         }
     }
 
