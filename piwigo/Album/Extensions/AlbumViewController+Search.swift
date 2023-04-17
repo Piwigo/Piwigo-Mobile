@@ -145,7 +145,7 @@ extension AlbumViewController: UISearchBarDelegate
         }
         
         // Cancel active image data session if any
-        cancelTasks {
+        ClearCache.cancelTasks {
             DispatchQueue.main.async {
                 // Reset search
                 self.pauseSearch = false
@@ -154,9 +154,9 @@ extension AlbumViewController: UISearchBarDelegate
                 // The query string has changed
                 self.updateNberOfImagesInFooter()
                 
-                // Determine if the session is active and for how long before fetching
+                // Determine if the session is active before fetching
                 NetworkUtilities.checkSession(ofUser: self.user) {
-                    self.startFetchingAlbumAndImages()
+                    self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
                     print("••> Error \(error.code): \(error.localizedDescription)")
                     // TO DO…
@@ -168,21 +168,5 @@ extension AlbumViewController: UISearchBarDelegate
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
-    }
-    
-    func cancelTasks(completion: @escaping () -> Void) {
-        // Cancel active Piwigo tasks
-        PwgSession.shared.dataSession.getAllTasks { tasks in
-            tasks.forEach { task in
-                task.cancel()
-            }
-            // Cancel active image downloads if any
-            ImageSession.shared.dataSession.getAllTasks { tasks in
-                tasks.forEach { task in
-                    task.cancel()
-                }
-                completion()
-            }
-        }
     }
 }
