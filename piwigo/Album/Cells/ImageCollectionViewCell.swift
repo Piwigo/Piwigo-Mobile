@@ -123,8 +123,21 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let albumType = pwgSmartAlbum(rawValue: categoryId) ?? .root
         let displayTitle = AlbumVars.shared.displayImageTitles ||
                             [.visits, .best, .recent].contains(albumType)
+#if DEBUG
+        // Used for selecting cells in piwigoAppStore
+        // for selecting cells
+        let title = getImageTitle(forAlbumType: albumType)
+        if title.string.contains("Clos de Vougeot") {
+            self.accessibilityIdentifier = "Clos de Vougeot"
+        } else if title.string.contains("Hotel de Coimbra") {
+            self.accessibilityIdentifier = "Hotel de Coimbra"
+        }
+#endif
         if displayTitle {
             let title = getImageTitle(forAlbumType: albumType)
+            if title.string.contains("Hotel de Coimbra") {
+                self.accessibilityIdentifier = "Hotel de Coimbra"
+            }
             nameLabel?.attributedText = title
         }
         bottomLayer?.isHidden = !displayTitle
