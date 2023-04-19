@@ -89,7 +89,7 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
         }
-        else if deviceType.hasPrefix("iPad") {
+        else if deviceType.hasPrefix("iPad"), !deviceType.contains("(12.9-inch)") {
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         sleep(2)                        // Leave time for animation
@@ -153,7 +153,7 @@ class piwigoAppStore: XCTestCase {
         sleep(1);
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
-        if deviceType.contains("iPad") {
+        if deviceType.contains("iPad"), !deviceType.contains("(12.9-inch)") {
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         sleep(1)                        // Leave time for animation
