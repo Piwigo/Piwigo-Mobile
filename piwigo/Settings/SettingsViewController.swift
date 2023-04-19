@@ -122,31 +122,34 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 
-        // Navigation bar
+        // Navigation bar appearance
+        let navigationBar = navigationController?.navigationBar
+        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationBar?.titleTextAttributes = attributes
         let attributesLarge = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
         ]
-        navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationBar?.largeTitleTextAttributes = attributesLarge
+        navigationBar?.prefersLargeTitles = true
 
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            barAppearance.largeTitleTextAttributes = attributesLarge
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+            navigationBar?.prefersLargeTitles = true
         }
 
         // Table view
