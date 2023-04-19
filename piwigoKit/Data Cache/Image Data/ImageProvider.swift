@@ -325,7 +325,10 @@ public class ImageProvider: NSObject {
             guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
                 fatalError("Unresolved error — Could not get album object!")
             }
-            
+            guard let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
+                fatalError("Unresolved error — Could not get favorite album object!")
+            }
+
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let imageIds = Set(imagesBatch.compactMap({$0.id}))
             let controller = frcOfImage(inContext: self.bckgContext, withIds: imageIds)
@@ -347,6 +350,12 @@ public class ImageProvider: NSObject {
                 if let albumIds = imageData.categories?.compactMap({$0.id}),
                    let allAlbums = user.albums?.filter({albumIds.contains($0.pwgID)}) {
                     albums.formUnion(allAlbums)
+                }
+                
+                // Check whether this image is a favorite
+                /// (available since version 13.0.0 of the Piwigo server)
+                if let isFavorite = imageData.isFavorite, isFavorite {
+                    albums.insert(favAlbum)
                 }
                 
                 // Rank of image in album

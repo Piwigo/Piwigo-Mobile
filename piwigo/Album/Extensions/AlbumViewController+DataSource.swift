@@ -237,6 +237,7 @@ extension AlbumViewController
 
     
     // MARK: - Fetch Favorites in the background
+    /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
     func loadFavoritesInBckg() {
         DispatchQueue.global(qos: .default).async {
             // Check that an album of favorites exists in cache (create it if necessary)

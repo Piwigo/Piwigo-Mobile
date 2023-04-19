@@ -864,6 +864,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if NetworkVars.userStatus != .guest,
            categoryId != pwgSmartAlbum.favorites.rawValue,
            "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {

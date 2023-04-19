@@ -80,6 +80,7 @@ public struct ImagesGetInfo: Decodable
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
+    public var isFavorite: Bool?                // false
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048
@@ -102,6 +103,7 @@ public struct ImagesGetInfo: Decodable
         case fileName = "file"
         case datePosted = "date_available"
         case dateCreated = "date_creation"
+        case isFavorite = "is_favorite"
 
         case fullResWidth = "width"
         case fullResHeight = "height"
@@ -132,7 +134,7 @@ extension ImagesGetInfo {
         
         self.init(id: id, title: title, comment: "", visits: 0,
                   fileName: fileName, datePosted: posted, dateCreated: created,
-                  fullResWidth: 0, fullResHeight: 0, fullResPath: "",
+                  isFavorite: false, fullResWidth: 0, fullResHeight: 0, fullResPath: "",
                   author: author, privacyLevel: privacyLevel,
                   tags: nil, ratingScore: nil,
                   fileSize: nil, md5checksum: nil,
