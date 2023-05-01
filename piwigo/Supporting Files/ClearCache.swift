@@ -63,17 +63,6 @@ class ClearCache: NSObject {
     }
 
     static func clearData(completion: @escaping () -> Void) {
-        // Erase database
-        UploadProvider().clearAll()
-        LocationProvider.shared.clearAll()
-        TagProvider().clearAll()
-        ImageProvider().clearAll()
-        AlbumProvider().clearAll()
-        
-        // Clean up /tmp directory
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectory(immediately: true)
-        
         // Cancel tasks
         cancelTasks {
             // Erase database
