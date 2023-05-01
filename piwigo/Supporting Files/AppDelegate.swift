@@ -629,7 +629,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Display default album
         let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
-        window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
+        window.rootViewController = AlbumNavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
@@ -759,7 +759,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if AppVars.shared.isLightPaletteModeActive
         {
             if !AppVars.shared.isDarkPaletteActive {
-                // Already in light mode
+                // Already in light mode but make sure that images stays in appropriate mode
+                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Light Mode" selected
@@ -769,7 +770,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else if AppVars.shared.isDarkPaletteModeActive
         {
             if AppVars.shared.isDarkPaletteActive {
-                // Already showing dark palette
+                // Already showing dark palette but make sure that images stays in appropriate mode
+                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
@@ -783,7 +785,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if AppVars.shared.isSystemDarkModeActive {
                     // System-wide dark mode active
                     if AppVars.shared.isDarkPaletteActive {
-                        // Keep dark palette
+                        // Keep dark palette but make sure that images stays in appropriate mode
+                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                         return;
                     } else {
                         // Switch to dark mode
@@ -795,7 +798,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Switch to light mode
                         AppVars.shared.isDarkPaletteActive = false
                     } else {
-                        // Keep light palette
+                        // Keep light palette but make sure that images stays in appropriate mode
+                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                         return;
                     }
                 }

@@ -15,13 +15,12 @@ import piwigoKit
 
 class LoginViewController: UIViewController {
 
+    @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
     @IBOutlet weak var userTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var websiteNotSecure: UILabel!
-    @IBOutlet weak var byLabel1: UILabel!
-    @IBOutlet weak var byLabel2: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
     private var isAlreadyTryingToLogin = false
@@ -29,7 +28,12 @@ class LoginViewController: UIViewController {
     private var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        if #available(iOS 13.0, *) {
+            return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        } else {
+            // Fallback on earlier versions
+            return .lightContent
+        }
     }
 
     
@@ -50,11 +54,6 @@ class LoginViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Always adopt a dark interface style
-        if #available(iOS 13.0, *) {
-            overrideUserInterfaceStyle = .dark
-        }
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
@@ -78,10 +77,6 @@ class LoginViewController: UIViewController {
         // Website not secure info
         websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
         
-        // Developpers
-        byLabel1.text = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        byLabel2.text = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-
         // App version
         let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
@@ -89,10 +84,59 @@ class LoginViewController: UIViewController {
 
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: .pwgPaletteChanged, object: nil)
+    }
+
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
+
+        // Navigation bar
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
+        // Text color depdending on background color
+        serverTextField.textColor = .piwigoColorText()
+        serverTextField.backgroundColor = .piwigoColorCellBackground()
+        userTextField.textColor = .piwigoColorText()
+        userTextField.backgroundColor = .piwigoColorCellBackground()
+        passwordTextField.textColor = .piwigoColorText()
+        passwordTextField.backgroundColor = .piwigoColorCellBackground()
+        versionLabel.textColor = .piwigoColorText()
+        websiteNotSecure.textColor = .piwigoColorText()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
 
         // Not yet trying to login
         isAlreadyTryingToLogin = false
@@ -112,6 +156,9 @@ class LoginViewController: UIViewController {
 
     deinit {
         // Release memory
+        
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     
@@ -563,43 +610,6 @@ class LoginViewController: UIViewController {
         }
     }
     
-    @IBAction func mailPiwigoSupport(_ sender: UIButton) {
-        if MFMailComposeViewController.canSendMail() {
-            let composeVC = MFMailComposeViewController()
-            composeVC.mailComposeDelegate = self
-
-            // Configure the fields of the interface.
-            composeVC.setToRecipients([
-                NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
-            ])
-
-            // Collect version and build numbers
-            let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-            let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-            // Compile ticket number from current date
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMddHHmm"
-            dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.language) as Locale
-            let date = Date()
-            let ticketDate = dateFormatter.string(from: date)
-
-            // Set subject
-            composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile"))")
-
-            // Collect system and device data
-            let deviceModel = UIDevice.current.modelName
-            let deviceOS = UIDevice.current.systemName
-            let deviceOSversion = UIDevice.current.systemVersion
-
-            // Set message body
-            composeVC.setMessageBody("\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? ""))\n\(deviceModel) — \(deviceOS) \(deviceOSversion)\n==============>>\n\n", isHTML: false)
-
-            // Present the view controller modally.
-            present(composeVC, animated: true)
-        }
-    }
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

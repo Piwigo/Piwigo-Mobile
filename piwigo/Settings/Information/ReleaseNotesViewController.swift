@@ -13,6 +13,7 @@ import piwigoKit
 
 class ReleaseNotesViewController: UIViewController {
     
+    @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
@@ -20,7 +21,7 @@ class ReleaseNotesViewController: UIViewController {
     private var doneBarButton: UIBarButtonItem?
 
     
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -34,6 +35,11 @@ class ReleaseNotesViewController: UIViewController {
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
 
         // Navigation bar
         let attributes = [

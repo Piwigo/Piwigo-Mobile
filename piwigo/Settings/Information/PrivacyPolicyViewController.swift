@@ -13,13 +13,13 @@ import piwigoKit
 
 class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
-    @IBOutlet var textView: UITextView!
+    @IBOutlet private weak var piwigoLogo: UIImageView!
+    @IBOutlet private var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
     private var doneBarButton: UIBarButtonItem?
 
 
     // MARK: - View Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -33,6 +33,11 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
 
         // Navigation bar
         let attributes = [
@@ -109,7 +114,6 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
     
     // MARK: - Pricay Policy
-
     func privacyPolicy() -> NSAttributedString {
         // Privacy policy attributed string
         let privacyAttributedString = NSMutableAttributedString(string: "\n")

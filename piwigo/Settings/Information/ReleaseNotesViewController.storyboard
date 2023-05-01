@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,11 +16,15 @@
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="adQ-xJ-L2L">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText.org" translatesAutoresizingMaskIntoConstraints="NO" id="cyK-gd-YwR">
-                                <rect key="frame" x="107" y="56" width="200" height="49"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText" translatesAutoresizingMaskIntoConstraints="NO" id="cyK-gd-YwR">
+                                <rect key="frame" x="107" y="56" width="200" height="49.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="cyK-gd-YwR" secondAttribute="height" multiplier="900:223" id="GTE-Hg-KSp"/>
+                                    <constraint firstAttribute="width" constant="200" id="yMN-PF-FJu"/>
+                                </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WDV-PN-aQQ">
-                                <rect key="frame" x="20" y="109" width="374" height="31.5"/>
+                                <rect key="frame" x="20" y="109.5" width="374" height="31.5"/>
                                 <string key="text">By Spencer Baker, Olaf Greck
  and Eddy Lelièvre-Berna</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -28,13 +32,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vuS-sl-8kx">
-                                <rect key="frame" x="20" y="143.5" width="374" height="12"/>
+                                <rect key="frame" x="20" y="144" width="374" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="release+notes" preservesSuperviewLayoutMargins="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UdN-nL-0ak">
-                                <rect key="frame" x="20" y="163.5" width="374" height="732.5"/>
+                                <rect key="frame" x="20" y="164" width="374" height="732"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES"/>
@@ -71,6 +75,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="authorsLabel" destination="WDV-PN-aQQ" id="8Hr-NI-9hv"/>
+                        <outlet property="piwigoLogo" destination="cyK-gd-YwR" id="0mY-Hb-QxS"/>
                         <outlet property="textView" destination="UdN-nL-0ak" id="HED-qK-dbg"/>
                         <outlet property="versionLabel" destination="vuS-sl-8kx" id="1pc-Gj-s2A"/>
                     </connections>
@@ -82,7 +87,7 @@
     </scenes>
     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
-        <image name="piwigoText.org" width="200" height="49.5"/>
+        <image name="piwigoText" width="300" height="74.5"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

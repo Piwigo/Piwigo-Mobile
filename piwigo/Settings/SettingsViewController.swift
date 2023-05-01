@@ -1294,13 +1294,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 
             default:
                 break
+            }
+            default:
+                break
         }
-        default:
-            break
-    }
 
-    tableViewCell.isAccessibilityElement = true
-    return tableViewCell
+        tableViewCell.isAccessibilityElement = true
+        return tableViewCell
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

@@ -242,6 +242,7 @@
 		ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */; };
 		ADA5FA4829A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4729A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
+		ADA818BA2A0032D9004C9A5A /* AlbumNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
 		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
@@ -759,6 +760,7 @@
 		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
+		ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumNavigationController.swift; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		ADAF3B7023DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1964,6 +1966,7 @@
 				AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */,
 				ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */,
 				ADEEC5D228560DF00065BA6D /* AlbumViewController.swift */,
+				ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */,
 				AD5A31642847F61700948FEE /* Extensions */,
 				D818E9F51A74BF1100733991 /* Cells */,
 				AD7B4C2120E0E0AC003E403A /* Headers & Footers */,
@@ -2639,6 +2642,7 @@
 				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,
 				AD911272281060D9002FB78F /* UIWindow+AppTools.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
+				ADA818BA2A0032D9004C9A5A /* AlbumNavigationController.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,
 				AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
@@ -3486,6 +3490,7 @@
 				CURRENT_PROJECT_VERSION = 494;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -3526,6 +3531,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
 				PROVISIONING_PROFILE_SPECIFIER = "Piwigo iOS distribution";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Piwigo iOS distribution";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

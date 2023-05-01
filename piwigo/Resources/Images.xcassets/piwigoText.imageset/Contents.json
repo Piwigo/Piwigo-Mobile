@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "piwigo@1x.png",
+      "filename" : "piwigoText@1x.org.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -17,7 +17,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "piwigo@2x.png",
+      "filename" : "piwigoText@2x.org.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -33,7 +33,7 @@
       "scale" : "2x"
     },
     {
-      "filename" : "piwigo@3x.png",
+      "filename" : "piwigoText@3x.org.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
