@@ -143,6 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Updating…";
+"categoryUpdatedOn" = "Updated on %@";
+"categoryUpdatedAt" = "Updated at %@";
+"categoryUpdatedNow" = "Updated just now";
 "categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda.\nAnda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
 "categoryImageList_selectButton" = "Pilih";
 "categoryImageList_deselectButton" = "Deselect";

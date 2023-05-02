@@ -143,6 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Updating…";
+"categoryUpdatedOn" = "Updated on %@";
+"categoryUpdatedAt" = "Updated at %@";
+"categoryUpdatedNow" = "Updated just now";
 "categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
 "categoryImageList_selectButton" = "选择";
 "categoryImageList_deselectButton" = "反选";

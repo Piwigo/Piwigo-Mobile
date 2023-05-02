@@ -143,6 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Mise à jour…";
+"categoryUpdatedOn" = "Mis à jour le %@";
+"categoryUpdatedAt" = "Mis à jour à %@";
+"categoryUpdatedNow" = "Mis à jour à l'instant";
 "categoryMainEmtpy" = "Pas encore d'albums dans votre Piwigo.\nVous pouvez tirer vers le bas pour actualiser ou vous reconnecter.";
 "categoryImageList_selectButton" = "Sélectionner";
 "categoryImageList_deselectButton" = "Désélectionner";

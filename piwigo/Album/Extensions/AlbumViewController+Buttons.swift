@@ -473,20 +473,37 @@ extension AlbumViewController
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone
-        if !albumData.isFault, albumData.dateLast != .distantPast,
-           (UIDevice.current.userInterfaceIdiom == .phone &&
-            !UIApplication.shared.statusBarOrientation.isLandscape) {
-            // Get last updated date
-            var lastUpdated: String
-            if #available(iOS 13.0, *) {
-                let formatter = RelativeDateTimeFormatter()
-                formatter.dateTimeStyle = .named
-                lastUpdated = formatter.localizedString(for: albumData.dateLast, relativeTo: Date())
-            } else {
-                lastUpdated = DateFormatter.localizedString(from: albumData.dateLast,
-                                                            dateStyle: .short, timeStyle: .short)
+        var lastUpdated = ""
+        if !(UIDevice.current.userInterfaceIdiom == .phone &&
+             UIApplication.shared.statusBarOrientation.isLandscape) {
+            if isUpdating {
+                // Inform user that the app is fetching album data
+                lastUpdated = NSLocalizedString("categoryUpdating", comment: "Updating…")
             }
-            
+            else if !albumData.isFault, albumData.dateGetImages > Date(timeIntervalSinceReferenceDate: 0) {
+                if albumData.dateGetImages.timeIntervalSince(Date()) > TimeInterval(-60) {
+                    lastUpdated = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                } else {
+                    let calendar = Calendar.current
+                    let updatedDay = calendar.dateComponents([.day], from: albumData.dateGetImages)
+                    let dateDay = calendar.dateComponents([.day], from: Date())
+                    if updatedDay.day == dateDay.day {
+                        // Album data updated today
+                        let time = DateFormatter.localizedString(from: albumData.dateGetImages,
+                                                                 dateStyle: .none, timeStyle: .short)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                    } else {
+                        // Album data updated yesterday or before
+                        let date = DateFormatter.localizedString(from: albumData.dateGetImages,
+                                                                 dateStyle: .short, timeStyle: .none)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                    }
+                }
+            }
+        }
+        
+        // Prepare sub-title
+        if lastUpdated.isEmpty == false {
             let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
             subTitleLabel.textColor = .piwigoColorWhiteCream()
@@ -497,11 +514,7 @@ extension AlbumViewController
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            if isUpdating {
-                subTitleLabel.text = NSLocalizedString("categoryUpdating", comment: "Updating…")
-            } else {
-                subTitleLabel.text = lastUpdated
-            }
+            subTitleLabel.text = lastUpdated
             subTitleLabel.sizeToFit()
             
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))

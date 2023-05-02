@@ -143,6 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Aktualisierung…";
+"categoryUpdatedOn" = "Aktualisiert am %@";
+"categoryUpdatedAt" = "Aktualisiert um %@";
+"categoryUpdatedNow" = "Gerade aktualisiert";
 "categoryMainEmtpy" = "Bislang keine Alben in Ihrem Piwigo enthalten. Sie können zur Aktualisierung nach unten ziehen oder Sich erneut anmelden.";
 "categoryImageList_selectButton" = "Wählen";
 "categoryImageList_deselectButton" = "Auswahl aufheben";

@@ -143,6 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Updating…";
+"categoryUpdatedOn" = "Updated on %@";
+"categoryUpdatedAt" = "Updated at %@";
+"categoryUpdatedNow" = "Updated just now";
 "categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
 "categoryImageList_selectButton" = "選択";
 "categoryImageList_deselectButton" = "選択を解除";
