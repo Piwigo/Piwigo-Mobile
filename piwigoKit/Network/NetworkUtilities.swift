@@ -632,10 +632,16 @@ public class NetworkUtilities: NSObject {
         }
 
         // The Piwigo server may not be in the root e.g. example.com/piwigo/…
-        // So we remove the path to avoid a duplicate if necessary
-        if let loginURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"),
-           loginURL.path.count > 0, cleanPath.hasPrefix(loginURL.path) {
-            cleanPath.removeFirst(loginURL.path.count)
+        // and images may not be in the same path
+        var loginPath = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        if let loginURL = URL(string: loginPath), loginURL.path.count > 0 {
+            if cleanPath.hasPrefix(loginURL.path) {
+                // Remove the path to avoid a duplicate
+                cleanPath.removeFirst(loginURL.path.count)
+            } else {
+                // Different paths
+                loginPath.removeLast(loginURL.path.count)
+            }
         }
         
         // Remove the .php?, i? prefixes if any
@@ -653,7 +659,7 @@ public class NetworkUtilities: NSObject {
         }
 
         // Compile final URL using the one provided at login
-        let encodedImageURL = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(prefix)\(cleanPath)"
+        let encodedImageURL = "\(loginPath)\(prefix)\(cleanPath)"
         #if DEBUG
         if encodedImageURL != originalURL {
             print("=> originalURL:\(String(describing: originalURL))")
