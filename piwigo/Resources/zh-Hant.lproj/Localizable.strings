@@ -143,9 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "更新中...";
-"categoryUpdatedOn" = "Updated on %@";
-"categoryUpdatedAt" = "Updated at %@";
-"categoryUpdatedNow" = "Updated just now";
+"categoryUpdatedOn" = "更新於 %@";
+"categoryUpdatedAt" = "更新於 %@";
+"categoryUpdatedNow" = "剛剛更新";
 "categoryMainEmtpy" = "你的Piwigo沒有相簿。你需要下拉以重新整理或是重新登入。";
 "categoryImageList_selectButton" = "選取";
 "categoryImageList_deselectButton" = "取消選取";

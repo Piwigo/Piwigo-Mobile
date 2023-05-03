@@ -53,9 +53,20 @@ public class Server: NSManagedObject {
     
     // MARK: - Cache Management
     public func getCoreDataStoreSize() -> String {
-        let dataURL = DataDirectories.shared.appGroupDirectory
-        let folderSize = dataURL.folderSize
-        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
+        // WAL checkpointing is not controllable ► not an appropriate solution
+//        let dataURL = DataDirectories.shared.appGroupDirectory
+//        let folderSize = dataURL.folderSize
+//        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
+        
+        // Calculate number of objects
+        var totalCount = LocationProvider.shared.getObjectCount()
+        totalCount += AlbumProvider().getObjectCount()
+        totalCount += ImageProvider().getObjectCount()
+        totalCount += TagProvider().getObjectCount()
+        totalCount += UploadProvider().getObjectCount()
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: totalCount as NSNumber) ?? "NaN"
     }
 
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {

@@ -185,7 +185,27 @@ public class UploadProvider: NSObject {
     }
     
     
-    // MARK: - Clear Uploads
+    // MARK: - Clear Upload Requests
+    /**
+        Return number of upload requests stored in cache
+     */
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Tag entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Upload")
+        fetchRequest.resultType = .countResultType
+        
+        // Fetch number of objects
+        do {
+            let countResult = try mainContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error as NSError {
+            print("••> Upload count not fetched \(error), \(error.userInfo)")
+        }
+        return Int64.zero
+    }
+        
     /**
      Clear cached Core Data upload entry
     */

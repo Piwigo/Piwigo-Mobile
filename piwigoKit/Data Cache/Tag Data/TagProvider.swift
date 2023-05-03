@@ -334,6 +334,26 @@ public class TagProvider: NSObject {
     
     // MARK: - Clear Tags
     /**
+        Return number of tags stored in cache
+     */
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Tag entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Tag")
+        fetchRequest.resultType = .countResultType
+        
+        // Fetch number of objects
+        do {
+            let countResult = try mainContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error as NSError {
+            print("••> Tag count not fetched \(error), \(error.userInfo)")
+        }
+        return Int64.zero
+    }
+        
+    /**
      Clears all Core Data tag entries of the current server.
     */
     public func clearAll() {

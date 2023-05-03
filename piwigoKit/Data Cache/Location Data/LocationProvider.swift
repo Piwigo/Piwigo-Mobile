@@ -237,6 +237,26 @@ public class LocationProvider: NSObject {
 
     // MARK: - Clear Locations
     /**
+        Return number of locations stored in cache
+     */
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Tag entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Location")
+        fetchRequest.resultType = .countResultType
+        
+        // Fetch number of objects
+        do {
+            let countResult = try mainContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error as NSError {
+            print("••> Album count not fetched \(error), \(error.userInfo)")
+        }
+        return Int64.zero
+    }
+        
+    /**
      Clear cached Core Data location entry
     */
     public func clearAll() {

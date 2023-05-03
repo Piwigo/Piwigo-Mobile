@@ -794,6 +794,28 @@ public class AlbumProvider: NSObject {
         updateParents(ofAlbum: album, nbImages: -(nbImages))
     }
     
+    
+    // MARK: - Clear Album Data
+    /**
+        Return number of albums stored in cache
+     */
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Tag entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
+        fetchRequest.resultType = .countResultType
+        
+        // Fetch number of objects
+        do {
+            let countResult = try mainContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error as NSError {
+            print("••> Album count not fetched \(error), \(error.userInfo)")
+        }
+        return Int64.zero
+    }
+
     /**
      Clear cached Core Data album entry
      */
