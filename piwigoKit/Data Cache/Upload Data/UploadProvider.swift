@@ -191,10 +191,17 @@ public class UploadProvider: NSObject {
      */
     public func getObjectCount() -> Int64 {
 
-        // Create a fetch request for the Tag entity
+        // Create a fetch request for the Upload entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Upload")
         fetchRequest.resultType = .countResultType
         
+        // Select upload requests:
+        /// — for the current server and user only
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
         // Fetch number of objects
         do {
             let countResult = try mainContext.fetch(fetchRequest)

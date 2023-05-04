@@ -342,6 +342,9 @@ public class TagProvider: NSObject {
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Tag")
         fetchRequest.resultType = .countResultType
         
+        // Select tags of the current server only
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
         // Fetch number of objects
         do {
             let countResult = try mainContext.fetch(fetchRequest)

@@ -801,9 +801,12 @@ public class AlbumProvider: NSObject {
      */
     public func getObjectCount() -> Int64 {
 
-        // Create a fetch request for the Tag entity
+        // Create a fetch request for the Album entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
         fetchRequest.resultType = .countResultType
+        
+        // Select albums of the current server only
+        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath)
         
         // Fetch number of objects
         do {

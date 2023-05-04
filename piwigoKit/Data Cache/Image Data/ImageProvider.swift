@@ -468,10 +468,13 @@ public class ImageProvider: NSObject {
      */
     public func getObjectCount() -> Int64 {
 
-        // Create a fetch request for the Tag entity
+        // Create a fetch request for the Image entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
         fetchRequest.resultType = .countResultType
         
+        // Select images of the current server
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
         // Fetch number of objects
         do {
             let countResult = try mainContext.fetch(fetchRequest)
