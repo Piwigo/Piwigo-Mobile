@@ -34,15 +34,22 @@ public class Image: NSManagedObject {
             pwgID = newPwgID
         }
         
-        // Image title and description
-        let imageTitle = NetworkUtilities.utf8mb4String(from: imageData.title ?? "").htmlToAttributedString
-        if title.string != imageTitle.string {
-            title = imageTitle
-            titleStr = imageTitle.string
+        // Image title
+        if let newTitle = imageData.title {
+            let titleUTF8 = NetworkUtilities.utf8mb4String(from: newTitle)
+            let titleAttrStr = titleUTF8.htmlToAttributedString
+            if title.string != titleUTF8 {
+                title = titleAttrStr
+                titleStr = titleUTF8
+            }
         }
-        let description = NetworkUtilities.utf8mb4String(from: imageData.comment ?? "").htmlToAttributedString
-        if comment.string != description.string {
-            comment = description
+        
+        // Image description
+        if let desc = imageData.comment {
+            let newDesc = NetworkUtilities.utf8mb4String(from: desc).htmlToAttributedString
+            if comment.string != newDesc.string {
+                comment = newDesc
+            }
         }
         
         // Image visits (returned by pwg.category.getImages)
