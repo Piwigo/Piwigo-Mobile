@@ -170,9 +170,9 @@ extension AlbumViewController
 
         progressLayer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
         let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
-        path.addLine(to: CGPoint(x: kRadius, y: 2 * kRadius - 2))
-        path.addArc(withCenter: CGPoint(x: kRadius, y: kRadius), radius: kRadius - 2, startAngle: .pi / 2, endAngle: .pi + .pi / 2, clockwise: true)
-        path.addLine(to: CGPoint(x: kRadius + extraWidth, y: 2))
+        path.addLine(to: CGPoint(x: kRadius, y: 2 * kRadius - 1.5))
+        path.addArc(withCenter: CGPoint(x: kRadius, y: kRadius), radius: kRadius - 1.5, startAngle: .pi / 2, endAngle: .pi + .pi / 2, clockwise: true)
+        path.addLine(to: CGPoint(x: kRadius + extraWidth, y: 1.5))
         path.lineCapStyle = .round
         progressLayer.path = path.cgPath
 
@@ -201,7 +201,7 @@ extension AlbumViewController
         let layer = CAShapeLayer()
         layer.fillColor = UIColor.clear.cgColor
         layer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius, height: 2 * kRadius)
-        layer.lineWidth = 4
+        layer.lineWidth = 3
         layer.lineCap = .round
         layer.lineJoin = .round
         layer.strokeStart = 0
