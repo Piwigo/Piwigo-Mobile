@@ -96,9 +96,11 @@ public class Image: NSManagedObject {
         }
         
         // Author
-        let newAuthor = NetworkUtilities.utf8mb4String(from: imageData.author ?? "")
-        if author != newAuthor {
-            author = newAuthor
+        if let newAuthor = imageData.author {
+           let newAuthorUTF8 = NetworkUtilities.utf8mb4String(from: newAuthor)
+            if author != newAuthorUTF8 {
+                author = newAuthorUTF8
+            }
         }
         
         // Privacy level
