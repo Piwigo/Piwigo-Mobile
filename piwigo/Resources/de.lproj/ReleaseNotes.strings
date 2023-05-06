@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.0.0_text" = "Version 3.0\n\n- Die Cache-Verwaltung wurde vollständig überarbeitet, um die Benutzerfreundlichkeit zu verbessern und das Offline-Browsing zu ermöglichen\n- Korrekturen einiger Übersetzungen";
+"v3.0.0_text" = "Version 3.0\n\n• Die Cache-Verwaltung wurde vollständig überarbeitet, um die Benutzerfreundlichkeit zu verbessern und das Offline-Browsing zu ermöglichen\n• Korrekturen einiger Übersetzungen";
 
 "v2.12.7_text" = "Version 2.12.7\n19. Dezember 2022\n\n• Fehlerbehebungen";
 

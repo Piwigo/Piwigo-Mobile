@@ -1,0 +1,2 @@
+• A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.
+• Néhány fordítás javítása
