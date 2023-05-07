@@ -248,6 +248,10 @@ extension UploadManager
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: originalFilename)
                 
+                // Snapchat creates filenames containning ":" characters,
+                // which prevents the app from storing the converted file
+                utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
+                
                 // If encodedFileName is empty, build one from the current date
                 if utf8mb3Filename.count == 0 {
                     // No filename => Build filename from creation date
