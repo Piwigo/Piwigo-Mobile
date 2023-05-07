@@ -202,7 +202,8 @@ class ImageUtilities: NSObject {
     
     
     // MARK: - Image Downsampling
-    // Downsampling large images for display at smaller size (WWDC 2018 - Session 219)
+    // Downsampling large images for display at smaller size
+    /// WWDC 2018 - Session 219 - Image and Graphics Best practices
     static func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
