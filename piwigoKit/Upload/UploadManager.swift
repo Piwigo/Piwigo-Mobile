@@ -153,7 +153,7 @@ public class UploadManager: NSObject {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
                                                  managedObjectContext: self.bckgContext,
                                                  sectionNameKeyPath: nil,
-                                                 cacheName: "org.piwigo.bckg.pendingUploads")
+                                                 cacheName: nil)
         return uploads
     }()
 
@@ -178,7 +178,7 @@ public class UploadManager: NSObject {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
                                                  managedObjectContext: self.bckgContext,
                                                  sectionNameKeyPath: nil,
-                                                 cacheName: "org.piwigo.bckg.completedUploads")
+                                                 cacheName: nil)
         return uploads
     }()
 }
