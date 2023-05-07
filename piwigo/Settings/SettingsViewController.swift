@@ -431,7 +431,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     
     // MARK: - UITableView - Sections
-    private func hasUploadRights() -> Bool {
+    func hasUploadRights() -> Bool {
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community

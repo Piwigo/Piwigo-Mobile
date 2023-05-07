@@ -28,25 +28,25 @@ extension SettingsViewController
     
     // MARK: - Update Cache Cells
     func updateDataCacheCell() {
-        let indexPath = IndexPath(row: 0, section: SettingsSection.cache.rawValue)
-        if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 0, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.dataCacheSize
         }
     }
 
     func updateThumbCacheCell() {
-        let indexPath = IndexPath(row: 1, section: SettingsSection.cache.rawValue)
-        if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 1, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.thumbCacheSize
         }
     }
 
     func updatePhotoCacheCell() {
-        let indexPath = IndexPath(row: 2, section: SettingsSection.cache.rawValue)
-        if let indexPaths = self.settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 2, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.photoCacheSize
         }
     }
