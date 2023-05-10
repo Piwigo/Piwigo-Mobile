@@ -77,14 +77,17 @@ public class Image: NSManagedObject {
             md5sum = newMD5
         }
         let newFile = NetworkUtilities.utf8mb4String(from: imageData.fileName ?? "")
-        if newFile.isEmpty == false, fileName != newFile {
-            fileName = newFile
-        }
-        let fileExt = URL(fileURLWithPath: fileName).pathExtension as NSString
-        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
-            let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
-            if isVideo != newIsVideo {
-                isVideo = newIsVideo
+        if newFile.isEmpty == false {
+            if fileName != newFile {
+                fileName = newFile
+            }
+            let fileExt = URL(fileURLWithPath: newFile).pathExtension as NSString
+            if fileExt.length > 0,
+               let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
+                let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
+                if isVideo != newIsVideo {
+                    isVideo = newIsVideo
+                }
             }
         }
         
@@ -136,7 +139,7 @@ public class Image: NSManagedObject {
         let fullResUrl = NetworkUtilities.encodedImageURL(imageData.fullResPath ?? "")
         let newFull = Resolution(imageWidth: imageData.fullResWidth ?? 1,
                                  imageHeight: imageData.fullResHeight ?? 1,
-                                 imagePath: fullResUrl?.absoluteString ?? "")
+                                 imageURL: NSURL(string: fullResUrl?.absoluteString ?? ""))
         if fullRes == nil || fullRes?.isEqual(newFull) == false {
             fullRes = newFull
         }
@@ -146,7 +149,7 @@ public class Image: NSManagedObject {
         let squareUrl = NetworkUtilities.encodedImageURL(square?.url ?? "")
         let newSquare = Resolution(imageWidth: square?.width?.intValue ?? 1,
                                    imageHeight: square?.height?.intValue ?? 1,
-                                   imagePath: squareUrl?.absoluteString ?? "")
+                                   imageURL: NSURL(string: squareUrl?.absoluteString ?? ""))
         if squareRes == nil || squareRes?.isEqual(newSquare) == false {
             squareRes = newSquare
         }
@@ -155,7 +158,7 @@ public class Image: NSManagedObject {
         let thumbUrl = NetworkUtilities.encodedImageURL(thumb?.url ?? "")
         let newThumb = Resolution(imageWidth: thumb?.width?.intValue ?? 1,
                                   imageHeight: thumb?.height?.intValue ?? 1,
-                                  imagePath: thumbUrl?.absoluteString ?? "")
+                                  imageURL: NSURL(string: thumbUrl?.absoluteString ?? ""))
         if thumbRes == nil || thumbRes?.isEqual(newThumb) == false {
             thumbRes = newThumb
         }
@@ -164,7 +167,7 @@ public class Image: NSManagedObject {
         let mediumUrl = NetworkUtilities.encodedImageURL(medium?.url ?? "")
         let newMedium = Resolution(imageWidth: medium?.width?.intValue ?? 1,
                                    imageHeight: medium?.height?.intValue ?? 1,
-                                   imagePath: mediumUrl?.absoluteString ?? "")
+                                   imageURL: NSURL(string: mediumUrl?.absoluteString ?? ""))
         if mediumRes == nil || mediumRes?.isEqual(newMedium) == false {
             mediumRes = newMedium
         }
@@ -173,7 +176,7 @@ public class Image: NSManagedObject {
         let smallUrl = NetworkUtilities.encodedImageURL(small?.url ?? "")
         let newSmall = Resolution(imageWidth: small?.width?.intValue ?? 1,
                                   imageHeight: small?.height?.intValue ?? 1,
-                                  imagePath: smallUrl?.absoluteString ?? "")
+                                  imageURL: NSURL(string: smallUrl?.absoluteString ?? ""))
         if smallRes == nil || smallRes?.isEqual(newSmall) == false {
             smallRes = newSmall
         }
@@ -182,7 +185,7 @@ public class Image: NSManagedObject {
         let xsmallUrl = NetworkUtilities.encodedImageURL(xsmall?.url ?? "")
         let newXsmall = Resolution(imageWidth: xsmall?.width?.intValue ?? 1,
                                    imageHeight: xsmall?.height?.intValue ?? 1,
-                                   imagePath: xsmallUrl?.absoluteString ?? "")
+                                   imageURL: NSURL(string: xsmallUrl?.absoluteString ?? ""))
         if xsmallRes == nil || xsmallRes?.isEqual(newXsmall) == false {
             xsmallRes = newXsmall
         }
@@ -191,7 +194,7 @@ public class Image: NSManagedObject {
         let xxsmallUrl = NetworkUtilities.encodedImageURL(xxsmall?.url ?? "")
         let newXxsmall = Resolution(imageWidth: xxsmall?.width?.intValue ?? 1,
                                     imageHeight: xxsmall?.height?.intValue ?? 1,
-                                    imagePath: xxsmallUrl?.absoluteString ?? "")
+                                    imageURL: NSURL(string: xxsmallUrl?.absoluteString ?? ""))
         if xxsmallRes == nil || xxsmallRes?.isEqual(newXxsmall) == false {
             xxsmallRes = newXxsmall
         }
@@ -200,7 +203,7 @@ public class Image: NSManagedObject {
         let largeUrl = NetworkUtilities.encodedImageURL(large?.url ?? "")
         let newLarge = Resolution(imageWidth: large?.width?.intValue ?? 1,
                                   imageHeight: large?.height?.intValue ?? 1,
-                                  imagePath: largeUrl?.absoluteString ?? "")
+                                  imageURL: NSURL(string: largeUrl?.absoluteString ?? ""))
         if largeRes == nil || largeRes?.isEqual(newLarge) == false {
             largeRes = newLarge
         }
@@ -209,7 +212,7 @@ public class Image: NSManagedObject {
         let xlargeUrl = NetworkUtilities.encodedImageURL(xlarge?.url ?? "")
         let newXlarge = Resolution(imageWidth: xlarge?.width?.intValue ?? 1,
                                    imageHeight: xlarge?.height?.intValue ?? 1,
-                                   imagePath: xlargeUrl?.absoluteString ?? "")
+                                   imageURL: NSURL(string: xlargeUrl?.absoluteString ?? ""))
         if xlargeRes == nil || xlargeRes?.isEqual(newXlarge) == false {
             xlargeRes = newXlarge
         }
@@ -218,7 +221,7 @@ public class Image: NSManagedObject {
         let xxlargeUrl = NetworkUtilities.encodedImageURL(xxlarge?.url ?? "")
         let newXxlarge = Resolution(imageWidth: xxlarge?.width?.intValue ?? 1,
                                     imageHeight: xxlarge?.height?.intValue ?? 1,
-                                    imagePath: xxlargeUrl?.absoluteString ?? "")
+                                    imageURL: NSURL(string: xxlargeUrl?.absoluteString ?? ""))
         if xxlargeRes == nil || xxlargeRes?.isEqual(newXxlarge) == false {
             xxlargeRes = newXxlarge
         }
