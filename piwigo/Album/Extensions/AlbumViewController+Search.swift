@@ -137,8 +137,7 @@ extension AlbumViewController: UISearchBarDelegate
             // Continue downloading images
             // Load next page of images
             self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
-                             fromPage: self.onPage + 1, toPage: self.lastPage,
-                             perPage: self.perPage) {
+                             fromPage: self.onPage + 1, toPage: self.lastPage) {
                 self.fetchCompleted()
             }
             return

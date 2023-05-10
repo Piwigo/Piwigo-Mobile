@@ -27,9 +27,8 @@ extension AlbumViewController
                 // The number of images is unknown when a smart album is created.
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
-                let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
                 self.fetchImages(withInitialImageIds: oldImageIds, query: query,
-                                 fromPage: 0, toPage: 0, perPage: perPage) {
+                                 fromPage: 0, toPage: 0) {
                     completion()
                 }
             } else {
@@ -67,7 +66,7 @@ extension AlbumViewController
                 let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(perPage))
                 let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
                 self.fetchImages(withInitialImageIds: oldImageIds, query: query,
-                                 fromPage: 0, toPage: lastPage - 1, perPage: perPage,
+                                 fromPage: 0, toPage: lastPage - 1,
                                  completion: completion)
                 return
             }
@@ -86,7 +85,7 @@ extension AlbumViewController
     
     func fetchImages(withInitialImageIds oldImageIds: Set<Int64>, query: String,
                      fromPage onPage: Int, toPage lastPage: Int,
-                     perPage: Int, completion: @escaping () -> Void) {
+                     completion: @escaping () -> Void) {
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query,
@@ -131,7 +130,7 @@ extension AlbumViewController
                     // Load next page of images
                     self.fetchImages(withInitialImageIds: imageIds, query: query,
                                      fromPage: onPage + 1, toPage: newLastPage,
-                                     perPage: perPage, completion: completion)
+                                     completion: completion)
                     return
                 }
                 

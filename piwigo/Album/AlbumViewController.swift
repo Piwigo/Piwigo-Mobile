@@ -524,6 +524,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         super.viewWillAppear(animated)
         print("••> viewWillAppear    => ID:\(categoryId)")
 
+        // Initialise number of images to download per page
+        perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+
         // Set colors, fonts, etc.
         applyColorPalette()
 
