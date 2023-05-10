@@ -870,11 +870,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
-           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-3600) {
+           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
             // Remember that the app is fetching favorites
             AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
             // Fetch favorites in the background
-            DispatchQueue.global(qos: .background).async { [unowned self] in
+            DispatchQueue.global(qos: .background).async { [self] in
                 self.loadFavoritesInBckg()
             }
         }

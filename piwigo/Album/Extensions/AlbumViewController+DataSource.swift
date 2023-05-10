@@ -238,32 +238,30 @@ extension AlbumViewController
     // MARK: - Fetch Favorites in the background
     /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
     func loadFavoritesInBckg() {
-        DispatchQueue.global(qos: .default).async {
-            // Check that an album of favorites exists in cache (create it if necessary)
-            guard let album = self.albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue) else {
-                // Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-                return
-            }
-            if album.isFault {
-                album.willAccessValue(forKey: nil)
-                album.didAccessValue(forKey: nil)
-            }
-
-            // Remember which images belong to this album
-            // from main context before calling background tasks
-            let oldImageIds = Set(album.images?.map({$0.pwgID}) ?? [])
-
-            // Load favorites data in the background
-            // Use the ImageProvider to fetch image data. On completion,
-            // handle general UI updates and error alerts on the main queue.
-            let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-            let albumNbImages = album.nbImages
-            let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
-            let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
-            self.fetchFavorites(ofAlbum: album, imageIds: oldImageIds,
-                                fromPage: 0, toPage: lastPage, perPage: perPage)
+        // Check that an album of favorites exists in cache (create it if necessary)
+        guard let album = self.albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue) else {
+            // Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
+            return
         }
+        if album.isFault {
+            album.willAccessValue(forKey: nil)
+            album.didAccessValue(forKey: nil)
+        }
+
+        // Remember which images belong to this album
+        // from main context before calling background tasks
+        let oldImageIds = Set(album.images?.map({$0.pwgID}) ?? [])
+
+        // Load favorites data in the background
+        // Use the ImageProvider to fetch image data. On completion,
+        // handle general UI updates and error alerts on the main queue.
+        let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
+        let albumNbImages = album.nbImages
+        let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+        let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
+        self.fetchFavorites(ofAlbum: album, imageIds: oldImageIds,
+                            fromPage: 0, toPage: lastPage, perPage: perPage)
     }
     
     private func fetchFavorites(ofAlbum album: Album, imageIds: Set<Int64>,
