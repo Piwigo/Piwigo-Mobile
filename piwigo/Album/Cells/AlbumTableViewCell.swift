@@ -23,8 +23,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
     
-    private var download: ImageDownload?
-
     func config(withAlbumData albumData: Album?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
@@ -113,9 +111,13 @@ class AlbumTableViewCell: MGSwipeTableCell {
 
         // Retrieve image from cache or download it
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        download = ImageDownload(imageID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
-                                 fromServer: serverID, placeHolder: placeHolder) { cachedImage in
+        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
+                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
             DispatchQueue.main.async {
+                self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
+                let size = self.backgroundImage.bounds.size
+                let scale = self.backgroundImage.traitCollection.displayScale
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
                 self.configImage(cachedImage)
             }
         } failure: { _ in
@@ -126,7 +128,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
                 }
             }
         }
-        download?.getImage()
     }
     
     private func getDescription(fromAlbumData albumData: Album?) -> NSAttributedString {
@@ -254,8 +255,5 @@ class AlbumTableViewCell: MGSwipeTableCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        download?.task?.cancel()
-        download = nil
     }
 }

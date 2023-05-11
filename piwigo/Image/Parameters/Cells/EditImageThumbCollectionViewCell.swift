@@ -37,7 +37,6 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     private var imageId = Int64.zero
     private var renameFileNameAction: UIAlertAction?
     private var oldFileName: String?
-    private var download: ImageDownload?
 
     override func awakeFromNib() {
 
@@ -119,19 +118,21 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()
         let placeHolder = UIImage(named: "placeholder")!
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
-                                 fromServer: serverID, placeHolder: placeHolder) { cachedImage in
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
+                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
             DispatchQueue.main.async {
+                self.imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
+                let size = self.imageThumbnail.bounds.size
+                let scale = self.imageThumbnail.traitCollection.displayScale
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
                 self.imageThumbnail.image = cachedImage
             }
         }
-        download?.getImage()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        download = nil
         imageFile.text = ""
         imageSize.text = ""
         imageDate.text = ""

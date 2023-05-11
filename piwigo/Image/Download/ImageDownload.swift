@@ -17,16 +17,18 @@ class ImageDownload {
     var fileURL: URL!
     var placeHolder: UIImage!
     var progressHandler: ((Float) -> Void)?
-    var completionHandler: ((UIImage) -> Void)!
+    var completionHandler: ((URL) -> Void)!
     var failureHandler: ((Error) -> Void)?
     var task: URLSessionDownloadTask?
+    var resumeData: Data?
+    var progress = Float.zero
     
     
     // MARK: - Initialization
     init(imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
          fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
          placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-         completion: @escaping (UIImage) -> Void, failure: ((Error) -> Void)? = nil) {
+         completion: @escaping (URL) -> Void, failure: ((Error) -> Void)? = nil) {
         
         // Set URLs of image in cache
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
@@ -44,20 +46,5 @@ class ImageDownload {
     
     deinit {
         self.task?.cancel()
-    }
-    
-    
-    // MARK: - Get Image from Cache or Download it
-    func getImage() {
-        // Do we already have this image in cache?
-        if let cachedImage: UIImage = UIImage(contentsOfFile: self.fileURL.path),
-           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           cachedImage != self.placeHolder {
-//            print("••> Image \(fileURL.lastPathComponent) retrieved from cache.")
-            self.completionHandler(cachedImage)
-            return
-        }
-        
-        ImageSession.shared.startDownload(self)
     }
 }

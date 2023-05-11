@@ -16,10 +16,7 @@ class PieProgressView: UIView {
     private var timeToFill = 3.43
     var progress: Float = 0.0 {
         didSet {
-            var pathMoved = progress - oldValue
-            if pathMoved < 0 {
-                pathMoved = 0 - pathMoved
-            }
+            let pathMoved = max(0, progress - oldValue)
             setProgress(duration: timeToFill * Double(pathMoved), to: progress)
         }
     }

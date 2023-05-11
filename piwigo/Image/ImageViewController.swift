@@ -598,6 +598,20 @@ class ImageViewController: UIViewController {
 // MARK: - UIPageViewControllerDelegate
 extension ImageViewController: UIPageViewControllerDelegate
 {
+    // Called before a gesture-driven transition begins
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            willTransitionTo pendingViewControllers: [UIViewController]) {
+        
+        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
+            fatalError("!!! Wrong View Controller Type !!!")
+        }
+
+        // Pause download if needed
+        if let imageURL = pvc.imageURL {
+            ImageSession.shared.pauseDownload(atURL: imageURL)
+        }
+    }
+    
     // Called after a gesture-driven transition completes
     func pageViewController(_ pageViewController: UIPageViewController,
                             didFinishAnimating finished: Bool,

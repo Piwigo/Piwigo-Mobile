@@ -27,7 +27,9 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var progressView: PieProgressView!
     
-    private var download: ImageDownload?
+    var imageURL: URL?
+    private var serverID = ""
+    private let placeHolder = UIImage(named: "placeholderImage")!
     private var userDidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
 
@@ -37,11 +39,11 @@ class ImagePreviewViewController: UIViewController
         super.viewDidLoad()
         
         // Retrieve server ID
-        let placeHolder = UIImage(named: "placeholderImage")!
-        guard let serverID = imageData.server?.uuid else {
+        serverID = imageData.server?.uuid ?? ""
+        if serverID.isEmpty {
             // Configure the description view before layouting subviews
             descContainer.configDescription(with: imageData.comment) {
-                self.configScrollView(with: placeHolder)
+                self.configScrollView(with: self.placeHolder)
             }
             return
         }
@@ -58,27 +60,51 @@ class ImagePreviewViewController: UIViewController
             self.configScrollView(with: thumbImage)
         }
 
-        // Previewed image
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        guard let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) else {
-            return
-        }
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                 fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
-            DispatchQueue.main.async {
-                self.progressView.progress = fractionCompleted
-            }
-        } completion: { cachedImage in
-            DispatchQueue.main.async {
-                self.progressView.progress = 1.0
-                self.configImage(cachedImage)
-            }
-        }
-        download?.getImage()
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
+    }
+    
+    @objc func applyColorPalette() {
+        // Update description view colors if necessary
+        descContainer.setDescriptionColor()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
+        // Previewed image
+        progressView?.progress = 0
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
+        if let imageURL = imageURL {
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                         fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
+                DispatchQueue.main.async {
+                    self.progressView.progress = fractionCompleted
+                }
+            } completion: { cachedImageURL in
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.imageView.layoutIfNeeded()   // Ensure imageView in its final size
+                    let size = self.scrollView.bounds.size
+                    let scale = self.scrollView.traitCollection.displayScale
+                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
+                    self.configImage(cachedImage)
+                }
+            } failure: { _ in }
+        }
+
+        // Show/hide the description
+        guard let comment = imageData?.comment,
+                comment.string.isEmpty == false else {
+            descContainer.isHidden = true
+            return
+        }
+        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
     }
     
     func configImage(_ image: UIImage) {
@@ -93,26 +119,6 @@ class ImagePreviewViewController: UIViewController
         
         // Display "play" button if video
         self.playImage.isHidden = !self.imageData.isVideo
-    }
-    
-    @objc func applyColorPalette() {
-        // Update description view colors if necessary
-        descContainer.setDescriptionColor()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
-        // Show/hide the description
-        guard let comment = imageData?.comment,
-                comment.string.isEmpty == false else {
-            descContainer.isHidden = true
-            return
-        }
-        descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
     }
 
     override func viewWillLayoutSubviews() {
@@ -132,9 +138,6 @@ class ImagePreviewViewController: UIViewController
     }
 
     deinit {
-        // Cancel download if needed
-        download = nil
-        
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }

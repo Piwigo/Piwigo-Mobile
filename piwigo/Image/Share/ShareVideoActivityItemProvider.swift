@@ -113,8 +113,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        download = ImageDownload(imageID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                 fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
+                                     fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
         } completion: { _ in
@@ -125,7 +125,6 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
             sema.signal()
         }
-        download?.getImage()
         let _ = sema.wait(timeout: .distantFuture)
         
         // Cancel item task if we could not retrieve the file
