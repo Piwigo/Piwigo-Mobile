@@ -46,11 +46,19 @@ public class NetworkVars: NSObject {
     // Network variables stored in UserDefaults / App Group
     /// - Scheme of the URL, "https://" by default
     @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
-    public static var serverProtocol: String
+    public static var serverProtocol: String {
+        didSet {
+            service = serverProtocol + serverPath
+        }
+    }
     
     /// - Path of the server, e.g. lelievre-berna.net/Piwigo
     @UserDefault("serverPath", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public static var serverPath: String
+    public static var serverPath: String {
+        didSet {
+            service = serverProtocol + serverPath
+        }
+    }
     
     /// - String encoding of the server, UTF-8 by default
     @UserDefault("stringEncoding", defaultValue: String.Encoding.utf8.rawValue, userDefaults: UserDefaults.dataSuite)
@@ -102,6 +110,9 @@ public class NetworkVars: NSObject {
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
+    /// - Quicker than calling UserDefaults variables
+    public static var service = serverProtocol + serverPath
+    
     /// - Remembers that the HTTP authentication failed
     public static var didFailHTTPauthentication = false
     

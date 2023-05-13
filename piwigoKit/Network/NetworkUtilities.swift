@@ -584,7 +584,7 @@ public class NetworkUtilities: NSObject {
 
             // The Piwigo server may not be in the root e.g. example.com/piwigo/…
             // So we remove the path to avoid a duplicate if necessary
-            if let loginURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"),
+            if let loginURL = URL(string: NetworkVars.service),
                loginURL.path.count > 0, leftURL.hasPrefix(loginURL.path) {
                 leftURL.removeFirst(loginURL.path.count)
             }
@@ -602,11 +602,11 @@ public class NetworkUtilities: NSObject {
                     // Could not apply percent encoding —> return image.jpg but should never happen
                     return nil
                 }
-                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(newQuery)\(newPath)")
+                serverURL = NSURL(string: NetworkVars.service + newQuery + newPath)
             } else {
                 // No query -> remaining string is a path
                 let newPath = String(leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)
-                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(newPath)")
+                serverURL = NSURL(string: NetworkVars.service + newPath)
             }
             
             // Last check
@@ -633,7 +633,7 @@ public class NetworkUtilities: NSObject {
 
         // The Piwigo server may not be in the root e.g. example.com/piwigo/…
         // and images may not be in the same path
-        var loginPath = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        var loginPath = NetworkVars.service
         if let loginURL = URL(string: loginPath), loginURL.path.count > 0 {
             if cleanPath.hasPrefix(loginURL.path) {
                 // Remove the path to avoid a duplicate

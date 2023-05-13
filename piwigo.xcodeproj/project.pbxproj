@@ -278,6 +278,7 @@
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
 		ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
+		ADC1C5B02A0FF8DE004F7025 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
@@ -365,7 +366,6 @@
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
 		ADF351D329A422AC009B7CAA /* UploadManager+Resume.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF351D229A422AC009B7CAA /* UploadManager+Resume.swift */; };
-		ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */; };
 		ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */; };
 		ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7B28B296D2009F3ECE /* ServerError.swift */; };
@@ -2480,7 +2480,6 @@
 				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
 				ADDC36CC28CCEA9C00E5AE4B /* AlbumProvider.swift in Sources */,
 				AD23882328F8914A0037696E /* pwg.users.favorites.getList.swift in Sources */,
-				ADF35E7528B26F39009F3ECE /* DataModel.xcdatamodeld in Sources */,
 				AD0B6AD3268A21AD007DEE70 /* UploadManager+Transfer.swift in Sources */,
 				AD0B6AC9268A2166007DEE70 /* UploadManager+Utilities.swift in Sources */,
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
@@ -2499,6 +2498,7 @@
 				AD62CC8726828DC100CA66C5 /* VideoMetadata.swift in Sources */,
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
 				AD23882728FAB4050037696E /* pwg.images.search.swift in Sources */,
+				ADC1C5B02A0FF8DE004F7025 /* DataModel.xcdatamodeld in Sources */,
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
 				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
 				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,

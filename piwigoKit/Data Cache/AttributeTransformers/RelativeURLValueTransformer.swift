@@ -33,7 +33,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
         // Return absolute URL from data containing relative URL
         if relativeURL.scheme == nil, relativeURL.host == nil,
            let path = relativeURL.absoluteString, path.isEmpty == false,
-           let absoluteURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(path)") {
+           let absoluteURL = NSURL(string: NetworkVars.service + path) {
             return absoluteURL
         }
         return relativeURL
@@ -45,9 +45,8 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
         }
         
         // Store relative URL as Data to save space and because the scheme and host might changed in future
-        let serverPath = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        if var path = absoluteURL.absoluteString, path.hasPrefix(serverPath) {
-            path.removeFirst(serverPath.count)
+        if var path = absoluteURL.absoluteString, path.hasPrefix(NetworkVars.service) {
+            path.removeFirst(NetworkVars.service.count)
             let relativeURL = NSURL(string: path) ?? absoluteURL
             return super.reverseTransformedValue(relativeURL)
         }

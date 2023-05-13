@@ -508,8 +508,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0:
                 // See https://iosref.com/res
                 let title = NSLocalizedString("settings_server", comment: "Address")
-                let detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
-                cell.configure(with: title, detail: detail)
+                cell.configure(with: title, detail: NetworkVars.service)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
             

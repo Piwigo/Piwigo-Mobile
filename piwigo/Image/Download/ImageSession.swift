@@ -228,9 +228,8 @@ extension ImageSession: URLSessionTaskDelegate {
         }
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
         let account = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: service, account: account)
+        let password = KeychainUtilities.password(forService: NetworkVars.service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return

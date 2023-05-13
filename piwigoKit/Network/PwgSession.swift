@@ -70,8 +70,7 @@ public class PwgSession: NSObject {
                                           success: @escaping (Data) -> Void,
                                           failure: @escaping (NSError) -> Void) {
         // Create POST request
-        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(method)")
+        let url = URL(string: NetworkVars.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         request.networkServiceType = .responsiveData
@@ -326,7 +325,7 @@ extension PwgSession: URLSessionDataDelegate {
         NetworkVars.didFailHTTPauthentication = false
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
+        let service = NetworkVars.service
         var account = NetworkVars.httpUsername
         var password = KeychainUtilities.password(forService: service, account: account)
 
@@ -338,7 +337,7 @@ extension PwgSession: URLSessionDataDelegate {
             
             // Adopt Piwigo credentials as HTTP basic authentification credentials
             NetworkVars.httpUsername = account
-            KeychainUtilities.setPassword(password, forService: service, account: account)
+            KeychainUtilities.setPassword(password, forService: NetworkVars.service, account: account)
         }
 
         // Supply requested credentials if not provided yet

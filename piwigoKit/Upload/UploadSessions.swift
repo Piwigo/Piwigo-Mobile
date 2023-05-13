@@ -122,9 +122,7 @@ public class UploadSessions: NSObject {
         config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
         if #available(iOS 10.0, *) {
-            let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-            let url = URL(string: urlStr)
-            if let validUrl = url {
+            if let validUrl = URL(string: NetworkVars.service) {
                 var params: [HTTPCookiePropertyKey : Any] = [
                     HTTPCookiePropertyKey.version           : NSString("0"),
                     HTTPCookiePropertyKey.name              : NSString("pwg_method"),
@@ -322,9 +320,8 @@ extension UploadSessions: URLSessionTaskDelegate {
         }
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
         let account = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: service, account: account)
+        let password = KeychainUtilities.password(forService: NetworkVars.service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return

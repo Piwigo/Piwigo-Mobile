@@ -57,7 +57,7 @@ class LoginViewController: UIViewController {
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
-        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        serverTextField.text = NetworkVars.service
 
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
@@ -262,7 +262,7 @@ class LoginViewController: UIViewController {
 
     func requestHttpCredentials(afterError error: Error?) {
         let username = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
+        let password = KeychainUtilities.password(forService: NetworkVars.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
                                                                      username: username, password: password,
                                                                      cancelAction: { [self] action in
@@ -274,8 +274,7 @@ class LoginViewController: UIViewController {
                httpUsername.isEmpty == false {
                 NetworkVars.httpUsername = httpUsername
                 KeychainUtilities.setPassword(httpAlertController?.textFields?[1].text ?? "",
-                    forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)",
-                    account: httpUsername)
+                    forService: NetworkVars.service, account: httpUsername)
                 // Try logging in with new HTTP credentials
                 launchLogin()
             }
@@ -311,7 +310,7 @@ class LoginViewController: UIViewController {
         NetworkVars.serverProtocol = "http://"
 
         // Update URL on UI
-        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        serverTextField.text = NetworkVars.service
 
         // Display security message below credentials
         websiteNotSecure.isHidden = false

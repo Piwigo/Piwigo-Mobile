@@ -149,8 +149,7 @@ extension UploadManager {
         print("\(dbg()) #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
-        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(pwgImagesUpload)")
+        let url = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUpload)")
         guard let validUrl = url else { fatalError() }
         
         // Initialise boundary of upload request
@@ -455,8 +454,7 @@ extension UploadManager {
         numberFormatter.minimumIntegerDigits = 5
 
         // Prepare URL
-        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(pwgImagesUploadAsync)")
+        let url = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUploadAsync)")
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
