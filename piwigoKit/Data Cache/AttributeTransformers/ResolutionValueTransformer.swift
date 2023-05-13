@@ -53,7 +53,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
             path.removeFirst(NetworkVars.service.count)
             let newResolution = Resolution(imageWidth: resolution.width,
                                            imageHeight: resolution.height,
-                                           imageURL: NSURL(string: path))
+                                           imagePath: path)
             return super.reverseTransformedValue(newResolution)
         }
         return super.reverseTransformedValue(resolution)
