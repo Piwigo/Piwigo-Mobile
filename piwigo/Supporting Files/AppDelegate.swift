@@ -63,12 +63,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
-        
-        // Register custom transformers used by the Core Data stack
-        DescriptionValueTransformer.register()
-        RelativeURLValueTransformer.register()
-        ResolutionValueTransformer.register()
-        
+
+        // Register transformers at the very beginning
+        ValueTransformer.setValueTransformer(DescriptionValueTransformer(), forName: .descriptionToDataTransformer)
+        ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)
+        ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
+
         // Register launch handlers for tasks if using iOS 13+
         /// Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {

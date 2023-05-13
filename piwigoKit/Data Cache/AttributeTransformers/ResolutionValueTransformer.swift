@@ -62,12 +62,6 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 }
 
 
-extension ResolutionValueTransformer{
-    
-    static let name = NSValueTransformerName(String(describing: ResolutionValueTransformer.self))
-    
-    public static func register() {
-        let transfomer = ResolutionValueTransformer()
-        ValueTransformer.setValueTransformer(transfomer, forName: name)
-    }
+extension NSValueTransformerName {
+    public static let resolutionToDataTransformer = NSValueTransformerName(rawValue: "ResolutionValueTransformer")
 }

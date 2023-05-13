@@ -56,12 +56,6 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
 }
 
 
-extension RelativeURLValueTransformer {
-    
-    static let name = NSValueTransformerName(String(describing: RelativeURLValueTransformer.self))
-    
-    public static func register() {
-        let transfomer = RelativeURLValueTransformer()
-        ValueTransformer.setValueTransformer(transfomer, forName: name)
-    }
+extension NSValueTransformerName {
+    public static let relativeUrlToDataTransformer = NSValueTransformerName(rawValue: "RelativeURLValueTransformer")
 }

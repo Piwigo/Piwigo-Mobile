@@ -38,11 +38,6 @@ public class DescriptionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 }
 
 
-extension DescriptionValueTransformer {
-    static let name = NSValueTransformerName(String(describing: DescriptionValueTransformer.self))
-    
-    public static func register() {
-        let transfomer = DescriptionValueTransformer()
-        ValueTransformer.setValueTransformer(transfomer, forName: name)
-    }
+extension NSValueTransformerName {
+    public static let descriptionToDataTransformer = NSValueTransformerName(rawValue: "DescriptionValueTransformer")
 }
