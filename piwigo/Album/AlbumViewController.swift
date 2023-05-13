@@ -577,7 +577,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Should we highlight the image of interest?
-        if categoryId != 0, (images.fetchedObjects ?? []).count > 0,
+        if categoryId != 0, nbImages > 0,
            imageOfInterest.item != 0 {
             // Highlight the cell of interest
             let indexPathsForVisibleItems = imagesCollection?.indexPathsForVisibleItems
@@ -614,7 +614,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
-        if (images.fetchedObjects ?? []).count > 5,
+        if nbImages > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
