@@ -14,7 +14,6 @@ import piwigoKit
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageData: Image!
-    private var download: ImageDownload?
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -285,7 +284,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        download = nil
         isAccessibilityElement = false
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
     }
