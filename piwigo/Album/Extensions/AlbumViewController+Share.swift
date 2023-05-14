@@ -114,7 +114,7 @@ extension AlbumViewController
                 }
             } else {
                 if activityType == nil {
-                    //                NSLog(@"User dismissed the view controller without making a selection.");
+//                    debugPrint("User dismissed the view controller without making a selection.")
                     updateButtonsInSelectionMode()
                 } else {
                     // Check what to do with selection
