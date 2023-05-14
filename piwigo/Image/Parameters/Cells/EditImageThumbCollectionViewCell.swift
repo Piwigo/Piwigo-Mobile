@@ -116,16 +116,17 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
 
         // Get image from cache or download it
-        imageThumbnail.layoutIfNeeded()
+        imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.imageThumbnail.bounds.size
+        let scale = self.imageThumbnail.traitCollection.displayScale
         let placeHolder = UIImage(named: "placeholder")!
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
-                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
-            DispatchQueue.main.async {
-                self.imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
-                let size = self.imageThumbnail.bounds.size
-                let scale = self.imageThumbnail.traitCollection.displayScale
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
-                self.imageThumbnail.image = cachedImage
+        ImageSession.shared.downloadQueue.async {
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
+                                         fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.imageThumbnail.image = cachedImage
+                }
             }
         }
     }

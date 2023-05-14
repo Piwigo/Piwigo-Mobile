@@ -158,21 +158,23 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Retrieve image from cache or download it
+        self.cellImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.cellImage.bounds.size
+        let scale = self.cellImage.traitCollection.displayScale
         let placeHolder = UIImage(named: "placeholderImage")!
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
-                                     fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
-            DispatchQueue.main.async {
-                self.cellImage.layoutIfNeeded()   // Ensure imageView in its final size
-                let size = self.cellImage.bounds.size
-                let scale = self.cellImage.traitCollection.displayScale
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
-                self.configImage(cachedImage)
-            }
-        } failure: { error in
-            // No image available
-            DispatchQueue.main.async {
-                self.noDataLabel?.isHidden = false
-                self.applyColorPalette()
+        ImageSession.shared.downloadQueue.async {
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
+                                         fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.configImage(cachedImage)
+                }
+            } failure: { error in
+                // No image available
+                DispatchQueue.main.async {
+                    self.noDataLabel?.isHidden = false
+                    self.applyColorPalette()
+                }
             }
         }
     }

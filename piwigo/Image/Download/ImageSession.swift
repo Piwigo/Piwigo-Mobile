@@ -73,6 +73,11 @@ class ImageSession: NSObject {
     // Active downloads
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
     
+    // Background queue in which imagee uploads are managed
+    let downloadQueue: DispatchQueue = {
+        return DispatchQueue(label: "org.piwigo.imageQueue", qos: .background)
+    }()
+    
     
     // MARK: - Asynchronous Methods
     func getImage(withID imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
@@ -99,7 +104,7 @@ class ImageSession: NSObject {
         // Download this image
         guard let download = activeDownloads[imageURL] else {
             print("••> Launch download: \(imageURL.lastPathComponent)")
-            download.task = ImageSession.shared.dataSession.downloadTask(with: request)
+            download.task = dataSession.downloadTask(with: request)
             download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
             download.task?.countOfBytesClientExpectsToReceive = download.fileSize
             download.task?.resume()
@@ -116,9 +121,9 @@ class ImageSession: NSObject {
         download.completionHandler = completion
         download.failureHandler = failure
         if let resumeData = download.resumeData {
-            download.task = ImageSession.shared.dataSession.downloadTask(withResumeData: resumeData)
+            download.task = dataSession.downloadTask(withResumeData: resumeData)
         } else {
-            download.task = ImageSession.shared.dataSession.downloadTask(with: request)
+            download.task = dataSession.downloadTask(with: request)
         }
         download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
         download.task?.countOfBytesClientExpectsToReceive = download.fileSize
@@ -279,11 +284,7 @@ extension ImageSession: URLSessionDownloadDelegate {
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
         print("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
-        var downloads = ""
-        activeDownloads.forEach { (key, value) in
-            downloads.append(contentsOf: key.lastPathComponent + ", ")
-        }
-        print("    activeDownloads: \(downloads.dropLast(2))")
+        print("    amongst \(activeDownloads.count) active downloads.")
         guard let imageURL = downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return

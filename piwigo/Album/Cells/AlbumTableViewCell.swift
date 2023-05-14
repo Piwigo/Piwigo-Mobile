@@ -110,21 +110,23 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
 
         // Retrieve image from cache or download it
+        self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.backgroundImage.bounds.size
+        let scale = self.backgroundImage.traitCollection.displayScale
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
-                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
-            DispatchQueue.main.async {
-                self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
-                let size = self.backgroundImage.bounds.size
-                let scale = self.backgroundImage.traitCollection.displayScale
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
-                self.configImage(cachedImage)
-            }
-        } failure: { _ in
-            DispatchQueue.main.async {
-                // No album thumbnail URL
-                if self.backgroundImage.image != placeHolder {
-                    self.backgroundImage.image = placeHolder
+        ImageSession.shared.downloadQueue.async {
+            ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
+                                         fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.configImage(cachedImage)
+                }
+            } failure: { _ in
+                DispatchQueue.main.async {
+                    // No album thumbnail URL
+                    if self.backgroundImage.image != placeHolder {
+                        self.backgroundImage.image = placeHolder
+                    }
                 }
             }
         }

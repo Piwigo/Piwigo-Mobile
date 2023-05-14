@@ -77,25 +77,27 @@ class ImagePreviewViewController: UIViewController
         applyColorPalette()
         
         // Previewed image
+        imageView.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.scrollView.bounds.size
+        let scale = self.scrollView.traitCollection.displayScale
         progressView?.progress = 0
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
         if let imageURL = imageURL {
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                         fromServer: serverID, placeHolder: placeHolder) { fractionCompleted in
-                DispatchQueue.main.async {
-                    self.progressView.progress = fractionCompleted
-                }
-            } completion: { cachedImageURL in
-                DispatchQueue.main.async {
-                    self.progressView.progress = 1.0
-                    self.imageView.layoutIfNeeded()   // Ensure imageView in its final size
-                    let size = self.scrollView.bounds.size
-                    let scale = self.scrollView.traitCollection.displayScale
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: size, scale: scale)
-                    self.configImage(cachedImage)
-                }
-            } failure: { _ in }
+            ImageSession.shared.downloadQueue.async {
+                ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                             fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                    DispatchQueue.main.async {
+                        self.progressView.progress = fractionCompleted
+                    }
+                } completion: { cachedImageURL in
+                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                    DispatchQueue.main.async {
+                        self.progressView.progress = 1.0
+                        self.configImage(cachedImage)
+                    }
+                } failure: { _ in }
+            }
         }
 
         // Show/hide the description
