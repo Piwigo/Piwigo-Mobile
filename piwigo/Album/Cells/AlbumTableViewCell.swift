@@ -34,40 +34,19 @@ class AlbumTableViewCell: MGSwipeTableCell {
         recentImage.tintColor = UIColor.white
 
         // Album name (Piwigo orange colour)
-        var text = albumData?.name ?? "—?—"
-        if albumName.text != text {
-            albumName.text = text
-        }
+        albumName.text = albumData?.name ?? "—?—"
         var fontSize = fontSizeFor(label: albumName, nberLines: 2)
-        var font = UIFont.systemFont(ofSize: fontSize)
-        if albumName.font != font {
-            albumName.font = font
-        }
+        albumName.font = UIFont.systemFont(ofSize: fontSize)
         
         // Album description (colour depends on text content)
-        let desc = getDescription(fromAlbumData: albumData)
-        if albumComment.attributedText != desc {
-            albumComment.attributedText = desc
-        }
+        albumComment.attributedText = getDescription(fromAlbumData: albumData)
         fontSize = UIFont.fontSizeFor(label: albumComment, nberLines: 3)
-        font = UIFont.systemFont(ofSize: fontSize)
-        if albumComment.font != font {
-            albumComment.font = font
-        }
+        albumComment.font = UIFont.systemFont(ofSize: fontSize)
 
         // Number of images and sub-albums
-        text = getNberOfImages(fromAlbumData: albumData)
-        if numberOfImages.text != text {
-            numberOfImages.text = text
-        }
-        let color = UIColor.piwigoColorText()
-        if numberOfImages.textColor != color {
-            numberOfImages.textColor = color
-        }
-        font = UIFont.systemFont(ofSize: 10, weight: .light)
-        if numberOfImages.font != font {
-            numberOfImages.font = font
-        }
+        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
+        numberOfImages.textColor = UIColor.piwigoColorText()
+        numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
         // Add renaming, moving and deleting capabilities when user has admin rights
         if albumData != nil, handleButton.isHidden == NetworkVars.hasAdminRights {
@@ -86,9 +65,6 @@ class AlbumTableViewCell: MGSwipeTableCell {
             self.recentImage.isHidden = !isRecent
         }
 
-        // Display album image
-        let placeHolder = UIImage(named: "placeholder")!
-
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
            let images = albumData?.images, let firstImage = images.first {
@@ -99,13 +75,12 @@ class AlbumTableViewCell: MGSwipeTableCell {
         }
         
         // Do we have a representative?
+        let placeHolder = UIImage(named: "placeholder")!
         guard let thumbUrl = albumData?.thumbnailUrl,
               let thumbID = albumData?.thumbnailId,
               let serverID = albumData?.user?.server?.uuid else {
             // No album thumbnail URL
-            if backgroundImage.image != placeHolder {
-                backgroundImage.image = placeHolder
-            }
+            backgroundImage.image = placeHolder
             return
         }
 
@@ -114,20 +89,15 @@ class AlbumTableViewCell: MGSwipeTableCell {
         let cellSize = self.backgroundImage.bounds.size
         let scale = self.backgroundImage.traitCollection.displayScale
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageSession.shared.downloadQueue.async {
-            ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
-                                         fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
-            } failure: { _ in
-                DispatchQueue.main.async {
-                    // No album thumbnail URL
-                    if self.backgroundImage.image != placeHolder {
-                        self.backgroundImage.image = placeHolder
-                    }
-                }
+        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
+                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
+        } failure: { _ in
+            DispatchQueue.main.async {
+                self.backgroundImage.image = placeHolder
             }
         }
     }

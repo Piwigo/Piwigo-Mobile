@@ -101,34 +101,36 @@ class ImageSession: NSObject {
             return
         }
 
-        // Download this image
-        guard let download = activeDownloads[imageURL] else {
-            print("••> Launch download: \(imageURL.lastPathComponent)")
-            download.task = dataSession.downloadTask(with: request)
+        // Download this image in the background thread
+        downloadQueue.async {
+            guard let download = self.activeDownloads[imageURL] else {
+                print("••> Launch download: \(imageURL.lastPathComponent)")
+                download.task = self.dataSession.downloadTask(with: request)
+                download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
+                download.task?.countOfBytesClientExpectsToReceive = download.fileSize
+                download.task?.resume()
+                self.activeDownloads[imageURL] = download
+                return
+            }
+            
+            // Resume download
+            print("••> Resume download: \(imageURL.lastPathComponent)")
+            download.progressHandler = progress
+            if let progressHandler = download.progressHandler {
+                progressHandler(download.progress)
+            }
+            download.completionHandler = completion
+            download.failureHandler = failure
+            if let resumeData = download.resumeData {
+                download.task = self.dataSession.downloadTask(withResumeData: resumeData)
+            } else {
+                download.task = self.dataSession.downloadTask(with: request)
+            }
             download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
             download.task?.countOfBytesClientExpectsToReceive = download.fileSize
             download.task?.resume()
-            activeDownloads[imageURL] = download
-            return
+            self.activeDownloads[imageURL] = download
         }
-
-        // Resume download
-        print("••> Resume download: \(imageURL.lastPathComponent)")
-        download.progressHandler = progress
-        if let progressHandler = download.progressHandler {
-            progressHandler(download.progress)
-        }
-        download.completionHandler = completion
-        download.failureHandler = failure
-        if let resumeData = download.resumeData {
-            download.task = dataSession.downloadTask(withResumeData: resumeData)
-        } else {
-            download.task = dataSession.downloadTask(with: request)
-        }
-        download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-        download.task?.countOfBytesClientExpectsToReceive = download.fileSize
-        download.task?.resume()
-        activeDownloads[imageURL] = download
     }
     
     func pauseDownload(atURL imageURL: URL) {

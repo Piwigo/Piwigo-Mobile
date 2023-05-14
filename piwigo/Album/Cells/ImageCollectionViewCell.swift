@@ -148,32 +148,31 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Retrieve image URLs (Piwigo server or cache)
+        cellImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let placeHolder = UIImage(named: "placeholderImage")!
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let serverID = imageData.server?.uuid,
               let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size) else {
-            self.noDataLabel?.isHidden = false
+            configImage(placeHolder)
+            noDataLabel?.isHidden = false
             applyColorPalette()
             return
         }
 
         // Retrieve image from cache or download it
-        self.cellImage.layoutIfNeeded()   // Ensure imageView in its final size
         let cellSize = self.cellImage.bounds.size
         let scale = self.cellImage.traitCollection.displayScale
-        let placeHolder = UIImage(named: "placeholderImage")!
-        ImageSession.shared.downloadQueue.async {
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
-                                         fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
-            } failure: { error in
-                // No image available
-                DispatchQueue.main.async {
-                    self.noDataLabel?.isHidden = false
-                    self.applyColorPalette()
-                }
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
+                                     fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
+        } failure: { error in
+            // No image available
+            DispatchQueue.main.async {
+                self.noDataLabel?.isHidden = false
+                self.applyColorPalette()
             }
         }
     }

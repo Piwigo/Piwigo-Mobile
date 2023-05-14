@@ -84,20 +84,18 @@ class ImagePreviewViewController: UIViewController
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
         if let imageURL = imageURL {
-            ImageSession.shared.downloadQueue.async {
-                ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                             fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
-                    DispatchQueue.main.async {
-                        self.progressView.progress = fractionCompleted
-                    }
-                } completion: { cachedImageURL in
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-                    DispatchQueue.main.async {
-                        self.progressView.progress = 1.0
-                        self.configImage(cachedImage)
-                    }
-                } failure: { _ in }
-            }
+            ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                         fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                DispatchQueue.main.async {
+                    self.progressView.progress = fractionCompleted
+                }
+            } completion: { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.configImage(cachedImage)
+                }
+            } failure: { _ in }
         }
 
         // Show/hide the description

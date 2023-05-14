@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="318" height="218"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholderImage" translatesAutoresizingMaskIntoConstraints="NO" id="Xpg-8s-0ki">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xpg-8s-0ki">
                         <rect key="frame" x="0.0" y="0.0" width="318" height="218"/>
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="HmZ-he-nPd">
@@ -153,7 +153,6 @@
     <resources>
         <image name="checkMark" width="17.5" height="25"/>
         <image name="imageFavorite" width="26" height="26"/>
-        <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="19"/>
     </resources>
 </document>
