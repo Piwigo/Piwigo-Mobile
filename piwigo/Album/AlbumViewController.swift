@@ -565,7 +565,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let nbImages = (self.images.fetchedObjects ?? []).count
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
-        let missingImages = expectedNbImages > 0 && nbImages < expectedNbImages / 2
+        let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
            noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             NetworkUtilities.checkSession(ofUser: user) {
@@ -1254,32 +1254,34 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             return cell
             
         default /* Images */:
+            let start = CFAbsoluteTimeGetCurrent()
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
                 fatalError("No ImageCollectionViewCell!")
             }
 
-            if (images.fetchedObjects ?? []).count > indexPath.item {
-                // Create cell from Piwigo data
-                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
-                let image = images.object(at: imageIndexPath)
-                cell.config(with: image, inCategoryId: categoryId)
-                cell.isSelection = selectedImageIds.contains(image.pwgID)
+            // Create cell from Piwigo data
+            let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+            let image = images.object(at: imageIndexPath)
+            cell.config(with: image, inCategoryId: categoryId)
+            cell.isSelection = selectedImageIds.contains(image.pwgID)
 
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    cell.isFavorite = (image.albums ?? Set<Album>())
-                        .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                }
-
-                // Add pan gesture recognition
-                let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-                imageSeriesRocognizer.minimumNumberOfTouches = 1
-                imageSeriesRocognizer.maximumNumberOfTouches = 1
-                imageSeriesRocognizer.cancelsTouchesInView = false
-                imageSeriesRocognizer.delegate = self
-                cell.addGestureRecognizer(imageSeriesRocognizer)
-                cell.isUserInteractionEnabled = true
+            // pwg.users.favorites… methods available from Piwigo version 2.10
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                cell.isFavorite = (image.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
             }
+
+            // Add pan gesture recognition
+            let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+            imageSeriesRocognizer.minimumNumberOfTouches = 1
+            imageSeriesRocognizer.maximumNumberOfTouches = 1
+            imageSeriesRocognizer.cancelsTouchesInView = false
+            imageSeriesRocognizer.delegate = self
+            cell.addGestureRecognizer(imageSeriesRocognizer)
+            cell.isUserInteractionEnabled = true
+
+            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            debugPrint("••> image built in \(diff.rounded()) ms")
             return cell
         }
     }
