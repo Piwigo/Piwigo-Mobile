@@ -362,6 +362,7 @@ extension AlbumViewController
         guard let gestureRecognizer = gestureRecognizer else { return }
 
         // Select/deselect cells
+        let start = CFAbsoluteTimeGetCurrent()
         switch gestureRecognizer.state {
         case .began, .changed:
             // Get touch point
@@ -397,6 +398,8 @@ extension AlbumViewController
         default:
             debugPrint("NOP")
         }
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
     }
 
 
