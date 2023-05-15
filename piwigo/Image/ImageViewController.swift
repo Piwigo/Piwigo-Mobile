@@ -670,7 +670,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        // Did we each the last image?
+        // Did we reach the last image?
         let maxIndex = max(0, (images?.fetchedObjects?.count ?? 0) - 1)
         if (imageIndex + 1 > maxIndex) {
             // Reached the end of the category
