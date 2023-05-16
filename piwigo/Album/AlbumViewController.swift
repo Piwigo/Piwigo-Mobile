@@ -1562,6 +1562,14 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
+            // Disable menu if this is the last deleted image
+            if fetchedImageCount() == 0 {
+                updateOperations.append( BlockOperation { [weak self] in
+                    print("••> Last removed image ► disable menu")
+                    self?.isSelect = false
+                    self?.updateButtonsInPreviewMode()
+                })
+            }
         case NSFetchedResultsChangeType.update.rawValue:
             guard let indexPath = indexPath else { return }
             if let image = anObject as? Image {
