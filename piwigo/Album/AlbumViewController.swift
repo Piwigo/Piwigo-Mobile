@@ -1353,13 +1353,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - ImageDetailDelegate Methods
-    func didSelectImage(withId imageID: Int64) {
-        // Determine index of image
-        guard let indexOfImage = (images.fetchedObjects ?? []).firstIndex(where: {$0.pwgID == imageID}) else { return }
-
+    func didSelectImage(atIndex imageIndex: Int) {
         // Scroll view to center image
-        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
-            let indexPath = IndexPath(item: indexOfImage, section: 1)
+        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
+            let indexPath = IndexPath(item: imageIndex, section: 1)
             imageOfInterest = indexPath
             imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
         }
