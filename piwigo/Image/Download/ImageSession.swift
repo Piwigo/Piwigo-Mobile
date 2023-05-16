@@ -75,7 +75,7 @@ class ImageSession: NSObject {
     
     // Background queue in which imagee uploads are managed
     let downloadQueue: DispatchQueue = {
-        return DispatchQueue(label: "org.piwigo.imageQueue", qos: .background)
+        return DispatchQueue(label: "org.piwigo.imageQueue", qos: .userInitiated)
     }()
     
     
