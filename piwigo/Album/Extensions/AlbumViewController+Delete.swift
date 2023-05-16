@@ -120,7 +120,7 @@ extension AlbumViewController
 
     func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>) {
         var imagesToRemove = toRemove
-        if imagesToRemove.isEmpty {
+        guard let imageData = imagesToRemove.first else {
             if toDelete.isEmpty {
                 updatePiwigoHUDwithSuccess() { [self] in
                     // Save changes
@@ -141,8 +141,7 @@ extension AlbumViewController
         }
 
         // Update image category list
-        guard let imageData = imagesToRemove.first,
-              let albums = imageData.albums else {
+        guard let albums = imageData.albums else {
             // Forget this image
             imagesToRemove.removeFirst()
 

@@ -231,9 +231,7 @@ extension AlbumViewController
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton.isEnabled = hasImagesSelected
-                let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
-                let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
-                let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
+                let areFavorites = selectedImageIds == selectedFavoriteIds
                 favoriteBarButton.setFavoriteImage(for: areFavorites)
                 favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
@@ -254,9 +252,7 @@ extension AlbumViewController
                // pwg.users.favorites… methods available from Piwigo version 2.10
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton.isEnabled = hasImagesSelected
-                let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
-                let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
-                let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
+                let areFavorites = selectedImageIds == selectedFavoriteIds
                 favoriteBarButton.setFavoriteImage(for: areFavorites)
                 favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
@@ -300,7 +296,7 @@ extension AlbumViewController
         }
 
         // Scroll to position of images if needed
-        if numberOfImageCells == 0, (images.fetchedObjects ?? []).isEmpty == false {
+        if numberOfImageCells == 0, fetchedImageCount() != 0 {
             let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
             imagesCollection?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
@@ -335,6 +331,7 @@ extension AlbumViewController
         // Clear array of selected images and allow iOS device to sleep
         touchedImageIds = []
         selectedImageIds = Set<Int64>()
+        selectedFavoriteIds = Set<Int64>()
         UIApplication.shared.isIdleTimerDisabled = false
     }
 
@@ -362,7 +359,7 @@ extension AlbumViewController
         guard let gestureRecognizer = gestureRecognizer else { return }
 
         // Select/deselect cells
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         switch gestureRecognizer.state {
         case .began, .changed:
             // Get touch point
@@ -384,9 +381,13 @@ extension AlbumViewController
                 if !selectedImageIds.contains(imageId) {
                     selectedImageIds.insert(imageId)
                     imageCell.isSelection = true
+                    if imageCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
                 } else {
                     imageCell.isSelection = false
                     selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
                 }
 
                 // Update the navigation bar
@@ -398,8 +399,8 @@ extension AlbumViewController
         default:
             debugPrint("NOP")
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
     }
 
 

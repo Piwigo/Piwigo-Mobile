@@ -178,6 +178,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
         } else if selectedImageIds.contains(imageId) {
             // Remove image from selection
             selectedImageIds.remove(imageId)
+            selectedFavoriteIds.remove(imageId)
             updateButtonsInSelectionMode()
 
             // Close HUD if last image

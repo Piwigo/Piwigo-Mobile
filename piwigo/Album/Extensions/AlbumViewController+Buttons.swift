@@ -617,7 +617,7 @@ extension AlbumViewController
         } else if albumData.nbImages > 0 {
             // Button for activating the selection mode
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton.isEnabled = (images.fetchedObjects ?? []).count > 0
+            selectBarButton.isEnabled = fetchedImageCount() > 0
         } else {
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)

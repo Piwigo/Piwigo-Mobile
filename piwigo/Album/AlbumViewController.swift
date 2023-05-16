@@ -28,6 +28,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var totalNumberOfImages = 0
     var selectedImageIds = Set<Int64>()
     var selectedImageIdsLoop = Set<Int64>()
+    var selectedFavoriteIds = Set<Int64>()
 
     var imagesCollection: UICollectionView?
     private var imageOfInterest = IndexPath(item: 0, section: 1)
@@ -354,6 +355,23 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return images
     }()
 
+    func fetchedImageCount() -> Int {
+        // Create a fetch request for the Image entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
+        fetchRequest.resultType = .countResultType
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: getImagePredicates())
+
+        // Fetch number of objects
+        do {
+            let countResult = try mainContext.fetch(fetchRequest)
+            return countResult.first!.intValue
+        }
+        catch let error as NSError {
+            print("••> Image count not fetched \(error), \(error.userInfo)")
+        }
+        return Int.zero
+    }
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -562,7 +580,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Check conditions before loading album and image data
         let lastLoad = albumData.dateGetImages
-        let nbImages = (self.images.fetchedObjects ?? []).count
+        let nbImages = fetchedImageCount()
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
@@ -1299,10 +1317,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Avoid rare crashes…
-            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
+            if (indexPath.item < 0) || (indexPath.item >= fetchedImageCount()) {
                 return
             }
-            if (images.fetchedObjects ?? [])[indexPath.item].pwgID == 0 {
+            guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
                 return
             }
 
@@ -1318,7 +1336,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 // Selection mode not active => display full screen image
                 let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
                 imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
-                imageDetailView?.imageIndex = indexPath.row
+                imageDetailView?.imageIndex = indexPath.item
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = images
                 imageDetailView?.user = user
@@ -1336,13 +1354,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
             } else {
                 // Selection mode active => add/remove image from selection
-                let imageID = selectedCell.imageData?.pwgID ?? Int64.zero
-                if !selectedImageIds.contains(imageID) {
-                    selectedImageIds.insert(imageID)
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.insert(imageId)
                     selectedCell.isSelection = true
+                    if selectedCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
                 } else {
                     selectedCell.isSelection = false
-                    selectedImageIds.remove(imageID)
+                    selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
                 }
 
                 // and update nav buttons
@@ -1574,7 +1595,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
-            if (images.fetchedObjects ?? []).count == 1 {
+            if fetchedImageCount() == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> First added image ► enable menu")
                     self?.updateButtonsInPreviewMode()

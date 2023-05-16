@@ -48,6 +48,7 @@ extension AlbumViewController: EditImageParamsDelegate
     func didDeselectImage(withId imageId: Int64) {
         // Deselect image
         selectedImageIds.remove(imageId)
+        selectedFavoriteIds.remove(imageId)
         imagesCollection?.reloadSections(IndexSet(integer: 1))
     }
 

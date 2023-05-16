@@ -13,9 +13,7 @@ extension AlbumViewController
 {
     // MARK: Favorites Utilities
     func getFavoriteBarButton() -> UIBarButtonItem {
-        let selectedImages: [Image] = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
-        let albumSetsOfImages: [Set<Album>] = selectedImages.map({$0.albums ?? Set<Album>()})
-        let areFavorites = albumSetsOfImages.first(where: {$0.contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}) == false}) == nil
+        let areFavorites = selectedImageIds == selectedFavoriteIds
         let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
         button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
         return button
@@ -28,7 +26,7 @@ extension AlbumViewController
     }
 
     func addImageToFavorites() {
-        if selectedImageIds.isEmpty {
+        guard let imageId = selectedImageIds.first else {
             // Save changes
             try? bckgContext.save()
             // Close HUD with success
@@ -42,10 +40,10 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard let imageId = selectedImageIds.first,
-              let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
             // Forget this image
             selectedImageIds.removeFirst()
+            selectedFavoriteIds.remove(imageId)
 
             // Update HUD
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
@@ -74,6 +72,7 @@ extension AlbumViewController
                     
                     // Next image
                     selectedImageIds.removeFirst()
+                    selectedFavoriteIds.remove(imageId)
                     addImageToFavorites()
                 }
             } failure: { [self] error in
@@ -104,7 +103,7 @@ extension AlbumViewController
     }
 
     func removeImageFromFavorites() {
-        if selectedImageIds.isEmpty {
+        guard let imageId = selectedImageIds.first else {
             // Save changes
             try? bckgContext.save()
             // Close HUD with success
@@ -118,10 +117,10 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard  let imageId = selectedImageIds.first,
-               let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
             // Deselect this image
             selectedImageIds.removeFirst()
+            selectedFavoriteIds.remove(imageId)
 
             // Update HUD
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
@@ -150,6 +149,7 @@ extension AlbumViewController
                     
                     // Next image
                     selectedImageIds.removeFirst()
+                    selectedFavoriteIds.remove(imageId)
                     removeImageFromFavorites()
                 }
             } failure: { [unowned self] error in
