@@ -211,17 +211,17 @@ class ImageUtilities: NSObject {
             return optImage
         }
         
-        // Downsize image
+        // Downsample image
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
-              let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
+              let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions),
+              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale) else {
             if let data = try? Data( contentsOf:imageURL) {
                 return UIImage(data: data) ?? UIImage(named: "placeholder")!
             } else {
                 return UIImage(named: "placeholder")!
             }
         }
-        let image = downsampledImage(from: imageSource, to: pointSize, scale: scale)
         
         // Save downsized image in cache
         DispatchQueue.global(qos: .background).async {
@@ -231,7 +231,7 @@ class ImageUtilities: NSObject {
                 try? fm.removeItem(atPath: filePath)
             }
             // Save optimised image
-            if let data = image.jpegData(compressionQuality: 1.0) as? NSData {
+            if let data = downsampledImage.jpegData(compressionQuality: 1.0) as? NSData {
                 do {
                     try data.write(toFile: filePath, options: .atomic)
                 } catch {
@@ -239,20 +239,21 @@ class ImageUtilities: NSObject {
                 }
             }
         }
-        return image
+        return downsampledImage
     }
     
     static func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageData = image.jpegData(compressionQuality: 1.0),
-              let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions) else {
+              let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
+              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale) else {
             return image
         }
-        return downsampledImage(from: imageSource, to: pointSize, scale: scale)
+        return downsampledImage
     }
     
-    static func downsampledImage(from imageSource:CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+    static func downsampledImage(from imageSource:CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
         // The default display scale for a trait collection is 0.0 (indicating unspecified).
         // We therefore adopt a scale of 1.0 when the display scale is unspecified.
         let maxDimensionInPixels = max(pointSize.width, pointSize.height) * max(scale, 1.0)
@@ -261,8 +262,10 @@ class ImageUtilities: NSObject {
                                    kCGImageSourceCreateThumbnailWithTransform: true,
                                           kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as [CFString : Any] as CFDictionary
         
-        let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions as CFDictionary)!
-        return UIImage(cgImage: downsampledImage)
+        if let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions as CFDictionary) {
+            return UIImage(cgImage: downsampledImage)
+        }
+        return nil
     }
     
     
