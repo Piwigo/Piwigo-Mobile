@@ -1272,7 +1272,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             return cell
             
         default /* Images */:
-            let start = CFAbsoluteTimeGetCurrent()
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else {
                 fatalError("No ImageCollectionViewCell!")
             }
@@ -1297,9 +1296,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             imageSeriesRocognizer.delegate = self
             cell.addGestureRecognizer(imageSeriesRocognizer)
             cell.isUserInteractionEnabled = true
-
-            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            debugPrint("••> image built in \(diff.rounded()) ms")
             return cell
         }
     }
@@ -1551,7 +1547,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId { return }
-//        print("••> fetchController did change: \(controller)")
 
         // Collect operation changes
         switch type.rawValue {
@@ -1629,7 +1624,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
-//        print("••> fetchController applies change: \(controller)")
 
         // Update objects
         imagesCollection?.performBatchUpdates({ [weak self] in
