@@ -34,14 +34,15 @@ class ShareUtilities {
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
         /// - Note: image.width and .height are always > 1
+        let sizes = imageData.sizes
         var selectedSize = Int.zero
         var pwgSize: pwgImageSize = .square, pwgURL: NSURL?
 
         // Square Size (should always be available)
         if NetworkVars.hasSquareSizeImages,
-           let imageURL = imageData.squareRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.square?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.squareRes?.maxSize ?? 1
+            let size = sizes.square?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             pwgSize = .square
             pwgURL = imageURL
@@ -50,9 +51,9 @@ class ShareUtilities {
         
         // Thumbnail Size (should always be available)
         if NetworkVars.hasThumbSizeImages,
-           let imageURL = imageData.thumbRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.thumbRes?.maxSize ?? 1
+            let size = sizes.thumb?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -64,9 +65,9 @@ class ShareUtilities {
         
         // XX Small Size
         if NetworkVars.hasXXSmallSizeImages,
-           let imageURL = imageData.xxsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.xxsmallRes?.maxSize ?? 1
+            let size = sizes.xxsmall?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -78,9 +79,9 @@ class ShareUtilities {
         
         // X Small Size
         if NetworkVars.hasXSmallSizeImages,
-           let imageURL = imageData.xsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.xsmallRes?.maxSize ?? 1
+            let size = sizes.xsmall?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -92,9 +93,9 @@ class ShareUtilities {
         
         // Small Size
         if NetworkVars.hasSmallSizeImages,
-           let imageURL = imageData.smallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.smallRes?.maxSize ?? 1
+            let size = sizes.small?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -106,9 +107,9 @@ class ShareUtilities {
         
         // Medium Size (should always be available)
         if NetworkVars.hasMediumSizeImages,
-           let imageURL = imageData.mediumRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.mediumRes?.maxSize ?? 1
+            let size = sizes.medium?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -120,9 +121,9 @@ class ShareUtilities {
         
         // Large Size
         if NetworkVars.hasLargeSizeImages,
-           let imageURL = imageData.largeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.largeRes?.maxSize ?? 1
+            let size = sizes.large?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -134,9 +135,9 @@ class ShareUtilities {
         
         // X Large Size
         if NetworkVars.hasXLargeSizeImages,
-           let imageURL = imageData.xlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.xlargeRes?.maxSize ?? 1
+            let size = sizes.xlarge?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -148,9 +149,9 @@ class ShareUtilities {
         
         // XX Large Size
         if NetworkVars.hasXXLargeSizeImages,
-           let imageURL = imageData.xxlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
-            let size = imageData.xxlargeRes?.maxSize ?? 1
+            let size = sizes.xxlarge?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
             if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
@@ -197,7 +198,7 @@ class ShareUtilities {
         if fileName?.contains(".php") ?? false {
             // The URL does not contain a file name but a PHP request
             // Sometimes happening with full resolution images, try with medium resolution file
-            fileName = image?.mediumRes?.url?.lastPathComponent
+            fileName = image?.sizes.medium?.url?.lastPathComponent
             
             // Is filename of medium size image still a PHP request?
             if fileName?.contains(".php") ?? false {

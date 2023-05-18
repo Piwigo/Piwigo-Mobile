@@ -40,18 +40,7 @@ extension Image {
     @NSManaged public var rankManual: Int64
     @NSManaged public var rankRandom: Int64
 
-    @NSManaged public var squareRes: Resolution?
-    @NSManaged public var thumbRes: Resolution?
-    @NSManaged public var mediumRes: Resolution?
-
-    @NSManaged public var smallRes: Resolution?
-    @NSManaged public var xsmallRes: Resolution?
-    @NSManaged public var xxsmallRes: Resolution?
-
-    @NSManaged public var largeRes: Resolution?
-    @NSManaged public var xlargeRes: Resolution?
-    @NSManaged public var xxlargeRes: Resolution?
-
+    @NSManaged public var sizes: Sizes
     @NSManaged public var server: Server?
     @NSManaged public var users: Set<User>?
     @NSManaged public var albums: Set<Album>?

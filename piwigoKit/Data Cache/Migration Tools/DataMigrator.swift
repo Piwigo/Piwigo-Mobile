@@ -333,7 +333,7 @@ private extension DataMigrationVersion {
         //            print("••> \(appVersion) is smaller than 3.00")
                     return .version09
                 }
-                return .version0B
+                return .version0C
             }
         }
         return compatibleVersion

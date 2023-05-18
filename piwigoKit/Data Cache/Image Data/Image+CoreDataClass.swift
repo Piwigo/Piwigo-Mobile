@@ -145,85 +145,85 @@ public class Image: NSManagedObject {
         }
 
         // Derivatives
-        let square = imageData.derivatives.squareImage
-        let squareUrl = NetworkUtilities.encodedImageURL(square?.url ?? "")
-        let newSquare = Resolution(imageWidth: square?.width?.intValue ?? 1,
-                                   imageHeight: square?.height?.intValue ?? 1,
+        let squareRes = imageData.derivatives.squareImage
+        let squareUrl = NetworkUtilities.encodedImageURL(squareRes?.url ?? "")
+        let newSquare = Resolution(imageWidth: squareRes?.width?.intValue ?? 1,
+                                   imageHeight: squareRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: squareUrl?.absoluteString ?? ""))
-        if squareRes == nil || squareRes?.isEqual(newSquare) == false {
-            squareRes = newSquare
+        if sizes.square == nil || sizes.square?.isEqual(newSquare) == false {
+            sizes.square = newSquare
         }
         
-        let thumb = imageData.derivatives.thumbImage
-        let thumbUrl = NetworkUtilities.encodedImageURL(thumb?.url ?? "")
-        let newThumb = Resolution(imageWidth: thumb?.width?.intValue ?? 1,
-                                  imageHeight: thumb?.height?.intValue ?? 1,
+        let thumbRes = imageData.derivatives.thumbImage
+        let thumbUrl = NetworkUtilities.encodedImageURL(thumbRes?.url ?? "")
+        let newThumb = Resolution(imageWidth: thumbRes?.width?.intValue ?? 1,
+                                  imageHeight: thumbRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: thumbUrl?.absoluteString ?? ""))
-        if thumbRes == nil || thumbRes?.isEqual(newThumb) == false {
-            thumbRes = newThumb
+        if sizes.thumb == nil || sizes.thumb?.isEqual(newThumb) == false {
+            sizes.thumb = newThumb
         }
         
-        let medium = imageData.derivatives.mediumImage
-        let mediumUrl = NetworkUtilities.encodedImageURL(medium?.url ?? "")
-        let newMedium = Resolution(imageWidth: medium?.width?.intValue ?? 1,
-                                   imageHeight: medium?.height?.intValue ?? 1,
+        let mediumRes = imageData.derivatives.mediumImage
+        let mediumUrl = NetworkUtilities.encodedImageURL(mediumRes?.url ?? "")
+        let newMedium = Resolution(imageWidth: mediumRes?.width?.intValue ?? 1,
+                                   imageHeight: mediumRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: mediumUrl?.absoluteString ?? ""))
-        if mediumRes == nil || mediumRes?.isEqual(newMedium) == false {
-            mediumRes = newMedium
+        if sizes.medium == nil || sizes.medium?.isEqual(newMedium) == false {
+            sizes.medium = newMedium
         }
         
-        let small = imageData.derivatives.smallImage
-        let smallUrl = NetworkUtilities.encodedImageURL(small?.url ?? "")
-        let newSmall = Resolution(imageWidth: small?.width?.intValue ?? 1,
-                                  imageHeight: small?.height?.intValue ?? 1,
+        let smallRes = imageData.derivatives.smallImage
+        let smallUrl = NetworkUtilities.encodedImageURL(smallRes?.url ?? "")
+        let newSmall = Resolution(imageWidth: smallRes?.width?.intValue ?? 1,
+                                  imageHeight: smallRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: smallUrl?.absoluteString ?? ""))
-        if smallRes == nil || smallRes?.isEqual(newSmall) == false {
-            smallRes = newSmall
+        if sizes.small == nil || sizes.small?.isEqual(newSmall) == false {
+            sizes.small = newSmall
         }
         
-        let xsmall = imageData.derivatives.xSmallImage
-        let xsmallUrl = NetworkUtilities.encodedImageURL(xsmall?.url ?? "")
-        let newXsmall = Resolution(imageWidth: xsmall?.width?.intValue ?? 1,
-                                   imageHeight: xsmall?.height?.intValue ?? 1,
+        let xsmallRes = imageData.derivatives.xSmallImage
+        let xsmallUrl = NetworkUtilities.encodedImageURL(xsmallRes?.url ?? "")
+        let newXsmall = Resolution(imageWidth: xsmallRes?.width?.intValue ?? 1,
+                                   imageHeight: xsmallRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xsmallUrl?.absoluteString ?? ""))
-        if xsmallRes == nil || xsmallRes?.isEqual(newXsmall) == false {
-            xsmallRes = newXsmall
+        if sizes.xsmall == nil || sizes.xsmall?.isEqual(newXsmall) == false {
+            sizes.xsmall = newXsmall
         }
         
-        let xxsmall = imageData.derivatives.xxSmallImage
-        let xxsmallUrl = NetworkUtilities.encodedImageURL(xxsmall?.url ?? "")
-        let newXxsmall = Resolution(imageWidth: xxsmall?.width?.intValue ?? 1,
-                                    imageHeight: xxsmall?.height?.intValue ?? 1,
+        let xxsmallRes = imageData.derivatives.xxSmallImage
+        let xxsmallUrl = NetworkUtilities.encodedImageURL(xxsmallRes?.url ?? "")
+        let newXxsmall = Resolution(imageWidth: xxsmallRes?.width?.intValue ?? 1,
+                                    imageHeight: xxsmallRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxsmallUrl?.absoluteString ?? ""))
-        if xxsmallRes == nil || xxsmallRes?.isEqual(newXxsmall) == false {
-            xxsmallRes = newXxsmall
+        if sizes.xxsmall == nil || sizes.xxsmall?.isEqual(newXxsmall) == false {
+            sizes.xxsmall = newXxsmall
         }
         
-        let large = imageData.derivatives.largeImage
-        let largeUrl = NetworkUtilities.encodedImageURL(large?.url ?? "")
-        let newLarge = Resolution(imageWidth: large?.width?.intValue ?? 1,
-                                  imageHeight: large?.height?.intValue ?? 1,
+        let largeRes = imageData.derivatives.largeImage
+        let largeUrl = NetworkUtilities.encodedImageURL(largeRes?.url ?? "")
+        let newLarge = Resolution(imageWidth: largeRes?.width?.intValue ?? 1,
+                                  imageHeight: largeRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: largeUrl?.absoluteString ?? ""))
-        if largeRes == nil || largeRes?.isEqual(newLarge) == false {
-            largeRes = newLarge
+        if sizes.large == nil || sizes.large?.isEqual(newLarge) == false {
+            sizes.large = newLarge
         }
         
-        let xlarge = imageData.derivatives.xLargeImage
-        let xlargeUrl = NetworkUtilities.encodedImageURL(xlarge?.url ?? "")
-        let newXlarge = Resolution(imageWidth: xlarge?.width?.intValue ?? 1,
-                                   imageHeight: xlarge?.height?.intValue ?? 1,
+        let xlargeRes = imageData.derivatives.xLargeImage
+        let xlargeUrl = NetworkUtilities.encodedImageURL(xlargeRes?.url ?? "")
+        let newXlarge = Resolution(imageWidth: xlargeRes?.width?.intValue ?? 1,
+                                   imageHeight: xlargeRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xlargeUrl?.absoluteString ?? ""))
-        if xlargeRes == nil || xlargeRes?.isEqual(newXlarge) == false {
-            xlargeRes = newXlarge
+        if sizes.xlarge == nil || sizes.xlarge?.isEqual(newXlarge) == false {
+            sizes.xlarge = newXlarge
         }
         
-        let xxlarge = imageData.derivatives.xxLargeImage
-        let xxlargeUrl = NetworkUtilities.encodedImageURL(xxlarge?.url ?? "")
-        let newXxlarge = Resolution(imageWidth: xxlarge?.width?.intValue ?? 1,
-                                    imageHeight: xxlarge?.height?.intValue ?? 1,
+        let xxlargeRes = imageData.derivatives.xxLargeImage
+        let xxlargeUrl = NetworkUtilities.encodedImageURL(xxlargeRes?.url ?? "")
+        let newXxlarge = Resolution(imageWidth: xxlargeRes?.width?.intValue ?? 1,
+                                    imageHeight: xxlargeRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxlargeUrl?.absoluteString ?? ""))
-        if xxlargeRes == nil || xxlargeRes?.isEqual(newXxlarge) == false {
-            xxlargeRes = newXxlarge
+        if sizes.xxlarge == nil || sizes.xxlarge?.isEqual(newXxlarge) == false {
+            sizes.xxlarge = newXxlarge
         }
         
         // Rank of image in album

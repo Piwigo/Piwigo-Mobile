@@ -16,7 +16,9 @@ extension AlbumViewController
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
         // Remember query and which images belong to the album
         // from main context before calling background tasks
-        let oldImageIds = Set(albumData.images?.map({$0.pwgID}) ?? [])
+        /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
+        /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
+        let oldImageIds = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
         let query = albumData.query
 
         // Use the AlbumProvider to create the album data. On completion,

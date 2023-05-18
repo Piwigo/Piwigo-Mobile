@@ -301,11 +301,13 @@ class ImageUtilities: NSObject {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
         /// - The max size of a video thumbnail is xxLarge
+        let sizes = imageData.sizes
         var pwgURL: NSURL?
         
         // Square Size (should always be available)
         if NetworkVars.hasSquareSizeImages,
-           let imageURL = imageData.squareRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.square?.url,
+           (imageURL.absoluteString ?? "").isEmpty == false {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -317,7 +319,7 @@ class ImageUtilities: NSObject {
         
         // Thumbnail Size (should always be available)
         if NetworkVars.hasThumbSizeImages,
-           let imageURL = imageData.thumbRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -329,7 +331,7 @@ class ImageUtilities: NSObject {
         
         // XX Small Size
         if NetworkVars.hasXXSmallSizeImages,
-           let imageURL = imageData.xxsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -341,7 +343,7 @@ class ImageUtilities: NSObject {
 
         // X Small Size
         if NetworkVars.hasXSmallSizeImages,
-           let imageURL = imageData.xsmallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -353,7 +355,7 @@ class ImageUtilities: NSObject {
 
         // Small Size
         if NetworkVars.hasSmallSizeImages,
-           let imageURL = imageData.smallRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -365,7 +367,7 @@ class ImageUtilities: NSObject {
 
         // Medium Size (should always be available)
         if NetworkVars.hasMediumSizeImages,
-           let imageURL = imageData.mediumRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -377,7 +379,7 @@ class ImageUtilities: NSObject {
 
         // Large Size
         if NetworkVars.hasLargeSizeImages,
-           let imageURL = imageData.largeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -389,7 +391,7 @@ class ImageUtilities: NSObject {
 
         // X Large Size
         if NetworkVars.hasXLargeSizeImages,
-           let imageURL = imageData.xlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
@@ -401,7 +403,7 @@ class ImageUtilities: NSObject {
 
         // XX Large Size
         if NetworkVars.hasXXLargeSizeImages,
-           let imageURL = imageData.xxlargeRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }

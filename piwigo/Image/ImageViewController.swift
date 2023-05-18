@@ -47,23 +47,6 @@ class ImageViewController: UIViewController {
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     
-    func fetchedImageCount() -> Int64 {
-        // Create a fetch request for the Image entity
-        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
-        fetchRequest.resultType = .countResultType
-        fetchRequest.predicate = images?.fetchRequest.predicate
-
-        // Fetch number of objects
-        do {
-            let countResult = try savingContext.fetch(fetchRequest)
-            return countResult.first!.int64Value
-        }
-        catch let error as NSError {
-            print("••> Image count not fetched \(error), \(error.userInfo)")
-        }
-        return Int64.zero
-    }
-
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -688,7 +671,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
         // Did we reach the last image?
-        let maxIndex = max(0, fetchedImageCount() - 1)
+        let maxIndex = max(0, (images?.fetchedObjects ?? []).count - 1)
         if (imageIndex + 1 > maxIndex) {
             // Reached the end of the category
             return nil

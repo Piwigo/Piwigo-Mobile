@@ -25,6 +25,7 @@ enum DataMigrationVersion: String, CaseIterable {
     case version09 = "DataModel 09 (Upload)"        // from v2.12   on 3 July 2022
     case version0A = "DataModel 0A (+Server)"       // from v3.00   on 27 Feb 2023 (added on 21 August 2022)
     case version0B = "DataModel 0B (Image)"         // from v3.00   on … (added on 28 February 2023)
+    case version0C = "DataModel 0C (Sizes)"         // from v3.00   on … (added on 17 May 2023)
 
     static var current: DataMigrationVersion {
         guard let current = allCases.last else {
@@ -56,6 +57,8 @@ enum DataMigrationVersion: String, CaseIterable {
         case .version0A:
             return .version0B
         case .version0B:
+            return .version0C
+        case .version0C:
             return nil
         }
     }

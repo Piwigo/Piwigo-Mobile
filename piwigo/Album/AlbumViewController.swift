@@ -1543,7 +1543,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
         if view.window == nil || fetchDelegate.categoryId != categoryId { return }
-//        print("••> fetchController will change content: \(controller)")
+        print("••> fetchController will change content: \(controller)")
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

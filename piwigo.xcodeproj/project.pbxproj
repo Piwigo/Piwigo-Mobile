@@ -274,6 +274,8 @@
 		ADBE9515279DC61700397426 /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */; };
 		ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBF55702736E1990014E74A /* UIImage+AppTools.swift */; };
+		ADBF95A62A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */; };
+		ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
 		ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */; };
@@ -533,6 +535,8 @@
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProvider.swift; sourceTree = "<group>"; };
 		AD243D9128E05F60002DCC5F /* RelativeURLValueTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelativeURLValueTransformer.swift; sourceTree = "<group>"; };
+		AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0C (Sizes).xcdatamodel"; sourceTree = "<group>"; };
+		AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageToSizesMigrationPolicy_0B_to_0C.swift; sourceTree = "<group>"; };
 		AD25CA75286B891300D574C7 /* DataMigrationVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationVersion.swift; sourceTree = "<group>"; };
 		AD25CA77286B90E200D574C7 /* DataMigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationStep.swift; sourceTree = "<group>"; };
 		AD25CA79286B932000D574C7 /* NSManagedObjectModel+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectModel+AppTools.swift"; sourceTree = "<group>"; };
@@ -811,6 +815,7 @@
 		ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
 		ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageParamsViewController.swift; sourceTree = "<group>"; };
 		ADBF55702736E1990014E74A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
+		ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0B_to_0C.xcmappingmodel; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
 		ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueViewControllerOld.swift; sourceTree = "<group>"; };
@@ -1113,6 +1118,8 @@
 				AD98E52528BA5F86008C846A /* TagToTagMigrationPolicy_09_to_0A.swift */,
 				ADF35E8328B42077009F3ECE /* UploadToUploadMigrationPolicy_09_to_0A.swift */,
 				AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */,
+				ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */,
+				AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */,
 			);
 			path = "Migration Tools";
 			sourceTree = "<group>";
@@ -2446,6 +2453,7 @@
 				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
 				AD865777284D153F00C06EF4 /* pwg.categories.getList.swift in Sources */,
 				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
+				ADBF95A62A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel in Sources */,
 				ADA5FA4829A12D76004A8A59 /* MappingModel_09_to_0A.xcmappingmodel in Sources */,
 				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
 				AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */,
@@ -2458,6 +2466,7 @@
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
 				ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */,
+				ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */,
 				AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
 				AD0B6ACD268A218F007DEE70 /* UploadManager.swift in Sources */,
 				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
@@ -3606,6 +3615,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */,
 				AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */,
 				ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */,
 				ADD981F728737EFD007213AE /* DataModel 09 (Upload).xcdatamodel */,
@@ -3618,7 +3628,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */;
+			currentVersion = AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
