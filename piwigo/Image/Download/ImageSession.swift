@@ -104,7 +104,7 @@ class ImageSession: NSObject {
         // Download this image in the background thread
         downloadQueue.async {
             guard let download = self.activeDownloads[imageURL] else {
-                print("••> Launch download: \(imageURL.lastPathComponent)")
+//                print("••> Launch download: \(imageURL.lastPathComponent)")
                 download.task = self.dataSession.downloadTask(with: request)
                 download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
                 download.task?.countOfBytesClientExpectsToReceive = download.fileSize
@@ -145,18 +145,18 @@ class ImageSession: NSObject {
             download.resumeData = imageData
         })
     }
-        
-    func cancelDownload(atURL imageURL: URL) {
-        // Retrieve download instance
-        guard let download = activeDownloads[imageURL] else {
-            return
-        }
-        
-        // Cancel the download request
-        print("••> Cancel download: \(imageURL.lastPathComponent)")
-        download.task?.cancel()
-        activeDownloads[imageURL] = nil
-    }
+    
+//    func cancelDownload(atURL imageURL: URL) {
+//        // Retrieve download instance
+//        guard let download = activeDownloads[imageURL] else {
+//            return
+//        }
+//
+//        // Cancel the download request
+//        print("••> Cancel download: \(imageURL.lastPathComponent)")
+//        download.task?.cancel()
+//        activeDownloads[imageURL] = nil
+//    }
 }
 
 
@@ -256,11 +256,10 @@ extension ImageSession: URLSessionTaskDelegate {
 
         if let error = error {
             // Return error with failureHandler
-            print("••> Did complete task #\(task.taskIdentifier) with error: \(String(describing: error))")
             if let failure = download.failureHandler {
                 failure(error)
             }
-            if (error as NSError).code != NSURLErrorCancelled {
+            if download.resumeData == nil {
                 // Remove task from active downloads
                 activeDownloads.removeValue(forKey: imageURL)
             }
@@ -320,12 +319,14 @@ extension ImageSession: URLSessionDownloadDelegate {
                                        attributes: nil)
             }
             
-            // Delete already existing file if it exists (incomplete previous attempt?)
-            try? fm.removeItem(at: fileURL)
+            // Delete existing file if it exists (incomplete previous attempt?)
+            if fm.fileExists(atPath: fileURL.path) {
+                try? fm.removeItem(at: fileURL)
+            }
             
             // Store image
             try fm.copyItem(at: location, to: fileURL)
-//            print("••> Image \(fileURL.lastPathComponent) stored in cache")
+            print("••> Image \(fileURL.lastPathComponent) stored in cache")
         } catch {
             // Return error with failureHandler
             if let failure = download.failureHandler {
