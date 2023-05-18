@@ -381,6 +381,13 @@ public class ImageProvider: NSObject {
                     }
                 }
                 else {
+                    // Create a Sizes managed object on the private queue context.
+                    guard let sizes = NSEntityDescription.insertNewObject(forEntityName: "Sizes",
+                                                                          into: bckgContext) as? Sizes else {
+                        print(ImageError.creationError.localizedDescription)
+                        return
+                    }
+
                     // Create an Image managed object on the private queue context.
                     guard let image = NSEntityDescription.insertNewObject(forEntityName: "Image",
                                                                           into: bckgContext) as? Image else {
@@ -389,6 +396,7 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Populate the Image's properties using the raw data.
+                    image.sizes = sizes
                     do {
                         try image.update(with: imageData,
                                          sort:sort, rank: rank,
