@@ -614,8 +614,8 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if albumData.nbImages > 0 {
-            // Button for activating the selection mode
+        } else if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
+            // Button for activating the selection mode (not for guests)
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
             selectBarButton.isEnabled = fetchedImageCount() > 0
         } else {

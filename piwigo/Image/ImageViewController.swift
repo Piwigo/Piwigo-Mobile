@@ -349,9 +349,6 @@ class ImageViewController: UIViewController {
                     navigationController?.setToolbarHidden(true, animated: false)
                 }
             } else {
-                // Guest can only share images
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-                
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
@@ -430,9 +427,6 @@ class ImageViewController: UIViewController {
                     navigationController?.setToolbarHidden(true, animated: false)
                 }
             } else {
-                // Guest can only share images
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
