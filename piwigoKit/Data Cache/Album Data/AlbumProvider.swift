@@ -761,7 +761,9 @@ public class AlbumProvider: NSObject {
     public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
         // Remove image from album
         album.nbImages += nbImages
-        album.totalNbImages += nbImages
+        if album.totalNbImages > (Int64.max - nbImages) {   // avoids possible crash with e.g. smart albums
+            album.totalNbImages += nbImages
+        }
 
         // Keep 'date_last' set as expected by the server
         album.dateLast = max(Date(), album.dateLast)
@@ -773,7 +775,9 @@ public class AlbumProvider: NSObject {
     public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) {
         // Remove image from album
         album.nbImages -= nbImages
-        album.totalNbImages -= nbImages
+        if album.totalNbImages < (Int64.min + nbImages) {   // avoids possible crash with e.g. smart albums
+            album.totalNbImages -= nbImages
+        }
 
         // Keep 'date_last' set as expected by the server
         var dateLast = Date(timeIntervalSince1970: 0)
