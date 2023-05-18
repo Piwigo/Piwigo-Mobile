@@ -205,6 +205,13 @@ class ImageUtilities: NSObject {
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
     static func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+        // Optimised image available?
+        let filePath = imageURL.path + CacheVars.shared.optImage
+        if let optImage = UIImage(contentsOfFile: filePath) {
+            return optImage
+        }
+        
+        // Downsize image
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions) else {
@@ -214,7 +221,25 @@ class ImageUtilities: NSObject {
                 return UIImage(named: "placeholder")!
             }
         }
-        return downsampledImage(from: imageSource, to: pointSize, scale: scale)
+        let image = downsampledImage(from: imageSource, to: pointSize, scale: scale)
+        
+        // Save downsized image in cache
+        DispatchQueue.global(qos: .background).async {
+            // Delete  existing file if it exists (incomplete previous attempt?)
+            let fm = FileManager.default
+            if fm.fileExists(atPath: filePath) {
+                try? fm.removeItem(atPath: filePath)
+            }
+            // Save optimised image
+            if let data = image.jpegData(compressionQuality: 1.0) as? NSData {
+                do {
+                    try data.write(toFile: filePath, options: .atomic)
+                } catch {
+                    debugPrint(error.localizedDescription)
+                }
+            }
+        }
+        return image
     }
     
     static func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {

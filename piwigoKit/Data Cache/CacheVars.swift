@@ -35,5 +35,5 @@ public class CacheVars: NSObject {
 
     // MARK: - Vars in Memory
     // Variables kept in memory
-    /// - none
+    public let optImage = "-opt"
 }

@@ -264,109 +264,28 @@ public class Image: NSManagedObject {
         super.prepareForDeletion()
         
         // Delete cached image files in background queue
+        let ID = String(self.pwgID)
+        let IDopt = ID + CacheVars.shared.optImage
         guard let serverUUID = self.server?.uuid else { return }
         let fm = FileManager.default
         let cacheUrl = DataDirectories.shared.cacheDirectory
             .appendingPathComponent(serverUUID)
 
-        // Square resolution
-        var fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.square.path)
-                              .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Square resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> square resolution: \(error.localizedDescription)")
-        }
-        
-        // Thumbnail resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.thumb.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Thumbnail resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> thumbnail resolution: \(error.localizedDescription)")
-        }
-        
-        // XXSmall resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xxSmall.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> XXSmall resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> xxSmall resolution: \(error.localizedDescription)")
-        }
-
-        // XSmall resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xSmall.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> XSmall resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> xSmall resolution: \(error.localizedDescription)")
-        }
-
-        // Small resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.small.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Small resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> small resolution: \(error.localizedDescription)")
-        }
-
-        // Medium resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.medium.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Medium resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> medium resolution: \(error.localizedDescription)")
-        }
-
-        // Large resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.large.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Large resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> large resolution: \(error.localizedDescription)")
-        }
-
-        // XLarge resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xLarge.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> XLarge resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> xLarge resolution: \(error.localizedDescription)")
-        }
-
-        // XXLarge resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.xxLarge.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> XXLarge resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> xxLarge resolution: \(error.localizedDescription)")
-        }
-
-        // Full resolution
-        fileUrl = cacheUrl.appendingPathComponent(pwgImageSize.fullRes.path)
-                          .appendingPathComponent(String(self.pwgID))
-        do {
-            try fm.removeItem(at: fileUrl)
-            print("••> Full resolution image \(self.pwgID) deleted from cache.")
-        } catch {
-            print("••> full resolution: \(error.localizedDescription)")
+        // Loop over image sizes
+        pwgImageSize.allCases.forEach { size in
+            // Delete files
+            let dirURL = cacheUrl.appendingPathComponent(size.path)
+            let filePath = dirURL.appendingPathComponent(ID).path
+            if fm.fileExists(atPath: filePath) {
+                let optPath = dirURL.appendingPathComponent(IDopt).path
+                do {
+                    try fm.removeItem(atPath: filePath)
+                    try fm.removeItem(atPath: optPath)
+                    print("••> \(size.name) image \(self.pwgID) deleted from cache.")
+                } catch {
+                    print("••> \(size.name) image \(self.pwgID) not deleted: \(error.localizedDescription)")
+                }
+            }
         }
     }
 }
