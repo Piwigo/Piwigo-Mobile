@@ -17,7 +17,6 @@ extension ImageViewController
             .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
         let button = UIBarButtonItem.favoriteImageButton(isFavorite, target: self)
         button.action = isFavorite ? #selector(removeFromFavorites) : #selector(addToFavorites)
-        button.isEnabled = true
         return button
     }
     

@@ -155,6 +155,7 @@ class ImageViewController: UIViewController {
 
         // Image options buttons
         updateNavBar()
+        setEnableStateOfButtons(imageData.fileSize != Int64.zero)
 
         // Scrolling
         if #available(iOS 12, *) {
@@ -480,8 +481,12 @@ class ImageViewController: UIViewController {
                     }
                 }
             } failure: { [self] error in
+                // Don't display an error if there is no Internet connection
+                if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
+                    return
+                }
                 // Display error only once and when image data is incomplete
-                if isIncomplete && !didPresentErrorMessage {
+                if isIncomplete, !didPresentErrorMessage  {
                     self.retrieveImageDataError(error)
                 }
             }
