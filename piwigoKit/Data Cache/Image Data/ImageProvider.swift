@@ -338,7 +338,7 @@ public class ImageProvider: NSObject {
         }
 
         // Get favorite album if possible (will not prevent import)
-        let favAlbum = albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue)
+        let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
