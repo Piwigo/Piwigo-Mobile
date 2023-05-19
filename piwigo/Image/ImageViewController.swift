@@ -18,7 +18,7 @@ protocol ImageDetailDelegate: NSObjectProtocol {
 class ImageViewController: UIViewController {
     
     weak var imgDetailDelegate: ImageDetailDelegate?
-    var images: NSFetchedResultsController<Image>?
+    var images: NSFetchedResultsController<Image>!
     var categoryId = Int32.zero
     var imageIndex = 0
     var userHasUploadRights = false
@@ -28,7 +28,7 @@ class ImageViewController: UIViewController {
     var imageProvider: ImageProvider!
     var savingContext: NSManagedObjectContext!
 
-    var imageData: Image?
+    var imageData: Image!
     var isToolbarRequired = false
     var didPresentPageAfter = true
     var didPresentErrorMessage = false
@@ -54,8 +54,13 @@ class ImageViewController: UIViewController {
                 
         // Current image
         var index = max(0, imageIndex)
-        index = min(imageIndex, (images?.fetchedObjects?.count ?? 0) - 1)
-        imageData = images?.object(at: IndexPath(item: index, section: 0))
+        index = min(imageIndex, (images.fetchedObjects?.count ?? 0) - 1)
+        imageData = images.object(at: IndexPath(item: index, section: 0))
+        if imageData.isFault {
+            // imageData is not fired yet.
+            imageData.willAccessValue(forKey: nil)
+            imageData.didAccessValue(forKey: nil)
+        }
 
         // Initialise pageViewController
         pageViewController = children[0] as? UIPageViewController
@@ -192,7 +197,7 @@ class ImageViewController: UIViewController {
     }
 
     deinit {
-        print("••> ImageViewController of image \(String(describing: imageData?.pwgID)) is being deinitialized.")
+        print("••> ImageViewController of image \(String(describing: imageData.pwgID)) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
@@ -211,8 +216,8 @@ class ImageViewController: UIViewController {
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.allowsDefaultTighteningForTruncation = true
-        if let title = imageData?.title, title.string.isEmpty == false {
-            let wholeRange = NSRange(location: 0, length: title.string.count)
+        if imageData.title.string.isEmpty == false {
+            let wholeRange = NSRange(location: 0, length: imageData.title.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
@@ -220,19 +225,19 @@ class ImageViewController: UIViewController {
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
                 NSAttributedString.Key.paragraphStyle: style
             ]
-            let attTitle = NSMutableAttributedString(attributedString: title)
+            let attTitle = NSMutableAttributedString(attributedString: imageData.title)
             attTitle.addAttributes(attributes, range: wholeRange)
             titleLabel.attributedText = attTitle
         } else {
             // No title => Use file name
-            titleLabel.text = imageData?.fileName
+            titleLabel.text = imageData.fileName
         }
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            (imageData?.dateCreated == imageData?.datePosted) {
+            (imageData.dateCreated == imageData.datePosted) {
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
@@ -253,10 +258,8 @@ class ImageViewController: UIViewController {
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            if let dateCreated = imageData?.dateCreated {
-                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
-                                                                   dateStyle: .medium, timeStyle: .medium)
-            }
+            subTitleLabel.text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                               dateStyle: .medium, timeStyle: .medium)
             subTitleLabel.sizeToFit()
 
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
@@ -459,7 +462,12 @@ class ImageViewController: UIViewController {
                            let pvc = vcs.first(where: {$0.imageData.pwgID == imageID}) {
                             // Update image data
                             let index = pvc.imageIndex
-                            pvc.imageData = self.images?.object(at: IndexPath(item: index, section: 0))
+                            pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
+                            if pvc.imageData.isFault {
+                                // The album is not fired yet.
+                                pvc.imageData.willAccessValue(forKey: nil)
+                                pvc.imageData.didAccessValue(forKey: nil)
+                            }
                             // Update navigation bar
                             self.updateNavBar()
                             self.setEnableStateOfButtons(true)
@@ -498,8 +506,6 @@ class ImageViewController: UIViewController {
     }
 
     @objc func didTapOnce() {
-        guard let imageData = imageData else { return }
-        
         // Should we do something else?
         if imageData.isVideo {
             // User wants to play/replay the video
@@ -535,8 +541,6 @@ class ImageViewController: UIViewController {
     }
     
     @objc func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
-        guard let imageData = imageData else { return }
-
         // Should we do something else?
         if imageData.isVideo { return }
 
@@ -621,8 +625,12 @@ extension ImageViewController: UIPageViewControllerDelegate
         imageIndex = pvc.imageIndex
 
         // Sets new image data
-        guard let imageData = images?.object(at: IndexPath(item: imageIndex, section: 0)) else { return }
-        self.imageData = imageData
+        imageData = images.object(at: IndexPath(item: imageIndex, section: 0))
+        if imageData.isFault {
+            // The album is not fired yet.
+            imageData.willAccessValue(forKey: nil)
+            imageData.didAccessValue(forKey: nil)
+        }
 
         // Initialise page view controller
         pvc.progressView.isHidden = pvc.imageLoaded || imageData.isVideo
@@ -645,7 +653,12 @@ extension ImageViewController: UIPageViewControllerDataSource
         guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
 
         // Retrieve up-to-date complete image data if needed
-        guard let imageData = images?.object(at: IndexPath(item: index, section: 0)) else { return nil }
+        let imageData = images.object(at: IndexPath(item: index, section: 0))
+        if imageData.isFault {
+            // The album is not fired yet.
+            imageData.willAccessValue(forKey: nil)
+            imageData.didAccessValue(forKey: nil)
+        }
         if imageData.fileSize == Int64.zero {
             // Retrieve image data
             retrieveImageData(imageData, isIncomplete: true)
@@ -665,7 +678,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
         // Did we reach the last image?
-        let maxIndex = max(0, (images?.fetchedObjects ?? []).count - 1)
+        let maxIndex = max(0, (images.fetchedObjects ?? []).count - 1)
         if (imageIndex + 1 > maxIndex) {
             // Reached the end of the category
             return nil
