@@ -1152,38 +1152,50 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         reUploadAllowed = !(self.reUploadAllowed)
         updateActionButton()
 
-        // No further operation if re-uploading is allowed
-        if reUploadAllowed { return }
+        // Refresh section buttons if re-uploading is allowed
+        if reUploadAllowed == false {
+            // Get visible cells
+            let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell]
 
-        // Deselect already uploaded photos if needed
-        var didChangeSelection = false
-        if (queue.operationCount == 0) && (selectedImages.count < indexedUploadsInQueue.count) {
-            // Indexed uploads available
-            for index in 0..<selectedImages.count {
-                if let upload = indexedUploadsInQueue[index],
-                   [.finished, .moderated].contains(upload.1) {
-                    // Deselect cell
-                    selectedImages[index] = nil
-                    didChangeSelection = true
+            // Deselect already uploaded photos if needed
+            if (queue.operationCount == 0) && (selectedImages.count < indexedUploadsInQueue.count) {
+                // Indexed uploads available
+                for index in 0..<selectedImages.count {
+                    if let upload = indexedUploadsInQueue[index],
+                       [.finished, .moderated].contains(upload.1) {
+                        // Deselect cell
+                        selectedImages[index] = nil
+                        if let cells = visibleCells,
+                           let cell = cells.first(where: {$0.localIdentifier == upload.0}) {
+                            cell.update(selected: false, state: upload.1)
+                        }
+                    }
                 }
-            }
-        } else {
-            // Use non-indexed data (might be quite slow)
-            let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-            for index in 0..<selectedImages.count {
-                if let localIdentifier = selectedImages[index]?.localIdentifier,
-                   let _ = completed.firstIndex(where: {$0.localIdentifier == localIdentifier}) {
-                    selectedImages[index] = nil
-                    didChangeSelection = true
+            } else {
+                // Use non-indexed data (might be quite slow)
+                let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+                for index in 0..<selectedImages.count {
+                    if let localIdentifier = selectedImages[index]?.localIdentifier,
+                       let upload = completed.first(where: {$0.localIdentifier == localIdentifier}) {
+                        selectedImages[index] = nil
+                        if let cells = visibleCells,
+                           let cell = cells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
+                            cell.update(selected: false, state: upload.state)
+                        }
+                    }
                 }
             }
         }
         
-        // Refresh collection view if necessary
-        if didChangeSelection {
-            self.updateNavBar()
-            self.localImagesCollection.reloadData()
+        // Update section buttons
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let sectionHeader = header as? LocalImagesHeaderReusableView {
+                let selectState = updateSelectButton(ofSection: sectionHeader.section)
+                sectionHeader.setButtonTitle(forState: selectState)
+            }
         }
+        self.updateNavBar()
     }
     
     private func canDeleteUploadedImages() -> Bool {

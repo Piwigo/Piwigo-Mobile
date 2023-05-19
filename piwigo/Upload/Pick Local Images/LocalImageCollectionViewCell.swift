@@ -169,7 +169,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .finished, .moderated:
-            selectedImage?.isHidden = true
+            selectedImage?.isHidden = !selected
             darkenView?.isHidden = false
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = false

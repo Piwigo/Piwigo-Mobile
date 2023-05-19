@@ -26,7 +26,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
-    private var section = 0
+    var section = 0
 
     // MARK: - View
     
