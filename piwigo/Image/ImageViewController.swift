@@ -31,7 +31,6 @@ class ImageViewController: UIViewController {
     var imageData: Image!
     var isToolbarRequired = false
     var didPresentPageAfter = true
-    var didPresentErrorMessage = false
     var pageViewController: UIPageViewController?
 
     // MARK: - Navigation Bar & Toolbar Buttons
@@ -193,10 +192,6 @@ class ImageViewController: UIViewController {
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        didPresentErrorMessage = false
-    }
-
     deinit {
         print("••> ImageViewController of image \(String(describing: imageData.pwgID)) is being deinitialized.")
         // Unregister palette changes
@@ -486,7 +481,7 @@ class ImageViewController: UIViewController {
                     return
                 }
                 // Display error only once and when image data is incomplete
-                if isIncomplete, !didPresentErrorMessage  {
+                if isIncomplete  {
                     self.retrieveImageDataError(error)
                 }
             }
@@ -498,9 +493,7 @@ class ImageViewController: UIViewController {
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
             dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) {
-                self.didPresentErrorMessage = true
-            }
+                               errorMessage: error.localizedDescription) { }
         }
     }
 
