@@ -1696,7 +1696,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 let indexPath = IndexPath(item: index, section: section)
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     // Select or deselect the cell
-                    let uploadState = getUploadStateOfImage(at: index, for: cell)
+                    let uploadState = getUploadStateOfImage(at: firstIndex + index, for: cell)
                     cell.update(selected: false, state: uploadState)
                 }
             }
