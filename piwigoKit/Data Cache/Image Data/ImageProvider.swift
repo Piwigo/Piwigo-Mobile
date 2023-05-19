@@ -312,23 +312,38 @@ public class ImageProvider: NSObject {
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
                                 sort: pwgImageSort = .dateCreatedDescending,
                                 fromRank startRank: Int64 = Int64.min) -> Bool {
+        // Initialisation
         var success = false
+        
+        // Get current user object (will create server and user objects if needed)
+        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
+            print("ImageProvider.importOneBatch() unresolved error: Could not get user object!")
+            return false
+        }
+        if user.isFault {
+            // user is not fired yet.
+            user.willAccessValue(forKey: nil)
+            user.didAccessValue(forKey: nil)
+        }
+        
+        // Get album of selected ID (should exist at this stage)
+        guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
+            print("ImageProvider.importOneBatch() unresolved error: Could not get album object!")
+            return false
+        }
+        if album.isFault {
+            // album is not fired yet.
+            album.willAccessValue(forKey: nil)
+            album.didAccessValue(forKey: nil)
+        }
+
+        // Get favorite album if possible (will not prevent import)
+        let favAlbum = albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue)
         
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
             
-            // Get current user object (will create server object if needed)
-            guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-                fatalError("Unresolved error — Could not get user object!")
-            }
-            guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
-                fatalError("Unresolved error — Could not get album object!")
-            }
-            guard let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
-                fatalError("Unresolved error — Could not get favorite album object!")
-            }
-
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let imageIds = Set(imagesBatch.compactMap({$0.id}))
             let controller = frcOfImage(inContext: self.bckgContext, withIds: imageIds)
@@ -354,7 +369,7 @@ public class ImageProvider: NSObject {
                 
                 // Check whether this image is a favorite
                 /// (available since version 13.0.0 of the Piwigo server)
-                if let isFavorite = imageData.isFavorite, isFavorite {
+                if let favAlbum = favAlbum, let isFavorite = imageData.isFavorite, isFavorite {
                     albums.insert(favAlbum)
                 }
                 

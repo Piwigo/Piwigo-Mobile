@@ -68,7 +68,8 @@ public class UserProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                print("••> getUserAccount() unresolved error: \(error)")
+                return
             }
             
             // Did we find a User instance?

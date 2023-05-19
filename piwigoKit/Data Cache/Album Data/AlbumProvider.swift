@@ -76,7 +76,8 @@ public class AlbumProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                print("••> getAlbum() unresolved error: \(error)")
+                return
             }
             
             // Did we find an Album instance?
@@ -352,15 +353,21 @@ public class AlbumProvider: NSObject {
         var success = false
         var albumToDeleteIDs = Set<Int32>()
 
+        // Get current user object (will create server and user objects if needed)
+        guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
+            print("AlbumProvider.importOneBatch() unresolved error: Could not get user object!")
+            return (success, albumToDeleteIDs)
+        }
+        if user.isFault {
+            // user is not fired yet.
+            user.willAccessValue(forKey: nil)
+            user.didAccessValue(forKey: nil)
+        }
+
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
             
-            // Get current user object (will create server object if needed)
-            guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-                fatalError("Unresolved error!")
-            }
-
             // Retrieve albums in persistent store
             let fetchRequest = Album.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
