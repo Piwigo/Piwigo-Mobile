@@ -254,7 +254,9 @@ class LoginViewController: UIViewController {
                     // Will accept certificate
                     NetworkVars.didApproveCertificate = true
                     // Try logging in with approved certificate
-                    self.launchLogin()
+                    DispatchQueue.main.async {
+                        self.launchLogin()
+                    }
                 }
             })
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, acceptAction])
