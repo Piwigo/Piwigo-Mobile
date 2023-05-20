@@ -6,12 +6,18 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+//import os
 import CoreData
 
 let sizesErrorDomain = "Sizes Migration"
 
 class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     
+    // Logs migration activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+//    @available(iOSApplicationExtension 14.0, *)
+//    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_0B_to_0C")
+
     /**
      ImageToSizes custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
@@ -68,8 +74,9 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         }
 
         // Associate new Sizes object to Image request
-        print("••> Image to Sizes migration:")
-        print("    new Sizes: \(newSizes)")
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            ImageToSizesMigrationPolicy_0B_to_0C.logger.notice("Image ► Sizes: \(newSizes)")
+//        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
     }
 }

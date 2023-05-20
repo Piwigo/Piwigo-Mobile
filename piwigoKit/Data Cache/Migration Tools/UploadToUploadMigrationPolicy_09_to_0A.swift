@@ -6,12 +6,18 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+//import os
 import CoreData
 
 let uploadErrorDomain = "Upload Migration"
 
 class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
     
+    // Logs migration activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+//    @available(iOSApplicationExtension 14.0, *)
+//    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_09_to_0A")
+
     /**
      UploadToUpload custom migration following these steps:
      - creates an Upload request instance in the destination context
@@ -157,10 +163,10 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
             newUpload.setValue(tags, forKey: "tags")
         }
         
-        // Associate new Server object to Upload request
-        print("••> Upload to Upload migration:")
-        print("    old Upload: \(sInstance)")
-        print("    new Upload: \(newUpload)")
+        // Associate new Upload object to old one
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            UploadToUploadMigrationPolicy_09_to_0A.logger.notice("Upload ► Upload: \(sInstance) > \(newUpload)")
+//        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
     }
 }

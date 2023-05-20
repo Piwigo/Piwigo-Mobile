@@ -6,11 +6,17 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+//import os
 import CoreData
 
 let tagErrorDomain = "Tag Migration"
 
 class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
+
+    // Logs migration activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+//    @available(iOSApplicationExtension 14.0, *)
+//    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_09_to_0A")
 
     /**
      If needed, creates a Server instance of the currently used server before migrating Tag entities.
@@ -96,9 +102,9 @@ class TagToTagMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         }
 
         // Associate new Tag to old one
-        print("••> Tag to Tag migration:")
-        print("    old Tag: \(sInstance)")
-        print("    new Tag: \(newTag)")
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            TagToTagMigrationPolicy_09_to_0A.logger.notice("Tag ► Tag: \(sInstance) > \(newTag)")
+//        }
         manager.associate(sourceInstance: sInstance,
                           withDestinationInstance: newTag,
                           for: mapping)
