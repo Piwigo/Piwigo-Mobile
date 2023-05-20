@@ -355,23 +355,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return images
     }()
 
-    func fetchedImageCount() -> Int {
-        // Create a fetch request for the Image entity
-        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
-        fetchRequest.resultType = .countResultType
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: getImagePredicates())
-
-        // Fetch number of objects
-        do {
-            let countResult = try mainContext.fetch(fetchRequest)
-            return countResult.first!.intValue
-        }
-        catch let error as NSError {
-            print("••> Image count not fetched \(error), \(error.userInfo)")
-        }
-        return Int.zero
-    }
-
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -580,7 +563,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Check conditions before loading album and image data
         let lastLoad = albumData.dateGetImages
-        let nbImages = fetchedImageCount()
+        let nbImages = (images.fetchedObjects ?? []).count
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
@@ -1313,7 +1296,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Avoid rare crashes…
-            if (indexPath.item < 0) || (indexPath.item >= fetchedImageCount()) {
+            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
                 return
             }
             guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
@@ -1558,7 +1541,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
             // Disable menu if this is the last deleted image
-            if fetchedImageCount() == 0 {
+            if (images.fetchedObjects ?? []).count == 0 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> Last removed image ► disable menu")
                     self?.isSelect = false
@@ -1598,7 +1581,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
-            if fetchedImageCount() == 1 {
+            if (images.fetchedObjects ?? []).count == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> First added image ► enable menu")
                     self?.updateButtonsInPreviewMode()

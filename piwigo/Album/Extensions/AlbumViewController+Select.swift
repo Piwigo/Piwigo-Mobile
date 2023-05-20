@@ -296,7 +296,7 @@ extension AlbumViewController
         }
 
         // Scroll to position of images if needed
-        if numberOfImageCells == 0, fetchedImageCount() != 0 {
+        if numberOfImageCells == 0, (images.fetchedObjects ?? []).count != 0 {
             let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
             imagesCollection?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
