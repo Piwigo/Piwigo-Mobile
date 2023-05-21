@@ -171,12 +171,13 @@ extension AlbumViewController
                 if imageIDs.isEmpty == false {
                     let toRemove = images.filter({ imageIDs.contains($0.pwgID) })
                     self.albumData.removeFromImages(toRemove)
-                } else if self.albumData.nbImages == Int64.zero {
+                    try? self.mainContext.save()
+                } else if self.albumData.nbImages == Int64.zero,
+                          images.isEmpty == false {
                     self.albumData.removeFromImages(images)
+                    try? self.mainContext.save()
                 }
             }
-            
-            try? self.mainContext.save()
         }
         
         // Delete upload requests of images deleted from the Piwigo server
