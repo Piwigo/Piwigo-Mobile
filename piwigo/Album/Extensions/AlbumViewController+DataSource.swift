@@ -53,6 +53,15 @@ extension AlbumViewController
                 let nbImages = self.albumData.nbImages
                 if self.categoryId == 0 || nbImages == 0 {
                     // Done fetching images
+                    // ► Check if the album has been deleted
+                    if self.albumData.isDeleted {
+                        DispatchQueue.main.async { [self] in
+                            navigationController?.hidePiwigoHUD { [self] in
+                                navigationController?.popViewController(animated: true)
+                            }
+                        }
+                        return
+                    }
                     // ► Remove non-fetched images from album
                     self.removeImageWithIDs(oldImageIds)
                     // ► Remove current album from list of album being fetched

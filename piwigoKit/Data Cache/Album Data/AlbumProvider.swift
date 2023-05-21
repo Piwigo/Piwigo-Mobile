@@ -401,8 +401,8 @@ public class AlbumProvider: NSObject {
             
             // Initialise set of album IDs during the first iteration
             if albumIDs == nil {
-                // Store IDs of present list of albums
-                albumToDeleteIDs = Set(cachedAlbums.filter({$0.parentId == parentId}).map({$0.pwgID}))
+                // Store IDs of present list of albums, except root which must not be deleted
+                albumToDeleteIDs = Set(cachedAlbums.filter({$0.pwgID != 0}).map({$0.pwgID}))
             } else {
                 // Resume IDs of albums to delete
                 albumToDeleteIDs = albumIDs ?? Set<Int32>()
