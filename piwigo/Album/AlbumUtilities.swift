@@ -654,49 +654,12 @@ class AlbumUtilities: NSObject {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
         let albumThumbnailSize: CGFloat = 144
 
-        // Square?
-        if pwgImageSize.square.minPixels >= albumThumbnailSize {
-            return .square
-        }
-        
-        // Thumbnail?
-        if pwgImageSize.thumb.minPixels >= albumThumbnailSize {
-            return .thumb
-        }
-        
-        // XXSmall?
-        if pwgImageSize.xxSmall.minPixels >= albumThumbnailSize {
-            return .xxSmall
-        }
-        
-        // XSmall?
-        if pwgImageSize.xSmall.minPixels >= albumThumbnailSize {
-            return .xSmall
-        }
-        
-        // Small?
-        if pwgImageSize.small.minPixels >= albumThumbnailSize {
-            return .small
-        }
-        
-        // Medium?
-        if pwgImageSize.medium.minPixels >= albumThumbnailSize {
-            return .medium
-        }
-        
-        // Large?
-        if pwgImageSize.large.minPixels >= albumThumbnailSize {
-            return .large
-        }
-        
-        // XLarge?
-        if pwgImageSize.xLarge.minPixels >= albumThumbnailSize {
-            return .xLarge
-        }
-
-        // XXLarge?
-        if pwgImageSize.xxLarge.minPixels >= albumThumbnailSize {
-            return .xxLarge
+        // Loop over all sizes
+        let sizes = pwgImageSize.allCases.dropLast(1)
+        for size in sizes {
+            if size.minPixels >= albumThumbnailSize {
+                return size
+            }
         }
 
         return .medium
