@@ -40,7 +40,7 @@ class PieProgressView: UIView {
         progressLayer.strokeColor = UIColor.white.cgColor
         progressLayer.lineCap = .butt
         progressLayer.lineWidth = radius - 1
-        progressLayer.strokeEnd = 0.34
+        progressLayer.strokeEnd = 0
         layer.addSublayer(progressLayer)
     }
 
