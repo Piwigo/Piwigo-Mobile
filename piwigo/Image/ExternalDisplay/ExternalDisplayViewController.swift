@@ -65,6 +65,15 @@ class ExternalDisplayViewController: UIViewController {
         // Store image URL for being able to pause the download
         self.imageURL = imageURL
         
+        // Presents the video player if needed
+        if imageData.isVideo {
+            // Hide help message
+            helpLabel.isHidden = true
+            // Start playing video
+            startVideoPlayerView(with: imageData)
+            return
+        }
+        
         // Get URL of preview image file potentially in cache
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
@@ -140,8 +149,6 @@ class ExternalDisplayViewController: UIViewController {
         completion: { _ in
             // Hide progress view
             self.progressView.isHidden = true
-            print(self.view.bounds.size)
-            print(self.imageView.frame.size)
         }
     }
 }

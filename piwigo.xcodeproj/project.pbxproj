@@ -102,6 +102,7 @@
 		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */; };
 		AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */; };
+		AD3B2C602A27CA410001B8B0 /* ExternalDisplayVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C5F2A27CA410001B8B0 /* ExternalDisplayVideoView.swift */; };
 		AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3CD639259DE34C000C26ED /* Help06ViewController.swift */; };
 		AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3DB4102773957A00017542 /* ImageViewController.storyboard */; };
 		AD3DB4132773958200017542 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3DB4122773958200017542 /* ImagePreviewViewController.swift */; };
@@ -592,6 +593,7 @@
 		AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = community.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDisplayUtilities.swift; sourceTree = "<group>"; };
 		AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreenExternal.storyboard; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Resources/LaunchScreenExternal.storyboard"; sourceTree = "<absolute>"; };
+		AD3B2C5F2A27CA410001B8B0 /* ExternalDisplayVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalDisplayVideoView.swift; sourceTree = "<group>"; };
 		AD3CD639259DE34C000C26ED /* Help06ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help06ViewController.swift; sourceTree = "<group>"; };
 		AD3DB4102773957A00017542 /* ImageViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ImageViewController.storyboard; sourceTree = "<group>"; };
 		AD3DB4122773958200017542 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
@@ -1670,6 +1672,7 @@
 			children = (
 				AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */,
 				ADD77EF12A1D0A6000F8C779 /* ExternalDisplayViewController.swift */,
+				AD3B2C5F2A27CA410001B8B0 /* ExternalDisplayVideoView.swift */,
 				ADD77EF42A1D0D9400F8C779 /* ExternalDisplayViewController.storyboard */,
 			);
 			path = ExternalDisplay;
@@ -2713,6 +2716,7 @@
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
 				ADC69F1B285A4C30009BF9AF /* AlbumViewController+Favorites.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
+				AD3B2C602A27CA410001B8B0 /* ExternalDisplayVideoView.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
 				AD659806297D98BB002A61D8 /* ImageDownload.swift in Sources */,

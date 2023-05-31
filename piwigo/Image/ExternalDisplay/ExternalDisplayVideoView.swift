@@ -1,16 +1,16 @@
 //
-//  VideoPreviewView.swift
+//  ExternalDisplayVideoView.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 14/08/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 31/05/2023.
+//  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
 import AVKit
 import UIKit
 import piwigoKit
 
-extension ImageViewController
+extension ExternalDisplayViewController
 {
     // MARK: - Video Player
     func startVideoPlayerView(with imageData: Image?) {
@@ -60,6 +60,7 @@ extension ImageViewController
         playerController.player = videoPlayer
         playerController.videoGravity = .resizeAspect
         playerController.showsPlaybackControls = true
+        playerController.allowsPictureInPicturePlayback = false
         
         // Start playing automatically
         playerController.player?.play()
@@ -69,21 +70,26 @@ extension ImageViewController
         playerController.modalPresentationStyle = .overFullScreen
         view?.addSubview(playerController.view)
         view?.addConstraints(NSLayoutConstraint.constraintFillSize(playerController.view)!)
-        present(playerController, animated: true)
+        present(playerController, animated: false)
     }
 
-    private func assetFailedToPrepare(forPlayback error: Error?) {
-        // Determine the present view controller
-        if let error = error as NSError? {
-            dismissPiwigoError(withTitle: error.localizedDescription, message: "",
-                               errorMessage: error.localizedFailureReason ?? "") {}
+    func dismissVideoPlayerIfNeeded() {
+        // Dismiss the video player if it exists
+        if let playerVC = presentedViewController as? AVPlayerViewController {
+            playerVC.dismiss(animated: true)
         }
+    }
+    
+    private func assetFailedToPrepare(forPlayback error: Error?) {
+        // Could not present the video
+        imageView.image = nil
+        helpLabel.isHidden = false
     }
 }
 
 
 // MARK: - AVAssetResourceLoader Methods
-extension ImageViewController: AVAssetResourceLoaderDelegate
+extension ExternalDisplayViewController: AVAssetResourceLoaderDelegate
 {
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader,
                         shouldWaitForResponseTo authenticationChallenge: URLAuthenticationChallenge

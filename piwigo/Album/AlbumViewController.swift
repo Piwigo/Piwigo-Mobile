@@ -1369,6 +1369,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                         if scene.session.role == wantedRole,
                            let windowScene = scene as? UIWindowScene,
                            let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+                            imageVC.dismissVideoPlayerIfNeeded()
                             imageVC.imageData = imageData
                             imageVC.configImage()
                         }
@@ -1376,10 +1377,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 }
                 
                 // Shows which image was tapped
-                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
-                    oldCell.darkenView.isHidden = true
-                }
-                selectedCell.darkenView.isHidden = false
+//                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
+//                    oldCell.darkenView.isHidden = true
+//                }
+//                selectedCell.darkenView.isHidden = false
             }
             
             // Remember that user did tap this image
