@@ -32,24 +32,44 @@ class ClearCache: NSObject {
             DispatchQueue.main.async {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 if #available(iOS 13.0, *) {
+                    // Get all scenes
+                    let connectedScenes = UIApplication.shared.connectedScenes
+                    
                     // Disconnect inactive scenes
-                    let scenesInBackground = UIApplication.shared.connectedScenes
+                    let scenesInBackground = connectedScenes
                         .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
                     for scene in scenesInBackground {
                         UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
                     }
                     
-                    // Disconnect supplementary active scenes
-                    var connectedScenes = UIApplication.shared.connectedScenes
-                    while connectedScenes.count > 1 {
+                    // Clear external displays
+                    var externalScenes = [UIScene]()
+                    if #available(iOS 16.0, *) {
+                        externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplayNonInteractive})
+                    } else {
+                        // Fallback to previous versions
+                        externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplay})
+                    }
+                    externalScenes.forEach { scene in
+                        if let scene = scene as? UIWindowScene,
+                           let imageVC = scene.rootViewController() as? ExternalDisplayViewController {
+                            imageVC.imageData = nil
+                            imageVC.imageView.image = nil
+                            imageVC.helpLabel.isHidden = false
+                        }
+                    }
+                    
+                    // Disconnect supplementary active scenes except external screens
+                    var deviceScenes = connectedScenes.filter({$0.session.role == .windowApplication})
+                    while deviceScenes.count > 1 {
                         if let scene = connectedScenes.first {
                             UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                            connectedScenes.removeFirst()
+                            deviceScenes.removeFirst()
                         }
                     }
                     
                     // Present login view in the remaining scene
-                    if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window {
+                    if let window = (deviceScenes.first?.delegate as? SceneDelegate)?.window {
                         AppVars.shared.isLoggingOut = true
                         appDelegate?.loadLoginView(in: window)
                     }

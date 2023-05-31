@@ -442,7 +442,8 @@ class ImageUtilities: NSObject {
         }
 
         // Full Resolution
-        if let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+        if imageData.isVideo == false,
+            let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }

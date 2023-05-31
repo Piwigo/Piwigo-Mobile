@@ -114,21 +114,69 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Scene Configuration
     @available(iOS 13.0, *)
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+
+        // Check connection options for user activities and attempt to generate an ActivityType
         var currentActivity: ActivityType?
         options.userActivities.forEach {
           currentActivity = ActivityType(rawValue: $0.activityType)
         }
 
-        let activity = currentActivity ?? ActivityType.album
+        // Default acitivty depends if user connected an external display
+        var activity: ActivityType!
+        if #available(iOS 16.0, *) {
+            switch connectingSceneSession.role {
+            case .windowApplication:                    /* Main display     */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.album
+
+            case .windowExternalDisplayNonInteractive:  /* External display */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.external
+
+            default:
+                debugPrint("••> Un-managed scene session role!")
+                activity = currentActivity ?? ActivityType.album
+            }
+        } else {
+            // Fallback on earlier versions
+            switch connectingSceneSession.role {
+            case .windowApplication:                    /* Main display     */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.album
+
+            case .windowExternalDisplay:                /* External display */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.external
+
+            default:
+                debugPrint("••> Un-managed scene session role!")
+                activity = currentActivity ?? ActivityType.album
+            }
+        }
+        
         return activity.sceneConfiguration()
     }
 
     @available(iOS 13.0, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        //..
-    }
+        // Called when the system, due to a user interaction or a request from the application itself, removes one or more representation from the -[UIApplication openSessions] set
+        // If sessions are discarded while the application is not running, this method is called shortly after the applications next launch.
+        sceneSessions.forEach { sceneSession in
+            let wantedRole: UISceneSession.Role!
+            if #available(iOS 16.0, *) {
+                wantedRole = .windowExternalDisplayNonInteractive
+            } else {
+                // Fallback on earlier versions
+                wantedRole = .windowExternalDisplay
+            }
+            if sceneSession.role == wantedRole,
+                let delegate = sceneSession.scene?.delegate as? ExternalDisplaySceneDelegate {
+                 delegate.tearDownWindow(for: sceneSession.persistentIdentifier)
+            }
+        }
+   }
 
     
     // MARK: - App Remote Notifications

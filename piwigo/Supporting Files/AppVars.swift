@@ -97,4 +97,7 @@ class AppVars: NSObject {
     
     /// - Flag informing the scene delegate that the user asked to logout
     var isLoggingOut: Bool = false
+    
+    /// - Flag indicating if an external display is connected
+    var inSingleDisplayMode: Bool = true
 }

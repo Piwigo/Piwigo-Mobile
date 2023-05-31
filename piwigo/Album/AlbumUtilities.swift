@@ -415,77 +415,106 @@ class AlbumUtilities: NSObject {
 
     // MARK: - Album/Images Collections | Common Methods
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
-        var pageSize: CGSize = view?.frame.size ?? UIScreen.main.bounds.size
+        var pageSize: CGSize = view?.frame.size ?? view?.window?.screen.bounds.size ?? UIScreen.main.bounds.size
         pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
         pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
         return pageSize
     }
     
-    static func minNberOfImagesPerRow() -> Int {   // => 3 on iPhone, 5 on iPad
-        return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
+
+    // MARK: - Album/Images Collections | Album Thumbnails
+    static var minNberOfAlbumsPerRow: Int = {
+        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
+    }()
+
+    static var maxNberOfAlbumsPerRow: Int = {
+        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
+    }()
+
+    static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
+        // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
+        let albumThumbnailSize: CGFloat = 144
+
+        // Loop over all sizes
+        let sizes = pwgImageSize.allCases.dropLast(1)
+        for size in sizes {
+            if size.minPixels >= albumThumbnailSize {
+                return size
+            }
+        }
+        return .medium
     }
     
+    static func albumThumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
+        var sizeName = size.name
+        
+        // Determine the optimum image size for the current device
+        let optimumSize = self.optimumAlbumThumbnailSizeForDevice()
+
+        // Return name for given thumbnail size
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
+            if withInfo {
+                if size == optimumSize {
+                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
+                } else {
+                    sizeName.append(contentsOf: size.sizeAndScale)
+                }
+            }
+        case .large, .xLarge, .xxLarge:
+            if withInfo {
+                sizeName.append(contentsOf: size.sizeAndScale)
+            }
+        case .fullRes:
+            break
+        }
+        return sizeName
+    }
+    
+    static func albumSize(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
+        // Size of view or screen
+        let pageSize = sizeOfPage(forView: view)
+        
+        // Number of albums per row in portrait
+        let viewWidth = min(pageSize.width, pageSize.height)
+        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
+        let denominator = kAlbumCellSpacing + maxWidth
+        let nbAlbumsPerRowInPortrait = Int(round(numerator / denominator))
+
+        // Width of album cells determined for the portrait mode
+        let minWidth = min(pageSize.width, pageSize.height)
+        let portraitSpacing = 2.0 * kAlbumMarginsSpacing + (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
+        let albumWidthInPortrait = floor((minWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+
+        // Album cells per row in whichever mode we are displaying them
+        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
+        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumWidthInPortrait))
+
+        // Width of albums for that number
+        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+    }
+
 
     // MARK: - Album/Images Collections | Image Thumbnails
+    static var minNberOfImagesPerRow: Int = {
+        return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
+    }()
+
+    static var maxNberOfImagesPerRow: Int = {
+        return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
+    }()
+
     static func optimumThumbnailSizeForDevice() -> pwgImageSize {
-        // Get optimum number of images per row
-        let nberThumbnailsPerRow = self.minNberOfImagesPerRow()
-
-        // Square?
-        var minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.square.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .square
+        // Returns the lowest size of sufficient resolution
+        // to display the minimum number of thumbnails on the device.
+        let sizes = pwgImageSize.allCases.dropLast(1)   // Avoids full resolution
+        for size in sizes {
+            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPixels)
+            if nbImages <= minNberOfImagesPerRow {
+                return size
+            }
         }
-        
-        // Thumbnail?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.thumb.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .thumb
-        }
-
-        // XXSmall?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xxSmall.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .xxSmall
-        }
-
-        // XSmall?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xSmall.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .xSmall
-        }
-
-        // Small?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.small.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .small
-        }
-
-        // Medium?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.medium.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .medium
-        }
-
-        // Large?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.large.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .large
-        }
-
-        // XLarge?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xLarge.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .xLarge
-        }
-
-        // XXLarge?
-        minNberOfImages = self.imagesPerRowInPortrait(forMaxWidth: pwgImageSize.xxLarge.minPixels)
-        if minNberOfImages <= nberThumbnailsPerRow {
-            return .xxLarge
-        }
-        
-        return .thumb
+        return .xxLarge
     }
 
     static func thumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
@@ -536,26 +565,20 @@ class AlbumUtilities: NSObject {
         return imageCellVerticalSpacing
     }
     
-    static func imagesPerRowInPortrait(forMaxWidth: CGFloat) -> Int {
-        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-        return imagesPerRowInPortrait(forView: nil, maxWidth: forMaxWidth)
-    }
-
-    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
-        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-        return imagesPerRowInPortrait(forView: view, maxWidth: maxWidth, collectionType: .full)
-    }
-
-    static func imagesPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat,
-                                       collectionType type: pwgImageCollectionType) -> Int {
-        // We display at least 3 thumbnails per row and images never exceed the thumbnails size
-        let pageSize = sizeOfPage(forView: view)
+    static func imagesPerRowInPortrait(forMaxWidth maxWidth: CGFloat) -> Int {
+        // Returns the number thumbnails per row for a given image width
+        let pageSize = sizeOfPage(forView: nil)
         let viewWidth = min(pageSize.width, pageSize.height)
-        let horSpacing = imageCellHorizontalSpacing(forCollectionType: type)
+        let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
         let numerator = viewWidth - 2 * kImageMarginsSpacing + horSpacing
         let denominator = horSpacing + maxWidth
         let nberOfImagePerRow = Int(round(numerator / denominator))
-        return max(minNberOfImagesPerRow(), nberOfImagePerRow)
+        return max(minNberOfImagesPerRow, nberOfImagePerRow)
+    }
+
+    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int) -> CGFloat {
+        return imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait,
+                         collectionType: .full)
     }
 
     static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int,
@@ -578,7 +601,7 @@ class AlbumUtilities: NSObject {
         let numerator = screenSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
         let nberOfImages = Int(round(numerator / denominator))
-        var imagesPerRow = Double(max(minNberOfImagesPerRow(), nberOfImages))
+        var imagesPerRow = Double(max(minNberOfImagesPerRow, nberOfImages))
 
         // Images per row for the current size class
         imagesPerRow *= pageSize.width / screenSize.width
@@ -587,11 +610,6 @@ class AlbumUtilities: NSObject {
         // Size of squared images for that number
         let usedWidth = pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
         return CGFloat(floor(usedWidth / imagesPerRow))
-    }
-
-    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int) -> CGFloat {
-        return imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait,
-                         collectionType: .full)
     }
 
     static func numberOfImagesToDownloadPerPage() -> Int {
@@ -613,9 +631,9 @@ class AlbumUtilities: NSObject {
         let spacing = 2.0 * kImageMarginsSpacing - imageCellHorizontalSpacing
         var numerator = pageSize.width - spacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
-        let imagesPerRowInPortrait = Double(max(minNberOfImagesPerRow(), Int(round(numerator / denominator))))
+        let imagesPerRowInPortrait = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
         numerator = pageSize.height - spacing
-        let imagesPerRowInLandscape = Double(max(minNberOfImagesPerRow(), Int(round(numerator / denominator))))
+        let imagesPerRowInLandscape = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
 
         // Minimum size of squared images
         let portrait = 2.0 * kImageMarginsSpacing + (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
@@ -630,97 +648,9 @@ class AlbumUtilities: NSObject {
         return Int(ceil(viewArea / cellArea))
     }
 
-    static func numberOfImagesPerPage(forView view: UIView, imagesPerRowInPortrait: Int,
-                                      collectionType type: pwgImageCollectionType) -> Int {
-        // Size of view or screen
-        let pageSize = sizeOfPage(forView: view)
-
-        // Size of squared images for that number
-        let size = imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait)
-        
-        // Image horizontal & vertical cell spacings
-        let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: type)
-        let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: type)
-
-        // Number of images par page
-        let cellArea = (size + imageCellVerticalSpacing) * (size + imageCellHorizontalSpacing)
-        let viewArea = pageSize.width * pageSize.height
-        return Int(ceil(viewArea / cellArea))
-    }
-    
-
-    // MARK: - Album/Images Collections | Album Thumbnails
-    static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
-        // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
-        let albumThumbnailSize: CGFloat = 144
-
-        // Loop over all sizes
-        let sizes = pwgImageSize.allCases.dropLast(1)
-        for size in sizes {
-            if size.minPixels >= albumThumbnailSize {
-                return size
-            }
-        }
-
-        return .medium
-    }
-    
-    static func albumThumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
-        var sizeName = size.name
-        
-        // Determine the optimum image size for the current device
-        let optimumSize = self.optimumAlbumThumbnailSizeForDevice()
-
-        // Return name for given thumbnail size
-        switch size {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
-            if withInfo {
-                if size == optimumSize {
-                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-                } else {
-                    sizeName.append(contentsOf: size.sizeAndScale)
-                }
-            }
-        case .large, .xLarge, .xxLarge:
-            if withInfo {
-                sizeName.append(contentsOf: size.sizeAndScale)
-            }
-        case .fullRes:
-            break
-        }
-        return sizeName
-    }
-
     static func imageDetailsSize(forView view: UIView) -> CGFloat {
         // Size of view or screen
         let cellSize = sizeOfPage(forView:view)
         return CGFloat(min(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0))
-    }
-
-    static func numberOfAlbumsPerRowInPortrait(forView view: UIView?, maxWidth: CGFloat) -> Int {
-        // Size of view or screen
-        let pageSize = sizeOfPage(forView: view)
-        let viewWidth = min(pageSize.width, pageSize.height)
-        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
-        let denominator = kAlbumCellSpacing + maxWidth
-        return Int(round(numerator / denominator))
-    }
-    
-    static func albumSize(forView view: UIView?,
-                          nberOfAlbumsPerRowInPortrait albumsPerRowInPortrait: Int) -> CGFloat {
-        // Size of view or screen
-        let pageSize = sizeOfPage(forView: view)
-        
-        // Size of album cells determined for the portrait mode
-        let minWidth = min(pageSize.width, pageSize.height)
-        let portrait = 2.0 * kAlbumMarginsSpacing + (CGFloat(albumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
-        let albumsSizeInPortrait = floor((minWidth - portrait) / CGFloat(albumsPerRowInPortrait))
-
-        // Album cells per row in whichever mode we are displaying them
-        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
-        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumsSizeInPortrait))
-
-        // Width of albums for that number
-        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
     }
 }

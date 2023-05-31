@@ -43,7 +43,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var pauseSearch = false
     var oldImageIds = Set<Int64>()
-    var onPage = 0, lastPage = 0, perPage = 0
+    var onPage = 0, lastPage = 0
 
     var isSelect = false
     var touchedImageIds = [Int64]()
@@ -59,7 +59,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
-    private var imageDetailView: ImageViewController?
+    var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
@@ -120,6 +120,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
     }
 
+    // Number of images to download per page
+    lazy var perPage: Int = {
+        return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 1)
+    }()
     
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
@@ -343,7 +347,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         var andPredicates = getImagePredicates()
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchBatchSize = AlbumUtilities.numberOfImagesToDownloadPerPage()
+        fetchRequest.fetchBatchSize = self.perPage
         return fetchRequest
     }()
 
@@ -392,17 +396,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         ]
         imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
 
-        // Buttons
+        // Buttons appearance
         addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-
+        
         createAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
         uploadImagesButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-
+        
         uploadQueueButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
         uploadQueueButton.backgroundColor = UIColor.piwigoColorRightLabel()
         nberOfUploadsLabel.textColor = UIColor.piwigoColorBackground()
         progressLayer.strokeColor = UIColor.piwigoColorBackground().cgColor
-
+        
         homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
         homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
         homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
@@ -524,9 +528,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("••> viewWillAppear    => ID:\(categoryId)")
-
-        // Initialise number of images to download per page
-        perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -1217,15 +1218,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            let nberAlbumsPerRow = AlbumUtilities.numberOfAlbumsPerRowInPortrait(forView: collectionView, maxWidth: 384.0)
-            let size = AlbumUtilities.albumSize(forView: collectionView,
-                                                nberOfAlbumsPerRowInPortrait: nberAlbumsPerRow)
+            let size = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
             return CGSize(width: size, height: 156.5)
         
         default /* Images */:
             // Calculates size of image cells
-            let size = AlbumUtilities.imageSize(forView: imagesCollection,
-                                                imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
+            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait
+            let size = AlbumUtilities.imageSize(forView: imagesCollection, imagesPerRowInPortrait: nbImages)
             return CGSize(width: size, height: size)
         }
     }
@@ -1299,14 +1298,34 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
                 return
             }
-            guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
-                return
-            }
 
             // Action depends on mode
-            if !isSelect {
-                // Remember that user did tap this image
-                imageOfInterest = indexPath
+            if isSelect {
+                // Check image ID
+                guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
+                    return
+                }
+                
+                // Selection mode active => add/remove image from selection
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.insert(imageId)
+                    selectedCell.isSelection = true
+                    if selectedCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
+                } else {
+                    selectedCell.isSelection = false
+                    selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
+                }
+                
+                // and update nav buttons
+                updateButtonsInSelectionMode()
+                return
+            }
+            
+            // Display the image in fullscreen mode
+            if AppVars.shared.inSingleDisplayMode {
 
                 // Add category to list of recent albums
                 let userInfo = ["categoryId": NSNumber(value: categoryId)]
@@ -1332,22 +1351,39 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     navigationController?.pushViewController(imageDetailView, animated: true)
                 }
             } else {
-                // Selection mode active => add/remove image from selection
-                if !selectedImageIds.contains(imageId) {
-                    selectedImageIds.insert(imageId)
-                    selectedCell.isSelection = true
-                    if selectedCell.isFavorite {
-                        selectedFavoriteIds.insert(imageId)
-                    }
-                } else {
-                    selectedCell.isSelection = false
-                    selectedImageIds.remove(imageId)
-                    selectedFavoriteIds.remove(imageId)
+                // Check image data
+                guard let imageData = selectedCell.imageData else {
+                    return
                 }
-
-                // and update nav buttons
-                updateButtonsInSelectionMode()
+                
+                // Present image on external screen
+                if #available(iOS 13.0, *) {
+                    var wantedRole: UISceneSession.Role!
+                    for scene in UIApplication.shared.connectedScenes {
+                        if #available(iOS 16.0, *) {
+                            wantedRole = .windowExternalDisplayNonInteractive
+                        } else {
+                            // Fallback on earlier versions
+                            wantedRole = .windowExternalDisplay
+                        }
+                        if scene.session.role == wantedRole,
+                           let windowScene = scene as? UIWindowScene,
+                           let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+                            imageVC.imageData = imageData
+                            imageVC.configImage()
+                        }
+                    }
+                }
+                
+                // Shows which image was tapped
+                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
+                    oldCell.darkenView.isHidden = true
+                }
+                selectedCell.darkenView.isHidden = false
             }
+            
+            // Remember that user did tap this image
+            imageOfInterest = indexPath
         }
     }
 

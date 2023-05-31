@@ -193,7 +193,7 @@ class ImageViewController: UIViewController {
     }
     
     deinit {
-        print("••> ImageViewController of image \(String(describing: imageData.pwgID)) is being deinitialized.")
+        print("••> ImageViewController is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }

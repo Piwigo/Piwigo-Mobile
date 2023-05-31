@@ -73,8 +73,7 @@ extension AlbumViewController
                 
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
-                let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
-                let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+                let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
                 let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
                 self.fetchImages(withInitialImageIds: oldImageIds, query: query,
                                  fromPage: 0, toPage: lastPage - 1,
@@ -268,9 +267,8 @@ extension AlbumViewController
         // Load favorites data in the background
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        let perPage = AlbumUtilities.numberOfImagesToDownloadPerPage()
         let albumNbImages = album.nbImages
-        let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(perPage))
+        let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
         let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
         self.fetchFavorites(ofAlbum: album, imageIds: oldImageIds,
                             fromPage: 0, toPage: lastPage, perPage: perPage)

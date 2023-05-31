@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  mySwift
+//  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/09/2020.
 //  Copyright © 2020 Piwigo. All rights reserved.
@@ -34,8 +34,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
 
-        // Get other existing scenes
+        // Get other existing scenes of the same session
         let existingScenes = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
             .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
 
         // Determine the user activity from a new connection or from a session's state restoration.

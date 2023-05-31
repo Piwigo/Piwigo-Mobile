@@ -345,6 +345,7 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Updating Photo…";
 "editImageDetailsHUD_updatingPlural" = "Updating Photos…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";

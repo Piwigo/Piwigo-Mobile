@@ -54,7 +54,7 @@ extension pwgImageSize {
         }
         return width/scale
     }
-
+    
     // Default Piwigo image maximum number of pixels
     public var maxPixels: CGFloat {
         // Get device scale factor
@@ -86,7 +86,7 @@ extension pwgImageSize {
         }
         return width/scale
     }
-
+    
     // Default number of pixels at the current scale
     public var sizeAndScale: String {
         // Get device scale factor
@@ -101,7 +101,7 @@ extension pwgImageSize {
         let maxPix = lroundf(Float(self.maxPixels))
         return String(format: " (%ldx%ld@%.0fx)", maxPix, minPix, scale)
     }
-
+    
     // Localized name
     public var name: String {
         switch self {
@@ -180,5 +180,9 @@ extension pwgImageSize {
     
     static public func <=(left: pwgImageSize, right: pwgImageSize) -> Bool {
         return left.rawValue <= right.rawValue
+    }
+    
+    static public func >=(left: pwgImageSize, right: pwgImageSize) -> Bool {
+        return left.rawValue >= right.rawValue
     }
 }
