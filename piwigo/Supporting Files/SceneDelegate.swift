@@ -215,19 +215,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Loop over all scenes
             let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
-                let sceneDelegate = scene.delegate as? SceneDelegate
-                // Remove passcode view controller if presented
-                if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
-                   topViewController is AppLockViewController {
-                    // Protect presented views
-                    sceneDelegate?.addPrivacyProtection()
-                    // Reset biometry flag
-                    appDelegate.didCancelBiometricsAuthentication = false
-                    // Dismiss passcode view
-                    topViewController.dismiss(animated: true)
-                } else {
-                    // Protect presented views
-                    sceneDelegate?.addPrivacyProtection()
+                if let sceneDelegate = scene.delegate as? SceneDelegate {
+                    // Remove passcode view controller if presented
+                    if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
+                       topViewController is AppLockViewController {
+                        // Protect presented views
+                        sceneDelegate.addPrivacyProtection()
+                        // Reset biometry flag
+                        appDelegate.didCancelBiometricsAuthentication = false
+                        // Dismiss passcode view
+                        topViewController.dismiss(animated: true)
+                    } else {
+                        // Protect presented views
+                        sceneDelegate.addPrivacyProtection()
+                    }
+                } else if let sceneDelegate = scene.delegate as? ExternalDisplaySceneDelegate,
+                          let window = sceneDelegate.windows[scene.session.persistentIdentifier] {
+                    sceneDelegate.addPrivacyProtection(to: window)
                 }
             }
         } else {
@@ -301,21 +305,23 @@ extension SceneDelegate: AppLockDelegate {
         
         // Any other scene in the foreground to unlock?
         let otherScenes = UIApplication.shared.connectedScenes
-            .filter({$0.activationState == .foregroundActive})
             .filter({$0.session.persistentIdentifier != window?.windowScene?.session.persistentIdentifier})
             .compactMap({$0})
         for scene in otherScenes {
-            let sceneDelegate = scene.delegate as? SceneDelegate
-            // Remove passcode view controller if presented
-            if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
-               topViewController is AppLockViewController {
-                // Remove protection view
-                sceneDelegate?.privacyView?.removeFromSuperview()
-                // Dismiss passcode view
-                topViewController.dismiss(animated: true)
-            } else {
-                // Remove protection view
-                sceneDelegate?.privacyView?.removeFromSuperview()
+            if let sceneDelegate = scene.delegate as? SceneDelegate {
+                // Remove passcode view controller if presented
+                if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
+                   topViewController is AppLockViewController {
+                    // Remove protection view
+                    sceneDelegate.privacyView?.removeFromSuperview()
+                    // Dismiss passcode view
+                    topViewController.dismiss(animated: true)
+                } else {
+                    // Remove protection view
+                    sceneDelegate.privacyView?.removeFromSuperview()
+                }
+            } else if let sceneDelegate = scene.delegate as? ExternalDisplaySceneDelegate {
+                sceneDelegate.privacyView?.removeFromSuperview()
             }
         }
         

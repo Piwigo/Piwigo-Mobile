@@ -13,7 +13,7 @@ import piwigoKit
 class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var windows = [String : UIWindow]()
-    private var privacyView: UIView?
+    var privacyView: UIView?
     
     // MARK: - Connecting and Disconnecting scenes
     /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
@@ -34,31 +34,28 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Enable management of external displays
         AppVars.shared.inSingleDisplayMode = false
         
-        // Get foreground active scenes of the main display
-        let existingScenes = UIApplication.shared.connectedScenes
-            .filter({$0.session.role == .windowApplication})
-        
-        // Get the root view controller of the first scene
-        guard let mainScene = existingScenes.first as? UIWindowScene,
-              let rootVC = mainScene.rootViewController() else {
-            return
-        }
-        
-        // Look for an instance of AlbumViewController embeded in a navigation controller
-        guard let navController = rootVC as? UINavigationController,
-              let _ = navController.viewControllers.first as? AlbumViewController else {
-            // Did not find an album ► Display the ExternalLaunchScreen
-            initExternalDisplay(for: session.persistentIdentifier, with: window)
-            return
-        }
-        
-        // Create external image view
+        // Add image view to external screen
         let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
         guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController else {
             fatalError("!!! No ExternalDisplayViewController !!!")
         }
         window.rootViewController = imageVC
-
+        
+        // Get foreground active scenes of the main display
+        let existingScenes = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
+        
+        // Get the root view controller of the first scene
+        // and look for an instance of AlbumViewController embeded in a navigation controller
+        guard let mainScene = existingScenes.first as? UIWindowScene,
+              let rootVC = mainScene.rootViewController(),
+              let navController = rootVC as? UINavigationController,
+              let _ = navController.viewControllers.first as? AlbumViewController else {
+                  // Did not find an album ► Display the ExternalLaunchScreen
+                  initExternalDisplay(for: session.persistentIdentifier, with: window)
+            return
+        }
+        
         // Determine if an image is presented fullscreen on the device
         for viewController in navController.viewControllers {
             if let vc = viewController as? ImageViewController {
@@ -70,13 +67,9 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        // Hold and present image in window
-        windows[session.persistentIdentifier] = window
-        window.makeKeyAndVisible()
-        UIView.transition(with: window, duration: 0.5,
-                          options: .transitionCrossDissolve) { }
-        completion: { _ in }
-
+        // Initialise the external display
+        initExternalDisplay(for: session.persistentIdentifier, with: window)
+        
         // Manages screen resolution changes
         NotificationCenter.default.addObserver(forName: UIScreen.modeDidChangeNotification,
                                                object: nil, queue: nil) { (modeNotice) in
@@ -91,11 +84,20 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func initExternalDisplay(for sessionID: String, with window: UIWindow) {
+        // Blur views if the App is locked
+        if AppVars.shared.isAppUnlocked == false {
+            // Protect presented login view
+            addPrivacyProtection(to: window)
+        }
+        
+        // Hold and present image in window
         windows[sessionID] = window
         window.makeKeyAndVisible()
+
+        // Apply transition
         UIView.transition(with: window, duration: 0.5,
                           options: .transitionCrossDissolve) { }
-        completion: { _ in }
+    completion: { _ in }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -104,17 +106,39 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
-
+        
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
     }
-
+    
     func tearDownWindow(for sessionID: String) {
         guard let window = windows[sessionID] else { return }
         window.isHidden = true
         windows[sessionID] = nil
-
+        
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
+    }
+    
+    
+    // MARK: - Privacy & Passcode
+    func addPrivacyProtection(to window: UIWindow) {
+        // Blur views if the App Lock is enabled
+        /// The passcode window is not presented now so that the app
+        /// does not request the passcode until it is put into the background.
+        if privacyView == nil {
+            if UIAccessibility.isReduceTransparencyEnabled {
+                // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
+                let storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+                let initialViewController = storyboard.instantiateInitialViewController()
+                privacyView = initialViewController?.view
+            } else {
+                // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
+                let blurEffect = UIBlurEffect(style: .dark)
+                privacyView = UIVisualEffectView(effect: blurEffect)
+                privacyView?.frame = window.frame
+            }
+        }
+        window.addSubview(privacyView!)
     }
 }

@@ -15,6 +15,7 @@ class ExternalDisplayViewController: UIViewController {
 
     private var imageURL: URL?
     private let placeHolder = UIImage(named: "placeholderImage")!
+    private var privacyView: UIView?
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var progressView: UIProgressView!
