@@ -1,22 +1,22 @@
 //
-//  UploadToUploadMigrationPolicy_09_to_0A.swift
+//  UploadToUploadMigrationPolicy_09_to_0C.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 22/08/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 04/06/2023.
+//  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
-//import os
+import os
 import CoreData
 
 let uploadErrorDomain = "Upload Migration"
 
-class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
+class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-//    @available(iOSApplicationExtension 14.0, *)
-//    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_09_to_0A")
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_09_to_0C")
 
     /**
      UploadToUpload custom migration following these steps:
@@ -73,7 +73,7 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         
         // Forget upload requests of images deleted from the Piwigo server
         if newUpload.value(forKey: "requestState") as? Int16 == 13 {
-            print("••> Upload request of deletedd image are non longer needed.")
+            print("••> Upload request of deleted image are non longer needed.")
             return
         }
         
@@ -93,7 +93,7 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
-            print("••> Should have been created in TagToTagMigrationPolicy_09_to_0A!")
+            print("••> Should have been created in TagToTagMigrationPolicy_09_to_0C!")
             return
         }
 
@@ -164,9 +164,9 @@ class UploadToUploadMigrationPolicy_09_to_0A: NSEntityMigrationPolicy {
         }
         
         // Associate new Upload object to old one
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            UploadToUploadMigrationPolicy_09_to_0A.logger.notice("Upload ► Upload: \(sInstance) > \(newUpload)")
-//        }
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > \(newUpload)")
+        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
     }
 }

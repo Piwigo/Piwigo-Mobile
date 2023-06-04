@@ -31,70 +31,169 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     */
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         print("••> \(session.persistentIdentifier): Scene will connect to session.")
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+              let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
 
-        // Get other existing scenes of the same session
-        let existingScenes = UIApplication.shared.connectedScenes
+        // Get other existing scenes of the main screen
+        let otherScenes = UIApplication.shared.connectedScenes
             .filter({$0.session.role == .windowApplication})
             .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
-
+        
         // Determine the user activity from a new connection or from a session's state restoration.
         guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
-            // No scene to restore —> Present login only if this is the first created scene
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-            if existingScenes.isEmpty {
-                // Create login view
-                appDelegate.loadLoginView(in: window)
-
-                // Blur views if the App Lock is enabled
-                /// The passcode window is not presented so that the app
-                /// does not request the passcode until it is put into the background.
-                if AppVars.shared.isAppLockActive {
-                    // Protect presented login view
-                    addPrivacyProtection()
+            // No scene to restore
+            // Check whether this is the first created scene
+            if otherScenes.isEmpty {
+                // Check if a migration is necessary
+                let migrator = DataMigrator()
+                if migrator.requiresMigration() {
+                    // Tell user to wait until migration is completed
+                    appDelegate.loadMigrationView(in: window)
+                    
+                    // Perform migration in background thread to prevent triggering watchdog after 10 s
+                    DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
+                        // Perform migration
+                        migrator.migrateStore()
+                        
+                        // Present views
+                        DispatchQueue.main.async { [self] in
+                            // Create login view
+                            appDelegate.loadLoginView(in: window)
+                            
+                            // Blur views if the App Lock is enabled
+                            addPrivacyProtection(toFirstScene: true)
+                            
+                            // Did user create other scenes during the migration?
+                            let otherScenes = UIApplication.shared.connectedScenes
+                                .filter({$0.session.role == .windowApplication})
+                                .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+                            otherScenes.forEach { scene in
+                                if let windowScene = (scene as? UIWindowScene) {
+                                    // Replace migration with album view controller
+                                    let window = UIWindow(windowScene: windowScene)
+                                    appDelegate.loadNavigation(in: window)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Create login view
+                    appDelegate.loadLoginView(in: window)
+                    
+                    // Blur views if the App Lock is enabled
+                    addPrivacyProtection(toFirstScene: true)
                 }
-                else {
-                    // User is allowed to access albums
-                    AppVars.shared.isAppUnlocked = true
+            } else {
+                // Create additional scene ► default album OR wait for migration?
+                if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty {
+                    // Create additional scene ► default album
+                    appDelegate.loadNavigation(in: window)
+                    
+                    // Blur views if the App is locked
+                    addPrivacyProtection(toFirstScene: false)
+                } else {
+                    // Tell user to wait until migration is completed
+                    appDelegate.loadMigrationView(in: window)
                 }
             }
-            else {
-                // Create additional scene => default album
-                appDelegate.loadNavigation(in: window)
-
-                // Blur views if the App is locked
-                if AppVars.shared.isAppUnlocked == false {
-                    // Protect presented login view
-                    addPrivacyProtection()
-                }
-            }
-
+            
             // Hold and present login window
             self.window = window
             window.makeKeyAndVisible()
             return
         }
         
-        // Restore scene
-        if configure(window: window, session: session, with: userActivity) {
-            // Remember this activity for later when this app quits or suspends.
-            scene.userActivity = userActivity
-            // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
-            scene.title = userActivity.title
-            
-            // Mark this scene's session with this userActivity product identifier so you can update the UI later.
-//            if let sessionProduct = SceneDelegate.product(for: userActivity) {
-//                session.userInfo =
-//                    [SceneDelegate.productIdentifierKey: sessionProduct.identifier]
-//            }
+        // Check whether this is the first scene to restore
+        if otherScenes.isEmpty {
+            // Check if a migration is necessary
+            let migrator = DataMigrator()
+            if migrator.requiresMigration() {
+                // Tell user to wait until migration is completed
+                appDelegate.loadMigrationView(in: window)
+                
+                // Perform migration in background thread to prevent triggering watchdog after 10 s
+                DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
+                    // Perform migration
+                    migrator.migrateStore()
+                    
+                    // Present views
+                    DispatchQueue.main.async { [self] in
+                        // Restore scene
+                        if configure(window: window, session: session, with: userActivity) {
+                            // Remember this activity for later when this app quits or suspends.
+                            scene.userActivity = userActivity
+                            // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+                            scene.title = userActivity.title
+                        } else {
+                            debugPrint("Failed to restore scene from \(userActivity)")
+                        }
+
+                        // Blur views if the App Lock is enabled
+                        addPrivacyProtection(toFirstScene: true)
+                        
+                        // Are there other scenes to restore?
+                        let otherScenes = UIApplication.shared.connectedScenes
+                            .filter({$0.session.role == .windowApplication})
+                            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+                        otherScenes.forEach { scene in
+                            if let windowScene = (scene as? UIWindowScene),
+                               let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity {
+                                // Replace migration with appropriate view controller
+                                let window = UIWindow(windowScene: windowScene)
+                                if configure(window: window, session: scene.session, with: userActivity) == false {
+                                    debugPrint("Failed to restore scene from \(userActivity)")
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Restore scene
+                if configure(window: window, session: session, with: userActivity) {
+                    // Remember this activity for later when this app quits or suspends.
+                    scene.userActivity = userActivity
+                    // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+                    scene.title = userActivity.title
+                } else {
+                    debugPrint("Failed to restore scene from \(userActivity)")
+                }
+
+                // Blur views if the App Lock is enabled
+                addPrivacyProtection(toFirstScene: true)
+            }
         } else {
-            debugPrint("Failed to restore scene from \(userActivity)")
+            // Restore additional scene ► default album / login view OR wait for migration?
+            if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty {
+                // Restore scene
+                if configure(window: window, session: session, with: userActivity) {
+                    // Remember this activity for later when this app quits or suspends.
+                    scene.userActivity = userActivity
+                    // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+                    scene.title = userActivity.title
+                } else {
+                    debugPrint("Failed to restore scene from \(userActivity)")
+                }
+
+                // Blur views if the App is locked
+                addPrivacyProtection(toFirstScene: false)
+            } else {
+                // Tell user to wait until migration is completed
+                appDelegate.loadMigrationView(in: window)
+            }
         }
 
+        // Hold and present login window
+        self.window = window
+        window.makeKeyAndVisible()
+    }
+    
+    private func addPrivacyProtection(toFirstScene isFirstScene: Bool) {
         // Check whether this is the first restored scene
-        if existingScenes.isEmpty {
-            // First restored scene —> Blur views if the App Lock is enabled
+        if isFirstScene {
+            // First created/restored scene ► Blur views if the App Lock is enabled
+            /// The passcode window is not presented so that the app
+            /// does not request the passcode until it is put into the background.
             if AppVars.shared.isAppLockActive {
                 // Protect presented login view
                 addPrivacyProtection()
@@ -104,7 +203,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 AppVars.shared.isAppUnlocked = true
             }
         } else {
-            // Additional restored scene —> Blur views if the App is locked
+            // Additional created/restored scene —> Blur views if the App is locked
             if AppVars.shared.isAppUnlocked == false {
                 // Protect presented login view
                 addPrivacyProtection()
@@ -120,11 +219,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // The activity type is for restoring AlbumViewController.
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
             appDelegate.loadNavigation(in: window)
-            
-            // Hold and present window
-            self.window = window
-            window?.makeKeyAndVisible()
-    
             succeeded = true
         }
         else {
@@ -164,9 +258,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Loop over all scenes
             let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
-                // If passcode view controller already presented ▶ NOP
-                if let topViewController = (scene as? UIWindowScene)?.topMostViewController(),
-                   topViewController is AppLockViewController { return }
+                // If passcode or migration view controllers presented ▶ NOP
+                if let topVC = (scene as? UIWindowScene)?.topMostViewController(),
+                   (topVC is AppLockViewController) || (topVC is DataMigrationViewController) { return }
             }
             
             // Request passcode for accessing app
@@ -325,7 +419,7 @@ extension SceneDelegate: AppLockDelegate {
             }
         }
         
-        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+        // Piwigo will play audio even if the Silent switch set to silent or when the screen locks.
         // Furthermore, it will interrupt any other current audio sessions (no mixing)
         let audioSession = AVAudioSession.sharedInstance()
         let availableCategories = audioSession.availableCategories

@@ -16,13 +16,7 @@ public class DataController: NSObject {
     
     
     // MARK: - Initialisation
-    let migrator: DataMigratorProtocol
-    private let storeType: String
-
-    init(storeType: String = NSSQLiteStoreType, migrator: DataMigratorProtocol = DataMigrator()) {
-        self.storeType = storeType
-        self.migrator = migrator    // Perform migration if needed
-
+    override init() {
         super.init()                // Create instance
         self.persistentContainer.loadPersistentStores { _, error in
             guard let error = error else { return }
@@ -40,7 +34,7 @@ public class DataController: NSObject {
         description?.shouldAddStoreAsynchronously = false
         description?.shouldInferMappingModelAutomatically = false
         description?.shouldMigrateStoreAutomatically = false
-        description?.type = storeType
+        description?.type = NSSQLiteStoreType
         return persistentContainer
     }()
     

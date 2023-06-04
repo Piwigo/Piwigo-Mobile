@@ -81,26 +81,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             /// - Present login view and if needed passcode view
             /// - or album view behind passcode view if needed
         } else {
-            // Create login view
+            // Create window
             window = UIWindow(frame: UIScreen.main.bounds)
-            loadLoginView(in: window)
-            window?.makeKeyAndVisible()
-            
-            // Blur views if the App Lock is enabled
-            /// The passcode window is not presented  so that the app
-            /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
-                // User is not allowed to access albums yet
-                AppVars.shared.isAppUnlocked = false
-                // Protect presented login view
-                addPrivacyProtection(to: window)
-            }
-            else {
-                // User is allowed to access albums
-                AppVars.shared.isAppUnlocked = true
+
+            // Check if a migration is necessary
+            let migrator = DataMigrator()
+            if migrator.requiresMigration() {
+                // Tell user to wait until migration is completed
+                loadMigrationView(in: window)
+
+                // Perform migration in background thread to prevent triggering watchdog after 10 s
+                DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
+                    // Perform migration
+                    migrator.migrateStore()
+
+                    // Present views
+                    DispatchQueue.main.async { [self] in
+                        // Create login view
+                        loadLoginView(in: window)
+                        addPrivacyProtectionIfNeeded()
+                    }
+                }
+            } else {
+                // Create login view
+                loadLoginView(in: window)
+                addPrivacyProtectionIfNeeded()
             }
         }
-        
+
+        // Display view
+        window?.makeKeyAndVisible()
+
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
                                                name: .pwgLeftUploads, object: nil)
@@ -111,6 +122,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    private func addPrivacyProtectionIfNeeded() {
+        // Blur view if the App Lock is enabled
+        /// The passcode window is not presented  so that the app
+        /// does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive {
+            // User is not allowed to access albums yet
+            AppVars.shared.isAppUnlocked = false
+            // Protect presented login view
+            addPrivacyProtection(to: window)
+        }
+        else {
+            // User is allowed to access albums
+            AppVars.shared.isAppUnlocked = true
+        }
+    }
+    
 
     // MARK: - Scene Configuration
     @available(iOS 13.0, *)
@@ -631,6 +658,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+    // MARK: - Data Migration View
+    private var _migrationVC: DataMigrationViewController!
+    var migrationVC: DataMigrationViewController {
+        // Already existing?
+        if _migrationVC != nil { return _migrationVC }
+        
+        // Create data migration view
+        let migrationSB = UIStoryboard(name: "DataMigrationViewController", bundle: nil)
+        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController else {
+            fatalError("!!! No DataMigrationViewController !!!")
+        }
+        _migrationVC = migrationVC
+        return _migrationVC
+    }
+    
+    func loadMigrationView(in window: UIWindow?) {
+        guard let window = window else { return }
+        
+        // Load Login view
+        let nav = LoginNavigationController(rootViewController: migrationVC)
+        nav.setNavigationBarHidden(true, animated: false)
+        window.rootViewController = nav
+
+        if #available(iOS 13.0, *) {
+            // Transition to login view
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil) { _ in }
+        } else {
+            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+            window.rootViewController?.view.setNeedsUpdateConstraints()
+        }
+    }
+
+    
     // MARK: - Login View
     private var _loginVC: LoginViewController!
     var loginVC: LoginViewController {
@@ -639,7 +701,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create login view controller
         let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
-        _loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+        guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else {
+            fatalError("!!! No LoginViewController !!!")
+        }
+        _loginVC = loginVC
         return _loginVC
     }
 
@@ -655,10 +720,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Transition to login view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
+                              animations: nil) { [self] success in
+                if success {
+                    self._migrationVC = nil
+                }
+            }
         } else {
-            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-            window.rootViewController?.view.setNeedsUpdateConstraints()
+            // Fallback on earlier versions
+            _migrationVC?.removeFromParent()
+            _migrationVC = nil
         }
     }
 
@@ -681,13 +751,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
-                completion: { success in
-//                    self._loginVC = nil
+                completion: { [self] success in
+                    if success {
+                        self._loginVC = nil
+                    }
                 }
         } else {
             // Fallback on earlier versions
-            loginVC.removeFromParent()
-//            _loginVC = nil
+            _loginVC?.removeFromParent()
+            _loginVC = nil
 
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
