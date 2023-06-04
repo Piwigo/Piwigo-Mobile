@@ -73,7 +73,9 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Forget upload requests of images deleted from the Piwigo server
         if newUpload.value(forKey: "requestState") as? Int16 == 13 {
-            print("••> Upload request of deleted image are non longer needed.")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request of deleted image are non longer needed.")
+            }
             return
         }
         
@@ -87,13 +89,17 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
               let serverFileTypes = sInstance.value(forKeyPath: "serverFileTypes") as? String,
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
-            print("••> Error: Upload request instance w/ wrong serverPath!")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request instance w/ wrong serverPath!")
+            }
             return
         }
         
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
-            print("••> Should have been created in TagToTagMigrationPolicy_09_to_0C!")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
+            }
             return
         }
 
