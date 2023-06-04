@@ -64,7 +64,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             // Blur views if the App Lock is enabled
                             addPrivacyProtection(toFirstScene: true)
                             
-                            // Did user create other scenes during the migration?
+                            // Manages privacy protection and resume uploads
+                            sceneDidBecomeActive(scene)
+                            
+                           // Did user create other scenes during the migration?
                             let otherScenes = UIApplication.shared.connectedScenes
                                 .filter({$0.session.role == .windowApplication})
                                 .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
@@ -131,6 +134,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                         // Blur views if the App Lock is enabled
                         addPrivacyProtection(toFirstScene: true)
+                        
+                        // Manages privacy protection and resume uploads
+                        sceneDidBecomeActive(scene)
                         
                         // Are there other scenes to restore?
                         let otherScenes = UIApplication.shared.connectedScenes
@@ -249,18 +255,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
-        // Called during biometric authentication?
+        // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        if appDelegate.isAuthenticatingWithBiometrics { return }
+        let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
+        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData { return }
 
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
             // Loop over all scenes
             let connectedScenes = UIApplication.shared.connectedScenes
             for scene in connectedScenes {
-                // If passcode or migration view controllers presented ▶ NOP
-                if let topVC = (scene as? UIWindowScene)?.topMostViewController(),
-                   (topVC is AppLockViewController) || (topVC is DataMigrationViewController) { return }
+                // If passcode view controller presented ▶ NOP
+                if (scene as? UIWindowScene)?.topMostViewController() is AppLockViewController { return }
             }
             
             // Request passcode for accessing app
@@ -300,6 +306,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Called during biometric authentication?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
         if appDelegate.isAuthenticatingWithBiometrics { return }
         
         // Blur views if the App Lock is enabled
