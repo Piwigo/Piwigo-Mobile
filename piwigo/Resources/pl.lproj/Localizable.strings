@@ -143,9 +143,9 @@
 
 // Albums view
 "categoryUpdating" = "Aktualizacja…";
-"categoryUpdatedOn" = "Updated on %@";
-"categoryUpdatedAt" = "Updated at %@";
-"categoryUpdatedNow" = "Updated just now";
+"categoryUpdatedOn" = "Zaktualizowane %@";
+"categoryUpdatedAt" = "Zaktualizowane o %@";
+"categoryUpdatedNow" = "Zaktualizowane teraz";
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";
 "categoryImageList_selectButton" = "Wybierz";
 "categoryImageList_deselectButton" = "Odznacz";
