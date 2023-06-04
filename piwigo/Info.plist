@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>514</string>
+	<string>515</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
@@ -69,10 +69,10 @@
 				<dict>
 					<key>UISceneConfigurationName</key>
 					<string>External Display</string>
-					<key>UISceneStoryboardFile</key>
-					<string>LaunchScreenExternal</string>
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).ExternalDisplaySceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>LaunchScreenExternal</string>
 				</dict>
 			</array>
 		</dict>
