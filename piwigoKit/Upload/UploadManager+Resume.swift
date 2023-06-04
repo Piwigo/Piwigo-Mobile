@@ -133,10 +133,10 @@ extension UploadManager
         // Loop over the failed uploads
         for failedUpload in toResume {
             switch failedUpload.state {
-            case .uploadingError:
+            case .uploading, .uploadingError, .uploaded:
                 // -> Will retry to transfer the image
                 failedUpload.setState(.prepared, save: false)
-            case .finishingError:
+            case .finishing, .finishingError:
                 // -> Will retry to finish the upload
                 failedUpload.setState(.uploaded, save: false)
             default:

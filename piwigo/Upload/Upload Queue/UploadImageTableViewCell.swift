@@ -61,7 +61,14 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         rightSwipeSettings.transition = .border
         switch upload.state {
         case .preparing, .prepared, .uploading, .uploaded, .finishing:
-            rightButtons = [];
+            rightButtons = [
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUploads([upload])
+                        UploadManager.shared.findNextImageToUpload()
+                    }
+                    return true
+                })]
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
