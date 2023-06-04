@@ -67,7 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             // Manages privacy protection and resume uploads
                             sceneDidBecomeActive(scene)
                             
-                           // Did user create other scenes during the migration?
+                            // Did user create other scenes during the migration?
                             let otherScenes = UIApplication.shared.connectedScenes
                                 .filter({$0.session.role == .windowApplication})
                                 .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
@@ -76,6 +76,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                     // Replace migration with album view controller
                                     let window = UIWindow(windowScene: windowScene)
                                     appDelegate.loadNavigation(in: window)
+                                    // Blur views if the App Lock is enabled
+                                    addPrivacyProtection(toFirstScene: false)
+                                    // Manages privacy protection and resume uploads
+                                    sceneDidBecomeActive(scene)
                                 }
                             }
                         }
@@ -128,15 +132,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             scene.userActivity = userActivity
                             // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
                             scene.title = userActivity.title
+                            // Blur views if the App Lock is enabled
+                            addPrivacyProtection(toFirstScene: true)
+                            // Manages privacy protection and resume uploads
+                            sceneDidBecomeActive(scene)
                         } else {
                             debugPrint("Failed to restore scene from \(userActivity)")
                         }
-
-                        // Blur views if the App Lock is enabled
-                        addPrivacyProtection(toFirstScene: true)
-                        
-                        // Manages privacy protection and resume uploads
-                        sceneDidBecomeActive(scene)
                         
                         // Are there other scenes to restore?
                         let otherScenes = UIApplication.shared.connectedScenes
@@ -147,7 +149,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity {
                                 // Replace migration with appropriate view controller
                                 let window = UIWindow(windowScene: windowScene)
-                                if configure(window: window, session: scene.session, with: userActivity) == false {
+                                if configure(window: window, session: scene.session, with: userActivity) {
+                                    // Remember this activity for later when this app quits or suspends.
+                                    scene.userActivity = userActivity
+                                    // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+                                    scene.title = userActivity.title
+                                    // Blur views if the App Lock is enabled
+                                    addPrivacyProtection(toFirstScene: true)
+                                    // Manages privacy protection and resume uploads
+                                    sceneDidBecomeActive(scene)
+                                } else {
                                     debugPrint("Failed to restore scene from \(userActivity)")
                                 }
                             }
@@ -161,12 +172,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     scene.userActivity = userActivity
                     // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
                     scene.title = userActivity.title
+                    // Blur views if the App Lock is enabled
+                    addPrivacyProtection(toFirstScene: true)
                 } else {
                     debugPrint("Failed to restore scene from \(userActivity)")
                 }
-
-                // Blur views if the App Lock is enabled
-                addPrivacyProtection(toFirstScene: true)
             }
         } else {
             // Restore additional scene ► default album / login view OR wait for migration?
@@ -177,12 +187,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     scene.userActivity = userActivity
                     // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
                     scene.title = userActivity.title
+                    // Blur views if the App is locked
+                    addPrivacyProtection(toFirstScene: false)
                 } else {
                     debugPrint("Failed to restore scene from \(userActivity)")
                 }
-
-                // Blur views if the App is locked
-                addPrivacyProtection(toFirstScene: false)
             } else {
                 // Tell user to wait until migration is completed
                 appDelegate.loadMigrationView(in: window)
