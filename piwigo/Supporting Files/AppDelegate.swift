@@ -147,7 +147,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Check connection options for user activities and attempt to generate an ActivityType
         var currentActivity: ActivityType?
         options.userActivities.forEach {
-          currentActivity = ActivityType(rawValue: $0.activityType)
+            currentActivity = ActivityType(rawValue: $0.activityType)
         }
 
         // Default acitivty depends if user connected an external display
