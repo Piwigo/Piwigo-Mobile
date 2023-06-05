@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "Varning";
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
 "CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
 "editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";

@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Updating Photo…";
 "editImageDetailsHUD_updatingPlural" = "Updating Photos…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "فشل في التحديث";

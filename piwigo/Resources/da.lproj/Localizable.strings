@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "Advarsel";
 "CoreDataStore_WarningMessage" = "En alvorlig applikationsfejl opstod under Piwigo forsøgte at læse data-cachen. En ny cache er derfor blevet oprettet.";
 "CoreDataFetch_DigestError" = "Kunne ikke hente data.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Vil kassere en brugerkonto mangler et gyldigt brugernavn.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
 "editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";

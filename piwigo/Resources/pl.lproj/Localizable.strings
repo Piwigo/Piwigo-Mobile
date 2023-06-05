@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 rok";
 "editImageDetailsHUD_updatingSingle" = "Aktualizowanie zdjęcia…";
 "editImageDetailsHUD_updatingPlural" = "Aktualizowanie zdjęć…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";

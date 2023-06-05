@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
 "CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 Év";
 "editImageDetailsHUD_updatingSingle" = "Fotó módosítása…";
 "editImageDetailsHUD_updatingPlural" = "Fotók módosítása…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Sikertelen frissítés";

@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "上一年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失败";

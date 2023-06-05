@@ -52,6 +52,8 @@
 "CoreDataStore_WarningTitle" = "Waarschuwing";
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";
@@ -345,6 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 Jaar";
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
