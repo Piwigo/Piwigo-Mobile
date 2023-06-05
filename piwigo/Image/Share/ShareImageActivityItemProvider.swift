@@ -353,7 +353,11 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return kUTTypeImage as String
+        if #available(iOS 14.0, *) {
+            return UTType.image.identifier
+        } else {
+            return kUTTypeImage as String
+        }
     }
     
     @available(iOS 13.0, *)

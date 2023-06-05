@@ -57,7 +57,15 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         
     // Collection of images in the pasteboard
     private var pbObjects = [PasteboardObject]()      // Objects in pasteboard
-
+    private lazy var pasteboardTypes : [String] = {
+        if #available(iOS 14.0, *) {
+            return [UTType.image.identifier, UTType.movie.identifier]
+        } else {
+            // Fallback on earlier version
+            return [kUTTypeImage as String, kUTTypeMovie as String]
+        }
+    }()
+    
     // Cached data
     private let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
     private var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
@@ -91,8 +99,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Retrieve pasteboard object indexes and types, then create identifiers
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                             kUTTypeMovie as String]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Initialise cached indexed uploads
@@ -383,7 +390,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
         // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String, "public.movie"]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Reinitialise cached indexed uploads, deselect images
@@ -916,10 +923,19 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             image = pbObjects[indexPath.row].image
             cell.md5sum = pbObjects[indexPath.row].md5Sum
         }
-        else if let data = UIPasteboard.general.data(forPasteboardType: kUTTypeImage as String,
-                                                     inItemSet: IndexSet(integer: indexPath.row))?.first {
-            image = UIImage(data: data) ?? imagePlaceholder
-            cell.md5sum = ""
+        else {
+            var imageType = ""
+            if #available(iOS 14.0, *) {
+                imageType = UTType.image.identifier
+            } else {
+                // Fallback on earlier version
+                imageType = kUTTypeImage as String
+            }
+            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
+                                                    inItemSet: IndexSet(integer: indexPath.row))?.first {
+                image = UIImage(data: data) ?? imagePlaceholder
+                cell.md5sum = ""
+            }
         }
 
         // Configure cell

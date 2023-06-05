@@ -50,6 +50,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                                                                    .sharedAlbums : false,
                                                                    .mediaTypes   : false,
                                                                    .otherAlbums  : false]
+    private lazy var pasteboardTypes : [String] = {
+        if #available(iOS 14.0, *) {
+            return [UTType.image.identifier, UTType.movie.identifier]
+        } else {
+            // Fallback on earlier version
+            return [kUTTypeImage as String, kUTTypeMovie as String]
+        }
+    }()
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -166,8 +175,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
             // Check if there are photos/videos in the pasteboard
-            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                                 kUTTypeMovie as String]),
+            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
                indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
                 hasImagesInPasteboard = true
             }
@@ -220,10 +228,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         if wantedAction == .setAutoUploadAlbum { return }
         
         // Are there images in the pasteboard?
-        let testTypes = UIPasteboard.general.contains(pasteboardTypes: [kUTTypeImage as String,
-                                                                        kUTTypeMovie as String]) ? true : false
-        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                            kUTTypeMovie as String])?.count ?? 0
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
         hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
@@ -389,8 +395,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
-            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                                kUTTypeMovie as String])?.count ?? NSNotFound
+            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? NSNotFound
             cell.configure(with: title, nberPhotos: Int64(nberPhotos))
             cell.isAccessibilityElement = true
             return cell
