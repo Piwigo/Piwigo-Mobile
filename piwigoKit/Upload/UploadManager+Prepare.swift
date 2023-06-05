@@ -138,7 +138,7 @@ extension UploadManager
             
             // Try to convert image if JPEG format is accepted by Piwigo server
             if UploadVars.serverFileTypes.contains("jpg"),
-               acceptedImageFormats.contains(fileExt) {
+               acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
                 
@@ -185,7 +185,7 @@ extension UploadManager
             
             // Convert video if MP4 format is accepted by Piwigo server
             if UploadVars.serverFileTypes.contains("mp4"),
-               acceptedMovieFormats.contains(fileExt) {
+               acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")
 
@@ -315,7 +315,7 @@ extension UploadManager
             }
             // Convert image if JPEG format is accepted by Piwigo server
             if UploadVars.serverFileTypes.contains("jpg"),
-               acceptedImageFormats.contains(fileExt) {
+               acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
                 
@@ -344,7 +344,7 @@ extension UploadManager
             }
             // Convert video if MP4 format is accepted by Piwigo server
             if UploadVars.serverFileTypes.contains("mp4"),
-               acceptedMovieFormats.contains(fileExt) {
+               acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")
                 

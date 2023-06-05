@@ -29,11 +29,29 @@ public class UploadManager: NSObject {
     /// - image formats which can be converted with iOS
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
-    let acceptedImageFormats: String = {
-        return "heic,heif,png,gif,jpg,jpeg,webp,tif,tiff,bmp,raw,ico,icns"
+    let acceptedImageExtensions: [String] = {
+        if #available(iOS 14.0, *) {
+            let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
+            var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+            if #available(iOS 14.3, *) {
+                fileExtensions.append("dng")    // i.e. Apple ProRAW
+                return fileExtensions
+            } else {
+                // Fallback on earlier version
+                return fileExtensions
+            }
+        } else {
+            // Fallback on earlier version
+            return ["heic","heif","png","gif","jpg","jpeg","webp","tif","tiff","bmp","raw","ico","icns"]
+        }
     }()
-    let acceptedMovieFormats: String = {
-        return "mov,mpg,mpeg,mpeg2,mp4,avi"
+    let acceptedMovieExtensions: [String] = {
+        if #available(iOS 14.0, *) {
+            let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
+            return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+        } else {
+            return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
+        }
     }()
 
     // Constants used to manage foreground tasks
