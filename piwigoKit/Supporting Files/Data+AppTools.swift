@@ -251,8 +251,8 @@ extension Data {
         }
 
         // Is this now a valid JSON object?
-        filteredData = filteredDataStr.data(using: String.Encoding.utf8)!
-        if let _ = try? decoder.decode(type, from: filteredData) {
+        if let filteredData = filteredDataStr.data(using: String.Encoding.utf8),
+           let _ = try? decoder.decode(type, from: filteredData) {
             self = filteredData
             return true
         }
@@ -292,8 +292,8 @@ extension Data {
             }
             
             // Is this block a valid JSON object?
-            let blockData = blockStr.data(using: String.Encoding.utf8)!
-            if let _ = try? decoder.decode(type, from: blockData) {
+            if let blockData = blockStr.data(using: String.Encoding.utf8),
+               let _ = try? decoder.decode(type, from: blockData) {
                 self = blockData
                 return true
             }
