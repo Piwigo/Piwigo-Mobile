@@ -244,16 +244,17 @@ public class Image: NSManagedObject {
         if server == nil {
             server = user.server
         }
-        if users == nil ||
-           users?.contains(where: { $0.objectID == user.objectID }) == false {
-            addToUsers(user)
+        if users == nil || users?.contains(where: { $0.objectID == user.objectID }) == false,
+           let userInContext = self.managedObjectContext?.object(with: user.objectID) as? User {
+            addToUsers(userInContext)
         }
 
         // Categories in which this image belongs to
         let albumIds = Set(self.albums?.compactMap({$0.objectID}) ?? [])
         let newAlbumIds = Set(albums.compactMap({$0.objectID}))
         if albumIds.isSuperset(of: newAlbumIds) == false {
-            addToAlbums(albums)
+            let newAlbums = Set(newAlbumIds.compactMap({self.managedObjectContext?.object(with: $0) as? Album}))
+            addToAlbums(newAlbums)
         }
     }
     

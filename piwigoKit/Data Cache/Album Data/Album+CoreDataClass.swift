@@ -95,9 +95,10 @@ public class Album: NSManagedObject {
             dateLast = newDateLast
         }
 
-        // This album belongs the provided user
-        if user == nil {
-            user = userInstance
+        // This album belongs to the provided user
+        if user == nil,
+           let userInContext = self.managedObjectContext?.object(with: userInstance.objectID) as? User {
+            user = userInContext
         }
     }
 }
