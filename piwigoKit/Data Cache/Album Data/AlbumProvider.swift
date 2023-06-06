@@ -768,7 +768,7 @@ public class AlbumProvider: NSObject {
     public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
         // Remove image from album
         album.nbImages += nbImages
-        if album.totalNbImages > (Int64.max - nbImages) {   // avoids possible crash with e.g. smart albums
+        if album.totalNbImages < (Int64.max - nbImages) {   // Avoids possible crash with e.g. smart albums
             album.totalNbImages += nbImages
         }
 
@@ -782,7 +782,7 @@ public class AlbumProvider: NSObject {
     public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) {
         // Remove image from album
         album.nbImages -= nbImages
-        if album.totalNbImages < (Int64.min + nbImages) {   // avoids possible crash with e.g. smart albums
+        if album.totalNbImages > (Int64.min + nbImages) {   // Avoids possible crash with e.g. smart albums
             album.totalNbImages -= nbImages
         }
 
