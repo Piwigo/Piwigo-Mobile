@@ -15,12 +15,12 @@ extension SelectCategoryViewController {
         // Display HUD during the update
         showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
 
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Add category to list of recent albums
-            let userInfo = ["categoryId": parentData.pwgID]
-            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": parentData.pwgID]
+        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
-            // Move album
+        // Move album
+        NetworkUtilities.checkSession(ofUser: user) {  [self] in
             AlbumUtilities.move(self.inputAlbum.pwgID,
                                 intoAlbumWithId: parentData.pwgID) { [self] in
                 // Update cached albums in the background
@@ -45,6 +45,14 @@ extension SelectCategoryViewController {
                     self.showError(with: error.localizedDescription)
                 }
             }
+        } failure: { [unowned self] error in
+            self.hidePiwigoHUD {
+                guard let error = error as NSError? else {
+                    self.showError()
+                    return
+                }
+                self.showError(with: error.localizedDescription)
+            }
         }
     }
 
@@ -57,7 +65,7 @@ extension SelectCategoryViewController {
         showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
-        DispatchQueue.global(qos: .userInitiated).async {
+        NetworkUtilities.checkSession(ofUser: user) {  [self] in
             AlbumUtilities.setRepresentative(albumData, with: imageData)
             {
                 DispatchQueue.main.async { [self] in
@@ -83,6 +91,14 @@ extension SelectCategoryViewController {
                     }
                     self.showError(with: error.localizedDescription)
                 }
+            }
+        } failure: { [unowned self] error in
+            self.hidePiwigoHUD {
+                guard let error = error as NSError? else {
+                    self.showError()
+                    return
+                }
+                self.showError(with: error.localizedDescription)
             }
         }
     }

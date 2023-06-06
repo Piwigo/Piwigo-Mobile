@@ -12,43 +12,43 @@ import piwigoKit
 extension SelectCategoryViewController {
     // MARK: - Retrieve Image Data
     func retrieveImageData() {
-        // Job done?
-        if inputImageIds.count == 0 {
-            // We do have complete image data
-            DispatchQueue.main.async { [self] in
-                self.inputImages.forEach { image in
-                    let catIDs = Set((image.albums ?? Set<Album>()).map({$0.pwgID}))
-                    if commonCatIDs.isEmpty {
-                        commonCatIDs = catIDs
-                    } else {
-                        commonCatIDs = commonCatIDs.intersection(catIDs)
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            // Job done?
+            if inputImageIds.count == 0 {
+                // We do have complete image data
+                DispatchQueue.main.async { [self] in
+                    self.inputImages.forEach { image in
+                        let catIDs = Set((image.albums ?? Set<Album>()).map({$0.pwgID}))
+                        if commonCatIDs.isEmpty {
+                            commonCatIDs = catIDs
+                        } else {
+                            commonCatIDs = commonCatIDs.intersection(catIDs)
+                        }
+                    }
+                    self.hidePiwigoHUD { }
+                }
+                return
+            }
+            
+            guard let imageId = inputImageIds.first else {
+                self.hidePiwigoHUD {
+                    self.dismissPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")) {
+                        self.dismiss(animated: true) { }
                     }
                 }
-                self.hidePiwigoHUD { }
+                return
             }
-            return
-        }
-        
-        guard let imageId = inputImageIds.first else {
-            self.hidePiwigoHUD {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")) {
-                    self.dismiss(animated: true) { }
-                }
+            
+            // Check whether we already have complete image data
+            if let imageData = inputImages.first(where: {$0.pwgID == imageId}),
+               imageData.fileSize != Int64.zero {
+                inputImageIds.removeFirst()
+                retrieveImageData()
+                return
             }
-            return
-        }
-        
-        // Check whether we already have complete image data
-        if let imageData = inputImages.first(where: {$0.pwgID == imageId}),
-           imageData.fileSize != Int64.zero {
-            inputImageIds.removeFirst()
-            retrieveImageData()
-            return
-        }
-        
-        // Image data are not complete when retrieved using pwg.categories.getImages
-        // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            
+            // Image data are not complete when retrieved using pwg.categories.getImages
+            // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
             imageProvider.getInfos(forID: imageId,
                                    inCategoryId: inputAlbum.pwgID) { [self] in
                 // Image info retrieved
