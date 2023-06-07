@@ -52,8 +52,8 @@
 "CoreDataStore_WarningTitle" = "Warnung";
 "CoreDataStore_WarningMessage" = "Ein schwerwiegender Anwendungsfehler trat auf, während Piwigo versuchte, den Daten-Cache zu lesen. Daher wurde ein neuer Cache angelegt.";
 "CoreDataFetch_DigestError" = "Konnte die abgerufenen Daten nicht verarbeiten.";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "Migration läuft...";
+"Coredata_MigrationPleaseWait" = "Wir migrieren derzeit einige Ihrer Daten. Bitte warten Sie, bis der Vorgang abgeschlossen ist. Beenden Sie die Anwendung nicht.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen.";
@@ -347,7 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 Jahr";
 "editImageDetailsHUD_updatingSingle" = "Foto wird aktualisiert…";
 "editImageDetailsHUD_updatingPlural" = "Fotos werden aktualisiert…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
+"help_externalDisplay" = "Tippen Sie auf das Bild, das Sie hier anzeigen möchten.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";

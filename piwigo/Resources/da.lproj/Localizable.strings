@@ -52,8 +52,8 @@
 "CoreDataStore_WarningTitle" = "Advarsel";
 "CoreDataStore_WarningMessage" = "En alvorlig applikationsfejl opstod under Piwigo forsøgte at læse data-cachen. En ny cache er derfor blevet oprettet.";
 "CoreDataFetch_DigestError" = "Kunne ikke hente data.";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "Migration i gang...";
+"Coredata_MigrationPleaseWait" = "Vi migrerer i øjeblikket nogle af dine data. Vent venligst til den er færdig. Du må ikke lukke programmet.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Vil kassere en brugerkonto mangler et gyldigt brugernavn.";
@@ -61,14 +61,14 @@
 "CoreData_UserCreateFailed" = "Kunne ikke oprette et nyt brugerobjekt.";
 
 // Album objects
-"CoreDataFetch_AlbumError" = "Hent albums fejl!";
-"CoreDataFetch_AlbumMissingData" = "Fundet og vil kassere et album mangler et gyldigt ID eller navn.";
+"CoreDataFetch_AlbumError" = "Fejl ved hentning af albums!";
+"CoreDataFetch_AlbumMissingData" = "Fundet og vil kassere et album der mangler et gyldigt ID eller navn.";
 "CoreDataFetch_AlbumCreateFailed" = "Kunne ikke oprette et nyt albumobjekt.";
-"CoreData_AlbumNotFound" = "Albummet er ikke i vedvarende cache.";
+"CoreData_AlbumNotFound" = "Albummet er ikke i cache.";
 
 // Image objects
 "CoreDataFetch_ImageError" = "Hent billeder/videoer fejl!";
-"CoreDataFetch_ImageMissingData" = "Fundet og vil kassere et foto/video mangler et gyldigt ID eller URL.";
+"CoreDataFetch_ImageMissingData" = "Fundet og vil kassere et foto/video der mangler et gyldigt ID eller URL.";
 "CoreDataFetch_ImageCreateFailed" = "Kunne ikke oprette et nyt billedobjekt.";
 
 // Tag objects
@@ -145,9 +145,9 @@
 
 // Albums view
 "categoryUpdating" = "Opdaterer…";
-"categoryUpdatedOn" = "Updated on %@";
-"categoryUpdatedAt" = "Updated at %@";
-"categoryUpdatedNow" = "Updated just now";
+"categoryUpdatedOn" = "Opdateret d. %@";
+"categoryUpdatedAt" = "Opdateret %@";
+"categoryUpdatedNow" = "Netop opdateret";
 "categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo.\nPrøv at trække ned for at opdatere eller log ind igen.";
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
@@ -347,13 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
 "editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
+"help_externalDisplay" = "Tryk på det billede, du ønsker at vise her.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
 "editImageDetailsError_message" = "Kunne ikke opdatere dine ændringer på din server. Prøv igen?";
 "imageDetailsFetchError_title" = "Kan ikke læse billeddetajler";
-"imageDetailsFetchError_message" = "Hentning af fotodata mislykkedes.";
+"imageDetailsFetchError_message" = "Hentning af billeddata mislykkedes.";
 "imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes. Fortsæt?";
 
 // Image privacy levels
@@ -743,9 +743,9 @@
 "settings_appLock" = "App Lås";
 "settings_appLockEnter" = "Indtast Kode";
 "settings_appLockVerify" = "Bekræft Kode";
-"settings_appLockModify" = "Ændre Kode";
+"settings_appLockModify" = "Skift Kode";
 "settings_appLockInfo" = "Med App Lock kræves en enhedsspecifik kode for at få adgang til appen. Hvis du mister denne kode, skal du geninstallere appen.";
-"settings_passcodeInfo" = "Koden er adskilt fra adgangskoden til din Piwigo konto.";
+"settings_passcodeInfo" = "Koden er forskellig fra adgangskoden til din Piwigo konto.";
 
 "settings_biometricsReason" = "Få adgang til dine Piwigo-albummer";
 "settings_biometricsTouchID" = "Touch ID";
@@ -754,7 +754,7 @@
 "settings_biometricsFaceIDinfo" = "Brug ansigts-id som et alternativ til din App Lock adgangskode.";
 
 "settings_clearClipboard" = "Ryd Udklipsholder";
-"settings_clearClipboardInfo" = "Vælg den forsinkelse, hvorefter udklipsholderen vil blive ryddet.";
+"settings_clearClipboardInfo" = "Vælg den forsinkelse, efter hvilken udklipsholderen vil blive ryddet.";
 "settings_clearClipboard10sUnit" = "Efter 10 s";
 "settings_clearClipboard10sText" = "Efter 10 sekunder";
 "settings_clearClipboard30sUnit" = "Efter 30 s";

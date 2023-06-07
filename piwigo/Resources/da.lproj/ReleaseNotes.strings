@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.0.0_text" = "Version 3.0\n\n- Cachehåndtering er fuldstændig omskrevet for at forbedre brugeroplevelsen og give mulighed for offline browsing\n- Retter nogle oversættelser";
+"v3.0.0_text" = "Version 3.0\n\n• Cachehåndtering er fuldstændig omskrevet for at forbedre brugeroplevelsen og give mulighed for offline browsing\n• Retter af nogle oversættelser";
 
 "v2.12.7_text" = "Version 2.12.7\n19 december 2022\n\n• Fejlrettelser";
 
@@ -18,7 +18,7 @@
 
 "v2.12.3_text" = "Version 2.12.3\n7 august 2022\n\n• Fejlrettelser";
 
-"v2.12.2_text" = "Version 2.12.2\n2 august 2022\n\n• Løser et nedbrud på iOS 9-12, når du viser upload anmodning kø\n• Mindre fejlrettelser og forbedringer af brugerflade";
+"v2.12.2_text" = "Version 2.12.2\n2 august 2022\n\n• Løser et nedbrud på iOS 9-12, ved visning upload anmodnings kø\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
 "v2.12.1_text" = "Version 2.12.1\n10 juli 2022\n\n• Retter et nedbrud, der opstår på iOS 9-13 ved ændring af tags tildelt billeder";
 
@@ -40,7 +40,7 @@
 
 "v2.9.2_text" = "Version 2.9.2\n24 januar 2022\n\n• Fejlrettelser\n• Modernisering af kode";
 
-"v2.9.1_text" = "Version 2.9.1\n20 januar 2022\n\n• Højdepunkter albummer opdateret for nylig\n• Mindre fejl rettet og forbedringer af brugerflade";
+"v2.9.1_text" = "Version 2.9.1\n20 januar 2022\n\n• Markerer albummer opdateret for nylig\n• Mindre fejl rettet og forbedringer af brugerflade";
 
 "v2.9.0_text" = "Version 2.9\n9 januar 2022\n\n• Viser foto-/videobeskrivelser i preview-tilstand\n• Mindre fejlrettelser og forbedringer af brugerflade";
 

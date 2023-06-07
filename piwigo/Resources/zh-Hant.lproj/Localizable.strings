@@ -52,8 +52,8 @@
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "在讀取快取時發生了一個嚴重的程式錯誤。因此重新建立了新的快取。";
 "CoreDataFetch_DigestError" = "無法讀取接收到的資料。";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "轉移進行中...";
+"Coredata_MigrationPleaseWait" = "我們正在轉移您的部分資料，請等待直到完成。請勿關閉程式。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "會拋棄無效使用者名稱的帳號。";
@@ -347,7 +347,7 @@
 "editImageDetails_dateYearDec" = "-1年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
-"help_externalDisplay" = "Tap the image you wish to display here.";
+"help_externalDisplay" = "點按你想要在這裡顯示的圖片。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失敗";
