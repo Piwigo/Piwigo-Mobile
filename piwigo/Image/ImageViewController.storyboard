@@ -119,7 +119,7 @@
                                     <outlet property="descWidth" destination="75C-3O-otD" id="nDS-S0-qUJ"/>
                                 </connections>
                             </visualEffectView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec0-NJ-b64" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec0-NJ-b64" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="195.5" y="64" width="23" height="23"/>
                                 <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
