@@ -336,6 +336,11 @@ public class ImageProvider: NSObject {
             album.willAccessValue(forKey: nil)
             album.didAccessValue(forKey: nil)
         }
+        
+        // Import tags which are not yet in cache
+        let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
+        let isAdmin = user.status == pwgUserStatus.admin.rawValue
+        let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, delete: false)
 
         // Get favorite album if possible (will not prevent import)
         let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)

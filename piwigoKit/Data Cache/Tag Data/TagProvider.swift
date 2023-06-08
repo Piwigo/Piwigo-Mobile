@@ -123,8 +123,8 @@ public class TagProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool,
-                                delete: Bool = true) -> Bool {
+    func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool,
+                        delete: Bool = true) -> Bool {
         var success = false
 
         // taskContext.performAndWait runs on the URLSession's delegate queue
