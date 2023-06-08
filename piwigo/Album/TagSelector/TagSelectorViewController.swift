@@ -47,22 +47,29 @@ class TagSelectorViewController: UITableViewController {
 
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
-    lazy var predicates: [NSPredicate] = {
+    lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-        return andPredicates
+        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
+
+    func getQueryVar() -> [String : Any] {
+        return ["query"  : "*" + searchQuery + "*"]
+    }
+
     lazy var fetchRequest: NSFetchRequest = {
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
                                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
+    
     lazy var tags: NSFetchedResultsController<Tag> = {
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let tags = NSFetchedResultsController(fetchRequest: fetchRequest,

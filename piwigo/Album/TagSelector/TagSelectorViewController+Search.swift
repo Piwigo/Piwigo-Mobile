@@ -39,11 +39,7 @@ extension TagSelectorViewController: UISearchResultsUpdating
             // Do not update content before pushing view in tableView(_:didSelectRowAt:)
             if searchController.isActive {
                 // Update fetch request predicate
-                var andPredicates = predicates
-                if searchQuery.isEmpty == false {
-                    andPredicates.append(NSPredicate(format: "tagName BEGINSWITH[c] %@", searchQuery))
-                }
-                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+                fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
 
                 // Perform a new fetch
                 try? tags.performFetch()

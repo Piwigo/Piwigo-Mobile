@@ -49,13 +49,11 @@ extension AlbumViewController: UISearchControllerDelegate
         self.resetSearchAlbum(withQuery: "")
         
         // Update albums
-        var andPredicates = getAlbumPredicates()
-        fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
         try? albums.performFetch()
         
         // Update images
-        andPredicates = getImagePredicates()
-        fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
         try? images.performFetch()
         
         // Reload collection

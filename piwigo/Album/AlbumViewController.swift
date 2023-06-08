@@ -215,21 +215,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return user.uploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
     
-    func getAlbumPredicates() -> [NSPredicate] {
-        var predicates = [NSPredicate]()
-        predicates.append(NSPredicate(format: "parentId == %i", categoryId))
-        predicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        predicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        return predicates
-    }
+    lazy var albumPredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "parentId == $catId"))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
     
     lazy var fetchAlbumsRequest: NSFetchRequest = {
         // Sort albums by globalRank i.e. the order in which they are presented in the web UI
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
-        var andPredicates = getAlbumPredicates()
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
@@ -242,13 +241,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return albums
     }()
     
-    func getImagePredicates() -> [NSPredicate] {
-        var predicates = [NSPredicate]()
-        predicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        predicates.append(NSPredicate(format: "ANY albums.pwgID == %i", categoryId))
-        predicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
-        return predicates
-    }
+    lazy var imagePredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catId"))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
     
     lazy var fetchImagesRequest: NSFetchRequest = {
         // Sort images according to default settings
@@ -345,8 +344,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 fetchRequest.sortDescriptors = [sortByRank]
             }
         }
-        var andPredicates = getImagePredicates()
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
         fetchRequest.fetchBatchSize = self.perPage
         return fetchRequest
     }()
@@ -782,13 +780,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     func resetPredicatesAndPerformFetch() {
         // Update albums
-        var andPredicates = getAlbumPredicates()
-        fetchAlbumsRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
         try? albums.performFetch()
 
         // Update images
-        andPredicates = getImagePredicates()
-        fetchImagesRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
         try? images.performFetch()
     }
     
