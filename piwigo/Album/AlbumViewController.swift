@@ -726,6 +726,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         // Hide upload button during transition
         addButton.isHidden = true
+        
+        // Hide HUD if still presented
+        self.navigationController?.hidePiwigoHUD { }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
