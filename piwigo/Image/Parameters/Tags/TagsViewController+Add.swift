@@ -85,6 +85,10 @@ extension TagsViewController
 extension TagsViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        // Initialise tag name list
+        allTagNames = Set((selectedTags.fetchedObjects ?? []).map({$0.tagName}))
+        allTagNames.formUnion(Set(nonSelectedTags.fetchedObjects ?? []).map({$0.tagName}))
+
         // Disable Add action
         addAction?.isEnabled = false
         return true
@@ -95,7 +99,6 @@ extension TagsViewController: UITextFieldDelegate
         if let text = textField.text,
            let textRange = Range(range, in: text) {
             let updatedText = text.replacingCharacters(in: textRange, with: string)
-            let allTagNames = (tagProvider.fetchedResultsController.fetchedObjects ?? []).map({$0.tagName})
             addAction?.isEnabled = !updatedText.isEmpty && !allTagNames.contains(updatedText)
         }
         return true

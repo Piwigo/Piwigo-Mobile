@@ -673,6 +673,8 @@ extension EditImageParamsViewController: UITableViewDelegate
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
+            tagsVC.user = user
+            tagsVC.savingContext = savingContext
             let tagList: [Int32] = commonTags.compactMap { Int32($0.tagId) }
             tagsVC.setPreselectedTagIds(Set(tagList))
             tagsVC.setTagCreationRights(hasTagCreationRights)

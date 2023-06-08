@@ -298,7 +298,7 @@ public class TagProvider: NSObject {
     /**
      Get all Tag instances of the current server matching the list of tag IDs
     */
-    func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> Set<Tag> {
+    public func getTags(withIDs tagIds: String, taskContext: NSManagedObjectContext) -> Set<Tag> {
         // Initialisation
         var tagList = Set<Tag>()
         
@@ -324,8 +324,12 @@ public class TagProvider: NSObject {
             
             // Tag selection
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
-            let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
-            tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
+            if tagIds.isEmpty {
+                tagList = Set(cachedTags)
+            } else {
+                let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
+                tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
+            }
         }
 
         return tagList
@@ -373,42 +377,4 @@ public class TagProvider: NSObject {
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
-    
-
-    // MARK: - NSFetchedResultsController
-    
-    /**
-     A fetched results controller delegate to give consumers a chance to update
-     the TagsViewController user interface when content changes.
-     */
-    public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
-    
-    /**
-     A fetched results controller to fetch Tag records of the current server, sorted by name.
-     */
-    public lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
-        
-        // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = Tag.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-        
-        // Select tags of the current server only
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
-
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: mainContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = fetchedResultsControllerDelegate
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error \(error)")
-        }
-        
-        return controller
-    }()
 }

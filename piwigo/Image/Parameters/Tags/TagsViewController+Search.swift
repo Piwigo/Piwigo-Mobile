@@ -34,11 +34,17 @@ extension TagsViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController) {
         if let query = searchController.searchBar.text {
-            // Update query
+            // Update persistent query string
             searchQuery = query
 
             // Do not update content before pushing view in tableView(_:didSelectRowAt:)
             if searchController.isActive {
+                // Update fetch requests and perform fetches
+                fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+                try? selectedTags.performFetch()
+                fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+                try? nonSelectedTags.performFetch()
+
                 // Shows filtered data
                 tableView.reloadData()
             }
@@ -59,8 +65,16 @@ extension TagsViewController: UISearchBarDelegate
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
-        // Update query
+
+        // Update persistent query string
         searchQuery = ""
+
+        // Update fetch requests and perform fetches
+        fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+        try? selectedTags.performFetch()
+        fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+        try? nonSelectedTags.performFetch()
+
         // Reload tableview
         tableView.reloadData()
     }

@@ -19,6 +19,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 class TagsViewController: UITableViewController {
 
     weak var delegate: TagsViewControllerDelegate?
+    private var updateOperations: [BlockOperation] = [BlockOperation]()
 
     // Called before uploading images (Tag class)
     private var selectedTagIds = Set<Int32>()
@@ -34,31 +35,81 @@ class TagsViewController: UITableViewController {
 
     // MARK: - Core Data Providers
     var user: User!
+    var savingContext: NSManagedObjectContext!
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
-        provider.fetchedResultsControllerDelegate = self
         return provider
+    }()
+
+
+    // MARK: - Core Data Source
+    lazy var selectedTagsPredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "tagId IN $tagIds"))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    func getSelectedVars() -> [String : Any] {
+        return ["tagIds" : selectedTagIds]
+    }
+
+    lazy var fetchSelectedTagsRequest: NSFetchRequest = {
+        // Sort tags by name i.e. the order in which they are presented in the web UI
+        let fetchRequest = Tag.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        fetchRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var selectedTags: NSFetchedResultsController<Tag> = {
+        let tags = NSFetchedResultsController(fetchRequest: fetchSelectedTagsRequest,
+                                              managedObjectContext: savingContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        tags.delegate = self
+        return tags
+    }()
+
+    var searchQuery = ""
+    lazy var nonSelectedTagsPredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "NOT (tagId IN $tagIds)"))
+        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    func getNonSelectedVars() -> [String : Any] {
+        return ["tagIds" : selectedTagIds,
+                "query"  : "*" + searchQuery + "*"]
+    }
+    
+    lazy var fetchNonSelectedTagsRequest: NSFetchRequest = {
+        // Sort tags by name i.e. the order in which they are presented in the web UI
+        let fetchRequest = Tag.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        fetchRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var nonSelectedTags: NSFetchedResultsController<Tag> = {
+        let tags = NSFetchedResultsController(fetchRequest: fetchNonSelectedTagsRequest,
+                                              managedObjectContext: savingContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        tags.delegate = self
+        return tags
     }()
 
 
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var letterIndex: [String] = []
-    private var selectedTagIdsBeforeUpdate = [Int32]()
-    private var nonSelectedTagIdsBeforeUpdate = [Int32]()
-
+    var allTagNames = Set<String>()
     let searchController = UISearchController(searchResultsController: nil)
-    var searchQuery = ""
-    private var selectedTags: [Tag] {
-        let allTags = tagProvider.fetchedResultsController.fetchedObjects ?? []
-        let selectedTags = allTags.filter({selectedTagIds.contains($0.tagId)})
-        return selectedTags
-    }
-    private var nonSelectedTags: [Tag] {
-        let allTags = tagProvider.fetchedResultsController.fetchedObjects ?? []
-        let nonSelectedTags = allTags.filter({!selectedTagIds.contains($0.tagId)})
-        return nonSelectedTags.filterTags(for: searchQuery)
-    }
 
     var addAction: UIAlertAction?
     private var addBarButton: UIBarButtonItem?
@@ -67,9 +118,17 @@ class TagsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Add search bar and prepare data source
+        // Add search bar
         initSearchBar()
         
+        // Initialise data source
+        do {
+            try selectedTags.performFetch()
+            try nonSelectedTags.performFetch()
+        } catch {
+            print("Error: \(error)")
+        }
+
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         NetworkUtilities.checkSession(ofUser: user) {
@@ -140,7 +199,7 @@ class TagsViewController: UITableViewController {
         super .viewWillDisappear(animated)
 
         // Return list of selected tags
-        delegate?.didSelectTags(Set(selectedTags))
+        delegate?.didSelectTags(Set(selectedTags.fetchedObjects ?? []))
     }
     
     deinit {
@@ -178,9 +237,11 @@ class TagsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return selectedTags.count
+            let objects = selectedTags.fetchedObjects
+            return objects?.count ?? 0
         case 1:
-            return nonSelectedTags.count
+            let objects = nonSelectedTags.fetchedObjects
+            return objects?.count ?? 0
         default:
             fatalError("Unknown tableView section!")
         }
@@ -193,9 +254,10 @@ class TagsViewController: UITableViewController {
         }
         switch indexPath.section {
         case 0 /* Selected tags */:
-            cell.configure(with: selectedTags[indexPath.row], andEditOption: .remove)
+            cell.configure(with: selectedTags.object(at: indexPath), andEditOption: .remove)
         case 1 /* Non-selected tags */:
-            cell.configure(with: nonSelectedTags[indexPath.row], andEditOption: .add)
+            let indexPath1 = IndexPath(row: indexPath.row, section: 0)
+            cell.configure(with: nonSelectedTags.object(at: indexPath1), andEditOption: .add)
         default:
             fatalError("Unknown tableView section!")
         }
@@ -210,28 +272,44 @@ class TagsViewController: UITableViewController {
         switch indexPath.section {
         case 0 /* Selected tags */:
             // Tapped selected tag
-            let currentTag = selectedTags[indexPath.row]
+            let currentTag = selectedTags.object(at: indexPath)
 
             // Remove tag from list of selected tags
             selectedTagIds.remove(currentTag.tagId)
             
+            // Update fetch requests and perform fetches
+            fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+            try? selectedTags.performFetch()
+            fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+            try? nonSelectedTags.performFetch()
+            
             // Determine new indexPath of deselected tag
-            if let indexOfTag = nonSelectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+            if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                 let insertPath = IndexPath(row: indexOfTag, section: 1)
                 // Move cell from top to bottom section
                 tableView.moveRow(at: indexPath, to: insertPath)
                 // Update icon of cell
-                tableView.reloadRows(at: [insertPath], with: .automatic)
+                if let indexPaths = tableView.indexPathsForVisibleRows,
+                   indexPaths.contains(insertPath) {
+                    tableView.reloadRows(at: [insertPath], with: .automatic)
+                }
             }
         case 1 /* Non-selected tags */:
             // Tapped non selected tag
-            let currentTag = nonSelectedTags[indexPath.row]
+            let indexPath1 = IndexPath(row: indexPath.row, section: 0)
+            let currentTag = nonSelectedTags.object(at: indexPath1)
 
             // Add tag to list of selected tags
             selectedTagIds.insert(currentTag.tagId)
 
+            // Update fetch requests and perform fetches
+            fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+            try? selectedTags.performFetch()
+            fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+            try? nonSelectedTags.performFetch()
+
             // Determine new indexPath of selected tag
-            if let indexOfTag = selectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+            if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                 let insertPath = IndexPath(row: indexOfTag, section: 0)
                 // Move cell from bottom to top section
                 tableView.moveRow(at: indexPath, to: insertPath)
@@ -252,82 +330,74 @@ class TagsViewController: UITableViewController {
 extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Stores tag IDs before the update
-        selectedTagIdsBeforeUpdate = selectedTags.map({$0.tagId})
-        nonSelectedTagIdsBeforeUpdate = nonSelectedTags.map({$0.tagId})
-        
+        // Initialise update operations
+        updateOperations.removeAll(keepingCapacity: false)
         // Begin the update
         tableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        switch type {
-        case .delete:   // Action performed in priority
-            // Remove tag from the right list of tags
-            guard let tag: Tag = anObject as? Tag else { return }
-            // List of selected tags
-            if let index = selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                // Remove selected tag from data source
-                selectedTagIds.remove(tag.tagId)
-                // Remove selected tag from table view
-                let deleteAtIndexPath = IndexPath(row: index, section: 0)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
-            // List of non-selected tags
-            else if let index = nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                // Remove non-selected tag from table view
-                let deleteAtIndexPath = IndexPath(row: index, section: 1)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
+        // Initialisation
+        var hasTagsInSection1 = false
+        if controller == nonSelectedTags  {
+            hasTagsInSection1 = true
+        }
 
+        // Collect operation changes
+        switch type {
         case .insert:
             // Insert tag into the right list of tags
-            guard let tag: Tag = anObject as? Tag else { return }
-            // Append tag to appropriate list
-            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let addAtIndexPath = IndexPath(row: index, section: 0)
-                print(".insert =>", addAtIndexPath.debugDescription)
-                tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+            guard var newIndexPath = newIndexPath else { return }
+            if hasTagsInSection1 { newIndexPath.section = 1 }
+            updateOperations.append( BlockOperation { [weak self] in
+                print("••> Insert tag item at \(newIndexPath)")
+                self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            })
+        case .update:
+            guard var indexPath = indexPath else { return }
+            if hasTagsInSection1 { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Update tag item at \(indexPath)")
+                self?.tableView?.reloadRows(at: [indexPath], with: .automatic)
+            })
+        case .move:
+            guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
+            if hasTagsInSection1 {
+                indexPath.section = 1
+                newIndexPath.section = 1
             }
-            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let addAtIndexPath = IndexPath(row: index, section: 1)
-                print(".insert =>", addAtIndexPath.debugDescription)
-                tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
-            }
-
-        case .move:        // Should never "move"
-            // Update tag belonging to the right list
-            assertionFailure("TagsViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
-
-        case .update:      // Will never "move"
-            // Update tag belonging to the right list
-            guard let tag: Tag = anObject as? Tag else { return }
-            // List of selected tags
-            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let updateAtIndexPath = IndexPath(row: index, section: 0)
-                print(".update =>", updateAtIndexPath.debugDescription)
-                if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
-                    cell.configure(with: tag, andEditOption: .remove)
-                }
-            }
-            // List of non-selected tags
-            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let updateAtIndexPath = IndexPath(row: index, section: 1)
-                print(".update =>", updateAtIndexPath.debugDescription)
-                if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
-                    cell.configure(with: tag, andEditOption: .add)
-                }
-            }
-
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                self?.tableView?.moveRow(at: indexPath, to: newIndexPath)
+            })
+        case .delete:
+            guard var indexPath = indexPath else { return }
+            if hasTagsInSection1 { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Delete tag item at \(indexPath)")
+                self?.tableView?.deleteRows(at: [indexPath], with: .automatic)
+            })
         @unknown default:
             fatalError("TagsViewController: unknown NSFetchedResultsChangeType")
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Do not update items if the album is not presented.
+        if view.window == nil { return }
+        
+        // Any update to perform?
+        if updateOperations.isEmpty || view.window == nil { return }
+
+        // Perform all updates
+        tableView?.performBatchUpdates({ () -> Void  in
+            for operation: BlockOperation in self.updateOperations {
+                operation.start()
+            }
+        })
+        
+        // End updates
         tableView.endUpdates()
     }
 }

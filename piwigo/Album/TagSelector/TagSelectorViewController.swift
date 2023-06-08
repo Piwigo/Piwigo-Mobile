@@ -30,7 +30,6 @@ class TagSelectorViewController: UITableViewController {
     // MARK: - Core Data Providers
     private lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider()
-        provider.fetchedResultsControllerDelegate = self
         return provider
     }()
     
