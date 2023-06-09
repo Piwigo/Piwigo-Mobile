@@ -23,7 +23,7 @@ extension SceneDelegate {
 
         // Create array of sub-album IDs
         var catIDs = Set<Int32>()
-        var imageID = Int.min
+        var imageIndex = Int.min
         for viewController in navController.viewControllers {
             if let vc = viewController as? AlbumViewController {
                 // Bypass the default album
@@ -33,13 +33,13 @@ extension SceneDelegate {
             }
             else if let vc = viewController as? ImageViewController {
                 // Store image index
-                imageID = vc.imageIndex
+                imageIndex = vc.imageIndex
             }
         }
                 
         // Create user info
         let info: [String: Any] = ["catIDs"  : catIDs,
-                                   "imageID" : imageID]
+                                   "imageID" : imageIndex]
         stateActivity.addUserInfoEntries(from: info)
 
         return stateActivity
@@ -63,24 +63,27 @@ extension SceneDelegate {
             navController.pushViewController(subAlbumVC, animated: false)
         }
         
-        // Restore image preview
-        if let imageID = (userInfo["imageID"] as? Int), imageID != Int.min {
+        // Restore image preview if performFetch() has been called and an image is available
+        if let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
+           let images = subAlbumVC.images.fetchedObjects, images.count > 1 {
+            // Prepare image detail view
             let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-            subAlbumVC.imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
-            subAlbumVC.imageDetailView?.imageIndex = imageID
-            subAlbumVC.imageDetailView?.categoryId = subAlbumVC.categoryId
-            subAlbumVC.imageDetailView?.images = subAlbumVC.images
-            subAlbumVC.imageDetailView?.user = subAlbumVC.user
-            subAlbumVC.imageDetailView?.userHasUploadRights = subAlbumVC.userHasUploadRights
-            subAlbumVC.imageDetailView?.albumProvider = subAlbumVC.albumProvider
-            subAlbumVC.imageDetailView?.imageProvider = subAlbumVC.imageProvider
-            subAlbumVC.imageDetailView?.savingContext = subAlbumVC.mainContext
-            subAlbumVC.imageDetailView?.imgDetailDelegate = subAlbumVC.self
-            subAlbumVC.imageDetailView?.hidesBottomBarWhenPushed = true
-            subAlbumVC.imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
-            if let imageDetailView = subAlbumVC.imageDetailView {
-                navController.pushViewController(imageDetailView, animated: false)
-            }
+            guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
+            imageDetailVC.imageIndex = min(imageIndex, images.count - 1)
+            imageDetailVC.categoryId = subAlbumVC.categoryId
+            imageDetailVC.images = subAlbumVC.images
+            imageDetailVC.user = subAlbumVC.user
+            imageDetailVC.userHasUploadRights = subAlbumVC.userHasUploadRights
+            imageDetailVC.albumProvider = subAlbumVC.albumProvider
+            imageDetailVC.imageProvider = subAlbumVC.imageProvider
+            imageDetailVC.savingContext = subAlbumVC.mainContext
+            imageDetailVC.imgDetailDelegate = subAlbumVC.self
+            imageDetailVC.hidesBottomBarWhenPushed = true
+            imageDetailVC.modalPresentationCapturesStatusBarAppearance = true
+            
+            // Present image in full screen
+            subAlbumVC.imageDetailView = imageDetailVC
+            navController.pushViewController(imageDetailVC, animated: false)
         }
     }
 }
