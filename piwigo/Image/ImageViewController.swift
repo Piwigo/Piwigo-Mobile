@@ -230,6 +230,14 @@ class ImageViewController: UIViewController {
         }
         titleLabel.sizeToFit()
 
+        // Check that dates are accessible
+        /// Will see if it fixes crash '#0    (null) in static Date._unconditionallyBridgeFromObjectiveC(_:) ()'
+        if imageData.isFault {
+            // imageData is not fired yet.
+            imageData.willAccessValue(forKey: nil)
+            imageData.didAccessValue(forKey: nil)
+        }
+
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
