@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -95,7 +95,7 @@
 		50FEB19150314B234644D5E5CAA50491 /* IQInvocation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQInvocation.swift; path = IQKeyboardManagerSwift/IQToolbar/IQInvocation.swift; sourceTree = "<group>"; };
 		55747ACD85E7391943B00C8CD5B84926 /* MBProgressHUD-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD-dummy.m"; sourceTree = "<group>"; };
 		56EC4FF35DA7CADE3EC6931B7D60C413 /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
-		5706E84C9AE0B10A0BB3C1DDAB1AA291 /* Pods-piwigoAppStore */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "Pods-piwigoAppStore"; path = "libPods-piwigoAppStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5706E84C9AE0B10A0BB3C1DDAB1AA291 /* libPods-piwigoAppStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigoAppStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B587A32BA0DE13FE950606538302EFD /* IQKeyboardManagerSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "IQKeyboardManagerSwift-umbrella.h"; sourceTree = "<group>"; };
 		62D25B56F9CABD978D34647878E816C8 /* IQKeyboardManager+Position.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "IQKeyboardManager+Position.swift"; path = "IQKeyboardManagerSwift/IQKeyboardManager+Position.swift"; sourceTree = "<group>"; };
 		73A2A45BD88CB29139A746ECB879DED1 /* Pods-piwigoAppStore-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-piwigoAppStore-dummy.m"; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 		AAEEFA91FF99A934A8DE5E538FB1100D /* Pods-piwigo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-piwigo.debug.xcconfig"; sourceTree = "<group>"; };
 		AD3EF64BDD7C8B18011EF382DAE93CD3 /* IQPreviousNextView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQPreviousNextView.swift; path = IQKeyboardManagerSwift/IQToolbar/IQPreviousNextView.swift; sourceTree = "<group>"; };
 		B959B966AF421EE1BACA384FEE30672E /* IQBarButtonItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQBarButtonItem.swift; path = IQKeyboardManagerSwift/IQToolbar/IQBarButtonItem.swift; sourceTree = "<group>"; };
-		B9DFC8964BAADB81C132F25C0C6CE40C /* Pods-piwigo */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "Pods-piwigo"; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9DFC8964BAADB81C132F25C0C6CE40C /* libPods-piwigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-piwigo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD6EC4161E26E32F68CDE6CDA7DCE5FF /* MBProgressHUD.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		BD90938A7DD60AB7330135F8256BC919 /* IQKeyboardReturnKeyHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IQKeyboardReturnKeyHandler.swift; path = IQKeyboardManagerSwift/IQKeyboardReturnKeyHandler.swift; sourceTree = "<group>"; };
 		C14B849D671526F0AE06E10635FBD5FB /* MGSwipeButton.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MGSwipeButton.h; path = MGSwipeTableCell/MGSwipeButton.h; sourceTree = "<group>"; };
@@ -253,8 +253,8 @@
 				A8E950A16D00F649C54FFB30F81D7842 /* libIQKeyboardManagerSwift.a */,
 				8B8FAB0D627B17EDE1366984278705D9 /* libMBProgressHUD.a */,
 				25F18D1B6B5143BEF52BDC9EFD5CBE0A /* libMGSwipeTableCell.a */,
-				B9DFC8964BAADB81C132F25C0C6CE40C /* Pods-piwigo */,
-				5706E84C9AE0B10A0BB3C1DDAB1AA291 /* Pods-piwigoAppStore */,
+				B9DFC8964BAADB81C132F25C0C6CE40C /* libPods-piwigo.a */,
+				5706E84C9AE0B10A0BB3C1DDAB1AA291 /* libPods-piwigoAppStore.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -427,7 +427,7 @@
 			);
 			name = "Pods-piwigo";
 			productName = "Pods-piwigo";
-			productReference = B9DFC8964BAADB81C132F25C0C6CE40C /* Pods-piwigo */;
+			productReference = B9DFC8964BAADB81C132F25C0C6CE40C /* libPods-piwigo.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		771F7CD6E0864BC28C79DE87EBC62872 /* Pods-piwigoAppStore */ = {
@@ -445,7 +445,7 @@
 			);
 			name = "Pods-piwigoAppStore";
 			productName = "Pods-piwigoAppStore";
-			productReference = 5706E84C9AE0B10A0BB3C1DDAB1AA291 /* Pods-piwigoAppStore */;
+			productReference = 5706E84C9AE0B10A0BB3C1DDAB1AA291 /* libPods-piwigoAppStore.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		82B0A41D3031FF27D78E17B0A9A46FB0 /* MBProgressHUD */ = {
@@ -489,8 +489,9 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1430;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -722,7 +723,6 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -830,7 +830,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
