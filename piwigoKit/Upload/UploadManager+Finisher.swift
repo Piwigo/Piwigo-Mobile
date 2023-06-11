@@ -1,5 +1,5 @@
 //
-//  UploadFinisher.swift
+//  UploadManager+Finisher.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 01/06/2020.

@@ -91,8 +91,8 @@ public class UploadManager: NSObject {
     
     /// Uploads directory, sessions and JSON decoder
     public let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
-    let frgdSession: URLSession = UploadSessions.shared.frgdSession
-    let bckgSession: URLSession = UploadSessions.shared.bckgSession
+    public let frgdSession: URLSession = UploadSessions.shared.frgdSession
+    public let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()
     
     /// Number of pending upload requests

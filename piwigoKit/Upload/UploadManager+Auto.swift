@@ -1,5 +1,5 @@
 //
-//  UploadAuto.swift
+//  UploadManager+Auto.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 10/04/2021.

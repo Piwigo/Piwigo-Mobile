@@ -1,5 +1,5 @@
 //
-//  UploadTransfer.swift
+//  UploadManager+Transfer.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
