@@ -40,6 +40,11 @@ public class LocationProvider: NSObject {
         return context
     }()
 
+    private lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        return context
+    }()
+
     
     // MARK: - Fetch Place Names
     /**
@@ -247,7 +252,7 @@ public class LocationProvider: NSObject {
         
         // Fetch number of objects
         do {
-            let countResult = try mainContext.fetch(fetchRequest)
+            let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error as NSError {
@@ -255,7 +260,7 @@ public class LocationProvider: NSObject {
         }
         return Int64.zero
     }
-        
+    
     /**
      Clear cached Core Data location entry
     */

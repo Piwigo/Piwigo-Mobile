@@ -13,10 +13,30 @@ import piwigoKit
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
+        guard let oldThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize),
+              thumbnailSize != oldThumbnailSize else {
             return
         }
         
+        // Delete album thumbnails in foreground queue if not used anymore
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let server = self.user.server else {
+                fatalError("••> User not provided!")
+            }
+            if oldThumbnailSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
+               oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
+               oldThumbnailSize != .fullRes {
+                server.clearCachedImages(ofSizes: [oldThumbnailSize])
+            }
+            
+            DispatchQueue.main.async {
+                // Refresh Settings cell
+                let sizes = self.getThumbnailSizes()
+                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                self.updateThumbCacheCell()
+            }
+        }
+
         // Save new choice
         AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 

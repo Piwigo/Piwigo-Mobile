@@ -13,8 +13,30 @@ import piwigoKit
 extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: pwgImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) { return }
+        guard let oldThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize),
+              thumbnailSize != oldThumbnailSize else {
+            return
+        }
         
+        // Delete image thumbnails in foreground queue if not used anymore
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let server = self.user.server else {
+                fatalError("••> User not provided!")
+            }
+            if oldThumbnailSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
+               oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
+               oldThumbnailSize != .fullRes {
+                server.clearCachedImages(ofSizes: [oldThumbnailSize])
+            }
+            
+            DispatchQueue.main.async {
+                // Refresh Settings cell
+                let sizes = self.getThumbnailSizes()
+                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                self.updateThumbCacheCell()
+            }
+        }
+
         // Save new choice
         AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
 
@@ -32,8 +54,30 @@ extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
 extension SettingsViewController: DefaultImageSizeDelegate {
     func didSelectImageDefaultSize(_ imageSize: pwgImageSize) {
         // Do nothing if size is unchanged
-        if imageSize == pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) { return }
+        guard let oldPhotoSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize),
+              imageSize != oldPhotoSize else {
+            return
+        }
         
+        // Delete image files in foreground queue if not used anymore
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let server = self.user.server else {
+                fatalError("••> User not provided!")
+            }
+            if oldPhotoSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
+               oldPhotoSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
+               oldPhotoSize != .fullRes {
+                server.clearCachedImages(ofSizes: [oldPhotoSize])
+            }
+            
+            DispatchQueue.main.async {
+                // Refresh Settings cell
+                let sizes = self.getPhotoSizes()
+                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                self.updatePhotoCacheCell()
+            }
+        }
+
         // Save new choice
         ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
 

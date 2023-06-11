@@ -505,7 +505,7 @@ public class ImageProvider: NSObject {
 
         // Fetch number of objects
         do {
-            let countResult = try mainContext.fetch(fetchRequest)
+            let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
         catch let error as NSError {

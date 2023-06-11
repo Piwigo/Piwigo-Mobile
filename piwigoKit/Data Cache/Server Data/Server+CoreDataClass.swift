@@ -58,7 +58,7 @@ public class Server: NSManagedObject {
 //        let folderSize = dataURL.folderSize
 //        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
         
-        // Calculate number of objects
+        // Calculate number of objects in background thread
         var totalCount = LocationProvider.shared.getObjectCount()
         totalCount += AlbumProvider().getObjectCount()
         totalCount += ImageProvider().getObjectCount()
