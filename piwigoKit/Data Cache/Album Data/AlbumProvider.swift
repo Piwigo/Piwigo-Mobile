@@ -389,7 +389,7 @@ public class AlbumProvider: NSObject {
             
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: bckgContext,
+                                                        managedObjectContext: self.bckgContext,
                                                         sectionNameKeyPath: nil, cacheName: nil)
             // Perform the fetch.
             do {
