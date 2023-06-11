@@ -52,11 +52,11 @@ extension UIImage {
         objectnessConfidence = objectnessObject?.confidence ?? 0.0
         
         // Priority to attention-based saliency
-        if attentionConfidence > 0.7,
+        if attentionConfidence > 0.8,
            attentionConfidence > objectnessConfidence,
            let salientObject = attentionObject,
-           salientObject.boundingBox.width > 0.3,
-           salientObject.boundingBox.height > 0.3 {
+           salientObject.boundingBox.width > 0.5,
+           salientObject.boundingBox.height > 0.5 {
             let salientRect = VNImageRectForNormalizedRect(salientObject.boundingBox,
                                                            cgImage.width, cgImage.height)
             // Crop image
@@ -67,10 +67,10 @@ extension UIImage {
         }
 
         // Objectness-based saliency
-        if objectnessConfidence > 0.7,
+        if objectnessConfidence > 0.8,
             let salientObject = objectnessObject,
-            salientObject.boundingBox.width > 0.3,
-            salientObject.boundingBox.height > 0.3 {
+            salientObject.boundingBox.width > 0.5,
+            salientObject.boundingBox.height > 0.5 {
              let salientRect = VNImageRectForNormalizedRect(salientObject.boundingBox,
                                                             cgImage.width, cgImage.height)
              // Crop image

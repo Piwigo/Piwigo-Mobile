@@ -23,6 +23,9 @@ public enum pwgImageSize : Int16, CaseIterable {
 }
 
 extension pwgImageSize {
+    // Maximum zoom scale of album thumbnails after applying saliency
+    public static let maxSaliencyScale: CGFloat = 2
+    
     // Maximum zoom scale of fullscreen image previews
     public static let maxZoomScale: CGFloat = 2
     
