@@ -315,7 +315,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Called during biometric authentication?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
         if appDelegate.isAuthenticatingWithBiometrics { return }
         
         // Blur views if the App Lock is enabled
