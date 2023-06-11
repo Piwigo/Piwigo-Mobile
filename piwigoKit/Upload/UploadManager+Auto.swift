@@ -112,6 +112,10 @@ extension UploadManager {
     
     
     // MARK: - Delete Auto-Upload Requests
+    @objc func stopAutoUploader(_ notification: Notification?) {
+        disableAutoUpload()
+    }
+    
     public func disableAutoUpload(withTitle title:String = "", message:String = "") {
         // Something to do?
         if !UploadVars.isAutoUploadActive { return }
@@ -125,7 +129,7 @@ extension UploadManager {
             DispatchQueue.main.async {
                 let userInfo: [String : Any] = ["title"   : title,
                                                 "message" : message];
-                NotificationCenter.default.post(name: .pwgAutoUploadDisabled,
+                NotificationCenter.default.post(name: .pwgAutoUploadChanged,
                                                 object: nil, userInfo: userInfo)
             }
         }

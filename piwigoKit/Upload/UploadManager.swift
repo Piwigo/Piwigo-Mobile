@@ -107,12 +107,18 @@ public class UploadManager: NSObject {
             NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
         }
     }
+    
+    public override init() {
+        super.init()
+        
+        // Register auto-upload disabler
+        NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
+                                               name: .pwgDisableAutoUpload, object: nil)
+    }
 
     deinit {
-//        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-
-        // Close upload session
-//        sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
+        // Unregister auto-upload disabler
+        NotificationCenter.default.removeObserver(self, name: .pwgDisableAutoUpload, object: nil)
     }
     
 

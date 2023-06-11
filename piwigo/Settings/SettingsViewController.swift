@@ -178,13 +178,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
 
-        // Register auto-upload option enabled
+        // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadEnabled, object: nil)
-
-        // Register auto-upload option disabled
-        NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadChanged, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -267,10 +263,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option enabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
-
-        // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
     }
 
 

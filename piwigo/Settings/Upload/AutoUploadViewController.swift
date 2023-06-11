@@ -93,7 +93,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Register auto-upload option disabler
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: .pwgAutoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadChanged, object: nil)
         
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
@@ -128,7 +128,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
     }
 
     
@@ -218,7 +218,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         UploadManager.shared.appendAutoUploadRequests()
                         // Update Settings tableview
                         DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: .pwgAutoUploadEnabled, object: nil, userInfo: nil)
+                            NotificationCenter.default.post(name: .pwgAutoUploadChanged, object: nil, userInfo: nil)
                         }
                     } else {
                         // Disable auto-uploading
@@ -421,6 +421,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
                 if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
                     tagsVC.delegate = self
+                    tagsVC.savingContext = savingContext
                     tagsVC.setPreselectedTagIds(Set(UploadVars.autoUploadTagIds
                                                         .components(separatedBy: ",")
                                                         .map { Int32($0) ?? nil }.compactMap {$0}))

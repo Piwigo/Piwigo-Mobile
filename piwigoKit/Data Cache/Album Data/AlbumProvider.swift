@@ -472,7 +472,7 @@ public class AlbumProvider: NSObject {
                albumToDeleteIDs.isEmpty == false {
                 // Check whether the auto-upload category will be deleted
                 if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
-                    UploadManager.shared.disableAutoUpload()
+                    NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
                 }
 
                 // Delete albums

@@ -55,10 +55,9 @@ class AlbumCollectionViewCell: UICollectionViewCell
         }
         contentView.addConstraints(NSLayoutConstraint.constraintFillSize(tableView)!)
 
+        // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)),
-                                               name: .pwgAutoUploadEnabled, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)),
-                                               name: .pwgAutoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadChanged, object: nil)
     }
 
     @objc
@@ -83,8 +82,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
     deinit {
         renameAction = nil
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
