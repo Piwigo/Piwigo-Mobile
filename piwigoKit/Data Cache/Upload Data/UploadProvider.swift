@@ -217,15 +217,6 @@ public class UploadProvider: NSObject {
      Clear cached Core Data upload entry
     */
     public func clearAll() {
-        
-        // Cancel tasks
-        UploadManager.shared.bckgSession.getAllTasks { tasks in
-            tasks.forEach({$0.cancel()})
-        }
-        UploadManager.shared.frgdSession.getAllTasks { tasks in
-            tasks.forEach({$0.cancel()})
-        }
-
         // Create a fetch request for the Upload entity
         let fetchRequest = Upload.fetchRequest()
 
@@ -246,11 +237,6 @@ public class UploadProvider: NSObject {
 
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
-
-        // Update badge and upload queue button
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.findNextImageToUpload()
-        }
     }
     
     /**
@@ -310,7 +296,6 @@ public class UploadProvider: NSObject {
                                 taskContext: NSManagedObjectContext) -> Bool {
         // Check imput and current queue
         if uploadBatch.isEmpty { return true }
-        print("••> deleteOneBatch()", queueName())
 
         var success = false
         taskContext.performAndWait {

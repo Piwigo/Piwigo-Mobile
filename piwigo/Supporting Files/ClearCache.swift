@@ -104,11 +104,25 @@ class ClearCache: NSObject {
     }
     
     static func cancelTasks(completion: @escaping () -> Void) {
-        PwgSession.shared.dataSession.getAllTasks { tasks in
+        // Cancel upload tasks, then other tasks
+        UploadManager.shared.bckgSession.getAllTasks { tasks in
             tasks.forEach({$0.cancel()})
-            ImageSession.shared.dataSession.getAllTasks { tasks in
+            UploadManager.shared.frgdSession.getAllTasks { tasks in
                 tasks.forEach({$0.cancel()})
-                completion()
+                
+                // Update badge and upload queue button
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.findNextImageToUpload()
+                }
+
+                // Cancel other tasks
+                PwgSession.shared.dataSession.getAllTasks { tasks in
+                    tasks.forEach({$0.cancel()})
+                    ImageSession.shared.dataSession.getAllTasks { tasks in
+                        tasks.forEach({$0.cancel()})
+                        completion()
+                    }
+                }
             }
         }
     }
