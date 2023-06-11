@@ -241,7 +241,6 @@ extension Data {
         /// - after the last closing curly brace
         let dataStr = String(decoding: self, as: UTF8.self)
         var filteredDataStr = ""
-        var filteredData = Data()
         if let openingCBindex = dataStr.firstIndex(of: "{"),
            let closingCBIndex = dataStr.lastIndex(of: "}") {
             filteredDataStr = String(dataStr[openingCBindex...closingCBIndex])
