@@ -107,15 +107,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             UploadVars.prefixFileNameBeforeUpload = false
         }
 
-        // Calculate cache sizes
-        guard let server = user.server else {
-            fatalError("••> User not provided!")
+        // Calculate cache sizes in the background
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let server = self.user.server else {
+                fatalError("••> User not provided!")
+            }
+            var sizes = self.getThumbnailSizes()
+            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+            sizes = self.getPhotoSizes()
+            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+            self.dataCacheSize = server.getCoreDataStoreSize()
+            
+            // Update cells if needed
+            DispatchQueue.main.async {
+                self.updateDataCacheCell()
+                self.updateThumbCacheCell()
+                self.updatePhotoCacheCell()
+            }
         }
-        var sizes = getThumbnailSizes()
-        self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-        sizes = getPhotoSizes()
-        self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-        self.dataCacheSize = server.getCoreDataStoreSize()
     }
 
     @objc func applyColorPalette() {
