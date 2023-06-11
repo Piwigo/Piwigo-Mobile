@@ -275,7 +275,7 @@ class ImageUtilities: NSObject {
         // See https://iosref.com/res
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
         let screenSize = UIScreen.main.bounds.size
-        let screenWidth = fmin(screenSize.width, screenSize.height)
+        let screenWidth = fmin(screenSize.width, screenSize.height) * pwgImageSize.maxZoomScale
         
         switch screenWidth {
         case 0...pwgImageSize.square.minPixels:

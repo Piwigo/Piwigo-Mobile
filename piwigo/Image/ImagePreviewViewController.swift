@@ -173,7 +173,7 @@ class ImagePreviewViewController: UIViewController
         let heightScale = view.bounds.size.height / image.size.height
         let minScale = min(widthScale, heightScale)
         scrollView.minimumZoomScale = minScale
-        scrollView.maximumZoomScale = max(2.0, 4 * minScale)
+        scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
 //        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }

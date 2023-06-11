@@ -23,6 +23,9 @@ public enum pwgImageSize : Int16, CaseIterable {
 }
 
 extension pwgImageSize {
+    // Maximum zoom scale of fullscreen image previews
+    public static let maxZoomScale: CGFloat = 2
+    
     // Default Piwigo image minimum number of pixels
     public var minPixels: CGFloat {
         // Get device scale factor
