@@ -24,7 +24,7 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = AlbumUtilities.albumThumbnailSizeName(for: thumbnailSize)
+            cell.detailLabel.text = thumbnailSize.name
         }
     }
 }

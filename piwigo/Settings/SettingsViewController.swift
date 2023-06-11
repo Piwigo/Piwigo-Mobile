@@ -565,8 +565,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                let defaultSize = AlbumUtilities.albumThumbnailSizeName(for: albumImageSize)
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -578,7 +576,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                cell.configure(with: title, detail: albumImageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
@@ -672,8 +671,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                let defaultSize = AlbumUtilities.thumbnailSizeName(for: thumbnailSize)
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -685,7 +682,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                cell.configure(with: title, detail: thumbnailSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImageThumbnailFile"
                 tableViewCell = cell
@@ -755,8 +753,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
-                let defaultSize = ImageUtilities.imageSizeName(for: imageSize)
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 430 {
@@ -768,7 +764,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultPreviewFile", comment: "Preview")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+                cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImagePreviewSize"
                 tableViewCell = cell
@@ -1432,84 +1429,92 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         statistics = ""
         
         // Collect stats from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and retrieve statistics.
-            do {
-                // Decode the JSON into codable type GetInfosJSON.
-                let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
+        NetworkUtilities.checkSession(ofUser: user) {
+            // Checking session ensures avalaible sizes are known
+            let JSONsession = PwgSession.shared
+            JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
+                                    jsonObjectClientExpectsToReceive: GetInfosJSON.self,
+                                    countOfBytesClientExpectsToReceive: 1000) { jsonData in
+                // Decode the JSON object and retrieve statistics.
+                do {
+                    // Decode the JSON into codable type GetInfosJSON.
+                    let decoder = JSONDecoder()
+                    let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if uploadJSON.errorCode != 0 {
+                    // Piwigo error?
+                    if uploadJSON.errorCode != 0 {
+                        #if DEBUG
+                        let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                     errorMessage: uploadJSON.errorMessage)
+                        debugPrint(error)
+                        #endif
+                        return
+                    }
+
+                    // Collect statistics
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = .decimal
+                    for info in uploadJSON.data {
+                        guard let nber = info.value?.intValue else { continue }
+                        switch info.name ?? "" {
+                        case "nb_elements":
+                            if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberImages = nber > 1 ?
+                                    String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                                    String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                                if nberImages.isEmpty == false { self.appendStats(nberImages) }
+                            }
+                        case "nb_categories":
+                            if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberCategories = nber > 1 ?
+                                    String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
+                                    String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
+                                if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
+                            }
+                        case "nb_tags":
+                            if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberTags = nber > 1 ?
+                                    String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
+                                    String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
+                                if nberTags.isEmpty == false { self.appendStats(nberTags) }
+                            }
+                        case "nb_users":
+                            if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberUsers = nber > 1 ?
+                                    String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
+                                    String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
+                                if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
+                            }
+                        case "nb_groups":
+                            if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberGroups = nber > 1 ?
+                                    String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
+                                    String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
+                                if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
+                            }
+                        case "nb_comments":
+                            if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberComments = nber > 1 ?
+                                    String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
+                                    String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
+                                if nberComments.isEmpty == false { self.appendStats(nberComments) }
+                            }
+                        default:
+                            break
+                        }
+                    }
+                } catch let error as NSError {
+                    // Data cannot be digested
                     #if DEBUG
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
                 }
-
-                // Collect statistics
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                for info in uploadJSON.data {
-                    guard let nber = info.value?.intValue else { continue }
-                    switch info.name ?? "" {
-                    case "nb_elements":
-                        if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberImages = nber > 1 ?
-                                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                            if nberImages.isEmpty == false { self.appendStats(nberImages) }
-                        }
-                    case "nb_categories":
-                        if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberCategories = nber > 1 ?
-                                String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
-                                String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
-                            if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
-                        }
-                    case "nb_tags":
-                        if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberTags = nber > 1 ?
-                                String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
-                                String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
-                            if nberTags.isEmpty == false { self.appendStats(nberTags) }
-                        }
-                    case "nb_users":
-                        if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberUsers = nber > 1 ?
-                                String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
-                                String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
-                            if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
-                        }
-                    case "nb_groups":
-                        if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberGroups = nber > 1 ?
-                                String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
-                                String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
-                            if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
-                        }
-                    case "nb_comments":
-                        if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberComments = nber > 1 ?
-                                String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
-                                String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
-                            if nberComments.isEmpty == false { self.appendStats(nberComments) }
-                        }
-                    default:
-                        break
-                    }
-                }
-            } catch let error as NSError {
-                // Data cannot be digested
-                #if DEBUG
-                debugPrint(error)
-                #endif
-                return
+            } failure: { _ in
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                /// -> nothing presented in the footer
             }
         } failure: { _ in
             /// - Network communication errors

@@ -301,30 +301,6 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func imageSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
-        var sizeName = size.name
-        
-        // Determine the optimum image size for the current device
-        let optimumSize = self.optimumImageSizeForDevice()
-        
-        // Return name for given thumbnail size
-        switch size {
-        case .square, .thumb, .xxSmall:
-            if withInfo {
-                sizeName.append(contentsOf: size.sizeAndScale)
-            }
-        case .xSmall, .small, .medium, .large, .xLarge, .xxLarge, .fullRes:
-            if withInfo {
-                if size == optimumSize {
-                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-                } else {
-                    sizeName.append(contentsOf: size.sizeAndScale)
-                }
-            }
-        }
-        return sizeName
-    }
-    
     static func getURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution

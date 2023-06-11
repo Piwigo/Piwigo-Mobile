@@ -22,7 +22,7 @@ extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
         let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = AlbumUtilities.thumbnailSizeName(for: thumbnailSize)
+            cell.detailLabel.text = thumbnailSize.name
         }
     }
 }
@@ -41,7 +41,7 @@ extension SettingsViewController: DefaultImageSizeDelegate {
         let indexPath = IndexPath(row: 4, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = ImageUtilities.imageSizeName(for: imageSize)
+            cell.detailLabel.text = imageSize.name
         }
     }
 }

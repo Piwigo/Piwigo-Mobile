@@ -448,32 +448,6 @@ class AlbumUtilities: NSObject {
         return .xxLarge
     }
     
-    static func albumThumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
-        var sizeName = size.name
-        
-        // Determine the optimum image size for the current device
-        let optimumSize = self.optimumAlbumThumbnailSizeForDevice()
-
-        // Return name for given thumbnail size
-        switch size {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
-            if withInfo {
-                if size == optimumSize {
-                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-                } else {
-                    sizeName.append(contentsOf: size.sizeAndScale)
-                }
-            }
-        case .large, .xLarge, .xxLarge:
-            if withInfo {
-                sizeName.append(contentsOf: size.sizeAndScale)
-            }
-        case .fullRes:
-            break
-        }
-        return sizeName
-    }
-    
     static func albumSize(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
         // Size of view or screen
         let pageSize = sizeOfPage(forView: view)
@@ -518,32 +492,6 @@ class AlbumUtilities: NSObject {
             }
         }
         return .xxLarge
-    }
-
-    static func thumbnailSizeName(for size: pwgImageSize, withInfo: Bool = false) -> String {
-        var sizeName = size.name
-        
-        // Determine the optimum image size for the current device
-        let optimumSize = self.optimumThumbnailSizeForDevice()
-
-        // Return name for given thumbnail size
-        switch size {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
-            if withInfo {
-                if size == optimumSize {
-                    sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-                } else {
-                    sizeName.append(contentsOf: size.sizeAndScale)
-                }
-            }
-        case .large, .xLarge, .xxLarge:
-            if withInfo {
-                sizeName.append(contentsOf: size.sizeAndScale)
-            }
-        case .fullRes:
-            break
-        }
-        return sizeName
     }
 
     static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
