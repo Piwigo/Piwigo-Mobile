@@ -114,7 +114,7 @@ class ImageSession: NSObject {
             }
             
             // Resume download
-            print("••> Resume download: \(imageURL.lastPathComponent)")
+            print("••> Resume download: \(imageURL)")
             download.progressHandler = progress
             if let progressHandler = download.progressHandler {
                 progressHandler(download.progress)
@@ -249,7 +249,7 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
-        guard let imageURL = task.currentRequest?.url,
+        guard let imageURL = task.originalRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
         }
@@ -286,7 +286,7 @@ extension ImageSession: URLSessionDownloadDelegate {
         // Retrieve the original URL of this task
         print("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
         print("    amongst \(activeDownloads.count) active downloads.")
-        guard let imageURL = downloadTask.currentRequest?.url,
+        guard let imageURL = downloadTask.originalRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
         }
@@ -303,7 +303,7 @@ extension ImageSession: URLSessionDownloadDelegate {
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
         print("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
-        guard let imageURL = downloadTask.currentRequest?.url,
+        guard let imageURL = downloadTask.originalRequest?.url,
               let download = activeDownloads[imageURL],
               let fileURL = download.fileURL else {
             return
