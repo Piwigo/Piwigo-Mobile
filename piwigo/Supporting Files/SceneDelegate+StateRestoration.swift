@@ -64,7 +64,8 @@ extension SceneDelegate {
         }
         
         // Restore image preview if performFetch() has been called and an image is available
-        if let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
+        if subAlbumVC != nil,
+           let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
            let images = subAlbumVC.images.fetchedObjects, images.count > 1 {
             // Prepare image detail view
             let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
