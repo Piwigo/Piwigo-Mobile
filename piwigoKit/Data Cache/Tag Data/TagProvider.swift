@@ -324,12 +324,8 @@ public class TagProvider: NSObject {
             
             // Tag selection
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
-            if tagIds.isEmpty {
-                tagList = Set(cachedTags)
-            } else {
-                let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
-                tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
-            }
+            let listOfIds = tagIds.components(separatedBy: ",").compactMap({ Int32($0) })
+            tagList = Set(cachedTags.filter({ listOfIds.contains($0.tagId)}))
         }
 
         return tagList

@@ -1268,6 +1268,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
+            uploadSwitchVC.savingContext = savingContext
 
             // Will we propose to delete images after upload?
             if let firstLocalIdentifer = selectedImages.compactMap({ $0 }).first?.localIdentifier {

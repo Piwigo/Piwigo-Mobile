@@ -279,16 +279,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     return EditImageTagsTableViewCell()
                 }
                 // Retrieve tags and switch to old cache data format
-                let tags = tagProvider.getTags(withIDs: "", taskContext: savingContext)
-                let tagIds = UploadVars.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) })
-                var tagList = Set<Tag>()
-                tagIds.forEach({ tagId in
-                    if let id = tagId,
-                       let tag = tags.first(where: { $0.tagId == id }) {
-                        tagList.insert(tag)
-                    }
-                })
-                cell.config(withList: tagList, inColor: UIColor.piwigoColorRightLabel())
+                let tags = tagProvider.getTags(withIDs: UploadVars.autoUploadTagIds, taskContext: savingContext)
+                cell.config(withList: tags, inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
             case 1 /* Comments */ :

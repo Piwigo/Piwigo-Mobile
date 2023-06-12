@@ -339,7 +339,7 @@ public class ImageProvider: NSObject {
         
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
-        let isAdmin = user.status == pwgUserStatus.admin.rawValue
+        let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
         let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, delete: false)
 
         // Get favorite album if possible (will not prevent import)

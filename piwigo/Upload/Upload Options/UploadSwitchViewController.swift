@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import piwigoKit
 
 @objc protocol UploadSwitchDelegate: NSObjectProtocol {
@@ -25,6 +26,7 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
+    var savingContext: NSManagedObjectContext!
     private var _canDeleteImages = false
     var canDeleteImages: Bool {
         get {

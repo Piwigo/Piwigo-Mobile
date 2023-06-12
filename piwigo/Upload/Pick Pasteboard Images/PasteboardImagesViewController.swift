@@ -672,6 +672,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
             uploadSwitchVC.canDeleteImages = false
+            uploadSwitchVC.savingContext = savingContext
 
             // Can the user create tags?
             if NetworkVars.hasAdminRights || userHasUploadRights {
