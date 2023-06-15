@@ -27,10 +27,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
             tableView?.reloadData()
         }
     }
-    lazy var user: User? = albumData?.user
-    var albumProvider: AlbumProvider!
-    var savingContext: NSManagedObjectContext?
-    
+
     var tableView: UITableView?
     var renameAlert: UIAlertController?
     var renameAction: UIAlertAction?
@@ -40,6 +37,25 @@ class AlbumCollectionViewCell: UICollectionViewCell
         case albumName = 1000, albumDescription, nberOfImages
     }
 
+
+    // MARK: - Core Data Object Contexts
+    lazy var user: User? = albumData?.user
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+
+    
+    // MARK: - Initialisation
     override init(frame: CGRect) {
         super.init(frame: frame)
         tableView = UITableView()

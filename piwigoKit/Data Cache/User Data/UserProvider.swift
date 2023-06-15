@@ -25,7 +25,7 @@ public class UserProvider: NSObject {
     //    }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
     

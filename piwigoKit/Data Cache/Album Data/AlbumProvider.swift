@@ -10,6 +10,10 @@ import CoreData
 
 public class AlbumProvider: NSObject {
     
+    // MARK: - Singleton
+    public static let shared = AlbumProvider()
+    
+    
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -17,7 +21,7 @@ public class AlbumProvider: NSObject {
     }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
     

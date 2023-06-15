@@ -45,11 +45,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
 
+    // MARK: - Core Data Objects
     var user: User!
-    var albumProvider: AlbumProvider!
-    var imageProvider: ImageProvider!
-    var savingContext: NSManagedObjectContext!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
     
+    // MARK: - Core Data Providers
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+
+    lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider.shared
+        return provider
+    }()
+
+    
+    // MARK: - Input Parameters
     var inputAlbum: Album!
     var inputImageIds = Set<Int64>()
     var inputImages = Set<Image>()
@@ -119,7 +137,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 debugPrint("List of image IDs should not be empty")
                 return false
             }
-            inputImages = imageProvider.getImages(inContext: savingContext, withIds: imageIds)
+            inputImages = imageProvider.getImages(inContext: mainContext, withIds: imageIds)
             if inputImages.isEmpty {
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")
                 return false
@@ -188,7 +206,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     lazy var recentAlbums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
-                                                managedObjectContext: self.savingContext,
+                                                managedObjectContext: self.mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
         albums.delegate = self
         return albums
@@ -225,7 +243,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     lazy var albums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
-                                                managedObjectContext: self.savingContext,
+                                                managedObjectContext: mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
         albums.delegate = self
         return albums
@@ -237,7 +255,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewDidLoad()
 
         // Check that a root album exists in cache (create it if necessary)
-        guard let _ = albumProvider?.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
+        guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return
         }
         
@@ -337,8 +355,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        albumProvider?.fetchAlbums(inParentWithId: 0, recursively: true,
-                                   thumbnailSize: thumnailSize) { [self] error in
+        albumProvider.fetchAlbums(inParentWithId: 0, recursively: true,
+                                  thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Retrieve image data if needed
                 /// Some images are not associated with freshly loaded albums
@@ -581,21 +599,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     .filter({ Int32($0) != albumData.pwgID }).count
             }
         }
-        
-//        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-//        }
-//        else if ((recentAlbums.fetchedObjects ?? []).count > 0) && (indexPath.section == 0) {
-//            albumData = recentAlbums.object(at: indexPath)
-//        }
-//        else {
-//            // Determine the depth before setting up the cell
-//            albumData = categories[indexPath.row]
-//            if albumData.parentId != 0 {
-//                depth += albumData.upperIds.components(separatedBy: ",").filter({ Int32($0) != albumData.pwgID }).count
-//            }
-//        }
         
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
@@ -1025,7 +1028,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             self.selectedCategoryId = Int32.min
             // Save changes if any
             do {
-                try self.savingContext.save()
+                try self.mainContext.save()
             } catch let error as NSError {
                 print("Could not fetch \(error), \(error.userInfo)")
             }

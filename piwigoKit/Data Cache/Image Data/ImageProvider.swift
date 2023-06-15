@@ -10,6 +10,10 @@ import CoreData
 
 public class ImageProvider: NSObject {
     
+    // MARK: - Singleton
+    public static let shared = ImageProvider()
+    
+    
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -17,14 +21,14 @@ public class ImageProvider: NSObject {
     }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
     
     
     // MARK: - Core Data Providers
     private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
+        let provider : AlbumProvider = AlbumProvider.shared
         return provider
     }()
     
@@ -34,7 +38,7 @@ public class ImageProvider: NSObject {
     }()
     
     private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+        let provider : TagProvider = TagProvider.shared
         return provider
     }()
     

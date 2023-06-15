@@ -13,8 +13,6 @@ extension AlbumCollectionViewCell {
         
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        moveVC.albumProvider = albumProvider
-        moveVC.savingContext = savingContext
         if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
             moveVC.albumMovedDelegate = self
             categoryDelegate?.pushCategoryView(moveVC)

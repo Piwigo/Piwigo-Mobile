@@ -22,17 +22,33 @@ class ImageViewController: UIViewController {
     var categoryId = Int32.zero
     var imageIndex = 0
     var userHasUploadRights = false
-
-    var user: User!
-    var albumProvider: AlbumProvider!
-    var imageProvider: ImageProvider!
-    var savingContext: NSManagedObjectContext!
-
     var imageData: Image!
     var isToolbarRequired = false
     var didPresentPageAfter = true
     var pageViewController: UIPageViewController?
 
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+    
+    private lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider.shared
+        return provider
+    }()
+
+    
     // MARK: - Navigation Bar & Toolbar Buttons
     var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
                                                         // - for editing image properties

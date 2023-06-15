@@ -21,7 +21,6 @@ extension ImageViewController
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
         editImageVC.user = user
-        editImageVC.savingContext = savingContext
         editImageVC.images = [imageData]
         editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self

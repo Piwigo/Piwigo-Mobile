@@ -31,8 +31,6 @@ extension AlbumViewController
         }
         settingsVC.settingsDelegate = self
         settingsVC.user = user
-        settingsVC.albumProvider = albumProvider
-        settingsVC.savingContext = mainContext
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet

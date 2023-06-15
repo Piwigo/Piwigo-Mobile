@@ -35,7 +35,7 @@ extension ImageViewController
                         // Update favorites album data
                         self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
                         // Save changes
-                        try? savingContext.save()
+                        try? mainContext.save()
                         // Set button
                         favoriteBarButton?.setFavoriteImage(for: true)
                         favoriteBarButton?.action = #selector(self.removeFromFavorites)
@@ -76,7 +76,7 @@ extension ImageViewController
                         // Update favorites album data
                         self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                         // Save changes
-                        try? savingContext.save()
+                        try? mainContext.save()
                         // Back to favorites album or set favorite button?
                         if self.categoryId == pwgSmartAlbum.favorites.rawValue {
                             // Return to favorites album

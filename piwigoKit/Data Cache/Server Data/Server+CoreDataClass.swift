@@ -60,10 +60,10 @@ public class Server: NSManagedObject {
         
         // Calculate number of objects in background thread
         var totalCount = LocationProvider.shared.getObjectCount()
-        totalCount += AlbumProvider().getObjectCount()
-        totalCount += ImageProvider().getObjectCount()
-        totalCount += TagProvider().getObjectCount()
-        totalCount += UploadProvider().getObjectCount()
+        totalCount += AlbumProvider.shared.getObjectCount()
+        totalCount += ImageProvider.shared.getObjectCount()
+        totalCount += TagProvider.shared.getObjectCount()
+        totalCount += UploadProvider.shared.getObjectCount()
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: totalCount as NSNumber) ?? "NaN"

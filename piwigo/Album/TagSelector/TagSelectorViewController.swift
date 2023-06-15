@@ -20,30 +20,34 @@ class TagSelectorViewController: UITableViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
 
-    // MARK: - Core Data Object Contexts
+    @IBOutlet var tagsTableView: UITableView!
+    private var tagIdsBeforeUpdate = [Int32]()
+    private var letterIndex: [String] = []
+
+    
+    // MARK: - Core Data Objects
+    var user: User!
     private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
         return context
     }()
 
     
     // MARK: - Core Data Providers
     private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+        let provider : TagProvider = TagProvider.shared
         return provider
     }()
     
     private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
+        let provider : AlbumProvider = AlbumProvider.shared
         return provider
     }()
-
-
-    @IBOutlet var tagsTableView: UITableView!
-    private var tagIdsBeforeUpdate = [Int32]()
-    private var letterIndex: [String] = []
-    var user: User!
-
+    
+    
+    // MARK: - Fetched Results Controller
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
     lazy var predicate: NSPredicate = {

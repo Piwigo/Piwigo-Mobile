@@ -11,6 +11,10 @@ import Photos
 
 public class UploadProvider: NSObject {
 
+    // MARK: - Singleton
+    public static let shared = UploadProvider()
+    
+    
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -18,7 +22,7 @@ public class UploadProvider: NSObject {
     }()
 
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
 
@@ -30,7 +34,7 @@ public class UploadProvider: NSObject {
     }()
 
     private lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+        let provider : TagProvider = TagProvider.shared
         return provider
     }()
 

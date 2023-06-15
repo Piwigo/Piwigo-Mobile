@@ -46,7 +46,7 @@ public class DataController: NSObject {
         return context
     }()
     
-    public var bckgContext: NSManagedObjectContext {
+    public func newTaskContext() -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.shouldDeleteInaccessibleFaults = true

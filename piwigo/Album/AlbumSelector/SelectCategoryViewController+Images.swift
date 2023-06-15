@@ -91,7 +91,7 @@ extension SelectCategoryViewController {
             updatePiwigoHUDwithSuccess() {
                 // Save changes
                 do {
-                    try self.savingContext.save()
+                    try self.mainContext.save()
                 } catch let error as NSError {
                     print("Could not save copied images \(error), \(error.userInfo)")
                 }
@@ -184,7 +184,7 @@ extension SelectCategoryViewController {
             updatePiwigoHUDwithSuccess() {
                 // Save changes
                 do {
-                    try self.savingContext.save()
+                    try self.mainContext.save()
                 } catch let error as NSError {
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }

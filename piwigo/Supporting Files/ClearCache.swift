@@ -86,11 +86,11 @@ class ClearCache: NSObject {
         // Cancel tasks
         cancelTasks {
             // Erase database
-            UploadProvider().clearAll()
+            UploadProvider.shared.clearAll()
             LocationProvider.shared.clearAll()
-            TagProvider().clearAll()
-            ImageProvider().clearAll()
-            AlbumProvider().clearAll()
+            TagProvider.shared.clearAll()
+            ImageProvider.shared.clearAll()
+            AlbumProvider.shared.clearAll()
             
             // Clean up /tmp directory
             DispatchQueue.main.async {

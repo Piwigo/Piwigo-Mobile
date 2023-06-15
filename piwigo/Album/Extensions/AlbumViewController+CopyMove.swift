@@ -59,9 +59,6 @@ extension AlbumViewController
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, categoryId]
         copyVC.user = user
-        copyVC.albumProvider = albumProvider
-        copyVC.imageProvider = imageProvider
-        copyVC.savingContext = mainContext
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
             pushView(copyVC)
@@ -73,9 +70,6 @@ extension AlbumViewController
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter: [Any] = [selectedImageIds, categoryId]
         moveVC.user = user
-        moveVC.albumProvider = albumProvider
-        moveVC.imageProvider = imageProvider
-        moveVC.savingContext = mainContext
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar
             pushView(moveVC)

@@ -16,9 +16,6 @@ extension ImageViewController
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
         copyVC.user = user
-        copyVC.albumProvider = albumProvider
-        copyVC.imageProvider = imageProvider
-        copyVC.savingContext = savingContext
         if copyVC.setInput(parameter: parameter, for: action) {
             copyVC.delegate = self                  // To re-enable toolbar
             if action == .copyImage {

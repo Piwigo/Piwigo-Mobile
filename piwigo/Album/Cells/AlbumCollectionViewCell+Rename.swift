@@ -142,7 +142,7 @@ extension AlbumCollectionViewCell {
                         albumData?.comment = albumComment.htmlToAttributedString
                     }
                     do {
-                        try savingContext?.save()
+                        try mainContext.save()
                     } catch let error as NSError {
                         print("Could not save context, \(error.userInfo)")
                     }

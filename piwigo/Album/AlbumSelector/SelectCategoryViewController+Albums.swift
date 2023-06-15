@@ -71,7 +71,7 @@ extension SelectCategoryViewController {
                 DispatchQueue.main.async { [self] in
                     // Save changes
                     do {
-                        try self.savingContext.save()
+                        try self.mainContext.save()
                     } catch let error as NSError {
                         print("Could not fetch \(error), \(error.userInfo)")
                     }

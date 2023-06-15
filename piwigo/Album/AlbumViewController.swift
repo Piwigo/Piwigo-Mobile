@@ -125,6 +125,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 1)
     }()
     
+    
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -132,7 +133,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
 
     lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
 
@@ -144,12 +145,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
 
     lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider()
+        let provider : AlbumProvider = AlbumProvider.shared
         return provider
     }()
 
     lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider()
+        let provider : ImageProvider = ImageProvider.shared
         return provider
     }()
 
@@ -1237,8 +1238,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
             // Configure cell with album data
             cell.albumData = albums.object(at: indexPath)
-            cell.albumProvider = albumProvider
-            cell.savingContext = mainContext
             cell.categoryDelegate = self
 
             // Disable category cells in Image selection mode
@@ -1338,9 +1337,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.images = images
                 imageDetailView?.user = user
                 imageDetailView?.userHasUploadRights = userHasUploadRights
-                imageDetailView?.albumProvider = albumProvider
-                imageDetailView?.imageProvider = imageProvider
-                imageDetailView?.savingContext = mainContext
                 imageDetailView?.imgDetailDelegate = self
                 imageDetailView?.hidesBottomBarWhenPushed = true
                 imageDetailView?.modalPresentationCapturesStatusBarAppearance = true

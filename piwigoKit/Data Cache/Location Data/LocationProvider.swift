@@ -41,7 +41,7 @@ public class LocationProvider: NSObject {
     }()
 
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
 
@@ -164,7 +164,7 @@ public class LocationProvider: NSObject {
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
-                        let taskContext = DataController.shared.bckgContext
+                        let taskContext = DataController.shared.newTaskContext()
                                 
                         // Add new location to CoreData store
                         let newLocation = LocationProperties(coordinate: location.coordinate,

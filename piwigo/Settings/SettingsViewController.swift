@@ -54,11 +54,23 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     var thumbCacheSize = ""
     var photoCacheSize = ""
     var dataCacheSize = ""
+
     
-    // MARK: - Core Data
+    // MARK: - Core Data Objects
     var user: User!
-    var albumProvider: AlbumProvider!
-    var savingContext: NSManagedObjectContext!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
 
 
     // MARK: - View Lifecycle
@@ -320,8 +332,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let now = Date()
         user?.lastUsed = now
         user?.server?.lastUsed = now
-        if savingContext.hasChanges {
-            try? savingContext.save()
+        if mainContext.hasChanges {
+            try? mainContext.save()
         }
         
         // Guest user?
@@ -1545,8 +1557,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.user = user
-                categoryVC.albumProvider = albumProvider
-                categoryVC.savingContext = savingContext
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
@@ -1619,8 +1629,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
-                autoUploadVC.albumProvider = albumProvider
-                autoUploadVC.savingContext = savingContext
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break

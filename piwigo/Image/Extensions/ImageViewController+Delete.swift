@@ -101,7 +101,7 @@ extension ImageViewController
 
                     // Save changes
                     do {
-                        try self.savingContext.save()
+                        try self.mainContext.save()
                     } catch let error as NSError {
                         print("Could not save copied images \(error), \(error.userInfo)")
                     }
@@ -160,7 +160,7 @@ extension ImageViewController
                 let imageID = imageData.pwgID
                 
                 // Delete image from cache (also deletes image files)
-                self.savingContext.delete(imageData)
+                self.mainContext.delete(imageData)
                 
                 // Retrieve albums associated to the deleted image
                 if let albums = imageData.albums {
@@ -172,7 +172,7 @@ extension ImageViewController
                 
                 // Save changes
                 do {
-                    try self.savingContext.save()
+                    try self.mainContext.save()
                 } catch let error as NSError {
                     print("Could not save albums after image deletion \(error), \(error.userInfo)")
                 }

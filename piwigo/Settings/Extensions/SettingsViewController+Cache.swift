@@ -65,7 +65,7 @@ extension SettingsViewController
                 guard let server = self.user.server else {
                     fatalError("••> User not provided!")
                 }
-                try? self.savingContext.save()
+                try? self.mainContext.save()
 
                 // Refresh Settings cell related with data
                 self.dataCacheSize = server.getCoreDataStoreSize()

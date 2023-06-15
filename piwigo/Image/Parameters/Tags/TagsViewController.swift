@@ -37,7 +37,7 @@ class TagsViewController: UITableViewController {
     var user: User!
     var savingContext: NSManagedObjectContext!
     lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+        let provider : TagProvider = TagProvider.shared
         return provider
     }()
 

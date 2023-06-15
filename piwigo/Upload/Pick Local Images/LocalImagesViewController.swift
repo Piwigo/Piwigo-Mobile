@@ -25,7 +25,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - Core Data Providers
     var savingContext: NSManagedObjectContext!
     private lazy var uploadProvider: UploadProvider = {
-        let provider = UploadProvider()
+        let provider = UploadProvider.shared
         return provider
     }()
     

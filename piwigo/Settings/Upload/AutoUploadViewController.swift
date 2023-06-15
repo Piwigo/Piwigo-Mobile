@@ -15,13 +15,25 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
+    // MARK: - Core Data Objects
     var user: User!
-    var albumProvider: AlbumProvider!
-    lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+    private lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+
+    // MARK: - Core Data Providers
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
         return provider
     }()
-    var savingContext: NSManagedObjectContext!
+    lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider.shared
+        return provider
+    }()
 
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
@@ -279,7 +291,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     return EditImageTagsTableViewCell()
                 }
                 // Retrieve tags and switch to old cache data format
-                let tags = tagProvider.getTags(withIDs: UploadVars.autoUploadTagIds, taskContext: savingContext)
+                let tags = tagProvider.getTags(withIDs: UploadVars.autoUploadTagIds, taskContext: mainContext)
                 cell.config(withList: tags, inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
@@ -394,8 +406,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                categoryVC.albumProvider = albumProvider
-                categoryVC.savingContext = savingContext
                 if categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
@@ -413,7 +423,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
                 if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
                     tagsVC.delegate = self
-                    tagsVC.savingContext = savingContext
                     tagsVC.setPreselectedTagIds(Set(UploadVars.autoUploadTagIds
                                                         .components(separatedBy: ",")
                                                         .map { Int32($0) ?? nil }.compactMap {$0}))

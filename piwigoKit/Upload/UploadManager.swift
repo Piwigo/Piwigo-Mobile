@@ -124,7 +124,7 @@ public class UploadManager: NSObject {
 
     // MARK: - Core Data Object Contexts
     lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.bckgContext
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
 
@@ -136,17 +136,17 @@ public class UploadManager: NSObject {
     }()
 
     lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider()
+        let provider : ImageProvider = ImageProvider.shared
         return provider
     }()
 
     lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider()
+        let provider : TagProvider = TagProvider.shared
         return provider
     }()
 
     public lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadProvider()
+        let provider : UploadProvider = UploadProvider.shared
         return provider
     }()
 
