@@ -25,7 +25,7 @@ public class TagProvider: NSObject {
     
     // MARK: - Core Data Providers
     private lazy var serverProvider: ServerProvider = {
-        let provider : ServerProvider = ServerProvider()
+        let provider : ServerProvider = ServerProvider.shared
         return provider
     }()
 

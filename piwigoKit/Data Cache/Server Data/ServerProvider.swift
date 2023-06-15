@@ -10,6 +10,10 @@ import CoreData
 
 public class ServerProvider: NSObject {
     
+    // MARK: - Singleton
+    public static let shared = ServerProvider()
+    
+    
     // MARK: - Get/Create Server Object
     /**
      Returns the Server object at path.
