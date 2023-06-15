@@ -14,6 +14,10 @@ public enum pwgUserStatus: String, CaseIterable {
 
 public class UserProvider: NSObject {
     
+    // MARK: - Singleton
+    public static let shared = UserProvider()
+    
+    
     // MARK: - Core Data Object Contexts
     //    private lazy var mainContext: NSManagedObjectContext = {
     //        let context:NSManagedObjectContext = DataController.shared.mainContext

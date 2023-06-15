@@ -25,7 +25,7 @@ public class UploadProvider: NSObject {
 
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
+        let provider : UserProvider = UserProvider.shared
         return provider
     }()
 

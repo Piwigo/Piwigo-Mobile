@@ -131,7 +131,7 @@ public class UploadManager: NSObject {
     
     // MARK: - Core Data Providers
     lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
+        let provider : UserProvider = UserProvider.shared
         return provider
     }()
 

@@ -29,7 +29,7 @@ public class ImageProvider: NSObject {
     }()
     
     private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider()
+        let provider : UserProvider = UserProvider.shared
         return provider
     }()
     
