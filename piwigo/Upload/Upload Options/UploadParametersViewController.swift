@@ -234,7 +234,6 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.tagId})))
             // Can we propose to create tags?
             if let switchVC = parent as? UploadSwitchViewController {
-                tagsVC.savingContext = switchVC.savingContext
                 tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
             }
             navigationController?.pushViewController(tagsVC, animated: true)

@@ -33,9 +33,17 @@ class TagsViewController: UITableViewController {
     }
     
 
-    // MARK: - Core Data Providers
+    // MARK: - Core Data Objects
     var user: User!
-    var savingContext: NSManagedObjectContext!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+
+    // MARK: - Core Data Providers
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider.shared
         return provider
@@ -66,7 +74,7 @@ class TagsViewController: UITableViewController {
 
     lazy var selectedTags: NSFetchedResultsController<Tag> = {
         let tags = NSFetchedResultsController(fetchRequest: fetchSelectedTagsRequest,
-                                              managedObjectContext: savingContext,
+                                              managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         tags.delegate = self
         return tags
@@ -98,7 +106,7 @@ class TagsViewController: UITableViewController {
 
     lazy var nonSelectedTags: NSFetchedResultsController<Tag> = {
         let tags = NSFetchedResultsController(fetchRequest: fetchNonSelectedTagsRequest,
-                                              managedObjectContext: savingContext,
+                                              managedObjectContext: mainContext,
                                               sectionNameKeyPath: nil, cacheName: nil)
         tags.delegate = self
         return tags

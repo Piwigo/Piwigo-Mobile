@@ -24,9 +24,6 @@ class EditImageParamsViewController: UIViewController
     var hasTagCreationRights = false
     weak var delegate: EditImageParamsDelegate?
     
-    var user: User?
-    var savingContext: NSManagedObjectContext!
-
     @IBOutlet private weak var editImageParamsTableView: UITableView!
     private var hudViewController: UIViewController?
     private let kEditImageParamsViewWidth: CGFloat = 512.0
@@ -66,6 +63,16 @@ class EditImageParamsViewController: UIViewController
         case count
     }
     
+    
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
     
     // MARK: - View Lifecycle
     @objc func applyColorPalette() {
@@ -281,7 +288,7 @@ class EditImageParamsViewController: UIViewController
             // Done, save, hide HUD and dismiss controller
             self.updatePiwigoHUDwithSuccess { [self] in
                 // Save changes
-                try? savingContext.save()
+                try? mainContext.save()
                 // Close HUD
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
                     // Return to image preview or album view
@@ -674,7 +681,6 @@ extension EditImageParamsViewController: UITableViewDelegate
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
             tagsVC.user = user
-            tagsVC.savingContext = savingContext
             let tagList: [Int32] = commonTags.compactMap { Int32($0.tagId) }
             tagsVC.setPreselectedTagIds(Set(tagList))
             tagsVC.setTagCreationRights(hasTagCreationRights)
@@ -864,7 +870,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
     func didRenameFileOfImage(_ imageData: Image) {
         // Update data source
         do {
-            try savingContext?.save()
+            try mainContext.save()
         } catch let error as NSError {
             print("Could not fetch \(error), \(error.userInfo)")
         }
