@@ -111,7 +111,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
 extension AlbumCollectionViewCell: UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return albumData?.isFault ?? true ? 0 : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
