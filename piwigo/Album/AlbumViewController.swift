@@ -608,8 +608,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Display What's New in Piwigo if needed
-//        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-//           appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
+        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
             // Display What's New in Piwigo
             let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
             guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
@@ -631,7 +631,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 present(whatsNewVC, animated: true)
             }
             return
-//        }
+        }
         
         // Display help views only when showing regular albums
         // and less than once a day
