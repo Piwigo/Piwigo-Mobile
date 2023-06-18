@@ -497,6 +497,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 /// which by default produces a transparent background, to all navigation bars.
                 toolbar?.scrollEdgeAppearance = toolbarAppearance
             }
+        } else {
+            navigationBar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
         }
 
         // Collection view
