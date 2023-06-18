@@ -327,11 +327,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
 
+        // Unregister the PiwigoAddRecentAlbumNotification
+        NotificationCenter.default.removeObserver(self, name: .pwgAddRecentAlbum, object: nil)
+
+        // Unregister the PiwigoRemoveRecentAlbumNotification
+        NotificationCenter.default.removeObserver(self, name: .pwgRemoveRecentAlbum, object: nil)
+
+        // Unregister the Power State notification
+        let name = Notification.Name.NSProcessInfoPowerStateDidChange
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+
         // Unregister left upload requests notifications updating the badge
         NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
         
         // Unregister auto-upload appender failures
         NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
+        
+        if #available(iOS 13.0, *) {
+            // NOP
+        } else {
+            // Unregister brightnessDidChangeNotification
+            NotificationCenter.default.removeObserver(self, name: UIScreen.brightnessDidChangeNotification, object: nil)
+        }
     }
     
 
@@ -766,12 +783,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.resumeAll()
             }
+            
+            // Observe the UIScreenBrightnessDidChangeNotification
+            NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
+                                                   name: UIScreen.brightnessDidChangeNotification, object: nil)
         }
-        
-        // Observe the UIScreenBrightnessDidChangeNotification
-        // When that notification is posted, the method screenBrightnessChanged will be called.
-        NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
-                                               name: UIScreen.brightnessDidChangeNotification, object: nil)
 
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),

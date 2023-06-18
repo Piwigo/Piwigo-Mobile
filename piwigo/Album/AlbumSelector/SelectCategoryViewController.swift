@@ -1100,7 +1100,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         if view.window == nil { return }
         
         // Any update to perform?
-        if updateOperations.isEmpty || view.window == nil { return }
+        if updateOperations.isEmpty { return }
 
         // Perform all updates
         categoriesTableView?.performBatchUpdates({ () -> Void  in
