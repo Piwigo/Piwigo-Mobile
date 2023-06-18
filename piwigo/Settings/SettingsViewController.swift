@@ -1629,6 +1629,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
+                autoUploadVC.user = user
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break

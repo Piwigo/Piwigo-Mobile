@@ -409,6 +409,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 if categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
+                    categoryVC.user = user
                     navigationController?.pushViewController(categoryVC, animated: true)
                 }
                 

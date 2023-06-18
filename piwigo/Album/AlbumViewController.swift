@@ -988,7 +988,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         localAlbumsVC.categoryId = categoryId
         localAlbumsVC.userHasUploadRights = userHasUploadRights
-        localAlbumsVC.savingContext = mainContext
+        localAlbumsVC.user = user
         let navController = UINavigationController(rootViewController: localAlbumsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .pageSheet

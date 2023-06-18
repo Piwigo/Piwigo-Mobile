@@ -26,7 +26,6 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
-    var savingContext: NSManagedObjectContext!
     private var _canDeleteImages = false
     var canDeleteImages: Bool {
         get {
@@ -47,7 +46,10 @@ class UploadSwitchViewController: UIViewController {
         }
     }
 
-    
+    // MARK: - Core Data Objects
+    var user: User!
+
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -27,7 +27,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var userHasUploadRights: Bool = false
-    var savingContext: NSManagedObjectContext!
 
     // Actions to perform after selection
     private enum pwgAlbumSelectAction : Int {
@@ -59,6 +58,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }()
     
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -553,7 +561,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
             localImagesVC.categoryId = categoryId
             localImagesVC.userHasUploadRights = userHasUploadRights
-            localImagesVC.savingContext = savingContext
+            localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
             return
         case .localAlbums:
@@ -598,7 +606,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             localImagesVC.categoryId = categoryId
             localImagesVC.imageCollectionId = albumID
             localImagesVC.userHasUploadRights = userHasUploadRights
-            localImagesVC.savingContext = savingContext
+            localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }

@@ -14,8 +14,16 @@ import piwigoKit
 
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
     // MARK: - Core Data Providers
-    var savingContext: NSManagedObjectContext!
     private lazy var uploadProvider: UploadProvider = {
         let provider = UploadProvider.shared
         return provider
@@ -38,7 +46,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
-                                                 managedObjectContext: self.savingContext,
+                                                 managedObjectContext: self.mainContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         uploads.delegate = self
@@ -672,7 +680,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
             uploadSwitchVC.canDeleteImages = false
-            uploadSwitchVC.savingContext = savingContext
 
             // Can the user create tags?
             if NetworkVars.hasAdminRights || userHasUploadRights {
