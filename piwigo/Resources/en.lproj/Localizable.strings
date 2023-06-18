@@ -826,3 +826,11 @@
 "help08_header" = "Parent Albums";
 "help08_text" = "Long-press on the back button to display the list of parent albums.";
 "help08_text2" = "Tap the parent album of your choice to jump back to it.";
+
+// What's New in Piwigo
+"whatsNew_title" = "What's New in Piwigo";
+"whatsNew_title1" = "New Cache";
+"whatsNew_desc1" = "Cache management fully rewritten to improve the user experience and bring offline browsing.";
+"whatsNew_title2" = "Screen Mirroring";
+"whatsNew_desc2" = "Watch your photos and videos on an external display.";
+"whatsNew_continue" = "Continue";

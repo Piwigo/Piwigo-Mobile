@@ -826,3 +826,11 @@
 "help08_header" = "Albums parents";
 "help08_text" = "Appuyez longuement sur le bouton retour pour afficher la liste des albums parents.";
 "help08_text2" = "Tapez sur l'album parent de votre choix pour y retourner.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Nouveautés de Piwigo";
+"whatsNew_title1" = "Nouveau cache";
+"whatsNew_desc1" = "La gestion du cache a été entièrement réécrite pour améliorer l'expérience utilisateur et permettre une navigation hors ligne.";
+"whatsNew_title2" = "Recopie de l'écran";
+"whatsNew_desc2" = "Regardez vos photos et vos vidéos sur un écran externe.";
+"whatsNew_continue" = "Continuer";

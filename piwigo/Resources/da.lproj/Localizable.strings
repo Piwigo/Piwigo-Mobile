@@ -826,3 +826,11 @@
 "help08_header" = "Overordnede Albums";
 "help08_text" = "Langt tryk på tilbage-knappen for at vise listen over overordnede albummer.";
 "help08_text2" = "Tryk på det overordnede album efter eget valg for at hoppe tilbage til det.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Hvad er nyt i Piwigo";
+"whatsNew_title1" = "Ny Cache";
+"whatsNew_desc1" = "Cache management fuldt omskrevet for at forbedre brugeroplevelsen og bringe offline browsing.";
+"whatsNew_title2" = "Dubler skaerm";
+"whatsNew_desc2" = "Se dine fotos og videoer på et eksternt display.";
+"whatsNew_continue" = "Fortsæt";

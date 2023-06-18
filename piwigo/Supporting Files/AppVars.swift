@@ -72,6 +72,10 @@ class AppVars: NSObject {
     @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
     var dateOfLastTranslationRequest: TimeInterval
     
+    /// - Remember for which version the What's New in Piwigo view was presented
+    @UserDefault("didShowWhatsNewAppVersion", defaultValue: "2.12.7")
+    var didShowWhatsNewAppVersion: String
+
     
     // MARK: - Vars in UserDefaults / App Group
     // Application variables stored in UserDefaults / App Group

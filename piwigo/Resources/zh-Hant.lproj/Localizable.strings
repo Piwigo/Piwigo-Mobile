@@ -826,3 +826,11 @@
 "help08_header" = "母相簿";
 "help08_text" = "長按返回按鈕來顯示母相簿列表。";
 "help08_text2" = "點擊您選擇的母相簿以跳回它。";
+
+// What's New in Piwigo
+"whatsNew_title" = "Piwigo的新功能";
+"whatsNew_title1" = "新的cache";
+"whatsNew_desc1" = "缓存管理完全重写，以改善用户体验并带来离线浏览。";
+"whatsNew_title2" = "鏡像輸出畫面";
+"whatsNew_desc2" = "在一个外部显示器上观看你的照片和视频。";
+"whatsNew_continue" = "繼續";

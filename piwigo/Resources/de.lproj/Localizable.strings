@@ -826,3 +826,11 @@
 "help08_header" = "Übergeordnete Alben";
 "help08_text" = "Drücken Sie lange auf die Zurück-Schaltfläche, um die Liste der übergeordneten Alben anzuzeigen.";
 "help08_text2" = "Tippe auf das übergeordnete Album deiner Wahl, um zu ihm zurückzuspringen.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Was ist neu in Piwigo";
+"whatsNew_title1" = "Neuer Cache";
+"whatsNew_desc1" = "Cache-Management vollständig überarbeitet, um das Benutzererlebnis zu verbessern und das Offline-Surfen zu ermöglichen.";
+"whatsNew_title2" = "Bildschirmsynchronisierung";
+"whatsNew_desc2" = "Betrachten Sie Ihre Fotos und Videos auf einem externen Display.";
+"whatsNew_continue" = "Fortsetzen";

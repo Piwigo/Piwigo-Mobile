@@ -52,24 +52,24 @@
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
 "CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "Migráció folyamatban...";
+"Coredata_MigrationPleaseWait" = "Jelenleg az Ön adatainak egy részét migráljuk. Kérjük, várjon, amíg ez befejeződik. Ne állítsa le az alkalmazást.";
 
 // User objects
-"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
-"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
-"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+"CoreDataFetch_UserMissingData" = "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat.";
+"CoreDataFetch_UserUnknownStatus" = "A közösségi bővítmény paraméterei nem elérhetőek. \nKérlek jelentkezz be újra.";
+"CoreData_UserCreateFailed" = "Nem sikerült új felhasználói objektumot létrehozni.";
 
 // Album objects
-"CoreDataFetch_AlbumError" = "Fetch albums error!";
-"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
-"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
-"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+"CoreDataFetch_AlbumError" = "Hiba az albumok lekérdezésében!";
+"CoreDataFetch_AlbumMissingData" = "Megtalálva, és eldobja az érvényes azonosító vagy név nélküli albumokat.";
+"CoreDataFetch_AlbumCreateFailed" = "Nem sikerült új Album objektumot létrehozni.";
+"CoreData_AlbumNotFound" = "Album nincs a tartós gyorsítótárban.";
 
 // Image objects
-"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
-"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
-"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
+"CoreDataFetch_ImageError" = "Fényképek/videók lekérése hiba!";
+"CoreDataFetch_ImageMissingData" = "Megtalálva, és az érvényes azonosítót vagy URL-t nélkülöző fényképet/videót elveti.";
+"CoreDataFetch_ImageCreateFailed" = "Nem sikerült új Image objektumot létrehozni.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Hiba a címkék letöltésekor!";
@@ -145,9 +145,9 @@
 
 // Albums view
 "categoryUpdating" = "Frissítés…";
-"categoryUpdatedOn" = "Updated on %@";
-"categoryUpdatedAt" = "Updated at %@";
-"categoryUpdatedNow" = "Updated just now";
+"categoryUpdatedOn" = "Frissítve %@";
+"categoryUpdatedAt" = "Frissítve %@";
+"categoryUpdatedNow" = "Most frissült";
 "categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
@@ -253,8 +253,8 @@
 "deleteCategory_empty" = "Üres Album Törlése";
 "deleteCategory_noImages" = "Fotók megtartása";
 "deleteCategory_orphanedImages" = "Árvák törlése";
-"deleteCategory_singleOrphanedImage" = "Delete Orphan";
-"deleteCategory_severalOrphanedImages" = "Delete %@ Orphans";
+"deleteCategory_singleOrphanedImage" = "Árvák törlése";
+"deleteCategory_severalOrphanedImages" = "%@ Árvák törlése";
 "deleteCategory_allImages" = "Mind a(z) %@ fotó törlése";
 "deleteCategoryConfirm_title" = "Biztos vagy benne?";
 "deleteCategoryConfirm_message" = "Kérlek add meg a fotók pontos számát az album törléséhez. A fotók száma: %@";
@@ -347,13 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 Év";
 "editImageDetailsHUD_updatingSingle" = "Fotó módosítása…";
 "editImageDetailsHUD_updatingPlural" = "Fotók módosítása…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
+"help_externalDisplay" = "Koppintson a megjeleníteni kívánt képre.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Sikertelen frissítés";
 "editImageDetailsError_message" = "Nem sikerült menteni a változásokat a szerverre. Megpróbáljuk újra?";
 "imageDetailsFetchError_title" = "A fotó adatai nem letölthetőek";
-"imageDetailsFetchError_message" = "Fetching the photo data failed.";
+"imageDetailsFetchError_message" = "A fényképadatok lekérése sikertelen volt.";
 "imageDetailsFetchError_continueMessage" = "Hiba a fotó adatainak betöltésénél. Tovább?";
 
 // Image privacy levels
@@ -823,6 +823,14 @@
 "help06_text" = "Nyomonkövetheted, megszakíthatod, vagy folytathatod a feltöltéseket akár egyenként is.";
 "help07_header" = "Automata feltöltés";
 "help07_text" = "Válassz forrás- és célalbumot a Piwigoban, automatizálj a Parancsok appal!";
-"help08_header" = "Parent Albums";
-"help08_text" = "Long-press on the back button to display the list of parent albums.";
-"help08_text2" = "Tap the parent album of your choice to jump back to it.";
+"help08_header" = "Szülői albumok";
+"help08_text" = "Nyomja meg hosszan a vissza gombot a szülői albumok listájának megjelenítéséhez.";
+"help08_text2" = "Érintse meg a kiválasztott szülőalbumot, ha vissza szeretne ugrani hozzá.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Újdonságok a Piwigo-ban";
+"whatsNew_title1" = "Új gyorsítótár";
+"whatsNew_desc1" = "A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.";
+"whatsNew_title2" = "Zrcalienie zaslona";
+"whatsNew_desc2" = "Nézze meg fényképeit és videóit egy külső kijelzőn.";
+"whatsNew_continue" = "Folytatás";

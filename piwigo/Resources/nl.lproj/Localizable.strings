@@ -52,13 +52,13 @@
 "CoreDataStore_WarningTitle" = "Waarschuwing";
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "Migratie in uitvoering...";
+"Coredata_MigrationPleaseWait" = "We migreren momenteel enkele van uw data. Wacht tot het is voltooid. Stop de applicatie niet.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";
 "CoreDataFetch_UserUnknownStatus" = "Fout bij het ophalen van de Community extensie parameters. Probeer opnieuw in te loggen.";
-"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+"CoreData_UserCreateFailed" = "Het maken van een nieuw gebruikersobject is mislukt.";
 
 // Album objects
 "CoreDataFetch_AlbumError" = "Albums fout ophalen!";
@@ -145,9 +145,9 @@
 
 // Albums view
 "categoryUpdating" = "Bijwerken…";
-"categoryUpdatedOn" = "Updated on %@";
-"categoryUpdatedAt" = "Updated at %@";
-"categoryUpdatedNow" = "Updated just now";
+"categoryUpdatedOn" = "Bijgewerkt op %@";
+"categoryUpdatedAt" = "Bijgewerkt op %@";
+"categoryUpdatedNow" = "Zojuist bijgewerkt";
 "categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
@@ -347,7 +347,7 @@
 "editImageDetails_dateYearDec" = "-1 Jaar";
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
+"help_externalDisplay" = "Klik op de afbeelding die u hier wilt weergeven.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
@@ -826,3 +826,11 @@
 "help08_header" = "Bovenliggende albums";
 "help08_text" = "Druk lang op de terugknop om de lijst van bovenliggende albums weer te geven.";
 "help08_text2" = "Tik op het bovenliggende album van je keuze om er naar terug te springen.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Wat is er nieuw in Piwigo";
+"whatsNew_title1" = "Neuer Cache";
+"whatsNew_desc1" = "Cache beheer is volledig herschreven om de gebruikerservaring te verbeteren en offline browsen te brengen.";
+"whatsNew_title2" = "Svnchrone weeraave";
+"whatsNew_desc2" = "Bekijk je foto's en video's op een externe weergave.";
+"whatsNew_continue" = "Doorgaan";
