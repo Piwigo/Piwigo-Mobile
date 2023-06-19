@@ -146,17 +146,17 @@ class ImageSession: NSObject {
         })
     }
     
-//    func cancelDownload(atURL imageURL: URL) {
-//        // Retrieve download instance
-//        guard let download = activeDownloads[imageURL] else {
-//            return
-//        }
-//
-//        // Cancel the download request
-//        print("••> Cancel download: \(imageURL.lastPathComponent)")
-//        download.task?.cancel()
-//        activeDownloads[imageURL] = nil
-//    }
+    func cancelDownload(atURL imageURL: URL) {
+        // Retrieve download instance
+        guard let download = activeDownloads[imageURL] else {
+            return
+        }
+
+        // Cancel the download request
+        print("••> Cancel download: \(imageURL.lastPathComponent)")
+        download.task?.cancel()
+        activeDownloads[imageURL] = nil
+    }
 }
 
 

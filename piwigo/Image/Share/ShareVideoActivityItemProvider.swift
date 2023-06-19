@@ -23,9 +23,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     private var exportSession: AVAssetExportSession?    // Export session
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
-    private var imageFileURL: URL                       // Shared image file URL
+    private var pwgImageURL: URL                        // URL of video in Piwigo server
+    private var cachedFileURL: URL?                     // URL of cached video file
+    private var imageFileURL: URL                       // URL of shared video file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
-    private var download: ImageDownload?
 
 
     // MARK: - Progress Faction
@@ -54,6 +55,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let serverID = imageData.server?.uuid else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
+            pwgImageURL = imageFileURL
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -62,7 +64,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
         imageFileURL = cacheDir.appendingPathComponent(size.path)
             .appendingPathComponent(String(imageData.pwgID))
-        
+        pwgImageURL = imageFileURL
+
         // Retrieve image in cache
         if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
             let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
@@ -111,13 +114,17 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
+        // Store URL of image in Piwigo server for being able to cancel the download
+        pwgImageURL = imageURL
+
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                      fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
-        } completion: { _ in
+        } completion: { fileURL in
+            self.cachedFileURL = fileURL
             sema.signal()
         } failure: { error in
             // Will notify the delegate on the main thread that the processing is cancelled
@@ -138,7 +145,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
 
         // Check that we have the URL of the cached video
-        guard let cachedFileURL = download?.fileURL else {
+        guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
             self.alertMessage = NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!")
@@ -347,7 +354,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel video file download
-        download?.task?.cancel()
+        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
         // Cancel video export
         exportSession?.cancelExport()
     }

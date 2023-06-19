@@ -33,9 +33,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private var imageData: Image                        // Core Data image
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
-    private var imageFileURL: URL                       // Shared image file URL
+    private var pwgImageURL: URL                        // URL of image in Piwigo server
+    private var cachedFileURL: URL?                     // URL of cached image file
+    private var imageFileURL: URL                       // URL of shared image file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
-    private var download: ImageDownload?
 
     // MARK: - Progress Faction
     private var _progressFraction: Float = 0.0
@@ -63,6 +64,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let serverID = imageData.server?.uuid else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
+            pwgImageURL = imageFileURL
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -71,6 +73,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
         imageFileURL = cacheDir.appendingPathComponent(size.path)
             .appendingPathComponent(String(imageData.pwgID))
+        pwgImageURL = imageFileURL
         
         // Retrieve image in cache
         if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
@@ -123,13 +126,17 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
         
+        // Store URL of image in Piwigo server for being able to cancel the download
+        pwgImageURL = imageURL
+
         // Download image synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                      fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
-        } completion: { _ in
+        } completion: { fileURL in
+            self.cachedFileURL = fileURL
             sema.signal()
         } failure: { error in
             // Will notify the delegate on the main thread that the processing is cancelled
@@ -149,7 +156,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
         
         // Check that we have the URL of the cached image
-        guard let cachedFileURL = download?.fileURL else {
+        guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
             self.alertMessage = NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!")
@@ -325,7 +332,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        download?.task?.cancel()
+        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
     }
 
     @objc func didFinishSharingImage() {
