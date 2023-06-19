@@ -31,6 +31,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var selectedFavoriteIds = Set<Int64>()
 
     var imagesCollection: UICollectionView?
+    var searchController: UISearchController?
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()

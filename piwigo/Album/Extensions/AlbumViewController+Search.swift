@@ -13,16 +13,16 @@ import piwigoKit
 extension AlbumViewController
 {
     func initSearchBar() {
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.delegate = self
-        searchController.hidesNavigationBarDuringPresentation = true
+        searchController = UISearchController(searchResultsController: nil)
+        searchController?.delegate = self
+        searchController?.hidesNavigationBarDuringPresentation = true
 
-        searchController.searchBar.searchBarStyle = .minimal
-        searchController.searchBar.isTranslucent = false
-        searchController.searchBar.showsCancelButton = false
-        searchController.searchBar.showsSearchResultsButton = false
-        searchController.searchBar.tintColor = UIColor.piwigoColorOrange()
-        searchController.searchBar.delegate = self // Monitor when the search button is tapped.
+        searchController?.searchBar.searchBarStyle = .minimal
+        searchController?.searchBar.isTranslucent = false
+        searchController?.searchBar.showsCancelButton = false
+        searchController?.searchBar.showsSearchResultsButton = false
+        searchController?.searchBar.tintColor = UIColor.piwigoColorOrange()
+        searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
         definesPresentationContext = true
 
         // Place the search bar in the navigation bar.
@@ -33,11 +33,12 @@ extension AlbumViewController
     }
 }
 
+// MARK: - UISearchControllerDelegate
 extension AlbumViewController: UISearchControllerDelegate
 {
-    func presentSearchController(_ searchController: UISearchController) {
-        debugPrint("presentSearchController…")
-    }
+//    func presentSearchController(_ searchController: UISearchController) {
+//        debugPrint("presentSearchController…")
+//    }
     
     func willPresentSearchController(_ searchController: UISearchController) {
         //        debugPrint("willPresentSearchController…")
@@ -165,5 +166,15 @@ extension AlbumViewController: UISearchBarDelegate
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if #available(iOS 13, *) {
+            // NOP
+        } else {
+            // Dismiss seach bar on iOS 12 only
+            navigationController?.navigationBar.prefersLargeTitles = false
+            searchController?.dismiss(animated: true, completion: nil)
+        }
     }
 }
