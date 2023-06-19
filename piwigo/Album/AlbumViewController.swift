@@ -1266,7 +1266,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Configure cell with album data
-            cell.albumData = albums.object(at: indexPath)
+            let albumCell = albums.object(at: indexPath)
+            if albumCell.isFault {
+                // The album is not fired yet.
+                albumCell.willAccessValue(forKey: nil)
+                albumCell.didAccessValue(forKey: nil)
+            }
+            cell.albumData = albumCell
             cell.categoryDelegate = self
 
             // Disable category cells in Image selection mode
