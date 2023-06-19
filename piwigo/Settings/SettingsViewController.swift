@@ -204,41 +204,39 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Invite user to translate the app
-        if #available(iOS 10, *) {
-            let langCode: String = NSLocale.current.languageCode ?? "en"
+        let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
-//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
-            let now: Double = Date().timeIntervalSinceReferenceDate
-            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
-            if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
-                // Store date of last translation request
-                AppVars.shared.dateOfLastTranslationRequest = now
+//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
+        let now: Double = Date().timeIntervalSinceReferenceDate
+        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
+        if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
+            // Store date of last translation request
+            AppVars.shared.dateOfLastTranslationRequest = now
 
-                // Request a translation
-                let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
+            // Request a translation
+            let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
 
-                let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
-                    })
-
-                let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
-                        if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                            UIApplication.shared.open(url)
-                        }
-                    })
-
-                alert.addAction(cancelAction)
-                alert.addAction(defaultAction)
-                alert.view.tintColor = .piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = .piwigoColorOrange()
+            let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
                 })
+
+            let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+                    if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
+                        UIApplication.shared.open(url)
+                    }
+                })
+
+            alert.addAction(cancelAction)
+            alert.addAction(defaultAction)
+            alert.view.tintColor = .piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
             }
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = .piwigoColorOrange()
+            })
         }
     }
 
@@ -776,43 +774,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 tableViewCell = cell
                 
             case 5 /* Share Image Metadata Options */:
-                if #available(iOS 10, *) {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                        return LabelTableViewCell()
-                    }
-                    // See https://iosref.com/res
-                    if view.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
-                    } else {
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                    }
-                    cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                    cell.accessibilityIdentifier = "defaultShareOptions"
-                    tableViewCell = cell
-                    
-                } else {
-                    // Single On/Off share metadata option
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                        return SwitchTableViewCell()
-                    }
-                    // See https://iosref.com/res
-                    if view.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share Private Metadata"))
-                    } else {
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Metadata"))
-                    }
-                    cell.cellSwitch.setOn(ImageVars.shared.shareMetadataTypeAirDrop, animated: true)
-                    cell.cellSwitchBlock = { switchState in
-                        ImageVars.shared.shareMetadataTypeAirDrop = switchState
-                    }
-                    cell.accessibilityIdentifier = "shareMetadataOptions"
-                    tableViewCell = cell
-                    
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
+                }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultShareOptions"
+                tableViewCell = cell
+                    
             default:
                 break
             }
@@ -1336,14 +1312,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */:
+                 4 /* Default Size of Previewed Images */,
+                 5 /* Share Image Metadata Options */:
                 result = true
-            case 5 /* Share Image Metadata Options */:
-                if #available(iOS 10, *) {
-                    result = true
-                } else {
-                    result = false
-                }
             default:
                 result = false
             }
@@ -1590,11 +1561,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 5 /* Share image metadata options */:
-                if #available(iOS 10, *) {
-                    let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                    guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
-                }
+                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }

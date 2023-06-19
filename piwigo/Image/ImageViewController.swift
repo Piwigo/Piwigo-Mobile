@@ -171,13 +171,6 @@ class ImageViewController: UIViewController {
         // Image options buttons
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
-
-        // Scrolling
-        if #available(iOS 12, *) {
-            // Safe area already excluded in storyboard
-        } else {
-            edgesForExtendedLayout = []
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

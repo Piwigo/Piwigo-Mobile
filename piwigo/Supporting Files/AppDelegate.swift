@@ -549,18 +549,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 //    @available(iOS 10.0, *)
 //    func application(_ application: UIApplication, handle intent: INIntent, completionHandler: @escaping (INIntentResponse) -> Void) {
-//        if #available(iOS 12.0, *) {
-//            switch intent {
-//            case is AutoUploadIntent:
-//                let handler = AutoUploadIntentHandler()
-//                handler.handle(intent: intent as! AutoUploadIntent) { response in
-//                    completionHandler(response)
-//                }
-//            default:
-//                break
+//        switch intent {
+//        case is AutoUploadIntent:
+//            let handler = AutoUploadIntentHandler()
+//            handler.handle(intent: intent as! AutoUploadIntent) { response in
+//                completionHandler(response)
 //            }
-//        } else {
-//            // Fallback on earlier versions
+//        default:
+//            break
 //        }
 //    }
     
@@ -877,12 +873,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Light and Dark Modes
     private func initColorPalette() {
         // Color palette depends on system settings
-        if #available(iOS 12.0, *) {
-            AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
-        } else {
-            // Fallback on earlier versions
-            AppVars.shared.isSystemDarkModeActive = false
-        }
+        AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
         print("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
         // Apply color palette

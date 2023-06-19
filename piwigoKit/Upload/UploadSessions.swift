@@ -121,23 +121,21 @@ public class UploadSessions: NSObject {
         /// We send a custom cookie to avoid a reject by ModSecurity if it is set to reject requests not containing cookies.
         config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
-        if #available(iOS 10.0, *) {
-            if let validUrl = URL(string: NetworkVars.service) {
-                var params: [HTTPCookiePropertyKey : Any] = [
-                    HTTPCookiePropertyKey.version           : NSString("0"),
-                    HTTPCookiePropertyKey.name              : NSString("pwg_method"),
-                    HTTPCookiePropertyKey.value             : NSString("uploadAsync"),
-                    HTTPCookiePropertyKey.domain            : NSString(string: validUrl.host ?? ""),
-                    HTTPCookiePropertyKey.path              : NSString(string: validUrl.path),
-                    HTTPCookiePropertyKey.expires           : NSDate(),
-                    HTTPCookiePropertyKey.discard           : NSString("TRUE")
-                ]
-                if NetworkVars.serverProtocol == "https" {
-                    params[HTTPCookiePropertyKey.secure] = "TRUE"
-                }
-                if let cookie = HTTPCookie(properties: params) {
-                    config.httpAdditionalHeaders = HTTPCookie.requestHeaderFields(with: [cookie])
-                }
+        if let validUrl = URL(string: NetworkVars.service) {
+            var params: [HTTPCookiePropertyKey : Any] = [
+                HTTPCookiePropertyKey.version           : NSString("0"),
+                HTTPCookiePropertyKey.name              : NSString("pwg_method"),
+                HTTPCookiePropertyKey.value             : NSString("uploadAsync"),
+                HTTPCookiePropertyKey.domain            : NSString(string: validUrl.host ?? ""),
+                HTTPCookiePropertyKey.path              : NSString(string: validUrl.path),
+                HTTPCookiePropertyKey.expires           : NSDate(),
+                HTTPCookiePropertyKey.discard           : NSString("TRUE")
+            ]
+            if NetworkVars.serverProtocol == "https" {
+                params[HTTPCookiePropertyKey.secure] = "TRUE"
+            }
+            if let cookie = HTTPCookie(properties: params) {
+                config.httpAdditionalHeaders = HTTPCookie.requestHeaderFields(with: [cookie])
             }
         }
 

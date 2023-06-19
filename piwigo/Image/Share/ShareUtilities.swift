@@ -257,29 +257,27 @@ extension UIActivity.ActivityType: Comparable {
         /// - See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
         /// - High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
         var maxSize = Int.max
-        if #available(iOS 10, *) {
-            switch self {
-            case .assignToContact:
-                maxSize = 1024
-            case .postToFacebook:
-                maxSize = 1200
-            case .postToTencentWeibo:
-                maxSize = 640 // 9 images max + 1 video
-            case .postToTwitter:
-                maxSize = 880 // 4 images max
-            case .postToWeibo:
-                maxSize = 640 // 9 images max + 1 video
-            case pwgActivityTypePostToWhatsApp:
-                maxSize = 1920
-            case pwgActivityTypePostToSignal:
-                maxSize = 1920
-            case pwgActivityTypeMessenger:
-                maxSize = 1920
-            case pwgActivityTypePostInstagram:
-                maxSize = 1080
-            default:
-                maxSize = Int.max
-            }
+        switch self {
+        case .assignToContact:
+            maxSize = 1024
+        case .postToFacebook:
+            maxSize = 1200
+        case .postToTencentWeibo:
+            maxSize = 640 // 9 images max + 1 video
+        case .postToTwitter:
+            maxSize = 880 // 4 images max
+        case .postToWeibo:
+            maxSize = 640 // 9 images max + 1 video
+        case pwgActivityTypePostToWhatsApp:
+            maxSize = 1920
+        case pwgActivityTypePostToSignal:
+            maxSize = 1920
+        case pwgActivityTypeMessenger:
+            maxSize = 1920
+        case pwgActivityTypePostInstagram:
+            maxSize = 1080
+        default:
+            maxSize = Int.max
         }
         return maxSize
     }
@@ -287,84 +285,77 @@ extension UIActivity.ActivityType: Comparable {
     func shouldStripMetadata() -> Bool {
         // Return whether the user wants to strip metadata
         /// - The flag are set in Settings / Images / Share Metadata
-        if #available(iOS 10, *) {
-            switch self {
-            case .airDrop:
-                if !ImageVars.shared.shareMetadataTypeAirDrop {
-                    return true
-                }
-            case .assignToContact:
-                if !ImageVars.shared.shareMetadataTypeAssignToContact {
-                    return true
-                }
-            case .copyToPasteboard:
-                if !ImageVars.shared.shareMetadataTypeCopyToPasteboard {
-                    return true
-                }
-            case .mail:
-                if !ImageVars.shared.shareMetadataTypeMail {
-                    return true
-                }
-            case .message:
-                if !ImageVars.shared.shareMetadataTypeMessage {
-                    return true
-                }
-            case .postToFacebook:
-                if !ImageVars.shared.shareMetadataTypePostToFacebook {
-                    return true
-                }
-            case pwgActivityTypeMessenger:
-                if !ImageVars.shared.shareMetadataTypeMessenger {
-                    return true
-                }
-            case .postToFlickr:
-                if !ImageVars.shared.shareMetadataTypePostToFlickr {
-                    return true
-                }
-            case pwgActivityTypePostInstagram:
-                if !ImageVars.shared.shareMetadataTypePostInstagram {
-                    return true
-                }
-            case pwgActivityTypePostToSignal:
-                if !ImageVars.shared.shareMetadataTypePostToSignal {
-                    return true
-                }
-            case pwgActivityTypePostToSnapchat:
-                if !ImageVars.shared.shareMetadataTypePostToSnapchat {
-                    return true
-                }
-            case .postToTencentWeibo:
-                if !ImageVars.shared.shareMetadataTypePostToTencentWeibo {
-                    return true
-                }
-            case .postToTwitter:
-                if !ImageVars.shared.shareMetadataTypePostToTwitter {
-                    return true
-                }
-            case .postToVimeo:
-                if !ImageVars.shared.shareMetadataTypePostToVimeo {
-                    return true
-                }
-            case .postToWeibo:
-                if !ImageVars.shared.shareMetadataTypePostToWeibo {
-                    return true
-                }
-            case pwgActivityTypePostToWhatsApp:
-                if !ImageVars.shared.shareMetadataTypePostToWhatsApp {
-                    return true
-                }
-            case .saveToCameraRoll:
-                if !ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
-                    return true
-                }
-            default:
-                if !ImageVars.shared.shareMetadataTypeOther {
-                    return true
-                }
-            }
-        } else {
-            // Single On/Off share metadata option (use first boolean)
+        switch self {
+        case .airDrop:
             if !ImageVars.shared.shareMetadataTypeAirDrop {
+                return true
+            }
+        case .assignToContact:
+            if !ImageVars.shared.shareMetadataTypeAssignToContact {
+                return true
+            }
+        case .copyToPasteboard:
+            if !ImageVars.shared.shareMetadataTypeCopyToPasteboard {
+                return true
+            }
+        case .mail:
+            if !ImageVars.shared.shareMetadataTypeMail {
+                return true
+            }
+        case .message:
+            if !ImageVars.shared.shareMetadataTypeMessage {
+                return true
+            }
+        case .postToFacebook:
+            if !ImageVars.shared.shareMetadataTypePostToFacebook {
+                return true
+            }
+        case pwgActivityTypeMessenger:
+            if !ImageVars.shared.shareMetadataTypeMessenger {
+                return true
+            }
+        case .postToFlickr:
+            if !ImageVars.shared.shareMetadataTypePostToFlickr {
+                return true
+            }
+        case pwgActivityTypePostInstagram:
+            if !ImageVars.shared.shareMetadataTypePostInstagram {
+                return true
+            }
+        case pwgActivityTypePostToSignal:
+            if !ImageVars.shared.shareMetadataTypePostToSignal {
+                return true
+            }
+        case pwgActivityTypePostToSnapchat:
+            if !ImageVars.shared.shareMetadataTypePostToSnapchat {
+                return true
+            }
+        case .postToTencentWeibo:
+            if !ImageVars.shared.shareMetadataTypePostToTencentWeibo {
+                return true
+            }
+        case .postToTwitter:
+            if !ImageVars.shared.shareMetadataTypePostToTwitter {
+                return true
+            }
+        case .postToVimeo:
+            if !ImageVars.shared.shareMetadataTypePostToVimeo {
+                return true
+            }
+        case .postToWeibo:
+            if !ImageVars.shared.shareMetadataTypePostToWeibo {
+                return true
+            }
+        case pwgActivityTypePostToWhatsApp:
+            if !ImageVars.shared.shareMetadataTypePostToWhatsApp {
+                return true
+            }
+        case .saveToCameraRoll:
+            if !ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
+                return true
+            }
+        default:
+            if !ImageVars.shared.shareMetadataTypeOther {
                 return true
             }
         }

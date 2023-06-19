@@ -185,19 +185,7 @@ class KeychainUtilities : NSObject {
         if status != 0 { return false }     // Could not set policy
         
         // Evaluate certificate
-        var isValid = false
-        if #available(iOS 12.0, *) {
-            isValid = SecTrustEvaluateWithError(serverTrust, nil)
-        } else {
-            // Fallback on earlier versions
-            var result: SecTrustResultType = .invalid
-            SecTrustEvaluate(serverTrust, &result)
-            if status == errSecSuccess {
-                isValid = (result == .unspecified) || (result == .proceed)
-            }
-        }
-        
-        return isValid
+        return SecTrustEvaluateWithError(serverTrust, nil)
     }
     
     public class
@@ -259,14 +247,12 @@ class KeychainUtilities : NSObject {
         }
         
         // Add contact email, e.g. support@qnap.com
-        if #available(iOS 10.3, *) {
-            var emailAddresses: CFArray!
-            let status: OSStatus = SecCertificateCopyEmailAddresses(certificate, &emailAddresses)
-            if status == errSecSuccess, emailAddresses != nil,
-               CFArrayGetCount(emailAddresses) > 0,
-               let address = (emailAddresses as Array).first as? String {
-                certString.append(", " + address)
-            }
+        var emailAddresses: CFArray!
+        let status: OSStatus = SecCertificateCopyEmailAddresses(certificate, &emailAddresses)
+        if status == errSecSuccess, emailAddresses != nil,
+           CFArrayGetCount(emailAddresses) > 0,
+           let address = (emailAddresses as Array).first as? String {
+            certString.append(", " + address)
         }
         certString.append(")")
         return certString
