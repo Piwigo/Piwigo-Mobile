@@ -123,30 +123,36 @@ extension UploadManager
         resumeFailedUploads(toResume)
     }
     
-    public func resumeFailedUploads(_ toResume: [Upload]) {
-        // Any upload to resume?
-        guard toResume.isEmpty == false,
-              let context = toResume.first?.managedObjectContext else {
-            return
+    public func resumeFailedUpload(withID localIdentifier: String) {
+        // Look for upload request in UploadManager context
+        if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.localIdentifier == localIdentifier}) {
+            resumeFailedUploads([upload])
         }
-        
+    }
+    
+    public func resumeFailedUploads(_ toResume: [Upload]) {
         // Loop over the failed uploads
         for failedUpload in toResume {
             switch failedUpload.state {
             case .uploading, .uploadingError, .uploaded:
                 // -> Will retry to transfer the image
                 failedUpload.setState(.prepared, save: false)
+                // Update list of transfers
+                isUploading.remove(failedUpload.objectID)
+
             case .finishing, .finishingError:
                 // -> Will retry to finish the upload
                 failedUpload.setState(.uploaded, save: false)
+                // Reset finishing flag
+                isFinishing = false
+                
             default:
                 // —> Will retry from scratch
                 failedUpload.setState(.waiting, save: false)
+                // Reset preparing flag
+                isPreparing = false
             }
         }
-        
-        // Save changes
-        try? context.save()
     }
     
     
