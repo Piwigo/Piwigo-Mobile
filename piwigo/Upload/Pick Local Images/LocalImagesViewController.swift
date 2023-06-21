@@ -1602,16 +1602,18 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             return LocalImageCollectionViewCell()
         }
         
-        // Get image asset, upload state and index which depends on image sort type and date order
+        // Get image asset and index which depends on image sort type and date order
         let index = getImageIndex(for: indexPath)
         let imageAsset = fetchedImages[index]
-        let uploadState = getUploadStateOfImage(at: index, for: cell)
 
         // Configure cell with image asset
         let thumbSize = AlbumUtilities.imageSize(forView: collectionView,
                                                  imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait,
                                                  collectionType: .popup)
         cell.configure(with: imageAsset, thumbnailSize: thumbSize)
+
+        // Get upload state from cell data
+        let uploadState = getUploadStateOfImage(at: index, for: cell)
         cell.update(selected: selectedImages[index] != nil, state: uploadState)
 
         // Add pan gesture recognition
