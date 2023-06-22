@@ -94,6 +94,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.shared.fetchedLocalAlbumsDelegate = self
+        LocalAlbumsProvider.shared.includingEmptyAlbums = (categoryId == Int32.min)
         LocalAlbumsProvider.shared.fetchLocalAlbums {
             // Set limiters
             if LocalAlbumsProvider.shared.localAlbums.count > self.maxNberOfAlbumsInSection {
