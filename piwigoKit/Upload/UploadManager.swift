@@ -135,6 +135,11 @@ public class UploadManager: NSObject {
         return provider
     }()
 
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+    
     lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider.shared
         return provider
@@ -206,36 +211,3 @@ public class UploadManager: NSObject {
         return uploads
     }()
 }
-
-
-// MARK: - NSFetchedResultsControllerDelegate
-//extension UploadManager: NSFetchedResultsControllerDelegate {
-//
-//    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//
-//    }
-//
-//    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//
-//        switch type {
-//        case .insert:
-//            guard let newIndexPath = newIndexPath else { return }
-//
-//        case .delete:
-//            guard let oldIndexPath = indexPath else { return }
-//
-//        case .move:
-//            guard let oldIndexPath = indexPath else { return }
-//            guard let newIndexPath = newIndexPath else { return }
-//
-//        case .update:
-//            guard let oldIndexPath = indexPath else { return }
-//
-//        @unknown default:
-//            fatalError("UploadQueueViewControllerOld: unknown NSFetchedResultsChangeType")
-//        }
-//    }
-//
-//    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//    }
-//}

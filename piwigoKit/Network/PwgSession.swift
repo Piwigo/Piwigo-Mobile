@@ -66,7 +66,7 @@ public class PwgSession: NSObject {
     // MARK: - Session Methods
     public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
                                           jsonObjectClientExpectsToReceive: T.Type,
-                                          countOfBytesClientExpectsToReceive:Int64,
+                                          countOfBytesClientExpectsToReceive: Int64,
                                           success: @escaping (Data) -> Void,
                                           failure: @escaping (NSError) -> Void) {
         // Create POST request
@@ -129,7 +129,7 @@ public class PwgSession: NSObject {
                         }
                         
                         // Return error code
-                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode)
+                        let error = self.localizedError(for: httpResponse.statusCode)
                         failure(error as NSError)
                         return
                     }
@@ -152,8 +152,8 @@ public class PwgSession: NSObject {
                         
                         // Return error code
                         let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode,
-                                                                     errorMessage: errorMessage)
+                        let error = self.localizedError(for: httpResponse.statusCode,
+                                                        errorMessage: errorMessage)
                         failure(error as NSError)
                         return
                     }

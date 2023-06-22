@@ -392,7 +392,7 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [self] in
+        PwgSession.shared.setInfos(with: paramsDict) { [self] in
             DispatchQueue.main.async { [self] in
                 // Update image title?
                 if shouldUpdateTitle {

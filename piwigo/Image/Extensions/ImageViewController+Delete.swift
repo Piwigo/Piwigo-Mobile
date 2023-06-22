@@ -89,7 +89,7 @@ extension ImageViewController
         
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setInfos(with: paramsDict) { [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
                    let album = albums.first(where: {$0.pwgID == categoryId}) {

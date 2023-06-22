@@ -165,7 +165,7 @@ extension AlbumViewController
 
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) {  [self] in
-            ImageUtilities.setInfos(with: paramsDict) { [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Remove image from source album
                 imageData.removeFromAlbums(albumData)
                 

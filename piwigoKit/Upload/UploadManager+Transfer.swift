@@ -11,7 +11,7 @@ import CoreData
 
 extension UploadManager {
     
-    // MARK: - Transfer Image
+    // MARK: - Transfer Image if Necessary
     public func launchTransfer(of upload: Upload) -> Void {
         print("\(dbg()) launch transfer of \(upload.objectID.uriRepresentation())")
 
@@ -19,21 +19,172 @@ extension UploadManager {
         if isUploading.contains(upload.objectID) { return }
         isUploading.insert(upload.objectID)
 
+        // Check user entity
+        guard let user = user else {
+            // Should never happen
+            // ► The lounge will be emptied later by the server
+            // ► Stop upload task and return an error
+            upload.setState(.uploadingError, error: UserError.emptyUsername, save: true)
+            self.didEndTransfer(for: upload)
+            return
+        }
+
+        // Check that the MD5 checksum is known
+        if upload.md5Sum.isEmpty {
+            let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue,
+                                userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            upload.setState(.uploadingFail, error: error, save: true)
+            self.didEndTransfer(for: upload)
+            return
+        }
+        
+        // Update state of upload request
+        upload.setState(.uploading, save: true)
+        
+        // Is this image already stored on the Piwigo server?
+        NetworkUtilities.checkSession(ofUser: user) {
+            PwgSession.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
+                self.backgroundQueue.async {
+                    if let imageID = imageID {
+                        // Already stored on the Piwigo server ► Copy to Album
+                        self.copyImageWithID(imageID, for: upload)
+                    } else {
+                        // Upload new image to the Piwigo server
+                        self.transfertImage(for: upload)
+                    }
+                }
+            } failure: { error in
+                upload.setState(.uploadingError, error: error, save: true)
+                self.backgroundQueue.async {
+                    try? self.bckgContext.save()
+                    self.didEndTransfer(for: upload)
+                }
+            }
+        } failure: { error in
+            upload.setState(.uploadingError, error: error, save: true)
+            self.backgroundQueue.async {
+                try? self.bckgContext.save()
+                self.didEndTransfer(for: upload)
+            }
+        }
+    }
+    
+    func copyImageWithID(_ imageID: Int64, for upload: Upload) {
+        // Retrieve image data from the Piwigo server, storing in cache
+        imageProvider.getInfos(forID: imageID, inCategoryId: upload.category) {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            DispatchQueue.main.async {
+                let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                                                  "progressFraction" : 0.5]
+                NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+            }
+
+            // Get image and album objects in cache
+            let imageSet = self.imageProvider.getImages(inContext: self.bckgContext, withIds: Set([imageID]))
+            guard let imageData = imageSet.first, let albums = imageData.albums,
+                  let albumData = self.albumProvider.getAlbum(ofUser: self.user, withId: upload.category)
+            else {
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue,
+                                    userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                upload.setState(.uploadingFail, error: error, save: true)
+                self.backgroundQueue.async {
+                    try? self.bckgContext.save()
+                    self.didEndTransfer(for: upload)
+                }
+                return
+            }
+            
+            // Append selected category ID to image category list
+            var categoryIds = Set(albums.compactMap({$0.pwgID}))
+            let categoryCount = categoryIds.count
+            categoryIds.insert(upload.category)
+            
+            // Check if the category already contains that image
+            if categoryIds.count == categoryCount {
+                // Update UploadQueue cell and button shown in root album (or default album)
+                DispatchQueue.main.async {
+                    let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                                                      "progressFraction" : 1.0]
+                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+                }
+                
+                // Job done
+                upload.imageId = imageID
+                upload.setState(.moderated, save: true)
+                self.backgroundQueue.async {
+                    try? self.bckgContext.save()
+                    self.didEndTransfer(for: upload)
+                }
+                return
+            }
+            
+            // Prepare parameters for copying the image/video to the selected category
+            let newImageCategories = categoryIds.compactMap({ String($0) }).joined(separator: ";")
+            let paramsDict: [String : Any] = ["image_id"            : imageData.pwgID,
+                                              "categories"          : newImageCategories,
+                                              "multiple_value_mode" : "replace"]
+            
+            // Send request to Piwigo server
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                // Update UploadQueue cell and button shown in root album (or default album)
+                DispatchQueue.main.async {
+                    let uploadInfo: [String : Any] = ["localIdentifier" : upload.localIdentifier,
+                                                      "progressFraction" : 1.0]
+                    NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
+                }
+
+                // Update cached data
+                self.backgroundQueue.async {
+                    // Add image to album
+                    albumData.addToImages(imageData)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+//                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+//                        albumData.thumbnailId = imageData.pwgID
+//                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+//                        albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+//                    }
+                    
+                    // Copy complete
+                    upload.imageId = imageID
+                    upload.setState(.moderated, save: true)
+                    self.backgroundQueue.async {
+                        try? self.bckgContext.save()
+                        self.didEndTransfer(for: upload)
+                    }
+                }
+            } failure: { error in
+                upload.setState(.uploadingError, error: error, save: true)
+                self.backgroundQueue.async {
+                    try? self.bckgContext.save()
+                    self.didEndTransfer(for: upload)
+                }
+            }
+        } failure: { error in
+            upload.setState(.uploadingError, error: error, save: true)
+            self.backgroundQueue.async {
+                try? self.bckgContext.save()
+                self.didEndTransfer(for: upload)
+            }
+        }
+    }
+    
+    func transfertImage(for upload: Upload) {
         // Initialise or reset counter of progress bar in case we repeat the transfer
         UploadSessions.shared.initCounter(withID: upload.localIdentifier)
-
-        // Update state of upload request and start transfer
-        upload.setState(.uploading, save: true)
 
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
         /// - Community users as from Piwigo 12.
         if NetworkVars.usesUploadAsync || isExecutingBackgroundUploadTask {
             // Prepare transfer
-            self.transferInBackgroundImage(for: upload)
+            self.transferInBackground(for: upload)
         } else {
             // Transfer image
-            self.transferImage(for: upload)
+            self.transferInForeground(for: upload)
         }
         
         // Do not prepare next image in background task (already scheduled)
@@ -60,7 +211,7 @@ extension UploadManager {
 
     
     // MARK: - Transfer in Foreground
-    func transferImage(for upload: Upload) {
+    func transferInForeground(for upload: Upload) {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -92,16 +243,6 @@ extension UploadManager {
             let error = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue,
                                 userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
             upload.setState(.preparingFail, error: error, save: true)
-            self.didEndTransfer(for: upload)
-            return
-        }
-
-        // Check user entity
-        guard let user = user else {
-            // Should never happen
-            // ► The lounge will be emptied later by the server
-            // ► Stop upload task and return an error
-            upload.setState(.uploadingError, error: UserError.emptyUsername, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -413,7 +554,7 @@ extension UploadManager {
     
     // MARK: - Transfer in Background
     // See https://tools.ietf.org/html/rfc7578
-    func transferInBackgroundImage(for upload: Upload) {
+    func transferInBackground(for upload: Upload) {
 
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully

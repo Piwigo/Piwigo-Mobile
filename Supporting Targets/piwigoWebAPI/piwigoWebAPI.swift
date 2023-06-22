@@ -317,6 +317,27 @@ class piwigoWebAPI: XCTestCase {
     }
 
     // MARK: - pwg.images…
+    func testPwgImagesExist() {
+        
+        // Case of a list containing existing and non-existing images
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.images.exist", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ImagesExistJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.errorCode, 0)
+        XCTAssertEqual(result.errorMessage, "")
+    }
+    
     func testPwgImagesUploadDecoding() {
         
         // Case of a JPG file

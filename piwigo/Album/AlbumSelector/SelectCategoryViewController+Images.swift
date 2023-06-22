@@ -150,7 +150,7 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [self] in
+        PwgSession.shared.setInfos(with: paramsDict) { [self] in
             DispatchQueue.main.async {
                 // Add image to album
                 albumData.addToImages(imageData)
@@ -246,7 +246,7 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [self] in
+        PwgSession.shared.setInfos(with: paramsDict) { [self] in
             DispatchQueue.main.async {
                 // Add image to target album
                 albumData.addToImages(imageData)
