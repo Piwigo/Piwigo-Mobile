@@ -176,7 +176,7 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
         guard let albumData = albumData else { return nil }
 
         // Only admins can rename, move and delete albums
-        if !NetworkVars.hasAdminRights { return nil }
+        if !(user?.hasAdminRights ?? false) { return nil }
 
         // Settings
         cell.swipeBackgroundColor = UIColor.piwigoColorOrange()

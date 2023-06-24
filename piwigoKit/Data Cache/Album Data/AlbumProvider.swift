@@ -128,49 +128,12 @@ public class AlbumProvider: NSObject {
         return currentAlbum
     }
     
-    //    public func resetSearchAlbum() {
-    //        // Does this smart album exist?
-    //        bckgContext.performAndWait {
-    //
-    //            // Create a fetched results controller and set its fetch request and context.
-    //            let controller = frcOfAlbum(inContext: bckgContext, withId: pwgSmartAlbum.search.rawValue)
-    //
-    //            // Perform the fetch.
-    //            do {
-    //                try controller.performFetch()
-    //            } catch {
-    //                fatalError("Unresolved error \(error)")
-    //            }
-    //
-    //            // Initialise search album
-    //            guard let searchAlbum = (controller.fetchedObjects ?? []).first as? Album else {
-    //                fatalError("••> No Search album in cache!")
-    //            }
-    //            searchAlbum.query = ""
-    //            searchAlbum.nbImages = Int64.min
-    //            searchAlbum.totalNbImages = Int64.min
-    //            searchAlbum.images = nil
-    //
-    //            // Save all modifications from the context to the store.
-    //            do {
-    //                try bckgContext.save()
-    //                DispatchQueue.main.async {
-    //                    DataController.shared.saveMainContext()
-    //                }
-    //            }
-    //            catch {
-    //                print("Error: \(error)\nCould not save Core Data context.")
-    //                return
-    //            }
-    //        }
-    //    }
-    
     
     // MARK: - Fetch Album Data
     /**
      Fetches the album feed from the remote Piwigo server, and imports it into Core Data.
      */
-    public func fetchAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
+    public func fetchAlbums(forUser user:User, inParentWithId parentId: Int32, recursively: Bool = false,
                             thumbnailSize: pwgImageSize, completion: @escaping (Error?) -> Void) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
@@ -205,7 +168,7 @@ public class AlbumProvider: NSObject {
                     }
                     
                     // Update albums if Community installed (not needed for admins)
-                    if NetworkVars.hasAdminRights == false,
+                    if user.hasAdminRights == false,
                        NetworkVars.usesCommunityPluginV29 {
                         // Non-admin user and Community installed —> collect Community albums
                         self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,

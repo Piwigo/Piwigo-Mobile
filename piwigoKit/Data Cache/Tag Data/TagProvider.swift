@@ -145,15 +145,7 @@ public class TagProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
             
             // Look for tags belonging to the currently active server
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "server.path == %@", server.path))
-
-            // Look for non-orphaned tags if method called by non-admin user
-            if asAdmin == false {
-                andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
-                andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
-            }
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

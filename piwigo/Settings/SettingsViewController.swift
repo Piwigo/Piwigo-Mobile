@@ -79,7 +79,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
 
         // Get Server Infos if possible
-        if NetworkVars.hasAdminRights {
+        if user.hasAdminRights {
             DispatchQueue.global(qos: .userInitiated).async {
                 self.getInfos()
             }
@@ -447,8 +447,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
-        return NetworkVars.hasAdminRights ||
-            (NetworkVars.userStatus == .normal && NetworkVars.usesCommunityPluginV29)
+        return user.hasAdminRights ||
+            (user.role == .normal && NetworkVars.usesCommunityPluginV29)
     }
     
     private func activeSection(_ section: Int) -> SettingsSection {
@@ -482,7 +482,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .images:
             nberOfRows = 6
         case .imageUpload:
-            nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
+            nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
@@ -796,7 +796,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -870,9 +870,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                    let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
-                    let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+                    let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -924,7 +924,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.resizeImageOnUpload ? 2 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
@@ -976,7 +976,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.prefixFileNameBeforeUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 5 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.resizeImageOnUpload ? 2 : 0)
                                                           + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
@@ -1322,7 +1322,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -1571,7 +1571,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -1777,7 +1777,7 @@ extension SettingsViewController: UITextFieldDelegate {
             if UploadVars.defaultPrefix.isEmpty {
                 UploadVars.prefixFileNameBeforeUpload = false
                 // Remove row in existing table
-                let prefixIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                let prefixIndexPath = IndexPath(row: 5 + (user.hasAdminRights ? 1 : 0)
                                                        + (UploadVars.resizeImageOnUpload ? 2 : 0)
                                                        + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                 section: SettingsSection.imageUpload.rawValue)
@@ -1869,7 +1869,7 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             UploadVars.photoMaxSize = newSize
             
             // Refresh corresponding row
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(photoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: photoAtIndexPath) as? LabelTableViewCell {
@@ -1881,9 +1881,9 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
         if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -1905,7 +1905,7 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.videoMaxSize = newSize
 
             // Refresh corresponding row
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(videoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: videoAtIndexPath) as? LabelTableViewCell {
@@ -1918,9 +1918,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
         if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             // Remove rows in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)

@@ -27,11 +27,6 @@ class TagsViewController: UITableViewController {
         selectedTagIds = preselectedTagIds ?? Set<Int32>()
     }
     
-    private var hasTagCreationRights:Bool = false
-    func setTagCreationRights(_ tagCreationRights:Bool) {
-        hasTagCreationRights = tagCreationRights
-    }
-    
 
     // MARK: - Core Data Objects
     var user: User!
@@ -51,9 +46,13 @@ class TagsViewController: UITableViewController {
 
 
     // MARK: - Core Data Source
+    lazy var tagPredicates: [NSPredicate] = {
+        let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.serverPath)]
+        return andPredicates
+    }()
+    
     lazy var selectedTagsPredicate: NSPredicate = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        var andPredicates = tagPredicates
         andPredicates.append(NSPredicate(format: "tagId IN $tagIds"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
@@ -82,8 +81,7 @@ class TagsViewController: UITableViewController {
 
     var searchQuery = ""
     lazy var nonSelectedTagsPredicate: NSPredicate = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        var andPredicates = tagPredicates
         andPredicates.append(NSPredicate(format: "NOT (tagId IN $tagIds)"))
         andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -140,7 +138,7 @@ class TagsViewController: UITableViewController {
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         NetworkUtilities.checkSession(ofUser: user) {
-            self.tagProvider.fetchTags(asAdmin: self.hasTagCreationRights) { error in
+            self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { error in
                 guard let error = error else { return }     // Done if no error
 
                 // Show an alert if there was an error.
@@ -161,7 +159,7 @@ class TagsViewController: UITableViewController {
         title = NSLocalizedString("tags", comment: "Tags")
         
         // Add button for Admins and some Community users
-        if hasTagCreationRights {
+        if user.hasAdminRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
         }

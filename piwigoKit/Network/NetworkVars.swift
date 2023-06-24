@@ -83,9 +83,6 @@ public class NetworkVars: NSObject {
             }
         }
     }
-    public static var hasAdminRights: Bool {
-        get { return [.admin, .webmaster].contains(userStatus) }
-    }
     
     /// - Library/Caches/Piwigo/Thumbnail folder size
     @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)

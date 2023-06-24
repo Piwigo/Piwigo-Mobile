@@ -20,7 +20,7 @@ extension UploadManager {
         isUploading.insert(upload.objectID)
 
         // Check user entity
-        guard let user = user else {
+        guard let user = upload.user else {
             // Should never happen
             // ► The lounge will be emptied later by the server
             // ► Stop upload task and return an error
@@ -82,7 +82,7 @@ extension UploadManager {
             // Get image and album objects in cache
             let imageSet = self.imageProvider.getImages(inContext: self.bckgContext, withIds: Set([imageID]))
             guard let imageData = imageSet.first, let albums = imageData.albums,
-                  let albumData = self.albumProvider.getAlbum(ofUser: self.user, withId: upload.category)
+                  let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
             else {
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue,
                                     userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
@@ -248,7 +248,7 @@ extension UploadManager {
         }
 
         // Prepare first chunk
-        NetworkUtilities.checkSession(ofUser: user) {
+        NetworkUtilities.checkSession(ofUser: upload.user) {
             // Set total number of bytes to upload
             UploadSessions.shared.addBytes(Int64(imageData.count), toCounterWithID: upload.localIdentifier)
             // Start uploading
@@ -505,7 +505,7 @@ extension UploadManager {
                 }
 
                 // Add image to cache when uploaded by admin users
-                if NetworkVars.hasAdminRights,
+                if let user = upload.user, user.hasAdminRights,
                    let imageID = uploadJSON.data.image_id {
                     // Create ImageGetInfo object
                     let created = Date(timeIntervalSinceReferenceDate: upload.creationDate)
@@ -917,7 +917,8 @@ extension UploadManager {
                 }
                 
                 // Add uploaded image to cache and update UI if needed
-                if NetworkVars.hasAdminRights {
+                if let user = userProvider.getUserAccount(inContext: bckgContext),
+                   user.hasAdminRights {
                     getInfos.fixingUnknowns()
                     imageProvider.didUploadImage(getInfos, asVideo: upload.isVideo,
                                                  inAlbumId: upload.category)

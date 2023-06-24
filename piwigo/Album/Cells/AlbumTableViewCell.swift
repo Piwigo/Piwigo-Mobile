@@ -49,8 +49,8 @@ class AlbumTableViewCell: MGSwipeTableCell {
         numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if albumData != nil, handleButton.isHidden == NetworkVars.hasAdminRights {
-            handleButton.isHidden = !NetworkVars.hasAdminRights
+        if albumData != nil, handleButton.isHidden == (albumData?.user?.hasAdminRights ?? false) {
+            handleButton.isHidden = !(albumData?.user?.hasAdminRights ?? false)
         }
 
         // Display recent icon when images have been uploaded recently
@@ -117,7 +117,7 @@ class AlbumTableViewCell: MGSwipeTableCell {
             ]
             desc.addAttributes(attributes, range: wholeRange)
         }
-        else if NetworkVars.hasAdminRights {
+        else if albumData?.user?.hasAdminRights ?? false {
             let noDesc = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
             desc = NSMutableAttributedString(string: noDesc)
             let wholeRange = NSRange(location: 0, length: desc.string.count)

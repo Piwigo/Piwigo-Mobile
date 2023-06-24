@@ -364,7 +364,7 @@ class LoginViewController: UIViewController {
                                              account: username)
             NetworkVars.username = ""
 
-            // Create/update User account in persistent cache, create Server if necessary.
+            // Create/update guest account in persistent cache, create Server if necessary.
             // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
             DispatchQueue.main.async { [self] in
                 let _ = self.userProvider.getUserAccount(inContext: mainContext,
@@ -392,6 +392,12 @@ class LoginViewController: UIViewController {
 
             // Community extension installed
             NetworkUtilities.communityGetStatus { [self] in
+                // Update user account in persistent cache
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                DispatchQueue.main.async { [self] in
+                    let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+                }
+
                 // Check Piwigo version, get token, available sizes, etc.
                 getSessionStatus()
             } failure: { [self] error in
@@ -419,6 +425,12 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         NetworkUtilities.sessionGetStatus() { [self] _ in
+            // Update user account in persistent cache
+            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+            DispatchQueue.main.async { [self] in
+                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            }
+
             LoginUtilities.checkAvailableSizes()
             if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                 // They need to update, ask user what to do

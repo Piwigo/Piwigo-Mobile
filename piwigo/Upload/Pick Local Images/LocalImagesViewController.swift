@@ -65,7 +65,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var imageCollectionId: String = String()
-    var userHasUploadRights: Bool = false
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -1287,11 +1286,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         uploadSwitchVC.canDeleteImages = true
                     }
                 }
-            }
-            
-            // Can the user create tags?
-            if NetworkVars.hasAdminRights || userHasUploadRights {
-                uploadSwitchVC.hasTagCreationRights = true
             }
             
             // Push Edit view embedded in navigation controller

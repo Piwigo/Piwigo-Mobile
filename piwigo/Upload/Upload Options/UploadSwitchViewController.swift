@@ -35,16 +35,7 @@ class UploadSwitchViewController: UIViewController {
             _canDeleteImages = canDeleteImages
         }
     }
-
-    private var _hasTagCreationRights = false
-    var hasTagCreationRights: Bool {
-        get {
-            _hasTagCreationRights
-        }
-        set(canCreateTags) {
-            _hasTagCreationRights = canCreateTags
-        }
-    }
+    
 
     // MARK: - Core Data Objects
     var user: User!

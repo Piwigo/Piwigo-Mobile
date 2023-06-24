@@ -34,7 +34,6 @@ extension AlbumViewController
         }
         editImageVC.user = user
         editImageVC.images = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
-        editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC)
     }

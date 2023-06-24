@@ -22,7 +22,6 @@ extension ImageViewController
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
         editImageVC.user = user
         editImageVC.images = [imageData]
-        editImageVC.hasTagCreationRights = userHasUploadRights
         editImageVC.delegate = self
         pushView(editImageVC, forButton: actionBarButton)
     }

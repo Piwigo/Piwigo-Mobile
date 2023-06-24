@@ -21,7 +21,6 @@ class ImageViewController: UIViewController {
     var images: NSFetchedResultsController<Image>!
     var categoryId = Int32.zero
     var imageIndex = 0
-    var userHasUploadRights = false
     var imageData: Image!
     var isToolbarRequired = false
     var didPresentPageAfter = true
@@ -302,7 +301,7 @@ class ImageViewController: UIViewController {
             let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
             
             // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights || userHasUploadRights {
+            if user.hasUploadRights(forCatID: categoryId) {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -377,7 +376,7 @@ class ImageViewController: UIViewController {
             let orientation = UIApplication.shared.statusBarOrientation
             
             // User with admin rights can do everything
-            if NetworkVars.hasAdminRights {
+            if user.hasAdminRights {
                 // Navigation bar
                 // The action menu is simply an Edit button
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
@@ -400,7 +399,7 @@ class ImageViewController: UIViewController {
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if userHasUploadRights {
+            else if user.hasUploadRights(forCatID: categoryId) {
                 // WRONG =====> 'normal' user with upload access to the current category can edit images
                 // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
                 // Navigation bar

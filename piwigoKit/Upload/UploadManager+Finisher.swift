@@ -153,7 +153,7 @@ extension UploadManager {
     func emptyLounge(for upload: Upload) {
         print("\(dbg()) emptyLounge() in", queueName())
         // Empty lounge without reporting potential error
-        guard let user = user else {
+        guard let user = upload.user else {
             // Should never happen
             // ► The lounge will be emptied later by the server
             // ► Continue upload tasks without returning error

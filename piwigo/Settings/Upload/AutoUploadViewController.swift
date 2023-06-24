@@ -383,7 +383,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.categoryId = Int32.min
-                        localAlbumsVC.userHasUploadRights = false
+                        localAlbumsVC.user = self.user
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
@@ -395,7 +395,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.categoryId = Int32.min
-                        localAlbumsVC.userHasUploadRights = false
+                        localAlbumsVC.user = self.user
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
@@ -428,7 +428,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     tagsVC.setPreselectedTagIds(Set(UploadVars.autoUploadTagIds
                                                         .components(separatedBy: ",")
                                                         .map { Int32($0) ?? nil }.compactMap {$0}))
-                    tagsVC.setTagCreationRights(hasTagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
 

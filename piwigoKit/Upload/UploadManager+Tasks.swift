@@ -185,7 +185,7 @@ extension UploadManager
         if categories.isEmpty { return }
 
         // Check user entity
-        guard let user = user else {
+        guard let user = uploads.first?.user else {
             // Should never happen
             // ► The moderator will be informed later
             return

@@ -74,7 +74,6 @@ extension SceneDelegate {
             imageDetailVC.categoryId = subAlbumVC.categoryId
             imageDetailVC.images = subAlbumVC.images
             imageDetailVC.user = subAlbumVC.user
-            imageDetailVC.userHasUploadRights = subAlbumVC.userHasUploadRights
             imageDetailVC.imgDetailDelegate = subAlbumVC.self
             imageDetailVC.hidesBottomBarWhenPushed = true
             imageDetailVC.modalPresentationCapturesStatusBarAppearance = true

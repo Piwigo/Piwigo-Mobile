@@ -312,10 +312,9 @@ extension AlbumViewController
             return addButton.frame
         }
         // Position of Home Album button depends on user's rights
-        // — admin rights
+        // — webmaster or admin rights
         // — normal rights and upload access to the current category
-        if categoryId > 0,
-           NetworkVars.hasAdminRights || userHasUploadRights {
+        if categoryId > 0, user.hasUploadRights(forCatID: categoryId) {
             let xPos = addButton.frame.origin.x
             let yPos = addButton.frame.origin.y
             return CGRect(x: xPos - 3 * kRadius, y: yPos,
@@ -628,8 +627,7 @@ extension AlbumViewController
         // User can upload images/videos if he/she has:
         // — admin rights
         // — normal rights and upload access to the current category
-        if categoryId >= 0,
-           NetworkVars.hasAdminRights || userHasUploadRights {
+        if categoryId >= 0, user.hasUploadRights(forCatID: categoryId) {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Unhide transparent Add button

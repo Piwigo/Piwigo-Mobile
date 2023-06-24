@@ -30,7 +30,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     private var shouldUpdateTags = false
     var commonComment = ""
     private var shouldUpdateComment = false
-
+    private var user: User? {
+        return (parent as? UploadSwitchViewController)?.user
+    }
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -98,7 +100,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Don't present privacy level choice to non-admin users
         var nberOfRows = EditImageDetailsOrder.count.rawValue
-        nberOfRows -= (!NetworkVars.hasAdminRights ? 1 : 0)
+        nberOfRows -= (!(user?.hasAdminRights ?? false) ? 1 : 0)
 
         return nberOfRows
     }
@@ -106,7 +108,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         var height: CGFloat = 44.0
         switch EditImageDetailsOrder(rawValue: row) {
@@ -114,7 +116,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 height = 78.0
             case .comment:
                 height = 428.0
-                height += !NetworkVars.hasAdminRights ? 78.0 : 0.0
+                height += !(user?.hasAdminRights ?? false) ? 78.0 : 0.0
             default:
                 break
         }
@@ -124,7 +126,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         var tableViewCell = UITableViewCell()
         switch EditImageDetailsOrder(rawValue: row) {
@@ -200,7 +202,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
@@ -231,12 +233,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
+            tagsVC.user = user
             tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.tagId})))
-            // Can we propose to create tags?
-            if let switchVC = parent as? UploadSwitchViewController {
-                tagsVC.user = switchVC.user
-                tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
-            }
             navigationController?.pushViewController(tagsVC, animated: true)
             
         default:
@@ -247,7 +245,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
         var result: Bool
         switch EditImageDetailsOrder(rawValue: row) {

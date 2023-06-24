@@ -26,7 +26,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet var localAlbumsTableView: UITableView!
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
-    var userHasUploadRights: Bool = false
 
     // Actions to perform after selection
     private enum pwgAlbumSelectAction : Int {
@@ -561,7 +560,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
             guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
             localImagesVC.categoryId = categoryId
-            localImagesVC.userHasUploadRights = userHasUploadRights
             localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
             return
@@ -606,7 +604,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
             localImagesVC.categoryId = categoryId
             localImagesVC.imageCollectionId = albumID
-            localImagesVC.userHasUploadRights = userHasUploadRights
             localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
         }

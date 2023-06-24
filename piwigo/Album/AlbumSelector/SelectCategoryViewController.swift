@@ -355,7 +355,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        albumProvider.fetchAlbums(inParentWithId: 0, recursively: true,
+        albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                   thumbnailSize: thumnailSize) { [self] error in
             guard let error = error else {
                 // No error ► Retrieve image data if needed
@@ -603,8 +603,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // No button if the user does not have upload rights
         var buttonState: pwgCategoryCellButtonState = .none
         let allAlbums: [Album] = albums.fetchedObjects ?? []
-        let filteredCat = allAlbums.filter({ NetworkVars.hasAdminRights ||
-                                                userUploadRights.contains($0.pwgID) })
+        let filteredCat = allAlbums.filter({ user.hasAdminRights ||
+                                             userUploadRights.contains($0.pwgID) })
         if filteredCat.count > 0 {
             buttonState = albumsShowingSubAlbums.contains(albumData.pwgID) ? .hideSubAlbum : .showSubAlbum
         }

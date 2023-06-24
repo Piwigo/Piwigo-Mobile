@@ -69,3 +69,21 @@ public class User: NSManagedObject {
         self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
     }
 }
+
+
+extension User {
+    public var role: pwgUserStatus {
+        return pwgUserStatus(rawValue: self.status) ?? .guest
+    }
+    
+    public var hasAdminRights: Bool {
+        return [.webmaster, .admin].contains(self.role)
+    }
+    
+    public func hasUploadRights(forCatID categoryId: Int32) -> Bool {
+        // Case of Community user?
+        if self.hasAdminRights { return true }
+        if self.role != .normal { return false }
+        return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+    }
+}

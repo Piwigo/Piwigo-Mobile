@@ -56,7 +56,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
-    var userHasUploadRights: Bool = false
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -680,11 +679,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
             uploadSwitchVC.canDeleteImages = false
-
-            // Can the user create tags?
-            if NetworkVars.hasAdminRights || userHasUploadRights {
-                uploadSwitchVC.hasTagCreationRights = true
-            }
 
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)

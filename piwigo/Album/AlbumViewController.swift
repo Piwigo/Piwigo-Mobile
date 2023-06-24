@@ -207,16 +207,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return rootAlbum
     }
     
-    lazy var userHasUploadRights: Bool = {
-        return getUserHasUploadRights()
-    }()
-    private func getUserHasUploadRights() -> Bool {
-        // Case of Community user?
-        if [.admin, .webmaster].contains(NetworkVars.userStatus) { return true }
-        if NetworkVars.userStatus != .normal { return false }
-        return user.uploadRights.components(separatedBy: ",").contains(String(categoryId))
-    }
-    
     lazy var albumPredicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "parentId == $catId"))
@@ -648,7 +638,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if (albums.fetchedObjects ?? []).count > 2, NetworkVars.hasAdminRights,
+        if (albums.fetchedObjects ?? []).count > 2, user.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
@@ -788,9 +778,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - Category Data
     func changeAlbumID() {
-        // Reset upload rights
-        userHasUploadRights = getUserHasUploadRights()
-
         // Add/remove search bar
         if categoryId == 0 {
             // Initialise search bar
@@ -990,7 +977,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             fatalError("No LocalAlbumsViewController!")
         }
         localAlbumsVC.categoryId = categoryId
-        localAlbumsVC.userHasUploadRights = userHasUploadRights
         localAlbumsVC.user = user
         let navController = UINavigationController(rootViewController: localAlbumsVC)
         navController.modalTransitionStyle = .coverVertical
@@ -1371,7 +1357,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.categoryId = categoryId
                 imageDetailView?.images = images
                 imageDetailView?.user = user
-                imageDetailView?.userHasUploadRights = userHasUploadRights
                 imageDetailView?.imgDetailDelegate = self
                 imageDetailView?.hidesBottomBarWhenPushed = true
                 imageDetailView?.modalPresentationCapturesStatusBarAppearance = true

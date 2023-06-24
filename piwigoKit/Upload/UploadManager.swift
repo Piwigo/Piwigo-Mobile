@@ -157,10 +157,6 @@ public class UploadManager: NSObject {
 
 
     // MARK: - Core Data Source
-    lazy var user: User? = {
-        return userProvider.getUserAccount(inContext: bckgContext)
-    }()
-    
     lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         // Priority to uploads requested manually, oldest ones first

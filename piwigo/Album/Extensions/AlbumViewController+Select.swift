@@ -53,7 +53,7 @@ extension AlbumViewController
             let orientation = view.window?.windowScene?.interfaceOrientation
 
             // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights || userHasUploadRights {
+            if user.hasUploadRights(forCatID: categoryId) {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -140,7 +140,7 @@ extension AlbumViewController
             // User with admin or upload rights can do everything
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-            if NetworkVars.hasAdminRights || userHasUploadRights {
+            if user.hasUploadRights(forCatID: categoryId) {
                 // The action button only proposes to edit image parameters
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
                 actionBarButton?.accessibilityIdentifier = "actions"
@@ -223,7 +223,7 @@ extension AlbumViewController
         // User with admin or upload rights can do everything
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-        if NetworkVars.hasAdminRights || userHasUploadRights {
+        if user.hasUploadRights(forCatID: categoryId) {
             cancelBarButton.isEnabled = true
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton.isEnabled = hasImagesSelected
