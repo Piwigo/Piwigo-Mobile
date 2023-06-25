@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -84,7 +84,6 @@
 		AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD2C62452A4896EB00671582 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
-		AD2C62462A4896EB00671582 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD2C624A2A4898A200671582 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACC268A218F007DEE70 /* UploadManager.swift */; };
 		AD2C624B2A4898A200671582 /* UploadManager+Auto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */; };
 		AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */; };
@@ -485,17 +484,6 @@
 			files = (
 				AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */,
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AD2C62492A4896EB00671582 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				AD2C62462A4896EB00671582 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2145,7 +2133,6 @@
 			buildConfigurationList = AD084E4F2659A27100159FE1 /* Build configuration list for PBXNativeTarget "piwigoKit" */;
 			buildPhases = (
 				AD084E412659A27100159FE1 /* Headers */,
-				AD7038A4267B931200A72CE1 /* Auto-increment build version of release */,
 				AD084E422659A27100159FE1 /* Sources */,
 				AD084E432659A27100159FE1 /* Frameworks */,
 				AD084E442659A27100159FE1 /* Resources */,
@@ -2185,7 +2172,6 @@
 				AD2C62362A4896A600671582 /* Sources */,
 				AD2C62372A4896A600671582 /* Frameworks */,
 				AD2C62382A4896A600671582 /* Resources */,
-				AD2C62492A4896EB00671582 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2241,9 +2227,9 @@
 			buildConfigurationList = D82B8CDE1A67820A000E47CA /* Build configuration list for PBXNativeTarget "piwigo" */;
 			buildPhases = (
 				577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */,
+				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB71A67820A000E47CA /* Sources */,
 				D82B8CB81A67820A000E47CA /* Frameworks */,
-				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
 			);
@@ -2526,20 +2512,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AD7038A4267B931200A72CE1 /* Auto-increment build version of release */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Auto-increment build version of release";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
-		};
 		AD77838E267E462A00317F36 /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2556,6 +2528,7 @@
 		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 8;
 			files = (
 			);
@@ -3738,7 +3711,7 @@
 				CODE_SIGN_ENTITLEMENTS = piwigo/Resources/debug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 494;
+				CURRENT_PROJECT_VERSION = 522;
 				DEAD_CODE_STRIPPING = YES;
 				"DEBUG_INFORMATION_FORMAT[sdk=*]" = "dwarf-with-dsym";
 				"DEBUG_INFORMATION_FORMAT[sdk=iphonesimulator*]" = dwarf;
@@ -3809,7 +3782,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 494;
+				CURRENT_PROJECT_VERSION = 522;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
