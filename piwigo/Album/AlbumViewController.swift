@@ -693,6 +693,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
+        // Hide HUD is needded
+        navigationController?.hidePiwigoHUD { }
+        
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
             // Reload collection
