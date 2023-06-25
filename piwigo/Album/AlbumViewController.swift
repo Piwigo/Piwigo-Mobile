@@ -123,7 +123,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     // Number of images to download per page
     lazy var perPage: Int = {
-        return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 1)
+        return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
     }()
     
     
