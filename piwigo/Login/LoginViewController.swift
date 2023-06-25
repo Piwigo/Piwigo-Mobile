@@ -338,7 +338,7 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Perform login
-            NetworkUtilities.sessionLogin(withUsername: username, password: password) { [self] in
+            PwgSession.shared.sessionLogin(withUsername: username, password: password) { [self] in
                 // Session now opened
                 NetworkVars.username = username
 
@@ -391,7 +391,7 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Community extension installed
-            NetworkUtilities.communityGetStatus { [self] in
+            PwgSession.shared.communityGetStatus { [self] in
                 // Update user account in persistent cache
                 // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
                 DispatchQueue.main.async { [self] in
@@ -424,7 +424,7 @@ class LoginViewController: UIViewController {
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
 
-        NetworkUtilities.sessionGetStatus() { [self] _ in
+        PwgSession.shared.sessionGetStatus() { [self] _ in
             // Update user account in persistent cache
             // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
             DispatchQueue.main.async { [self] in

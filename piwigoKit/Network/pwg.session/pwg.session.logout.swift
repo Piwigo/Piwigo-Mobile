@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.session.logout
 public let pwgSessionLogout = "format=json&method=pwg.session.logout"
 
+// MARK: Piwigo JSON Structure
 public struct SessionLogoutJSON: Decodable {
 
     public var status: String?
@@ -59,6 +59,50 @@ public struct SessionLogoutJSON: Decodable {
             // Unexpected Piwigo server error
             errorCode = -1
             errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+
+// MARK: - Piwigo Method Caller
+extension PwgSession {
+    
+    public func sessionLogout(completion: @escaping () -> Void,
+                              failure: @escaping (NSError) -> Void) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Close session")
+        }
+        // Launch request
+        postRequest(withMethod: pwgSessionLogout, paramDict: [:],
+                    jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
+                    countOfBytesClientExpectsToReceive: 620) { jsonData in
+            // Decode the JSON object and check if the logout was successful
+            do {
+                // Decode the JSON into codable type SessionLogoutJSON.
+                let decoder = JSONDecoder()
+                let loginJSON = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if loginJSON.errorCode != 0 {
+                    let error = self.localizedError(for: loginJSON.errorCode,
+                                                    errorMessage: loginJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+
+                // Logout successful
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 }

@@ -230,13 +230,16 @@ extension PwgSession: URLSessionDelegate {
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print("    > The data session has been invalidated")
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("The data session has been invalidated.")
+        }
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server \(NetworkVars.domain())")
-        
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Session-level authentication requested…")
+        }
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {
@@ -312,8 +315,9 @@ extension PwgSession: URLSessionDelegate {
 extension PwgSession: URLSessionDataDelegate {
         
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Task-level authentication request from the remote server")
-
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Task-level authentication requested…")
+        }
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {

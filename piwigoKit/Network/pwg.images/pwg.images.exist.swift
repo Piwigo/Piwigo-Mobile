@@ -114,8 +114,8 @@ extension PwgSession {
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                    errorMessage: uploadJSON.errorMessage)
+                    let error = self.localizedError(for: uploadJSON.errorCode,
+                                                    errorMessage: uploadJSON.errorMessage)
                     failure(error)
                     return
                 }
