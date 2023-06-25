@@ -124,7 +124,14 @@ extension AlbumViewController
                 if onPage < newLastPage, query == albumData.query {
                     // Pursue fetch without HUD
                     DispatchQueue.main.async { [self] in
-                        navigationController?.hidePiwigoHUD { }
+                        navigationController?.hidePiwigoHUD {
+                            // Set navigation bar buttons
+                            if self.isSelect {
+                                self.updateButtonsInSelectionMode()
+                            } else {
+                                self.updateButtonsInPreviewMode()
+                            }
+                        }
                     }
                     // Is user editing the search string?
                     if pauseSearch {
