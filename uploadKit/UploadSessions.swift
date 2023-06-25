@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 struct UploadCounter {
     var uid: String
@@ -35,6 +36,13 @@ extension UploadCounter: Hashable {
     }
 }
 
+public let pwgHTTPuploadID = "X-PWG-UploadID"
+public let pwgHTTPimageID  = "X-PWG-localIdentifier"
+public let pwgHTTPchunk    = "X-PWG-chunk"
+public let pwgHTTPchunks   = "X-PWG-chunks"
+public let pwgHTTPmd5sum   = "X-PWG-md5sum"
+
+
 public class UploadSessions: NSObject {
                 
     // Singleton
@@ -53,7 +61,7 @@ public class UploadSessions: NSObject {
 //        config.waitsForConnectivity = NetworkVars.usesUploadAsync
         
         /// Connections should not use the network when the user has specified Low Data Mode
-//        if #available(iOSApplicationExtension 13.0, *) {
+//        if #available(iOS 13.0, *) {
 //            config.allowsConstrainedNetworkAccess = false
 //        }
 
@@ -189,7 +197,7 @@ public class UploadSessions: NSObject {
         bckgSession.getAllTasks { uploadTasks in
             // Select remaining tasks related with this request if any
             let tasksToCancel = uploadTasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: UploadVars.HTTPuploadID) == uploadIDStr })
+                .value(forHTTPHeaderField: pwgHTTPuploadID) == uploadIDStr })
                 .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
@@ -334,7 +342,7 @@ extension UploadSessions: URLSessionTaskDelegate {
 
         // Get upload info from the task
         // The size of the uploaded image is set in the Content-Length field.
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID) else {
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID) else {
                 print("••> Could not extract HTTP header fields !!!!!!")
                 return
         }
@@ -355,9 +363,9 @@ extension UploadSessions: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         // Get upload info from task
-        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
-            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk))!),
-            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks))!) else {
+        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
+            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
+            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) else {
                 print("••> Could not extract HTTP header fields !!!!!!")
                 return
         }
@@ -419,9 +427,9 @@ extension UploadSessions: URLSessionDataDelegate {
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Get upload info from task
-        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
-            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk))!),
-            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks))!) else {
+        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
+            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
+            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) else {
                 print("••> Could not extract HTTP header fields !!!!!!")
                 return
         }

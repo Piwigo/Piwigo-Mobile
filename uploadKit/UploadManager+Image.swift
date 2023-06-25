@@ -10,6 +10,7 @@ import CoreData
 import MobileCoreServices
 import Photos
 import UIKit
+import piwigoKit
 
 extension UploadManager {
     // See https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/ImageIOGuide/imageio_intro/ikpg_intro.html#//apple_ref/doc/uid/TP40005462-CH201-TPXREF101
@@ -307,7 +308,7 @@ extension UploadManager {
             
             // Get index of the primary image (assumes 0 before iOS 12)
             var imageIndex = 0
-            if #available(iOSApplicationExtension 12.0, *) {
+            if #available(iOS 12.0, *) {
                 imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
             }
             
@@ -341,7 +342,7 @@ extension UploadManager {
             
             // Prepare conversion to JPEG format
             var UTI: CFString, fileExt: String
-            if #available(iOSApplicationExtension 14.0, *) {
+            if #available(iOS 14.0, *) {
                 UTI = UTType.jpeg.identifier as CFString
                 fileExt = UTType.jpeg.preferredFilenameExtension!
             } else {

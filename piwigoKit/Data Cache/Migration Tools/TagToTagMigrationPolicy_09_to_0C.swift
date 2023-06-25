@@ -31,7 +31,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         let newServer = Server(entity: description!, insertInto: manager.destinationContext)
         newServer.setValue(UUID().uuidString, forKey: "uuid")
         newServer.setValue(NetworkVars.serverPath, forKey: "path")
-        newServer.setValue(UploadVars.serverFileTypes, forKey: "fileTypes")
+        newServer.setValue(NetworkVars.serverFileTypes, forKey: "fileTypes")
 
         // Store new server instance in userInfo for reuse
         manager.userInfo = [NetworkVars.serverPath : newServer]

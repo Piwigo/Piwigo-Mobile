@@ -11,6 +11,7 @@ import Foundation
 import Photos
 import CoreData
 import MobileCoreServices
+import piwigoKit
 
 public class UploadManager: NSObject {
 

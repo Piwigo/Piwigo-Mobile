@@ -154,7 +154,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the state of an Upload instance.
      */
-    func setState(_ state: pwgUploadState, error: Error? = nil, save: Bool) {
+    public func setState(_ state: pwgUploadState, error: Error? = nil, save: Bool) {
         // State of upload request
         requestState = state.rawValue
         
@@ -222,7 +222,7 @@ extension Upload {
             category: self.category,
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
-            serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
+            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -250,7 +250,7 @@ extension Upload {
             category: self.category,
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
-            serverFileTypes: self.user?.server?.fileTypes ?? UploadVars.serverFileTypes,
+            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename

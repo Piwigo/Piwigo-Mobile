@@ -11,6 +11,7 @@ import AVFoundation
 import BackgroundTasks
 import LocalAuthentication
 import piwigoKit
+import uploadKit
 
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

@@ -8,6 +8,7 @@
 
 import BackgroundTasks
 import CoreData
+import piwigoKit
 
 extension UploadManager {
     
@@ -318,12 +319,12 @@ extension UploadManager {
         var request = URLRequest(url: validUrl)
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: UploadVars.HTTPuploadID)
+        request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
         request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-        request.addValue(upload.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
-        request.addValue(String(chunk), forHTTPHeaderField: UploadVars.HTTPchunk)
-        request.addValue(String(chunks), forHTTPHeaderField: UploadVars.HTTPchunks)
-        request.addValue(upload.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
+        request.addValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+        request.addValue(String(chunk), forHTTPHeaderField: pwgHTTPchunk)
+        request.addValue(String(chunks), forHTTPHeaderField: pwgHTTPchunks)
+        request.addValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
 
         // As soon as a task is created, the timeout counter starts
         let task = frgdSession.uploadTask(with: request, from: httpBody)
@@ -344,11 +345,11 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum) else {
             print("\(dbg()) Could not extract HTTP header fields !!!!!!")
             return
         }
@@ -423,10 +424,10 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunks), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum) else {
             return
         }
         
@@ -509,8 +510,8 @@ extension UploadManager {
                    let imageID = uploadJSON.data.image_id {
                     // Create ImageGetInfo object
                     let created = Date(timeIntervalSinceReferenceDate: upload.creationDate)
-                    let square = Derivative(url: uploadJSON.data.square_src, width: nil, height: nil)
-                    let thumb = Derivative(url: uploadJSON.data.src, width: nil, height: nil)
+                    let square = Derivative(url: uploadJSON.data.square_src)
+                    let thumb = Derivative(url: uploadJSON.data.src)
                     let newImage = ImagesGetInfo(id: imageID, title: upload.imageName,
                                                  fileName: upload.fileName,
                                                  datePosted: Date(), dateCreated: created,
@@ -674,13 +675,12 @@ extension UploadManager {
                 var request = URLRequest(url: validUrl)
                 request.httpMethod = "POST"
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-                request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: UploadVars.HTTPuploadID)
+                request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
                 request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-                request.setValue(upload.localIdentifier, forHTTPHeaderField: UploadVars.HTTPimageID)
-                request.setValue(chunkStr, forHTTPHeaderField: UploadVars.HTTPchunk)
-                request.setValue(chunksStr, forHTTPHeaderField: UploadVars.HTTPchunks)
-                request.setValue("1", forHTTPHeaderField: "tries")
-                request.setValue(upload.md5Sum, forHTTPHeaderField: UploadVars.HTTPmd5sum)
+                request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+                request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
+                request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
+                request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
@@ -711,10 +711,10 @@ extension UploadManager {
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: Error?) {
         
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum),
-              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk),
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk),
               let chunk = Int(chunkStr) else {
             print("\(dbg()) Could not extract HTTP header fields !!!!!!")
             return
@@ -793,9 +793,9 @@ extension UploadManager {
 
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID),
-              let identifier = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPimageID),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPmd5sum) else {
+        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum) else {
             return
         }
         

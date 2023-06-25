@@ -9,6 +9,7 @@
 import Intents
 import Photos
 import piwigoKit
+import uploadKit
 
 @available(iOS 14.0, *)
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {

@@ -37,7 +37,7 @@ extension URL {
     }
 
     // Returns the file size
-    var fileSize: UInt64 {
+    public var fileSize: UInt64 {
         return attributes?[.size] as? UInt64 ?? UInt64.zero
     }
 

@@ -13,6 +13,7 @@ import LinkPresentation
 import MobileCoreServices
 import UIKit
 import piwigoKit
+import uploadKit
 
 class ShareVideoActivityItemProvider: UIActivityItemProvider {
 

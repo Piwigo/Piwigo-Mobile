@@ -9,6 +9,7 @@
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 class UploadImageTableViewCell: MGSwipeTableCell {
     

@@ -10,6 +10,7 @@ import CoreData
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 @available(iOS 13.0, *)
 class UploadQueueViewController: UIViewController, UITableViewDelegate {

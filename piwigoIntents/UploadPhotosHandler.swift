@@ -9,6 +9,7 @@
 import CoreData
 import Foundation
 import piwigoKit
+import uploadKit
 
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
@@ -35,7 +36,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // Check files compatibility with server
         var selectedFiles = [URL]()
-        let fileTypes = UploadVars.serverFileTypes
+        let fileTypes = NetworkVars.serverFileTypes
         for index in 0..<files.count {
             guard let fileUrl = files[index].fileURL else { continue }
             print("••> \(String(describing: files[index].typeIdentifier))")

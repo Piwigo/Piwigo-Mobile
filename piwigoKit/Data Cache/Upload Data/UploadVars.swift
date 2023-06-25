@@ -2,73 +2,11 @@
 //  UploadVars.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 01/06/2021.
-//  Copyright © 2021 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 25/06/2023.
+//  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
 import Foundation
-
-// MARK: - Max Photo Sizes
-public enum pwgPhotoMaxSizes: Int16, CaseIterable {
-    case fullResolution = 0, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
-}
-
-extension pwgPhotoMaxSizes {
-    public var pixels: Int {
-        switch self {
-        case .fullResolution:   return Int.max
-        case .Retina5K:         return 5120
-        case .UHD4K:            return 3840
-        case .DCI2K:            return 2048
-        case .FullHD:           return 1920
-        case .HD:               return 1280
-        case .qHD:              return 960
-        case .nHD:              return 640
-        }
-    }
-    
-    public var name: String {
-        switch self {
-        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
-        case .Retina5K:         return "5K | 14.7 Mpx"
-        case .UHD4K:            return "4K | 8.29 Mpx"
-        case .DCI2K:            return "2K | 2.21 Mpx"
-        case .FullHD:           return "Full HD | 2.07 Mpx"
-        case .HD:               return "HD | 0.92 Mpx"
-        case .qHD:              return "qHD | 0.52 Mpx"
-        case .nHD:              return "nHD | 0.23 Mpx"
-        }
-    }
-}
-
-// MARK: - Max Video Sizes
-public enum pwgVideoMaxSizes: Int16, CaseIterable {
-    case fullResolution = 0, UHD4K, FullHD, HD, qHD, nHD
-}
-
-extension pwgVideoMaxSizes {
-    public var pixels: Int {
-        switch self {
-        case .fullResolution:   return Int.max
-        case .UHD4K:            return 3840
-        case .FullHD:           return 1920
-        case .HD:               return 1280
-        case .qHD:              return 960
-        case .nHD:              return 640
-        }
-    }
-    
-    public var name: String {
-        switch self {
-        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
-        case .UHD4K:            return "4K | ≈26.7 Mbit/s"
-        case .FullHD:           return "Full HD | ≈15.6 Mbit/s"
-        case .HD:               return "HD | ≈11.3 Mbit/s"
-        case .qHD:              return "qHD | ≈5.8 Mbit/s"
-        case .nHD:              return "nHD | ≈2.8 Mbit/s"
-        }
-    }
-}
 
 public class UploadVars: NSObject {
     
@@ -123,27 +61,11 @@ public class UploadVars: NSObject {
     /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
     @UserDefault("photoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var photoMaxSize: Int16
-    public class func selectedPhotoSizeFromSize(_ size:Int16) -> Int16 {
-        for index in (0...pwgPhotoMaxSizes.allCases.count-1).reversed() {
-            if size < pwgPhotoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
-                return Int16(index)
-            }
-        }
-        return 0
-    }
     
     /// - Max video size to apply when downsizing
     /// - before version 2.7, we stored in 'photoResize' the fraction of the photo or video size to apply when resizing.
     @UserDefault("videoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var videoMaxSize: Int16
-    public class func selectedVideoSizeFromSize(_ size:Int16) -> Int16 {
-        for index in (0...pwgVideoMaxSizes.allCases.count-1).reversed() {
-            if size < pwgVideoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
-                return Int16(index)
-            }
-        }
-        return 0
-    }
     
     /// - Compress photo before uploading
     @UserDefault("compressImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
@@ -164,10 +86,6 @@ public class UploadVars: NSObject {
     /// - Prefix added to file name before uploading
     @UserDefault("defaultPrefix", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var defaultPrefix: String
-
-    /// - File types accepted by the Piwigo server
-    @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
-    public static var serverFileTypes: String
 
     /// - Chunk size wanted by the Piwigo server (500 KB by default)
     @UserDefault("uploadChunkSize", defaultValue: 500, userDefaults: UserDefaults.dataSuite)
@@ -201,14 +119,4 @@ public class UploadVars: NSObject {
     public static let pwgOneDay = (TimeInterval)(24 * 60 * 60)     // i.e. 1 day
     @UserDefault("dateOfLastPhotoLibraryDeletion", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate, userDefaults: UserDefaults.dataSuite)
     public static var dateOfLastPhotoLibraryDeletion: TimeInterval
-
-    
-    // MARK: - Vars in Memory
-    // Upload variables kept in memory
-    /// - Custom HTTP header field names
-    static let HTTPuploadID = "X-PWG-UploadID"
-    static let HTTPimageID  = "X-PWG-localIdentifier"
-    static let HTTPchunk    = "X-PWG-chunk"
-    static let HTTPchunks   = "X-PWG-chunks"
-    static let HTTPmd5sum   = "X-PWG-md5sum"
 }

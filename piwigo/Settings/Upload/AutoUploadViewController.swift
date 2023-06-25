@@ -10,6 +10,7 @@ import CoreData
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate, TagsViewControllerDelegate, UITextViewDelegate {
 
@@ -342,7 +343,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         switch section {
         case 0:
             if UploadVars.isAutoUploadActive {
-                if UploadVars.serverFileTypes.contains("mp4") {
+                if NetworkVars.serverFileTypes.contains("mp4") {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")

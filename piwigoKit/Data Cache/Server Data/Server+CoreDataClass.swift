@@ -22,7 +22,7 @@ public class Server: NSManagedObject {
      Updates the attributes of a Server instance.
      */
     func update(withPath path: String,
-                fileTypes: String = UploadVars.serverFileTypes,
+                fileTypes: String = NetworkVars.serverFileTypes,
                 lastUsed: Date = Date()) throws {
         // Server path
         guard path.isEmpty == false,

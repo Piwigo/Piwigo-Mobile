@@ -209,7 +209,7 @@ extension PwgSession
 
                 // Images and videos can be uploaded if their file types are found.
                 // The iPhone creates mov files that will be uploaded in mp4 format.
-                UploadVars.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
+                NetworkVars.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
                 
                 // User rights are determined by Community extension (if installed)
                 if let status = data.userStatus, status.isEmpty == false,

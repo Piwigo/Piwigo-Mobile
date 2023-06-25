@@ -92,6 +92,10 @@ public class NetworkVars: NSObject {
     @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var pwgVersion: String
     
+    /// - File types accepted by the Piwigo server
+    @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
+    public static var serverFileTypes: String
+
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCommunityPluginV29:Bool

@@ -5,7 +5,9 @@
 //  Created by Eddy Lelièvre-Berna on 15/07/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
+
 import piwigoKit
+import uploadKit
 
 class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     

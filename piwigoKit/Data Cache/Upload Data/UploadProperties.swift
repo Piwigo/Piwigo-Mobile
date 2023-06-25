@@ -55,7 +55,7 @@ extension UploadProperties {
             
             // Server parameters
             serverPath: NetworkVars.serverPath,
-            serverFileTypes: UploadVars.serverFileTypes,
+            serverFileTypes: NetworkVars.serverFileTypes,
             
             // Upload request date is now and state is waiting
             requestDate: Date().timeIntervalSinceReferenceDate,

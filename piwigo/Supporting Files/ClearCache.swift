@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import piwigoKit
 import UIKit
+import piwigoKit
+import uploadKit
 
 class ClearCache: NSObject {
     

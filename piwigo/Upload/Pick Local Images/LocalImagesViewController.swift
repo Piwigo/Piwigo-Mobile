@@ -12,6 +12,7 @@ import CoreData
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 enum SectionType: Int {
     case month

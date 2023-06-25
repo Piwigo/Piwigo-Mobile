@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import piwigoKit
 
 extension UploadManager
 {
@@ -306,7 +307,7 @@ extension UploadManager
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
                         print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
@@ -336,7 +337,7 @@ extension UploadManager
                     switch task.state {
                     case .running:
                         // Retrieve upload request properties
-                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPuploadID) else { continue }
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
                         guard let objectURI = URL(string: objectURIstr) else {
                             print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                             continue

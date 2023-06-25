@@ -60,7 +60,7 @@ public class DataDirectories
 
     // "Library/Application Support/Piwigo" in the AppGroup container.
     /// - The Uploads directory into which image/video files are temporarily stored.
-    lazy var appUploadsDirectory: URL = {
+    public lazy var appUploadsDirectory: URL = {
         // Get path of Uploads directory
         let uploadURL = appGroupDirectory.appendingPathComponent("Uploads")
 

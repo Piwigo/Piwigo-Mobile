@@ -8,6 +8,7 @@
 
 import Foundation
 import Photos
+import piwigoKit
 
 extension UploadManager
 {
@@ -130,14 +131,14 @@ extension UploadManager
             upload.fileName = fileName
 
             // Chek that the image format is accepted by the Piwigo server
-            if UploadVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
-            if UploadVars.serverFileTypes.contains("jpg"),
+            if NetworkVars.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
@@ -174,7 +175,7 @@ extension UploadManager
             upload.fileName = fileName
 
             // Chek that the video format is accepted by the Piwigo server
-            if UploadVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 print("\(dbg()) preparing video \(upload.fileName)…")
 
@@ -184,7 +185,7 @@ extension UploadManager
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if UploadVars.serverFileTypes.contains("mp4"),
+            if NetworkVars.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")
@@ -307,14 +308,14 @@ extension UploadManager
         case .image:
             upload.isVideo = false
             // Chek that the image format is accepted by the Piwigo server
-            if UploadVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
                 // Launch preparation job
                 self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if UploadVars.serverFileTypes.contains("jpg"),
+            if NetworkVars.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(dbg()) converting photo \(upload.fileName)…")
@@ -334,7 +335,7 @@ extension UploadManager
         case .video:
             upload.isVideo = true
             // Chek that the video format is accepted by the Piwigo server
-            if UploadVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 print("\(dbg()) preparing video \(upload.fileName)…")
                 
@@ -343,7 +344,7 @@ extension UploadManager
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if UploadVars.serverFileTypes.contains("mp4"),
+            if NetworkVars.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(dbg()) converting video \(upload.fileName)…")

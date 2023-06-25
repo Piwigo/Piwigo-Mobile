@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import piwigoKit
+import uploadKit
 
 extension AlbumViewController
 {

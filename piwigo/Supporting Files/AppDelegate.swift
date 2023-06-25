@@ -16,6 +16,7 @@ import UIKit
 
 import IQKeyboardManagerSwift
 import piwigoKit
+import uploadKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

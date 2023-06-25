@@ -142,7 +142,7 @@ extension ImagesGetInfo {
         self.fixingUnknowns()
     }
     
-    mutating func fixingUnknowns() {
+    public mutating func fixingUnknowns() {
         if self.title == nil { self.title = "" }
         if self.comment == nil { self.comment = "" }
         if self.visits == nil { self.visits = 0 }
@@ -209,8 +209,12 @@ public struct Derivative: Decodable {
     public let height: StringOrInt?
 }
 
-extension Derivative {
-    public init() {
+public extension Derivative {
+    init() {
         self.init(url: nil, width: nil, height: nil)
+    }
+    
+    init(url: String?) {
+        self.init(url: url, width: nil, height: nil)
     }
 }

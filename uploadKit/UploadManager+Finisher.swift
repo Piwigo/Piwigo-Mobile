@@ -8,6 +8,7 @@
 
 import CoreData
 import Photos
+import piwigoKit
 
 extension UploadManager {
     

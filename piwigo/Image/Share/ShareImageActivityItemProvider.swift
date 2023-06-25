@@ -13,6 +13,7 @@ import MobileCoreServices
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 @objc
 protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {

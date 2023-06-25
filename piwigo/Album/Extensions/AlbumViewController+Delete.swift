@@ -8,6 +8,7 @@
 
 import Foundation
 import piwigoKit
+import uploadKit
 
 // MARK: Delete Images
 extension AlbumViewController

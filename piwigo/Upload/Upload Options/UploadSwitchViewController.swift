@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import piwigoKit
+import uploadKit
 
 @objc protocol UploadSwitchDelegate: NSObjectProtocol {
     func uploadSettingsDidDisappear()

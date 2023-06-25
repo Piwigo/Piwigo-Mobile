@@ -11,6 +11,7 @@ import MobileCoreServices
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     

@@ -90,7 +90,7 @@ extension Array where Element == AVMetadataItem {
 
 extension AVAssetTrack {
     // Return media format description
-    public var mediaFormat: String {
+    var mediaFormat: String {
         var format = ""
         let descriptions = self.formatDescriptions as! [CMFormatDescription]
         for (index, formatDesc) in descriptions.enumerated() {

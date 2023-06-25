@@ -13,6 +13,7 @@ import Intents
 import MessageUI
 import UIKit
 import piwigoKit
+import uploadKit
 
 enum SettingsSection : Int {
     case server
@@ -1378,8 +1379,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if UploadVars.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if NetworkVars.serverFileTypes.isEmpty == false {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case .about:
             footer = statistics
