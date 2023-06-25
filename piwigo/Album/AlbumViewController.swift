@@ -242,24 +242,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
-    lazy var fetchImageCountRequest: NSFetchRequest = {
-        // Create a fetch request for the Image entity
-        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
-        fetchRequest.resultType = .countResultType
-        
-        // Sort images according to default settings
-        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
-        return fetchRequest
-    }()
-    
-    lazy var imageCount: NSFetchedResultsController<NSNumber> = {
-        let count = NSFetchedResultsController(fetchRequest: fetchImageCountRequest,
-                                                managedObjectContext: self.mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
-        return count
-    }()
-
     lazy var fetchImagesRequest: NSFetchRequest = {
         // Sort images according to default settings
         // PS: Comparator blocks are not supported with Core Data
@@ -1655,7 +1637,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
-            if imageCount == NSNumber(value: 1) {
+            if albumData.nbImages == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> First added image ► enable menu")
                     self?.updateButtonsInPreviewMode()
