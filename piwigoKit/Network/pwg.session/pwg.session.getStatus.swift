@@ -9,6 +9,7 @@
 import Foundation
 
 public let pwgSessionGetStatus = "format=json&method=pwg.session.getStatus"
+fileprivate let pwgSessionGetStatusBytes: Int64 = 7430
 
 // MARK: Piwigo JSON Structures
 public struct SessionGetStatusJSON: Decodable {
@@ -96,8 +97,8 @@ public struct StatusInfo: Decodable
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{    
     public func sessionGetStatus(completion: @escaping (String) -> Void,
                                  failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
@@ -106,7 +107,7 @@ extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: 7400) { jsonData in
+                    countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { jsonData in
             // Decode the JSON object and retrieve the status
             do {
                 // Decode the JSON into codable type SessionGetStatusJSON.

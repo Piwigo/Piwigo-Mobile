@@ -9,6 +9,7 @@
 import Foundation
 
 public let pwgImagesExist = "format=json&method=pwg.images.exist"
+fileprivate let pwgImagesExistBytes: Int64 = 1250
 
 // MARK: Piwigo JSON Structures
 public struct ImagesExistJSON: Decodable {
@@ -34,7 +35,7 @@ public struct ImagesExistJSON: Decodable {
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-        dump(rootContainer)
+//        dump(rootContainer)
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
@@ -96,8 +97,8 @@ public struct ImageExist {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{
     public func getIDofImage(withMD5 md5sum: String,
                              completion: @escaping (Int64?) -> Void,
                              failure: @escaping (Error?) -> Void) {
@@ -105,7 +106,7 @@ extension PwgSession {
         let paramDict: [String : Any] = ["md5sum_list": md5sum]
         postRequest(withMethod: pwgImagesExist, paramDict: paramDict,
                     jsonObjectClientExpectsToReceive: ImagesExistJSON.self,
-                    countOfBytesClientExpectsToReceive: 600) { jsonData in
+                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { jsonData in
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()

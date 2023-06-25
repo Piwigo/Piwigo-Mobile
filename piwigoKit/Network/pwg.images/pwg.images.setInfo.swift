@@ -9,6 +9,7 @@
 import Foundation
 
 public let pwgImagesSetInfo = "format=json&method=pwg.images.setInfo"
+fileprivate let pwgImagesSetInfoBytes: Int64 = 610
 
 // MARK: Piwigo JSON Structure
 public struct ImagesSetInfoJSON: Decodable {
@@ -64,14 +65,14 @@ public struct ImagesSetInfoJSON: Decodable {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{    
     public func setInfos(with paramsDict: [String: Any],
                          completion: @escaping () -> Void,
                          failure: @escaping (NSError) -> Void) {
         postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                    countOfBytesClientExpectsToReceive: 1000) { jsonData in
+                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { jsonData in
             // Decode the JSON object and check if image data were updated on server.
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.

@@ -9,10 +9,11 @@
 import Foundation
 
 public let kCommunitySessionGetStatus = "format=json&method=community.session.getStatus"
+fileprivate let kCommunitySessionGetStatusBytes: Int64 = 2100
 
 // MARK: Piwigo JSON Structure
-public struct CommunitySessionGetStatusJSON: Decodable {
-    
+public struct CommunitySessionGetStatusJSON: Decodable
+{    
     public var status: String?
     public var realUser = ""        // "webmaster"
     public var uploadMethod = ""    // "pwg.categories.getAdminList"
@@ -85,8 +86,8 @@ public struct CommunitySessionGetStatusJSON: Decodable {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{    
     public func communityGetStatus(completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
@@ -95,7 +96,7 @@ extension PwgSession {
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: 2100) { jsonData in
+                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { jsonData in
             // Decode the JSON object and retrieve the status
             do {
                 // Decode the JSON into codable type CommunitySessionGetStatusJSON.

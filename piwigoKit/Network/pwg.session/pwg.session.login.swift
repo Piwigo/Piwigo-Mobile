@@ -9,6 +9,7 @@
 import Foundation
 
 public let pwgSessionLogin = "format=json&method=pwg.session.login"
+fileprivate let pwgSessionLoginBytes: Int64 = 620
 
 // MARK: Piwigo JSON Structure
 public struct SessionLoginJSON: Decodable {
@@ -65,8 +66,8 @@ public struct SessionLoginJSON: Decodable {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{    
     public func sessionLogin(withUsername username:String, password:String,
                              completion: @escaping () -> Void,
                              failure: @escaping (NSError) -> Void) {
@@ -79,7 +80,7 @@ extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
-                    countOfBytesClientExpectsToReceive: 620) { jsonData in
+                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { jsonData in
             // Decode the JSON object and check if the login was successful
             do {
                 // Decode the JSON into codable type SessionLoginJSON.

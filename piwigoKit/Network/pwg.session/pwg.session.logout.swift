@@ -9,6 +9,7 @@
 import Foundation
 
 public let pwgSessionLogout = "format=json&method=pwg.session.logout"
+fileprivate let pwgSessionLogoutBytes: Int64 = 620
 
 // MARK: Piwigo JSON Structure
 public struct SessionLogoutJSON: Decodable {
@@ -65,8 +66,8 @@ public struct SessionLogoutJSON: Decodable {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{    
     public func sessionLogout(completion: @escaping () -> Void,
                               failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
@@ -75,7 +76,7 @@ extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
-                    countOfBytesClientExpectsToReceive: 620) { jsonData in
+                    countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { jsonData in
             // Decode the JSON object and check if the logout was successful
             do {
                 // Decode the JSON into codable type SessionLogoutJSON.

@@ -9,6 +9,7 @@
 import Foundation
 
 public let kReflectionGetMethodList = "format=json&method=reflection.getMethodList"
+fileprivate let kReflectionGetMethodListBytes: Int64 = 34528
 
 // MARK: Piwigo JSON Structure
 public struct ReflectionGetMethodListJSON: Decodable {
@@ -81,8 +82,8 @@ public struct ReflectionGetMethodListJSON: Decodable {
 
 
 // MARK: - Piwigo Method Caller
-extension PwgSession {
-    
+extension PwgSession
+{
     public func getMethods(completion: @escaping () -> Void,
                            failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
@@ -91,7 +92,7 @@ extension PwgSession {
         // Launch request
         postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                     jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
-                    countOfBytesClientExpectsToReceive: 32500) { jsonData in
+                    countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes) { jsonData in
             // Decode the JSON object and set variables.
             do {
                 // Decode the JSON into codable type ReflectionGetMethodListJSON.
