@@ -62,7 +62,8 @@ public class DataController: NSObject {
         do {
             try mainContext.save()
         } catch let error as NSError {
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            // Will try later…
+            debugPrint("Unresolved error \(error), \(error.userInfo)")
         }
     }
 }
