@@ -421,10 +421,12 @@ class EditImageParamsViewController: UIViewController
                     // Loop over the removed tags
                     for tag in removedTags {
                         imageData.removeFromTags(tag)
+                        tag.numberOfImagesUnderTag -= 1
                     }
                     // Loop over the added tags
                     for tag in addedTags {
                         imageData.addToTags(tag)
+                        tag.numberOfImagesUnderTag += 1
                     }
                 }
 
