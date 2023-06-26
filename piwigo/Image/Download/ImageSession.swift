@@ -114,7 +114,7 @@ class ImageSession: NSObject {
             }
             
             // Resume download
-            print("••> Resume download: \(imageURL)")
+//            print("••> Resume download: \(imageURL)")
             download.progressHandler = progress
             if let progressHandler = download.progressHandler {
                 progressHandler(download.progress)
@@ -141,7 +141,7 @@ class ImageSession: NSObject {
         
         // Cancel the download request
         download.task?.cancel(byProducingResumeData: { imageData in
-            print("••> Pause download: \(imageURL.lastPathComponent)")
+//            print("••> Pause download: \(imageURL.lastPathComponent)")
             download.resumeData = imageData
         })
     }
@@ -153,7 +153,7 @@ class ImageSession: NSObject {
         }
 
         // Cancel the download request
-        print("••> Cancel download: \(imageURL.lastPathComponent)")
+//        print("••> Cancel download: \(imageURL.lastPathComponent)")
         download.task?.cancel()
         activeDownloads[imageURL] = nil
     }
@@ -164,13 +164,13 @@ class ImageSession: NSObject {
 extension ImageSession: URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print("    > The data session has been invalidated")
+//        print("    > The data session has been invalidated")
         activeDownloads = [ : ]
     }
     
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server.")
+//        print("    > Session-level authentication request from the remote server.")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
@@ -249,7 +249,7 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
-        guard let imageURL = task.originalRequest?.url,
+        guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
         }
@@ -265,7 +265,7 @@ extension ImageSession: URLSessionTaskDelegate {
             }
         } else {
             // Return cached image with completionHandler
-            print("••> Did complete task #\(task.taskIdentifier)")
+//            print("••> Did complete task #\(task.taskIdentifier)")
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {
                 completion(fileURL)
@@ -284,9 +284,9 @@ extension ImageSession: URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
-        print("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
-        print("    amongst \(activeDownloads.count) active downloads.")
-        guard let imageURL = downloadTask.originalRequest?.url,
+//        print("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
+//        print("    amongst \(activeDownloads.count) active downloads.")
+        guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
         }
@@ -294,7 +294,7 @@ extension ImageSession: URLSessionDownloadDelegate {
         // Update progress bar if any
         if let progressHandler = download.progressHandler {
             download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-            print("••> Progress task #\(downloadTask.taskIdentifier) -> \(download.progress)")
+//            print("••> Progress task #\(downloadTask.taskIdentifier) -> \(download.progress)")
             progressHandler(download.progress)
         }
     }
@@ -303,7 +303,7 @@ extension ImageSession: URLSessionDownloadDelegate {
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
         print("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
-        guard let imageURL = downloadTask.originalRequest?.url,
+        guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL],
               let fileURL = download.fileURL else {
             return
