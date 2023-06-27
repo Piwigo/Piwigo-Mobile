@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.getInfos
-public let kPiwigoGetInfos = "format=json&method=pwg.getInfos"
+public let pwgGetInfos = "format=json&method=pwg.getInfos"
 
 public struct GetInfosJSON: Decodable {
     
@@ -80,13 +80,13 @@ public struct GetInfosJSON: Decodable {
 }
 
 /**
- A struct for decoding JSON returned by kPiwigoGetinfos.
+ A struct for decoding JSON returned by pwgGetInfos.
  All members are optional in case they are missing from the data.
 */
 public struct InfoKeyValue: Decodable
 {
     public let name: String?        // "version"
-    public let value: StringOrInt?  // "11.5.0"
+    public let value: StringOrInt?  // "11.5.0" or 23
 }
 
 public enum StringOrInt: Codable {
@@ -131,6 +131,24 @@ public enum StringOrInt: Codable {
             return x
         case .string(let x):
             return Int(x) ?? NSNotFound
+        }
+    }
+    
+    public var int32Value: Int32? {
+        switch self {
+        case .integer(let x):
+            return Int32(x)
+        case .string(let x):
+            return Int32(x)
+        }
+    }
+    
+    public var int64Value: Int64? {
+        switch self {
+        case .integer(let x):
+            return Int64(x)
+        case .string(let x):
+            return Int64(x)
         }
     }
 }

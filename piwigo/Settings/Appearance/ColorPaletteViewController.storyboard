@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="OpenSansRegular.TTF">
-            <string>OpenSans</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Color Palette View Controller-->
         <scene sceneID="s0d-6b-0kx">
@@ -22,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="PhoneTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="PhoneTableViewCell" rowHeight="214" id="msY-Kk-nKM" customClass="PhoneTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="49" width="388" height="214"/>
+                                <rect key="frame" x="20" y="55.333332061767578" width="388" height="214"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="msY-Kk-nKM" id="jPv-g2-vgW">
                                     <rect key="frame" x="0.0" y="0.0" width="388" height="214"/>
@@ -49,7 +44,7 @@
                                                 <constraint firstAttribute="width" constant="120" id="ZFL-1B-2U1"/>
                                                 <constraint firstAttribute="height" constant="30" id="l9Q-ed-0B4"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <state key="normal" title="Light">
                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
@@ -86,7 +81,7 @@
                                                 <constraint firstAttribute="height" constant="30" id="ZCe-lH-7xd"/>
                                                 <constraint firstAttribute="width" constant="120" id="p0O-KS-y4S"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <state key="normal" title="Dark">
                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
@@ -128,7 +123,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="PadTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="PadTableViewCell" rowHeight="214" id="L09-er-AGn" customClass="PadTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="263" width="388" height="214"/>
+                                <rect key="frame" x="20" y="269.33333206176758" width="388" height="214"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="L09-er-AGn" id="QOh-G8-Yx0">
                                     <rect key="frame" x="0.0" y="0.0" width="388" height="214"/>
@@ -155,7 +150,7 @@
                                                 <constraint firstAttribute="height" constant="30" id="7LY-P8-xv0"/>
                                                 <constraint firstAttribute="width" constant="120" id="oqZ-sa-YNz"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <state key="normal" title="Light">
                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
@@ -192,7 +187,7 @@
                                                 <constraint firstAttribute="width" constant="120" id="DZu-7u-JcU"/>
                                                 <constraint firstAttribute="height" constant="30" id="u1n-IT-hAb"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <state key="normal" title="Dark">
                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
@@ -238,15 +233,15 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="XeI-aw-MtI" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="477" width="388" height="43.666667938232422"/>
+                                <rect key="frame" x="20" y="483.33333206176758" width="388" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="XeI-aw-MtI" id="dTK-lb-dlc">
                                     <rect key="frame" x="0.0" y="0.0" width="388" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Vv-yX-3xP">
-                                            <rect key="frame" x="20" y="10.000000000000002" width="48" height="23.666666666666671"/>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <rect key="frame" x="20" y="11.666666666666666" width="45" height="20.333333333333336"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -287,8 +282,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="checkmark.circle.fill" catalog="system" width="128" height="121"/>
-        <image name="circle" catalog="system" width="128" height="121"/>
+        <image name="checkmark.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemGrayColor">
             <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

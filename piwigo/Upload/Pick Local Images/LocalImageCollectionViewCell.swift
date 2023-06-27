@@ -12,45 +12,17 @@ import Photos
 import UIKit
 import piwigoKit
 
-@objc
 class LocalImageCollectionViewCell: UICollectionViewCell {
 
-    private var _localIdentifier = ""
-    @objc var localIdentifier: String {
-        get {
-            _localIdentifier
-        }
-        set(localIdentifier) {
-            _localIdentifier = localIdentifier
-        }
-    }
-
-    private var _md5sum = ""
-    @objc var md5sum: String {
-        get {
-            _md5sum
-        }
-        set(md5sum) {
-            _md5sum = md5sum
-        }
-    }
-
-    private var _progress: Float = 0.0
-    @objc var progress: Float {
-        get {
-            _progress
-        }
-        set(progress) {
-            setProgress(progress, withAnimation: true)
-        }
-    }
+    var localIdentifier = ""
+    var md5sum = ""
     
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.16
-    let selectScale: CGFloat = 0.14
-    let selectRatio: CGFloat = 75/53
-    let uploadedScale: CGFloat = 0.16
-    let uploadedRatio: CGFloat = 1.0
+    private let selectScale: CGFloat = 0.14
+    private let selectRatio: CGFloat = 75/53
+    private let uploadedScale: CGFloat = 0.16
+    private let uploadedRatio: CGFloat = 1.0
     
     @IBOutlet weak var cellImage: UIImageView!
     
@@ -80,20 +52,27 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 
         // Selected icon: match size to cell size
         let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
-        selectImgWidth.constant = frame.size.width * selectScale + (scale - 1)
-        selectImgHeight.constant = selectImgWidth.constant * selectRatio
+        let selectWidth = frame.size.width * selectScale + (scale - 1)
+        if selectImgWidth.constant != selectWidth {
+            selectImgWidth.constant = selectWidth
+        }
+        let selectHeight = selectImgWidth.constant * selectRatio
+        if selectImgHeight.constant != selectHeight {
+            selectImgHeight.constant = selectHeight
+        }
 
         // Video icon: match size to cell size
-        let width = frame.size.width * playScale + (scale - 1)
+        let playWidth = frame.size.width * playScale + (scale - 1)
         playBckg.setMovieIconImage()
         playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)
-        playBckgWidth.constant = width + 2*offset
+        playBckgWidth.constant = playWidth + 2*offset
         playBckgHeight.constant = playBckgWidth.constant * playRatio
         playImg.setMovieIconImage()
         playImg.tintColor = UIColor.white
         playBckg.addSubview(playImg)
         playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
-        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: CGSize(width: width, height: width * playRatio))!)
+        let bckgSize = CGSize(width: playWidth, height: playWidth * playRatio)
+        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: bckgSize)!)
         
         // Uploaded icon: match size to cell size
         uploadedImgWidth.constant = frame.size.width * uploadedScale + (scale - 1)
@@ -122,14 +101,14 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             DispatchQueue.main.async(execute: {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
-                        debugPrint("=> Error : \(error.localizedDescription)")
+                        print("••> Error : \(error.localizedDescription)")
                     }
-                    self.cellImage.image = UIImage(named: "placeholder")
+                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
                     return
                 }
                 
-                self.cellImage.image = image
-                if imageAsset.mediaType == .video {
+                self.changeCellImageIfNeeded(withImage: image)
+                if imageAsset.mediaType == .video, self.playImg.isHidden {
                     self.playBckg?.isHidden = false
                     self.playImg.isHidden = false
                 }
@@ -145,28 +124,29 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         localIdentifier = identifier
         
         // Image: retrieve data of right size and crop image
-        self.cellImage.image = image
-        if identifier.contains("mov") {
+        changeCellImageIfNeeded(withImage: image)
+        if identifier.contains("mov"), self.playImg.isHidden {
             self.playBckg?.isHidden = false
             self.playImg.isHidden = false
         }
     }
     
-    func update(selected: Bool, state: kPiwigoUploadState? = nil) {
-        // Selection mode
-        selectedImage?.isHidden = !selected
-        darkenView?.isHidden = !selected
-
-        // Upload state
+    func update(selected: Bool, state: pwgUploadState? = nil) {
+        print("••> Update cell with ID: \(self.localIdentifier) to state: \(state?.stateInfo ?? "nil")")
+        // No upload state ► selected/deselected
         guard let state = state else {
+            selectedImage?.isHidden = !selected
+            darkenView?.isHidden = !selected
             waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
             return
         }
+        // Known upload request state
         switch state {
-        case .waiting, .preparing, .prepared, .deleted:
+        case .waiting, .preparing, .prepared:
+            selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
             uploadingProgress?.isHidden = false
@@ -174,31 +154,32 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploading:
+            selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = false
-            uploadingProgress?.setProgress(_progress, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploaded, .finishing:
+            selectedImage?.isHidden = true
             darkenView?.isHidden = false
-            waitingActivity?.isHidden = true
+            waitingActivity?.isHidden = false
             uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(1.0, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .finished, .moderated:
+            selectedImage?.isHidden = !selected
             darkenView?.isHidden = false
             uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(1, animated: false)
             uploadedImage?.isHidden = false
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = true
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
+            selectedImage?.isHidden = true
             darkenView?.isHidden = true
             uploadingProgress?.isHidden = true
-            uploadingProgress?.setProgress(_progress, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false
             waitingActivity?.isHidden = true
@@ -210,9 +191,17 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         uploadingProgress?.setProgress(progress, animated: animate)
     }
 
+    private func changeCellImageIfNeeded(withImage image: UIImage) {
+        if let oldImage = self.cellImage.image {
+            if oldImage.isEqual(image) == false {
+                self.cellImage.image = image
+            }
+        } else {
+            self.cellImage.image = image
+        }
+    }
+    
     override func prepareForReuse() {
-        cellImage.image = UIImage(named: "placeholder")
-        playBckg.isHidden = true
-        playImg.isHidden = true
+        super.prepareForReuse()
     }
 }

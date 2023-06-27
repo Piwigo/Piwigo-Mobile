@@ -23,28 +23,37 @@ extension AlbumViewController
         button.accessibilityIdentifier = "Cancel"
         return button
     }
+    
+    func getMoveBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .reply, target: self,
+                               action: #selector(copyMoveSelection))
+    }
+    
+    func getDeleteBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .trash, target: self,
+                               action: #selector(deleteSelection))
+    }
+    
+    func getShareBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(shareSelection))
+        button.tintColor = UIColor.piwigoColorOrange()
+        return button
+    }
 
     func initButtonsInSelectionMode() {
-        // Get album upload rights
-        userHasUploadRights = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId)?.hasUploadRights ?? false
-
         // Hide back, Settings, Upload and Home buttons
         navigationItem.hidesBackButton = true
         addButton.isHidden = true
-        homeAlbumButton?.isHidden = true
+        homeAlbumButton.isHidden = true
 
         // Button displayed in all circumstances
-        shareBarButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareSelection))
-        shareBarButton?.tintColor = UIColor.piwigoColorOrange()
-
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
             let orientation = view.window?.windowScene?.interfaceOrientation
 
             // User with admin or upload rights can do everything
-            if NetworkVars.hasAdminRights ||
-               (NetworkVars.hasNormalRights && userHasUploadRights) {
+            if user.hasUploadRights(forCatID: categoryId) {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -52,8 +61,6 @@ extension AlbumViewController
                 let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
-
-                deleteBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteSelection))
 
                 if orientation?.isPortrait ?? false,
                    UIDevice.current.userInterfaceIdiom == .phone {
@@ -71,7 +78,6 @@ extension AlbumViewController
                                         deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 2, length: 2)).enumerated() {toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationController?.setToolbarHidden(false, animated: true)
@@ -84,7 +90,6 @@ extension AlbumViewController
                     var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
@@ -92,10 +97,8 @@ extension AlbumViewController
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if !NetworkVars.hasGuestRights,
+            } else if NetworkVars.userStatus != .guest,
                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending) {
-                favoriteBarButton = getFavoriteBarButton()
-
                 if orientation?.isPortrait ?? false,
                    UIDevice.current.userInterfaceIdiom == .phone {
                     // Left side of navigation bar
@@ -137,14 +140,10 @@ extension AlbumViewController
             // User with admin or upload rights can do everything
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-            if NetworkVars.hasAdminRights ||
-               (NetworkVars.hasNormalRights && userHasUploadRights) {
+            if user.hasUploadRights(forCatID: categoryId) {
                 // The action button only proposes to edit image parameters
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
                 actionBarButton?.accessibilityIdentifier = "actions"
-
-                deleteBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteSelection))
-                moveBarButton = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(copyMoveSelection))
 
                 if orientation.isPortrait,
                    UIDevice.current.userInterfaceIdiom == .phone {
@@ -160,7 +159,6 @@ extension AlbumViewController
                     var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton, UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 4, length: 2)).enumerated() { toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationController?.setToolbarHidden(false, animated: true)
@@ -173,7 +171,6 @@ extension AlbumViewController
                     var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
                         for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
                     }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
@@ -181,10 +178,8 @@ extension AlbumViewController
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if !NetworkVars.hasGuestRights,
+            } else if NetworkVars.userStatus != .guest,
                       "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton = getFavoriteBarButton()
-
                 if orientation.isPortrait,
                    UIDevice.current.userInterfaceIdiom == .phone {
                     // Left side of navigation bar
@@ -228,38 +223,38 @@ extension AlbumViewController
         // User with admin or upload rights can do everything
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-        if NetworkVars.hasAdminRights ||
-           (NetworkVars.hasNormalRights && userHasUploadRights) {
-            cancelBarButton?.isEnabled = true
+        if user.hasUploadRights(forCatID: categoryId) {
+            cancelBarButton.isEnabled = true
             actionBarButton?.isEnabled = hasImagesSelected
-            shareBarButton?.isEnabled = hasImagesSelected
-            deleteBarButton?.isEnabled = hasImagesSelected
+            shareBarButton.isEnabled = hasImagesSelected
+            deleteBarButton.isEnabled = hasImagesSelected
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+                favoriteBarButton.isEnabled = hasImagesSelected
+                let areFavorites = selectedImageIds == selectedFavoriteIds
+                favoriteBarButton.setFavoriteImage(for: areFavorites)
+                favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
 
             if #available(iOS 14, *) {
                 } else {
-                moveBarButton?.isEnabled = hasImagesSelected
+                moveBarButton.isEnabled = hasImagesSelected
             }
         } else {
             // Left side of navigation bar
-            cancelBarButton?.isEnabled = true
+            cancelBarButton.isEnabled = true
 
             // Right side of navigation bar
             /// — guests can share photo of high-resolution or not
             /// — non-guest users can set favorites in addition
-            shareBarButton?.isEnabled = hasImagesSelected
-            if !NetworkVars.hasGuestRights,
+            shareBarButton.isEnabled = hasImagesSelected
+            if NetworkVars.userStatus != .guest,
+               // pwg.users.favorites… methods available from Piwigo version 2.10
                "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton?.isEnabled = hasImagesSelected
-                let areFavorites = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: selectedImageIds)
-                favoriteBarButton?.setFavoriteImage(for: areFavorites)
-                favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+                favoriteBarButton.isEnabled = hasImagesSelected
+                let areFavorites = selectedImageIds == selectedFavoriteIds
+                favoriteBarButton.setFavoriteImage(for: areFavorites)
+                favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
             }
         }
     }
@@ -267,14 +262,14 @@ extension AlbumViewController
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
     func setEnableStateOfButtons(_ state: Bool) {
-        cancelBarButton?.isEnabled = state
+        cancelBarButton.isEnabled = state
         actionBarButton?.isEnabled = state
-        deleteBarButton?.isEnabled = state
-        moveBarButton?.isEnabled = state
-        shareBarButton?.isEnabled = state
+        deleteBarButton.isEnabled = state
+        moveBarButton.isEnabled = state
+        shareBarButton.isEnabled = state
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-            favoriteBarButton?.isEnabled = state
+            favoriteBarButton.isEnabled = state
         }
     }
 
@@ -301,8 +296,9 @@ extension AlbumViewController
         }
 
         // Scroll to position of images if needed
-        if numberOfImageCells == 0 {
-            imagesCollection?.scrollToItem(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
+        if numberOfImageCells == 0, (images.fetchedObjects ?? []).count != 0 {
+            let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
+            imagesCollection?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
 
         // Initialisae navigation bar and toolbar
@@ -334,7 +330,8 @@ extension AlbumViewController
 
         // Clear array of selected images and allow iOS device to sleep
         touchedImageIds = []
-        selectedImageIds = []
+        selectedImageIds = Set<Int64>()
+        selectedFavoriteIds = Set<Int64>()
         UIApplication.shared.isIdleTimerDisabled = false
     }
 
@@ -362,6 +359,7 @@ extension AlbumViewController
         guard let gestureRecognizer = gestureRecognizer else { return }
 
         // Select/deselect cells
+//        let start = CFAbsoluteTimeGetCurrent()
         switch gestureRecognizer.state {
         case .began, .changed:
             // Get touch point
@@ -371,22 +369,25 @@ extension AlbumViewController
             if let indexPath = imagesCollection?.indexPathForItem(at: point),
                indexPath.section == 1,
                let imageCell = imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.imageId
+               let imageId = imageCell.imageData?.pwgID
             {
                 // Update the selection if not already done
-                let imageIdObject = NSNumber(value: imageId)
-                if touchedImageIds.contains(imageIdObject) { return }
+                if touchedImageIds.contains(imageId) { return }
 
                 // Store that the user touched this cell during this gesture
-                touchedImageIds.append(imageIdObject)
+                touchedImageIds.append(imageId)
 
                 // Update the selection state
-                if !selectedImageIds.contains(imageIdObject) {
-                    selectedImageIds.append(imageIdObject)
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.insert(imageId)
                     imageCell.isSelection = true
+                    if imageCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIds.removeAll { $0 === imageIdObject }
+                    selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
                 }
 
                 // Update the navigation bar
@@ -398,6 +399,8 @@ extension AlbumViewController
         default:
             debugPrint("NOP")
         }
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
     }
 
 
@@ -408,102 +411,114 @@ extension AlbumViewController
         // Disable buttons
         setEnableStateOfButtons(false)
 
-        // Display HUD
-        totalNumberOfImages = selectedImageIds.count
-        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                      detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                      inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
-
-        // Add image to favorites?
-        if action == .addToFavorites {
+        // Prepare variable for HUD and attribute action
+        switch action {
+        case .edit      /* Edit images parameters */,
+             .delete    /* Distinguish orphanes and ask for confirmation */,
+             .share     /* Check Photo Library access rights */:
+            // Remove images fro which we already have complete data
+            selectedImageIdsLoop = selectedImageIds
+            for selectedImageId in selectedImageIds {
+                guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
+                    else { continue }
+                if selectedImage.fileSize != Int64.zero {
+                    selectedImageIdsLoop.remove(selectedImageId)
+                }
+            }
+            
+            // Should we retrieve data of some images?
+            if selectedImageIdsLoop.isEmpty {
+                doAction(action)
+            } else {
+                // Display HUD
+                totalNumberOfImages = selectedImageIdsLoop.count
+                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                              detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                              inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+                
+                // Retrieve image data if needed
+                retrieveImageData(beforeAction: action)
+            }
+            
+        case .addToFavorites        /* Add photos to favorites */,
+             .removeFromFavorites   /* Remove photos from favorites */:
+            // Display HUD
+            totalNumberOfImages = selectedImageIds.count
+            let title = totalNumberOfImages > 1 ? NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") : NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
+            showPiwigoHUD(withTitle: title,
+                          detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                          inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+            
+            // Retrieve image data if needed
+            doAction(action)
+        }
+    }
+    
+    private func doAction(_ action:pwgImageAction) {
+        switch action {
+        case .edit      /* Edit images parameters */:
+            editImages()
+        case .delete    /* Distinguish orphanes and ask for confirmation */:
+            askDeleteConfirmation()
+        case .share     /* Check Photo Library access rights */:
+            checkPhotoLibraryAccessBeforeShare()
+        case .addToFavorites:
             addImageToFavorites()
-            return
-        }
-        
-        // Remove image from favorites?
-        if action == .removeFromFavorites {
+        case .removeFromFavorites:
             removeImageFromFavorites()
-            return
         }
-        
-        // Retrieve image data
-        selectedImageData = []
-        selectedImageIdsLoop = selectedImageIds.compactMap({$0.intValue})
-        retrieveImageData(beforeAction: action)
     }
 
-    func retrieveImageData(beforeAction action:pwgImageAction) {
+    private func retrieveImageData(beforeAction action:pwgImageAction) {
         if selectedImageIdsLoop.isEmpty {
             hidePiwigoHUD() { [self] in
-                switch action {
-                case .edit:
-                    // Edit images parameters
-                    editImages()
-                case .delete:
-                    // Distinguish orphanes and ask for confirmation
-                    askDeleteConfirmation()
-                case .share:
-                    // Check Photo Library access rights
-                    checkPhotoLibraryAccessBeforeShare()
-                case .addToFavorites, .removeFromFavorites:
-                    // No need to retrieve image data
-                    debugPrint("••> Did call retrieveImageData() before adding/removing images from favorites!?")
-                }
+                doAction(action)
             }
             return
         }
 
         // Check the provided image ID
-        guard let imageId = selectedImageIdsLoop.last else {
+        guard let imageId = selectedImageIdsLoop.first else {
             // Forget this image
-            selectedImageIdsLoop.removeLast()
+            selectedImageIdsLoop.removeFirst()
             
-            // Update HUD
+            // Update HUD if any
             updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
             
             // Next image
             retrieveImageData(beforeAction: action)
             return
         }
-        
+                        
         // Image data are not complete when retrieved using pwg.categories.getImages
-        ImageUtilities.getInfos(forID: imageId,
-                                inCategoryId: categoryId) { [self] imageData in
-            // Store image data
-            selectedImageData.insert(imageData, at: 0)
+        NetworkUtilities.checkSession(ofUser: user) {  [self] in
+            imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
+                // Image info retrieved
+                selectedImageIdsLoop.removeFirst()
 
-            // Image info retrieved
-            selectedImageIdsLoop.removeLast()
+                // Update HUD
+                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
 
-            // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
-
-            // Next image
-            retrieveImageData(beforeAction: action)
-            
+                // Next image
+                retrieveImageData(beforeAction: action)
+            } failure: { [unowned self] error in
+                retrieveImageDataError(error)
+            }
         } failure: { [unowned self] error in
-            // Failed — Ask user if he/she wishes to retry
+            retrieveImageDataError(error)
+        }
+    }
+    
+    private func retrieveImageDataError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            var message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed\nTry again?")
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [unowned self] in
                 hidePiwigoHUD() { [unowned self] in
                     updateButtonsInSelectionMode()
                 }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    retrieveImageData(beforeAction: action)
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD() { [unowned self] in
-                            updateButtonsInSelectionMode()
-                        }
-                    }
-                }
-            })
+            }
         }
     }
 }

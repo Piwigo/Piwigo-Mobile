@@ -8,10 +8,12 @@
 //  Converted to Swift 5.4 by Eddy Lelièvre-Berna on 11/06/2022
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
-//#import <StoreKit/StoreKit.h>
+import uploadKit
+//import StoreKit
 
 let kRadius: CGFloat = 25.0
 let kDeg2Rad: CGFloat = 3.141592654 / 180.0
@@ -21,88 +23,65 @@ enum pwgImageAction {
     case addToFavorites, removeFromFavorites
 }
 
-@objc
 class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UIScrollViewDelegate, ImageDetailDelegate, AlbumCollectionViewCellDelegate, SelectCategoryDelegate, ChangedSettingsDelegate
 {
-    @objc var categoryId = 0
+    var categoryId = Int32.zero
     var totalNumberOfImages = 0
-    var selectedImageIds = [NSNumber]()
-    var selectedImageIdsLoop = [Int]()
-    var selectedImageData = [PiwigoImageData]()
+    var selectedImageIds = Set<Int64>()
+    var selectedImageIdsLoop = Set<Int64>()
+    var selectedFavoriteIds = Set<Int64>()
 
     var imagesCollection: UICollectionView?
-    var albumData: AlbumData?
-    var userHasUploadRights = false
-    private var didScrollToImageIndex = 0
+    var searchController: UISearchController?
     private var imageOfInterest = IndexPath(item: 0, section: 1)
     
-    var settingsBarButton: UIBarButtonItem!
-    var discoverBarButton: UIBarButtonItem?                 // Calls discover alert on iOS 9.x —> 13.x
-    var actionBarButton: UIBarButtonItem?                   // Menu presented on iOS 14.x —>
-    var moveBarButton: UIBarButtonItem?
-    var deleteBarButton: UIBarButtonItem?
-    var shareBarButton: UIBarButtonItem?
-    var favoriteBarButton: UIBarButtonItem?
+    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
+    lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
+    var actionBarButton: UIBarButtonItem?
+    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
+    lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
+    lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
+    lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
+
+    var pauseSearch = false
+    var oldImageIds = Set<Int64>()
+    var onPage = 0, lastPage = 0
 
     var isSelect = false
-    var touchedImageIds = [NSNumber]()
-    var cancelBarButton: UIBarButtonItem!
-    var selectBarButton: UIBarButtonItem!
+    var touchedImageIds = [Int64]()
+    lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
+    lazy var selectBarButton: UIBarButtonItem = getSelectBarButton()
 
-    var addButton: UIButton!
-    var createAlbumButton: UIButton!
+    lazy var addButton: UIButton = getAddButton()
+    lazy var createAlbumButton: UIButton = getCreateAlbumButton()
     var createAlbumAction: UIAlertAction!
-    var homeAlbumButton: UIButton!
-    var uploadImagesButton: UIButton!
-    var uploadQueueButton: UIButton!
-    var progressLayer: CAShapeLayer!
-    var nberOfUploadsLabel: UILabel!
+    lazy var homeAlbumButton: UIButton = getHomeButton()
+    lazy var uploadImagesButton: UIButton = getUploadImagesButton()
+    lazy var uploadQueueButton: UIButton = getUploadQueueButton()
+    lazy var progressLayer: CAShapeLayer = getProgressLayer()
+    lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
-    private var refreshControl: UIRefreshControl? // iOS 9.x only
-    private var imageDetailView: ImageViewController?
+    var imageDetailView: ImageViewController?
+    private var updateOperations = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 //@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
 //@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
 //@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
     
-    init(albumId: Int) {
+    init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
         
         // Store album ID
         categoryId = albumId
         
-        // Will present Settings icon if root or default album
-        if [0, AlbumVars.shared.defaultCategory].contains(albumId) {
-            // Navigation bar buttons
-            settingsBarButton = getSettingsBarButton()
-        }
-        
-        // Will present Discover menu and Search bar if root
+        // Place search bar in navigation bar of root album
         if albumId == 0 {
-            // Discover menu
-            if #available(iOS 14.0, *) {
-                // Menu
-                discoverBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
-            } else {
-                // Fallback on earlier versions
-                discoverBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
-            }
-            discoverBarButton?.accessibilityIdentifier = "discover"
-
-            // For iOS 11 and later: place search bar in navigation bar for root album
-            if #available(iOS 11.0, *) {
-                // Initialise search controller when displaying root album
-                initSearchBar()
-            }
+            initSearchBar()
         }
         
         // Initialise selection mode
         isSelect = false
-
-        // Navigation bar and toolbar buttons
-        selectBarButton = getSelectBarButton()
-        cancelBarButton = getCancelBarButton()
 
         // Hide toolbar
         navigationController?.isToolbarHidden = true
@@ -119,12 +98,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // Refresh view
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        if #available(iOS 10.0, *) {
-            imagesCollection?.refreshControl = refreshControl
-        } else {
-            // Fallback on earlier versions
-            self.refreshControl = refreshControl
-        }
+        imagesCollection?.refreshControl = refreshControl
 
         imagesCollection?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         imagesCollection?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
@@ -134,43 +108,264 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             view.addSubview(imagesCollection)
             view.addConstraints(NSLayoutConstraint.constraintFillSize(imagesCollection)!)
         }
-        if #available(iOS 11.0, *) {
-            imagesCollection?.contentInsetAdjustmentBehavior = .always
-        }
+        imagesCollection?.contentInsetAdjustmentBehavior = .always
 
-        // "Add" button above collection view and other buttons
-        addButton = getAddButton()
+        // Add buttons above collection view and other buttons
         if let imagesCollection = imagesCollection {
             view.insertSubview(addButton, aboveSubview: imagesCollection)
         }
-
-        // "Upload Queue" button above collection view
-        uploadQueueButton = getUploadQueueButton()
-        progressLayer = getProgressLayer()
-        uploadQueueButton?.layer.addSublayer(progressLayer)
-        nberOfUploadsLabel = getNberOfUploadsLabel()
-        uploadQueueButton?.addSubview(nberOfUploadsLabel)
+        uploadQueueButton.layer.addSublayer(progressLayer)
+        uploadQueueButton.addSubview(nberOfUploadsLabel)
         view.insertSubview(uploadQueueButton, belowSubview: addButton)
-
-        // "Home" album button above collection view
-        homeAlbumButton = getHomeButton()
         view.insertSubview(homeAlbumButton, belowSubview: addButton)
-
-        // "Create Album" button above collection view
-        createAlbumButton = getCreateAlbumButton()
         view.insertSubview(createAlbumButton, belowSubview: addButton)
-
-        // "Upload Images" button above collection view
-        uploadImagesButton = getUploadImagesButton()
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
     }
+
+    // Number of images to download per page
+    lazy var perPage: Int = {
+        return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
+    }()
+    
+    
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+    lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider.shared
+        return provider
+    }()
+
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+
+    lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider.shared
+        return provider
+    }()
+
+    
+    // MARK: - Core Data Source
+    lazy var user: User = {
+        guard let user = userProvider.getUserAccount(inContext: mainContext) else {
+            // Unknown user instance! —> Back to login view
+            ClearCache.closeSession { }
+            return User()
+        }
+        return user
+    }()
+    
+    lazy var albumData: Album = {
+        return currentAlbumData()
+    }()
+    private func currentAlbumData() -> Album {
+        // Did someone delete this album?
+        if let album = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
+            // Album available ► Job done
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
+            return album
+        }
+        
+        // Album not available anymore ► Back to default album?
+        categoryId = AlbumVars.shared.defaultCategory
+        if let defaultAlbum = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
+            changeAlbumID()
+            if defaultAlbum.isFault {
+                // The default album is not fired yet.
+                defaultAlbum.willAccessValue(forKey: nil)
+                defaultAlbum.didAccessValue(forKey: nil)
+            }
+            return defaultAlbum
+        }
+
+        // Default album deleted ► Back to root album
+        categoryId = Int32.zero
+        guard let rootAlbum = albumProvider.getAlbum(ofUser: user, withId: Int32.zero) else {
+            fatalError("••> Could not create root album!")
+        }
+        if rootAlbum.isFault {
+            // The root album is not fired yet.
+            rootAlbum.willAccessValue(forKey: nil)
+            rootAlbum.didAccessValue(forKey: nil)
+        }
+        changeAlbumID()
+        return rootAlbum
+    }
+    
+    lazy var albumPredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "parentId == $catId"))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    lazy var fetchAlbumsRequest: NSFetchRequest = {
+        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var albums: NSFetchedResultsController<Album> = {
+        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        albums.delegate = self
+        return albums
+    }()
+    
+    lazy var imagePredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catId"))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    lazy var fetchImagesRequest: NSFetchRequest = {
+        // Sort images according to default settings
+        // PS: Comparator blocks are not supported with Core Data
+        let fetchRequest = Image.fetchRequest()
+        let sortByIdDesc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: false)
+        let sortByIdAsc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
+        switch categoryId {
+        case pwgSmartAlbum.search.rawValue:
+            // 'datePosted' is always accessible (returned by pwg.images.search)
+            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
+            fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
+
+        case pwgSmartAlbum.visits.rawValue:
+            // 'visits' is always accessible (returned by pwg.category.getImages)
+            let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: false)
+            fetchRequest.sortDescriptors = [sortByVisits, sortByIdDesc]
+        
+        case pwgSmartAlbum.best.rawValue:
+            // 'ratingScore' is not always accessible (returned by pwg.images.getInfo)
+            // so the image list might not be identical to the one returned by the web UI.
+            let sortByRateScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: false)
+            fetchRequest.sortDescriptors = [sortByRateScore, sortByIdDesc]
+            
+        case pwgSmartAlbum.recent.rawValue:
+            // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
+            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
+            fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
+
+        default:    // Sorting option chosen by user
+            switch AlbumVars.shared.defaultSort {
+            // Use the string version of 'title' because
+            case .nameAscending:
+                let sortByName = NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: true,
+                                                  selector: #selector(NSString.localizedCaseInsensitiveCompare))
+                fetchRequest.sortDescriptors = [sortByName, sortByIdAsc]
+            case .nameDescending:
+                let sortByName = NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: false,
+                                                  selector: #selector(NSString.localizedCaseInsensitiveCompare))
+                fetchRequest.sortDescriptors = [sortByName, sortByIdDesc]
+            
+            // 'dateCreated' can be unknown and defaults to 01/01/1900 in such situation
+            case .dateCreatedDescending:
+                let sortByCreated = NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: false)
+                fetchRequest.sortDescriptors = [sortByCreated, sortByIdDesc]
+            case .dateCreatedAscending:
+                let sortByCreated = NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: true)
+                fetchRequest.sortDescriptors = [sortByCreated, sortByIdAsc]
+            
+            // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
+            case .datePostedDescending:
+                let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
+                fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
+            case .datePostedAscending:
+                let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: true)
+                fetchRequest.sortDescriptors = [sortByPosted, sortByIdAsc]
+            
+            // 'fileName' is generally accessible but can be "" (returned by pwg.category.getImages)
+            case .fileNameAscending:
+                let sortByFileName = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: true,
+                                                      selector: #selector(NSString.localizedStandardCompare))
+                fetchRequest.sortDescriptors = [sortByFileName, sortByIdAsc]
+            case .fileNameDescending:
+                let sortByFileName = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: false,
+                                                      selector: #selector(NSString.localizedStandardCompare))
+                fetchRequest.sortDescriptors = [sortByFileName, sortByIdDesc]
+
+            // 'ratingScore' is not always accessible (only returned by pwg.images.getInfo)
+            // so the image list might not be identical to the one returned by the web UI.
+            // It can also be unknown and defaults to -1.0 in such situation
+            case .ratingScoreDescending:
+                let sortByRatingScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: false)
+                fetchRequest.sortDescriptors = [sortByRatingScore, sortByIdDesc]
+            case .ratingScoreAscending:
+                let sortByRatingScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: true)
+                fetchRequest.sortDescriptors = [sortByRatingScore, sortByIdAsc]
+            
+            // 'visits' is always accessible (returned by pwg.category.getImages)
+            case .visitsDescending:
+                let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: false)
+                fetchRequest.sortDescriptors = [sortByVisits, sortByIdDesc]
+            case .visitsAscending:
+                let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: true)
+                fetchRequest.sortDescriptors = [sortByVisits, sortByIdAsc]
+            
+            // 'rankManual' is set by the iOS app when fetching album images (not returned by API)
+            case .manual:
+                let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: true)
+                fetchRequest.sortDescriptors = [sortByRank]
+                
+            // 'rankRandom' is set by the iOS app.
+            case .random:
+                let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true)
+                fetchRequest.sortDescriptors = [sortByRank]
+            }
+        }
+        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
+        fetchRequest.fetchBatchSize = self.perPage
+        return fetchRequest
+    }()
+
+    lazy var images: NSFetchedResultsController<Image> = {
+        let images = NSFetchedResultsController(fetchRequest: fetchImagesRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        images.delegate = self
+        return images
+    }()
 
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         print("===============================")
-        print(String(format: "viewDidLoad       => ID:%ld", categoryId))
+        print("••> viewDidLoad       => ID:\(categoryId)")
+
+        // Initialise data source
+        do {
+            if categoryId >= Int32.zero {
+                try albums.performFetch()
+            }
+            try images.performFetch()
+        } catch {
+            print("Error: \(error)")
+        }
 
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
@@ -184,68 +379,57 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         view.backgroundColor = UIColor.piwigoColorBackground()
 
         // Refresh controller
-        if #available(iOS 10.0, *) {
-            imagesCollection?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-            imagesCollection?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
-            let attributesRefresh = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-                NSAttributedString.Key.font: UIFont.piwigoFontLight()
-            ]
-            imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
-        } else {
-            // Fallback on earlier versions
-            refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-            refreshControl?.tintColor = UIColor.piwigoColorOrange()
-            let attributesRefresh = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
-                NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-            ]
-            refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Images"), attributes: attributesRefresh)
-        }
+        imagesCollection?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
+        imagesCollection?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        let attributesRefresh = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+        ]
+        imagesCollection?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
 
-        // Buttons
+        // Buttons appearance
         addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-
-        createAlbumButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadImagesButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-
-        uploadQueueButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadQueueButton?.backgroundColor = UIColor.piwigoColorRightLabel()
-        nberOfUploadsLabel?.textColor = UIColor.piwigoColorBackground()
-        progressLayer?.strokeColor = UIColor.piwigoColorBackground().cgColor
-
-        homeAlbumButton?.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        homeAlbumButton?.backgroundColor = UIColor.piwigoColorRightLabel()
-        homeAlbumButton?.tintColor = UIColor.piwigoColorBackground()
+        
+        createAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        uploadImagesButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        
+        uploadQueueButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        uploadQueueButton.backgroundColor = UIColor.piwigoColorRightLabel()
+        nberOfUploadsLabel.textColor = UIColor.piwigoColorBackground()
+        progressLayer.strokeColor = UIColor.piwigoColorBackground().cgColor
+        
+        homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
+        homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
 
         if AppVars.shared.isDarkPaletteActive {
             addButton.layer.shadowRadius = 1.0
             addButton.layer.shadowOffset = CGSize.zero
 
-            createAlbumButton?.layer.shadowRadius = 1.0
-            createAlbumButton?.layer.shadowOffset = CGSize.zero
-            uploadImagesButton?.layer.shadowRadius = 1.0
-            uploadImagesButton?.layer.shadowOffset = CGSize.zero
+            createAlbumButton.layer.shadowRadius = 1.0
+            createAlbumButton.layer.shadowOffset = CGSize.zero
+            uploadImagesButton.layer.shadowRadius = 1.0
+            uploadImagesButton.layer.shadowOffset = CGSize.zero
 
-            uploadQueueButton?.layer.shadowRadius = 1.0
-            uploadQueueButton?.layer.shadowOffset = CGSize.zero
+            uploadQueueButton.layer.shadowRadius = 1.0
+            uploadQueueButton.layer.shadowOffset = CGSize.zero
 
-            homeAlbumButton?.layer.shadowRadius = 1.0
-            homeAlbumButton?.layer.shadowOffset = CGSize.zero
+            homeAlbumButton.layer.shadowRadius = 1.0
+            homeAlbumButton.layer.shadowOffset = CGSize.zero
         } else {
             addButton.layer.shadowRadius = 3.0
             addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            createAlbumButton?.layer.shadowRadius = 3.0
-            createAlbumButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            uploadImagesButton?.layer.shadowRadius = 3.0
-            uploadImagesButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            createAlbumButton.layer.shadowRadius = 3.0
+            createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            uploadImagesButton.layer.shadowRadius = 3.0
+            uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            uploadQueueButton?.layer.shadowRadius = 3.0
-            uploadQueueButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            uploadQueueButton.layer.shadowRadius = 3.0
+            uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
 
-            homeAlbumButton?.layer.shadowRadius = 3.0
-            homeAlbumButton?.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            homeAlbumButton.layer.shadowRadius = 3.0
+            homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
         }
 
         // Navigation bar appearance
@@ -253,6 +437,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        setTitleViewFromAlbumData(whileUpdating: false)
 
         // Toolbar appearance
         let toolbar = navigationController?.toolbar
@@ -261,55 +446,51 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         let attributesLarge = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
         ]
-        if #available(iOS 11.0, *) {
-            if categoryId == AlbumVars.shared.defaultCategory {
-                // Title
-                navigationBar?.largeTitleTextAttributes = attributesLarge
-                navigationBar?.prefersLargeTitles = true
+        if categoryId == AlbumVars.shared.defaultCategory {
+            // Title
+            navigationBar?.largeTitleTextAttributes = attributesLarge
+            navigationBar?.prefersLargeTitles = true
 
-                // Search bar
-                let searchBar = navigationItem.searchController?.searchBar
-                searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-                if #available(iOS 13.0, *) {
-                    searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
-                    searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                }
-            } else {
-                navigationBar?.titleTextAttributes = attributes
-                navigationBar?.prefersLargeTitles = false
-            }
-
+            // Search bar
+            let searchBar = navigationItem.searchController?.searchBar
+            searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
             if #available(iOS 13.0, *) {
-                let barAppearance = UINavigationBarAppearance()
-                barAppearance.configureWithTransparentBackground()
-                barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-                barAppearance.titleTextAttributes = attributes
-                barAppearance.largeTitleTextAttributes = attributesLarge
-                if categoryId != AlbumVars.shared.defaultCategory {
-                    barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
-                }
-                navigationItem.standardAppearance = barAppearance
-                navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-                navigationItem.scrollEdgeAppearance = barAppearance
-
-                let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-                toolbar?.standardAppearance = toolbarAppearance
-                if #available(iOS 15.0, *) {
-                    /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-                    /// which by default produces a transparent background, to all navigation bars.
-                    toolbar?.scrollEdgeAppearance = toolbarAppearance
-                }
+                searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
+                searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
             }
         } else {
             navigationBar?.titleTextAttributes = attributes
-            navigationBar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.3)
-            toolbar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            navigationBar?.prefersLargeTitles = false
+        }
+
+        if #available(iOS 13.0, *) {
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            barAppearance.largeTitleTextAttributes = attributesLarge
+            if categoryId != AlbumVars.shared.defaultCategory {
+                barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
+            }
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+
+            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+            toolbar?.standardAppearance = toolbarAppearance
+            if #available(iOS 15.0, *) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar?.scrollEdgeAppearance = toolbarAppearance
+            }
+        } else {
+            navigationBar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
         }
 
         // Collection view
@@ -339,13 +520,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(String(format: "viewWillAppear    => ID:%ld", categoryId))
-
-        // Initialise data source
-        if categoryId != 0 {
-            albumData = AlbumData(categoryId: categoryId, andQuery: "")
-            AlbumUtilities.updateDescriptionOfAlbum(withId: categoryId)
-        }
+        print("••> viewWillAppear    => ID:\(categoryId)")
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -358,110 +533,46 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         initButtonsInPreviewMode()
         updateButtonsInPreviewMode()
 
-        // Register upload manager changes
-        NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                               name: .pwgLeftUploads, object: nil)
-        // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
-                                               name: .pwgUploadProgress, object: nil)
-
-        // Inform Upload view controllers that user selected this category
-        let userInfo = ["currentCategoryId": NSNumber(value: categoryId)]
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: kPiwigoNotificationChangedCurrentCategory), object: nil, userInfo: userInfo)
-
-        // If displaying smart album —> reload images
-        if categoryId < 0 {
-            // Load, sort images and reload collection
-            let oldImageList = albumData?.images ?? []
-            albumData?.updateImageSort(kPiwigoSortObjc(rawValue: UInt32(AlbumVars.shared.defaultSort)), onCompletion: { [self] in
-                // Reset navigation bar buttons after image load
-                updateButtonsInPreviewMode()
-                reloadImagesCollection(from: oldImageList)
-            }, onFailure: { [self] _, error in
-                dismissPiwigoError(withTitle: NSLocalizedString("albumPhotoError_title", comment: "Get Album Photos Error"), message: NSLocalizedString("albumPhotoError_message", comment: "Failed to get album photos (corrupt image in your album?)"), errorMessage: error?.localizedDescription ?? "") { }
-            })
-        } else {
-            // Images will be loaded if needed after displaying cells
-            imagesCollection?.reloadData()
+        // Register upload changes and progress if displaying default album
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
+                                                   name: .pwgLeftUploads, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
+                                                   name: .pwgUploadProgress, object: nil)
         }
+        
+        // Display albums and images
+        imagesCollection?.reloadData()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(String(format: "viewDidAppear     => ID:%ld", categoryId))
+        print("••> viewDidAppear     => ID:\(categoryId)")
 
-        // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view?.window?.windowScene?.title = self.title
-        }
-
-        if #available(iOS 10.0, *) {
-            } else {
-            // Fallback on earlier versions
-            if let refreshControl = refreshControl {
-                imagesCollection?.addSubview(refreshControl)
-                imagesCollection?.alwaysBounceVertical = true
-            }
-        }
-
-        // Stop here if app is reloading album data
-        if AppVars.shared.isReloadingData {
+        // The user may have cleared the cached data
+        // Display an empty root album in that case
+        if categoryId == Int32.zero, albumData.isFault {
             return
         }
         
-        // Determine for how long the session was open
-        /// Piwigo 11 session duration defaults to an hour.
-        let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-        let allAlbums = CategoriesData.sharedInstance().allCategories?.filter({ $0.numberOfImages != NSNotFound})
-        AppVars.shared.nberOfAlbumsInCache = allAlbums?.count ?? 0
-        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == false,
-           ((timeSinceLastLogin < TimeInterval(-1800)) || AppVars.shared.nberOfAlbumsInCache == 0) {
-            // Check if we have album data
-            AppVars.shared.isReloadingData = true
-            if AppVars.shared.nberOfAlbumsInCache == 0 {
-                reloginAndReloadAlbumData {
-                    AppVars.shared.isReloadingData = false
-                }
-            } else {
-                // Check if session is active in the background
-                let pwgToken = NetworkVars.pwgToken
-                LoginUtilities.sessionGetStatus { [unowned self] in
-                    if NetworkVars.pwgToken != pwgToken {
-                        reloginAndReloadAlbumData {
-                            AppVars.shared.isReloadingData = false
-                        }
-                    }
-                } failure: { _ in
-                    print("••> Failed to check session status…")
-                    AppVars.shared.isReloadingData = false
-                    // Will re-check later…
-                }
-            }
-            return
-        }
-        
-        if NetworkVars.serverPath.isEmpty == false, NetworkVars.username.isEmpty == true,
-           AppVars.shared.nberOfAlbumsInCache == 0 {
-            // Apparently this is the first time we load album data as Guest
-            /// - Reload album data
-            print("••> Reload album data…")
-            AppVars.shared.isReloadingData = true
-            reloadAlbumData {
-                AppVars.shared.isReloadingData = false
-            }
-            return
-        }
-        
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
+        // Check conditions before loading album and image data
+        let lastLoad = albumData.dateGetImages
+        let nbImages = (images.fetchedObjects ?? []).count
+        let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
+        let expectedNbImages = self.albumData.nbImages
+        let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
+            NetworkUtilities.checkSession(ofUser: user) {
+                self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
+            } failure: { error in
+                print("••> Error \(error.code): \(error.localizedDescription)")
+                // TO DO…
             }
         }
 
         // Should we highlight the image of interest?
-        if categoryId != 0, (albumData?.images.count ?? 0) > 0,
+        if categoryId != 0, nbImages > 0,
            imageOfInterest.item != 0 {
             // Highlight the cell of interest
             let indexPathsForVisibleItems = imagesCollection?.indexPathsForVisibleItems
@@ -478,21 +589,61 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
         }
 
+        // Inform user why the app crashed at start
+        if CacheVars.shared.couldNotMigrateCoreDataStore {
+            dismissPiwigoError(
+                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
+                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
+                errorMessage: "") {
+                // Reset flag
+                CacheVars.shared.couldNotMigrateCoreDataStore = false
+            }
+            return
+        }
+        
+        // Display What's New in Piwigo if needed
+        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
+            // Display What's New in Piwigo
+            let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
+            guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
+                fatalError("No WhatsNewViewController available!")
+            }
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
+                present(whatsNewVC, animated: true)
+            } else {
+                whatsNewVC.modalTransitionStyle = .coverVertical
+                whatsNewVC.modalPresentationStyle = .formSheet
+                let mainScreenBounds = UIScreen.main.bounds
+                whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
+                    x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+                    width: 0, height: 0)
+                whatsNewVC.preferredContentSize = CGSize(
+                    width: pwgPadSettingsWidth,
+                    height: ceil(mainScreenBounds.size.height * 2 / 3))
+                present(whatsNewVC, animated: true)
+            }
+            return
+        }
+        
+        // Display help views only when showing regular albums
+        // and less than once a day
+        let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
+        let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
+        if categoryId <= 0 || diff > UploadVars.pwgOneDay { return }
+            
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
-        if categoryId != 0, (albumData?.images.count ?? 0) > 5,
+        if nbImages > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if categoryId != 0,
-           let albums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-           albums.count > 2, NetworkVars.hasAdminRights,
+        if (albums.fetchedObjects ?? []).count > 2, user.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
-        if categoryId != 0,
-           let album = CategoriesData.sharedInstance().getCategoryById(categoryId),
-           let parents = album.upperCategories, parents.count > 2,
+        if albumData.upperIds.count > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
             displayHelpPagesWithID.append(8) // i.e. back to parent album
         }
@@ -520,22 +671,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         //        [SKStoreReviewController requestReview];
         //    }
         //#endif
-
-        // Inform user why the app crashed at start
-        if CacheVars.couldNotMigrateCoreDataStore {
-            dismissPiwigoError(
-                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
-                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
-                errorMessage: "") {
-                // Reset flag
-                CacheVars.couldNotMigrateCoreDataStore = false
-            }
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
+        // Hide HUD is needded
+        navigationController?.hidePiwigoHUD { }
+        
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
             // Reload collection
@@ -546,11 +689,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 initButtonsInSelectionMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
-                addButton?.frame = getAddButtonFrame()
-                homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton?.isHidden ?? true)
-                uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton?.isHidden ?? true)
-                createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton?.isHidden ?? true)
-                uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton?.isHidden ?? true)
+                addButton.frame = getAddButtonFrame()
+                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
             }
         })
     }
@@ -576,15 +719,40 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Keep title
         } else {
             // Do not show album title in backButtonItem of child view to provide enough space for image title
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width <= 414 {
-                // i.e. smaller than iPhones 6,7 Plus screen width
+            // See https://iosref.com/res
+            if view.bounds.size.width <= 430 {
+                // i.e. smaller than iPhone 14 Pro Max screen width
                 title = ""
             }
         }
 
+        // Cancel remaining tasks
+        PwgSession.shared.dataSession.getAllTasks { tasks in
+            // Select tasks related with this album if any
+            let tasksToCancel = tasks.filter({ $0.originalRequest?
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                $0.cancel()
+            })
+        }
+        ImageSession.shared.dataSession.getAllTasks { tasks in
+            // Select tasks related with this album if any
+            let tasksToCancel = tasks.filter({ $0.originalRequest?
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                $0.cancel()
+            })
+        }
+
         // Hide upload button during transition
         addButton.isHidden = true
+        
+        // Hide HUD if still presented
+        self.navigationController?.hidePiwigoHUD { }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -595,122 +763,153 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     deinit {
+        // Cancel all block operations
+        for operation in updateOperations {
+            operation.cancel()
+        }
+        updateOperations.removeAll(keepingCapacity: false)
+
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
-        // Unregister upload manager changes
-        NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
-
-        // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        // Unregister upload changes and progress if was displaying default album
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        }
     }
 
     
     // MARK: - Category Data
+    func changeAlbumID() {
+        // Add/remove search bar
+        if categoryId == 0 {
+            // Initialise search bar
+            initSearchBar()
+        } else {
+            // Remove search bar from the navigation bar
+            navigationItem.searchController = nil
+        }
+
+        // Reset predicates and reload albums and images
+        resetPredicatesAndPerformFetch()
+
+        // Reload album
+        imagesCollection?.reloadData()
+        
+        // Reset buttons and menus
+        initButtonsInPreviewMode()
+        updateButtonsInPreviewMode()
+    }
+    
+    func resetPredicatesAndPerformFetch() {
+        // Update albums
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
+        try? albums.performFetch()
+
+        // Update images
+        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
+        try? images.performFetch()
+    }
+    
+    func startFetchingAlbumAndImages(withHUD: Bool) {
+        // Remember that the app is uploading this album data
+        AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
+        
+        // Inform user
+        DispatchQueue.main.async { [self] in
+            // Display "loading" in title view
+            self.setTitleViewFromAlbumData(whileUpdating: true)
+
+            // Display HUD when loading images for the first time
+            // or when we have less than half of the images in cache
+            if withHUD == false { return }
+            
+            // Display HUD while downloading album data
+            self.navigationController?.showPiwigoHUD(
+                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                detail: NSLocalizedString("severalImages", comment: "Photos"),
+                buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        }
+        
+        // Fetch album data and then image data
+        fetchAlbumsAndImages { [self] in
+            fetchCompleted()
+        }
+    }
+
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
-        reloginAndReloadAlbumData { [self] in
-            // End refreshing
-            if #available(iOS 10.0, *) {
-                if imagesCollection?.refreshControl != nil {
-                    imagesCollection?.refreshControl?.endRefreshing()
-                }
+        // Already being fetching album data?
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
+        
+        // Pause upload manager
+        UploadManager.shared.isPaused = true
+        
+        // Check that the root album exists
+        // (might have been deleted with a clear of the cache)
+        if categoryId == Int32.zero {
+            albumData = currentAlbumData()
+        }
+        
+        // Re-login and then fetch album and image data
+        NetworkUtilities.checkSession(ofUser: user) {
+            self.startFetchingAlbumAndImages(withHUD: true)
+        } failure: { error in
+            // End refreshing anyway
+            DispatchQueue.main.async {
+                self.imagesCollection?.refreshControl?.endRefreshing()
+            }
+            print("••> Error \(error.code): \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchCompleted() {
+        DispatchQueue.main.async { [self] in
+            // Hide HUD
+            self.navigationController?.hidePiwigoHUD { }
+
+            // Update title
+            self.setTitleViewFromAlbumData(whileUpdating: false)
+
+            // Set navigation bar buttons
+            if isSelect {
+                self.updateButtonsInSelectionMode()
             } else {
-                if refreshControl != nil {
-                    refreshControl?.endRefreshing()
-                }
+                self.updateButtonsInPreviewMode()
+            }
+
+            // Update number of images in footer
+            self.updateNberOfImagesInFooter()
+
+            // End refreshing if needed
+            self.imagesCollection?.refreshControl?.endRefreshing()
+        }
+        
+        // Fetch favorites in the background if needed
+        if NetworkVars.userStatus != .guest,
+           categoryId != pwgSmartAlbum.favorites.rawValue,
+           "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
+           let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
+           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
+            // Remember that the app is fetching favorites
+            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
+            // Fetch favorites in the background
+            DispatchQueue.global(qos: .background).async { [self] in
+                self.loadFavoritesInBckg()
+            }
+        }
+
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
             }
         }
     }
-
-    private func reloadImagesCollection(from oldImages: [PiwigoImageData]) {
-        if oldImages.count != albumData?.images?.count ?? NSNotFound {
-            // List of images has changed
-            imagesCollection?.reloadData()
-            // Cancel selection
-            cancelSelect()
-        }
-        else {
-            // Loop over the visible cells (the number of images did not changed)
-            for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
-                // Only concerns cells of section 1
-                if indexPath.section == 0 { continue }
-
-                // Check that there exists a cell at this indexPath
-                if indexPath.item >= oldImages.count { continue }
-
-                // We should update this cell
-                imagesCollection?.reloadItems(at: [indexPath])
-            }
-        }
-    }
-
-    @objc
-    func updateSubCategory(withId albumId: Int) {
-        // Get index of updated category
-        if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-           let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == albumId}) {
-            // Update cell of corresponding category
-            let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
-            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-                imagesCollection?.reloadItems(at: [indexPath])
-            }
-        }
-    }
-
-    @objc
-    func addImage(withId imageId: Int) {
-        // Retrieve images from cache
-        guard let newImages = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList else { return }
-        if let indexOfNewItem = newImages.firstIndex(where: {$0.imageId == imageId}),
-           newImages.count > (albumData?.images.count ?? 0) {
-            // Add image to data source
-            albumData?.images = newImages
-            // Insert corresponding cell
-            let indexPath = IndexPath(item: indexOfNewItem, section: 1)
-            imagesCollection?.insertItems(at: [indexPath])
-
-            // Update footer if visible
-            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-        }
-
-        // Display Select button if there was no image in the album
-        if newImages.count == 1 {
-            // Display Select button
-            if isSelect == false {
-                updateButtonsInPreviewMode()
-            }
-        }
-    }
-
-    @objc
-    func removeImage(withId imageId: Int) {
-        // Remove image from the selection if needed
-        let imageIdObject = NSNumber(value: imageId)
-        if selectedImageIds.contains(imageIdObject) {
-            selectedImageIds.removeAll { $0 === imageIdObject }
-        }
-
-        // Get index of deleted image
-        if let indexOfExistingItem = albumData?.images.firstIndex(where: {$0.imageId == imageId}) {
-            // Remove image from data source
-            var imageList = albumData?.images
-            imageList?.remove(at: indexOfExistingItem)
-            albumData?.images = imageList
-            // Delete corresponding cell
-            let indexPath = IndexPath(item: indexOfExistingItem, section: 1)
-            if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-                imagesCollection?.deleteItems(at: [indexPath])
-            }
-
-            // Update footer if visible
-            if (imagesCollection?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter).count ?? 0) > 0 {
-                imagesCollection?.reloadSections(IndexSet(integer: 1))
-            }
-        }
-    }
-
+    
 
     // MARK: - Default Category Management
     @objc func returnToDefaultCategory() {
@@ -761,35 +960,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
-                    fatalError("No LocalAlbumsViewController!")
-                }
-                localAlbumsVC.setCategoryId(categoryId)
-                let navController = UINavigationController(rootViewController: localAlbumsVC)
-                navController.modalTransitionStyle = .coverVertical
-                navController.modalPresentationStyle = .pageSheet
-                present(navController, animated: true)
-            }, onDeniedAccess: {
-            })
+                self.presentLocalAlbums()
+            }, onDeniedAccess: { })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self, onAuthorizedAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
-                    fatalError("No LocalAlbumsViewController!")
-                }
-                localAlbumsVC.setCategoryId(self.categoryId)
-                let navController = UINavigationController(rootViewController: localAlbumsVC)
-                navController.modalTransitionStyle = .coverVertical
-                navController.modalPresentationStyle = .pageSheet
-                present(navController, animated: true)
+                self.presentLocalAlbums()
             }, onDeniedAccess: { })
         }
 
         // Hide CreateAlbum and UploadImages buttons
         didCancelTapAddButton()
+    }
+    
+    private func presentLocalAlbums() {
+        // Open local albums view controller in new navigation controller
+        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
+            fatalError("No LocalAlbumsViewController!")
+        }
+        localAlbumsVC.categoryId = categoryId
+        localAlbumsVC.user = user
+        let navController = UINavigationController(rootViewController: localAlbumsVC)
+        navController.modalTransitionStyle = .coverVertical
+        navController.modalPresentationStyle = .pageSheet
+        present(navController, animated: true)
     }
 
     @objc func didTapUploadQueueButton() {
@@ -819,42 +1015,76 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - UICollectionView Headers & Footers
+    func getImageCount() -> String {
+        // Get total number of images
+        var totalCount = Int64.zero
+        if categoryId == 0 {
+            // Root Album only contains albums  => calculate total number of images
+            (albums.fetchedObjects ?? []).forEach({ album in
+                totalCount += album.totalNbImages
+            })
+        } else {
+            // Number of images in current album
+            totalCount = albumData.nbImages
+        }
+        
+        // Build footer content
+        var legend = ""
+        if totalCount == Int64.min {
+            // Is loading…
+            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
+        }
+        else if totalCount == Int64.zero {
+            // Not loading and no images
+            if categoryId == Int64.zero {
+                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            } else {
+                legend = NSLocalizedString("noImages", comment:"No Images")
+            }
+        }
+        else {
+            // Display number of images…
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
+                let format:String = totalCount > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
+                legend = String(format: format, number)
+            }
+            else {
+                legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
+            }
+        }
+        return legend
+    }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         switch indexPath.section {
         case 0 /* Section 0 — Album collection */:
-            var header:     AlbumHeaderReusableView? = nil
-
+            var header: AlbumHeaderReusableView? = nil
             if kind == UICollectionView.elementKindSectionHeader {
                 header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CategoryHeader", for: indexPath) as? AlbumHeaderReusableView
-                header?.commentLabel?.attributedText = AlbumUtilities.headerLegend(for: categoryId)
-                header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
+                let desc = NSMutableAttributedString(attributedString: albumData.comment)
+                let wholeRange = NSRange(location: 0, length: desc.string.count)
+                let style = NSMutableParagraphStyle()
+                style.alignment = NSTextAlignment.center
+                let attributes = [
+                    NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                    NSAttributedString.Key.paragraphStyle: style
+                ]
+                desc.addAttributes(attributes, range: wholeRange)
+                header?.commentLabel?.attributedText = desc
                 return header!
             }
         case 1 /* Section 1 — Image collection */:
             if kind == UICollectionView.elementKindSectionFooter {
-                // Get number of images
-                var totalImageCount = NSNotFound
-                if categoryId == 0 {
-                    // Only albums in Root Album => total number of images
-                    for albumData in CategoriesData.sharedInstance().getCategoriesForParentCategory(0) {
-                        if totalImageCount == NSNotFound {
-                            totalImageCount = 0
-                        }
-                        totalImageCount += albumData.totalNumberOfImages
-                    }
-                } else {
-                    // Number of images in current album
-                    if let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) {
-                        totalImageCount = albumData.totalNumberOfImages
-                    }
-                }
-
+                // Get number of images and status
                 guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "NberImagesFooterCollection", for: indexPath) as? NberImagesFooterCollectionReusableView else {
                     fatalError("No NberImagesFooterCollectionReusableView!")
                 }
                 footer.noImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                footer.noImagesLabel?.text = AlbumUtilities.footerLegend(for: totalImageCount)
+                footer.noImagesLabel?.text = getImageCount()
                 return footer
             }
         default:
@@ -878,18 +1108,26 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch section {
         case 0 /* Section 0 — Album collection */:
             // Header height?
-            guard let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
+            guard !albumData.comment.string.isEmpty else {
                 return CGSize.zero
             }
-            if let desc = albumData.comment, desc.isEmpty == false,
-               collectionView.frame.size.width - 30.0 > 0 {
-                let description = AlbumUtilities.headerLegend(for: categoryId)
+            let desc = NSMutableAttributedString(attributedString: albumData.comment)
+            let wholeRange = NSRange(location: 0, length: desc.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+
+            if collectionView.frame.size.width - 30.0 > 0 {
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
-                let headerRect = description.boundingRect(
-                    with: CGSize(width: collectionView.frame.size.width - 30.0,
-                                 height: CGFloat.greatestFiniteMagnitude),
-                    options: .usesLineFragmentOrigin, context: context)
+                let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 30.0,
+                                                                height: CGFloat.greatestFiniteMagnitude),
+                                                   options: .usesLineFragmentOrigin, context: context)
                 return CGSize(width: collectionView.frame.size.width - 30.0,
                               height: ceil(headerRect.size.height))
             }
@@ -904,26 +1142,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     {
         switch section {
         case 1 /* Section 1 — Image collection */:
-            var footer = ""
-            // Get number of images
-            var totalImageCount = NSNotFound
-            if categoryId == 0 {
-                // Only albums in Root Album => total number of images
-                for albumData in CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId) {
-                    if totalImageCount == NSNotFound {
-                        totalImageCount = 0
-                    }
-                    totalImageCount += albumData.totalNumberOfImages
-                }
-            } else {
-                // Number of images in current album
-                totalImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.totalNumberOfImages ?? 0
-            }
-
-            footer = AlbumUtilities.footerLegend(for: totalImageCount)
+            // Get number of images and status
+            let footer = getImageCount()
             if footer.count > 0,
                collectionView.frame.size.width - 30.0 > 0 {
-                let attributes = [NSAttributedString.Key.font: UIFont.piwigoFontLight()]
+                let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)]
                 let context = NSStringDrawingContext()
                 context.minimumScaleFactor = 1.0
                 let footerRect = footer.boundingRect(
@@ -946,16 +1169,15 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Returns number of images or albums
-        var numberOfItems: Int
         switch section {
         case 0 /* Albums */:
-            numberOfItems = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId)?.count ?? 0
+            let objects = albums.fetchedObjects
+            return objects?.count ?? 0
         
         default /* Images */:
-            numberOfItems = albumData?.images?.count ?? 0
+            let objects = images.fetchedObjects
+            return objects?.count ?? 0
         }
-        return numberOfItems
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
@@ -979,11 +1201,10 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                                     right: AlbumUtilities.kAlbumMarginsSpacing)
             }
         default /* Images */:
-            let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
             if collectionView.numberOfItems(inSection: section) == 0 {
                 return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
-            } else if albumData?.comment?.count == 0 {
+            } else if albumData.comment.string.isEmpty {
                 return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
                                     bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
             } else {
@@ -1016,15 +1237,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            let nberAlbumsPerRow = AlbumUtilities.numberOfAlbumsPerRowInPortrait(forView: collectionView, maxWidth: 384.0)
-            let size = AlbumUtilities.albumSize(forView: collectionView,
-                                                nberOfAlbumsPerRowInPortrait: nberAlbumsPerRow)
+            let size = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
             return CGSize(width: size, height: 156.5)
         
         default /* Images */:
             // Calculates size of image cells
-            let size = AlbumUtilities.imageSize(forView: imagesCollection,
-                                                imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait)
+            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait
+            let size = AlbumUtilities.imageSize(forView: imagesCollection, imagesPerRowInPortrait: nbImages)
             return CGSize(width: size, height: size)
         }
     }
@@ -1035,18 +1254,16 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell else {
                 fatalError("No AlbumCollectionViewCell!")
             }
-            cell.categoryDelegate = self
-
-            // Check album data
-            guard let parentAlbums = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-                  indexPath.item < parentAlbums.count else {
-                cell.config()
-                return cell
-            }
 
             // Configure cell with album data
-            let albumData = parentAlbums[indexPath.item]
-            cell.config(withAlbumData: albumData)
+            let albumCell = albums.object(at: indexPath)
+            if albumCell.isFault {
+                // The album is not fired yet.
+                albumCell.willAccessValue(forKey: nil)
+                albumCell.didAccessValue(forKey: nil)
+            }
+            cell.albumData = albumCell
+            cell.categoryDelegate = self
 
             // Disable category cells in Image selection mode
             if isSelect {
@@ -1064,36 +1281,26 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 fatalError("No ImageCollectionViewCell!")
             }
 
-            if (self.albumData?.images?.count ?? 0) > indexPath.item {
-                // Remember that user did scroll down to this item
-                didScrollToImageIndex = indexPath.item
+            // Create cell from Piwigo data
+            let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+            let image = images.object(at: imageIndexPath)
+            cell.config(with: image, inCategoryId: categoryId)
+            cell.isSelection = selectedImageIds.contains(image.pwgID)
 
-                // Create cell from Piwigo data
-                let imageData = self.albumData?.images[indexPath.row] as? PiwigoImageData
-                cell.config(with: imageData, inCategoryId: categoryId)
-                cell.isSelection = selectedImageIds.contains(NSNumber(value: imageData?.imageId ?? NSNotFound))
-
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    cell.isFavorite = CategoriesData.sharedInstance().category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData?.imageId ?? 0)])
-                }
-
-                // Add pan gesture recognition
-                let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-                imageSeriesRocognizer.minimumNumberOfTouches = 1
-                imageSeriesRocognizer.maximumNumberOfTouches = 1
-                imageSeriesRocognizer.cancelsTouchesInView = false
-                imageSeriesRocognizer.delegate = self
-                cell.addGestureRecognizer(imageSeriesRocognizer)
-                cell.isUserInteractionEnabled = true
+            // pwg.users.favorites… methods available from Piwigo version 2.10
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                cell.isFavorite = (image.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
             }
 
-            // Load more image data if possible (page after page…)
-            if let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId),
-               !currentAlbumData.isLoadingMoreImages, !currentAlbumData.hasAllImagesInCache() {
-                self.needToLoadMoreImages()
-            }
-
+            // Add pan gesture recognition
+            let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+            imageSeriesRocognizer.minimumNumberOfTouches = 1
+            imageSeriesRocognizer.maximumNumberOfTouches = 1
+            imageSeriesRocognizer.cancelsTouchesInView = false
+            imageSeriesRocognizer.delegate = self
+            cell.addGestureRecognizer(imageSeriesRocognizer)
+            cell.isUserInteractionEnabled = true
             return cell
         }
     }
@@ -1111,17 +1318,37 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             }
 
             // Avoid rare crashes…
-            if (indexPath.row < 0) || (indexPath.row >= (albumData?.images.count ?? 0)) {
-                return
-            }
-            if albumData?.images?[indexPath.item].imageId == 0 {
+            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
                 return
             }
 
             // Action depends on mode
-            if !isSelect {
-                // Remember that user did tap this image
-                imageOfInterest = indexPath
+            if isSelect {
+                // Check image ID
+                guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
+                    return
+                }
+                
+                // Selection mode active => add/remove image from selection
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.insert(imageId)
+                    selectedCell.isSelection = true
+                    if selectedCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
+                } else {
+                    selectedCell.isSelection = false
+                    selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
+                }
+                
+                // and update nav buttons
+                updateButtonsInSelectionMode()
+                return
+            }
+            
+            // Display the image in fullscreen mode
+            if AppVars.shared.inSingleDisplayMode {
 
                 // Add category to list of recent albums
                 let userInfo = ["categoryId": NSNumber(value: categoryId)]
@@ -1130,11 +1357,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 // Selection mode not active => display full screen image
                 let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
                 imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
-                imageDetailView?.imageIndex = indexPath.row
+                imageDetailView?.imageIndex = indexPath.item
                 imageDetailView?.categoryId = categoryId
-                imageDetailView?.images = albumData?.images ?? []
-                imageDetailView?.hidesBottomBarWhenPushed = true
+                imageDetailView?.images = images
+                imageDetailView?.user = user
                 imageDetailView?.imgDetailDelegate = self
+                imageDetailView?.hidesBottomBarWhenPushed = true
                 imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
 //                self.imageDetailView.transitioningDelegate = self;
 //                self.selectedCellImageViewSnapshot = [self.selectedCell.cellImage snapshotViewAfterScreenUpdates:NO];
@@ -1142,158 +1370,58 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     navigationController?.pushViewController(imageDetailView, animated: true)
                 }
             } else {
-                // Selection mode active => add/remove image from selection
-                let imageIdObject = NSNumber(value: selectedCell.imageData?.imageId ?? NSNotFound)
-                if !selectedImageIds.contains(imageIdObject) {
-                    selectedImageIds.append(imageIdObject)
-                    selectedCell.isSelection = true
-                } else {
-                    selectedCell.isSelection = false
-                    selectedImageIds.removeAll { $0 as AnyObject === imageIdObject as AnyObject }
+                // Check image data
+                guard let imageData = selectedCell.imageData else {
+                    return
                 }
-
-                // and update nav buttons
-                updateButtonsInSelectionMode()
+                
+                // Present image on external screen
+                if #available(iOS 13.0, *) {
+                    var wantedRole: UISceneSession.Role!
+                    for scene in UIApplication.shared.connectedScenes {
+                        if #available(iOS 16.0, *) {
+                            wantedRole = .windowExternalDisplayNonInteractive
+                        } else {
+                            // Fallback on earlier versions
+                            wantedRole = .windowExternalDisplay
+                        }
+                        if scene.session.role == wantedRole,
+                           let windowScene = scene as? UIWindowScene,
+                           let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+                            imageVC.dismissVideoPlayerIfNeeded()
+                            imageVC.imageData = imageData
+                            imageVC.configImage()
+                        }
+                    }
+                }
+                
+                // Shows which image was tapped
+//                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
+//                    oldCell.darkenView.isHidden = true
+//                }
+//                selectedCell.darkenView.isHidden = false
             }
+            
+            // Remember that user did tap this image
+            imageOfInterest = indexPath
         }
     }
 
     
     // MARK: - ImageDetailDelegate Methods
-    func didSelectImage(withId imageId: Int) {
-        // Determine index of image
-        guard let indexOfImage = albumData?.images.firstIndex(where: {$0.imageId == imageId}) else { return }
-
+    func didSelectImage(atIndex imageIndex: Int) {
         // Scroll view to center image
-        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > indexOfImage {
-            let indexPath = IndexPath(item: indexOfImage, section: 1)
+        if (imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
+            let indexPath = IndexPath(item: imageIndex, section: 1)
             imageOfInterest = indexPath
             imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
         }
     }
 
-    func didUpdateImage(withData imageData: PiwigoImageData) {
-        // Update data source
-        let indexOfImage = albumData?.updateImage(imageData) ?? 0
-        if indexOfImage == NSNotFound { return }
-
-        // Refresh image banner
-        let indexPath = IndexPath(item: indexOfImage, section: 1)
-        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
-            imagesCollection?.reloadItems(at: [indexPath])
-        }
-    }
-
-    func needToLoadMoreImages() {
-        // Check that album data exists
-        guard let currentAlbumData = CategoriesData.sharedInstance().getCategoryById(categoryId) else {
-            debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... cancelled")
-            return
-        }
-        
-        // Get number of downloaded images
-        let downloadedImageCount = currentAlbumData.imageList.count
-
-        // Load more images
-        DispatchQueue.global(qos: .default).async { [self] in
-            let start = CFAbsoluteTimeGetCurrent()
-            self.albumData?.loadMoreImages(onCompletion: { [self] done in
-                // Did we try to collect more images?
-                if !done {
-                    debugPrint("••••••>> needToLoadMoreImages for catID \(self.categoryId)... nothing done")
-                    return
-                }
-
-                // Should we retry loading more images?
-                let newDownloadedImageCount = CategoriesData.sharedInstance().getCategoryById(categoryId)?.imageList.count ?? 0
-                let didProgress = (newDownloadedImageCount > downloadedImageCount)
-                if !didProgress {
-                    // Did try loading more images but unsuccessfully
-                    debugPrint("••••••>> needToLoadMoreImagesfor catID \(self.categoryId)... unsuccessful!")
-                    if self.didScrollToImageIndex >= newDownloadedImageCount {
-                        // Re-login before continuing to load images
-                        LoginUtilities.reloginAndRetry() { [self] in
-                            DispatchQueue.main.async { [self] in
-                                self.needToLoadMoreImages()
-                            }
-                        } failure: { [self] error in
-                            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                            self.dismissPiwigoError(withTitle: title, completion: {})
-                        }
-                    }
-                    return
-                }
-
-                // Prepare indexPaths of cells to reload
-                var indexPaths: [IndexPath] = []
-                for i in downloadedImageCount..<newDownloadedImageCount {
-                    indexPaths.append(IndexPath(item: i, section: 1))
-                }
-
-                // Back to main thread…
-                DispatchQueue.main.async { [self] in
-                    // Update detail view if needed
-                    if let imageDetailView = self.imageDetailView {
-                        imageDetailView.images = self.albumData?.images ?? []
-                    }
-
-                    // Add indexPaths of cell presented with placeholder
-                    let placeHolderImage = UIImage(named: "placeholderImage")
-                    for indexPath in self.imagesCollection?.indexPathsForVisibleItems ?? [] {
-                        if indexPath.section == 0 { continue }
-                        if indexPaths.contains(indexPath) { continue }
-                        let cell = self.imagesCollection?.cellForItem(at: indexPath)
-                        if let imageCell = cell as? ImageCollectionViewCell,
-                           imageCell.cellImage.image == placeHolderImage {
-                            indexPaths.append(indexPath)
-                        }
-                    }
-
-                    // Reload cells
-                    self.imagesCollection?.reloadItems(at: indexPaths)
-
-                    // Display HUD if it will take more than a second to load image data
-                    let diff: CFAbsoluteTime = Double((CFAbsoluteTimeGetCurrent() - start)) * 1000.0
-                    let perImage = abs(Float(Double(diff) / Double(newDownloadedImageCount - downloadedImageCount)))
-                    let left: Double = Double(perImage) * Double(max(0, (didScrollToImageIndex - newDownloadedImageCount)))
-                    print(String(format: "expected time: %.2f ms (diff: %.0f, perImage: %.0f)", left, diff, perImage))
-                    if left > 1000.0, didProgress {
-                        if view.viewWithTag(loadingViewTag) == nil {
-                            self.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"), inMode: .annularDeterminate)
-                        } else {
-                            let fraction = Float(newDownloadedImageCount) / Float(didScrollToImageIndex)
-                            self.updatePiwigoHUD(withProgress: fraction)
-                        }
-                    } else {
-                        self.hidePiwigoHUD() { }
-                    }
-                    
-                    // Should we continue loading images?
-                    print(String(format: "==> Should we continue loading images? (scrolled to %ld)", didScrollToImageIndex))
-                    if self.didScrollToImageIndex >= newDownloadedImageCount {
-                        if didProgress {
-                            // Continue loadding images
-                            self.needToLoadMoreImages()
-                        } else {
-                            // Re-login before continuing to load images
-                            LoginUtilities.reloginAndRetry() { [self] in
-                                DispatchQueue.main.async { [self] in
-                                    self.needToLoadMoreImages()
-                                }
-                            } failure: { [unowned self] error in
-                                let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-                                self.dismissPiwigoError(withTitle: title, completion: {})
-                            }
-                        }
-                    }
-                }
-            }, onFailure: nil)
-        }
-    }
-
+    
     // MARK: - SelectCategoryDelegate Methods
-    func didSelectCategory(withId category: Int) {
-        if category == NSNotFound {
+    func didSelectCategory(withId category: Int32) {
+        if category == Int32.min {
             setEnableStateOfButtons(true)
         } else {
             cancelSelect()
@@ -1305,26 +1433,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     func didChangeDefaultAlbum() {
         // Change default album
         categoryId = AlbumVars.shared.defaultCategory
-
-        // Add/remove search bar
-        if #available(iOS 11.0, *) {
-            if categoryId == 0 {
-                // Initialise search bar
-                initSearchBar()
-            } else {
-                // Remove search bar from the navigation bar
-                navigationItem.searchController = nil
-            }
-        }
-
-        // Initialise data source
-        albumData = AlbumData(categoryId: categoryId, andQuery: "")
-
-        // Reset buttons and menus
-        updateButtonsInPreviewMode()
-
-        // Reload album
-        imagesCollection?.reloadData()
+        albumData = currentAlbumData()
+        changeAlbumID()
     }
 
     func didChangeRecentPeriod() {
@@ -1333,27 +1443,27 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     
-    // MARK: - AlbumCollectionViewCellDelegate Method (+ PushView:)
-    @objc
-    func removeCategory(_ albumCell: AlbumCollectionViewCell?) {
-        // Update data source
-        albumData = AlbumData(categoryId: categoryId, andQuery: "")
-
+    // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
+    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?) {
         // Remove cell
-        var indexPath: IndexPath? = nil
-        if let albumCell = albumCell {
-            indexPath = imagesCollection?.indexPath(for: albumCell)
+        guard let cellToRemove = albumCell else { return }
+        if let indexPath = imagesCollection?.indexPath(for: cellToRemove) {
+            imagesCollection?.deleteItems(at: [indexPath])
         }
-        imagesCollection?.deleteItems(at: [indexPath].compactMap { $0 })
+        
+        // Update number of images in footer
+        updateNberOfImagesInFooter()
+    }
 
-        // If necessary, update the cell of the category into which the album was moved
-        for indexPath in imagesCollection?.indexPathsForVisibleItems ?? [] {
-            if indexPath.section == 1 { return }
-            if let cell = imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
-               cell.albumData?.albumId == albumCell?.albumData?.parentAlbumId {
-                imagesCollection?.reloadItems(at: [indexPath])
-            }
+    func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
+                        inMode mode: pwgAlbumDeletionMode) {
+        // Delete album, sub-albums and images from presistent cache
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+            self.albumProvider.deleteAlbum(albumId, inParent: parentID, inMode: mode)
         }
+        
+        // Update number of images in footer
+        updateNberOfImagesInFooter()
     }
 
     @objc
@@ -1457,5 +1567,109 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+extension AlbumViewController: NSFetchedResultsControllerDelegate {
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Check that this update should be managed by this view controller
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+        print("••> fetchController will change content: \(controller)")
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        // Check that this update should be managed by this view controller
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+
+        // Collect operation changes
+        switch type.rawValue {
+        case NSFetchedResultsChangeType.delete.rawValue:
+            guard var indexPath = indexPath else { return }
+            if anObject is Image { indexPath.section = 1 }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                self?.imagesCollection?.deleteItems(at: [indexPath])
+            })
+            // Disable menu if this is the last deleted image
+            if (images.fetchedObjects ?? []).count == 0 {
+                updateOperations.append( BlockOperation { [weak self] in
+                    print("••> Last removed image ► disable menu")
+                    self?.isSelect = false
+                    self?.updateButtonsInPreviewMode()
+                })
+            }
+        case NSFetchedResultsChangeType.update.rawValue:
+            guard let indexPath = indexPath else { return }
+            if let image = anObject as? Image {
+                let cellIndexPath = IndexPath(item: indexPath.item, section: 1)
+                updateOperations.append( BlockOperation {  [weak self] in
+                    print("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell {
+                        // Re-configure image cell
+                        cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
+                        // pwg.users.favorites… methods available from Piwigo version 2.10
+                        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                            cell.isFavorite = (image.albums ?? Set<Album>())
+                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                        }
+                    }
+                })
+            } else if let album = anObject as? Album {
+                updateOperations.append( BlockOperation {  [weak self] in
+                    print("••> Update album at \(indexPath) of album #\(fetchDelegate.categoryId)")
+                    if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                        // Re-configure album cell
+                        cell.albumData = album
+                    }
+                })
+            }
+        case NSFetchedResultsChangeType.insert.rawValue:
+            guard var newIndexPath = newIndexPath else { return }
+            if anObject is Image { newIndexPath.section = 1 }
+            updateOperations.append( BlockOperation { [weak self] in
+                print("••> Insert item of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
+                self?.imagesCollection?.insertItems(at: [newIndexPath])
+            })
+            // Enable menu if this is the first added image
+            if albumData.nbImages == 1 {
+                updateOperations.append( BlockOperation { [weak self] in
+                    print("••> First added image ► enable menu")
+                    self?.updateButtonsInPreviewMode()
+                })
+            }
+        case NSFetchedResultsChangeType.move.rawValue:
+            guard var indexPath = indexPath,  var newIndexPath = newIndexPath,
+                  indexPath != newIndexPath else { return }
+            if anObject is Image {
+                indexPath.section = 1
+                newIndexPath.section = 1
+            }
+            updateOperations.append( BlockOperation {  [weak self] in
+                print("••> Move   item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
+                self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
+            })
+        default:
+            fatalError("AlbumViewController: unknown NSFetchedResultsChangeType")
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Check that this update should be managed by this view controller
+        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
+        if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
+
+        // Update objects
+        imagesCollection?.performBatchUpdates({ [weak self] in
+            self?.updateOperations.forEach({ $0.start()})
+        }) { [weak self] _ in
+            // Update footer
+            self?.updateNberOfImagesInFooter()
+        }
     }
 }

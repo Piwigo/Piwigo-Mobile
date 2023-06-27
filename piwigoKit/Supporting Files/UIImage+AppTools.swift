@@ -41,19 +41,12 @@ extension UIImage {
             fatalError("UIIMage.resizeToFit(): FATAL: Unimplemented ContentMode")
         }
 
-        if #available(iOS 10.0, *) {
-            let renderFormat = UIGraphicsImageRendererFormat.default()
-            renderFormat.opaque = opaque
-            renderFormat.scale = scale
-            let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: renderFormat)
-            newImage = renderer.image { (context) in
-                self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
-            }
-        } else {
-            UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), opaque, 0)
-                self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
-                newImage = UIGraphicsGetImageFromCurrentImageContext()!
-            UIGraphicsEndImageContext()
+        let renderFormat = UIGraphicsImageRendererFormat.default()
+        renderFormat.opaque = opaque
+        renderFormat.scale = scale
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: renderFormat)
+        newImage = renderer.image { (context) in
+            self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
         }
 
         return newImage

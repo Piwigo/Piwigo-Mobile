@@ -25,7 +25,6 @@
 "alertRetryButton" = "再試行";
 "alertNextButton" = "次の写真";
 "alertTryButton" = "試す";
-"alertClearButton" = "クリア";
 
 // HUD views
 "loadingHUD_label" = "読み込み中…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "注意";
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
+"CoreData_MigrationProgress" = "移行中...";
+"Coredata_MigrationPleaseWait" = "現在、お客様のデータの一部を移行しています。完了するまでお待ちください。アプリケーションは終了させないでください。";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "有効なユーザー名がないユーザーアカウントは破棄されます。";
+"CoreDataFetch_UserUnknownStatus" = "Community拡張パラメータを取得できませんでした。\nもう一度ログインしてください。";
+"CoreData_UserCreateFailed" = "新しいUserオブジェクトの作成に失敗しました。";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "アルバムエラーを取得しました！";
+"CoreDataFetch_AlbumMissingData" = "有効なIDまたは名前がないアルバムを見つけて破棄します。";
+"CoreDataFetch_AlbumCreateFailed" = "新しいアルバムオブジェクトの作成に失敗しました。";
+"CoreData_AlbumNotFound" = "アルバムが永続キャッシュにありません。";
+
+// Image objects
+"CoreDataFetch_ImageError" = "写真/動画を取得するエラー！";
+"CoreDataFetch_ImageMissingData" = "有効なIDまたはURLが見つかり、写真/ビデオを破棄します。";
+"CoreDataFetch_ImageCreateFailed" = "新しい画像オブジェクトの作成に失敗しました。";
 
 // Tag objects
 "CoreDataFetch_TagError" = "タグ取得エラー！";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";
 
-"serverCommunityError_title" = "Communityエラー";
-"serverCommunityError_message" = "Community拡張パラメータを取得できませんでした。もう一度ログインしてください。";
-
 // Logout
 "logoutConfirmation_title" = "ログアウト";
 "logoutConfirmation_message" = "本当にログアウトしますか？";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ サブアルバム";
 
 // Albums view
+"categoryUpdating" = "更新中…";
+"categoryUpdatedOn" = "%@ に更新";
+"categoryUpdatedAt" = "%@ に更新";
+"categoryUpdatedNow" = "更新: たった今";
 "categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
 "categoryImageList_selectButton" = "選択";
 "categoryImageList_deselectButton" = "選択を解除";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "空のアルバムを削除します";
 "deleteCategory_noImages" = "写真を保存します";
 "deleteCategory_orphanedImages" = "孤立画像を削除します";
+"deleteCategory_singleOrphanedImage" = "孤立状態を削除";
+"deleteCategory_severalOrphanedImages" = "%@ 個の孤児を削除";
 "deleteCategory_allImages" = "写真%@を削除します";
 "deleteCategoryConfirm_title" = "本当によろしいですか？";
 "deleteCategoryConfirm_message" = "このアルバムを削除するには写真の数を入力して下さい。写真の数：%@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1年";
 "editImageDetailsHUD_updatingSingle" = "写真を更新しています...";
 "editImageDetailsHUD_updatingPlural" = "写真を更新しています...";
+"help_externalDisplay" = "ここに表示したい画像をタップします。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";
 "editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
 "imageDetailsFetchError_title" = "写真詳細の取得に失敗しました";
-"imageDetailsFetchError_retryMessage" = "写真データの取得に失敗しました。もう一度やり直しますか？";
+"imageDetailsFetchError_message" = "写真データの取得に失敗しました。";
 "imageDetailsFetchError_continueMessage" = "写真データの取得に失敗しました。続行しますか？";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "一度もない";
 
 // Settings — Cache
-"settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
-"settings_cacheDisk" = "ディスク";
-"settings_cacheMemory" = "メモリ";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "キャッシュ";
+"settings_database" = "データ";
 "settings_cacheClear" = "キャッシュをクリア";
-"settings_cacheClearAll" = "写真キャッシュをクリア";
+"settings_cacheClearAll" = "すべてを削除する";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "親アルバム";
 "help08_text" = "戻るボタンを長押しすると、アルバムのリストが表示されます。";
 "help08_text2" = "選択した親アルバムをタップしてジャンプします。";
+
+// What's New in Piwigo
+"whatsNew_title" = "Piwigoの新機能";
+"whatsNew_title1" = "新しいキャッシュ";
+"whatsNew_desc1" = "キャッシュ管理は完全に書き換えられ、ユーザーエクスペリエンスを向上させ、オフラインブラウジングをもたらします。";
+"whatsNew_title2" = "画面ミラーリング";
+"whatsNew_desc2" = "外部のディスプレイで写真やビデオをご覧ください。";
+"whatsNew_continue" = "続ける";

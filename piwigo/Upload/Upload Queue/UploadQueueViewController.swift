@@ -6,37 +6,60 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 @available(iOS 13.0, *)
 class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
-    // MARK: - Core Data
-    /**
-     The managedObjectContext that manages Core Data objects in the main queue.
-     The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-     */
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.managedObjectContext
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
 
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        provider.fetchedNonCompletedResultsControllerDelegate = self
-        return provider
+
+    // MARK: - Core Data Source
+    lazy var fetchPendingRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
+        // Sort upload requests by state and date
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestSectionKey), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true))
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves non-completed upload requests:
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
     }()
-    
-    
+
+    lazy var uploads: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
+                                                 managedObjectContext: self.mainContext,
+                                                 sectionNameKeyPath: "requestSectionKey",
+                                                 cacheName: "org.piwigo.frgd.pendingUploads")
+        uploads.delegate = self
+        return uploads
+    }()
+
+
     // MARK: - View
     @IBOutlet weak var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
     typealias DataSource = UITableViewDiffableDataSource<String,NSManagedObjectID>
-    private lazy var diffableDataSource: DataSource = configDataSource()
+    private var diffableDataSource: DataSource!
     
     // MARK: - View Lifecycle
     
@@ -44,7 +67,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
 
         // Buttons
-        actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        if #available(iOS 14.0, *) {
+            // Menu
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
+        } else {
+            // Fallback on earlier versions
+            actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        }
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
 
@@ -52,7 +81,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
 
         // Initialise dataSource and tableView
-        applyInitialSnapshots()
+        diffableDataSource = configDataSource()
+        do {
+            try uploads.performFetch()
+        }
+        catch {
+            print("••> Could not fetch uploads: \(error)")
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -73,10 +108,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
         
-        // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
-                                               name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
@@ -111,7 +142,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -170,9 +201,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
-        // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
         // Unregister Low Power Mode status
         NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
@@ -180,8 +208,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
     }
     
-    // MARK: - Action Menu
     
+    // MARK: - Action Menu
     func updateNavBar() {
         // Title
         let nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
@@ -215,61 +243,32 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
 
-        // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
+        // Resume upload requests in section 2
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
                 let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-                    if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
-                        // Get IDs of upload requests which can be resumed
-                        let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section2.rawValue)
-                        // Resume failed uploads
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.resume(failedUploads: uploadIds, completionHandler: { (error) in
-                                if let error = error {
-                                    // Inform user
-                                    let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
-                                    let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
-                                        })
-                                    alert.addAction(cancelAction)
-                                    alert.view.tintColor = .piwigoColorOrange()
-                                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                                    self.present(alert, animated: true, completion: {
-                                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                                        alert.view.tintColor = .piwigoColorOrange()
-                                    })
-                                } else {
-                                    // Relaunch uploads
-                                    UploadManager.shared.findNextImageToUpload()
-                                }
-                            })
-                        }
+                    UploadManager.shared.backgroundQueue.async {
+                        // Resume all failed uploads
+                        UploadManager.shared.resumeAllFailedUploads()
+                        // Relaunch uploads
+                        UploadManager.shared.findNextImageToUpload()
                     }
                 })
                 alert.addAction(resumeAction)
             }
         }
 
-        // Clear impossible upload requests in section 1 (preparingFail, formatError)
+        // Clear impossible upload requests in section 1
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
                 let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                    if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
-                        // Get IDs of upload requests which won't be possible to perform
-                        let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
-                        // Delete failed uploads in the main thread
-                        self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
-                            // Error encountered?
-                            if let error = error {
-                                DispatchQueue.main.async {
-                                    self.dismissPiwigoError(withTitle: titleClear,
-                                                            message: error.localizedDescription) { }
-                                }
-                            }
-                        }
+                    UploadManager.shared.backgroundQueue.async {
+                        // Delete all impossible upload requests
+                        UploadManager.shared.deleteImpossibleUploads()
                     }
                 })
                 alert.addAction(clearAction)
@@ -299,44 +298,26 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
         
     // MARK: - UITableView - DataSource
-    
     private func configDataSource() -> DataSource {
-        let dataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: queueTableView) { (tableView, indexPath, objectID) -> UITableViewCell? in
+        let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
                 return UploadImageTableViewCell()
             }
-            let upload = self.managedObjectContext.object(with: objectID) as! Upload
+            guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload else {
+                fatalError("Managed object should be available")
+            }
             cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
             return cell
         }
         return dataSource
     }
     
-    private func applyInitialSnapshots() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
-        
-        // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
-        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
-        snapshot.appendSections(sections)
-        diffableDataSource.apply(snapshot, animatingDifferences: false)
-        
-        // Items
-        let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        for section in SectionKeys.allValues {
-            let objectIDsInSection = items.filter({$0.requestSectionKey == section.rawValue}).map({$0.objectID})
-            if objectIDsInSection.isEmpty { continue }
-            snapshot.appendItems(objectIDsInSection, toSection: section.rawValue)
-        }
-    }
-    
 
     // MARK: - UITableView - Headers
-    
     @objc func setTableViewMainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.wifiOnlyUploading {
+            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
@@ -356,6 +337,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                 if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section3.rawValue) {
                     if self.diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section3.rawValue) > 0 {
                         UIApplication.shared.isIdleTimerDisabled = true
+                    } else {
+                        UIApplication.shared.isIdleTimerDisabled = false
                     }
                 }
             }
@@ -387,15 +370,12 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
-           localIdentifier.count > 0 {
-            let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
-            for cell in visibleCells {
-                if cell.localIdentifier == localIdentifier {
-                    cell.update(with: notification.userInfo!)
-                    break
-                }
-            }
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
+           let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
+           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
+            print("••> progressFraction = \(progressFraction) in applyUploadProgress()")
+            cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }
 }
@@ -408,17 +388,33 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Update UI
-        let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
-        DispatchQueue.main.async {
-            // Apply modifications
-            self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
-            
-            // Update the navigation bar
-            self.updateNavBar()
-            
-            // Refresh header informing user on network status when UploadManager restarted running
-            self.setTableViewMainHeader()
+        guard let dataSource = queueTableView.dataSource as? UITableViewDiffableDataSource<String, NSManagedObjectID> else {
+            assertionFailure("The data source has not implemented snapshot support while it should")
+            return
         }
+        var snapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+        let currentSnapshot = dataSource.snapshot() as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+
+        let reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap { itemIdentifier in
+            guard let currentIndex = currentSnapshot.indexOfItem(itemIdentifier),
+                  let index = snapshot.indexOfItem(itemIdentifier), index == currentIndex else {
+                return nil
+            }
+            guard let existingObject = try? controller.managedObjectContext.existingObject(with: itemIdentifier),
+                  existingObject.isUpdated else { return nil }
+            return itemIdentifier
+        }
+        snapshot.reloadItems(reloadIdentifiers)
+
+        let shouldAnimate = queueTableView.numberOfSections != 0
+        dataSource.apply(snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>,
+                         animatingDifferences: shouldAnimate)
+            
+        // Update the navigation bar
+        self.updateNavBar()
+        
+        // Refresh header informing user on network status when UploadManager restarted running
+        self.setTableViewMainHeader()
         
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {

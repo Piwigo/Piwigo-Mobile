@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageDatePickerDelegate: NSObjectProtocol {
-    func didSelectDate(withPicker date: Date?)
+    func didSelectDate(withPicker date: Date)
     func didUnsetImageCreationDate()
 }
 
@@ -37,15 +37,15 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     @IBOutlet private weak var todayDateButton: UIBarButtonItem!
     @IBOutlet private weak var incrementYearButton: UIBarButtonItem!
 
-    private let kPiwigoPickerMinDate = "1922-01-01 00:00:00" // UTC
-    private let kPiwigoPickerMaxDate = "2100-01-01 00:00:00" // UTC
-    private let kPiwigoComponentWidthLimit: CGFloat = 375 // i.e. larger than iPhones 6,7,8 screen width
-    private let kPiwigoPicker1Day: Int = 24 * 60 * 60
-    private let kPiwigoPicker12Hours: Int = 12
-    private let kPiwigoPicker24Hours: Int = 24
-    private let kPiwigoPickerMinutesPerHour: Int = 60
-    private let kPiwigoPickerSecondsPerMinute: Int = 60
-    private let kPiwigoPickerNberOfLoops: Int = 2 * 5000 // i.e. ±5000 loops of picker
+    private let pwgPickerMinDate = "1922-01-01 00:00:00" // UTC
+    private let pwgPickerMaxDate = "2100-01-01 00:00:00" // UTC
+    private let pwgPickerWidthLimit: CGFloat = 375 // i.e. larger than iPhones 6,7,8 screen width
+    private let pwgPicker1Day: Int = 24 * 60 * 60
+    private let pwgPicker12Hours: Int = 12
+    private let pwgPicker24Hours: Int = 24
+    private let pwgPickerMinutesPerHour: Int = 60
+    private let pwgPickerSecondsPerMinute: Int = 60
+    private let pwgPickerNberOfLoops: Int = 2 * 5000 // i.e. ±5000 loops of picker
     
     enum PickerComponents : Int {
         case day
@@ -97,9 +97,9 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         // Define date picker limits in number of days
         formatter.dateFormat = "YYYY-MM-DD hh:mm:ss"
         formatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone?
-        pickerRefDate = formatter.date(from: kPiwigoPickerMinDate)!
-        let maxDate = formatter.date(from: kPiwigoPickerMaxDate)!
-        pickerMaxNberDays = Int(maxDate.timeIntervalSince(pickerRefDate) / Double(kPiwigoPicker1Day))
+        pickerRefDate = formatter.date(from: pwgPickerMinDate)!
+        let maxDate = formatter.date(from: pwgPickerMaxDate)!
+        pickerMaxNberDays = Int(maxDate.timeIntervalSince(pickerRefDate) / Double(pwgPicker1Day))
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -136,46 +136,46 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         daysInSec += TimeInterval(tzShift)
         let second = calendar.component(.second, from: pickerDate)
         daysInSec -= TimeInterval(second)
-        datePicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2 + second,
+        datePicker.selectRow(pwgPickerNberOfLoops * pwgPickerSecondsPerMinute / 2 + second,
                              inComponent: PickerComponents.second.rawValue, animated: false)
 
         let minute = calendar.component(.minute, from: pickerDate)
         daysInSec -= TimeInterval(minute * 60)
-        datePicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2 + minute,
+        datePicker.selectRow(pwgPickerNberOfLoops * pwgPickerMinutesPerHour / 2 + minute,
                              inComponent: PickerComponents.minute.rawValue, animated: false)
 
         var hour = calendar.component(.hour, from: pickerDate)
         daysInSec -= TimeInterval(hour * 3600)
         if is24hFormat {
-            datePicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPicker24Hours / 2 + hour,
+            datePicker.selectRow(pwgPickerNberOfLoops * pwgPicker24Hours / 2 + hour,
                                  inComponent: PickerComponents.hour.rawValue, animated: false)
         } else {
             if hour > 11 {
                 hour -= 12
                 datePicker.selectRow(1, inComponent: PickerComponents.AMPM.rawValue, animated: false)
             }
-            datePicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPicker12Hours / 2 + hour,
+            datePicker.selectRow(pwgPickerNberOfLoops * pwgPicker12Hours / 2 + hour,
                                  inComponent: PickerComponents.hour.rawValue, animated: false)
         }
 
-        daysInSec /= Double(kPiwigoPicker1Day)
+        daysInSec /= Double(pwgPicker1Day)
         datePicker.selectRow(lround(daysInSec), inComponent: PickerComponents.day.rawValue, animated: animated)
     }
 
-    private func getDateFromPicker() -> Date? {
+    private func getDateFromPicker() -> Date {
         // Date from first component
-        let dateInSeconds = Date(timeInterval: TimeInterval(datePicker.selectedRow(inComponent: PickerComponents.day.rawValue)) * Double(kPiwigoPicker1Day), since: pickerRefDate)
+        let dateInSeconds = Date(timeInterval: TimeInterval(datePicker.selectedRow(inComponent: PickerComponents.day.rawValue)) * Double(pwgPicker1Day), since: pickerRefDate)
 
         // Add seconds to reach time
         var hours: Int
         if is24hFormat {
-            hours = datePicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % kPiwigoPicker24Hours
+            hours = datePicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % pwgPicker24Hours
         } else {
-            hours = datePicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % kPiwigoPicker12Hours
+            hours = datePicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % pwgPicker12Hours
             hours += datePicker.selectedRow(inComponent: PickerComponents.AMPM.rawValue) * 12
         }
-        let minutes = datePicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % kPiwigoPickerMinutesPerHour
-        let seconds = datePicker.selectedRow(inComponent: PickerComponents.second.rawValue) % kPiwigoPickerSecondsPerMinute
+        let minutes = datePicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % pwgPickerMinutesPerHour
+        let seconds = datePicker.selectedRow(inComponent: PickerComponents.second.rawValue) % pwgPickerSecondsPerMinute
 
         // Date displayed in picker is in local timezone!
         let tzShift = NSTimeZone.local.secondsFromGMT(for: dateInSeconds)
@@ -201,9 +201,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 
     @IBAction func unsetDate(_ sender: Any) {
         // Close date picker
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didUnsetImageCreationDate)) ?? false {
-            delegate?.didUnsetImageCreationDate()
-        }
+        delegate?.didUnsetImageCreationDate()
     }
 
     @IBAction func setDateAsToday(_ sender: Any) {
@@ -211,12 +209,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let newDate = Date()
 
         // Update picker with new date
-        config(withDate: newDate, animated: true)
-
-        // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: newDate)
-        }
+        updatePicker(with: newDate)
     }
 
     @IBAction func incrementMonth(_ sender: Any) {
@@ -224,18 +217,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.month = 1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Add a month
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
     }
 
@@ -244,18 +229,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.month = -1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Removes a moonth
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-        }
-
-        // Update picker with new date
-        config(withDate: newDate, animated: true)
-
-        // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: newDate)
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
+            // Update picker with new date
+            updatePicker(with: newDate)
         }
     }
 
@@ -264,18 +241,10 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.year = 1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Adds a year
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
     }
 
@@ -284,19 +253,19 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let gregorian = Calendar(identifier: .gregorian)
         var comp = DateComponents()
         comp.year = -1
-        var newDate: Date? = nil
-        if let get = getDateFromPicker() {
-            // Removes a year
-            newDate = gregorian.date(byAdding: comp, to: get, wrappingComponents: false)
-
+        if let newDate = gregorian.date(byAdding: comp, to: getDateFromPicker(),
+                                        wrappingComponents: false) {
             // Update picker with new date
-            config(withDate: newDate, animated: true)
-
-            // Change date in parent view
-            if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-                delegate?.didSelectDate(withPicker: newDate)
-            }
+            updatePicker(with: newDate)
         }
+    }
+    
+    private func updatePicker(with newDate: Date) {
+        // Update picker with new date
+        config(withDate: newDate, animated: true)
+
+        // Change date in parent view
+        delegate?.didSelectDate(withPicker: newDate)
     }
 }
 
@@ -316,15 +285,15 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDataSource
             case .sepDH:
                 nberOfRows = 1
             case .hour:
-                nberOfRows = kPiwigoPickerNberOfLoops * (is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours)
+                nberOfRows = pwgPickerNberOfLoops * (is24hFormat ? pwgPicker24Hours : pwgPicker12Hours)
             case .sepHM:
                 nberOfRows = 1
             case .minute:
-                nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour
+                nberOfRows = pwgPickerNberOfLoops * pwgPickerMinutesPerHour
             case .sepMS:
                 nberOfRows = 1
             case .second:
-                nberOfRows = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute
+                nberOfRows = pwgPickerNberOfLoops * pwgPickerSecondsPerMinute
             case .AMPM:
                 nberOfRows = 2
             default:
@@ -346,7 +315,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         // Widths contants
         var dayWidth: CGFloat = 106.0
-        dayWidth += datePicker.bounds.size.width > kPiwigoComponentWidthLimit ? 60.0 : 0.0
+        dayWidth += datePicker.bounds.size.width > pwgPickerWidthLimit ? 60.0 : 0.0
         let sepDay: CGFloat = 10.0
         let time: CGFloat = 26.0
         let sepTime: CGFloat = 8.0
@@ -386,16 +355,16 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         var label = view as? UILabel
         if label == nil {
             label = UILabel()
-            label?.font = .piwigoFontNormal()
+            label?.font = .systemFont(ofSize: 17)
             label?.textColor = .piwigoColorLeftLabel()
         }
         switch PickerComponents(rawValue: component) {
             case .day:
                 var dateOfDay: Date? = nil
                 if let pickerRefDate = pickerRefDate {
-                    dateOfDay = Date(timeInterval: TimeInterval(row * kPiwigoPicker1Day), since: pickerRefDate)
+                    dateOfDay = Date(timeInterval: TimeInterval(row * pwgPicker1Day), since: pickerRefDate)
                 }
-                if datePicker.bounds.size.width > kPiwigoComponentWidthLimit {
+                if datePicker.bounds.size.width > pwgPickerWidthLimit {
                     if let dateOfDay = dateOfDay {
                         label?.text = formatterLong.string(from: dateOfDay)
                     }
@@ -409,19 +378,19 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
                 label?.text = "-"
                 label?.textAlignment = .center
             case .hour:
-                label?.text = String(format: "%02ld", row % (is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours))
+                label?.text = String(format: "%02ld", row % (is24hFormat ? pwgPicker24Hours : pwgPicker12Hours))
                 label?.textAlignment = .center
             case .sepHM:
                 label?.text = ":"
                 label?.textAlignment = .center
             case .minute:
-                label?.text = String(format: "%02ld", row % kPiwigoPickerMinutesPerHour)
+                label?.text = String(format: "%02ld", row % pwgPickerMinutesPerHour)
                 label?.textAlignment = .center
             case .sepMS:
                 label?.text = ":"
                 label?.textAlignment = .center
             case .second:
-                label?.text = String(format: "%02ld", row % kPiwigoPickerSecondsPerMinute)
+                label?.text = String(format: "%02ld", row % pwgPickerSecondsPerMinute)
                 label?.textAlignment = .center
             case .AMPM:
                 label?.text = ampmSymbols?[row]
@@ -438,20 +407,18 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         var newRow = row
         switch PickerComponents(rawValue: component) {
             case .hour:
-                let hoursPerDay = is24hFormat ? kPiwigoPicker24Hours : kPiwigoPicker12Hours
-                newRow = kPiwigoPickerNberOfLoops * hoursPerDay / 2 + row % hoursPerDay
+                let hoursPerDay = is24hFormat ? pwgPicker24Hours : pwgPicker12Hours
+                newRow = pwgPickerNberOfLoops * hoursPerDay / 2 + row % hoursPerDay
             case .minute:
-                newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2 + row % kPiwigoPickerMinutesPerHour
+                newRow = pwgPickerNberOfLoops * pwgPickerMinutesPerHour / 2 + row % pwgPickerMinutesPerHour
             case .second:
-                newRow = kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2 + row % kPiwigoPickerSecondsPerMinute
+                newRow = pwgPickerNberOfLoops * pwgPickerSecondsPerMinute / 2 + row % pwgPickerSecondsPerMinute
             default:
                 break
         }
         pickerView.selectRow(newRow, inComponent: component, animated: false)
 
         // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageDatePickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: getDateFromPicker())
-        }
+        delegate?.didSelectDate(withPicker: getDateFromPicker())
     }
 }

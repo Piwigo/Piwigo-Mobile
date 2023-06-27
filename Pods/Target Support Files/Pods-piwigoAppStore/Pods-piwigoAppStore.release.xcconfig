@@ -1,8 +1,9 @@
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/MGSwipeTableCell"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/MGSwipeTableCell"
+LIBRARY_SEARCH_PATHS = $(inherited) $(SDKROOT)/usr/lib/swift
 OTHER_CFLAGS = $(inherited) -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.modulemap"
-OTHER_LDFLAGS = $(inherited) -framework "CoreGraphics" -framework "Foundation" -framework "QuartzCore" -framework "UIKit"
+OTHER_LDFLAGS = $(inherited) -l"swiftCoreGraphics" -framework "CoreGraphics" -framework "Foundation" -framework "QuartzCore" -framework "UIKit"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS -Xcc -fmodule-map-file="${PODS_CONFIGURATION_BUILD_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.modulemap"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

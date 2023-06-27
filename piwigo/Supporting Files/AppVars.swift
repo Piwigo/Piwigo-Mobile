@@ -10,32 +10,42 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// Constants
+/// - Preferred popover view width on iPad
+let pwgPadSubViewWidth = CGFloat(375.0)
+///- Preferred Settings view width on iPad
+let pwgPadSettingsWidth = CGFloat(512.0)
+
+
 class AppVars: NSObject {
     
     // Singleton
-    @objc static let shared = AppVars()
+    static let shared = AppVars()
 
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
+    override init() {
+        // Deprecated data?
+        if let _ = UserDefaults.dataSuite.object(forKey: "memoryCache") {
+            UserDefaults.dataSuite.removeObject(forKey: "memoryCache")
+        }
+        if let _ = UserDefaults.dataSuite.object(forKey: "diskCache") {
+            UserDefaults.dataSuite.removeObject(forKey: "diskCache")
+        }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
     /// - App color palette (adopts light/dark modes as from iOS 13)
     @UserDefault("isDarkPaletteActive", defaultValue: false)
-    @objc var isDarkPaletteActive: Bool
+    var isDarkPaletteActive: Bool
     @UserDefault("switchPaletteAutomatically", defaultValue: true)
-    @objc var switchPaletteAutomatically: Bool
+    var switchPaletteAutomatically: Bool
     @UserDefault("switchPaletteThreshold", defaultValue: 40)
-    @objc var switchPaletteThreshold: Int
+    var switchPaletteThreshold: Int
     @UserDefault("isDarkPaletteModeActive", defaultValue: false)
-    @objc var isDarkPaletteModeActive: Bool
+    var isDarkPaletteModeActive: Bool
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
-    @objc var isLightPaletteModeActive: Bool
+    var isLightPaletteModeActive: Bool
     
     /// - App Lock option
     @UserDefault("isAppLockActive", defaultValue: false)
@@ -47,31 +57,25 @@ class AppVars: NSObject {
     
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
-    @objc var clearClipboardDelay: Int
+    var clearClipboardDelay: Int
 
-    /// - Memory cache size
-    let kPiwigoMemoryCacheInc = 8            // Slider increment
-    let kPiwigoMemoryCacheMin = 0            // Minimum size
-    let kPiwigoMemoryCacheMax = 256          // Maximum size
-    @UserDefault("memoryCache", defaultValue: 32)   // 4 x min = 32 MB
-    @objc var memoryCache: Int
-
-    /// - Disk cache size
-    let kPiwigoDiskCacheInc   = 64;          // Slider increment
-    let kPiwigoDiskCacheMin   = 128;         // Minimum size
-    let kPiwigoDiskCacheMax   = 2048;        // Maximum size
-    @UserDefault("diskCache", defaultValue: 512)    // 4 x min = 512 MB
-    @objc var diskCache: Int
-    
     /// - Remember which help views were watched
     @UserDefault("didWatchHelpViews", defaultValue: 0b00000000_00000000)
-    @objc var didWatchHelpViews: UInt16
+    var didWatchHelpViews: UInt16
+    
+    /// - Remember when the last help view was presented
+    @UserDefault("dateOfLastHelpView", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate)
+    var dateOfLastHelpView: TimeInterval
     
     /// - Request help for translating Piwigo once a month max
-    let kPiwigoOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
+    let pwgOneMonth: TimeInterval = 31.0 * 24.0 * 60.0 * 60.0     // i.e. 31 days
     @UserDefault("dateOfLastTranslationRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
-    @objc var dateOfLastTranslationRequest: TimeInterval
+    var dateOfLastTranslationRequest: TimeInterval
     
+    /// - Remember for which version the What's New in Piwigo view was presented
+    @UserDefault("didShowWhatsNewAppVersion", defaultValue: "2.12.7")
+    var didShowWhatsNewAppVersion: String
+
     
     // MARK: - Vars in UserDefaults / App Group
     // Application variables stored in UserDefaults / App Group
@@ -81,10 +85,10 @@ class AppVars: NSObject {
     // MARK: - Vars in Memory
     // Application variables kept in memory
     /// - Directionality of the language in the user interface of the app?
-    @objc var isAppLanguageRTL = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+    var isAppLanguageRTL = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
     
     /// - Is system dark palette active?
-    @objc var isSystemDarkModeActive = false
+    var isSystemDarkModeActive = false
     
     /// - Check for haptics compatibility at the app’s launch
     var supportsHaptics: Bool = false
@@ -92,12 +96,12 @@ class AppVars: NSObject {
     /// - App Lock status
     var isAppUnlocked: Bool = false
     
-    /// - Flag telling whether the app is already loading album data (case de several scenes)
-    var isReloadingData: Bool = false
-    
     /// - Number of albums in cache (excepted smart albums) calculated before connecting other scenes
     var nberOfAlbumsInCache: Int = 0
     
     /// - Flag informing the scene delegate that the user asked to logout
     var isLoggingOut: Bool = false
+    
+    /// - Flag indicating if an external display is connected
+    var inSingleDisplayMode: Bool = true
 }

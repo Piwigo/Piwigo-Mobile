@@ -9,32 +9,13 @@
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 class UploadImageTableViewCell: MGSwipeTableCell {
     
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-
-
     // MARK: - Variables
+    var localIdentifier = ""
     private let imagePlaceholder = UIImage(named: "placeholder")!
-    private var _localIdentifier = ""
-    var localIdentifier: String {
-        get {
-            _localIdentifier
-        }
-        set(localIdentifier) {
-            _localIdentifier = localIdentifier
-        }
-    }
-
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
 
@@ -66,10 +47,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
              .preparing, .preparingError, .preparingFail, .formatError, .prepared,
              .uploadingError, .uploadingFail:
             uploadingProgress?.setProgress(0.0, animated: false)
-        case .uploaded, .finishing, .finishingError, .finished:
+        case .uploaded, .finishing, .finishingError, .finishingFail, .finished, .moderated:
             uploadingProgress?.setProgress(1.0, animated: false)
-        default:
-            uploadingProgress?.setProgress(1.0, animated: false)
+        case .uploading:
+            break
         }
 
         // Right => Left swipe commands
@@ -81,31 +62,55 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         rightSwipeSettings.transition = .border
         switch upload.state {
         case .preparing, .prepared, .uploading, .uploaded, .finishing:
-            rightButtons = [];
+            rightButtons = [
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                        UploadManager.shared.findNextImageToUpload()
+                    }
+                    return true
+                })]
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
                     UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resume(failedUploads: [upload.objectID], completionHandler: { (_) in
-                            UploadManager.shared.findNextImageToUpload()
-                        })
+                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                        UploadManager.shared.findNextImageToUpload()
                     }
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
-        case .waiting, .deleted:
+        case .waiting:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
         case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
+                    let savingContext = upload.managedObjectContext
+                    savingContext?.delete(upload)
+                    try? savingContext?.save()
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                     return true
                 })]
         }
@@ -125,37 +130,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             prepareThumbnailFromAsset(for: upload, availableWidth: availableWidth)
         }
     }
-    
-    func update(with userInfo: [AnyHashable : Any]) {
-        // Top label
-        if let stateLabel: String = userInfo["stateLabel"] as! String? {
-            uploadInfoLabel.text = stateLabel
-        }
-
-        // Progress bar
-        if let progressFraction = userInfo["progressFraction"] as? Float {
-            if progressFraction == Float(0.0) {
-                uploadingProgress?.setProgress(0.0, animated: true)
-            } else {
-                let progress = max(uploadingProgress.progress, progressFraction)
-                uploadingProgress?.setProgress(progress, animated: true)
-            }
-        }
-
-        // Bottom label
-        if let errorDescription = userInfo["Error"] as? String,
-           errorDescription.isEmpty == false {
-            imageInfoLabel.text = errorDescription
-        }
-    }
-    
+        
     override func prepareForReuse() {
-        cellImage.image = imagePlaceholder
-        playBckg.isHidden = true
-        playImg.isHidden = true
-        uploadInfoLabel.text = ""
-        uploadingProgress?.setProgress(0, animated: false)
-        imageInfoLabel.text = ""
+        super.prepareForReuse()
     }
 
 
@@ -163,15 +140,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     /// Case of an image from the pasteboard
     private func prepareThumbnailFromFile(for upload:Upload, availableWidth:Int) {
         // Get file URL from identifier
-        let fileURL = UploadManager.shared.applicationUploadsDirectory
+        let fileURL = UploadManager.shared.uploadsDirectory
             .appendingPathComponent(upload.localIdentifier)
         
         // Task depends on file type
         var image: UIImage!
         if fileURL.lastPathComponent.contains("img") {
             // Case of a photo
-            playBckg.isHidden = true
-            playImg.isHidden = true
+            if playBckg.isHidden == false {
+                playBckg.isHidden = true
+                playImg.isHidden = true
+            }
 
             // Retrieve image data from file stored in the Uploads directory
             var fullResImageData: Data = Data()
@@ -210,22 +189,31 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Scale/crop image
-        cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
-        cellImage.layer.cornerRadius = 10 - 3
+        let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
+        if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
+            cellImage.image = finalImage
+        }
+        if cellImage.layer.cornerRadius != 7 {
+            cellImage.layer.cornerRadius = 10 - 3
+        }
 
         // Image available
+        var text = ""
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            imageInfoLabel.text = errorDescription(for: upload)
+            text = errorDescription(for: upload)
         } else if image == imagePlaceholder {
-            imageInfoLabel.text = ""
+            text = ""
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
-            imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
-                                               for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: maxSize)
+            text = getImageInfo(from: image ?? imagePlaceholder,
+                                for: availableWidth - 2*Int(indentationWidth),
+                                maxSize: maxSize)
+        }
+        if imageInfoLabel.text != text {
+            imageInfoLabel.text = text
         }
     }
 
@@ -242,15 +230,19 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Image asset available
+        var text = ""
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            imageInfoLabel.text = errorDescription(for: upload)
+            text = errorDescription(for: upload)
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: maxSize)
+            text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
+                                maxSize: maxSize)
+        }
+        if imageInfoLabel.text != text {
+            imageInfoLabel.text = text
         }
 
         // Cell image: retrieve data of right size and crop image
@@ -267,16 +259,18 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async(execute: {
-                if info?[PHImageErrorKey] != nil {
-                    let error = info?[PHImageErrorKey] as? Error
-                    if let description = error?.localizedDescription {
-                        print("=> Error : \(description)")
+                guard let image = result else {
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        print("••> Error : \(error.localizedDescription)")
                     }
-                    self.cellImage.image = self.imagePlaceholder
-                } else {
-                    self.cellImage.image = result
+                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
+                    return
                 }
-                self.cellImage.layer.cornerRadius = 10 - 3
+
+                self.changeCellImageIfNeeded(withImage: image)
+                if self.cellImage.layer.cornerRadius != 7 {
+                    self.cellImage.layer.cornerRadius = 10 - 3
+                }
             })
         })
         
@@ -284,8 +278,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         if imageAsset.mediaType == .video {
             addMovieIcon()
         } else {
-            playBckg.isHidden = true
-            playImg.isHidden = true
+            if playBckg.isHidden == false {
+                playBckg.isHidden = true
+                playImg.isHidden = true
+            }
         }
     }
     
@@ -327,7 +323,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: Date())
     }
 
+    private func changeCellImageIfNeeded(withImage image: UIImage) {
+        if let oldImage = self.cellImage.image {
+            if oldImage.isEqual(image) == false {
+                self.cellImage.image = image
+            }
+        } else {
+            self.cellImage.image = image
+        }
+    }
     
+
     // MARK: - Utilities
     private func errorDescription(for upload:Upload) -> String {
         // Display error message
@@ -357,8 +363,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Info depends on table width
-        if availableWidth > 414 {
-            // i.e. larger than iPhones 6,7 screen width
+        if availableWidth > 430 {
+            // i.e. larger than iPhone 14 Pro Max screen width
             return String(format: "%.0fx%.0f pixels - %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
         } else if availableWidth > 375 {
             return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
@@ -382,8 +388,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Info depends on table width
-        if availableWidth > 414 {
-            // i.e. larger than iPhones 6,7 screen width
+        if availableWidth > 430 {
+            // i.e. larger than iPhone 14 Pro Max screen width
             return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
         } else if availableWidth > 375 {
             return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))

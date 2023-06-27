@@ -9,7 +9,6 @@
 import Foundation
 
 // MARK: - Search Images
-@available(iOS 11.0, *)
 extension TagsViewController
 {
     func initSearchBar() {
@@ -22,6 +21,7 @@ extension TagsViewController
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
 
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
@@ -30,16 +30,21 @@ extension TagsViewController
 
 
 // MARK: - UISearchResultsUpdating Methods
-@available(iOS 11.0, *)
 extension TagsViewController: UISearchResultsUpdating
 {
     func updateSearchResults(for searchController: UISearchController) {
         if let query = searchController.searchBar.text {
-            // Update query
+            // Update persistent query string
             searchQuery = query
 
             // Do not update content before pushing view in tableView(_:didSelectRowAt:)
             if searchController.isActive {
+                // Update fetch requests and perform fetches
+                fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+                try? selectedTags.performFetch()
+                fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+                try? nonSelectedTags.performFetch()
+
                 // Shows filtered data
                 tableView.reloadData()
             }
@@ -49,7 +54,6 @@ extension TagsViewController: UISearchResultsUpdating
 
 
 // MARK: - UISearchBarDelegate Methods
-@available(iOS 11.0, *)
 extension TagsViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
@@ -61,5 +65,17 @@ extension TagsViewController: UISearchBarDelegate
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
+
+        // Update persistent query string
+        searchQuery = ""
+
+        // Update fetch requests and perform fetches
+        fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+        try? selectedTags.performFetch()
+        fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+        try? nonSelectedTags.performFetch()
+
+        // Reload tableview
+        tableView.reloadData()
     }
 }

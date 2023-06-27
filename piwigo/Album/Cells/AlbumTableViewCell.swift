@@ -22,161 +22,210 @@ class AlbumTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var handleButton: UIButton!
     @IBOutlet weak var recentBckg: UIImageView!
     @IBOutlet weak var recentImage: UIImageView!
-
-    func config(withAlbumData albumData: PiwigoAlbumData?) {
+    
+    func config(withAlbumData albumData: Album?) {
         // General settings
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
         selectionStyle = UITableViewCell.SelectionStyle.none
         topCut.backgroundColor = UIColor.piwigoColorBackground()
         bottomCut.backgroundColor = UIColor.piwigoColorBackground()
+        recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
+        recentImage.tintColor = UIColor.white
 
-        // Album name
+        // Album name (Piwigo orange colour)
         albumName.text = albumData?.name ?? "—?—"
-        albumName.font =  albumName.font.withSize(UIFont.fontSizeFor(label: albumName, nberLines: 2))
-
-        // Album description
-        if let description = albumData?.comment, description.isEmpty == false,
-           let catID = albumData?.albumId {
-            albumComment.attributedText = AlbumUtilities.headerLegend(for: catID)
-            albumComment.textColor = UIColor.piwigoColorText()
-        }
-        else {  // No comment
-            if NetworkVars.hasAdminRights {
-                albumComment.text = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
-                albumComment.textColor = UIColor.piwigoColorRightLabel()
-            } else {
-                albumComment.text = ""
-            }
-        }
-        albumComment.font = albumComment.font.withSize(UIFont.fontSizeFor(label: albumComment, nberLines: 3))
+        var fontSize = fontSizeFor(label: albumName, nberLines: 2)
+        albumName.font = UIFont.systemFont(ofSize: fontSize)
+        
+        // Album description (colour depends on text content)
+        albumComment.attributedText = getDescription(fromAlbumData: albumData)
+        fontSize = UIFont.fontSizeFor(label: albumComment, nberLines: 3)
+        albumComment.font = UIFont.systemFont(ofSize: fontSize)
 
         // Number of images and sub-albums
+        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
         numberOfImages.textColor = UIColor.piwigoColorText()
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        if albumData?.numberOfSubCategories ?? 0 == 0 {
-            // There are no sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.numberOfImages ?? 0))
-            numberOfImages.text = (albumData?.numberOfImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
-                : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
-        }
-        else if albumData?.totalNumberOfImages ?? 0 == 0 {
-            // There are no images but sub-albums
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
-            numberOfImages.text = (albumData?.numberOfSubCategories ?? 0 > 1)
-                ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
-                : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
-        }
-        else {
-            // There are images and sub-albums
-            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNumberOfImages ?? 0))
-            var nberOfImages = (albumData?.totalNumberOfImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberImages ?? "")
-                : String.localizedStringWithFormat(NSLocalizedString("singleImageCount", comment: "%@ photo"), nberImages ?? "")
-            nberOfImages += ", "
-            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.numberOfSubCategories ?? 0))
-            nberOfImages += (albumData?.numberOfSubCategories ?? 0 > 1)
-                ? String.localizedStringWithFormat(NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums ?? "")
-                : String.localizedStringWithFormat(NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums ?? "")
-            numberOfImages.text = nberOfImages
-        }
-        numberOfImages.font = numberOfImages.font.withSize(UIFont.fontSizeFor(label: numberOfImages, nberLines: 1))
+        numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if let _ = albumData, NetworkVars.hasAdminRights {
-            handleButton.isHidden = false
+        if albumData != nil, handleButton.isHidden == (albumData?.user?.hasAdminRights ?? false) {
+            handleButton.isHidden = !(albumData?.user?.hasAdminRights ?? false)
         }
 
         // Display recent icon when images have been uploaded recently
-        DispatchQueue.global(qos: .userInteractive).async {
-            guard let catId = albumData?.albumId,
-                  let dateLast = CategoriesData.sharedInstance()
-                                    .getDateLastOfCategories(inCategory: catId) else { return }
-            let timeSinceLastUpload: TimeInterval = dateLast.timeIntervalSinceNow
-            var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
-            indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
-            indexOfPeriod = max(0, indexOfPeriod)
-            let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
-            if timeSinceLastUpload > TimeInterval(-24*3600*periodInDays) {
-                DispatchQueue.main.async {
-                    self.recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
-                    self.recentImage.tintColor = UIColor.white
-                    self.recentBckg.isHidden = false
-                    self.recentImage.isHidden = false
-                }
-            }
+        let timeSinceLastUpload: TimeInterval = albumData?.dateLast.timeIntervalSinceNow ?? .greatestFiniteMagnitude
+        var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
+        indexOfPeriod = max(0, indexOfPeriod)
+        let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
+        let isRecent = timeSinceLastUpload > TimeInterval(-24*3600*periodInDays)
+        if self.recentBckg.isHidden == isRecent {
+            self.recentBckg.isHidden = !isRecent
+            self.recentImage.isHidden = !isRecent
+        }
+
+        // Can we add a representative if needed?
+        if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
+           let images = albumData?.images, let firstImage = images.first {
+            // Set representative (case where images were uploaded recently)
+            albumData?.thumbnailId = firstImage.pwgID
+            let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+            albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
-        // Display album image
-        let placeHolder = UIImage(named: "placeholder")
-
-        // Do we have a correct URL?
-        guard let thumbUrlStr: String = albumData?.albumThumbnailUrl,
-              let thumbURL = URL(string: thumbUrlStr) else {
+        // Do we have a representative?
+        let placeHolder = UIImage(named: "placeholder")!
+        guard let thumbUrl = albumData?.thumbnailUrl,
+              let thumbID = albumData?.thumbnailId,
+              let serverID = albumData?.user?.server?.uuid else {
             // No album thumbnail URL
-            albumData?.categoryImage = placeHolder
             backgroundImage.image = placeHolder
             return
         }
 
-        // Do we have the thumbnail in cache?
-        if let cachedImage: UIImage = albumData?.categoryImage,
-           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           (albumData?.categoryImage != placeHolder) {
-            // Album thumbnail in memory
-            backgroundImage.image = albumData?.categoryImage
-            return
+        // Retrieve image from cache or download it
+        self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.backgroundImage.bounds.size
+        let scale = self.backgroundImage.traitCollection.displayScale
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl as URL,
+                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
+        } failure: { _ in
+            DispatchQueue.main.async {
+                self.backgroundImage.image = placeHolder
+            }
+        }
+    }
+    
+    private func getDescription(fromAlbumData albumData: Album?) -> NSAttributedString {
+        var desc = NSMutableAttributedString()
+        // Any provided description?
+        if let description = albumData?.comment, description.string.isEmpty == false {
+            desc = NSMutableAttributedString(attributedString: description)
+            let wholeRange = NSRange(location: 0, length: desc.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+        }
+        else if albumData?.user?.hasAdminRights ?? false {
+            let noDesc = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
+            desc = NSMutableAttributedString(string: noDesc)
+            let wholeRange = NSRange(location: 0, length: desc.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorRightLabel(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+        }
+        return desc
+    }
+    
+    private func getNberOfImages(fromAlbumData albumData: Album?) -> String {
+        // Constants
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+        let singleImage = NSLocalizedString("severalImagesCount", comment: "%@ photos")
+        let severalImages = NSLocalizedString("singleImageCount", comment: "%@ photo")
+        let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
+        let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
+        // Determine string
+        var text = ""
+        if albumData?.nbSubAlbums ?? 0 == 0 {
+            // There are no sub-albums
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
+            text = (albumData?.nbImages ?? 0 > 1)
+                ? String.localizedStringWithFormat(singleImage, nberImages ?? "")
+                : String.localizedStringWithFormat(severalImages, nberImages ?? "")
+        }
+        else if albumData?.totalNbImages ?? 0 == 0 {
+            // There are no images but sub-albums
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
+            text = (albumData?.nbSubAlbums ?? 0 > 1)
+                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
+                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+        }
+        else {
+            // There are images and sub-albums
+            let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
+            text = (albumData?.totalNbImages ?? 0 > 1)
+                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
+                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
+            text += ", "
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
+            text += (albumData?.nbSubAlbums ?? 0 > 1)
+                ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
+                : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
+        }
+        return text
+    }
+    
+    private func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
+        // Check label is not nil
+        guard let label = label else { return 17.0 }
+        let font = UIFont.systemFont(ofSize: 17)
+        
+        // Check that we can adjust the font
+        if (label.adjustsFontSizeToFitWidth == false) ||
+            (label.minimumScaleFactor >= 1.0) {
+            // Font adjustment is disabled
+            return font.pointSize
         }
 
-        // Retrieve the image file
-        let size: CGSize = backgroundImage.bounds.size
-        let scale = CGFloat(fmax(1.0, backgroundImage.traitCollection.displayScale))
-        var thumbRequest = URLRequest(url: thumbURL)
-        thumbRequest.addValue("image/*", forHTTPHeaderField: "Accept")
-        backgroundImage.setImageWith(thumbRequest, placeholderImage: placeHolder)
-        { _, _, image in
-            DispatchQueue.global(qos: .userInitiated).async {
-                // Process saliency
-                var finalImage:UIImage = image
-                if #available(iOS 13.0, *) {
-                    if let croppedImage = image.processSaliency() {
-                        finalImage = croppedImage
-                    }
-                }
-                
-                // Reduce size?
-                let imageSize: CGSize = finalImage.size
-                if fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale {
-                    let albumImage = ImageUtilities.downsample(image: finalImage, to: size, scale: scale)
-                    DispatchQueue.main.async {
-                        albumData?.categoryImage = albumImage
-                        self.backgroundImage.image = albumImage
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        albumData?.categoryImage = finalImage
-                        self.backgroundImage.image = finalImage
-                    }
+        // Should we scale the font?
+        var unadjustedWidth: CGFloat = 1.0
+        if let text = label.text {
+            unadjustedWidth = text.size(withAttributes: [NSAttributedString.Key.font: font]).width
+        }
+        let width: CGFloat = label.frame.size.width
+        let height: CGFloat = unadjustedWidth / CGFloat(nberLines)
+        var scaleFactor: CGFloat = width / height
+        if scaleFactor >= 1.0 {
+            // The text already fits at full font size
+            return font.pointSize
+        }
+
+        // Respect minimumScaleFactor
+        scaleFactor = fmax(scaleFactor, label.minimumScaleFactor)
+        let newFontSize: CGFloat = font.pointSize * scaleFactor
+
+        // Uncomment this if you insist on integer font sizes
+        //newFontSize = floor(newFontSize);
+
+        return newFontSize
+    }
+
+    private func configImage(_ image: UIImage) {
+        // Process image in the background
+        DispatchQueue.global(qos: .userInitiated).async {
+            // Process saliency
+            var finalImage:UIImage = image
+            if #available(iOS 13.0, *) {
+                if let croppedImage = image.processSaliency() {
+                    finalImage = croppedImage
                 }
             }
-        } failure: { _, _, error in
-            #if DEBUG
-            debugPrint("setupWithAlbumData — Fail to get album image at \(albumData?.albumThumbnailUrl ?? "—?—")")
-            #endif
+
+            // Set image
+            DispatchQueue.main.async {
+                self.backgroundImage.image = finalImage
+            }
         }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        backgroundImage.cancelImageDownloadTask()
-        backgroundImage.image = UIImage(named: "placeholder")
-        albumName.text = ""
-        numberOfImages.text = ""
-        recentBckg.isHidden = true
-        recentImage.isHidden = true
-        handleButton.isHidden = true
     }
 }

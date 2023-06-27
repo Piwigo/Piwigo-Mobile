@@ -1,4 +1,5 @@
-Here is the address of the server requiring credentials: https://lelievre-berna.net/Piwigo/
-And here are servers you can try without credentials: https://lesmonier.piwigo.com, https://geoffroysudre.piwigo.com
 
-The privacy policy is provided in the app in Chinese (Simplified), Danish, Dutch,  English, French, German, Indonesian, Italian, Japanese, Polish, Russian, Spanish and Swedish.
+Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/Dev/
+And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.
+
+The privacy policy is provided in the app in Chinese (Simplified), Danish, Dutch,  English, French, German, Hungarian, Indonesian, Italian, Japanese, Polish, Russian, Spanish and Swedish.

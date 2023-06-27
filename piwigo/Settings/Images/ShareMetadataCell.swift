@@ -22,11 +22,11 @@ class ShareMetadataCell: UITableViewCell {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
-        textLabel?.font = .piwigoFontNormal()
+        textLabel?.font = .systemFont(ofSize: 17)
 
         // Activity name
         leftLabel.text = activityName ?? "Unknown Activity"
-        leftLabel.font = .piwigoFontNormal()
+        leftLabel.font = .systemFont(ofSize: 17)
         leftLabel.textColor = .piwigoColorLeftLabel()
 
         // Change image according to state

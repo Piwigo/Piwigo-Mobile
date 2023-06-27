@@ -25,7 +25,6 @@
 "alertRetryButton" = "Retry";
 "alertNextButton" = "Næste billede";
 "alertTryButton" = "Forsøg";
-"alertClearButton" = "Slet";
 
 // HUD views
 "loadingHUD_label" = "Indlæser…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Advarsel";
 "CoreDataStore_WarningMessage" = "En alvorlig applikationsfejl opstod under Piwigo forsøgte at læse data-cachen. En ny cache er derfor blevet oprettet.";
 "CoreDataFetch_DigestError" = "Kunne ikke hente data.";
+"CoreData_MigrationProgress" = "Migration i gang...";
+"Coredata_MigrationPleaseWait" = "Vi migrerer i øjeblikket nogle af dine data. Vent venligst til den er færdig. Du må ikke lukke programmet.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Vil kassere en brugerkonto mangler et gyldigt brugernavn.";
+"CoreDataFetch_UserUnknownStatus" = "Kunne ikke hente Community udvidelsens parametre.\nPrøv at logge ind igen.";
+"CoreData_UserCreateFailed" = "Kunne ikke oprette et nyt brugerobjekt.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fejl ved hentning af albums!";
+"CoreDataFetch_AlbumMissingData" = "Fundet og vil kassere et album der mangler et gyldigt ID eller navn.";
+"CoreDataFetch_AlbumCreateFailed" = "Kunne ikke oprette et nyt albumobjekt.";
+"CoreData_AlbumNotFound" = "Albummet er ikke i cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Hent billeder/videoer fejl!";
+"CoreDataFetch_ImageMissingData" = "Fundet og vil kassere et foto/video der mangler et gyldigt ID eller URL.";
+"CoreDataFetch_ImageCreateFailed" = "Kunne ikke oprette et nyt billedobjekt.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Fejl ved henting af tags!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Godkendelse Mislykkedes";
 "sessionStatusError_message" = "Log ind ikke godkendt af serveren. Prøv at logge ind igen.";
 
-"serverCommunityError_title" = "Community Fejl";
-"serverCommunityError_message" = "Kunne ikke hente Community udvidelsens parametre. Prøv at logge ind igen.";
-
 // Logout
 "logoutConfirmation_title" = "Log ud";
 "logoutConfirmation_message" = "Er du sikker på at du vil logge ud?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ under-albums";
 
 // Albums view
+"categoryUpdating" = "Opdaterer…";
+"categoryUpdatedOn" = "Opdateret d. %@";
+"categoryUpdatedAt" = "Opdateret %@";
+"categoryUpdatedNow" = "Netop opdateret";
 "categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo.\nPrøv at trække ned for at opdatere eller log ind igen.";
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Slet tomt album";
 "deleteCategory_noImages" = "Behold billeder";
 "deleteCategory_orphanedImages" = "Slet forældreløse";
+"deleteCategory_singleOrphanedImage" = "Slet Forældreløse";
+"deleteCategory_severalOrphanedImages" = "Slet %@ forældreløse";
 "deleteCategory_allImages" = "Slet %@ billeder";
 "deleteCategoryConfirm_title" = "Er du sikker?";
 "deleteCategoryConfirm_message" = "Angiv antallet af billeder for at slette dette album. Antal billeder: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
 "editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
+"help_externalDisplay" = "Tryk på det billede, du ønsker at vise her.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
 "editImageDetailsError_message" = "Kunne ikke opdatere dine ændringer på din server. Prøv igen?";
 "imageDetailsFetchError_title" = "Kan ikke læse billeddetajler";
-"imageDetailsFetchError_retryMessage" = "Hentning af billeddata mislykkedes. Prøv igen?";
+"imageDetailsFetchError_message" = "Hentning af billeddata mislykkedes.";
 "imageDetailsFetchError_continueMessage" = "Hentning af billeddata mislykkedes. Fortsæt?";
 
 // Image privacy levels
@@ -722,9 +743,9 @@
 "settings_appLock" = "App Lås";
 "settings_appLockEnter" = "Indtast Kode";
 "settings_appLockVerify" = "Bekræft Kode";
-"settings_appLockModify" = "Ændre Kode";
+"settings_appLockModify" = "Skift Kode";
 "settings_appLockInfo" = "Med App Lock kræves en enhedsspecifik kode for at få adgang til appen. Hvis du mister denne kode, skal du geninstallere appen.";
-"settings_passcodeInfo" = "Koden er adskilt fra adgangskoden til din Piwigo konto.";
+"settings_passcodeInfo" = "Koden er forskellig fra adgangskoden til din Piwigo konto.";
 
 "settings_biometricsReason" = "Få adgang til dine Piwigo-albummer";
 "settings_biometricsTouchID" = "Touch ID";
@@ -733,7 +754,7 @@
 "settings_biometricsFaceIDinfo" = "Brug ansigts-id som et alternativ til din App Lock adgangskode.";
 
 "settings_clearClipboard" = "Ryd Udklipsholder";
-"settings_clearClipboardInfo" = "Vælg den forsinkelse, hvorefter udklipsholderen vil blive ryddet.";
+"settings_clearClipboardInfo" = "Vælg den forsinkelse, efter hvilken udklipsholderen vil blive ryddet.";
 "settings_clearClipboard10sUnit" = "Efter 10 s";
 "settings_clearClipboard10sText" = "Efter 10 sekunder";
 "settings_clearClipboard30sUnit" = "Efter 30 s";
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Aldrig";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";
-"settings_cacheDisk" = "Disk";
-"settings_cacheMemory" = "Hukommelse";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "Ryd cache";
-"settings_cacheClearAll" = "Ryd foto cache";
+"settings_cacheClearAll" = "Ryd alle";
 "settings_cacheClearMsg" = "Er du sikker på du vil slette billedcache? Dette vil bevirke at albums og billeder skal genindlæses ved næste visning.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Overordnede Albums";
 "help08_text" = "Langt tryk på tilbage-knappen for at vise listen over overordnede albummer.";
 "help08_text2" = "Tryk på det overordnede album efter eget valg for at hoppe tilbage til det.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Hvad er nyt i Piwigo";
+"whatsNew_title1" = "Ny Cache";
+"whatsNew_desc1" = "Cache management fuldt omskrevet for at forbedre brugeroplevelsen og bringe offline browsing.";
+"whatsNew_title2" = "Dubler skaerm";
+"whatsNew_desc2" = "Se dine fotos og videoer på et eksternt display.";
+"whatsNew_continue" = "Fortsæt";

@@ -6,39 +6,57 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import MobileCoreServices
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
-@objc
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        provider.fetchedResultsControllerDelegate = self
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider = UploadProvider.shared
         return provider
+    }()
+    
+    lazy var fetchUploadRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves only non-completed upload requests
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        return fetchRequest
+    }()
+
+    public lazy var uploads: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
+                                                 managedObjectContext: self.mainContext,
+                                                 sectionNameKeyPath: nil,
+                                                 cacheName: nil)
+        uploads.delegate = self
+        return uploads
     }()
     
 
     // MARK: - View
-    @objc func setCategoryId(_ categoryId: Int) {
-        _categoryId = categoryId
-    }
-    private var _categoryId: Int?
-    private var categoryId: Int {
-        get {
-            return _categoryId ?? AlbumVars.shared.defaultCategory
-        }
-        set(categoryId) {
-            _categoryId = categoryId
-        }
-    }
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -47,16 +65,23 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         
     // Collection of images in the pasteboard
     private var pbObjects = [PasteboardObject]()      // Objects in pasteboard
-
+    private lazy var pasteboardTypes : [String] = {
+        if #available(iOS 14.0, *) {
+            return [UTType.image.identifier, UTType.movie.identifier]
+        } else {
+            // Fallback on earlier version
+            return [kUTTypeImage as String, kUTTypeMovie as String]
+        }
+    }()
+    
     // Cached data
     private let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
-    private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
-    private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    private var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     
     // Selection data
-    private var selectedImages = [UploadProperties?]()                      // Array of images to upload
-    private var sectionState: SelectButtonState = .none                     // To remember the state of the section
-    private var imagesBeingTouched = [IndexPath]()                          // Array of indexPaths of touched images
+    private var selectedImages = [UploadProperties?]()                  // Array of images to upload
+    private var sectionState: SelectButtonState = .none                 // To remember the state of the section
+    private var imagesBeingTouched = [IndexPath]()                      // Array of indexPaths of touched images
     
     // Buttons
     private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
@@ -69,23 +94,20 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
 
     // MARK: - View Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Pause UploadManager while sorting images
-        UploadManager.shared.isPaused = true
-        
-        // We collect a non-indexed list of images in the upload queue
+        // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection
-        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {
-            uploadsInQueue = uploads.map {($0.md5Sum, $0.state)}
+        do {
+            try uploads.performFetch()
+        } catch {
+            print("Error: \(error)")
         }
-                                                                                        
+
         // Retrieve pasteboard object indexes and types, then create identifiers
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                             kUTTypeMovie as String]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Initialise cached indexed uploads
@@ -171,28 +193,28 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()
 
-        // Navigation bar
+        // Navigation bar appearance
+        let navigationBar = navigationController?.navigationBar
+        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationBar?.titleTextAttributes = attributes
+        navigationBar?.prefersLargeTitles = false
 
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+            navigationBar?.prefersLargeTitles = false
         }
 
         // Case of an iPhone
@@ -216,9 +238,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Pause UploadManager while sorting images
-        UploadManager.shared.isPaused = true
-
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -238,10 +257,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Prevent device from sleeping if uploads are in progress
-        let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
-                                                    .uploading, .uploaded, .finishing]
-        let uploadsToPerform:Int = uploadsProvider.fetchedResultsController
-            .fetchedObjects?.map({ uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
+        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
+                                           .uploading, .uploaded, .finishing]
+        let uploadsToPerform = (uploads.fetchedObjects ?? [])
+            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
         }
@@ -379,7 +398,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
         // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String, "public.movie"]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Reinitialise cached indexed uploads, deselect images
@@ -447,8 +466,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
 
             // Update upload cache
-            if let upload = self.uploadsInQueue.first(where: { $0?.0 == pbObject.md5Sum }) {
-                self.indexedUploadsInQueue[indexPath.row] = upload
+            if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
+                self.indexedUploadsInQueue[indexPath.row] = (upload.localIdentifier, upload.md5Sum, upload.state)
             }
 
             // Update cell image if operation was successful
@@ -485,7 +504,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             /// - restart UplaodManager activity
             if self.pendingOperations.preparationsInProgress.isEmpty {
                 DispatchQueue.main.async {
-                    self.localImagesCollection.reloadSections([0])
+                    if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+                        header.setButtonTitle(forState: .select)
+                    }
                 }
                 if UploadManager.shared.isPaused {
                     UploadManager.shared.isPaused = false
@@ -504,15 +525,15 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     private func getUploadStateOfImage(at index: Int,
-                                       for cell: LocalImageCollectionViewCell) -> kPiwigoUploadState? {
-        var state: kPiwigoUploadState? = nil
+                                       for cell: LocalImageCollectionViewCell) -> pwgUploadState? {
+        var state: pwgUploadState? = nil
         if pendingOperations.preparationsInProgress.isEmpty,
            index < indexedUploadsInQueue.count {
             // Indexed uploads available
-            state = indexedUploadsInQueue[index]?.1
+            state = indexedUploadsInQueue[index]?.2
         } else {
             // Use non-indexed data (might be quite slow)
-            state = uploadsInQueue.first(where: { $0?.0 == cell.md5sum })??.1
+            state = (uploads.fetchedObjects ?? []).first(where: { $0.md5Sum == cell.md5sum })?.state
         }
         return state
     }
@@ -571,19 +592,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     @available(iOS 14, *)
     private func getMenuForReuploadingPhotos() -> UIMenu? {
-        // Don't provide access to the Trash button until the preparation work is not done
-        if !pendingOperations.preparationsInProgress.isEmpty { return nil }
         
-        // Check if there are uploaded photos to delete
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-            let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
-            for index in 0..<indexedUploads.count {
-                if completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) == nil {
-                    return nil
-                }
-            }
-        }
+        // Check if there are uploaded photos to re-upload
+        if !canReUploadImages() { return nil }
         
         // Propose option for re-uploading photos
         let reUpload = UIAction(title: NSLocalizedString("localImages_reUploadTitle", comment: "Re-upload"),
@@ -602,27 +613,29 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Swap "Re-upload" option
         reUploadAllowed = !(self.reUploadAllowed)
         updateActionButton()
-
+        
         // No further operation if re-uploading is allowed
         if reUploadAllowed { return }
-
+        
         // Deselect already uploaded photos if needed
         var didChangeSelection = false
-        for index in 0..<selectedImages.count {
-            if selectedImages[index] == nil { continue }
-            // Can we select this image?
-            if pendingOperations.preparationsInProgress.isEmpty,
-               index < indexedUploadsInQueue.count {
+        if pendingOperations.preparationsInProgress.isEmpty,
+           selectedImages.count < indexedUploadsInQueue.count {
+            for index in 0..<selectedImages.count {
                 // Indexed uploads available
-                if indexedUploadsInQueue[index] != nil {
+                if let upload = indexedUploadsInQueue[index],
+                   [.finished, .moderated].contains(upload.2) {
                     // Deselect cell
                     selectedImages[index] = nil
                     didChangeSelection = true
                 }
-            } else {
-                // Use non-indexed data (might be quite slow)
+            }
+        } else {
+            // Use non-indexed data (might be quite slow)
+            let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+            for index in 0..<selectedImages.count {
                 if let localIdentifier = selectedImages[index]?.localIdentifier,
-                   let _ = uploadsInQueue.firstIndex(where: { $0?.0 == localIdentifier }) {
+                   let _ = completed.firstIndex(where: { $0.localIdentifier == localIdentifier }) {
                     selectedImages[index] = nil
                     didChangeSelection = true
                 }
@@ -636,7 +649,22 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
+    private func canReUploadImages() -> Bool {
+        // Don't provide access to the Trash button until the preparation work is not done
+        if !pendingOperations.preparationsInProgress.isEmpty { return false }
 
+        // Check if there are uploaded photos to delete
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+        for index in 0..<indexedUploads.count {
+            if let _ = completed.first(where: {$0.md5Sum == indexedUploads[index].1}) {
+                return true
+            }
+        }
+        return false
+    }
+
+    
     // MARK: - Upload Images
 
     @objc func didTapUploadButton() {
@@ -652,13 +680,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
             uploadSwitchVC.canDeleteImages = false
-
-            // Can the user create tags?
-            let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && albumData?.hasUploadRights ?? false) {
-                uploadSwitchVC.hasTagCreationRights = true
-            }
 
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
@@ -681,8 +702,20 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update navigation bar
         updateNavBar()
 
-        // Update collection
-        localImagesCollection.reloadData()
+        // Deselect visible cells
+        localImagesCollection.visibleCells.forEach { cell in
+            if let cell = cell as? LocalImageCollectionViewCell {
+                cell.update(selected: false)
+            }
+        }
+        
+        // Update button
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? PasteboardImagesHeaderReusableView {
+                header.setButtonTitle(forState: .select)
+            }
+        }
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -719,30 +752,27 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 return
             }
 
-            // Get upload state of image
-            let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-
             // Update the selection if not already done
             if !imagesBeingTouched.contains(indexPath) {
 
                 // Store that the user touched this cell during this gesture
                 imagesBeingTouched.append(indexPath)
 
+                // Get upload state of image
+                let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
+
                 // Update the selection state
                 if let _ = selectedImages[indexPath.item] {
                     selectedImages[indexPath.item] = nil
                     cell.update(selected: false, state: uploadState)
                 } else {
-                    // Can we re-upload this image?
-                    if uploadState != nil {
-                        if !reUploadAllowed { return }
-                        if ![.finished, .moderated].contains(uploadState) { return }
+                    // Can we upload or re-upload this image?
+                    if (uploadState == nil) || reUploadAllowed {
+                        // Select the cell
+                        selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                          category: categoryId)
+                        cell.update(selected: true, state: uploadState)
                     }
-
-                    // Select the cell
-                    selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                      category: categoryId)
-                    cell.update(selected: true, state: uploadState)
                 }
 
                 // Update navigation bar
@@ -760,7 +790,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    func updateSelectButton(completion: @escaping () -> Void) {
+    func updateSelectButton() {
         
         // Number of images in section
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
@@ -768,7 +798,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Job done if there is no image presented
         if nberOfImagesInSection == 0 {
             sectionState = .none
-            completion()
             return
         }
         
@@ -776,20 +805,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
         if nberOfImagesInSection == nberOfSelectedImagesInSection {
             // All images are selected
-            if sectionState != .deselect {
-                sectionState = .deselect
-                completion()
-            }
+            sectionState = .deselect
             return
         }
 
         // Can we calculate the number of images already in the upload queue?
         if pendingOperations.preparationsInProgress.isEmpty == false {
             // Keep Select button disabled
-            if sectionState != .none {
-                sectionState = .none
-                completion()
-            }
+            sectionState = .none
             return
         }
 
@@ -803,22 +826,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update state of Select button only if needed
         if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
             // All images are in the upload queue or already downloaded
-            if sectionState != .none {
-                sectionState = .none
-                completion()
-            }
+            sectionState = .none
         } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
             // All images are either selected or in the upload queue
-            if sectionState != .deselect {
-                sectionState = .deselect
-                completion()
-            }
+            sectionState = .deselect
         } else {
             // Not all images are either selected or in the upload queue
-            if sectionState != .select {
-                sectionState = .select
-                completion()
-            }
+            sectionState = .select
         }
     }
 
@@ -834,12 +848,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 return view
             }
             
-            // Update section if available data
-            updateSelectButton(completion: {})
-            
             // Configure the header
-            let selectState = pendingOperations.preparationsInProgress.isEmpty ? sectionState : .none
-            header.configure(with: selectState)
+            updateSelectButton()
+            header.configure(with: sectionState)
             header.headerDelegate = self
             return header
         }
@@ -915,10 +926,19 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             image = pbObjects[indexPath.row].image
             cell.md5sum = pbObjects[indexPath.row].md5Sum
         }
-        else if let data = UIPasteboard.general.data(forPasteboardType: kUTTypeImage as String,
-                                                     inItemSet: IndexSet(integer: indexPath.row))?.first {
-            image = UIImage(data: data) ?? imagePlaceholder
-            cell.md5sum = ""
+        else {
+            var imageType = ""
+            if #available(iOS 14.0, *) {
+                imageType = UTType.image.identifier
+            } else {
+                // Fallback on earlier version
+                imageType = kUTTypeImage as String
+            }
+            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
+                                                    inItemSet: IndexSet(integer: indexPath.row))?.first {
+                image = UIImage(data: data) ?? imagePlaceholder
+                cell.md5sum = ""
+            }
         }
 
         // Configure cell
@@ -942,17 +962,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
-           localIdentifier.count > 0,
+        if let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
+           let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,
+           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}),
            let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-            for indexPath in indexPathsForVisibleItems {
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-                   cell.localIdentifier == localIdentifier {
-                    cell.setProgress(progressFraction, withAnimation: true)
-                    return
-                }
-            }
+            cell.setProgress(progressFraction, withAnimation: true)
         }
     }
 
@@ -963,7 +977,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             return
         }
 
-        // Get index and upload state of image
+        // Get upload state of image
         let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
 
         // Update cell and selection
@@ -972,16 +986,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             selectedImages[indexPath.item] = nil
             cell.update(selected: false, state: uploadState)
         } else {
-            // Can we  re-upload this image?
-            if uploadState != nil {
-                if !reUploadAllowed { return }
-                if ![.finished, .moderated].contains(uploadState) { return }
+            // Can we upload or re-upload this image?
+            if (uploadState == nil) || reUploadAllowed {
+                // Select the image
+                selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                  category: categoryId)
+                cell.update(selected: true, state: uploadState)
             }
-
-            // Select the image
-            selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                              category: categoryId)
-            cell.update(selected: true, state: uploadState)
         }
 
         // Update navigation bar
@@ -991,9 +1002,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         cell.reloadInputViews()
 
         // Update state of Select button if needed
-        updateSelectButton(completion: {
-            self.localImagesCollection.reloadSections(IndexSet(integer: 0))
-        })
+        updateSelectButton()
+        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+            header.setButtonTitle(forState: sectionState)
+        }
     }
 
 
@@ -1023,8 +1035,23 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Update navigation bar
         self.updateNavBar()
 
-        // Update collection
-        self.localImagesCollection.reloadSections(IndexSet(integer: 0))
+        // Select or deselect visible cells (only one section shown)
+        localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
+            // Get cell at index path
+            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
+                // Select or deselect the cell
+                let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
+                cell.update(selected: sectionState == .deselect, state: uploadState)
+            }
+        }
+        
+        // Update button (only one section shown)
+        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        headers.forEach { header in
+            if let header = header as? PasteboardImagesHeaderReusableView {
+                header.setButtonTitle(forState: sectionState)
+            }
+        }
     }
 
 
@@ -1032,71 +1059,66 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters and upload settings
         for index in 0..<selectedImages.count {
-            if let request = selectedImages[index] {
-                var updatedRequest = request
+            guard var updatedRequest = selectedImages[index] else { continue }
                 
-                // Image parameters
-                if let imageTitle = imageParameters["title"] as? String {
-                    updatedRequest.imageTitle = imageTitle
-                }
-                if let author = imageParameters["author"] as? String {
-                    updatedRequest.author = author
-                }
-                if let privacy = imageParameters["privacy"] as? kPiwigoPrivacy {
-                    updatedRequest.privacyLevel = privacy
-                }
-                if let tagIds = imageParameters["tagIds"] as? String {
-                    updatedRequest.tagIds = tagIds
-                }
-                if let comment = imageParameters["comment"] as? String {
-                    updatedRequest.comment = comment
-                }
-                
-                // Upload settings
-                if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
-                    updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-                }
-                if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
-                    updatedRequest.resizeImageOnUpload = resizeImageOnUpload
-                    if resizeImageOnUpload {
-                        if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
-                            updatedRequest.photoMaxSize = photoMaxSize
-                        }
-                    } else {
-                        updatedRequest.photoMaxSize = 5 // i.e. 4K
-                    }
-                }
-                if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
-                    updatedRequest.compressImageOnUpload = compressImageOnUpload
-                }
-                if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
-                    updatedRequest.photoQuality = photoQuality
-                }
-                if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
-                    updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-                }
-                if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
-                    updatedRequest.defaultPrefix = defaultPrefix
-                }
-                if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
-                    updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
-                }
-
-                selectedImages[index] = updatedRequest
+            // Image parameters
+            if let imageTitle = imageParameters["title"] as? String {
+                updatedRequest.imageTitle = imageTitle
             }
+            if let author = imageParameters["author"] as? String {
+                updatedRequest.author = author
+            }
+            if let privacy = imageParameters["privacy"] as? pwgPrivacy {
+                updatedRequest.privacyLevel = privacy
+            }
+            if let tagIds = imageParameters["tagIds"] as? String {
+                updatedRequest.tagIds = tagIds
+            }
+            if let comment = imageParameters["comment"] as? String {
+                updatedRequest.comment = comment
+            }
+            
+            // Upload settings
+            if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
+                updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
+            }
+            if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
+                updatedRequest.resizeImageOnUpload = resizeImageOnUpload
+                if resizeImageOnUpload {
+                    if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
+                        updatedRequest.photoMaxSize = photoMaxSize
+                    }
+                } else {
+                    updatedRequest.photoMaxSize = 5 // i.e. 4K
+                }
+            }
+            if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
+                updatedRequest.compressImageOnUpload = compressImageOnUpload
+            }
+            if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
+                updatedRequest.photoQuality = photoQuality
+            }
+            if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
+                updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
+            }
+            if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
+                updatedRequest.defaultPrefix = defaultPrefix
+            }
+            if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
+                updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
+            }
+
+            selectedImages[index] = updatedRequest
         }
         
         // Add selected images to upload queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
-                // Show an alert if there was an error.
+        UploadManager.shared.backgroundQueue.async {
+            self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
                 guard let error = error else {
                     // Restart UploadManager activities
-                    if UploadManager.shared.isPaused {
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.isPaused = false
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.findNextImageToUpload()
-                        }
+                        UploadManager.shared.findNextImageToUpload()
                     }
                     return
                 }
@@ -1122,89 +1144,73 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-//            print("••• LocalImagesViewController controller:insert...")
+            print("••> PasteboardImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
-            if let upload:Upload = anObject as? Upload {
-                // Append upload to non-indexed upload queue
-                if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
-                } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)))
-                }
-                
-                // Get index of selected image, deselect it and add request to cache
-                if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
-                    // Deselect image
-                    selectedImages[indexOfUploadedImage] = nil
-                    // Add upload request to cache
-                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
-                }
-                
-                // Update corresponding cell
-                updateCell(for: upload)
+            guard let upload:Upload = anObject as? Upload else { return }
+
+            // Get index of selected image, deselect it and add request to cache
+            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
+                // Deselect image
+                selectedImages[index] = nil
+                // Add upload request to cache
+                indexedUploadsInQueue[index] = (upload.localIdentifier, upload.md5Sum, upload.state)
             }
+            
+            // Update corresponding cell
+            updateCellAndSectionHeader(for: upload)
         case .delete:
-//            print("••• LocalImagesViewController controller:delete...")
+            print("••> PasteboardImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
-            if let upload:Upload = anObject as? Upload {
-                // Remove upload from non-indexed upload queue
-                if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue.remove(at: index)
-                }
-                // Remove image from indexed upload queue
-                if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexOfUploadedImage] = nil
-                }
-                // Update corresponding cell
-                updateCell(for: upload)
+            guard let upload:Upload = anObject as? Upload else { return }
+
+            // Remove image from indexed upload queue
+            if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
+                indexedUploadsInQueue[index] = nil
             }
+            // Remove image from selection if needed
+            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
+                // Deselect image
+                selectedImages[index] = nil
+            }
+            // Update corresponding cell
+            updateCellAndSectionHeader(for: upload)
         case .move:
-//            print("••• LocalImagesViewController controller:move...")
-            break
+            assertionFailure("••> PasteboardImagesViewController: Unexpected move!")
         case .update:
-//            print("••• LocalImagesViewController controller:update...")
+            print("••• PasteboardImagesViewController controller:update...")
             // Update upload request and cell
-            if let upload:Upload = anObject as? Upload {
-                // Update upload in non-indexed upload queue
-                if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
-                }
-                // Update upload in indexed upload queue
-                if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
-                }
-                // Update corresponding cell
-                updateCell(for: upload)
+            guard let upload:Upload = anObject as? Upload else { return }
+
+            // Update upload in indexed upload queue
+            if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
+                indexedUploadsInQueue[indexOfUploadedImage]?.1 = upload.md5Sum
+                indexedUploadsInQueue[indexOfUploadedImage]?.2 = upload.state
             }
+            // Update corresponding cell
+            updateCellAndSectionHeader(for: upload)
         @unknown default:
-            fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
+            assertionFailure("••> PasteboardImagesViewController: unknown NSFetchedResultsChangeType!")
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        print("••• LocalImagesViewController controller:didChangeContent...")
+//        print("••• PasteboardImagesViewController controller:didChangeContent...")
         // Update navigation bar
         updateNavBar()
     }
 
-    func updateCell(for upload: Upload) {
+    func updateCellAndSectionHeader(for upload: Upload) {
         DispatchQueue.main.async {
-            // Get indices of visible items
-            let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
-            
-            // Loop over the visible items
-            for indexPath in indexPathsForVisibleItems {
-                // Identify cell to be updated (if presented)
-                if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-                   cell.localIdentifier == upload.localIdentifier {
-                    // Update cell
-                    cell.update(selected: false, state: upload.state)
-                    cell.reloadInputViews()
-                    // The section will be refreshed only if the button content needs to be changed
-                    self.updateSelectButton(completion: {
-                        self.localImagesCollection.reloadSections(IndexSet(integer: 0))
-                    })
-                    return
+            if let visibleCells = self.localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
+               let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
+                // Update cell
+                cell.update(selected: false, state: upload.state)
+                cell.reloadInputViews()
+
+                // The section will be refreshed only if the button content needs to be changed
+                self.updateSelectButton()
+                if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+                    header.setButtonTitle(forState: self.sectionState)
                 }
             }
         }
@@ -1212,6 +1218,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
 }
 
 
+// MARK: -
 extension AVURLAsset {
     func extractedImage() -> UIImage! {
         var image: UIImage! = UIImage(named: "placeholder")!

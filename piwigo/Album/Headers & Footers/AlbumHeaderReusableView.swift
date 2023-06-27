@@ -24,21 +24,15 @@ class AlbumHeaderReusableView: UICollectionReusableView {
         commentLabel?.adjustsFontSizeToFitWidth = false
         commentLabel?.lineBreakMode = .byWordWrapping
         commentLabel?.textAlignment = .center
-        commentLabel?.font = .piwigoFontNormal()
+        commentLabel?.font = .systemFont(ofSize: 13, weight: .light)
         commentLabel?.attributedText = NSAttributedString()
 
         if let commentLabel = commentLabel {
             addSubview(commentLabel)
             addConstraint(NSLayoutConstraint.constraintView(fromTop: commentLabel, amount: 4)!)
-            if #available(iOS 11, *) {
-                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-                "header": commentLabel
-                ]))
-            } else {
-                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-                "header": commentLabel
-                ]))
-            }
+            addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|",
+                    options: [], metrics: nil, views: ["header": commentLabel
+            ]))
         }
     }
 

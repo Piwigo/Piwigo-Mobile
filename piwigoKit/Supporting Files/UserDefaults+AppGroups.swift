@@ -68,6 +68,7 @@ extension NSString: PropertyListValue {}
 extension Bool: PropertyListValue {}
 extension Int: PropertyListValue {}
 extension Int16: PropertyListValue {}
+extension Int32: PropertyListValue {}
 extension UInt: PropertyListValue {}
 extension UInt16: PropertyListValue {}
 extension UInt32: PropertyListValue {}

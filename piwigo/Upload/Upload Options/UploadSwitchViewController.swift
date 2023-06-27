@@ -7,18 +7,18 @@
 //
 
 import UIKit
+import CoreData
 import piwigoKit
+import uploadKit
 
-@objc
-protocol UploadSwitchDelegate: NSObjectProtocol {
+@objc protocol UploadSwitchDelegate: NSObjectProtocol {
     func uploadSettingsDidDisappear()
     func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
 }
 
-@objc
 class UploadSwitchViewController: UIViewController {
     
-    @objc weak var delegate: UploadSwitchDelegate?
+    weak var delegate: UploadSwitchDelegate?
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
@@ -28,7 +28,7 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var settingsView: UIView!
 
     private var _canDeleteImages = false
-    @objc var canDeleteImages: Bool {
+    var canDeleteImages: Bool {
         get {
             _canDeleteImages
         }
@@ -36,28 +36,16 @@ class UploadSwitchViewController: UIViewController {
             _canDeleteImages = canDeleteImages
         }
     }
-
-    private var _hasTagCreationRights = false
-    @objc var hasTagCreationRights: Bool {
-        get {
-            _hasTagCreationRights
-        }
-        set(canCreateTags) {
-            _hasTagCreationRights = canCreateTags
-        }
-    }
-
     
+
+    // MARK: - Core Data Objects
+    var user: User!
+
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Remove space between navigation bar and first cell
-        if #available(iOS 12.0, *) {
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
         // Bar buttons
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
@@ -81,10 +69,7 @@ class UploadSwitchViewController: UIViewController {
         navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
         navigationItem.titleView = switchViewSegmentedControl
         
-        // iOS 9 & 10 fix
-        if #available(iOS 11, *) {
-            parametersView.translatesAutoresizingMaskIntoConstraints = false
-        }
+        parametersView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     @objc func applyColorPalette() {
@@ -94,12 +79,10 @@ class UploadSwitchViewController: UIViewController {
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()

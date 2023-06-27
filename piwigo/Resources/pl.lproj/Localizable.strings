@@ -25,7 +25,6 @@
 "alertRetryButton" = "Ponów";
 "alertNextButton" = "Następne zdjęcie";
 "alertTryButton" = "Wypróbuj";
-"alertClearButton" = "Wyczyść";
 
 // HUD views
 "loadingHUD_label" = "Ładowanie…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
+"CoreData_MigrationProgress" = "Migracja w toku...";
+"Coredata_MigrationPleaseWait" = "Obecnie migrujemy niektóre z Twoich danych. Poczekaj na zakończenie tego procesu. Nie zamykaj aplikacji.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika.";
+"CoreDataFetch_UserUnknownStatus" = "Nie udało się ustalić parametrów rozszerzenia Community. \nSpróbuj zalogować się ponownie.";
+"CoreData_UserCreateFailed" = "Nie udało się utworzyć nowego obiektu Użytkownik.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Błąd pobierania albumów!";
+"CoreDataFetch_AlbumMissingData" = "Znaleziono i będzie usunięty album bez poprawnego identyfikatora lub nazwy.";
+"CoreDataFetch_AlbumCreateFailed" = "Nie udało się utworzyć nowego obiektu Album.";
+"CoreData_AlbumNotFound" = "Albumu nie ma w stałej pamięci podręcznej.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Błąd pobierania zdjęć/filmów!";
+"CoreDataFetch_ImageMissingData" = "Znaleziono i będzie usunięte zdjęcie/film bez poprawnego identyfikatora lub nazwy.";
+"CoreDataFetch_ImageCreateFailed" = "Nie udało się utworzyć nowego obiektu Zdjęcie.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Błąd pobierania znaczników!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
 "sessionStatusError_message" = "Nie można uwierzytelnić z serwerem. Spróbuj zalogować się ponownie.";
 
-"serverCommunityError_title" = "Błąd rozszerzenia Community";
-"serverCommunityError_message" = "Nie udało się ustalić parametrów rozszerzenia Community. Spróbuj zalogować się ponownie.";
-
 // Logout
 "logoutConfirmation_title" = "Wyloguj";
 "logoutConfirmation_message" = "Czy na pewno chcesz się wylogować?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ podalbumów";
 
 // Albums view
+"categoryUpdating" = "Aktualizacja…";
+"categoryUpdatedOn" = "Zaktualizowane %@";
+"categoryUpdatedAt" = "Zaktualizowane o %@";
+"categoryUpdatedNow" = "Zaktualizowane teraz";
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";
 "categoryImageList_selectButton" = "Wybierz";
 "categoryImageList_deselectButton" = "Odznacz";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Usuń pusty Album";
 "deleteCategory_noImages" = "Zachowaj zdjęcia";
 "deleteCategory_orphanedImages" = "Usunąć sieroty";
+"deleteCategory_singleOrphanedImage" = "Usuń osierocone";
+"deleteCategory_severalOrphanedImages" = "Usuń %@ osieroconych";
 "deleteCategory_allImages" = "Usuń %@ zdjęć";
 "deleteCategoryConfirm_title" = "Czy na pewno?";
 "deleteCategoryConfirm_message" = "Proszę podać liczbę zdjęć, aby usunąć ten album. Liczba zdjęć: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 rok";
 "editImageDetailsHUD_updatingSingle" = "Aktualizowanie zdjęcia…";
 "editImageDetailsHUD_updatingPlural" = "Aktualizowanie zdjęć…";
+"help_externalDisplay" = "Dotknij zdjęcia, które chcesz tutaj wyświetlić.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";
-"editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze. Spróbować ponownie?";
+"editImageDetailsError_message" = "Nie można zaktualizować zmian na serwerze.";
 "imageDetailsFetchError_title" = "Nie udało się pobrać informacji o zdjęciu";
-"imageDetailsFetchError_retryMessage" = "Nie udało się pobrać informacji o zdjęciu. Spróbować ponownie?";
+"imageDetailsFetchError_message" = "Nie udało się pobrać informacji o zdjęciu.";
 "imageDetailsFetchError_continueMessage" = "Nie udało się pobrać informacji o zdjęciu. Kontynuować?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Nigdy";
 
 // Settings — Cache
-"settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
-"settings_cacheDisk" = "Dysk";
-"settings_cacheMemory" = "Pamięć";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Pamięć podręczna";
+"settings_database" = "Dane";
 "settings_cacheClear" = "Wyczyść pamięć podręczną";
-"settings_cacheClearAll" = "Wyczyść pamięć podręczną zdjęć";
+"settings_cacheClearAll" = "Wyczyść wszystko";
 "settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Albumy nadrzędne";
 "help08_text" = "Przytrzymaj przycisk wstecz, aby wyświetlić listę albumów nadrzędnych.";
 "help08_text2" = "Dotknij wybranego albumu nadrzędnego, aby do niego wrócić.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Co nowego w Piwigo";
+"whatsNew_title1" = "Nowa skrytka";
+"whatsNew_desc1" = "Zarządzanie pamięcią podręczną w pełni przeredagowane w celu poprawy komfortu użytkownika i przekierowania przeglądania offline.";
+"whatsNew_title2" = "Klonowanie ekranu";
+"whatsNew_desc2" = "Obejrzyj zdjęcia i filmy na zewnętrznym wyświetlaczu.";
+"whatsNew_continue" = "Kontynuuj";

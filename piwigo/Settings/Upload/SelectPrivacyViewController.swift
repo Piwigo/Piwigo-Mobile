@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 protocol SelectPrivacyDelegate: NSObjectProtocol {
-    func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacy)
+    func didSelectPrivacyLevel(_ privacy: pwgPrivacy)
 }
 
 class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -21,8 +21,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
     @IBOutlet var privacyTableView: UITableView!
     
-    private var _privacy: kPiwigoPrivacy?
-    var privacy: kPiwigoPrivacy {
+    private var _privacy: pwgPrivacy?
+    var privacy: pwgPrivacy {
         get {
             return _privacy ?? .everybody
         }
@@ -47,12 +47,10 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -120,7 +118,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(kPiwigoPrivacy.count.rawValue)
+        return Int(pwgPrivacy.count.rawValue)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -139,7 +137,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .piwigoFontNormal()
+        cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = privacyLevel.name
@@ -172,8 +170,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
 // MARK: - Utilities
 
-private func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
-    var privacyLevel: kPiwigoPrivacy
+private func getPrivacyLevel(forRow row: Int) -> pwgPrivacy {
+    var privacyLevel: pwgPrivacy
     switch row {
         case 0:
             privacyLevel = .everybody

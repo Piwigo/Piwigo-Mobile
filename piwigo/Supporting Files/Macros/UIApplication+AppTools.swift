@@ -12,7 +12,6 @@ extension UIApplication {
     
     // MARK: - Top Most View Controllers of an App
     /// One or several top view controllers when there are several scenes in the foreground.
-    @objc
     func topViewControllers() -> [UIViewController] {
         var topViewControllers = [UIViewController]()
         

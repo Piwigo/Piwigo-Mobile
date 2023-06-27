@@ -8,45 +8,32 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 13/04/2020
 //
 
+import CoreData
 import MobileCoreServices
 import Photos
 import PhotosUI
 import UIKit
 import piwigoKit
 
-@objc
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
     func didSelectPhotoAlbum(withId: String)
 }
 
-@objc
 class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsProviderDelegate {
 
-    @objc weak var delegate: LocalAlbumsSelectorDelegate?
+    weak var delegate: LocalAlbumsSelectorDelegate?
 
     @IBOutlet var localAlbumsTableView: UITableView!
     
-    @objc
-    func setCategoryId(_ categoryId: Int) {
-        _categoryId = categoryId
-    }
-    private var _categoryId: Int?
-    private var categoryId: Int {
-        get {
-            return _categoryId ?? 0
-        }
-        set(categoryId) {
-            _categoryId = categoryId
-        }
-    }
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
 
     // Actions to perform after selection
-    private enum kPiwigoCategorySelectAction : Int {
+    private enum pwgAlbumSelectAction : Int {
         case none
         case presentLocalAlbum
         case setAutoUploadAlbum
     }
-    private var wantedAction: kPiwigoCategorySelectAction = .none
+    private var wantedAction: pwgAlbumSelectAction = .none
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
@@ -61,6 +48,24 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                                                                    .sharedAlbums : false,
                                                                    .mediaTypes   : false,
                                                                    .otherAlbums  : false]
+    private lazy var pasteboardTypes : [String] = {
+        if #available(iOS 14.0, *) {
+            return [UTType.image.identifier, UTType.movie.identifier]
+        } else {
+            // Fallback on earlier version
+            return [kUTTypeImage as String, kUTTypeMovie as String]
+        }
+    }()
+    
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -88,6 +93,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.shared.fetchedLocalAlbumsDelegate = self
+        LocalAlbumsProvider.shared.includingEmptyAlbums = (categoryId == Int32.min)
         LocalAlbumsProvider.shared.fetchLocalAlbums {
             // Set limiters
             if LocalAlbumsProvider.shared.localAlbums.count > self.maxNberOfAlbumsInSection {
@@ -127,28 +133,28 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 
-        // Navigation bar
+        // Navigation bar appearance
+        let navigationBar = navigationController?.navigationBar
+        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-                
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        navigationBar?.titleTextAttributes = attributes
+        navigationBar?.prefersLargeTitles = false
+
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+            navigationBar?.prefersLargeTitles = false
         }
 
         // Table view
@@ -177,8 +183,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
             // Check if there are photos/videos in the pasteboard
-            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                                 kUTTypeMovie as String]),
+            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
                indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
                 hasImagesInPasteboard = true
             }
@@ -231,10 +236,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         if wantedAction == .setAutoUploadAlbum { return }
         
         // Are there images in the pasteboard?
-        let testTypes = UIPasteboard.general.contains(pasteboardTypes: [kUTTypeImage as String,
-                                                                        kUTTypeMovie as String]) ? true : false
-        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                            kUTTypeMovie as String])?.count ?? 0
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
         hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
@@ -284,11 +287,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let headerView = SelectCategoryHeaderView(frame: .zero)
         switch wantedAction {
         case .presentLocalAlbum:
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSettingsWidth),
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
                                  text: NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded."))
 
         case .setAutoUploadAlbum:
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSubViewWidth),
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
 
         default:
@@ -400,9 +403,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
-            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
-                                                                                kUTTypeMovie as String])?.count ?? NSNotFound
-            cell.configure(with: title, nberPhotos: nberPhotos)
+            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? NSNotFound
+            cell.configure(with: title, nberPhotos: Int64(nberPhotos))
             cell.isAccessibilityElement = true
             return cell
         case .localAlbums:
@@ -448,7 +450,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Case of an album
         let title = aCollection.localizedTitle ?? "—> ? <——"
-        let nberPhotos = aCollection.estimatedAssetCount
+        let nberPhotos = Int64(aCollection.estimatedAssetCount)
 
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {
@@ -557,7 +559,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         case .pasteboard:
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
             guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
-            localImagesVC.setCategoryId(categoryId)
+            localImagesVC.categoryId = categoryId
+            localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
             return
         case .localAlbums:
@@ -599,8 +602,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // Presents local images of the selected album
             let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
             guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
-            localImagesVC.setCategoryId(categoryId)
-            localImagesVC.setImageCollectionId(albumID)
+            localImagesVC.categoryId = categoryId
+            localImagesVC.imageCollectionId = albumID
+            localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }

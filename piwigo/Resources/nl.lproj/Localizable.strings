@@ -25,7 +25,6 @@
 "alertRetryButton" = "Probeer opnieuw";
 "alertNextButton" = "Volgende foto";
 "alertTryButton" = "Probeer";
-"alertClearButton" = "Verwijderen";
 
 // HUD views
 "loadingHUD_label" = "Bezig met laden…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Waarschuwing";
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
+"CoreData_MigrationProgress" = "Migratie in uitvoering...";
+"Coredata_MigrationPleaseWait" = "We migreren momenteel enkele van uw data. Wacht tot het is voltooid. Stop de applicatie niet.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";
+"CoreDataFetch_UserUnknownStatus" = "Fout bij het ophalen van de Community extensie parameters. Probeer opnieuw in te loggen.";
+"CoreData_UserCreateFailed" = "Het maken van een nieuw gebruikersobject is mislukt.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Albums fout ophalen!";
+"CoreDataFetch_AlbumMissingData" = "Gevonden en zullen een album verwijderen dat een geldige ID of naam ontbeert.";
+"CoreDataFetch_AlbumCreateFailed" = "Het maken van een nieuw Album object is mislukt.";
+"CoreData_AlbumNotFound" = "Album niet in persistente cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fout bij het ophalen van foto's/video's!";
+"CoreDataFetch_ImageMissingData" = "Een foto/video die geen geldige ID of URL mist en zal worden verwijderd.";
+"CoreDataFetch_ImageCreateFailed" = "Nieuw object afbeelding maken mislukt.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Fout bij het ophalen van tags!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Authenticatie is mislukt";
 "sessionStatusError_message" = "Kan niet worden geverifieerd door de server. Probeer opnieuw aan te melden.";
 
-"serverCommunityError_title" = "Community-fout";
-"serverCommunityError_message" = "Fout bij het ophalen van de Community extensie parameters. Probeer opnieuw aan te melden";
-
 // Logout
 "logoutConfirmation_title" = "Afmelden";
 "logoutConfirmation_message" = "Weet je zeker dat je je wilt afmelden?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
+"categoryUpdating" = "Bijwerken…";
+"categoryUpdatedOn" = "Bijgewerkt op %@";
+"categoryUpdatedAt" = "Bijgewerkt op %@";
+"categoryUpdatedNow" = "Zojuist bijgewerkt";
 "categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Verwijder leeg album";
 "deleteCategory_noImages" = "Foto's houden";
 "deleteCategory_orphanedImages" = "Verwijder wezen";
+"deleteCategory_singleOrphanedImage" = "Verwijder wezen";
+"deleteCategory_severalOrphanedImages" = "Verwijder %@ wezen";
 "deleteCategory_allImages" = "Verwijder %@ foto's";
 "deleteCategoryConfirm_title" = "Weet je het zeker?";
 "deleteCategoryConfirm_message" = "Voer het juiste aantal foto's in om het album te kunnen verwijderen. Aantal foto's: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 Jaar";
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
+"help_externalDisplay" = "Klik op de afbeelding die u hier wilt weergeven.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
 "editImageDetailsError_message" = "Bijwerken van jouw wijzigingen met jouw server is mislukt. Opnieuw proberen?";
 "imageDetailsFetchError_title" = "Ophalen van de foto-eigenschappen is mislukt";
-"imageDetailsFetchError_retryMessage" = "Ophalen van foto-data is mislukt. Opnieuw proberen?";
+"imageDetailsFetchError_message" = "Ophalen van foto-data is mislukt.";
 "imageDetailsFetchError_continueMessage" = "Ophalen van fotodata is mislukt. Doorgaan?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Nooit";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";
-"settings_cacheDisk" = "Schijf";
-"settings_cacheMemory" = "Geheugen";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Cachegeheugen";
+"settings_database" = "Gegevens";
 "settings_cacheClear" = "Cache wissen";
-"settings_cacheClearAll" = "Wis foto-cache";
+"settings_cacheClearAll" = "Alles wissen";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Bovenliggende albums";
 "help08_text" = "Druk lang op de terugknop om de lijst van bovenliggende albums weer te geven.";
 "help08_text2" = "Tik op het bovenliggende album van je keuze om er naar terug te springen.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Wat is er nieuw in Piwigo";
+"whatsNew_title1" = "Neuer Cache";
+"whatsNew_desc1" = "Cache beheer is volledig herschreven om de gebruikerservaring te verbeteren en offline browsen te brengen.";
+"whatsNew_title2" = "Svnchrone weeraave";
+"whatsNew_desc2" = "Bekijk je foto's en video's op een externe weergave.";
+"whatsNew_continue" = "Doorgaan";

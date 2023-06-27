@@ -11,7 +11,7 @@
 import UIKit
 import piwigoKit
 
-enum kPiwigoEditOption : Int {
+enum pwgEditOption : Int {
     case none
     case add
     case remove
@@ -22,11 +22,11 @@ class TagTableViewCell: UITableViewCell {
     @IBOutlet weak var rightAddImage: UIImageView!
     @IBOutlet weak var rightRemoveImage: UIImageView!
 
-    func configure(with tag: Tag, andEditOption option: kPiwigoEditOption) {
+    func configure(with tag: Tag, andEditOption option: pwgEditOption) {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
-        textLabel?.font = .piwigoFontNormal()
+        textLabel?.font = .systemFont(ofSize: 17)
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
@@ -43,7 +43,7 @@ class TagTableViewCell: UITableViewCell {
                 String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
-        leftLabel.font = .piwigoFontNormal()
+        leftLabel.font = .systemFont(ofSize: 17)
         leftLabel.textColor = .piwigoColorLeftLabel()
 
         // Change image according to state

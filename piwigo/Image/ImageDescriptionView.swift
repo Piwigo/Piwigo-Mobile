@@ -29,10 +29,11 @@ class ImageDescriptionView: UIVisualEffectView {
         }
     }
     
-    func configDescription(with imageComment:String?,
+    func configDescription(with imageComment:NSAttributedString?,
                            completion: @escaping () -> Void) {
         // Should we present a description?
-        guard let comment = imageComment, comment.isEmpty == false else {
+        guard let comment = imageComment,
+              comment.string.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
@@ -41,7 +42,17 @@ class ImageDescriptionView: UIVisualEffectView {
         }
         
         // Configure the description view
-        descTextView.attributedText = comment.htmlToAttributedString
+        let wholeRange = NSRange(location: 0, length: comment.string.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let desc = NSMutableAttributedString(attributedString: comment)
+        desc.addAttributes(attributes, range: wholeRange)
+        descTextView.attributedText = desc
         let navController = topMostController()?.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 
@@ -49,15 +60,13 @@ class ImageDescriptionView: UIVisualEffectView {
         var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
         if let root = navController?.topViewController {
             safeAreaWidth = root.view.frame.size.width
-            if #available(iOS 11.0, *) {
-                safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
-            }
+            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
         }
         
         // Calculate the required number of lines, corners'width deducted
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let lineHeight = (descTextView.font ?? UIFont.piwigoFontSmall()).lineHeight
+        let lineHeight = (descTextView.font ?? UIFont.systemFont(ofSize: 13)).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
         let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
                                                                          height: CGFloat.greatestFiniteMagnitude),

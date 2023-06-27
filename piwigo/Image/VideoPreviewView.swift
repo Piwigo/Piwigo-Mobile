@@ -13,25 +13,22 @@ import piwigoKit
 extension ImageViewController
 {
     // MARK: - Video Player
-    func startVideoPlayerView(with imageData: PiwigoImageData?) {
+    func startVideoPlayerView(with imageData: Image?) {
         // Set URL
-        let videoURL = URL(string: imageData?.fullResPath ?? "")
+        guard let videoURL = imageData?.fullRes?.url as? URL else { return }
 
         // AVURLAsset + Loader
-        var asset: AVURLAsset? = nil
-        if let videoURL = videoURL {
-            asset = AVURLAsset(url: videoURL, options: nil)
-        }
-        let loader = asset?.resourceLoader
-        loader?.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
+        let asset = AVURLAsset(url: videoURL, options: nil)
+        let loader = asset.resourceLoader
+        loader.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
 
         // Load the asset's "playable" key
-        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
+        asset.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
             DispatchQueue.main.async(
                 execute: { [self] in
                     // IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem.
                     var error: NSError? = nil
-                    let keyStatus = asset?.statusOfValue(forKey: "playable", error: &error)
+                    let keyStatus = asset.statusOfValue(forKey: "playable", error: &error)
                     switch keyStatus {
                         case .loaded:
                             // Sucessfully loaded, continue processing
@@ -50,7 +47,7 @@ extension ImageViewController
         })
     }
 
-    func playVideoAsset(_ asset: AVAsset?) {
+    private func playVideoAsset(_ asset: AVAsset?) {
         // AVPlayer
         var playerItem: AVPlayerItem? = nil
         if let asset = asset {
@@ -68,12 +65,14 @@ extension ImageViewController
         playerController.player?.play()
 
         // Present the video
+        playerController.modalTransitionStyle = .crossDissolve
+        playerController.modalPresentationStyle = .overFullScreen
         view?.addSubview(playerController.view)
         view?.addConstraints(NSLayoutConstraint.constraintFillSize(playerController.view)!)
         present(playerController, animated: true)
     }
 
-    func assetFailedToPrepare(forPlayback error: Error?) {
+    private func assetFailedToPrepare(forPlayback error: Error?) {
         // Determine the present view controller
         if let error = error as NSError? {
             dismissPiwigoError(withTitle: error.localizedDescription, message: "",
@@ -102,7 +101,7 @@ extension ImageViewController: AVAssetResourceLoaderDelegate
         else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             // HTTP basic authentification credentials
             let user = NetworkVars.httpUsername
-            let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: user)
+            let password = KeychainUtilities.password(forService: NetworkVars.service, account: user)
             authenticationChallenge.sender?.use(
                 URLCredential(user: user, password: password, persistence: .synchronizable),
                               for: authenticationChallenge)

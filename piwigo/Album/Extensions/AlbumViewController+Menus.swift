@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 @available(iOS 14.0, *)
 extension AlbumViewController
@@ -31,7 +32,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for copying image
-            copyImageToAlbum()
+            copyImagesToAlbum()
         })
         action.accessibilityIdentifier = "copy"
         return action
@@ -45,7 +46,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Present album selector for moving image
-            moveImageToAlbum()
+            moveImagesToAlbum()
         })
         action.accessibilityIdentifier = "move"
         return action
@@ -75,16 +76,21 @@ extension AlbumViewController
  
     
     // MARK: - Discover Menu
-    /// - for presenting favorite images
+    /// - for presenting favorite images if logged in
     /// - for presenting the tag selector and then tagged images
     /// - for presenting most visited images
     /// - for presenting best rated images
     /// - for presenting recent images
     func discoverMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.discover")
+        var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
+        if NetworkVars.username.isEmpty == false,
+           NetworkVars.username.lowercased() != "guest" {
+            children.insert(favoritesAction(), at: 0)
+        }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [favoritesAction(), taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()])
+                          children: children)
         return menu
     }
     
@@ -93,14 +99,20 @@ extension AlbumViewController
         let action = UIAction(title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
+            // Check that an album of favorites exists in cache (create it if necessary)
+            guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
+                return
+            }
+
             // Present favorite images
-            let favoritesVC = AlbumViewController(albumId: kPiwigoFavoritesCategoryId)
+            let favoritesVC = AlbumViewController(albumId: pwgSmartAlbum.favorites.rawValue)
             navigationController?.pushViewController(favoritesVC, animated: true)
         })
         return action
     }
 
     private func taggedAction() -> UIAction {
+        // Create action
         let actionId = UIAction.Identifier("Tagged")
         let action = UIAction(title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
                               image: UIImage(systemName: "tag"),
@@ -117,7 +129,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "person.3.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present most visited images
-            discoverImages(inCategoryId: kPiwigoVisitsCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.visits.rawValue)
         })
         return action
     }
@@ -128,7 +140,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "star.leadinghalf.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present best rated images
-            discoverImages(inCategoryId: kPiwigoBestCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.best.rawValue)
         })
         return action
     }
@@ -139,7 +151,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "clock"),
                               identifier: actionId, handler: { [self] action in
             // Present recent images
-            discoverImages(inCategoryId: kPiwigoRecentCategoryId)
+            discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
         })
         return action
     }

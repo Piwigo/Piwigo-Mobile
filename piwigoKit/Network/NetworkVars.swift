@@ -11,12 +11,12 @@ import Foundation
 import SystemConfiguration
 
 public class NetworkVars: NSObject {
-
+    
     public static func domain() -> String {
         let strURL = "\(serverProtocol)\(serverPath)"
         return URL(string: strURL)?.host ?? ""
     }
-
+    
     public static func isConnectedToWiFi() -> Bool {
         guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault,
                                                                      domain()) else { return false }
@@ -28,29 +28,37 @@ public class NetworkVars: NSObject {
         let needsConnection = flags.contains(.connectionRequired)
         return (isReachable && !cellular && !needsConnection)
     }
-
+    
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
-
+    //    override init() {
+    //        // Deprecated data?
+    //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+    //            UserDefaults.dataSuite.removeObject(forKey: "test")
+    //        }
+    //    }
+    
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
     /// - None
-
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Network variables stored in UserDefaults / App Group
     /// - Scheme of the URL, "https://" by default
     @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
-    public static var serverProtocol: String
+    public static var serverProtocol: String {
+        didSet {
+            service = serverProtocol + serverPath
+        }
+    }
     
     /// - Path of the server, e.g. lelievre-berna.net/Piwigo
     @UserDefault("serverPath", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public static var serverPath: String
+    public static var serverPath: String {
+        didSet {
+            service = serverProtocol + serverPath
+        }
+    }
     
     /// - String encoding of the server, UTF-8 by default
     @UserDefault("stringEncoding", defaultValue: String.Encoding.utf8.rawValue, userDefaults: UserDefaults.dataSuite)
@@ -59,33 +67,56 @@ public class NetworkVars: NSObject {
     /// -  Username provided to access a server requiring HTTP basic authentication
     @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var httpUsername: String
-
+    
     /// - Username provided to access the Piwigo server
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var username: String
+    
+    /// - Status of the user accessing the Piwigo server
+    @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
+    private static var userStatusRaw: String
+    public static var userStatus: pwgUserStatus {
+        get { return pwgUserStatus(rawValue: userStatusRaw) ?? pwgUserStatus.guest }
+        set (value) {
+            if pwgUserStatus.allCases.contains(value) {
+                userStatusRaw = value.rawValue
+            }
+        }
+    }
+    
+    /// - Library/Caches/Piwigo/Thumbnail folder size
+    @UserDefault("thumbFolderSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
+    public static var thumbFolderSize: UInt
+    
+    /// - Piwigo server version (stored so that the app knows it after a crash and before re-login)
+    @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public static var pwgVersion: String
+    
+    /// - File types accepted by the Piwigo server
+    @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
+    public static var serverFileTypes: String
+
+    /// - Community methods available, false by default (available since  version 2.9 of the plugin)
+    @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesCommunityPluginV29:Bool
+    
+    /// - pwg.images.uploadAsync method available, false by default (avaiable since Piwigo 11)
+    @UserDefault("usesUploadAsync", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesUploadAsync: Bool
+    
+    /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
+    @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesCalcOrphans: Bool
 
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
-    /// - Session manager used to communicate with the Piwigo server
-//    var sessionManager: AFHTTPSessionManager?
-    
-    /// - Session manager used to download images
-//    var imagesSessionManager: AFHTTPSessionManager?
-    
-    // - Image and thumbnail caches
-//    var imageCache: URLCache?
-//    var thumbnailCache: AFAutoPurgingImageCache?
-    
-    /// - Community methods available, false by default (available since  version 2.9 of the plugin)
-    public static var usesCommunityPluginV29 = false
-    
-    /// - uploadAsync method available, false by default (avaiable since Piwigo 11)
-    public static var usesUploadAsync = false
+    /// - Quicker than calling UserDefaults variables
+    public static var service = serverProtocol + serverPath
     
     /// - Remembers that the HTTP authentication failed
     public static var didFailHTTPauthentication = false
-
+    
     /// - Remembers that the SSL certicate was approved
     public static var didApproveCertificate = false
     
@@ -95,30 +126,23 @@ public class NetworkVars: NSObject {
     /// - Remembers certificate information
     public static var certificateInformation = ""
 
-    /// - Remembers that the user cancelled login attempt
-    public static var userCancelledCommunication = false
-    
-    /// - Logged user has guest rigths, false by default
-    public static var hasGuestRights = false
-
-    /// - Logged user has normal rigths, false by default
-    public static var hasNormalRights = false
-
-    /// - Logged user has normal rigths and upload rights, false by default
-    public static var hasNormalAndUploadRights = false
-
-    /// - Logged user has admin rigths, false by default
-    public static var hasAdminRights = false
-
-    /// - Remembers when the user logged in
-    public static var dateOfLastLogin: Date = .distantPast
-    
-    /// - Piwigor server version
-    public static var pwgVersion = ""
-    
     /// - Token returned after login
     public static var pwgToken = ""
-
+    
     /// - User's default language
     public static var language = ""
+    
+    /// - Custom HTTP header field names
+    public static let HTTPCatID = "X-PWG-categoryID"
+    
+    /// - Available image sizes
+    public static var hasSquareSizeImages = true
+    public static var hasThumbSizeImages = true
+    public static var hasXXSmallSizeImages = false
+    public static var hasXSmallSizeImages = false
+    public static var hasSmallSizeImages = false
+    public static var hasMediumSizeImages = true
+    public static var hasLargeSizeImages = false
+    public static var hasXLargeSizeImages = false
+    public static var hasXXLargeSizeImages = false
 }

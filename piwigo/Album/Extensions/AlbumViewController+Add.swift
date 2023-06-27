@@ -7,14 +7,14 @@
 //
 
 import Foundation
-
+import piwigoKit
 
 extension AlbumViewController
 {
     // MARK: - Create Sub-Album
     @objc func addAlbum() {
         // Change colour of Upload Images button
-        createAlbumButton?.backgroundColor = UIColor.gray
+        createAlbumButton.backgroundColor = UIColor.gray
 
         // Start creating album
         showCreateCategoryDialog()
@@ -52,7 +52,7 @@ extension AlbumViewController
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 // Cancel action
-                if homeAlbumButton?.isHidden ?? false {
+                if homeAlbumButton.isHidden {
                     didCancelTapAddButton()
                 }
         })
@@ -82,36 +82,43 @@ extension AlbumViewController
     }
 
     func addCategory(withName albumName: String, andComment albumComment: String,
-                     inParent parentId: Int) {
+                     inParent parentId: Int32) {
         // Display HUD during the update
         showPiwigoHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Create album
-        AlbumUtilities.create(withName: albumName, description: albumComment,
-                              status: "public", inParentWithId: parentId) { [self] newCatId in
-            // Get index of added category
-            if let categories = CategoriesData.sharedInstance().getCategoriesForParentCategory(categoryId),
-               let indexOfExistingItem = categories.firstIndex(where: {$0.albumId == newCatId}) {
-                // Insert cell of new category
-                DispatchQueue.main.async { [self] in
-                    let indexPath = IndexPath(item: indexOfExistingItem, section: 0)
-                    imagesCollection?.insertItems(at: [indexPath])
+        NetworkUtilities.checkSession(ofUser: user) {
+            AlbumUtilities.create(withName: albumName, description: albumComment,
+                                  status: "public", inParentWithId: parentId) { [self] newCatId in
+                // Album successfully created ▶ Add new album to cache and update parent albums
+                DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                    self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
+                                                intoAlbumWithId: parentId)
                 }
-            }
-            
-            // Hide HUD
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Reset buttons
-                    didCancelTapAddButton()
+                
+                // Hide HUD
+                updatePiwigoHUDwithSuccess() { [self] in
+                    hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                        // Reset buttons
+                        didCancelTapAddButton()
+                    }
                 }
+            } failure: { error in
+                self.addCategoryError(error)
             }
         } failure: { error in
-            self.hidePiwigoHUD() { [self] in
-                dismissPiwigoError(withTitle: NSLocalizedString("createAlbumError_title", comment: "Create Album Error"), message: NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album"), errorMessage: error.localizedDescription) { [self] in
-                    // Reset buttons
-                    didCancelTapAddButton()
-                }
+            self.addCategoryError(error)
+        }
+    }
+    
+    private func addCategoryError(_ error: NSError) {
+        self.hidePiwigoHUD() { [self] in
+            let title = NSLocalizedString("createAlbumError_title", comment: "Create Album Error")
+            let message = NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [self] in
+                // Reset buttons
+                didCancelTapAddButton()
             }
         }
     }

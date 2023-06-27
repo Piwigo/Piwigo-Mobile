@@ -25,7 +25,6 @@
 "alertRetryButton" = "重试";
 "alertNextButton" = "下一张照片";
 "alertTryButton" = "尝试";
-"alertClearButton" = "清除";
 
 // HUD views
 "loadingHUD_label" = "加载中...";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
+"CoreData_MigrationProgress" = "正在进行迁移.....";
+"Coredata_MigrationPleaseWait" = "我们正在迁移您的某些数据。请等待完成。请不要关闭应用程序。";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "将丢弃缺少有效用户名的用户帐户。";
+"CoreDataFetch_UserUnknownStatus" = "无法获取社区扩展参数。\n请重新登录。";
+"CoreData_UserCreateFailed" = "创建新用户对象失败。";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "获取相册时出错！";
+"CoreDataFetch_AlbumMissingData" = "找到并将丢弃缺少有效ID或名称的相册。";
+"CoreDataFetch_AlbumCreateFailed" = "创建新相册对象失败。";
+"CoreData_AlbumNotFound" = "相册不在持久缓存中。";
+
+// Image objects
+"CoreDataFetch_ImageError" = "获取照片/视频错误！";
+"CoreDataFetch_ImageMissingData" = "发现并将丢弃缺少有效ID或URL的照片/视频。";
+"CoreDataFetch_ImageCreateFailed" = "创建新图像对象失败。";
 
 // Tag objects
 "CoreDataFetch_TagError" = "获取标签时出现错误！";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "验证失败";
 "sessionStatusError_message" = "无法与服务器验证。请尝试再次登录。";
 
-"serverCommunityError_title" = "通讯错误";
-"serverCommunityError_message" = "获取通讯扩展参数失败。请尝试再次登录。";
-
 // Logout
 "logoutConfirmation_title" = "注销";
 "logoutConfirmation_message" = "您确定要注销吗？";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ 个子相册";
 
 // Albums view
+"categoryUpdating" = "正在更新…";
+"categoryUpdatedOn" = "更新于 %@";
+"categoryUpdatedAt" = "更新于 %@";
+"categoryUpdatedNow" = "刚刚更新";
 "categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
 "categoryImageList_selectButton" = "选择";
 "categoryImageList_deselectButton" = "反选";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "删除空相册";
 "deleteCategory_noImages" = "保留图像";
 "deleteCategory_orphanedImages" = "删除孤立图片";
+"deleteCategory_singleOrphanedImage" = "删除孤立的";
+"deleteCategory_severalOrphanedImages" = "删除 %@ 个孤立的";
 "deleteCategory_allImages" = "删除 %@ 张图片";
 "deleteCategoryConfirm_title" = "是否确定？";
 "deleteCategoryConfirm_message" = "请输入照片数量以删除此相册。照片数量： %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "上一年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
+"help_externalDisplay" = "点击您想要在这里显示的图像。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失败";
 "editImageDetailsError_message" = "无法更新此次变更，是否重试？";
 "imageDetailsFetchError_title" = "无法获取照片的详细信息";
-"imageDetailsFetchError_retryMessage" = "无法获取照片数据，是否重试？";
+"imageDetailsFetchError_message" = "获取照片数据失败。";
 "imageDetailsFetchError_continueMessage" = "无法获取照片信息，是否继续？";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "绝不";
 
 // Settings — Cache
-"settingsHeader_cache" = "缓存设置 (使用量/总量)";
-"settings_cacheDisk" = "磁盘";
-"settings_cacheMemory" = "内存";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "缓存";
+"settings_database" = "数据";
 "settings_cacheClear" = "清除缓存";
-"settings_cacheClearAll" = "清除图像缓存";
+"settings_cacheClearAll" = "全部清除";
 "settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "父相册";
 "help08_text" = "长按返回按钮以显示父相册列表。";
 "help08_text2" = "点击您选择的父相册以跳回它。";
+
+// What's New in Piwigo
+"whatsNew_title" = "Piwigo有什么新功能";
+"whatsNew_title1" = "新缓存";
+"whatsNew_desc1" = "缓存管理完全重写，以改善用户体验并带来离线浏览。";
+"whatsNew_title2" = "苹果投屏";
+"whatsNew_desc2" = "在外部显示器上观看您的照片和视频。";
+"whatsNew_continue" = "继续储值";

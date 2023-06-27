@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.7_text" = "Wersja 2.12.7\n\n• Poprawki błędów";
+"v3.0.0_text" = "Wersja 3.0\n\n• W całości przepisane zarządzanie pamięcią podręczną w celu poprawy komfortu użytkowania i umożliwienia przeglądania offline\n• Poprawki niektórych tłumaczeń";
+
+"v2.12.7_text" = "Wersja 2.12.7\n19 grudnia 2022\n\n• Poprawki błędów";
 
 "v2.12.6_text" = "Wersja 2.12.6\n21 listopada 2022\n\n• Poprawki błędów";
 
@@ -66,7 +68,7 @@
 
 "v2.5.4_text" = "Wersja 2.5.4\n2 stycznia 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
-"v2.5.3_text" = "Wersja 2.5.\n21 grudnia 2020\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów";
+"v2.5.3_text" = "Wersja 2.5.3\n21 grudnia 2020\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów";
 
 "v2.5.2_text" = "Wersja 2.5.2\n3 grudnia 2020\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 2.11 lub nowszego)\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 

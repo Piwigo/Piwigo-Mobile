@@ -43,7 +43,7 @@ extension String {
         do {
             let attributedStr = try NSMutableAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
             let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
-            attributedStr.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: wholeRange)
+            attributedStr.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: wholeRange)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             attributedStr.addAttribute(.paragraphStyle, value: style, range: wholeRange)

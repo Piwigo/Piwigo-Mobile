@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.images.delete
-public let kPiwigoImagesDelete = "format=json&method=pwg.images.delete"
+public let pwgImagesDelete = "format=json&method=pwg.images.delete"
 
 public struct ImagesDeleteJSON: Decodable {
 

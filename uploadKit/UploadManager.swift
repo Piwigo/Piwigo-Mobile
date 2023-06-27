@@ -1,0 +1,210 @@
+//
+//  UploadManager.swift
+//  piwigoKit
+//
+//  Created by Eddy Lelièvre-Berna on 22/05/2020.
+//  Copyright © 2020 Piwigo.org. All rights reserved.
+//
+// See https://academy.realm.io/posts/gwendolyn-weston-ios-background-networking/
+
+import Foundation
+import Photos
+import CoreData
+import MobileCoreServices
+import piwigoKit
+
+public class UploadManager: NSObject {
+
+    // Singleton
+    public static let shared = UploadManager()
+    
+    // MARK: - Constants
+    // Constants used to name and identify media
+    let kOriginalSuffix = "-original"
+    public let kIntentPrefix = "Intent-"
+    public let kClipboardPrefix = "Clipboard-"
+    public let kImageSuffix = "-img-"
+    public let kMovieSuffix = "-mov-"
+    
+    // Constants returning the list of:
+    /// - image formats which can be converted with iOS
+    /// - movie formats which can be converted with iOS
+    /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
+    let acceptedImageExtensions: [String] = {
+        if #available(iOS 14.0, *) {
+            let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
+            var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+            if #available(iOS 14.3, *) {
+                fileExtensions.append("dng")    // i.e. Apple ProRAW
+                return fileExtensions
+            } else {
+                // Fallback on earlier version
+                return fileExtensions
+            }
+        } else {
+            // Fallback on earlier version
+            return ["heic","heif","png","gif","jpg","jpeg","webp","tif","tiff","bmp","raw","ico","icns"]
+        }
+    }()
+    let acceptedMovieExtensions: [String] = {
+        if #available(iOS 14.0, *) {
+            let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
+            return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+        } else {
+            return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
+        }
+    }()
+
+    // Constants used to manage foreground tasks
+    let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
+    let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
+    public let maxNberOfFailedUploads = 5       // Stop transfers after 5 failures
+
+    // Constants used to manage background tasks
+    public let maxCountOfBytesToUpload = 50 * 1024 * 1024   // Up to 50 MB transferred in a series
+    public let maxNberOfUploadsPerBckgTask = 100            // i.e. 100 requests to be considered
+    public let maxNberOfAutoUploadsPerCheck = 500           // i.e. do not add more than 500 requests at a time
+
+    
+    // MARK: - Upload Request States
+    /** The manager prepares an image for upload and then launches the transfer.
+    - isPreparing is set to true when a photo/video is going to be prepared,
+      and false when the preparation has completed or failed.
+    - isUploading contains the localIdentifier of the photos/videos being transferred to the server,
+    - isFinishing is set to true when the photo/video parameters are going to be set,
+      and false when this job has completed or failed.
+    */
+    public var isPaused = false                             // Flag used to pause/resume uploads
+    var isPreparing = false                                 // Prepare one image at once
+    var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
+    var isFinishing = false                                 // Finish transfer one image at once
+
+    public var isExecutingBackgroundUploadTask = false      // true is called by the background task
+    public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
+    public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
+    public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
+    public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
+
+    /// Background queue in which uploads are managed
+    public let backgroundQueue: DispatchQueue = {
+        return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
+    }()
+    
+    /// Uploads directory, sessions and JSON decoder
+    public let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
+    public let frgdSession: URLSession = UploadSessions.shared.frgdSession
+    public let bckgSession: URLSession = UploadSessions.shared.bckgSession
+    let decoder = JSONDecoder()
+    
+    /// Number of pending upload requests
+    public var nberOfUploadsToComplete = 0                  // Stored and used by the App delegate
+    public func updateNberOfUploadsToComplete() {
+        // Update value
+        nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
+        // Update badge and default album view button
+        DispatchQueue.main.async { [unowned self] in
+            // Update app badge and button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
+            NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
+        }
+    }
+    
+    public override init() {
+        super.init()
+        
+        // Register auto-upload disabler
+        NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
+                                               name: .pwgDisableAutoUpload, object: nil)
+    }
+
+    deinit {
+        // Unregister auto-upload disabler
+        NotificationCenter.default.removeObserver(self, name: .pwgDisableAutoUpload, object: nil)
+    }
+    
+
+    // MARK: - Core Data Object Contexts
+    lazy var bckgContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider.shared
+        return provider
+    }()
+
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+    
+    lazy var imageProvider: ImageProvider = {
+        let provider : ImageProvider = ImageProvider.shared
+        return provider
+    }()
+
+    lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider.shared
+        return provider
+    }()
+
+    public lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadProvider.shared
+        return provider
+    }()
+
+
+    // MARK: - Core Data Source
+    lazy var fetchPendingRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves only non-completed upload requests
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        return fetchRequest
+    }()
+
+    public lazy var uploads: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
+                                                 managedObjectContext: self.bckgContext,
+                                                 sectionNameKeyPath: nil,
+                                                 cacheName: nil)
+        return uploads
+    }()
+
+    lazy var fetchCompletedRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves only completed upload requests
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        var states: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        return fetchRequest
+    }()
+
+    public lazy var completed: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
+                                                 managedObjectContext: self.bckgContext,
+                                                 sectionNameKeyPath: nil,
+                                                 cacheName: nil)
+        return uploads
+    }()
+}

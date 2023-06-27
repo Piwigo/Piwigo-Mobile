@@ -13,26 +13,26 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
     
-    func configure(with title: String, nberPhotos: Int) -> Void {
+    func configure(with title: String, nberPhotos: Int64) -> Void {
 
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
 
         // Title
-        titleLabel.font = .piwigoFontNormal()
+        titleLabel.font = .systemFont(ofSize: 17)
         titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .piwigoFontSmall()
+        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != NSNotFound {
-            numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
-        } else {
+        if [Int64.min, Int64.max].contains(nberPhotos) {
             numberLabel.text = ""
+        } else {
+            numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         }
     }
 

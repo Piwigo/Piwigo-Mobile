@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 extension ImageViewController
 {
@@ -14,8 +15,9 @@ extension ImageViewController
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         let parameter = [imageData, NSNumber(value: categoryId)]
+        copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: action) {
-            copyVC.delegate = self // To re-enable toolbar
+            copyVC.delegate = self                  // To re-enable toolbar
             if action == .copyImage {
                 copyVC.imageCopiedDelegate = self   // To update image data after copy
             } else {
@@ -34,7 +36,7 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         // If image selected from Search, immediatley propose to copy it
-        if categoryId == kPiwigoSearchCategoryId {
+        if categoryId == pwgSmartAlbum.search.rawValue {
             // Present album selector for copying image
             self.selectCategory(withAction: .copyImage)
             return
@@ -87,10 +89,7 @@ extension ImageViewController
 // MARK: - SelectCategoryOfImageDelegate Methods
 extension ImageViewController: SelectCategoryImageCopiedDelegate
 {
-    func didCopyImage(withData imageData: PiwigoImageData) {
-        // Update image data
-        self.imageData = imageData
-
+    func didCopyImage() {
         // Re-enable buttons
         setEnableStateOfButtons(true)
     }

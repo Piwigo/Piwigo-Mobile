@@ -10,6 +10,9 @@ import Foundation
 
 public class CacheVars: NSObject {
 
+    // Singleton
+    public static let shared = CacheVars()
+
     // Remove deprecated stored objects if needed
 //    override init() {
 //        // Deprecated data?
@@ -22,7 +25,7 @@ public class CacheVars: NSObject {
     // Data cache variables stored in UserDefaults / Standard
     /// - Core Data migration issue
     @UserDefault("couldNotMigrateCoreDataStore", defaultValue: false)
-    public static var couldNotMigrateCoreDataStore: Bool
+    public var couldNotMigrateCoreDataStore: Bool
 
 
     // MARK: - Vars in UserDefaults / App Group
@@ -31,6 +34,6 @@ public class CacheVars: NSObject {
 
 
     // MARK: - Vars in Memory
-    // Network variables kept in memory
-    /// - none
+    // Variables kept in memory
+    public let optImage = "-opt"
 }

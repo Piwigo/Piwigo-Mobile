@@ -9,6 +9,7 @@
 import AVFoundation
 import UIKit
 import piwigoKit
+import uploadKit
 
 protocol UploadVideoSizeDelegate: NSObjectProtocol {
     func didSelectUploadVideoSize(_ imageSize: Int16)
@@ -53,12 +54,10 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -136,7 +135,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Name of the image size
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .piwigoFontNormal()
+        cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = indexPath.row == 0 ? pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)

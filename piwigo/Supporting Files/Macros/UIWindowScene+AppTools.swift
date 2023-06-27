@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 extension UIWindowScene {
-    func topMostViewController() -> UIViewController? {
+    func rootViewController() -> UIViewController? {
         // Determine top most view controller of a UIWindowScene
         var rootViewController: UIViewController? = nil
         // Determine top most view controller of a UIWindowScene
@@ -24,6 +24,10 @@ extension UIWindowScene {
             rootViewController = self
                 .windows.first(where: {$0.isKeyWindow})?.rootViewController
         }
-        return rootViewController?.topMostViewController()
+        return rootViewController
+    }
+    
+    func topMostViewController() -> UIViewController? {
+        return rootViewController()?.topMostViewController()
     }
 }

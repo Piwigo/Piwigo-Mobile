@@ -8,39 +8,48 @@
 //  Converted to Swift 5.3 by Eddy Lelièvre-Berna on 31/08/2021.
 //
 
+import CoreData
 import UIKit
 import piwigoKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int)
-    func didChangeImageParameters(_ imageData: PiwigoImageData)
+    func didDeselectImage(withId imageId: Int64)
+    func didChangeImageParameters(_ imageData: Image)
     func didFinishEditingParameters()
 }
 
 class EditImageParamsViewController: UIViewController
 {
-    var images = [PiwigoImageData]()
+    var images = [Image]()
     var hasTagCreationRights = false
     weak var delegate: EditImageParamsDelegate?
-
-    @IBOutlet private weak var editImageParamsTableView: UITableView!
-
-    private var commonParameters = PiwigoImageData()
-    private var imagesToUpdate = [PiwigoImageData]()
-    private var hasDatePicker = false
-    private var shouldUpdateTitle = false
-    private var shouldUpdateAuthor = false
-    private var shouldUpdateDateCreated = false
-    private var oldCreationDate: Date?
-    private var shouldUpdatePrivacyLevel = false
-    private var shouldUpdateTags = false
-    private var addedTags = [PiwigoTagData]()
-    private var removedTags = [PiwigoTagData]()
-    private var shouldUpdateComment = false
-    private var hudViewController: UIViewController?
-    private var nberOfSelectedImages = 0
     
+    @IBOutlet private weak var editImageParamsTableView: UITableView!
+    private var hudViewController: UIViewController?
     private let kEditImageParamsViewWidth: CGFloat = 512.0
+
+    private var shouldUpdateTitle = false
+    private var commonTitle = NSAttributedString()
+    
+    private var shouldUpdateAuthor = false
+    private var commonAuthor = ""
+    
+    private var hasDatePicker = false
+    private var shouldUpdateDateCreated = false
+    private var commonDateCreated = Date.distantPast
+    private var oldCreationDate = Date()
+    private var timeOffset = TimeInterval.zero
+
+    private var shouldUpdatePrivacyLevel = false
+    private var commonPrivacyLevel = pwgPrivacy.everybody.rawValue
+    
+    private var shouldUpdateTags = false
+    private var commonTags = Set<Tag>()
+    private var addedTags = Set<Tag>()
+    private var removedTags = Set<Tag>()
+    
+    private var shouldUpdateComment = false
+    private var commonComment = NSAttributedString()
     
     enum EditImageParamsOrder : Int {
         case thumbnails
@@ -53,144 +62,88 @@ class EditImageParamsViewController: UIViewController
         case desc
         case count
     }
+    
+    
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
 
     
     // MARK: - View Lifecycle
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
-
+        
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
+        
         // Table view
         editImageParamsTableView.separatorColor = .piwigoColorSeparator()
         editImageParamsTableView.backgroundColor = .piwigoColorBackground()
         editImageParamsTableView.reloadData()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Title
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
-
+        
         // Buttons
         let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
         cancel.accessibilityIdentifier = "Cancel"
         let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
         done.accessibilityIdentifier = "Done"
-
+        
         // Navigation bar
         navigationController?.isNavigationBarHidden = false
         navigationItem.leftBarButtonItem = cancel
         navigationItem.rightBarButtonItem = done
-
+        
         // Register thumbnails cell
         editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
-
+        
         // Register date picker cell
         editImageParamsTableView.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
         hasDatePicker = false
-
+        
         // Register date interval picker cell
         editImageParamsTableView.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
-
-        // Initialise common image properties, mostly from first supplied image
-        commonParameters = PiwigoImageData()
-        imagesToUpdate = [PiwigoImageData]()
-
-        // Common title?
-        shouldUpdateTitle = false
-        commonParameters.imageTitle = images[0].imageTitle
-        if images.contains(where: { $0.imageTitle != commonParameters.imageTitle }) {
-            // Images titles are different
-            commonParameters.imageTitle = ""
-        }
-
-        // Common author?
-        shouldUpdateAuthor = false
-        commonParameters.author = images[0].author
-        if images.contains(where: { $0.author != commonParameters.author }) {
-            // Images authors are different
-            commonParameters.author = ""
-        }
-
-        // Common creation date is date of first image with non-nil value, or nil
-        shouldUpdateDateCreated = false
-        commonParameters.dateCreated = images.first(where: { $0.dateCreated != nil })?.dateCreated
-        oldCreationDate = commonParameters.dateCreated
-
-        // Common privacy?
-        shouldUpdatePrivacyLevel = false
-        commonParameters.privacyLevel = images[0].privacyLevel
-        if images.contains(where: { $0.privacyLevel != commonParameters.privacyLevel}) {
-            // Images privacy levels are different, display no level
-            commonParameters.privacyLevel = kPiwigoPrivacyObjcUnknown
-        }
-
-        // Common tags?
-        shouldUpdateTags = false
-        commonParameters.tags = images[0].tags ?? []
-        var commonTags = commonParameters.tags
-        for index in 1..<images.count {
-            // Get tags of next image
-            guard let imageTags = images[index].tags else {
-                // No tags —> next image
-                continue
-            }
-            // Loop over the common tags
-            let copyOfCommonTags = commonTags
-            for tag in copyOfCommonTags ?? [] {
-                // Remove tags not belonging to other images
-                if !imageTags.contains(where: { $0.tagId == tag.tagId }) {
-                    commonTags?.removeAll(where: { $0.tagId == tag.tagId })
-                    // Done if empty list
-                    if (commonTags?.count ?? 0) == 0 { break }
-                }
-            }
-            
-            // Done if empty list
-            if (commonTags?.count ?? 0) == 0 { break }
-        }
-        commonParameters.tags = commonTags
-
-        // Common comment?
-        shouldUpdateComment = false
-        commonParameters.comment = images[0].comment
-        if images.contains(where: { $0.comment != commonParameters.comment}) {
-            // Images comments are different, display no comment
-            commonParameters.comment = ""
-        }
-
+        
+        // Reset common parameters
+        resetCommonParameters()
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Adjust content inset
         // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
         let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
         let tableHeight = editImageParamsTableView.bounds.size.height
         let viewHeight = view.bounds.size.height
-
+        
         // On iPad, the form is presented in a popover view
         if UIDevice.current.userInterfaceIdiom == .pad {
             editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - viewHeight)), right: 0.0)
@@ -199,157 +152,144 @@ class EditImageParamsViewController: UIViewController
             editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight)), right: 0.0)
         }
     }
-
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
-
+            
             // Adjust content inset
             // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
             let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
             let tableHeight = editImageParamsTableView.bounds.size.height
-
+            
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
-                preferredContentSize = CGSize(width: kPiwigoPadSubViewWidth,
+                preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
                 editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - size.height)), right: 0.0)
             } else {
                 let statBarHeight = UIApplication.shared.statusBarFrame.size.height
                 editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + statBarHeight + navBarHeight - size.height)), right: 0.0)
             }
-
+            
             // Reload table view
             editImageParamsTableView.reloadData()
         })
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         // Check if the user is still editing parameters
         if (navigationController?.visibleViewController is SelectPrivacyViewController) || (navigationController?.visibleViewController is TagsViewController) {
             return
         }
-
+        
         // Return updated parameters
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didFinishEditingParameters)) ?? false {
-            delegate?.didFinishEditingParameters()
-        }
+        delegate?.didFinishEditingParameters()
     }
-
+    
     deinit {
         debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
-
+    
     
     // MARK: - Edit image Methods
-
+    
+    private func resetCommonParameters() {
+        // Common title?
+        shouldUpdateTitle = false
+        if images[0].title.string == "NSNotFound" {
+            commonTitle = NSAttributedString()
+        } else {
+            commonTitle = images[0].title
+        }
+        if images.contains(where: {$0.title != commonTitle}) {
+            // Images titles are different
+            commonTitle = NSAttributedString()
+        }
+        
+        // Common author?
+        shouldUpdateAuthor = false
+        commonAuthor = images[0].author
+        if images.contains(where: { $0.author != commonAuthor }) {
+            // Images authors are different
+            commonAuthor = ""
+        }
+        
+        // Common creation date is date of first image with non-nil value, or nil
+        shouldUpdateDateCreated = false
+        timeOffset = TimeInterval.zero
+        commonDateCreated = images[0].dateCreated
+        oldCreationDate = commonDateCreated
+        
+        // Common privacy?
+        shouldUpdatePrivacyLevel = false
+        commonPrivacyLevel = images[0].privacyLevel
+        if images.contains(where: { $0.privacyLevel != commonPrivacyLevel}) {
+            // Images privacy levels are different, display no level
+            commonPrivacyLevel = pwgPrivacy.unknown.rawValue
+        }
+        
+        // Common tags?
+        shouldUpdateTags = false
+        commonTags = images[0].tags ?? Set<Tag>()
+        for index in 1..<images.count {
+            // Get tags of next image
+            guard let imageTags = images[index].tags else {
+                // No tags —> next image
+                continue
+            }
+            // Remove non-common tags
+            commonTags.formIntersection(imageTags)
+        }
+        
+        // Common comment?
+        shouldUpdateComment = false
+        commonComment = images[0].comment
+        if images.contains(where: { $0.comment != commonComment}) {
+            // Images comments are different, display no comment
+            commonComment = NSAttributedString()
+        }
+    }
+    
     @objc func cancelEdit() {
         // No change
-        commonParameters = PiwigoImageData()
+        resetCommonParameters()
 
         // Return to image preview
         dismiss(animated: true)
     }
 
     @objc func doneEdit() {
-        // Initialise new image list and time shift
-        var updatedImages: [PiwigoImageData] = []
-        var timeInterval: TimeInterval = 0.0
-        if let _ = commonParameters.dateCreated,
-           let oldCreationDate = oldCreationDate {
-                timeInterval = commonParameters.dateCreated.timeIntervalSince(oldCreationDate)
-        }
-
-        // Update all images
-        for imageData in images {
-            // Update image title?
-            if shouldUpdateTitle,
-                let imageTitle = commonParameters.imageTitle {
-                imageData.imageTitle = imageTitle
-            }
-
-            // Update image author?
-            if shouldUpdateAuthor,
-                let author = commonParameters.author {
-                imageData.author = author
-            }
-
-            // Update image creation date?
-            if shouldUpdateDateCreated {
-                if commonParameters.dateCreated == nil {
-                    imageData.dateCreated = nil
-                } else if oldCreationDate == nil {
-                    imageData.dateCreated = commonParameters.dateCreated
-                } else {
-                    imageData.dateCreated = imageData.dateCreated.addingTimeInterval(timeInterval)
-                }
-            }
-
-            // Update image privacy level?
-            if shouldUpdatePrivacyLevel,
-                (commonParameters.privacyLevel != kPiwigoPrivacyObjcUnknown) {
-                imageData.privacyLevel = commonParameters.privacyLevel
-            }
-
-            // Update image tags?
-            if shouldUpdateTags {
-                // Retrieve tags of current image
-                if var imageTags = imageData.tags
-                {
-                    // Loop over the removed tags
-                    for tag in removedTags {
-                        imageTags.removeAll(where: { $0.tagId == tag.tagId })
-                    }
-
-                    // Loop over the added tags
-                    for tag in addedTags {
-                        if !imageTags.contains(where: { $0.tagId == tag.tagId }) {
-                            imageTags.append(tag)
-                        }
-                    }
-
-                    // Update image tags
-                    imageData.tags = imageTags
-                }
-            }
-
-            // Update image description?
-            if shouldUpdateComment,
-               let comment = commonParameters.comment {
-                imageData.comment = comment
-            }
-
-            // Append image data
-            updatedImages.append(imageData)
-        }
-        images = updatedImages
-        imagesToUpdate = updatedImages.compactMap({$0})
-
-        // Start updating Piwigo database
-        if imagesToUpdate.isEmpty { return }
-
         // Display HUD during the update
-        if imagesToUpdate.count > 1 {
-            nberOfSelectedImages = imagesToUpdate.count
+        if images.count > 1 {
             showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .annularDeterminate)
         } else {
             showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
-        updateImageProperties()
+
+        // Determine common time offset to apply
+        timeOffset = commonDateCreated.timeIntervalSince(oldCreationDate)
+        
+        // Update all images
+        let index = 0
+        updateImageProperties(fromIndex: index)
     }
 
-    func updateImageProperties() {
+    func updateImageProperties(fromIndex index: Int) {
         // Any further image to update?
-        if imagesToUpdate.isEmpty {
-            // Done, hide HUD and dismiss controller
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
+        if index == images.count {
+            // Done, save, hide HUD and dismiss controller
+            self.updatePiwigoHUDwithSuccess { [self] in
+                // Save changes
+                try? mainContext.save()
+                // Close HUD
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
                     // Return to image preview or album view
                     self.dismiss(animated: true)
@@ -358,121 +298,145 @@ class EditImageParamsViewController: UIViewController
             return
         }
 
-        // Retrieve image to update
-        guard let image = imagesToUpdate.last else {
-            // Next image?
-            self.imagesToUpdate.removeLast()
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
-            self.updateImageProperties()
-            return
-        }
-
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        setProperties(ofImage: image) { [self] in
-            // Next image?
-            if self.imagesToUpdate.isEmpty ==  false {
-                self.imagesToUpdate.removeLast()
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            setProperties(ofImage: images[index]) { [self] in
+                // Next image?
+                self.updatePiwigoHUD(withProgress: Float(index + 1) / Float(images.count))
+                self.updateImageProperties(fromIndex: index + 1)
             }
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
-            self.updateImageProperties()
-        }
-        failure: { [unowned self] error in
+            failure: { [self] error in
+                // Display error
+                self.hidePiwigoHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
+            }
+        } failure: { [self] error in
             // Display error
             self.hidePiwigoHUD {
-                self.showUpdatePropertiesError(error)
+                self.showUpdatePropertiesError(error, atIndex: index)
             }
         }
     }
 
-    private func showUpdatePropertiesError(_ error: NSError) {
+    private func showUpdatePropertiesError(_ error: NSError, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
-        var message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server. Try again?")
-        if imagesToUpdate.count > 1 {
-            cancelDismissRetryPiwigoError(withTitle: title, message: message,
-                                          errorMessage: error.localizedDescription, cancel: {
-            }, dismiss: { [unowned self] in
+        let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
+        if index + 1 < images.count {
+            cancelDismissPiwigoError(withTitle: title, message: message,
+                                     errorMessage: error.localizedDescription) {
+            } dismiss: { [self] in
                 // Bypass this image
-                imagesToUpdate.removeLast()
-                // Next image
-                if imagesToUpdate.count != 0 { updateImageProperties() }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    updateImageProperties()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { }
+                if index + 1 < images.count {
+                    // Next image
+                    updateImageProperties(fromIndex: index + 1)
                 }
-            })
+            }
         } else {
-            dismissRetryPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription, dismiss: {
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    updateImageProperties()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { }
-                }
-            })
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) {
+            }
         }
     }
     
-    private func setProperties(ofImage imageData: PiwigoImageData,
+    private func setProperties(ofImage imageData: Image,
                                completion: @escaping () -> Void,
                                failure: @escaping (NSError) -> Void) {
         // Image ID
-        var paramsDict: [String : Any] = ["image_id" : "\(NSNumber(value: imageData.imageId))",
+        var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
                                           "single_value_mode"   : "replace",
                                           "multiple_value_mode" : "replace"]
         // Update image title?
-        if shouldUpdateTitle,
-           let title = imageData.imageTitle {
-            paramsDict["name"] = NetworkUtilities.utf8mb3String(from: title)
+        if shouldUpdateTitle {
+            paramsDict["name"] = NetworkUtilities.utf8mb3String(from: commonTitle.string)
         }
 
-        // Update image author?
-        if shouldUpdateAuthor,
-           var name = imageData.author {
-            // We should never set NSNotFound in the database
-            if name == "NSNotFound" { name = "" }
-            paramsDict["author"] = NetworkUtilities.utf8mb3String(from: name)
+        // Update image author? (We should never set NSNotFound in the database)
+        if shouldUpdateAuthor || imageData.author == "NSNotFound" {
+            paramsDict["author"] = NetworkUtilities.utf8mb3String(from: commonAuthor)
         }
 
         // Update image creation date?
-        if shouldUpdateDateCreated,
-           let creationDate = imageData.dateCreated {
+        if shouldUpdateDateCreated {
             let dateFormat = DateFormatter()
             dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            paramsDict["date_creation"] = dateFormat.string(from: creationDate)
+            let dateCreated = imageData.dateCreated.addingTimeInterval(timeOffset)
+            paramsDict["date_creation"] = dateFormat.string(from: dateCreated)
         }
 
         // Update image privacy level?
-        if shouldUpdatePrivacyLevel {
-            paramsDict["level"] = "\(NSNumber(value: imageData.privacyLevel.rawValue))"
+        if shouldUpdatePrivacyLevel,
+           commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
+            paramsDict["level"] = commonPrivacyLevel
         }
 
         // Update image tags?
         if shouldUpdateTags {
-            let tags = imageData.tags?.compactMap({$0}) ?? []
+            var tags = imageData.tags ?? Set<Tag>()
+            // Loop over the removed tags
+            for tag in removedTags {
+                tags.remove(tag)
+            }
+            // Loop over the added tags
+            for tag in addedTags {
+                tags.insert(tag)
+            }
             paramsDict["tag_ids"] = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         }
 
         // Update image description?
-        if shouldUpdateComment,
-           let desc = imageData.comment {
-            paramsDict["comment"] = NetworkUtilities.utf8mb3String(from: desc)
+        if shouldUpdateComment {
+            paramsDict["comment"] = NetworkUtilities.utf8mb3String(from: commonComment.string)
         }
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) {
-            // Notify album/image view of modification
-            DispatchQueue.main.async {
+        PwgSession.shared.setInfos(with: paramsDict) { [self] in
+            DispatchQueue.main.async { [self] in
+                // Update image title?
+                if shouldUpdateTitle {
+                    let newTitle = NetworkUtilities.utf8mb4String(from: (paramsDict["name"] as! String))
+                    imageData.title = newTitle.htmlToAttributedString
+                }
+
+                // Update image author? (We should never set NSNotFound in the database)
+                if shouldUpdateAuthor || imageData.author == "NSNotFound" {
+                    imageData.author = commonAuthor
+                }
+
+                // Update image creation date?
+                if shouldUpdateDateCreated {
+                    imageData.dateCreated.addTimeInterval(timeOffset)
+                }
+
+                // Update image privacy level?
+                if shouldUpdatePrivacyLevel,
+                   commonPrivacyLevel != pwgPrivacy.unknown.rawValue {
+                    imageData.privacyLevel = commonPrivacyLevel
+                }
+
+                // Update image tags?
+                if shouldUpdateTags {
+                    // Loop over the removed tags
+                    for tag in removedTags {
+                        imageData.removeFromTags(tag)
+                        tag.numberOfImagesUnderTag -= 1
+                    }
+                    // Loop over the added tags
+                    for tag in addedTags {
+                        imageData.addToTags(tag)
+                        tag.numberOfImagesUnderTag += 1
+                    }
+                }
+
+                // Update image description?
+                if shouldUpdateComment {
+                    let newComment = NetworkUtilities.utf8mb4String(from: (paramsDict["comment"] as! String))
+                    imageData.comment = newComment.htmlToAttributedString
+                }
+
+                // Notify album/image view of modification
                 self.delegate?.didChangeImageParameters(imageData)
             }
 
@@ -491,7 +455,7 @@ extension EditImageParamsViewController: UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = EditImageParamsOrder.count.rawValue
         nberOfRows -= hasDatePicker ? 0 : 1
-        nberOfRows -= NetworkVars.hasAdminRights ? 0 : 1
+        nberOfRows -= user.hasAdminRights ? 0 : 1
         return nberOfRows
     }
 
@@ -499,7 +463,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var height: CGFloat = 44.0
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
             case .thumbnails:
                 height = 188.0
@@ -527,7 +491,7 @@ extension EditImageParamsViewController: UITableViewDataSource
 
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
         case .thumbnails:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EditImageThumbTableViewCell", for: indexPath) as? EditImageThumbTableViewCell else {
@@ -543,10 +507,16 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            cell.config(
-                withLabel: NSLocalizedString("editImageDetails_title", comment: "Title"),
-                placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
-                andImageDetail: commonParameters.imageTitle)
+            let wholeRange = NSRange(location: 0, length: commonTitle.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.right
+            let attributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let detail = NSMutableAttributedString(attributedString: commonTitle)
+            detail.addAttributes(attributes, range: wholeRange)
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title")), placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"), andImageDetail: detail)
             if shouldUpdateTitle {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
@@ -559,10 +529,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            cell.config(
-                withLabel: NSLocalizedString("editImageDetails_author", comment: "Author"),
-                placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
-                andImageDetail: (commonParameters.author == "NSNotFound") ? "" : commonParameters.author)
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_author", comment: "Author")), placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"), andImageDetail: NSAttributedString(string: commonAuthor))
             if shouldUpdateAuthor {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
@@ -575,10 +542,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            cell.config(
-                withLabel: NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date"),
-                placeHolder: "",
-                andImageDetail: getStringFrom(commonParameters.dateCreated))
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")), placeHolder: "", andImageDetail: NSAttributedString(string: getStringFrom(commonDateCreated)))
             if shouldUpdateDateCreated {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
@@ -593,7 +557,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                     print("Error: tableView.dequeueReusableCell does not return a EditImageShiftPickerTableViewCell!")
                     return EditImageShiftPickerTableViewCell()
                 }
-                cell.config(withDate: commonParameters.dateCreated, animated: false)
+                cell.config(withDate: commonDateCreated, animated: false)
                 cell.delegate = self
                 tableViewCell = cell
                 
@@ -602,7 +566,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                     print("Error: tableView.dequeueReusableCell does not return a EditImageDatePickerTableViewCell!")
                     return EditImageDatePickerTableViewCell()
                 }
-                cell.config(withDate: commonParameters.dateCreated, animated: false)
+                cell.config(withDate: commonDateCreated, animated: false)
                 cell.setDatePickerButtons()
                 cell.delegate = self
                 tableViewCell = cell
@@ -614,8 +578,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImagePrivacyTableViewCell()
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-            cell.setPrivacyLevel(with: kPiwigoPrivacy(rawValue: Int16(commonParameters.privacyLevel.rawValue)) ?? .everybody,
-                inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.setPrivacyLevel(with: pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
+                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
         case .tags:
@@ -623,8 +587,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
                 return EditImageTagsTableViewCell()
             }
-            cell.config(withList: commonParameters.tags,
-                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.config(withList: commonTags,
+                        inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
             tableViewCell = cell
             
         case .desc:
@@ -632,8 +596,17 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                 return EditImageTextViewTableViewCell()
             }
-            cell.config(withText: commonParameters.comment,
-                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            let wholeRange = NSRange(location: 0, length: commonComment.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.left
+            let attributes = [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let detail = NSMutableAttributedString(attributedString: commonComment)
+            detail.addAttributes(attributes, range: wholeRange)
+            cell.config(withText: detail,
+                        inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
             
@@ -646,12 +619,12 @@ extension EditImageParamsViewController: UITableViewDataSource
         return tableViewCell
     }
 
-    private func getStringFrom(_ date: Date?) -> String? {
+    private func getStringFrom(_ date: Date?) -> String {
         var dateStr = ""
         var timeStr = ""
         if let date = date {
-            if view.bounds.size.width > 375 {
-                // i.e. larger than iPhones 6,7,8 screen width
+            if view.bounds.size.width > 430 {
+                // i.e. larger than iPhone 14 Pro Max screen width
                 dateStr = DateFormatter.localizedString(from: date, dateStyle: .long, timeStyle: .none)
                 timeStr = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .medium)
             } else if view.bounds.size.width > 320 {
@@ -682,7 +655,7 @@ extension EditImageParamsViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
         case .privacy:
             // Deselect row
@@ -695,7 +668,7 @@ extension EditImageParamsViewController: UITableViewDelegate
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
             guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
             privacyVC.delegate = self
-            privacyVC.privacy = kPiwigoPrivacy(rawValue: Int16(commonParameters.privacyLevel.rawValue)) ?? .everybody
+            privacyVC.privacy = pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody
             navigationController?.pushViewController(privacyVC, animated: true)
             
         case .tags:
@@ -709,9 +682,9 @@ extension EditImageParamsViewController: UITableViewDelegate
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
             guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
-            let tagList: [Int32] = (commonParameters.tags ?? []).compactMap { Int32($0.tagId) }
-            tagsVC.setPreselectedTagIds(tagList)
-            tagsVC.setTagCreationRights(hasTagCreationRights)
+            tagsVC.user = user
+            let tagList: [Int32] = commonTags.compactMap { Int32($0.tagId) }
+            tagsVC.setPreselectedTagIds(Set(tagList))
             navigationController?.pushViewController(tagsVC, animated: true)
             
         default:
@@ -723,7 +696,7 @@ extension EditImageParamsViewController: UITableViewDelegate
         var result: Bool
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!NetworkVars.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName, .author, .date, .datePicker, .desc:
                 result = false
@@ -741,10 +714,10 @@ extension EditImageParamsViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         if textField.tag == EditImageParamsOrder.date.rawValue {
-            // The common date can be nil or past distant (i.e. unset)
-            if commonParameters.dateCreated == nil {
+            // The common date can be distant past (i.e. unset)
+            if commonDateCreated == .distantPast {
                 // Define date as today
-                commonParameters.dateCreated = Date()
+                commonDateCreated = Date()
                 shouldUpdateDateCreated = true
 
                 // Update creation date
@@ -792,18 +765,15 @@ extension EditImageParamsViewController: UITextFieldDelegate
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+        guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+            else { return false }
         switch EditImageParamsOrder(rawValue: textField.tag) {
             case .imageName:
                 // Title
-                commonParameters.imageTitle = finalString
+                commonTitle = finalString.htmlToAttributedString
             case .author:
                 // Author
-                if (finalString?.count ?? 0) > 0 {
-                    commonParameters.author = finalString
-                } else {
-                    commonParameters.author = "NSNotFound"
-                }
+                commonAuthor = finalString
             default:
                 break
         }
@@ -814,10 +784,10 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: textField.tag) {
             case .imageName:
                 // Title
-                commonParameters.imageTitle = ""
+            commonTitle = "".htmlToAttributedString
             case .author:
                 // Author
-                commonParameters.author = "NSNotFound"
+                commonAuthor = ""
             default:
                 break
         }
@@ -833,14 +803,10 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: textField.tag) {
             case .imageName:
                 // Title
-                commonParameters.imageTitle = textField.text
+            commonTitle = (textField.text ?? "").htmlToAttributedString
             case .author:
                 // Author
-                if (textField.text?.count ?? 0) > 0 {
-                    commonParameters.author = textField.text
-                } else {
-                    commonParameters.author = "NSNotFound"
-                }
+                commonAuthor = textField.text ?? ""
             default:
                 break
         }
@@ -858,7 +824,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let finalString = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        commonParameters.comment = finalString
+        commonComment = finalString.htmlToAttributedString
         return true
     }
 
@@ -868,7 +834,7 @@ extension EditImageParamsViewController: UITextViewDelegate
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        commonParameters.comment = textView.text
+        commonComment = textView.text.htmlToAttributedString
     }
 }
 
@@ -876,7 +842,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 // MARK: - EditImageThumbnailCellDelegate Methods
 extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 {
-    func didDeselectImage(withId imageId: Int) {
+    func didDeselectImage(withId imageId: Int64) {
         // Hide picker if needed
         let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
         if hasDatePicker {
@@ -888,51 +854,30 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         }
 
         // Update data source
-        var newImages = images
-        var timeInterval: TimeInterval? = nil
-        if let oldCreationDate = oldCreationDate {
-            timeInterval = commonParameters.dateCreated.timeIntervalSince(oldCreationDate)
-        }
-        for imageData in images {
-            if imageData.imageId == imageId {
-                newImages.removeAll { $0 as AnyObject === imageData as AnyObject }
-                break
-            }
-        }
-        images = newImages
+        let timeInterval = commonDateCreated.timeIntervalSince(oldCreationDate)
+        images.removeAll(where: {$0.pwgID == imageId})
 
         // Update common creation date if needed
-        for imageData in images {
-            // Keep first non-nil date value
-            if imageData.dateCreated != nil {
-                oldCreationDate = imageData.dateCreated
-                commonParameters.dateCreated = oldCreationDate?.addingTimeInterval(timeInterval ?? 0.0)
-                break
-            }
-        }
-        if commonParameters.dateCreated == nil {
-            oldCreationDate = nil
-        }
+        oldCreationDate = images[0].dateCreated
+        commonDateCreated = oldCreationDate.addingTimeInterval(timeInterval)
 
         // Refresh table
         editImageParamsTableView.reloadData()
 
         // Deselect image in album view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didDeselectImage(withId:))) ?? false {
-            delegate?.didDeselectImage(withId: imageId)
-        }
+        delegate?.didDeselectImage(withId: imageId)
     }
 
-    func didRenameFileOfImage(_ imageData: PiwigoImageData) {
+    func didRenameFileOfImage(_ imageData: Image) {
         // Update data source
-        if let index = images.firstIndex(where: { $0.imageId == imageData.imageId }) {
-            images[index] = imageData
+        do {
+            try mainContext.save()
+        } catch let error as NSError {
+            print("Could not fetch \(error), \(error.userInfo)")
         }
 
         // Update parent image view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
-            delegate?.didChangeImageParameters(imageData)
-        }
+        delegate?.didChangeImageParameters(imageData)
     }
 }
 
@@ -940,10 +885,10 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 // MARK: -  EditImageDatePickerDelegate Methods
 extension EditImageParamsViewController: EditImageDatePickerDelegate
 {
-    func didSelectDate(withPicker date: Date?) {
+    func didSelectDate(withPicker date: Date) {
         // Apply new date
         shouldUpdateDateCreated = true
-        commonParameters.dateCreated = date
+        commonDateCreated = date
 
         // Update cell
         let indexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
@@ -951,7 +896,7 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
     }
 
     func didUnsetImageCreationDate() {
-        commonParameters.dateCreated = nil
+        commonDateCreated = .distantPast
         shouldUpdateDateCreated = true
 
         // Close date picker
@@ -973,10 +918,10 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
 // MARK: -  EditImageShiftPickerDelegate Methods
 extension EditImageParamsViewController: EditImageShiftPickerDelegate
 {
-    func didSelectDate(withShiftPicker date: Date?) {
+    func didSelectDate(withShiftPicker date: Date) {
         // Apply new date
         shouldUpdateDateCreated = true
-        commonParameters.dateCreated = date
+        commonDateCreated = date
 
         // Update cell
         let indexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
@@ -988,7 +933,7 @@ extension EditImageParamsViewController: EditImageShiftPickerDelegate
 // MARK: - SelectPrivacyObjcDelegate Methods
 extension EditImageParamsViewController: SelectPrivacyDelegate
 {
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
             // Return updated parameters
@@ -999,11 +944,10 @@ extension EditImageParamsViewController: SelectPrivacyDelegate
         }
 
         // Update image parameter?
-        let privacyLevelObjc = kPiwigoPrivacyObjc(rawValue: Int32(privacyLevel.rawValue))
-        if privacyLevelObjc != commonParameters.privacyLevel {
+        if privacyLevel.rawValue != commonPrivacyLevel {
             // Remember to update image info
             shouldUpdatePrivacyLevel = true
-            commonParameters.privacyLevel = privacyLevelObjc
+            commonPrivacyLevel = privacyLevel.rawValue
 
             // Refresh table row
             let row = EditImageParamsOrder.privacy.rawValue - (hasDatePicker == false ? 1 : 0)
@@ -1017,40 +961,27 @@ extension EditImageParamsViewController: SelectPrivacyDelegate
 // MARK: - TagsViewControllerObjcDelegate Methods
 extension EditImageParamsViewController: TagsViewControllerDelegate
 {
-    func didSelectTags(_ selectedTags: [Tag]) {
+    func didSelectTags(_ selectedTags: Set<Tag>) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
             // Return updated parameters
-            if delegate?.responds(to: #selector(EditImageParamsDelegate.didFinishEditingParameters)) ?? false {
-                delegate?.didFinishEditingParameters()
-            }
+            delegate?.didFinishEditingParameters()
             return
         }
 
-        // Convert tags: Tag —> PiwigoTagData
-        var selectedPiwigoTags = [PiwigoTagData]()
-        for selectedTag in selectedTags {
-            let piwigoTag = PiwigoTagData()
-            piwigoTag.tagId = Int(selectedTag.tagId)
-            piwigoTag.tagName = selectedTag.tagName
-            piwigoTag.lastModified = selectedTag.lastModified
-            piwigoTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag
-            selectedPiwigoTags.append(piwigoTag)
-        }
-        
         // Build list of added tags
         addedTags = []
-        for tag in selectedPiwigoTags {
-            if !commonParameters.tags.contains(where: { $0.tagId == tag.tagId }) {
-                addedTags.append(tag)
+        for tag in selectedTags {
+            if commonTags.contains(where: { $0.tagId == tag.tagId }) == false {
+                addedTags.insert(tag)
             }
         }
 
         // Build list of removed tags
         removedTags = []
-        for tag in commonParameters.tags {
-            if !selectedPiwigoTags.contains(where: { $0.tagId == tag.tagId }) {
-                removedTags.append(tag)
+        for tag in commonTags {
+            if !selectedTags.contains(where: { $0.tagId == tag.tagId }) {
+                removedTags.insert(tag)
             }
         }
 
@@ -1058,12 +989,12 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
         if (addedTags.isEmpty == false) || (removedTags.isEmpty == false) {
             // Update common tag list and remember to update image info
             shouldUpdateTags = true
-            commonParameters.tags = selectedPiwigoTags
+            commonTags = Set(selectedTags)
 
             // Refresh table row
             var row: Int = EditImageParamsOrder.tags.rawValue
             row -= !hasDatePicker ? 1 : 0
-            row -= !NetworkVars.hasAdminRights ? 1 : 0
+            row -= !user.hasAdminRights ? 1 : 0
             let indexPath = IndexPath(row: row, section: 0)
             editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
         }

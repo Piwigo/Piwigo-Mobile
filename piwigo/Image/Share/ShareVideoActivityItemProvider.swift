@@ -13,18 +13,20 @@ import LinkPresentation
 import MobileCoreServices
 import UIKit
 import piwigoKit
+import uploadKit
 
 class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
     // MARK: - Initialisation
     weak var delegate: ShareImageActivityItemProviderDelegate?
 
-    private var imageData: PiwigoImageData              // Piwigo image data
-    private var task: URLSessionDownloadTask?           // Download task
+    private var imageData: Image                        // Core Data image
     private var exportSession: AVAssetExportSession?    // Export session
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
-    private var imageFileURL: URL                       // Shared image file URL
+    private var pwgImageURL: URL                        // URL of video in Piwigo server
+    private var cachedFileURL: URL?                     // URL of cached video file
+    private var imageFileURL: URL                       // URL of shared video file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
 
 
@@ -46,27 +48,30 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     
     
     // MARK: - Placeholder Image
-    init(placeholderImage imageData: PiwigoImageData) {
+    init(placeholderImage: Image) {
         // Store Piwigo image data for future use
-        self.imageData = imageData
+        self.imageData = placeholderImage
 
-        // We use the thumbnail cached in memory
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
-        guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
+        // We use the thumbnail image stored in cache
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        guard let serverID = imageData.server?.uuid else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
+            pwgImageURL = imageFileURL
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
         
-        // Retrieve thumbnail image
-        let thumb = UIImageView()
-        thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
-        if let thumbnailImage = thumb.image {
-            imageFileURL = thumbnailURL
-            let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
+        // Retrieve URL of image in cache
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        imageFileURL = cacheDir.appendingPathComponent(size.path)
+            .appendingPathComponent(String(imageData.pwgID))
+        pwgImageURL = imageFileURL
+
+        // Retrieve image in cache
+        if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
+            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
-            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 
@@ -98,9 +103,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: NSLocalizedString("downloadingVideo", comment: "Downloading Video"))
         })
 
-        // Determine the URL request
-        /// - The movie URL is necessarily the one of the full resolution Piwigo image
-        guard let urlRequest: URLRequest = ShareUtilities.getUrlRequest(forImage: imageData, withMaxSize: Int.max) else {
+        // Get the server ID and optimum available image size
+        guard let serverID = imageData.server?.uuid,
+              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: Int.max) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -110,37 +115,26 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
-        // Do we have the movie in cache?
-        if let cache = NetworkVarsObjc.imageCache,
-           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data, cachedImageData.isEmpty == false {
-            // Create file URL where the shared file is expected to be found
-            imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
-            
-            // Deletes temporary image file if it exists
-            do {
-                try FileManager.default.removeItem(at: imageFileURL)
-            } catch {
-            }
+        // Store URL of image in Piwigo server for being able to cancel the download
+        pwgImageURL = imageURL
 
-            // Store cached image data into /tmp directory
-            do {
-                try cachedImageData.write(to: imageFileURL)
-                // Notify the delegate on the main thread to show how it makes progress.
-                progressFraction = 0.5
-            }
-            catch let error as NSError {
-                // Cancel task
-                cancel()
-                // Notify the delegate on the main thread that the processing is cancelled
-                alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
-                alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-            }
+        // Download video synchronously if not in cache
+        let sema = DispatchSemaphore(value: 0)
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
+                                     fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+            // Notify the delegate on the main thread to show how it makes progress.
+            self.progressFraction = Float((0.75 * fractionCompleted))
+        } completion: { fileURL in
+            self.cachedFileURL = fileURL
+            sema.signal()
+        } failure: { error in
+            // Will notify the delegate on the main thread that the processing is cancelled
+            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
+            sema.signal()
         }
-        else {
-            // Download synchronously the image file and store it in cache
-            downloadSynchronouslyVideo(with: urlRequest)
-        }
-
+        let _ = sema.wait(timeout: .distantFuture)
+        
         // Cancel item task if we could not retrieve the file
         if alertTitle != nil {
             // Cancel task
@@ -148,6 +142,40 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             // Notify the delegate on the main thread that the processing has finished.
             preprocessingDidEnd()
             // Could not retrieve video file
+            return placeholderItem!
+        }
+
+        // Check that we have the URL of the cached video
+        guard let cachedFileURL = cachedFileURL else {
+            // Will notify the delegate on the main thread that the processing is cancelled
+            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            self.alertMessage = NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!")
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled.
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+
+        // Shared files are stored in the /tmp directory and will be deleted:
+        // - by the app if the user kills it
+        // - by the system after a certain amount of time
+        imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
+
+        // Deletes temporary image file if it exists
+        try? FileManager.default.removeItem(at: imageFileURL)
+
+        // Copy original file to /tmp directly with appropriate file name
+        do {
+            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+        }
+        catch {
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled.
+            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            preprocessingDidEnd()
             return placeholderItem!
         }
 
@@ -200,10 +228,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let newSourceURL = tempDirectoryUrl.appendingPathComponent(newSourceFileName)
 
         // Deletes temporary image file if it exists
-        do {
-            try FileManager.default.removeItem(at: newSourceURL)
-        } catch {
-        }
+        try? FileManager.default.removeItem(at: newSourceURL)
 
         // Rename temporary original image file
         do {
@@ -269,57 +294,6 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // - by the system after a certain amount of time
         return imageFileURL
     }
-
-    private func downloadSynchronouslyVideo(with urlRequest: URLRequest) {
-        let sema = DispatchSemaphore(value: 0)
-        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
-            onProgress: { (progress) in
-                // Notify the delegate on the main thread to show how it makes progress.
-                if let progress = progress {
-                    self.progressFraction = Float(0.75 * progress.fractionCompleted)
-                }
-            }, completionHandler: { (response, fileURL, error) in
-                // Any error ?
-                if let error = error {
-                    // Failed
-                    self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                    self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-                    sema.signal()
-                } else {
-                    // Get response
-                    if let fileURL = fileURL, let response = response {
-                        do {
-                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
-                            let data = try Data(contentsOf: fileURL)
-
-                            // Check content
-                            if data.isEmpty {
-                                self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                                self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
-                                sema.signal()
-                            }
-                            else {
-                                // Store image in cache
-                                let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVarsObjc.imageCache {
-                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
-                                }
-
-                                // Set image file URL
-                                self.imageFileURL = fileURL
-                                sema.signal()
-                            }
-                        }
-                        catch let error as NSError {
-                            self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
-                            sema.signal()
-                        }
-                    }
-                }
-            })
-        let _ = sema.wait(timeout: .distantFuture)
-    }
     
     private func exportSynchronously(originalAsset: AVAsset, with exportPreset: String) {
         let sema = DispatchSemaphore(value: 0)
@@ -373,7 +347,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
-            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: self.imageData.imageId)
+            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageId: self.imageData.pwgID)
         })
     }
     
@@ -381,7 +355,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel video file download
-        task?.cancel()
+        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
         // Cancel video export
         exportSession?.cancelExport()
     }
@@ -413,19 +387,25 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     
     @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
+        // Initialisation
         let linkMetaData = LPLinkMetadata()
-        
+
         // We use the thumbnail in cache
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
-        if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
-            // Retrieve thumbnail image
-            let thumb = UIImageView()
-            thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
-            if let thumbnailImage = thumb.image {
-                linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
+        if let serverID = imageData.server?.uuid {
+            // Retrieve URL of image in cache
+            let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+            let fileURL = cacheDir.appendingPathComponent(size.path)
+                .appendingPathComponent(String(imageData.pwgID))
+
+            // Retrieve image in cache
+            if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
+                linkMetaData.imageProvider = NSItemProvider(object: cachedImage)
             } else {
                 linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
             }
+        } else {
+            linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
         }
         
         // Title

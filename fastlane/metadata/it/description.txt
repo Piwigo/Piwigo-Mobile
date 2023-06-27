@@ -4,12 +4,12 @@ Piwigo per iPhone/iPad/iPod integra il software di galleria fotografica nel clou
 • Crea, elimina, sposta e rinomina gli album,
 • Ricerca, modifica, scarica ed elimina foto e video,
 • Copia e sposta foto e video tra gli album,
+• Aggiungi e rimuovi foto e video dai tuoi preferiti,
 • Imposta una foto come immagine dell'album,
-• Caricare foto:
+• Carica foto e video:
   - di dimensioni e qualità modificabili,
   - con descrizione, autore, tag, metadati EXIF,
   - con o senza metadati GPS.
-• Carica video,
 • Condividi foto e video.
 
 Piwigo ti consente di creare la tua galleria fotografica sul web. Include molte funzioni potenti come album, tag, geolocalizzazione, molti livelli di personalizzazione, caricamento da parte dei visitatori, privacy, calendario o statistiche.

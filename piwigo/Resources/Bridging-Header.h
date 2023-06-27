@@ -3,17 +3,5 @@
 //
 
 #import <Availability.h>
-#import <AFNetworking.h>
-#import "AFNetworkActivityIndicatorManager.h"
 #import <MBProgressHUD.h>
 #import <MGSwipeTableCell.h>
-#import <UIImageView+AFNetworking.h>
-
-#import "AlbumData.h"
-#import "CategoriesData.h"
-#import "ImageService.h"
-#import "Model.h"
-#import "NetworkHandler.h"
-#import "PiwigoAlbumData.h"
-#import "PiwigoImageData.h"
-#import "PiwigoTagData.h"

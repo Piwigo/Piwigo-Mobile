@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.categories.setRepresentative
-public let kPiwigoCategoriesMove = "format=json&method=pwg.categories.move"
+public let pwgCategoriesMove = "format=json&method=pwg.categories.move"
 
 public struct CategoriesMoveJSON: Decodable {
 

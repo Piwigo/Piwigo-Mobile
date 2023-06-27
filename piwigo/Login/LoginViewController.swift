@@ -8,57 +8,68 @@
 //  Converted to Swift 5.4 by Eddy Lelièvre-Berna on 26/02/2022.
 //
 
+import CoreData
 import MessageUI
 import UIKit
 import piwigoKit
+import uploadKit
 
 class LoginViewController: UIViewController {
 
+    @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
     @IBOutlet weak var userTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var websiteNotSecure: UILabel!
-    @IBOutlet weak var byLabel1: UILabel!
-    @IBOutlet weak var byLabel2: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
     private var isAlreadyTryingToLogin = false
-    private var httpAlertController: UIAlertController?
-    private var httpLoginAction: UIAlertAction?
+    var httpAlertController: UIAlertController?
+    var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        if #available(iOS 13.0, *) {
+            return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
+        } else {
+            // Fallback on earlier versions
+            return .lightContent
+        }
     }
 
     
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
+    }()
+
+
+    // MARK: - Core Data Providers
+    private lazy var userProvider: UserProvider = {
+        let provider : UserProvider = UserProvider.shared
+        return provider
+    }()
+
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Always adopt a dark interface style
-        if #available(iOS 13.0, *) {
-            overrideUserInterfaceStyle = .dark
-        }
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
-        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        serverTextField.text = NetworkVars.service
 
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
         userTextField.text = NetworkVars.username
-        if #available(iOS 11.0, *) {
-            userTextField.textContentType = .username
-        }
+        userTextField.textContentType = .username
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.serverPath,
                                                             account: NetworkVars.username)
-        if #available(iOS 11.0, *) {
-            passwordTextField.textContentType = .password
-        }
+        passwordTextField.textContentType = .password
         
         // Login button
         loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
@@ -67,10 +78,6 @@ class LoginViewController: UIViewController {
         // Website not secure info
         websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
         
-        // Developpers
-        byLabel1.text = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        byLabel2.text = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-
         // App version
         let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
@@ -78,10 +85,59 @@ class LoginViewController: UIViewController {
 
         // Keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard)))
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: .pwgPaletteChanged, object: nil)
+    }
+
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
+
+        // Navigation bar
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
+        // Text color depdending on background color
+        serverTextField.textColor = .piwigoColorText()
+        serverTextField.backgroundColor = .piwigoColorCellBackground()
+        userTextField.textColor = .piwigoColorText()
+        userTextField.backgroundColor = .piwigoColorCellBackground()
+        passwordTextField.textColor = .piwigoColorText()
+        passwordTextField.backgroundColor = .piwigoColorCellBackground()
+        versionLabel.textColor = .piwigoColorText()
+        websiteNotSecure.textColor = .piwigoColorText()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
 
         // Not yet trying to login
         isAlreadyTryingToLogin = false
@@ -101,6 +157,9 @@ class LoginViewController: UIViewController {
 
     deinit {
         // Release memory
+        
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
     }
 
     
@@ -112,12 +171,10 @@ class LoginViewController: UIViewController {
 
         // Default settings
         isAlreadyTryingToLogin = true
-        NetworkVars.hasAdminRights = false
-        NetworkVars.hasNormalRights = false
+        NetworkVars.userStatus = pwgUserStatus.guest
         NetworkVars.usesCommunityPluginV29 = false
-        NetworkVars.userCancelledCommunication = false
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
@@ -149,21 +206,31 @@ class LoginViewController: UIViewController {
     
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
-        LoginUtilities.requestServerMethods { [self] in
-            // Known methods, pursue logging in…
-            performLogin()
+        NetworkUtilities.requestServerMethods { [self] in
+            // Pursue logging in…
+            DispatchQueue.main.async {
+                self.performLogin()
+            }
         } didRejectCertificate: { [self] error in
             // The SSL certificate is not trusted
-            requestCertificateApproval(afterError: error)
+            DispatchQueue.main.async {
+                self.requestCertificateApproval(afterError: error)
+            }
         } didFailHTTPauthentication: { [self] error in
             // Without prior knowledge, the app already tried Piwigo credentials
             // but unsuccessfully, so we request HTTP credentials
-            requestHttpCredentials(afterError: error)
+            DispatchQueue.main.async {
+                self.requestHttpCredentials(afterError: error)
+            }
         } didFailSecureConnection: { [self] error in
             // Suggest HTTP connection if HTTPS attempt failed
-            requestNonSecuredAccess(afterError: error)
+            DispatchQueue.main.async {
+                self.requestNonSecuredAccess(afterError: error)
+            }
         } failure: { [self] error in
-            logging(inConnectionError: error)
+            DispatchQueue.main.async {
+                self.logging(inConnectionError: error)
+            }
         }
     }
 
@@ -181,19 +248,24 @@ class LoginViewController: UIViewController {
         let acceptAction = UIAlertAction(
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .default, handler: { [self] action in
-                // Cancel task
-                NetworkVarsObjc.sessionManager!.invalidateSessionCancelingTasks(true, resetSession: true)
-                // Will accept certificate
-                NetworkVars.didApproveCertificate = true
-                // Try logging in with approved certificate
-                launchLogin()
+                // Cancel task and relaunch login
+                PwgSession.shared.dataSession.getAllTasks { tasks in
+                    // Cancel task
+                    tasks.forEach({ $0.cancel() })
+                    // Will accept certificate
+                    NetworkVars.didApproveCertificate = true
+                    // Try logging in with approved certificate
+                    DispatchQueue.main.async {
+                        self.launchLogin()
+                    }
+                }
             })
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, acceptAction])
     }
 
     func requestHttpCredentials(afterError error: Error?) {
         let username = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)", account: username)
+        let password = KeychainUtilities.password(forService: NetworkVars.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
                                                                      username: username, password: password,
                                                                      cancelAction: { [self] action in
@@ -205,8 +277,7 @@ class LoginViewController: UIViewController {
                httpUsername.isEmpty == false {
                 NetworkVars.httpUsername = httpUsername
                 KeychainUtilities.setPassword(httpAlertController?.textFields?[1].text ?? "",
-                    forService: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)",
-                    account: httpUsername)
+                    forService: NetworkVars.service, account: httpUsername)
                 // Try logging in with new HTTP credentials
                 launchLogin()
             }
@@ -242,7 +313,7 @@ class LoginViewController: UIViewController {
         NetworkVars.serverProtocol = "http://"
 
         // Update URL on UI
-        serverTextField.text = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
+        serverTextField.text = NetworkVars.service
 
         // Display security message below credentials
         websiteNotSecure.isHidden = false
@@ -253,19 +324,12 @@ class LoginViewController: UIViewController {
 
     func performLogin() {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
-
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
-        if (userTextField.text?.count ?? 0) > 0 {
+        if username.isEmpty == false {
             // Update HUD during login
             showPiwigoHUD(
                 withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -275,45 +339,49 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Perform login
-            LoginUtilities.sessionLogin(
-                withUsername: username, password: password,
-                completion: { [self] in
-                    // Session now opened
-                    // First determine user rights if Community extension installed
-                    getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
+            PwgSession.shared.sessionLogin(withUsername: username, password: password) { [self] in
+                // Session now opened
+                NetworkVars.username = username
 
-                },
-                failure: { [self] error in
-                    // Don't keep unaccepted credentials
-                    KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
-                                                     account: username)
-                    // Login request failed
-                    logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-                })
+                // Create/update User account in persistent cache, create Server if necessary.
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                DispatchQueue.main.async { [self] in
+                    let _ = self.userProvider.getUserAccount(inContext: mainContext,
+                                                             withUsername: username, afterUpdate: true)
+                }
+
+                // First determine user rights if Community extension installed
+                getCommunityStatus()
+            } failure: { [self] error in
+                // Don't keep unaccepted credentials
+                KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
+                                                 account: username)
+                // Login request failed
+                logging(inConnectionError: error)
+            }
         } else {
             // Reset keychain and credentials
             KeychainUtilities.deletePassword(forService: NetworkVars.serverPath,
-                                             account: NetworkVars.username)
+                                             account: username)
             NetworkVars.username = ""
 
+            // Create/update guest account in persistent cache, create Server if necessary.
+            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+            DispatchQueue.main.async { [self] in
+                let _ = self.userProvider.getUserAccount(inContext: mainContext,
+                                                         withUsername: username, afterUpdate: true)
+            }
+
             // Check Piwigo version, get token, available sizes, etc.
-            getCommunityStatus(atFirstLogin: true, withReloginCompletion: { })
+            getCommunityStatus()
         }
     }
 
     // Determine true user rights when Community extension installed
-    func getCommunityStatus(atFirstLogin isFirstLogin: Bool,
-                            withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func getCommunityStatus() {
         print(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
-        
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
-
+            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
+        // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
             // Update HUD during login
             showPiwigoHUD(
@@ -324,36 +392,31 @@ class LoginViewController: UIViewController {
                 inMode: .indeterminate)
 
             // Community extension installed
-            LoginUtilities.communityGetStatus { [self] in
+            PwgSession.shared.communityGetStatus { [self] in
+                // Update user account in persistent cache
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                DispatchQueue.main.async { [self] in
+                    let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+                }
+
                 // Check Piwigo version, get token, available sizes, etc.
-                getSessionStatus(atFirstLogin: isFirstLogin,
-                                 withReloginCompletion: reloginCompletion)
+                getSessionStatus()
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
                 isAlreadyTryingToLogin = false
-                logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
+                logging(inConnectionError: error)
             }
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus(atFirstLogin: isFirstLogin,
-                             withReloginCompletion: reloginCompletion)
+            getSessionStatus()
         }
     }
 
     // Check Piwigo version, get token, available sizes, etc.
-    func getSessionStatus(atFirstLogin isFirstLogin: Bool,
-                          withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func getSessionStatus() {
         print(
-            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasAdminRights=\(NetworkVars.hasAdminRights ? "YES" : "NO"), hasNormalRights=\(NetworkVars.hasNormalRights ? "YES" : "NO")")
-
-        // Did the user cancel communication?
-        if NetworkVars.userCancelledCommunication {
-            isAlreadyTryingToLogin = false
-            logging(inConnectionError: nil)
-            return
-        }
-
+            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Update HUD during login
         showPiwigoHUD(
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
@@ -362,12 +425,16 @@ class LoginViewController: UIViewController {
             buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
             inMode: .indeterminate)
 
-        LoginUtilities.sessionGetStatus(completion: { [self] in
+        PwgSession.shared.sessionGetStatus() { [self] _ in
+            // Update user account in persistent cache
+            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+            DispatchQueue.main.async { [self] in
+                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            }
+
+            LoginUtilities.checkAvailableSizes()
             if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
                 // They need to update, ask user what to do
-                // Reinitialise flag
-                NetworkVars.userCancelledCommunication = false
-
                 // Close loading or re-login view and ask what to do
                 DispatchQueue.main.async { [self] in
                     hidePiwigoHUD() { [self] in
@@ -382,64 +449,31 @@ class LoginViewController: UIViewController {
                             style: .destructive,
                             handler: { [self] action in
                                 // Proceed at their own risk
-                                launchApp(atFirstLogin: isFirstLogin,
-                                          withReloginCompletion: reloginCompletion)
+                                launchApp()
                             })
                         presentPiwigoAlert(withTitle: NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVars.pwgVersion), actions: [defaultAction, continueAction])
                     }
                 }
             } else {
                 // Their version is Ok. Close HUD.
-                launchApp(atFirstLogin: isFirstLogin,
-                          withReloginCompletion: reloginCompletion)
+                launchApp()
             }
-        }, failure: { [self] error in
+        } failure: { [self] error in
             isAlreadyTryingToLogin = false
             // Display error message
-            logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-        })
+            logging(inConnectionError: error)
+        }
     }
 
-    func launchApp(atFirstLogin isFirstLogin: Bool,
-                   withReloginCompletion reloginCompletion: @escaping () -> Void) {
+    func launchApp() {
         isAlreadyTryingToLogin = false
-
-        // Load navigation if needed
-        if isFirstLogin {
-            print("••> Load album data in LoginViewController.")
-            // Update HUD during login
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("tabBar_albums", comment: "Albums"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                inMode: .indeterminate)
-
-            // Load category data in recursive mode
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
-                AlbumUtilities.getAlbums { didUpdateCats in
-                    // Reinitialise flag
-                    NetworkVars.userCancelledCommunication = false
-
-                    // Hide HUD and present root album
-                    DispatchQueue.main.async { [unowned self] in
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        hidePiwigoHUD() {
-                            // Present Album/Images view and resume uploads
-                            appDelegate?.loadNavigation(in: self.view.window)
-                        }
-                    }
-                } failure: { error in
-                    DispatchQueue.main.async { [unowned self] in
-                        // Inform user that we could not load album data
-                        logging(inConnectionError: NetworkVars.userCancelledCommunication ? nil : error)
-                    }
-                }
-            }
-        } else {
-            // Hide HUD if needed
+        // Hide HUD and present root album
+        DispatchQueue.main.async { [unowned self] in
+            // Present Album/Images view and resume uploads
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
             hidePiwigoHUD() {
-                reloginCompletion()
+                // Present Album/Images view and resume uploads
+                appDelegate?.loadNavigation(in: self.view.window)
             }
         }
     }
@@ -456,14 +490,8 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         // Propagate user's request
-        NetworkVars.userCancelledCommunication = true
-        PwgSession.shared.dataSession.getAllTasks(completionHandler: { tasks in
-            tasks.forEach { task in
-                task.cancel()
-            }
-        })
-        NetworkVarsObjc.sessionManager!.tasks.forEach { task in
-            task.cancel()
+        PwgSession.shared.dataSession.getAllTasks() { tasks in
+            tasks.forEach { $0.cancel() }
         }
     }
 
@@ -496,9 +524,6 @@ class LoginViewController: UIViewController {
     }
 
     @objc func hideLoading() {
-        // Reinitialise flag
-        NetworkVars.userCancelledCommunication = false
-
         // Hide and remove login HUD
         hidePiwigoHUD() { }
     }
@@ -595,162 +620,17 @@ class LoginViewController: UIViewController {
 
     @IBAction func openPiwigoURL(_ sender: UIButton) {
         if let url = URL(string: "https://piwigo.org") {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         }
     }
     
-    @IBAction func mailPiwigoSupport(_ sender: UIButton) {
-        if MFMailComposeViewController.canSendMail() {
-            let composeVC = MFMailComposeViewController()
-            composeVC.mailComposeDelegate = self
-
-            // Configure the fields of the interface.
-            composeVC.setToRecipients([
-                NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
-            ])
-
-            // Collect version and build numbers
-            let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-            let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-            // Compile ticket number from current date
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMddHHmm"
-            dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.language) as Locale
-            let date = Date()
-            let ticketDate = dateFormatter.string(from: date)
-
-            // Set subject
-            composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile"))")
-
-            // Collect system and device data
-            let deviceModel = UIDevice.current.modelName
-            let deviceOS = UIDevice.current.systemName
-            let deviceOSversion = UIDevice.current.systemVersion
-
-            // Set message body
-            composeVC.setMessageBody("\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? ""))\n\(deviceModel) — \(deviceOS) \(deviceOSversion)\n==============>>\n\n", isHTML: false)
-
-            // Present the view controller modally.
-            present(composeVC, animated: true)
-        }
-    }
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
 
 
-// MARK: - UITextField Delegate Methods
-extension LoginViewController: UITextFieldDelegate
-{
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        // Disable HTTP login action until user provides credentials
-        if let httpAlertController = httpAlertController {
-            // Requesting autorisation to access non secure web site
-            // or asking HTTP basic authentication credentials
-            if (httpAlertController.textFields?.count ?? 0) > 0 {
-                // Being requesting HTTP basic authentication credentials
-                if textField == httpAlertController.textFields?[0] {
-                    if (httpAlertController.textFields?[0].text?.count ?? 0) == 0 {
-                        httpLoginAction?.isEnabled = false
-                    }
-                } else if textField == httpAlertController.textFields?[1] {
-                    if (httpAlertController.textFields?[1].text?.count ?? 0) == 0 {
-                        httpLoginAction?.isEnabled = false
-                    }
-                }
-            }
-        }
-        return true
-    }
-
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        // Disable login buttons
-        if textField == serverTextField {
-            loginButton.isEnabled = false
-        } else if let httpAlertController = httpAlertController {
-            // Requesting autorisation to access non secure web site
-            // or asking HTTP basic authentication credentials
-            if (httpAlertController.textFields?.count ?? 0) > 0 {
-                // Being requesting HTTP basic authentication credentials
-                if (textField == httpAlertController.textFields?[0]) || (textField == httpAlertController.textFields?[1]) {
-                    httpLoginAction?.isEnabled = false
-                }
-            }
-        }
-
-        return true
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-        let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-
-        if textField == serverTextField {
-            // Disable Login button if URL invalid
-            let _ = saveServerAddress(finalString, andUsername: userTextField.text)
-            loginButton.isEnabled = true
-        } else if let httpAlertController = httpAlertController {
-            // Requesting autorisation to access non secure web site
-            // or asking HTTP basic authentication credentials
-            if (httpAlertController.textFields?.count ?? 0) > 0 {
-                // Being requesting HTTP basic authentication credentials
-                if (textField == httpAlertController.textFields?[0]) || (textField == httpAlertController.textFields?[1]) {
-                    // Enable HTTP Login action if field not empty
-                    httpLoginAction?.isEnabled = (finalString?.count ?? 0) >= 1
-                }
-            }
-        }
-
-        return true
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == serverTextField {
-            // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
-            loginButton.isEnabled = validURL
-            if !validURL {
-                // Incorrect URL
-                showIncorrectWebAddressAlert()
-                return false
-            }
-
-            // User entered acceptable server address
-            userTextField.becomeFirstResponder()
-        }
-        else if textField == userTextField {
-            // User entered username
-            let pwd = KeychainUtilities.password(forService: NetworkVars.serverPath,
-                                                 account: userTextField.text ?? "")
-            passwordTextField.text = pwd
-            passwordTextField.becomeFirstResponder()
-        }
-        else if textField == passwordTextField {
-            // User entered password —> Launch login
-            launchLogin()
-        }
-        return true
-    }
-
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField == serverTextField {
-            // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
-            loginButton.isEnabled = validURL
-            if !validURL {
-                // Incorrect URL
-                showIncorrectWebAddressAlert()
-                return false
-            }
-        }
-        return true
-    }
-}
-
-
+// MARK: - MFMailComposeViewController Delegate
 extension LoginViewController: MFMailComposeViewControllerDelegate
 {
     func mailComposeController(_ controller: MFMailComposeViewController,

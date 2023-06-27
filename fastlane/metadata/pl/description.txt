@@ -1,0 +1,25 @@
+Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.8 lub wyższej). Aplikacja pozwala na:
+
+• Przeglądanie albumów.
+• Tworzenie, usuwanie, przenoszenie i zmianę nazw albumów.
+• Wyszukiwanie, edycję, pobieranie i usuwanie zdjęć i filmów.
+• Kopiowanie i przenoszenie zdjęć i filmów między albumami.
+• Dodawanie i usuwanie zdjęć i filmów z Twoich Ulubionych.
+• Ustawianie zdjęcia jako zdjęcia albumu.
+• Przesyłanie zdjęć:
+  - z możliwością modyfikacji rozmiaru i jakości,
+  - z opisem, autorem, znacznikami, metadanymi EXIF,
+  - z metadanymi GPS lub bez nich.
+• Przesyłanie plików wideo.
+• Udostępnianie zdjęć i filmów.
+
+Piwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.
+
+Piwigo jest oprogramowaniem bezpłatnym i otwartym.
+
+Piwigo jest również kompatybilny z następującymi rozszerzeniami:
+- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora
+- piwigo-videojs: dodaje obsługę wideo
+
+Opinie lub pytania?
+Piwigo oferuje bezpłatną pomoc w https://piwigo.org/forum i chcielibyśmy poznać Twoje zdanie.

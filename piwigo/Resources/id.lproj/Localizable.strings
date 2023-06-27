@@ -25,7 +25,6 @@
 "alertRetryButton" = "Ulangi";
 "alertNextButton" = "Gambar Berikutnya";
 "alertTryButton" = "Mencoba";
-"alertClearButton" = "Bersihkan";
 
 // HUD views
 "loadingHUD_label" = "Memuat…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Warning";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreData_MigrationProgress" = "Migration in progress...";
+"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
+"CoreData_UserCreateFailed" = "Failed to create a new User object.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fetch albums error!";
+"CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
+"CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
+"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
+"CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
+"CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Fetch tags error!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Pengesahan Gagal";
 "sessionStatusError_message" = "Gagal untuk pengesahan pada peladen. Coba masuk lagi.";
 
-"serverCommunityError_title" = "Galat Komunitas";
-"serverCommunityError_message" = "Gagal mendapatkan parameter ekstensi Komunitas. Coba masuk lagi.";
-
 // Logout
 "logoutConfirmation_title" = "Keluar";
 "logoutConfirmation_message" = "Anda yakin ingin keluar?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
+"categoryUpdating" = "Updating…";
+"categoryUpdatedOn" = "Updated on %@";
+"categoryUpdatedAt" = "Updated at %@";
+"categoryUpdatedNow" = "Updated just now";
 "categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda.\nAnda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
 "categoryImageList_selectButton" = "Pilih";
 "categoryImageList_deselectButton" = "Deselect";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Hapus Album kosong";
 "deleteCategory_noImages" = "Menyimpan gambar";
 "deleteCategory_orphanedImages" = "Hapus yatim";
+"deleteCategory_singleOrphanedImage" = "Delete Orphan";
+"deleteCategory_severalOrphanedImages" = "Delete %@ Orphans";
 "deleteCategory_allImages" = "Hapus %@ gambarnya";
 "deleteCategoryConfirm_title" = "Anda yakin?";
 "deleteCategoryConfirm_message" = "Masukkan jumlah gambar untuk menghapus album ini. Jumlah gambar: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Memperbarui foto…";
 "editImageDetailsHUD_updatingPlural" = "Memperbarui foto…";
+"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Gagal untuk Memperbarui";
 "editImageDetailsError_message" = "Gagal untuk memperbarui perubahan dengan peladen Anda. Coba lagi?";
 "imageDetailsFetchError_title" = "Galat dalam Pengambilan Detai Gambar";
-"imageDetailsFetchError_retryMessage" = "Pengambilan data gambar gagal. Coba lagi?";
+"imageDetailsFetchError_message" = "Fetching the photo data failed.";
 "imageDetailsFetchError_continueMessage" = "Pengambilan data gambar gagal. Lanjutkan?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Never";
 
 // Settings — Cache
-"settingsHeader_cache" = "Pengaturan Tembolok (Terpakai/Total)";
-"settings_cacheDisk" = "Diska";
-"settings_cacheMemory" = "Memori";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "Bersihkan Cache";
-"settings_cacheClearAll" = "Bersihkan Cache Gambar";
+"settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Parent Albums";
 "help08_text" = "Long-press on the back button to display the list of parent albums.";
 "help08_text2" = "Tap the parent album of your choice to jump back to it.";
+
+// What's New in Piwigo
+"whatsNew_title" = "What's New in Piwigo";
+"whatsNew_title1" = "New Cache";
+"whatsNew_desc1" = "Cache management fully rewritten to improve the user experience and bring offline browsing.";
+"whatsNew_title2" = "Screen Mirroring";
+"whatsNew_desc2" = "Watch your photos and videos on an external display.";
+"whatsNew_continue" = "Continue";

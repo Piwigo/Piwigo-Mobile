@@ -22,12 +22,11 @@ enum SelectButtonState : Int {
     func didSelectImagesOfSection(_ section: Int)
 }
 
-@objc
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
-    private var section = 0
+    var section = 0
 
     // MARK: - View
     
@@ -49,14 +48,14 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.numberOfLines = 1
         dateLabel.adjustsFontSizeToFitWidth = false
-        dateLabel.font = .piwigoFontSmall()
+        dateLabel.font = .systemFont(ofSize: 13)
         dateLabel.textColor = .piwigoColorRightLabel()
 
         // Place name of location
         placeLabel.translatesAutoresizingMaskIntoConstraints = false
         placeLabel.numberOfLines = 1
         placeLabel.adjustsFontSizeToFitWidth = false
-        placeLabel.font = .piwigoFontSemiBold()
+        placeLabel.font = .systemFont(ofSize: 17, weight: .semibold)
         placeLabel.textColor = .piwigoColorLeftLabel()
 
         // Get date labels from images in section
@@ -70,7 +69,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(for: selectState)
+        setButtonTitle(forState: selectState)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -89,8 +88,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     
     // MARK: Utilities
-    
-    private func setButtonTitle(for state:SelectButtonState) {
+    func setButtonTitle(forState state: SelectButtonState) {
         let title: String, bckgColor: UIColor
         switch state {
         case .select:
@@ -109,9 +107,9 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         selectButton.accessibilityIdentifier = "SelectAll"
     }
 
-    @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
+    private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationsProvider().getPlaceName(for: location) else {
+        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
             return
@@ -181,8 +179,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
                     dateLabelText = dateFormatter1.string(from: dateCreated1) + " - " + dateFormatter2.string(from: dateCreated2)
                     // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
                         optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
                     } else {
@@ -203,8 +201,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
                     dateLabelText = dateFormatter.string(from: dateCreated1)
                     // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
                         optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                     } else {
@@ -220,12 +218,12 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 if (firstImageYear == lastImageYear) {
                     // Images taken during the sme year
                     // => Display day/month followed by year
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    // See https://iosref.com/res
                     let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                     dateFormatter1.locale = .current
                     dateFormatter2.locale = .current
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
+                    if UIScreen.main.bounds.size.width > 430 {
+                        // i.e. larger than iPhone 14 Pro Max screen width
                         dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
                         dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
                         dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
@@ -240,8 +238,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 // => Images taken on several years
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = .current
-                if UIScreen.main.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
+                if UIScreen.main.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
                     dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                 } else {

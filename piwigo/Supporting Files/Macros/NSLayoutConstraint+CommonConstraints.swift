@@ -9,7 +9,6 @@
 
 import UIKit
 
-@objc
 extension NSLayoutConstraint {
     // -------------------------- CENTERING --------------------------
     /// Centers the view vertically, this is left to right "|--here--|"

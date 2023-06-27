@@ -6,12 +6,13 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 
 public class PwgSession: NSObject {
     
     // Singleton
-    public static var shared = PwgSession()
+    public static let shared = PwgSession()
     
     // Create single instance
     public lazy var dataSession: URLSession = {
@@ -24,6 +25,14 @@ public class PwgSession: NSObject {
 
         /// Network service type for data that the user is actively waiting for.
         config.networkServiceType = .responsiveData
+        
+        /// The foreground session should wait for connectivity to become available.
+//        config.waitsForConnectivity = true
+        
+        /// Connections should use the network when the user has specified Low Data Mode
+//        if #available(iOSApplicationExtension 13.0, *) {
+//            config.allowsConstrainedNetworkAccess = true
+//        }
         
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
@@ -44,9 +53,7 @@ public class PwgSession: NSObject {
         config.httpCookieAcceptPolicy = .always
         
         /// Allows a seamless handover from Wi-Fi to cellular
-        if #available(iOS 11.0, *) {
-            config.multipathServiceType = .handover
-        }
+        config.multipathServiceType = .handover
         
         /// Create the main session and set its description
         let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
@@ -59,15 +66,24 @@ public class PwgSession: NSObject {
     // MARK: - Session Methods
     public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
                                           jsonObjectClientExpectsToReceive: T.Type,
-                                          countOfBytesClientExpectsToReceive:Int64,
+                                          countOfBytesClientExpectsToReceive: Int64,
                                           success: @escaping (Data) -> Void,
                                           failure: @escaping (NSError) -> Void) {
         // Create POST request
-        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-        let url = URL(string: urlStr + "/ws.php?\(method)")
+        let url = URL(string: NetworkVars.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         request.networkServiceType = .responsiveData
+        switch method {
+        case pwgCategoriesGetList, pwgCategoriesGetImages:
+            // Identify requests performed for a specific album
+            // so that they can be easily cancelled.
+            if let albumId = paramDict["cat_id"] as? Int {
+                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.HTTPCatID)
+            }
+        default:
+            break
+        }
 
         // Combine percent encoded parameters
         var encPairs = [String]()
@@ -113,7 +129,7 @@ public class PwgSession: NSObject {
                         }
                         
                         // Return error code
-                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode)
+                        let error = self.localizedError(for: httpResponse.statusCode)
                         failure(error as NSError)
                         return
                     }
@@ -123,7 +139,10 @@ public class PwgSession: NSObject {
                         // Invalid JSON data
 						#if DEBUG
 						let dataStr = String(decoding: jsonData, as: UTF8.self)
-						print(" > JSON: \(dataStr)")
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            NetworkUtilities.logger.notice("PwgSession: \(method, privacy: .public)")
+                            NetworkUtilities.logger.notice("Received invalid JSON: \(dataStr, privacy: .public)")
+                        }
 						#endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
@@ -133,8 +152,8 @@ public class PwgSession: NSObject {
                         
                         // Return error code
                         let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = PwgSession.shared.localizedError(for: httpResponse.statusCode,
-                                                                     errorMessage: errorMessage)
+                        let error = self.localizedError(for: httpResponse.statusCode,
+                                                        errorMessage: errorMessage)
                         failure(error as NSError)
                         return
                     }
@@ -156,12 +175,6 @@ public class PwgSession: NSObject {
                 return
             }
             
-            // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
-                failure(JsonError.invalidJSONobject as NSError)
-                return
-            }
-
             // Check returned data
             /// - The following 2 lines are used to determine the count of returned bytes.
             /// - This value can then be used to provide the expected count of returned bytes.
@@ -169,21 +182,28 @@ public class PwgSession: NSObject {
             #if DEBUG
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
-            let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print(" > JSON — \(countsOfByte) bytes received:\r \(dataStr)")
+//            let dataStr = String(decoding: jsonData, as: UTF8.self)
+            let dataStr = String(decoding: jsonData.prefix(128), as: UTF8.self) + "…"
+            if #available(iOSApplicationExtension 14.0, *) {
+                NetworkUtilities.logger.notice("PwgSession: \(method, privacy: .public)")
+                NetworkUtilities.logger.notice("Received JSON of \(countsOfByte, privacy: .public) bytes\r\(dataStr, privacy: .public)")
+             }
             #endif
             
+            // Return Piwigo error if no error and no data returned.
+            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+                failure(JsonError.invalidJSONobject as NSError)
+                return
+            }
+
             // The caller will decode the returned data
             success(jsonData)
         }
         
-        // Inform iOS so that it can optimize the scheduling of the task
-        if #available(iOS 11.0, *) {
-            // Tell the system how many bytes are expected to be exchanged
-            task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
-                                                            (request.allHTTPHeaderFields ?? [:]).count)
-            task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
-        }
+        // Tell the system how many bytes are expected to be exchanged
+        task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
+                                                        (request.allHTTPHeaderFields ?? [:]).count)
+        task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
 
         // Sets the task description from the method
         if let pos = method.lastIndex(of: "=") {
@@ -201,14 +221,25 @@ public class PwgSession: NSObject {
 // MARK: - Session Delegate
 extension PwgSession: URLSessionDelegate {
 
+//    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+//        print("    > The upload session is waiting for connectivity (offline mode)")
+//    }
+        
+//    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
+//        print("    > The upload session will begin delayed request (back to online)")
+//    }
+
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print("    > The data session has been invalidated")
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("The data session has been invalidated.")
+        }
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server \(NetworkVars.domain())")
-        
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Session-level authentication requested…")
+        }
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {
@@ -284,8 +315,9 @@ extension PwgSession: URLSessionDelegate {
 extension PwgSession: URLSessionDataDelegate {
         
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Task-level authentication request from the remote server")
-
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Task-level authentication requested…")
+        }
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {
@@ -297,7 +329,7 @@ extension PwgSession: URLSessionDataDelegate {
         NetworkVars.didFailHTTPauthentication = false
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
+        let service = NetworkVars.service
         var account = NetworkVars.httpUsername
         var password = KeychainUtilities.password(forService: service, account: account)
 
@@ -309,7 +341,7 @@ extension PwgSession: URLSessionDataDelegate {
             
             // Adopt Piwigo credentials as HTTP basic authentification credentials
             NetworkVars.httpUsername = account
-            KeychainUtilities.setPassword(password, forService: service, account: account)
+            KeychainUtilities.setPassword(password, forService: NetworkVars.service, account: account)
         }
 
         // Supply requested credentials if not provided yet

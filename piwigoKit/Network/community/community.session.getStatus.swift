@@ -8,11 +8,12 @@
 
 import Foundation
 
-// MARK: - community.images.uploadCompleted
 public let kCommunitySessionGetStatus = "format=json&method=community.session.getStatus"
+fileprivate let kCommunitySessionGetStatusBytes: Int64 = 2100
 
-public struct CommunitySessionGetStatusJSON: Decodable {
-    
+// MARK: Piwigo JSON Structure
+public struct CommunitySessionGetStatusJSON: Decodable
+{    
     public var status: String?
     public var realUser = ""        // "webmaster"
     public var uploadMethod = ""    // "pwg.categories.getAdminList"
@@ -79,6 +80,56 @@ public struct CommunitySessionGetStatusJSON: Decodable {
             // Unexpected Piwigo server error
             errorCode = -1
             errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+
+// MARK: - Piwigo Method Caller
+extension PwgSession
+{    
+    public func communityGetStatus(completion: @escaping () -> Void,
+                                   failure: @escaping (NSError) -> Void) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Get community status")
+        }
+        // Launch request
+        postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
+                    jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
+                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { jsonData in
+            // Decode the JSON object and retrieve the status
+            do {
+                // Decode the JSON into codable type CommunitySessionGetStatusJSON.
+                let decoder = JSONDecoder()
+                let statusJSON = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if statusJSON.errorCode != 0 {
+                    let error = self.localizedError(for: statusJSON.errorCode,
+                                                    errorMessage: statusJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+                
+                // Update user's status
+                guard statusJSON.realUser.isEmpty == false,
+                      let userStatus = pwgUserStatus(rawValue: statusJSON.realUser) else {
+                    failure(UserError.unknownUserStatus as NSError)
+                    return
+                }
+                NetworkVars.userStatus = userStatus
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 }

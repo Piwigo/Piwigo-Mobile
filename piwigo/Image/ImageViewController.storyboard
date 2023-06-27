@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="OpenSansRegular.TTF">
-            <string>OpenSans</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Image View Controller-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="ImageViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ImageViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImageViewController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ImageViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
@@ -82,7 +77,7 @@
                                 </connections>
                             </scrollView>
                             <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="playImage" insetsLayoutMarginsFromSafeArea="NO" image="videoPlay" translatesAutoresizingMaskIntoConstraints="NO" id="NAw-1Y-mdv">
-                                <rect key="frame" x="182" y="428" width="50" height="50"/>
+                                <rect key="frame" x="182" y="430" width="50" height="50"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="Ye4-oq-F4Z"/>
@@ -100,7 +95,7 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
                                             <color key="textColor" systemColor="labelColor"/>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         </textView>
                                     </subviews>
@@ -124,6 +119,18 @@
                                     <outlet property="descWidth" destination="75C-3O-otD" id="nDS-S0-qUJ"/>
                                 </connections>
                             </visualEffectView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec0-NJ-b64" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="195.5" y="64" width="23" height="23"/>
+                                <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="23" id="Ula-Dr-KWW"/>
+                                    <constraint firstAttribute="height" constant="23" id="VOg-Fs-Khx"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="cl6-aa-PKH"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -134,7 +141,9 @@
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="trailing" secondItem="CkJ-ky-Kbn" secondAttribute="trailing" id="7m2-DR-v9c"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="9R7-ma-jIc"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerY" secondItem="cl6-aa-PKH" secondAttribute="centerY" id="VZt-KI-TUJ"/>
+                            <constraint firstItem="Ec0-NJ-b64" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="c93-be-uGH"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="n2C-oc-2eJ"/>
+                            <constraint firstItem="Ec0-NJ-b64" firstAttribute="top" secondItem="cl6-aa-PKH" secondAttribute="top" constant="16" id="qhv-WB-vXC"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="rXV-ju-e4i"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="bottom" secondItem="CkJ-ky-Kbn" secondAttribute="bottom" id="sXf-85-dZO"/>
                         </constraints>
@@ -146,6 +155,7 @@
                         <outlet property="imageViewHeightConstraint" destination="yK6-53-GS0" id="An0-dM-Vno"/>
                         <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
                         <outlet property="playImage" destination="NAw-1Y-mdv" id="NIe-8s-wTm"/>
+                        <outlet property="progressView" destination="Ec0-NJ-b64" id="2SI-9C-yer"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>
                     </connections>
                 </viewController>
@@ -157,7 +167,7 @@
     <resources>
         <image name="videoPlay" width="50" height="50"/>
         <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -8,6 +8,7 @@
 
 import Foundation
 import piwigoKit
+import uploadKit
 
 extension ImageViewController
 {
@@ -30,7 +31,7 @@ extension ImageViewController
         let removeAction = UIAlertAction(
             title: NSLocalizedString("removeSingleImage_title", comment: "Remove from Album"),
             style: .default, handler: { [self] action in
-                removeImageFromCategory()
+                removeImageFromAlbum()
             })
 
         let deleteAction = UIAlertAction(
@@ -42,8 +43,7 @@ extension ImageViewController
         // Add actions
         alert.addAction(cancelAction)
         alert.addAction(deleteAction)
-        if let categoryIds = imageData.categoryIds, categoryIds.count > 1,
-           categoryId > 0 {
+        if categoryId > 0, let albums = imageData?.albums?.filter({$0.pwgID > 0}), albums.count > 1 {
             // This image is used in another album
             // Proposes to remove it from the current album, unless it was selected from a smart album
             alert.addAction(removeAction)
@@ -62,13 +62,14 @@ extension ImageViewController
             alert.view.tintColor = .piwigoColorOrange()
         }
     }
-
-    func removeImageFromCategory() {
+    
+    func removeImageFromAlbum() {
         // Display HUD during deletion
         showPiwigoHUD(withTitle: NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Update image category list
-        guard var categoryIds = imageData.categoryIds else {
+        
+        // Remove selected category ID from image category list
+        guard let imageData = imageData,
+              var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
                 self.hidePiwigoHUD { [unowned self] in
@@ -78,95 +79,138 @@ extension ImageViewController
             }
             return
         }
-        categoryIds.removeAll { $0 as AnyObject === NSNumber(value: categoryId) as AnyObject }
-
+        catIDs.removeAll(where: {$0 == categoryId})
+        
         // Prepare parameters for removing the image/video from the selected category
-        let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
-        let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
+        let imageID = imageData.pwgID
+        let newImageCategories = catIDs.compactMap({"\($0)"}).joined(separator: ",")
+        let paramsDict: [String : Any] = ["image_id"            : imageID,
                                           "categories"          : newImageCategories,
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        ImageUtilities.setInfos(with: paramsDict) { [unowned self] in
-            // Update image data
-            self.imageData.categoryIds = categoryIds
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                // Retrieve album
+                if let albums = imageData.albums,
+                   let album = albums.first(where: {$0.pwgID == categoryId}) {
+                    // Remove image from album
+                    album.removeFromImages(imageData)
 
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
-                    // Remove image from cache and update UI in main thread
-                    CategoriesData.sharedInstance()
-                        .removeImage(self.imageData, fromCategory: String(self.categoryId))
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage(withId: self.imageData.imageId)
-                }
-            }
-        } failure: { [unowned self] error in
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
-                // Hide HUD
-                hidePiwigoHUD { [unowned self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
-                }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    removeImageFromCategory()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD { [unowned self] in
-                            // Re-enable buttons
-                            setEnableStateOfButtons(true)
-                        }
+                    // Update albums
+                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save copied images \(error), \(error.userInfo)")
                     }
                 }
-            })
+
+                // Hide HUD
+                self.updatePiwigoHUDwithSuccess { [unowned self] in
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                        // Display preceding/next image or return to album view
+                        self.didRemoveImage()
+                    }
+                }
+            } failure: { [self] error in
+                self.removeImageFromAlbumError(error)
+            }
+        } failure: { [self] error in
+            self.removeImageFromAlbumError(error)
         }
     }
-
-    func deleteImageFromDatabase() {
-        // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
-
-        // Send request to Piwigo server
-        ImageUtilities.delete([imageData]) { [unowned self] in
-            // Hide HUD
-            self.updatePiwigoHUDwithSuccess { [unowned self] in
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                    // Display preceding/next image or return to album view
-                    self.didRemoveImage(withId: imageData.imageId)
-                }
-            }
-        } failure: { [unowned self] error in
+    
+    private func removeImageFromAlbumError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            var message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissRetryPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription, dismiss: { [unowned self] in
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            self.dismissPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
                 hidePiwigoHUD { [unowned self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
-            }, retry: { [unowned self] in
-                // Relogin and retry
-                LoginUtilities.reloginAndRetry() { [unowned self] in
-                    deleteImageFromDatabase()
-                } failure: { [unowned self] error in
-                    message = NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry…")
-                    dismissPiwigoError(withTitle: title, message: message,
-                                       errorMessage: error?.localizedDescription ?? "") { [unowned self] in
-                        hidePiwigoHUD { [unowned self] in
-                            // Re-enable buttons
-                            setEnableStateOfButtons(true)
-                        }
+            }
+        }
+    }
+    
+    func deleteImageFromDatabase() {
+        // Remove selected category ID from image category list
+        guard let imageData = imageData else {
+            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
+                // Hide HUD
+                self.hidePiwigoHUD { [self] in
+                    // Re-enable buttons
+                    self.setEnableStateOfButtons(true)
+                }
+            }
+            return
+        }
+
+        // Display HUD during deletion
+        showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        
+        // Send request to Piwigo server
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            ImageUtilities.delete(Set([imageData])) { [self] in
+                // Save image ID for marking Upload request in the background
+                let imageID = imageData.pwgID
+                
+                // Delete image from cache (also deletes image files)
+                self.mainContext.delete(imageData)
+                
+                // Retrieve albums associated to the deleted image
+                if let albums = imageData.albums {
+                    // Remove image from cached albums
+                    albums.forEach { album in
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
                     }
                 }
-            })
+                
+                // Save changes
+                do {
+                    try self.mainContext.save()
+                } catch let error as NSError {
+                    print("Could not save albums after image deletion \(error), \(error.userInfo)")
+                }
+
+                // If this image was uploaded with the iOS app,
+                // delete upload request from cache so that it can be re-uploaded.
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
+                }
+
+                // Hide HUD
+                self.updatePiwigoHUDwithSuccess { [self] in
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                        // Display preceding/next image or return to album view
+                        self.didRemoveImage()
+                    }
+                }
+            } failure: { [self] error in
+                self.deleteImageFromDatabaseError(error)
+            }
+        } failure: { [self] error in
+            self.deleteImageFromDatabaseError(error)
+        }
+    }
+    
+    private func deleteImageFromDatabaseError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
+            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+            self.dismissPiwigoError(withTitle: title, message: message,
+                                    errorMessage: error.localizedDescription) { [unowned self] in
+                // Hide HUD
+                hidePiwigoHUD { [self] in
+                    // Re-enable buttons
+                    setEnableStateOfButtons(true)
+                }
+            }
         }
     }
 }
@@ -175,73 +219,86 @@ extension ImageViewController
 // MARK: - SelectCategoryImageRemovedDelegate Methods
 extension ImageViewController: SelectCategoryImageRemovedDelegate
 {
-    func didRemoveImage(withId imageID: Int) {
-        // Determine index of the removed image
-        guard let indexOfRemovedImage = images.firstIndex(where: { $0.imageId == imageID }) else { return }
-
-        // Remove the image from the datasource
-        images.remove(at: indexOfRemovedImage)
-
+    func didRemoveImage() {
         // Return to the album view if the album is empty
-        if images.isEmpty {
+        let nbImages = images?.fetchedObjects?.count ?? 0
+        if nbImages == 0 {
             // Return to the Album/Images collection view
             navigationController?.popViewController(animated: true)
             return
         }
 
-        // Can we present the next image?
-        if indexOfRemovedImage < images.count {
-            // Retrieve data of next image (may be incomplete)
-            let imageData = images[indexOfRemovedImage]
-
-            // Create view controller for presenting next image
-            guard let nextImage = imagePageViewController(atIndex: indexOfRemovedImage) else { return }
-            nextImage.imagePreviewDelegate = self
-            imageIndex = indexOfRemovedImage
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-                // Update image data
-                self.imageData = self.images[indexOfRemovedImage]
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
+        // Was user scrolling towards next images?
+        if didPresentPageAfter {
+            // Can we present the next image?
+            if imageIndex < nbImages {
+                presentNextImage()
+                return
             }
-            return
+
+            // Can we present the preceding image?
+            if imageIndex > 0 {
+                presentPreviousImage()
+                return
+            }
+        } else {
+            // Can we present the preceding image?
+            if imageIndex > 0 {
+                presentPreviousImage()
+                return
+            }
+
+            // Can we present the next image?
+            if imageIndex < nbImages {
+                presentNextImage()
+                return
+            }
+        }        
+    }
+    
+    private func presentNextImage() {
+        // Create view controller for presenting next image
+        guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
+
+        // This changes the View Controller
+        // and calls the presentationIndexForPageViewController datasource method
+        pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+            // Update image data
+            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            // Set title view
+            self.setTitleViewFromImageData()
+            // Re-enable buttons
+            self.setEnableStateOfButtons(true)
+            // Reset favorites button
+            // pwg.users.favorites… methods available from Piwigo version 2.10
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                let isFavorite = (imageData?.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+            }
         }
+    }
+    
+    private func presentPreviousImage() {
+        // Create view controller for presenting next image
+        imageIndex -= 1
+        guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
 
-        // Can we present the preceding image?
-        if indexOfRemovedImage > 0 {
-            // Retrieve data of next image (may be incomplete)
-            let imageData = images[indexOfRemovedImage - 1]
-
-            // Create view controller for presenting next image
-            guard let prevImage = imagePageViewController(atIndex: indexOfRemovedImage - 1) else { return }
-            prevImage.imagePreviewDelegate = self
-            imageIndex = indexOfRemovedImage - 1
-
-            // This changes the View Controller
-            // and calls the presentationIndexForPageViewController datasource method
-            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                // Re-enable buttons
-                self.setEnableStateOfButtons(true)
-                // Reset favorites button
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId,
-                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
-                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-                }
+        // This changes the View Controller
+        // and calls the presentationIndexForPageViewController datasource method
+        pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+            // Update image data
+            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            // Set title view
+            self.setTitleViewFromImageData()
+            // Re-enable buttons
+            self.setEnableStateOfButtons(true)
+            // Reset favorites button
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                let isFavorite = (imageData?.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
             }
-            return
         }
     }
 }

@@ -12,17 +12,12 @@ import AVKit
 import UIKit
 import piwigoKit
 
-@objc protocol ImagePreviewDelegate: NSObjectProtocol {
-    func downloadProgress(_ progress: CGFloat)
-}
-
 class ImagePreviewViewController: UIViewController
 {
-    weak var imagePreviewDelegate: ImagePreviewDelegate?
 
     var imageIndex = 0
     var imageLoaded = false
-    var imageData: PiwigoImageData!
+    var imageData: Image!
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
@@ -30,9 +25,12 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var descContainer: ImageDescriptionView!
+    @IBOutlet weak var progressView: PieProgressView!
     
-    private var downloadTask: URLSessionDataTask?
-    private var userdidTapOnce: Bool = false        // True if the user did tap the view
+    var imageURL: URL?
+    private var serverID = ""
+    private let placeHolder = UIImage(named: "placeholderImage")!
+    private var userDidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
 
 
@@ -40,87 +38,27 @@ class ImagePreviewViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Retrieve server ID
+        serverID = imageData.server?.uuid ?? ""
+        if serverID.isEmpty {
+            // Configure the description view before layouting subviews
+            descContainer.configDescription(with: imageData.comment) {
+                self.configScrollView(with: self.placeHolder)
+            }
+            return
+        }
+
         // Thumbnail image should be available in cache
-        let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize)
-        let thumbnailStr = imageData.getURLFromImageSizeType(thumbnailSize)
-        let thumbnailURL = URL(string: thumbnailStr ?? "")
-        let thumb = UIImageView()
-        if let thumbnailURL = thumbnailURL {
-            thumb.image = NetworkVarsObjc.thumbnailCache?.imageforRequest(URLRequest(url: thumbnailURL), withAdditionalIdentifier: nil)
-        }
-        guard let imageThumbnail = thumb.image ?? UIImage(named: "placeholderImage") else {
-            fatalError("!!! No placeholder image available !!!")
-        }
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let fileURL = cacheDir.appendingPathComponent(thumbSize.path)
+            .appendingPathComponent(String(imageData.pwgID))
         
         // Configure the description view before layouting subviews
+        let thumbImage = UIImage(contentsOfFile: fileURL.path) ?? placeHolder
         descContainer.configDescription(with: imageData.comment) {
-            self.configScrollView(with: imageThumbnail)
+            self.configScrollView(with: thumbImage)
         }
-
-        // Previewed image
-        let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
-        var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
-        if previewStr == nil {
-            // Image URL unknown => default to medium image size
-            previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeMedium)
-            // After an upload, the server only returns the Square and Thumbnail sizes
-            if previewStr == nil {
-                previewStr = imageData.getURLFromImageSizeType(kPiwigoImageSizeThumb)
-            }
-        }
-        guard let previewURL = URL(string: previewStr ?? "") else {return }
-        weak var weakSelf = self
-
-        downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
-            previewURL.absoluteString,
-            parameters: [],
-            headers: [:],
-            progress: { progress in
-                DispatchQueue.main.async(
-                    execute: {
-                        // Update progress bar
-                        if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-                            weakSelf?.imagePreviewDelegate?.downloadProgress(CGFloat(progress.fractionCompleted))
-                        }
-                    })
-            },
-            success: { task, image in
-                if let image = image as? UIImage {
-                    // Set image view content
-                    weakSelf?.configScrollView(with: image)
-                    // Layout subviews
-                    weakSelf?.view.layoutIfNeeded()
-                    
-                    // Hide progress bar
-                    weakSelf?.imageLoaded = true
-                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
-                    }
-                    
-                    // Display "play" button if video
-                    weakSelf?.playImage.isHidden = !(weakSelf?.imageData.isVideo ?? false)
-
-                    // Store image in cache
-                    var cachedResponse: CachedURLResponse? = nil
-                    if let response = task.response,
-                        let image1 = image.jpegData(compressionQuality: 0.9) {
-                        cachedResponse = CachedURLResponse(response: response, data: image1)
-                    }
-                    if let cachedResponse = cachedResponse, let downloadTask1 = weakSelf?.downloadTask {
-                        NetworkVarsObjc.imageCache?.storeCachedResponse(cachedResponse, for: downloadTask1)
-                    }
-                } else {
-                    // Keep thumbnail or placeholder if image could not be loaded
-                    debugPrint("setImageScrollViewWithImageData: loaded image is nil!")
-                }
-            },
-            failure: { task, error in
-                if let error = error as NSError? {
-                    debugPrint("setImageScrollViewWithImageData/GET Error: \(error)")
-                }
-            })
-
-        downloadTask?.resume()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -137,19 +75,56 @@ class ImagePreviewViewController: UIViewController
         
         // Set colors, fonts, etc.
         applyColorPalette()
+        
+        // Previewed image
+        imageView.layoutIfNeeded()   // Ensure imageView in its final size
+        let cellSize = self.scrollView.bounds.size
+        let scale = self.scrollView.traitCollection.displayScale
+        progressView?.progress = 0
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
+        if let imageURL = imageURL {
+            ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                         fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                DispatchQueue.main.async {
+                    self.progressView.progress = fractionCompleted
+                }
+            } completion: { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.configImage(cachedImage)
+                }
+            } failure: { _ in }
+        }
 
         // Show/hide the description
-        guard let comment = imageData.comment, comment.isEmpty == false else {
+        guard let comment = imageData?.comment,
+                comment.string.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
         descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
     }
+    
+    func configImage(_ image: UIImage) {
+        // Set image view content
+        self.configScrollView(with: image)
+        // Layout subviews
+        self.view.layoutIfNeeded()
+        
+        // Hide progress view
+        self.imageLoaded = true
+        self.progressView.isHidden = true
+        
+        // Display "play" button if video
+        self.playImage.isHidden = !self.imageData.isVideo
+    }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if userdidTapOnce {
-            userdidTapOnce = false
+        if userDidTapOnce {
+            userDidTapOnce = false
             return
         }
         
@@ -191,18 +166,14 @@ class ImagePreviewViewController: UIViewController
         
         // Don't adjust the insets when showing or hiding the navigation bar/toolbar
         scrollView.contentInset = .zero
-        if #available(iOS 11.0, *) {
-            scrollView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-        }
+        scrollView.contentInsetAdjustmentBehavior = .never
         
         // Define the zoom scale range
         let widthScale = view.bounds.size.width / image.size.width
         let heightScale = view.bounds.size.height / image.size.height
         let minScale = min(widthScale, heightScale)
         scrollView.minimumZoomScale = minScale
-        scrollView.maximumZoomScale = max(2.0, 4 * minScale)
+        scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
 //        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
@@ -232,14 +203,13 @@ class ImagePreviewViewController: UIViewController
             spaceTop += nav.navigationBar.bounds.height
             spaceBottom += isToolbarRequired ? nav.toolbar.bounds.height : 0
         }
-        if #available(iOS 11.0, *) {
-            // Takes into account the safe area insets
-            if let root = topMostViewController()?.view?.window?.topMostViewController() {
-                spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
-                spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
-                spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
-                spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
-            }
+
+        // Takes into account the safe area insets
+        if let root = topMostViewController()?.view?.window?.topMostViewController() {
+            spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
+            spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
+            spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
+            spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
         }
         
         // Horizontal constraints
@@ -252,7 +222,7 @@ class ImagePreviewViewController: UIViewController
         let imageHeight = image.size.height * scrollView.zoomScale
         var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
         var descHeight: CGFloat = 0.0
-        if let comment = imageData.comment, comment.isEmpty == false {
+        if let comment = imageData?.comment, comment.string.isEmpty == false {
             descHeight = descContainer.descHeight.constant + 8
         }
         if isToolbarRequired {
@@ -302,10 +272,11 @@ class ImagePreviewViewController: UIViewController
     // MARK: - Image Metadata
     func didTapOnce() {
         // Remember that user did tap the view
-        userdidTapOnce = true
+        userDidTapOnce = true
         
         // Show/hide the description
-        guard let comment = imageData.comment, comment.isEmpty == false else {
+        guard let comment = imageData?.comment,
+              comment.string.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
@@ -348,15 +319,10 @@ class ImagePreviewViewController: UIViewController
         }
     }
     
-    func updateImageMetadata(with data:PiwigoImageData) {
-        // Update Piwigo data
-        imageData = data
-
-        // Should we update the image description?
-        if descContainer.descTextView.text != data.comment {
-            descContainer.configDescription(with: data.comment) {
-                self.view.layoutIfNeeded()
-            }
+    func updateImageMetadata(with data: Image) {
+        // Update image description
+        descContainer.configDescription(with: data.comment) {
+            self.view.layoutIfNeeded()
         }
     }
 }

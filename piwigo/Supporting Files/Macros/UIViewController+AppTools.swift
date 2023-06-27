@@ -1,6 +1,6 @@
 //
 //  UIViewController+AppTools.swift
-//  piwigo
+//  piwig
 //
 //  Created by Eddy Lelièvre-Berna on 13/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -8,7 +8,9 @@
 
 import UIKit
 
-@objc
+let kDelayPiwigoHUD = 500
+let loadingViewTag = 899
+
 extension UIViewController {
 
     // MARK: - Top Most View Controller
@@ -63,13 +65,13 @@ extension UIViewController {
             // Set title if needed
             if title.count > 0 {
                 hud?.label.text = title
-                hud?.label.font = .piwigoFontNormal()
+                hud?.label.font = .systemFont(ofSize: 17)
             }
             
             // Set details label if needed
             if detail.count > 0 {
                 hud?.detailsLabel.text = detail
-                hud?.detailsLabel.font = .piwigoFontSmall()
+                hud?.detailsLabel.font = .systemFont(ofSize: 13)
             }
             
             // Set button if needed
@@ -81,7 +83,8 @@ extension UIViewController {
     }
     
     func isShowingPiwigoHUD() -> Bool {
-        if let _ = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
+        if let _ = self.view.window,
+           let _ = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
             return true
         }
         return false
@@ -98,12 +101,9 @@ extension UIViewController {
         DispatchQueue.main.async {
             // Show "Completed" icon
             if let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if #available(iOS 11, *) {
-                    // An iPod on iOS 9.3 enters an infinite loop when creating imageView
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                }
+                let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
+                let imageView = UIImageView(image: image)
+                hud.customView = imageView
                 hud.mode = MBProgressHUDMode.customView
                 hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
             }
@@ -145,6 +145,25 @@ extension UIViewController {
         // Present alert
         self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
                                 actions: [dismissAction])
+    }
+
+    func cancelDismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                                  cancel: @escaping () -> Void, dismiss: @escaping () -> Void) {
+        // Prepare message
+        var wholeMessage = message
+        if errorMessage.count > 0 {
+            wholeMessage.append("\n(" + errorMessage + ")")
+        }
+        
+        // Prepare actions
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+                                         style: .cancel) { _ in cancel() }
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                          style: .default) { _ in dismiss() }
+
+        // Present alert
+        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                actions: [cancelAction, dismissAction])
     }
 
     func dismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",

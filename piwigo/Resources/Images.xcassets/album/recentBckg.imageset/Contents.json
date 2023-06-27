@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "recentBckg@1x.png",
+      "filename" : "sparklesBckg@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "recentBckg@2x.png",
+      "filename" : "sparklesBckg@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "recentBckg@3x.png",
+      "filename" : "sparklesBckg@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -21,6 +21,7 @@
     "version" : 1
   },
   "properties" : {
-    "template-rendering-intent" : "template"
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "original"
   }
 }

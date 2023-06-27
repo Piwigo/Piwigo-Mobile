@@ -6,33 +6,68 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
+import uploadKit
 
 class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        provider.fetchedNonCompletedResultsControllerDelegate = self
-        return provider
+    // MARK: - Core Data Object Contexts
+    lazy var mainContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.shared.mainContext
+        return context
     }()
 
-    
+
+    // MARK: - Core Data Source
+    lazy var fetchPendingRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
+        // Sort upload requests by state and date
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestSectionKey), ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true))
+        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
+
+        // Retrieves non-completed upload requests:
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var uploads: NSFetchedResultsController<Upload> = {
+        let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
+                                                 managedObjectContext: self.mainContext,
+                                                 sectionNameKeyPath: "requestSectionKey",
+                                                 cacheName: "org.piwigo.frgd.pendingUploads")
+        uploads.delegate = self
+        return uploads
+    }()
+
+
     // MARK: - View
     @IBOutlet var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
     
-    // MARK: - View Lifecycle
     
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Initialise data source
+        do {
+            try uploads.performFetch()
+        } catch {
+            print("Error: \(error)")
+        }
 
         // Buttons
         actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
@@ -43,12 +78,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
 
         // No extra space above tableView
-        if #available(iOS 11.0, *) {
-            queueTableView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        queueTableView.contentInsetAdjustmentBehavior = .never
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -98,12 +128,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -140,9 +168,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
         
-        // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
@@ -160,9 +185,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
 
-        // Unregister network reachability
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
         // Unregister Low Power Mode status
         NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
@@ -172,22 +194,18 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
     
     // MARK: - Action Menu
-    
     func updateNavBar() {
         // Title
-        let nberOfImagesInQueue = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count ?? 0
+        let nberOfImagesInQueue = (uploads.fetchedObjects ?? []).count
         title = nberOfImagesInQueue > 1 ?
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
-        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads:Int = uploadsProvider.fetchedNonCompletedResultsController
-            .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads:Int = uploadsProvider.fetchedResultsController
-            .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-
+        let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossibleUploads:Int = (uploads.fetchedObjects ?? []).map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +)
+        let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
+        let failedUploads:Int = (uploads.fetchedObjects ?? []).map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +)
         if impossibleUploads + failedUploads > 0 {
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
         } else {
@@ -199,71 +217,40 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                         style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
-        let resumable: Array<kPiwigoUploadState> = [.preparingError, .uploadingError, .finishingError]
-        let failedUploads:Int = uploadsProvider.fetchedResultsController
-            .fetchedObjects?.map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-            if failedUploads > 0 {
-			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+        let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
+        let failedUploads = (uploads.fetchedObjects ?? []).filter({ resumable.contains($0.state) == true })
+        if failedUploads.isEmpty == false {
+            let failedCount = failedUploads.count
+            let titleResume = failedCount > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedCount), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
 			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-				// Collect list of failed uploads
-				if let uploadIds = self.uploadsProvider.fetchedResultsController
-                    .fetchedObjects?.filter({resumable.contains($0.state)}).map({$0.objectID}) {
-					// Resume failed uploads
-					UploadManager.shared.backgroundQueue.async {
-						UploadManager.shared.resume(failedUploads: uploadIds, completionHandler: { (error) in
-							if let error = error {
-								// Inform user
-								let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
-								let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
-									})
-								alert.addAction(cancelAction)
-								alert.view.tintColor = .piwigoColorOrange()
-								if #available(iOS 13.0, *) {
-									alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-								} else {
-									// Fallback on earlier versions
-								}
-								self.present(alert, animated: true, completion: {
-									// Bugfix: iOS9 - Tint not fully Applied without Reapplying
-									alert.view.tintColor = .piwigoColorOrange()
-								})
-							} else {
-								// Relaunch uploads
-								UploadManager.shared.findNextImageToUpload()
-							}
-						})
-					}
-				}
+                // Resume failed uploads
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.resumeAllFailedUploads()
+                    UploadManager.shared.findNextImageToUpload()
+                }
 			})
             alert.addAction(resumeAction)
 		}
 
         // Clear impossible upload requests in section 1 (preparingFail, formatError, uploadingFail, finishingFail)
-        let impossible: Array<kPiwigoUploadState> = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-        let impossibleUploads:Int = uploadsProvider.fetchedResultsController
-            .fetchedObjects?.map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-    	if impossibleUploads > 0 {
-	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+        let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
+        let impossibleUploads = (uploads.fetchedObjects ?? []).filter({ impossible.contains($0.state) == true})
+        if impossibleUploads.isEmpty == false {
+            let impossibleCount = impossibleUploads.count
+            let titleClear = impossibleCount > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleCount), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
 			let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-			   // Get completed uploads
-				guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
-					return
-				}
-				// Get uploads to delete
-				let uploadIds = allUploads.filter({impossible.contains($0.state)}).map({$0.objectID})
-				// Delete failed uploads in the main thread
-                self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
-                    // Error encountered?
-                    if let error = error {
-                        DispatchQueue.main.async {
-                            self.dismissPiwigoError(withTitle: titleClear,
-                                                    message: error.localizedDescription) { }
-                        }
-                    }
+				// Delete failed uploads
+                failedUploads.forEach({ self.mainContext.delete($0) })
+                try? self.mainContext.save()
+                // Resume failed uploads
+                UploadManager.shared.backgroundQueue.async {
+                    // Update number of uploads
+                    UploadManager.shared.updateNberOfUploadsToComplete()
                 }
 			})
 			alert.addAction(clearAction)
@@ -296,10 +283,9 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         
     // MARK: - UITableView - Header
-    
     @objc func mainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.wifiOnlyUploading {
+            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.width,
@@ -316,11 +302,12 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             else {
                 // Prevent device from sleeping if uploads are in progress
                 self.queueTableView.tableHeaderView = nil
-                let uploading: Array<kPiwigoUploadState> = [.waiting, .preparing, .prepared,
-                                                            .uploading, .uploaded, .finishing]
-                let uploadsToPerform:Int = self.uploadsProvider.fetchedResultsController
-                    .fetchedObjects?.map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +) ?? 0
-                if uploadsToPerform > 0 {
+                let states: [pwgUploadState] = [.waiting, .preparing, .prepared,
+                                                .uploading, .uploaded, .finishing]
+                let uploading = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
+                if uploading.isEmpty {
+                    UIApplication.shared.isIdleTimerDisabled = false
+                } else {
                     UIApplication.shared.isIdleTimerDisabled = true
                 }
             }
@@ -330,7 +317,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         var sectionName = SectionKeys.Section4.name
-        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+        if let sectionInfo = uploads.sections?[section] {
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
@@ -343,7 +330,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
-        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+        if let sectionInfo = uploads.sections?[section] {
             let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             header.config(with: sectionKey)
         } else {
@@ -355,14 +342,14 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        if let sections = uploadsProvider.fetchedNonCompletedResultsController.sections {
+        if let sections = uploads.sections {
             return sections.count
         }
         return 0
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = uploadsProvider.fetchedNonCompletedResultsController.sections else {
+        guard let sections = uploads.sections else {
             fatalError("No sections in fetchedResultsController")
         }
         let sectionInfo = sections[section]
@@ -374,8 +361,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
             return UploadImageTableViewCell()
         }
-        let upload = uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
-        cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
+        cell.configure(with: uploads.object(at: indexPath),
+                       availableWidth: Int(tableView.bounds.size.width))
         return cell
     }
     
@@ -384,22 +371,17 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        if let localIdentifier = notification.userInfo?["localIdentifier"] as? String,
-            localIdentifier.count > 0 {
-            let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
-            for cell in visibleCells {
-                if cell.localIdentifier == localIdentifier {
-                    cell.update(with: notification.userInfo!)
-                    break
-                }
-            }
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty ,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float,
+           let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
+           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
+            cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }
 }
 
 
-// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
-
+// MARK: - NSFetchedResultsControllerDelegate
 extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -419,7 +401,7 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         case .move, .update:
             fallthrough
         @unknown default:
-                fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
+                fatalError("UploadQueueViewControllerOld: unknown NSFetchedResultsChangeType")
         }
     }
 
@@ -440,57 +422,27 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
             print("move… from", oldIndexPath, "to", newIndexPath)
             queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
             queueTableView.insertRows(at: [newIndexPath], with: .fade)
-            guard let upload:Upload = anObject as? Upload else { return }
-            updateCell(at: newIndexPath, with: upload)
         case .update:
             guard let oldIndexPath = indexPath else { return }
             print("update… at", oldIndexPath)
             if newIndexPath == nil {        // Regular update
-                guard let upload:Upload = anObject as? Upload else { break }
-                updateCell(at: oldIndexPath, with: upload)
+                queueTableView.reloadRows(at: [oldIndexPath], with: .automatic)
             } else {                        // Moving update when using iOS 10
-                queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
-                queueTableView.insertRows(at: [newIndexPath!], with: .fade)
+                queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+                queueTableView.insertRows(at: [newIndexPath!], with: .automatic)
             }
         @unknown default:
-            fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
+            fatalError("UploadQueueViewControllerOld: unknown NSFetchedResultsChangeType")
         }
     }
     
-    private func updateCell(at indexPath: IndexPath, with upload: Upload) -> Void {
-        guard let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell else { return }
-        var uploadInfo: [String : Any]
-        switch upload.state {
-        case .waiting,
-             .preparing, .preparingError, .preparingFail, .formatError, .prepared,
-             .uploadingError, .uploadingFail:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError,
-                          "progressFraction" : Float(0.0)]
-        case .uploaded, .finishing, .finishingError, .finished, .moderated, .deleted:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError,
-                          "progressFraction" : Float(1.0)]
-        default:
-            uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoMaxSize" : upload.photoMaxSize,
-                          "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError]
-        }
-        cell.update(with: uploadInfo)
-    }
-
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Perform tableView updates
         queueTableView.endUpdates()
         queueTableView.layoutIfNeeded()
 
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
-        if uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
+        if (uploads.fetchedObjects ?? []).count == 0 {
             // Delete remaining files from Upload directory (if any)
             UploadManager.shared.deleteFilesInUploadsDirectory()
             // Close the view when there is no more upload request to display

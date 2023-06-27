@@ -8,10 +8,12 @@
 //  Converted to Swift 5 by Eddy Lelièvre-Berna on 12/04/2020.
 //
 
+import CoreData
 import Intents
 import MessageUI
 import UIKit
 import piwigoKit
+import uploadKit
 
 enum SettingsSection : Int {
     case server
@@ -45,11 +47,31 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     weak var settingsDelegate: ChangedSettingsDelegate?
 
     @IBOutlet var settingsTableView: UITableView!
-    
+
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
+    var thumbCacheSize = ""
+    var photoCacheSize = ""
+    var dataCacheSize = ""
+
+    
+    // MARK: - Core Data Objects
+    var user: User!
+    lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
 
 
     // MARK: - View Lifecycle
@@ -58,7 +80,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
 
         // Get Server Infos if possible
-        if NetworkVars.hasAdminRights {
+        if user.hasAdminRights {
             DispatchQueue.global(qos: .userInitiated).async {
                 self.getInfos()
             }
@@ -97,39 +119,59 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
            UploadVars.defaultPrefix.isEmpty {
             UploadVars.prefixFileNameBeforeUpload = false
         }
+
+        // Calculate cache sizes in the background
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let server = self.user.server else {
+                fatalError("••> User not provided!")
+            }
+            var sizes = self.getThumbnailSizes()
+            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+            sizes = self.getPhotoSizes()
+            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+            self.dataCacheSize = server.getCoreDataStoreSize()
+            
+            // Update cells if needed
+            DispatchQueue.main.async {
+                self.updateDataCacheCell()
+                self.updateThumbCacheCell()
+                self.updatePhotoCacheCell()
+            }
+        }
     }
 
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 
-        // Navigation bar
+        // Navigation bar appearance
+        let navigationBar = navigationController?.navigationBar
+        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            let attributesLarge = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-                NSAttributedString.Key.font: UIFont.piwigoFontLargeTitle()
-            ]
-            navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
-            navigationController?.navigationBar.prefersLargeTitles = true
-        }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationBar?.titleTextAttributes = attributes
+        let attributesLarge = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
+        ]
+        navigationBar?.largeTitleTextAttributes = attributesLarge
+        navigationBar?.prefersLargeTitles = true
 
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.titleTextAttributes = attributes
+            barAppearance.largeTitleTextAttributes = attributesLarge
+            navigationItem.standardAppearance = barAppearance
+            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+            navigationItem.scrollEdgeAppearance = barAppearance
+            navigationBar?.prefersLargeTitles = true
         }
 
         // Table view
@@ -149,13 +191,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
 
-        // Register auto-upload option enabled
+        // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadEnabled, object: nil)
-
-        // Register auto-upload option disabled
-        NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadDisabled, object: nil)
+                                               name: .pwgAutoUploadChanged, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -167,41 +205,39 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Invite user to translate the app
-        if #available(iOS 10, *) {
-            let langCode: String = NSLocale.current.languageCode ?? "en"
+        let langCode: String = NSLocale.current.languageCode ?? "en"
 //            print("=> langCode: ", String(describing: langCode))
-//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
-            let now: Double = Date().timeIntervalSinceReferenceDate
-            let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.kPiwigoOneMonth
-            if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
-                // Store date of last translation request
-                AppVars.shared.dateOfLastTranslationRequest = now
+//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, k2WeeksInDays))
+        let now: Double = Date().timeIntervalSinceReferenceDate
+        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
+        if (now > dueDate) && (["ar","fa","pl","pt-BR","sk"].contains(langCode)) {
+            // Store date of last translation request
+            AppVars.shared.dateOfLastTranslationRequest = now
 
-                // Request a translation
-                let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
+            // Request a translation
+            let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
 
-                let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
-                    })
-
-                let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
-                        if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                            UIApplication.shared.openURL(url)
-                        }
-                    })
-
-                alert.addAction(cancelAction)
-                alert.addAction(defaultAction)
-                alert.view.tintColor = .piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = .piwigoColorOrange()
+            let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
                 })
+
+            let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+                    if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
+                        UIApplication.shared.open(url)
+                    }
+                })
+
+            alert.addAction(cancelAction)
+            alert.addAction(defaultAction)
+            alert.view.tintColor = .piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
             }
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = .piwigoColorOrange()
+            })
         }
     }
 
@@ -217,7 +253,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
                                                                         y: mainScreenBounds.midY,
                                                                         width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: kPiwigoPadSettingsWidth,
+                self.preferredContentSize = CGSize(width: pwgPadSettingsWidth,
                                                    height: ceil(mainScreenBounds.height * 2 / 3))
             }
 
@@ -225,16 +261,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             self.settingsTableView?.reloadData()
         })
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Update upload counter in case user cleared the cache
+        UploadManager.shared.updateNberOfUploadsToComplete()
+    }
 
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
         
         // Unregister auto-upload option enabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadEnabled, object: nil)
-
-        // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadDisabled, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
     }
 
 
@@ -287,9 +327,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func loginLogout() {
-        if NetworkVars.username.isEmpty {
-            // Clear caches and display login view
-            ClearCache.closeSessionAndClearCache() { }
+        // Set date of use of server and user
+        let now = Date()
+        user?.lastUsed = now
+        user?.server?.lastUsed = now
+        if mainContext.hasChanges {
+            try? mainContext.save()
+        }
+        
+        // Guest user?
+        if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
+            ClearCache.closeSession { }
             return
         }
         
@@ -300,10 +348,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         })
 
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
-            LoginUtilities.sessionLogout {
-                // Logout successful
+            PwgSession.shared.sessionLogout {
+                // Close session
                 DispatchQueue.main.async {
-                    ClearCache.closeSessionAndClearCache() { }
+                    ClearCache.closeSession { }
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
@@ -311,7 +359,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // or simply a connection drop.
                 self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
                                         message: error.localizedDescription) {
-                    ClearCache.closeSessionAndClearCache() { }
+                    ClearCache.closeSession { }
                 }
             }
         })
@@ -368,7 +416,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .privacy:
             title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
         case .cache:
-            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
+            title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings")
         case .about:
             title = NSLocalizedString("settingsHeader_about", comment: "Information")
         case .logout, .clear:
@@ -396,12 +444,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     
     // MARK: - UITableView - Sections
-    private func hasUploadRights() -> Bool {
+    func hasUploadRights() -> Bool {
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
-        return NetworkVars.hasAdminRights ||
-                (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
+        return user.hasAdminRights ||
+            (user.role == .normal && NetworkVars.usesCommunityPluginV29)
     }
     
     private func activeSection(_ section: Int) -> SettingsSection {
@@ -435,7 +483,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .images:
             nberOfRows = 6
         case .imageUpload:
-            nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
+            nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
@@ -445,7 +493,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 2
+            nberOfRows = 3
         case .clear:
             nberOfRows = 1
         case .about:
@@ -471,10 +519,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             switch indexPath.row {
             case 0:
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 let title = NSLocalizedString("settings_server", comment: "Address")
-                let detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
-                cell.configure(with: title, detail: detail)
+                cell.configure(with: title, detail: NetworkVars.service)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
             
@@ -522,9 +569,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize)
-                let defaultSize = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -535,7 +580,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                cell.configure(with: title, detail: albumImageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
@@ -549,7 +595,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AlbumVars.shared.maxNberRecentCategories)
 
                 // Slider configuration
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String = ""
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -608,12 +654,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
-                let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 Plus screen width
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images")
                 } else if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -621,7 +665,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultImageSort", comment: "Sort")
                 }
-                cell.configure(with: title, detail: defaultSort)
+                cell.configure(with: title, detail: AlbumVars.shared.defaultSort.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultSort"
                 tableViewCell = cell
@@ -631,8 +675,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize), withInfo: false)!
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -643,7 +686,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                cell.configure(with: title, detail: thumbnailSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImageThumbnailFile"
                 tableViewCell = cell
@@ -654,8 +698,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize))
-                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forView: nil, maxWidth: defaultWidth))
+                let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                let defaultWidth = thumbnailSize.minPixels
+                let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
                 if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
@@ -667,7 +712,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
 
                 // Slider configuration
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -691,7 +736,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 if view.bounds.size.width > 320 {
                     cell.configure(with: NSLocalizedString("settings_displayTitles>320px", comment: "Display Titles on Thumbnails"))
                 } else {
@@ -712,11 +757,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageSizeType: kPiwigoImageSize(ImageVars.shared.defaultImagePreviewSize), withInfo: false)!
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File")
                 } else if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -724,49 +768,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     title = NSLocalizedString("defaultPreviewFile", comment: "Preview")
                 }
-                cell.configure(with: title, detail: defaultSize)
+                let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
+                cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImagePreviewSize"
                 tableViewCell = cell
                 
             case 5 /* Share Image Metadata Options */:
-                if #available(iOS 10, *) {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                        return LabelTableViewCell()
-                    }
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if view.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6,7 screen width
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
-                    } else {
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                    }
-                    cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                    cell.accessibilityIdentifier = "defaultShareOptions"
-                    tableViewCell = cell
-                    
-                } else {
-                    // Single On/Off share metadata option
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                        return SwitchTableViewCell()
-                    }
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    if view.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6,7 screen width
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share Private Metadata"))
-                    } else {
-                        cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Metadata"))
-                    }
-                    cell.cellSwitch.setOn(ImageVars.shared.shareMetadataTypeAirDrop, animated: true)
-                    cell.cellSwitchBlock = { switchState in
-                        ImageVars.shared.shareMetadataTypeAirDrop = switchState
-                    }
-                    cell.accessibilityIdentifier = "shareMetadataOptions"
-                    tableViewCell = cell
-                    
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
+                }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultShareOptions"
+                tableViewCell = cell
+                    
             default:
                 break
             }
@@ -774,7 +797,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -785,7 +808,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                     return TextFieldTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultAuthor
                 let placeHolder: String = NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name")
@@ -806,10 +829,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 Plus screen width
+                let defaultLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("privacyLevel", comment: "Privacy Level"), detail: defaultLevel)
                 } else {
                     cell.configure(with: NSLocalizedString("settings_defaultPrivacy", comment: "Privacy"), detail: defaultLevel)
@@ -823,9 +846,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_stripGPSdata>375px", comment: "Strip Private Metadata Before Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
@@ -848,9 +871,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                    let photoAtIndexPath = IndexPath(row: 3 + (self.user.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
-                    let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+                    let videoAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -890,9 +913,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Photo Before Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
@@ -902,7 +925,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 4 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.resizeImageOnUpload ? 2 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
@@ -939,9 +962,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhones 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_prefixFilename>414px", comment: "Prefix Photo Filename Before Upload"))
                 } else if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
@@ -954,7 +977,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.prefixFileNameBeforeUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                    let rowAtIndexPath = IndexPath(row: 5 + (self.user.hasAdminRights ? 1 : 0)
                                                           + (UploadVars.resizeImageOnUpload ? 2 : 0)
                                                           + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
@@ -974,7 +997,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                     return TextFieldTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultPrefix
                 let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
@@ -1018,8 +1041,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return LabelTableViewCell()
                 }
                 let title: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload in the Background")
                 } else {
                     title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
@@ -1040,9 +1063,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
                     cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))
@@ -1114,77 +1137,40 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             cell.accessibilityIdentifier = "colorPalette"
             tableViewCell = cell
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .cache /* Cache Settings */:
             switch indexPath.row {
-            case 0 /* Disk */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
+            case 0 /* Core Data store */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                // Slider value
-                let value = Float(AppVars.shared.diskCache)
-
-                // Slider configuration
-                let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
-                let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                var prefix:String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    prefix = String(format: "%.1f/", currentDiskSizeInMB)
-                } else {
-                    prefix = String(format: "%ld/", lroundf(currentDiskSizeInMB))
-                }
-                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-                cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
-                               value: value,
-                               increment: Float(AppVars.shared.kPiwigoDiskCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoDiskCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoDiskCacheMax),
-                               prefix: prefix, suffix: suffix)
-                cell.cellSliderBlock = { newValue in
-                    // Update settings
-                    AppVars.shared.diskCache = Int(newValue)
-                    // Update disk cache size
-                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
-                }
-                cell.accessibilityIdentifier = "diskCache"
+                let title = NSLocalizedString("settings_database", comment: "Data")
+                cell.configure(with: title, detail: self.dataCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "dataCache"
                 tableViewCell = cell
                 
-            case 1 /* Memory */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
+            case 1 /* Album and Photo Thumbnails */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                // Slider value
-                let value = Float(AppVars.shared.memoryCache)
-
-                // Slider configuration
-                let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
-                let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                var prefix:String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhone 6,7 screen width
-                    prefix = String(format: "%.1f/", currentMemSizeInMB)
-                } else {
-                    prefix = String(format: "%ld/", lroundf(currentMemSizeInMB))
+                let title = NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails")
+                cell.configure(with: title, detail: self.thumbCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "thumbnailCache"
+                tableViewCell = cell
+                
+            case 2 /* Photos and Videos */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
-                cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
-                               value: value,
-                               increment: Float(AppVars.shared.kPiwigoMemoryCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoMemoryCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoMemoryCacheMax),
-                               prefix: prefix, suffix: suffix)
-                cell.cellSliderBlock = { newValue in
-                    // Update settings
-                    AppVars.shared.memoryCache = Int(newValue)
-                    // Update memory cache size
-                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
-                }
-                cell.accessibilityIdentifier = "memoryCache"
+                let title = NSLocalizedString("severalImages", comment: "Photos")
+                cell.configure(with: title, detail: self.photoCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "photoCache"
                 tableViewCell = cell
                 
             default:
@@ -1198,13 +1184,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                     return ButtonTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    cell.configure(with: NSLocalizedString("settings_cacheClearAll", comment: "Clear Photo Cache"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
-                }
+                cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
                 cell.accessibilityIdentifier = "clearCache"
                 tableViewCell = cell
                 
@@ -1301,13 +1281,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 
             default:
                 break
+            }
+            default:
+                break
         }
-        default:
-            break
-    }
 
-    tableViewCell.isAccessibilityElement = true
-    return tableViewCell
+        tableViewCell.isAccessibilityElement = true
+        return tableViewCell
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -1333,14 +1313,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */:
+                 4 /* Default Size of Previewed Images */,
+                 5 /* Share Image Metadata Options */:
                 result = true
-            case 5 /* Share Image Metadata Options */:
-                if #available(iOS 10, *) {
-                    result = true
-                } else {
-                    result = false
-                }
             default:
                 result = false
             }
@@ -1348,7 +1323,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -1404,8 +1379,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if UploadVars.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if NetworkVars.serverFileTypes.isEmpty == false {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case .about:
             footer = statistics
@@ -1431,84 +1406,92 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         statistics = ""
         
         // Collect stats from server
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
-                                jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and retrieve statistics.
-            do {
-                // Decode the JSON into codable type TagJSON.
-                let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
+        NetworkUtilities.checkSession(ofUser: user) {
+            // Checking session ensures avalaible sizes are known
+            let JSONsession = PwgSession.shared
+            JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
+                                    jsonObjectClientExpectsToReceive: GetInfosJSON.self,
+                                    countOfBytesClientExpectsToReceive: 1000) { jsonData in
+                // Decode the JSON object and retrieve statistics.
+                do {
+                    // Decode the JSON into codable type GetInfosJSON.
+                    let decoder = JSONDecoder()
+                    let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if uploadJSON.errorCode != 0 {
+                    // Piwigo error?
+                    if uploadJSON.errorCode != 0 {
+                        #if DEBUG
+                        let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                     errorMessage: uploadJSON.errorMessage)
+                        debugPrint(error)
+                        #endif
+                        return
+                    }
+
+                    // Collect statistics
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = .decimal
+                    for info in uploadJSON.data {
+                        guard let nber = info.value?.intValue else { continue }
+                        switch info.name ?? "" {
+                        case "nb_elements":
+                            if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberImages = nber > 1 ?
+                                    String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                                    String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                                if nberImages.isEmpty == false { self.appendStats(nberImages) }
+                            }
+                        case "nb_categories":
+                            if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberCategories = nber > 1 ?
+                                    String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
+                                    String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
+                                if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
+                            }
+                        case "nb_tags":
+                            if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberTags = nber > 1 ?
+                                    String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
+                                    String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
+                                if nberTags.isEmpty == false { self.appendStats(nberTags) }
+                            }
+                        case "nb_users":
+                            if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberUsers = nber > 1 ?
+                                    String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
+                                    String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
+                                if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
+                            }
+                        case "nb_groups":
+                            if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberGroups = nber > 1 ?
+                                    String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
+                                    String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
+                                if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
+                            }
+                        case "nb_comments":
+                            if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
+                                let nberComments = nber > 1 ?
+                                    String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
+                                    String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
+                                if nberComments.isEmpty == false { self.appendStats(nberComments) }
+                            }
+                        default:
+                            break
+                        }
+                    }
+                } catch let error as NSError {
+                    // Data cannot be digested
                     #if DEBUG
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
                     debugPrint(error)
                     #endif
                     return
                 }
-
-                // Collect statistics
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                for info in uploadJSON.data {
-                    guard let nber = info.value?.intValue else { continue }
-                    switch info.name ?? "" {
-                    case "nb_elements":
-                        if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberImages = nber > 1 ?
-                                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                            if nberImages.isEmpty == false { self.appendStats(nberImages) }
-                        }
-                    case "nb_categories":
-                        if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberCategories = nber > 1 ?
-                                String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
-                                String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
-                            if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
-                        }
-                    case "nb_tags":
-                        if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberTags = nber > 1 ?
-                                String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
-                                String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
-                            if nberTags.isEmpty == false { self.appendStats(nberTags) }
-                        }
-                    case "nb_users":
-                        if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberUsers = nber > 1 ?
-                                String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
-                                String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
-                            if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
-                        }
-                    case "nb_groups":
-                        if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberGroups = nber > 1 ?
-                                String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
-                                String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
-                            if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
-                        }
-                    case "nb_comments":
-                        if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
-                            let nberComments = nber > 1 ?
-                                String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
-                                String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
-                            if nberComments.isEmpty == false { self.appendStats(nberComments) }
-                        }
-                    default:
-                        break
-                    }
-                }
-            } catch let error as NSError {
-                // Data cannot be digested
-                #if DEBUG
-                debugPrint(error)
-                #endif
-                return
+            } failure: { _ in
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                /// -> nothing presented in the footer
             }
         } failure: { _ in
             /// - Network communication errors
@@ -1545,6 +1528,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.user = user
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
                     categoryVC.delegate = self
@@ -1578,11 +1562,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 5 /* Share image metadata options */:
-                if #available(iOS 10, *) {
-                    let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                    guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
-                }
+                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }
@@ -1590,7 +1572,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case .imageUpload /* Default upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
@@ -1600,7 +1582,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.privacy = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
+                privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 4 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
@@ -1617,6 +1599,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
+                autoUploadVC.user = user
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break
@@ -1658,55 +1641,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
-                #if DEBUG
-                let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
-                #else
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
-                #endif
-
-                let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
-
-                #if DEBUG
-                let clearTagsAction = UIAlertAction(title: "Clear All Tags",
-                                                    style: .default, handler: { action in
-                    // Delete all tags in background queue
-                    TagsProvider().clearTags()
-                })
-                alert.addAction(clearTagsAction)
-                
-                let titleClearLocations = "Clear All Locations"
-                let clearLocationsAction = UIAlertAction(title: titleClearLocations,
-                                                         style: .default, handler: { action in
-                    // Delete all locations in background queue
-                    LocationsProvider().clearLocations()
-                })
-                alert.addAction(clearLocationsAction)
-                
-                let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
-                                                       style: .default, handler: { action in
-                    // Delete all upload requests in the main thread
-                    UploadsProvider().clearUploads()
-                })
-                alert.addAction(clearUploadsAction)
-                #endif
-
-                let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
-                    // Delete image cache
-                    ClearCache.clearAllCache(exceptCategories: true) {
-                        // Reload tableView
-                        self.settingsTableView?.reloadData()
-                    }
-                })
-
-                // Add actions
-                alert.addAction(dismissAction)
-                alert.addAction(clearAction)
-
                 // Determine position of cell in table view
                 let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.clear.rawValue)
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
 
                 // Present list of actions
+                let alert = getClearCacheAlert()
                 alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
@@ -1729,7 +1669,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Open @piwigo on Twitter */:
                 if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 1 /* Prepare draft email */:
                 if MFMailComposeViewController.canSendMail() {
@@ -1768,16 +1708,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
             case 2 /* Open Piwigo support forum webpage with default browser */:
                 if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 3 /* Open Piwigo App Store page for rating */:
                 // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
                 if let url = URL(string: "itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review") {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 4 /* Open Piwigo Crowdin page for translating */:
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                    UIApplication.shared.openURL(url)
+                    UIApplication.shared.open(url)
                 }
             case 5 /* Open Release Notes page */:
                 let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
@@ -1838,7 +1778,7 @@ extension SettingsViewController: UITextFieldDelegate {
             if UploadVars.defaultPrefix.isEmpty {
                 UploadVars.prefixFileNameBeforeUpload = false
                 // Remove row in existing table
-                let prefixIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                let prefixIndexPath = IndexPath(row: 5 + (user.hasAdminRights ? 1 : 0)
                                                        + (UploadVars.resizeImageOnUpload ? 2 : 0)
                                                        + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                 section: SettingsSection.imageUpload.rawValue)
@@ -1858,9 +1798,9 @@ extension SettingsViewController: UITextFieldDelegate {
 
 // MARK: - SelectCategoryDelegate Methods
 extension SettingsViewController: SelectCategoryDelegate {
-    func didSelectCategory(withId categoryId: Int) {
+    func didSelectCategory(withId categoryId: Int32) {
         // Do nothing if new default album is unknown or unchanged
-        guard categoryId != NSNotFound,
+        guard categoryId != Int32.min,
               categoryId != AlbumVars.shared.defaultCategory else {
             return
         }
@@ -1893,9 +1833,9 @@ extension SettingsViewController: SelectCategoryDelegate {
         }
         
         // Default album…
-        if let albumData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory),
-           let albumName = albumData.name {
-            return albumName
+        if let album = albumProvider.getAlbum(ofUser: user, withId: AlbumVars.shared.defaultCategory),
+           album.name.isEmpty == false {
+            return album.name
         } else {
             return NSLocalizedString("categorySelection_title", comment: "Album")
         }
@@ -1903,90 +1843,11 @@ extension SettingsViewController: SelectCategoryDelegate {
 }
 
 
-// MARK: - DefaultAlbumThumbnailSizeDelegate Methods
-extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
-    func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize) { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
-
-        // Refresh settings row
-        let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
-        }
-    }
-}
-
-
-// MARK: - CategorySortDelegate Methods
-extension SettingsViewController: CategorySortDelegate {
-    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
-        // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultSort = sortType.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = CategorySortViewController.getNameForCategorySortType(sortType)
-        }
-        
-        // Clear image data in cache
-        for category in CategoriesData.sharedInstance().allCategories {
-            category.resetData()
-        }
-    }
-}
-
-
-// MARK: - DefaultImageThumbnailSizeDelegate Methods
-extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
-    func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize) { return }
-        
-        // Save new choice
-        AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: thumbnailSize, withInfo: false)!
-        }
-    }
-}
-
-// MARK: - DefaultImageSizeDelegate Methods
-extension SettingsViewController: DefaultImageSizeDelegate {
-    func didSelectImageDefaultSize(_ imageSize: kPiwigoImageSize) {
-        // Do nothing if size is unchanged
-        if imageSize == kPiwigoImageSize(ImageVars.shared.defaultImagePreviewSize) { return }
-        
-        // Save new choice
-        ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 4, section: SettingsSection.images.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = PiwigoImageData.name(forAlbumThumbnailSizeType: imageSize, withInfo: false)!
-        }
-    }
-}
-
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Do nothing if privacy level is unchanged
-        if privacyLevel == kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
+        if privacyLevel == pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
         
         // Save new choice
         UploadVars.defaultPrivacyLevel = privacyLevel.rawValue
@@ -1995,7 +1856,7 @@ extension SettingsViewController: SelectPrivacyDelegate {
         let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
+            cell.detailLabel.text = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
         }
     }
 }
@@ -2009,7 +1870,7 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             UploadVars.photoMaxSize = newSize
             
             // Refresh corresponding row
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(photoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: photoAtIndexPath) as? LabelTableViewCell {
@@ -2021,9 +1882,9 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
         if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
@@ -2045,7 +1906,7 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.videoMaxSize = newSize
 
             // Refresh corresponding row
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(videoAtIndexPath),
                let cell = settingsTableView.cellForRow(at: videoAtIndexPath) as? LabelTableViewCell {
@@ -2058,9 +1919,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
         if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
                                              section: SettingsSection.imageUpload.rawValue)
             // Remove rows in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)

@@ -16,11 +16,15 @@ import UIKit
 
 import IQKeyboardManagerSwift
 import piwigoKit
+import uploadKit
 
 @UIApplicationMain
-@objc class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
         
-    let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
+    private let k1WeekInDays: TimeInterval  = 60 * 60 * 24 *  7.0
+    private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
+    private let k3WeeksInDays: TimeInterval = 60 * 60 * 24 * 21.0
+    private let pwgBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
     var privacyView: UIView?
@@ -31,18 +35,9 @@ import piwigoKit
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("••> App did finish launching with options.")
-        // Read old settings file and create UserDefaults cached files
-        Model.sharedInstance().readFromDisk()
-
         // Register notifications for displaying number of uploads to perform in app badge
-        if #available(iOS 9.0, *) {
-            let settings = UIUserNotificationSettings.init(types: .badge, categories: nil)
-            UIApplication.shared.registerUserNotificationSettings(settings)
-        }
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
+        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
-            }
         }
 
         // IQKeyboardManager
@@ -64,46 +59,60 @@ import piwigoKit
         // Set Settings Bundle data
         setSettingsBundleData()
         
-        // Create permanent session managers for retrieving data and downloading images
-        NetworkHandler.createJSONdataSessionManager()       // 30s timeout, 4 connections max
-        NetworkHandler.createFavoritesDataSessionManager()  // 30s timeout, 1 connection max
-        NetworkHandler.createImagesSessionManager()         // 60s timeout, 4 connections max
-
         // In absence of passcode, albums are always accessible
         if AppVars.shared.appLockKey.isEmpty {
             AppVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
-        
+
+        // Register transformers at the very beginning
+        ValueTransformer.setValueTransformer(DescriptionValueTransformer(), forName: .descriptionToDataTransformer)
+        ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)
+        ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
+
+        // Register launch handlers for tasks if using iOS 13+
+        /// Will have to check if pwg.images.uploadAsync is available
+        if #available(iOS 13.0, *) {
+            registerBgTasks()
+        }
+
         // What follows depends on iOS version
         if #available(iOS 13.0, *) {
-            // Register launch handlers for tasks if using iOS 13
-            /// Will have to check if pwg.images.uploadAsync is available
-            registerBgTasks()
-
             // Delegate to SceneDelegate
             /// - Present login view and if needed passcode view
+            /// - or album view behind passcode view if needed
         } else {
-            // Create login view
+            // Create window
             window = UIWindow(frame: UIScreen.main.bounds)
-            loadLoginView(in: window)
-            window?.makeKeyAndVisible()
-            
-            // Blur views if the App Lock is enabled
-            /// The passcode window is not presented  so that the app
-            /// does not request the passcode until it is put into the background.
-            if AppVars.shared.isAppLockActive {
-                // User is not allowed to access albums yet
-                AppVars.shared.isAppUnlocked = false
-                // Protect presented login view
-                addPrivacyProtection(to: window)
-            }
-            else {
-                // User is allowed to access albums
-                AppVars.shared.isAppUnlocked = true
+
+            // Check if a migration is necessary
+            let migrator = DataMigrator()
+            if migrator.requiresMigration() {
+                // Tell user to wait until migration is completed
+                loadMigrationView(in: window)
+
+                // Perform migration in background thread to prevent triggering watchdog after 10 s
+                DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
+                    // Perform migration
+                    migrator.migrateStore()
+
+                    // Present views
+                    DispatchQueue.main.async { [self] in
+                        // Create login view
+                        loadLoginView(in: window)
+                        addPrivacyProtectionIfNeeded()
+                    }
+                }
+            } else {
+                // Create login view
+                loadLoginView(in: window)
+                addPrivacyProtectionIfNeeded()
             }
         }
-        
+
+        // Display view
+        window?.makeKeyAndVisible()
+
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
                                                name: .pwgLeftUploads, object: nil)
@@ -111,31 +120,91 @@ import piwigoKit
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
                                                name: .pwgAppendAutoUploadRequestsFailed, object: nil)
-
-        // Register uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.addObserver(self, selector: #selector(addImage),
-                                               name: .pwgAddUploadedImageToCache, object: nil)
         return true
     }
 
+    private func addPrivacyProtectionIfNeeded() {
+        // Blur view if the App Lock is enabled
+        /// The passcode window is not presented  so that the app
+        /// does not request the passcode until it is put into the background.
+        if AppVars.shared.isAppLockActive {
+            // User is not allowed to access albums yet
+            AppVars.shared.isAppUnlocked = false
+            // Protect presented login view
+            addPrivacyProtection(to: window)
+        }
+        else {
+            // User is allowed to access albums
+            AppVars.shared.isAppUnlocked = true
+        }
+    }
+    
 
     // MARK: - Scene Configuration
     @available(iOS 13.0, *)
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+
+        // Check connection options for user activities and attempt to generate an ActivityType
         var currentActivity: ActivityType?
         options.userActivities.forEach {
-          currentActivity = ActivityType(rawValue: $0.activityType)
+            currentActivity = ActivityType(rawValue: $0.activityType)
         }
 
-        let activity = currentActivity ?? ActivityType.album
+        // Default acitivty depends if user connected an external display
+        var activity: ActivityType!
+        if #available(iOS 16.0, *) {
+            switch connectingSceneSession.role {
+            case .windowApplication:                    /* Main display     */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.album
+
+            case .windowExternalDisplayNonInteractive:  /* External display */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.external
+
+            default:
+                debugPrint("••> Un-managed scene session role!")
+                activity = currentActivity ?? ActivityType.album
+            }
+        } else {
+            // Fallback on earlier versions
+            switch connectingSceneSession.role {
+            case .windowApplication:                    /* Main display     */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.album
+
+            case .windowExternalDisplay:                /* External display */
+                // User activity defaults to displaying albums
+                activity = currentActivity ?? ActivityType.external
+
+            default:
+                debugPrint("••> Un-managed scene session role!")
+                activity = currentActivity ?? ActivityType.album
+            }
+        }
+        
         return activity.sceneConfiguration()
     }
 
     @available(iOS 13.0, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        //..
-    }
+        // Called when the system, due to a user interaction or a request from the application itself, removes one or more representation from the -[UIApplication openSessions] set
+        // If sessions are discarded while the application is not running, this method is called shortly after the applications next launch.
+        sceneSessions.forEach { sceneSession in
+            let wantedRole: UISceneSession.Role!
+            if #available(iOS 16.0, *) {
+                wantedRole = .windowExternalDisplayNonInteractive
+            } else {
+                // Fallback on earlier versions
+                wantedRole = .windowExternalDisplay
+            }
+            if sceneSession.role == wantedRole,
+                let delegate = sceneSession.scene?.delegate as? ExternalDisplaySceneDelegate {
+                 delegate.tearDownWindow(for: sceneSession.persistentIdentifier)
+            }
+        }
+   }
 
     
     // MARK: - App Remote Notifications
@@ -152,12 +221,6 @@ import piwigoKit
         print("••> App will enter foreground.")
         // Called when the app is about to enter the foreground.
         // This call is then followed by a call to applicationDidBecomeActive().
-
-        // Enable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = true
-        
-        // Enable network reachability monitoring
-        AFNetworkReachabilityManager.shared().startMonitoring()
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -243,14 +306,8 @@ import piwigoKit
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        // Save cached data
-        DataController.saveContext()
-
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
+        // Save cached data in the main thread
+        DataController.shared.saveMainContext()
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
@@ -261,21 +318,25 @@ import piwigoKit
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
-        // Save cached data
-        DataController.saveContext()
+        // Save cached data in the main thread
+        DataController.shared.saveMainContext()
 
         // Cancel tasks and close sessions
-        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        PwgSession.shared.dataSession.invalidateAndCancel()
+        ImageSession.shared.dataSession.invalidateAndCancel()
 
-        // Disable network activity indicator
-        AFNetworkActivityIndicatorManager.shared().isEnabled = false
-        
-        // Disable network reachability monitoring
-        AFNetworkReachabilityManager.shared().stopMonitoring()
-        
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
+
+        // Unregister the PiwigoAddRecentAlbumNotification
+        NotificationCenter.default.removeObserver(self, name: .pwgAddRecentAlbum, object: nil)
+
+        // Unregister the PiwigoRemoveRecentAlbumNotification
+        NotificationCenter.default.removeObserver(self, name: .pwgRemoveRecentAlbum, object: nil)
+
+        // Unregister the Power State notification
+        let name = Notification.Name.NSProcessInfoPowerStateDidChange
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
         // Unregister left upload requests notifications updating the badge
         NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
@@ -283,8 +344,12 @@ import piwigoKit
         // Unregister auto-upload appender failures
         NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
         
-        // Unregister uploaded image notification appending image to CategoriesData cache
-        NotificationCenter.default.removeObserver(self, name: .pwgAddUploadedImageToCache, object: nil)
+        if #available(iOS 13.0, *) {
+            // NOP
+        } else {
+            // Unregister brightnessDidChangeNotification
+            NotificationCenter.default.removeObserver(self, name: UIScreen.brightnessDidChangeNotification, object: nil)
+        }
     }
     
 
@@ -324,7 +389,7 @@ import piwigoKit
     @available(iOS 13.0, *)
     private func registerBgTasks() {
         // Register background upload task
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: kPiwigoBackgroundTaskUpload, using: nil) { task in
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundTaskUpload, using: nil) { task in
              self.handleNextUpload(task: task as! BGProcessingTask)
         }
     }
@@ -333,7 +398,7 @@ import piwigoKit
     func scheduleNextUpload() {
         // Schedule upload not earlier than 1 minute from now
         // Uploading requires network connectivity and external power
-        let request = BGProcessingTaskRequest.init(identifier: kPiwigoBackgroundTaskUpload)
+        let request = BGProcessingTaskRequest.init(identifier: pwgBackgroundTaskUpload)
         request.earliestBeginDate = Date.init(timeIntervalSinceNow: 1 * 60)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = true
@@ -401,9 +466,9 @@ import piwigoKit
         lastOperation.completionBlock = {
             print("    > Task completed with success.")
             task.setTaskCompleted(success: true)
-            // Save cached data
+            // Save cached data in the main thread
             DispatchQueue.main.async {
-                DataController.saveContext()
+                DataController.shared.saveMainContext()
             }
         }
 
@@ -446,20 +511,22 @@ import piwigoKit
     // MARK: - Cleaning
     /// Delete files stored in the temporary directory after a week i.e. after the timeout period of the UploadSessionDelegate
     func cleanUpTemporaryDirectory(immediately: Bool) {
-        let fm = FileManager.default
-        do {
-            let tmpDirectory = try fm.contentsOfDirectory(atPath: NSTemporaryDirectory())
-            for file in tmpDirectory {
-                let path = String(format: "%@%@", NSTemporaryDirectory(), file)
-                let attrs = try fm.attributesOfItem(atPath: path)
-                if let fileCreationDate = attrs[FileAttributeKey.creationDate] as? Date,
-                   (fileCreationDate.timeIntervalSinceReferenceDate + k1WeekInDays < Date.timeIntervalSinceReferenceDate) || immediately {
-                    try fm.removeItem(atPath: path)
+        DispatchQueue.global(qos: .background).async { [self] in
+            let fm = FileManager.default
+            do {
+                let tmpDirectory = try fm.contentsOfDirectory(atPath: NSTemporaryDirectory())
+                for file in tmpDirectory {
+                    let path = String(format: "%@%@", NSTemporaryDirectory(), file)
+                    let attrs = try fm.attributesOfItem(atPath: path)
+                    if let fileCreationDate = attrs[FileAttributeKey.creationDate] as? Date,
+                       (fileCreationDate.timeIntervalSinceReferenceDate + k1WeekInDays < Date.timeIntervalSinceReferenceDate) || immediately {
+                        try fm.removeItem(atPath: path)
+                    }
                 }
             }
-        }
-        catch {
-            print("Could not clean up the temporary directory")
+            catch {
+                print("Could not clean up the temporary directory")
+            }
         }
     }
 
@@ -483,18 +550,14 @@ import piwigoKit
     
 //    @available(iOS 10.0, *)
 //    func application(_ application: UIApplication, handle intent: INIntent, completionHandler: @escaping (INIntentResponse) -> Void) {
-//        if #available(iOS 12.0, *) {
-//            switch intent {
-//            case is AutoUploadIntent:
-//                let handler = AutoUploadIntentHandler()
-//                handler.handle(intent: intent as! AutoUploadIntent) { response in
-//                    completionHandler(response)
-//                }
-//            default:
-//                break
+//        switch intent {
+//        case is AutoUploadIntent:
+//            let handler = AutoUploadIntentHandler()
+//            handler.handle(intent: intent as! AutoUploadIntent) { response in
+//                completionHandler(response)
 //            }
-//        } else {
-//            // Fallback on earlier versions
+//        default:
+//            break
 //        }
 //    }
     
@@ -567,9 +630,7 @@ import piwigoKit
         // Get a fresh context
         let context = LAContext()
         context.localizedFallbackTitle = ""
-        if #available(iOS 11.0, *) {
-            context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
-        }
+        context.localizedReason = NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode")
 
         // First check if we have the needed hardware support
         var error: NSError?
@@ -611,6 +672,41 @@ import piwigoKit
     }
 
 
+    // MARK: - Data Migration View
+    private var _migrationVC: DataMigrationViewController!
+    var migrationVC: DataMigrationViewController {
+        // Already existing?
+        if _migrationVC != nil { return _migrationVC }
+        
+        // Create data migration view
+        let migrationSB = UIStoryboard(name: "DataMigrationViewController", bundle: nil)
+        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController else {
+            fatalError("!!! No DataMigrationViewController !!!")
+        }
+        _migrationVC = migrationVC
+        return _migrationVC
+    }
+    
+    func loadMigrationView(in window: UIWindow?) {
+        guard let window = window else { return }
+        
+        // Load Login view
+        let nav = LoginNavigationController(rootViewController: migrationVC)
+        nav.setNavigationBarHidden(true, animated: false)
+        window.rootViewController = nav
+
+        if #available(iOS 13.0, *) {
+            // Transition to login view
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil) { _ in }
+        } else {
+            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
+            window.rootViewController?.view.setNeedsUpdateConstraints()
+        }
+    }
+
+    
     // MARK: - Login View
     private var _loginVC: LoginViewController!
     var loginVC: LoginViewController {
@@ -619,7 +715,10 @@ import piwigoKit
         
         // Create login view controller
         let loginSB = UIStoryboard(name: "LoginViewController", bundle: nil)
-        _loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController
+        guard let loginVC = loginSB.instantiateViewController(withIdentifier: "LoginViewController") as? LoginViewController else {
+            fatalError("!!! No LoginViewController !!!")
+        }
+        _loginVC = loginVC
         return _loginVC
     }
 
@@ -635,55 +734,57 @@ import piwigoKit
             // Transition to login view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
+                              animations: nil) { [self] success in
+                if success {
+                    self._migrationVC = nil
+                }
+            }
         } else {
-            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-            window.rootViewController?.view.setNeedsUpdateConstraints()
+            // Fallback on earlier versions
+            _migrationVC?.removeFromParent()
+            _migrationVC = nil
         }
     }
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
         if !ProcessInfo.processInfo.isLowPowerModeEnabled {
-            LoginUtilities.reloginAndRetry() {
-                /// - Resume upload operations in background queue
-                ///   and update badge, upload button of album navigator
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.resumeAll()
-                }
-            } failure: { _ in }
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeAll()
+            }
         }
     }
 
     
     // MARK: - Album Navigator
-    @objc func loadNavigation(in window: UIWindow?) {
+    func loadNavigation(in window: UIWindow?) {
         guard let window = window else { return }
         
         // Display default album
         let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
-        window.rootViewController = UINavigationController(rootViewController: defaultAlbum)
+        window.rootViewController = AlbumNavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
-                completion: { success in
-//                    self._loginVC = nil
+                completion: { [self] success in
+                    if success {
+                        self._loginVC = nil
+                    }
                 }
         } else {
             // Fallback on earlier versions
-            loginVC.removeFromParent()
-//            _loginVC = nil
+            _loginVC?.removeFromParent()
+            _loginVC = nil
 
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.resumeAll()
             }
+            
+            // Observe the UIScreenBrightnessDidChangeNotification
+            NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
+                                                   name: UIScreen.brightnessDidChangeNotification, object: nil)
         }
-        
-        // Observe the UIScreenBrightnessDidChangeNotification
-        // When that notification is posted, the method screenBrightnessChanged will be called.
-        NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
-                                               name: UIScreen.brightnessDidChangeNotification, object: nil)
 
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
@@ -701,10 +802,10 @@ import piwigoKit
 
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
-        guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
+        guard let categoryId = notification.userInfo?["categoryId"] as? Int32 else {
             fatalError("!!! Did not provide a category ID !!!")
         }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+        if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
         // Get new album Id as string
         let categoryIdStr = String(categoryId)
@@ -746,7 +847,7 @@ import piwigoKit
         guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
             fatalError("!!! Did not provide a category ID !!!")
         }
-        if (categoryId <= 0) || (categoryId == NSNotFound) { return }
+        if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
         // Get current list of recent albums
         let recentAlbumsStr = AlbumVars.shared.recentCategories
@@ -773,12 +874,7 @@ import piwigoKit
     // MARK: - Light and Dark Modes
     private func initColorPalette() {
         // Color palette depends on system settings
-        if #available(iOS 12.0, *) {
-            AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
-        } else {
-            // Fallback on earlier versions
-            AppVars.shared.isSystemDarkModeActive = false
-        }
+        AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
         print("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
         // Apply color palette
@@ -791,7 +887,8 @@ import piwigoKit
         if AppVars.shared.isLightPaletteModeActive
         {
             if !AppVars.shared.isDarkPaletteActive {
-                // Already in light mode
+                // Already in light mode but make sure that images stays in appropriate mode
+                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Light Mode" selected
@@ -801,7 +898,8 @@ import piwigoKit
         else if AppVars.shared.isDarkPaletteModeActive
         {
             if AppVars.shared.isDarkPaletteActive {
-                // Already showing dark palette
+                // Already showing dark palette but make sure that images stays in appropriate mode
+                NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                 return;
             } else {
                 // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
@@ -815,7 +913,8 @@ import piwigoKit
                 if AppVars.shared.isSystemDarkModeActive {
                     // System-wide dark mode active
                     if AppVars.shared.isDarkPaletteActive {
-                        // Keep dark palette
+                        // Keep dark palette but make sure that images stays in appropriate mode
+                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                         return;
                     } else {
                         // Switch to dark mode
@@ -827,7 +926,8 @@ import piwigoKit
                         // Switch to light mode
                         AppVars.shared.isDarkPaletteActive = false
                     } else {
-                        // Keep light palette
+                        // Keep light palette but make sure that images stays in appropriate mode
+                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
                         return;
                     }
                 }
@@ -887,86 +987,6 @@ import piwigoKit
         // Notify palette change to views
         NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
 //        print("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
-    }
-
-    
-    // MARK: - Upload Methods advertised to Obj-C and Old Cache
-        
-    @objc func didDeletePiwigoImage(withID imageId: Int) {
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.didDeletePiwigoImage(withID: imageId)
-        }
-    }
-    
-    // Add image uploaded to the Piwigo server
-    @objc func addImage(_ notification: Notification) {
-        // Prepare image for cache
-        let imageData = PiwigoImageData()
-        imageData.imageId = notification.userInfo?["imageId"] as? Int ?? NSNotFound
-        imageData.categoryIds = [(notification.userInfo?["categoryId"] as? Int ?? 0) as NSNumber]
-
-        imageData.imageTitle = notification.userInfo?["imageTitle"] as? String ?? ""
-        imageData.author = notification.userInfo?["author"] as? String ?? ""
-        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: notification.userInfo?["privacyLevel"] as? Int32 ?? Int32(kPiwigoPrivacy.unknown.rawValue))
-        imageData.comment = notification.userInfo?["comment"] as? String ?? ""
-        imageData.visits = notification.userInfo?["visits"] as? Int ?? 0
-        imageData.ratingScore = notification.userInfo?["ratingScore"] as? Float ?? 0.0
-
-        // Switch to old cache data format
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        var tagList = [PiwigoTagData]()
-        let tags = notification.userInfo?["tags"] as? [TagProperties] ?? []
-        tags.forEach { (tag) in
-            let newTag = PiwigoTagData()
-            newTag.tagId = Int(tag.id!)
-            newTag.tagName = tag.name
-            newTag.lastModified = dateFormatter.date(from: tag.lastmodified ?? "")
-            newTag.numberOfImagesUnderTag = tag.counter ?? 0
-            tagList.append(newTag)
-        }
-        imageData.tags = tagList
-
-        imageData.fileName = notification.userInfo?["fileName"] as? String ?? "image.jpg"
-        imageData.fileSize = notification.userInfo?["fileSize"] as? Int ?? NSNotFound    // Will trigger pwg.images.getInfo
-        imageData.isVideo = notification.userInfo?["isVideo"] as? Bool ?? false
-        imageData.datePosted = notification.userInfo?["datePosted"] as? Date ?? Date()
-        imageData.dateCreated = notification.userInfo?["dateCreated"] as? Date ?? Date()
-        imageData.md5checksum = notification.userInfo?["md5checksum"] as? String ?? ""
-
-        imageData.fullResPath = notification.userInfo?["fullResPath"] as? String ?? ""
-        imageData.fullResWidth = notification.userInfo?["fullResWidth"] as? Int ?? 1
-        imageData.fullResHeight = notification.userInfo?["fullResHeight"] as? Int ?? 1
-        imageData.squarePath = notification.userInfo?["squarePath"] as? String ?? ""
-        imageData.squareWidth = notification.userInfo?["squareWidth"] as? Int ?? 1
-        imageData.squareHeight = notification.userInfo?["squareHeight"] as? Int ?? 1
-        imageData.thumbPath = notification.userInfo?["thumbPath"] as? String ?? ""
-        imageData.thumbWidth = notification.userInfo?["thumbWidth"] as? Int ?? 1
-        imageData.thumbHeight = notification.userInfo?["thumbHeight"] as? Int ?? 1
-        imageData.mediumPath = notification.userInfo?["mediumPath"] as? String ?? ""
-        imageData.mediumWidth = notification.userInfo?["mediumWidth"] as? Int ?? 1
-        imageData.mediumHeight = notification.userInfo?["mediumHeight"] as? Int ?? 1
-        imageData.xxSmallPath = notification.userInfo?["xxSmallPath"] as? String ?? ""
-        imageData.xxSmallWidth = notification.userInfo?["xxSmallWidth"] as? Int ?? 1
-        imageData.xxSmallHeight = notification.userInfo?["xxSmallHeight"] as? Int ?? 1
-        imageData.xSmallPath = notification.userInfo?["xSmallPath"] as? String ?? ""
-        imageData.xSmallWidth = notification.userInfo?["xSmallWidth"] as? Int ?? 1
-        imageData.xSmallHeight = notification.userInfo?["xSmallHeight"] as? Int ?? 1
-        imageData.smallPath = notification.userInfo?["smallPath"] as? String ?? ""
-        imageData.smallWidth = notification.userInfo?["smallWidth"] as? Int ?? 1
-        imageData.smallHeight = notification.userInfo?["smallHeight"] as? Int ?? 1
-        imageData.largePath = notification.userInfo?["largePath"] as? String ?? ""
-        imageData.largeWidth = notification.userInfo?["largeWidth"] as? Int ?? 1
-        imageData.largeHeight = notification.userInfo?["largeHeight"] as? Int ?? 1
-        imageData.xLargePath = notification.userInfo?["xLargePath"] as? String ?? ""
-        imageData.xLargeWidth = notification.userInfo?["xLargeWidth"] as? Int ?? 1
-        imageData.xLargeHeight = notification.userInfo?["xLargeHeight"] as? Int ?? 1
-        imageData.xxLargePath = notification.userInfo?["xxLargePath"] as? String ?? ""
-        imageData.xxLargeWidth = notification.userInfo?["xxLargeWidth"] as? Int ?? 1
-        imageData.xxLargeHeight = notification.userInfo?["xxLargeHeight"] as? Int ?? 1
-
-        // Add uploaded image to cache and update UI if needed
-        CategoriesData.sharedInstance()?.addImage(imageData)
     }
 }
 

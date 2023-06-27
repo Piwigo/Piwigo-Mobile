@@ -12,8 +12,8 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageThumbnailCellDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(_ imageData: PiwigoImageData)
+    func didDeselectImage(withId imageId: Int64)
+    func didRenameFileOfImage(_ imageData: Image)
 }
 
 class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
@@ -22,7 +22,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 
-    private var images: [PiwigoImageData]?
+    private var images: [Image]?
     private var startingScrollingOffset = CGPoint.zero
 
     override func awakeFromNib() {
@@ -33,7 +33,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
             bundle: nil), forCellWithReuseIdentifier: "EditImageThumbCollectionViewCell")
     }
 
-    func config(withImages imageSelection: [PiwigoImageData]?) {
+    func config(withImages imageSelection: [Image]?) {
         // Data
         images = imageSelection
 
@@ -96,35 +96,25 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 // MARK: - EditImageThumbnailDelegate Methods
 extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 {
-    @objc
-    func didDeselectImage(withId imageId: Int) {
+    @objc func didDeselectImage(withId imageId: Int64) {
         // Update data source
-        let newImages = images?.filter({ $0.imageId != imageId })
+        let newImages = images?.filter({ $0.pwgID != imageId })
         images = newImages
         editImageThumbCollectionView.reloadData()
 
         // Deselect image in parent view
-        if delegate?.responds(to: #selector(EditImageThumbnailCellDelegate.didDeselectImage(withId:))) ?? false {
-            delegate?.didDeselectImage(withId: imageId)
-        }
+        delegate?.didDeselectImage(withId: imageId)
     }
 
-    @objc
-    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String) {
-        // Check accessible data
-        guard let indexOfImage = images?.firstIndex(where: { $0.imageId == imageId }),
-              let imageToUpdate: PiwigoImageData = images?[indexOfImage] else { return }
+    @objc func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String) {
+        // Retrieve image data from cache
+        guard let imageToUpdate = images?.first(where: {$0.pwgID == imageId}) else { return }
         
-        // Update data source
-        /// Cached data cannot be updated as we may not have downloaded image data.
-        /// This happens for example if the user used the search tool right after launching the app.
+        // Update image in cache
         imageToUpdate.fileName = fileName
-        images?.replaceSubrange(indexOfImage...indexOfImage, with: [imageToUpdate])
 
         // Update parent image view
-        if delegate?.responds(to: #selector(EditImageThumbnailCellDelegate.didRenameFileOfImage(_:))) ?? false {
-            delegate?.didRenameFileOfImage(imageToUpdate)
-        }
+        delegate?.didRenameFileOfImage(imageToUpdate)
     }
 }
 

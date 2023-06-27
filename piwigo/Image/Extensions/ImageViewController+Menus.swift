@@ -18,7 +18,7 @@ extension ImageViewController
     /// - for moving images to another album
     /// - for setting an image as album thumbnail
     func albumMenu() -> UIMenu {
-        if NetworkVars.hasAdminRights {
+        if user.hasAdminRights {
             return UIMenu(title: "", image: nil,
                           identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
                           options: .displayInline,

@@ -62,7 +62,7 @@ extension TagsViewController
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
-            self.tagsProvider.addTag(with: tagName, completionHandler: { error in
+            self.tagProvider.addTag(with: tagName, completionHandler: { error in
                 guard let error = error else {
                     self.updatePiwigoHUDwithSuccess {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
@@ -85,22 +85,27 @@ extension TagsViewController
 extension TagsViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        // Disable Add/Delete Category action
+        // Initialise tag name list
+        allTagNames = Set((selectedTags.fetchedObjects ?? []).map({$0.tagName}))
+        allTagNames.formUnion(Set(nonSelectedTags.fetchedObjects ?? []).map({$0.tagName}))
+
+        // Disable Add action
         addAction?.isEnabled = false
         return true
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Enable Add/Delete Tag action if text field not empty
-        let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        let allTags = tagsProvider.fetchedResultsController.fetchedObjects ?? []
-        let existTagWithName = (allTags.first(where: {$0.tagName == finalString}) != nil)
-        addAction?.isEnabled = (((finalString?.count ?? 0) >= 1) && !existTagWithName)
+        // Enable Add action if text field not empty and tag name is not a duplicate
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            addAction?.isEnabled = !updatedText.isEmpty && !allTagNames.contains(updatedText)
+        }
         return true
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        // Disable Add/Delete Category action
+        // Disable Add action
         addAction?.isEnabled = false
         return true
     }

@@ -9,25 +9,22 @@
 import Intents
 import Photos
 import piwigoKit
+import uploadKit
 
 @available(iOS 14.0, *)
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    // MARK: - Core Data Providers
+    private lazy var uploadProvider: UploadProvider = {
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         return provider
     }()
 
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
-        debugPrint("    > !!!!!!!!!!!!!!!!!!!!!!!!!")
-        debugPrint("    > In-app intent starting...")
+        print("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("••> In-app intent starting...")
 
         // Is auto-uploading enabled?
         if !UploadVars.isAutoUploadActive {
@@ -57,9 +54,9 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
         // Check existence of Piwigo album
         let categoryId = UploadVars.autoUploadCategoryId
-        guard categoryId != NSNotFound else {
+        guard categoryId != Int32.min else {
             // Cannot access Piwigo album -> Reset album ID
-            UploadVars.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+            UploadVars.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests
             UploadManager.shared.backgroundQueue.async {
@@ -80,21 +77,14 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 .compactMap{ $0 }
             
             // Append auto-upload requests to database
-            self.uploadsProvider.importUploads(from: uploadRequestsToAppend) { error in
-                // Update app badge and Upload button in root/default album
-                // Considers only uploads to the server to which the user is logged in
-                let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                    .preparingFail, .formatError, .prepared,
-                                                    .uploading, .uploadingError, .uploadingFail, .uploaded,
-                                                    .finishing, .finishingError]
-                UploadManager.shared.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
-
+            self.uploadProvider.importUploads(from: uploadRequestsToAppend) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Initialise upload operations
                     let uploadOperations = self.getUploadOperations()
 
                     // Launch upload operations
+                    // The badge will be updated during execution.
                     let uploadQueue = OperationQueue()
                     uploadQueue.maxConcurrentOperationCount = 1
                     uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
@@ -145,8 +135,9 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         // Save cached data
         let lastOperation = uploadOperations.last!
         lastOperation.completionBlock = {
+            // Save cached data in the main thread
             DispatchQueue.main.async {
-                DataController.saveContext()
+                DataController.shared.saveMainContext()
             }
             debugPrint("    > In-app intent completed with success.")
         }

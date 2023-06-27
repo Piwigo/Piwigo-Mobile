@@ -25,7 +25,6 @@
 "alertRetryButton" = "Erneut versuchen";
 "alertNextButton" = "Nächstes Foto";
 "alertTryButton" = "Probieren";
-"alertClearButton" = "Leeren";
 
 // HUD views
 "loadingHUD_label" = "Laden…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Warnung";
 "CoreDataStore_WarningMessage" = "Ein schwerwiegender Anwendungsfehler trat auf, während Piwigo versuchte, den Daten-Cache zu lesen. Daher wurde ein neuer Cache angelegt.";
 "CoreDataFetch_DigestError" = "Konnte die abgerufenen Daten nicht verarbeiten.";
+"CoreData_MigrationProgress" = "Migration läuft...";
+"Coredata_MigrationPleaseWait" = "Wir migrieren derzeit einige Ihrer Daten. Bitte warten Sie, bis der Vorgang abgeschlossen ist. Beenden Sie die Anwendung nicht.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen.";
+"CoreDataFetch_UserUnknownStatus" = "Die Parameter der Community-Erweiterung konnten nicht abgerufen werden.\nVersuchen Sie, sich erneut anzumelden.";
+"CoreData_UserCreateFailed" = "Das Erstellen eines neuen Benutzerobjekts ist fehlgeschlagen.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Fehler beim Abrufen von Alben!";
+"CoreDataFetch_AlbumMissingData" = "Gefunden und verwirft ein Album, dem eine gültige ID oder ein Name fehlt.";
+"CoreDataFetch_AlbumCreateFailed" = "Es konnte kein neues Album-Objekt erstellt werden.";
+"CoreData_AlbumNotFound" = "Album nicht im persistenten Cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Fehler beim Abrufen von Fotos/Videos!";
+"CoreDataFetch_ImageMissingData" = "Gefunden und verwirft ein Foto/Video ohne gültige ID oder URL.";
+"CoreDataFetch_ImageCreateFailed" = "Es konnte kein neues Bildobjekt erstellt werden.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Schlagwort-Fehler abrufen!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";
 "sessionStatusError_message" = "Konnte den Server nicht authentifizieren. Versuche erneute Anmeldung.";
 
-"serverCommunityError_title" = "Community Fehler";
-"serverCommunityError_message" = "Konnte die Parameter der Community Erweiterung nicht abrufen. Versuche erneute Anmeldung.";
-
 // Logout
 "logoutConfirmation_title" = "Abmelden";
 "logoutConfirmation_message" = "Wollen Sie sich wirklich abmelden?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ Unter-Alben";
 
 // Albums view
+"categoryUpdating" = "Aktualisierung…";
+"categoryUpdatedOn" = "Aktualisiert am %@";
+"categoryUpdatedAt" = "Aktualisiert um %@";
+"categoryUpdatedNow" = "Gerade aktualisiert";
 "categoryMainEmtpy" = "Bislang keine Alben in Ihrem Piwigo enthalten. Sie können zur Aktualisierung nach unten ziehen oder Sich erneut anmelden.";
 "categoryImageList_selectButton" = "Wählen";
 "categoryImageList_deselectButton" = "Auswahl aufheben";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Lösche leeres Album";
 "deleteCategory_noImages" = "Behalte Fotos";
 "deleteCategory_orphanedImages" = "Lösche verwaiste";
+"deleteCategory_singleOrphanedImage" = "Verwaiste löschen";
+"deleteCategory_severalOrphanedImages" = "%@ verwaiste löschen";
 "deleteCategory_allImages" = "Lösche %@ Fotos";
 "deleteCategoryConfirm_title" = "Sind Sie sicher?";
 "deleteCategoryConfirm_message" = "Gib bitte die Anzahl der Fotos an um dieses Album zu löschen. Anzahl der Fotos: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 Jahr";
 "editImageDetailsHUD_updatingSingle" = "Foto wird aktualisiert…";
 "editImageDetailsHUD_updatingPlural" = "Fotos werden aktualisiert…";
+"help_externalDisplay" = "Tippen Sie auf das Bild, das Sie hier anzeigen möchten.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
-"editImageDetailsError_message" = "Übertragen der Änderungen auf Ihren Server fehlgeschlagen. Erneut versuchen?";
+"editImageDetailsError_message" = "Ihre Änderungen konnten nicht mit Ihrem Server aktualisiert werden.";
 "imageDetailsFetchError_title" = "Abrufen der Fotoinformationen fehlgeschlagen";
-"imageDetailsFetchError_retryMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Erneut versuchen?";
+"imageDetailsFetchError_message" = "Das Abrufen der Fotodaten ist fehlgeschlagen.";
 "imageDetailsFetchError_continueMessage" = "Abrufen der Fotoinformationen fehlgeschlagen. Fortsetzen?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Nie";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
-"settings_cacheDisk" = "Festplatte";
-"settings_cacheMemory" = "Speicher";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Cache";
+"settings_database" = "Daten";
 "settings_cacheClear" = "Zwischenspeicher leeren";
-"settings_cacheClearAll" = "Zwischenspeicher für Fotos leeren";
+"settings_cacheClearAll" = "Alles löschen";
 "settings_cacheClearMsg" = "Sind Sie sicher, dass Sie den Foto-Cache löschen möchten? Alben und Fotos werden eine Weile benötigen, um erneut geladen zu werden.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Übergeordnete Alben";
 "help08_text" = "Drücken Sie lange auf die Zurück-Schaltfläche, um die Liste der übergeordneten Alben anzuzeigen.";
 "help08_text2" = "Tippe auf das übergeordnete Album deiner Wahl, um zu ihm zurückzuspringen.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Was ist neu in Piwigo";
+"whatsNew_title1" = "Neuer Cache";
+"whatsNew_desc1" = "Cache-Management vollständig überarbeitet, um das Benutzererlebnis zu verbessern und das Offline-Surfen zu ermöglichen.";
+"whatsNew_title2" = "Bildschirmsynchronisierung";
+"whatsNew_desc2" = "Betrachten Sie Ihre Fotos und Videos auf einem externen Display.";
+"whatsNew_continue" = "Fortsetzen";

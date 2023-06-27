@@ -13,6 +13,8 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+
 default_platform(:ios)
 
 platform :ios do
@@ -27,3 +29,4 @@ update_app_identifier(
   plist_path: "piwigo/Info.plist", 	# Path to info plist file, relative to xcodeproj
   app_identifier: "org.piwigo" 		# The App Identifier
 )
+

@@ -12,8 +12,7 @@ import UIKit
 import CoreData
 import piwigoKit
 
-@objc
-protocol TagSelectorViewDelegate {
+protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
@@ -21,54 +20,85 @@ class TagSelectorViewController: UITableViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
 
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
-        provider.fetchedNonAdminResultsControllerDelegate = self
-        return provider
-    }()
-    
-    
-    // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
 
+    
+    // MARK: - Core Data Objects
+    var user: User!
+    private lazy var mainContext: NSManagedObjectContext = {
+        guard let context: NSManagedObjectContext = user?.managedObjectContext else {
+            fatalError("!!! Missing Managed Object Context !!!")
+        }
+        return context
+    }()
+
+    
+    // MARK: - Core Data Providers
+    private lazy var tagProvider: TagProvider = {
+        let provider : TagProvider = TagProvider.shared
+        return provider
+    }()
+    
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+    
+    
+    // MARK: - Fetched Results Controller
     let searchController = UISearchController(searchResultsController: nil)
     var searchQuery = ""
-    private var filteredTags: [Tag] {
-        let allTags = tagsProvider.fetchedNonAdminResultsController.fetchedObjects ?? []
-        if #available(iOS 11.0, *) {
-            return allTags.filterTags(for: searchQuery)
-        } else {
-            return allTags
-        }
+    lazy var predicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
+        andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
+        andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+
+    func getQueryVar() -> [String : Any] {
+        return ["query"  : "*" + searchQuery + "*"]
     }
 
+    lazy var fetchRequest: NSFetchRequest = {
+        // Create a fetch request for the Tag entity sorted by name.
+        let fetchRequest = Tag.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+    
+    lazy var tags: NSFetchedResultsController<Tag> = {
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let tags = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                              managedObjectContext: mainContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        tags.delegate = self
+        return tags
+    }()
+
+    
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Add search bar and prepare data source
-        if #available(iOS 11.0, *) {
-            // Initialise search bar
-            initSearchBar()
-        } else {
-            // Rebuild ABC index
-            rebuildABCindex()
-        }
+        // Initialise search bar
+        initSearchBar()
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        tagsProvider.fetchTags(asAdmin: false) { error in
+        tagProvider.fetchTags(asAdmin: false) { error in
             DispatchQueue.main.async { [self] in
                 guard let error = error else { return }
 
                 // Show an alert if there was an error.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), message: error.localizedDescription) { }
+                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                        message: error.localizedDescription) { }
             }
         }
         
@@ -84,12 +114,10 @@ class TagSelectorViewController: UITableViewController {
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -107,6 +135,13 @@ class TagSelectorViewController: UITableViewController {
         // Set colors, fonts, etc.
         applyColorPalette()
         
+        // Initialise data source
+        do {
+            try tags.performFetch()
+        } catch {
+            fatalError("Failed to fetch tags: \(error)")
+        }
+
         // Reload data
         tagsTableView.reloadData()
         
@@ -125,40 +160,7 @@ class TagSelectorViewController: UITableViewController {
     }
 
 
-    // MARK: - UITableView ABC Index (before iOS 11)
-    func rebuildABCindex() {
-        // Rebuild ABC index
-        let firstCharacters = NSMutableSet(capacity: 0)
-        for tag in filteredTags {
-            firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
-        }
-        letterIndex = (firstCharacters.allObjects as! [String]).sorted()
-    }
-    
-    // Returns the titles for the sections
-    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        if #available(iOS 11.0, *) {
-            return nil
-        } else {
-            return letterIndex
-        }
-    }
-
-    // Returns the section that the table view should scroll to
-    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-
-        var newRow: Int = 0
-        for tag in filteredTags {
-            if tag.tagName.hasPrefix(title) { break }
-            newRow += 1
-        }
-        let newIndexPath = IndexPath(row: newRow, section: 0)
-        tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
-        return index
-    }
-
-    
-    // MARK: - UITableView Rows & Cells
+    // MARK: - UITableView Rows
     // Return the number of sections for the table.
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -166,7 +168,8 @@ class TagSelectorViewController: UITableViewController {
 
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredTags.count
+        let objects = tags.fetchedObjects
+        return objects?.count ?? 0
     }
 
     // Return cell configured with tag
@@ -176,7 +179,7 @@ class TagSelectorViewController: UITableViewController {
             print("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
             return TagSelectorCell()
         }
-        cell.configure(with: filteredTags[indexPath.row])
+        cell.configure(with: tags.object(at: indexPath))
         return cell
     }
 
@@ -185,7 +188,7 @@ class TagSelectorViewController: UITableViewController {
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        let nberOfTags = filteredTags.count
+        let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
             String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberAsStr) :
@@ -213,12 +216,13 @@ class TagSelectorViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         // Determine selected tag before deactivating search bar
-        var catID = NSNotFound
-        if filteredTags.count > indexPath.row {
-            let tag = filteredTags[indexPath.row]
-            catID = getCategory(withTagId: tag.tagId, tagName: tag.tagName)
+        let tag = tags.object(at: indexPath)
+        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+        
+        // Check that an album of tagged images exists in cache (create it if necessary)
+        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID) else {
+            return
         }
-        if catID == NSNotFound { return }
         
         // Deactivate search bar
         searchController.isActive = false
@@ -230,18 +234,6 @@ class TagSelectorViewController: UITableViewController {
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
         }
     }
-    
-    private func getCategory(withTagId tagId:Int32, tagName:String) -> Int {
-        // Calc category ID
-        let categoryId = kPiwigoTagsCategoryId - Int(tagId)
-        
-        // Create category in cache if necessary
-        if CategoriesData.sharedInstance().getCategoryById(categoryId) == nil,
-           let album = PiwigoAlbumData(id: categoryId, andQuery: tagName) {
-            CategoriesData.sharedInstance().updateCategories([album])
-        }
-        return categoryId
-    }
 }
 
 
@@ -250,9 +242,6 @@ class TagSelectorViewController: UITableViewController {
 extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Stores tag IDs before the update
-        tagIdsBeforeUpdate = filteredTags.map({$0.tagId})
-        
         // Begin the update
         tagsTableView.beginUpdates()
     }
@@ -261,37 +250,20 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .delete:   // Action performed in priority
-            // Should we remove this tag from the filtered list?
-            guard let tag: Tag = anObject as? Tag else { return }
-            if let index = tagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                // Delete tag from table view
-                let deleteAtIndexPath = IndexPath(row: index, section: 0)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
+            guard let indexPath = indexPath else { return }
+            tagsTableView.deleteRows(at: [indexPath], with: .automatic)
             
         case .insert:
-            // Should we add this tag to the filtered list?
-            guard let tag: Tag = anObject as? Tag else { return }
-            if let index = filteredTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let addAtIndexPath = IndexPath(row: index, section: 0)
-                print(".insert =>", addAtIndexPath.debugDescription)
-                tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
-            }
+            guard let newIndexPath = newIndexPath else { return }
+            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
             
         case .move:
-            // Should never happen…
-            print("TagsSelectorViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
+            guard let indexPath = indexPath,  let newIndexPath = newIndexPath else { return }
+            tagsTableView.moveRow(at: indexPath, to: newIndexPath)
             
         case .update:
-            guard let tag: Tag = anObject as? Tag else { return }
-            // Get index of tag to update
-            if let index = tagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId}) {
-                let indexPath = IndexPath(row: index, section: 0)
-                if let cell = tableView.cellForRow(at: indexPath) as? TagSelectorCell {
-                    cell.configure(with: tag)
-                }
-            }
+            guard let indexPath = indexPath else { return }
+            tagsTableView.reloadRows(at: [indexPath], with: .automatic)
             
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
@@ -300,13 +272,5 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tagsTableView.endUpdates()
-        
-        if #available(iOS 11, *) {
-            // Use search bar
-        } else {
-            // Rebuild ABC index
-            rebuildABCindex()
-            tagsTableView.reloadSectionIndexTitles()
-        }
     }
 }

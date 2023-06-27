@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.12.7_text" = "Version 2.12.7\n\n• Fehlerbehebungen";
+"v3.0.0_text" = "Version 3.0\n\n• Die Cache-Verwaltung wurde vollständig überarbeitet, um die Benutzerfreundlichkeit zu verbessern und das Offline-Browsing zu ermöglichen\n• Korrekturen einiger Übersetzungen";
+
+"v2.12.7_text" = "Version 2.12.7\n19. Dezember 2022\n\n• Fehlerbehebungen";
 
 "v2.12.6_text" = "Version 2.12.6\n21. November 2022\n\n• Fehlerbehebungen";
 
@@ -16,11 +18,11 @@
 
 "v2.12.3_text" = "Version 2.12.3\n7. August 2022\n\n• Fehlerbehebungen";
 
-"v2.12.2_text" = "Version 2.12.2\n2. August 2022\n\n• Behebt einen Absturz, der bei iOS 9.12 auftritt, wenn die Warteschlange für Upload-Anfragen angezeigt wird\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
+"v2.12.2_text" = "Version 2.12.2\n2. August 2022\n\n• Behebt einen Absturz, der bei iOS 9 - 12 auftritt, wenn die Warteschlange für Upload-Anfragen angezeigt wird\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
 
 "v2.12.1_text" = "Version 2.12.1\n10. Juli 2022\n\n• Behebt einen Absturz auf iOS 9-13 beim Ändern von Schlagwörtern, die Fotos zugeordnet sind";
 
-"v2.12.0_text" = "Version 2.12\n3. Juli 2022\n\n• Wählen Sie eine Schlagwort schneller mit der Suchleiste\n• Code-Modernisierung\n• Fehlerbehebungen";
+"v2.12.0_text" = "Version 2.12\n3. Juli 2022\n\n• Wählen Sie ein Schlagwort schneller mit der Suchleiste aus\n• Code-Modernisierung\n• Fehlerbehebungen";
 
 "v2.11.2_text" = "Version 2.11.2\n21. Juni 2022\n\n• Behebt ein Kompatibilitätsproblem mit dem Community-Plugin";
 

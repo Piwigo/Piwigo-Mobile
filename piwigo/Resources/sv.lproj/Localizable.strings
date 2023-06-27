@@ -25,7 +25,6 @@
 "alertRetryButton" = "Försök igen";
 "alertNextButton" = "Nästa bild";
 "alertTryButton" = "Prova";
-"alertClearButton" = "Rensa";
 
 // HUD views
 "loadingHUD_label" = "Laddar…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Varning";
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
 "CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
+"CoreData_MigrationProgress" = "Migrering pågår...";
+"Coredata_MigrationPleaseWait" = "Vi migrerar för närvarande vissa av dina data. Vänta tills det är klart. Döda inte programmet.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn.";
+"CoreDataFetch_UserUnknownStatus" = "Kunde inte hämta utökade parametrar för Community.\nProva med att logga in igen.";
+"CoreData_UserCreateFailed" = "Det gick inte att skapa ett nytt användarobjekt.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Hämta album fel!";
+"CoreDataFetch_AlbumMissingData" = "Hittade och kommer att kasta ett album som saknar ett giltigt ID eller namn.";
+"CoreDataFetch_AlbumCreateFailed" = "Det gick inte att skapa ett nytt albumobjekt.";
+"CoreData_AlbumNotFound" = "Album ej i ihållande cache.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Hämta foton/videofel!";
+"CoreDataFetch_ImageMissingData" = "Hittade och kommer att kasta ett foto/video som saknar ett giltigt ID eller URL.";
+"CoreDataFetch_ImageCreateFailed" = "Det gick inte att skapa ett nytt bildobjekt.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Hämta taggar fel!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Autentisering misslyckades";
 "sessionStatusError_message" = "Det gick inte att autentisera med servern. Försök logga in igen.";
 
-"serverCommunityError_title" = "Kommunikationsfel";
-"serverCommunityError_message" = "Kunde inte hämta utökade parametrar för Community. Prova med att logga in igen.";
-
 // Logout
 "logoutConfirmation_title" = "Logga ut";
 "logoutConfirmation_message" = "Är du säker på att du vill logga ut?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ underalbum";
 
 // Albums view
+"categoryUpdating" = "Uppdaterar…";
+"categoryUpdatedOn" = "Uppdaterad den %@";
+"categoryUpdatedAt" = "Uppdaterad den %@";
+"categoryUpdatedNow" = "Uppdaterad just nu";
 "categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Radera tomma album";
 "deleteCategory_noImages" = "Behåll bilderna";
 "deleteCategory_orphanedImages" = "Radera föräldralösa";
+"deleteCategory_singleOrphanedImage" = "Ta bort föräldralösa";
+"deleteCategory_severalOrphanedImages" = "Ta bort %@ föräldralösa";
 "deleteCategory_allImages" = "Radera %@ bilder";
 "deleteCategoryConfirm_title" = "Är du säker?";
 "deleteCategoryConfirm_message" = "Ange antalet bilder för att kunna radera detta album. Antal bilder: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
 "editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
+"help_externalDisplay" = "Tryck på den bild du vill visa här.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
 "editImageDetailsError_message" = "Det gick inte att uppdatera ändringarna med din server. Försök igen?";
 "imageDetailsFetchError_title" = "Kunde inte hämta bilddetaljer";
-"imageDetailsFetchError_retryMessage" = "Hämtning av bilddata misslyckades. Försök igen?";
+"imageDetailsFetchError_message" = "Hämtning av fotodata misslyckades.";
 "imageDetailsFetchError_continueMessage" = "Hämtning av bilddata misslyckats. Fortsätt?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Aldrig";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
-"settings_cacheDisk" = "Disk";
-"settings_cacheMemory" = "Minne";
-"settings_cacheMegabytes" = "MB";
+"settingsHeader_cache" = "Cache";
+"settings_database" = "Data";
 "settings_cacheClear" = "Rensa cache";
-"settings_cacheClearAll" = "Töm bildcache";
+"settings_cacheClearAll" = "Rensa alla";
 "settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Överordnat album";
 "help08_text" = "Långtryck på bakåtknappen för att visa listan över överordnade album.";
 "help08_text2" = "Tryck på det överordnade albumet du väljer för att hoppa tillbaka till det.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Vad är nytt i Piwigo";
+"whatsNew_title1" = "Ny cache";
+"whatsNew_desc1" = "Cachehantering helt omskriven för att förbättra användarupplevelsen och ta offline surfning.";
+"whatsNew_title2" = "Skärmdubblering";
+"whatsNew_desc2" = "Titta på dina foton och videor på en extern skärm.";
+"whatsNew_continue" = "Fortsätt";

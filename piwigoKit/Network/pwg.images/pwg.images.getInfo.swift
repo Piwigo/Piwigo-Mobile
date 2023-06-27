@@ -9,13 +9,12 @@
 import Foundation
 
 // MARK: - pwg.images.getInfo
-public let kPiwigoImagesGetInfo = "format=json&method=pwg.images.getInfo"
+public let pwgImagesGetInfo = "format=json&method=pwg.images.getInfo"
 
 public struct ImagesGetInfoJSON: Decodable {
 
     public var status: String?
     public var data: ImagesGetInfo!
-    public var derivatives: Derivatives!
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -26,24 +25,6 @@ public struct ImagesGetInfoJSON: Decodable {
         case errorMessage = "message"
     }
     
-    private enum ResultCodingKeys: String, CodingKey {
-        case derivatives
-    }
-
-    private enum DerivativesCodingKeys: String, CodingKey {
-        case squareImage = "square"
-        case thumbImage = "thumb"
-        case mediumImage = "medium"
-        
-        case smallImage = "small"
-        case xSmallImage = "xsmall"
-        case xxSmallImage = "2small"
-
-        case largeImage = "large"
-        case xLargeImage = "xlarge"
-        case xxLargeImage = "xxlarge"
-    }
-
     private enum ErrorCodingKeys: String, CodingKey {
         case code = "code"
         case message = "msg"
@@ -63,148 +44,7 @@ public struct ImagesGetInfoJSON: Decodable {
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Adopt default values when data are not provided
-            if data.imageTitle == nil { data.imageTitle = "" }
-            if data.comment == nil { data.comment = "" }
-            if data.visits == nil { data.visits = 0 }
-            if data.fileName == nil { data.fileName = "" }
-            if data.datePosted == nil {
-                // Adopts now
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-                data.datePosted = dateFormatter.string(from: Date())
-            }
-            if data.dateCreated == nil {
-                // Adopts the posted date when the creation date is unknown.
-                data.dateCreated = data.datePosted
-            }
-            if data.privacyLevel == nil { data.privacyLevel = "0" }
-            if data.tags == nil { data.tags = [TagProperties]() }
-            if data.ratingScore == nil { data.ratingScore = "0.0" }
-            if data.fileSize == nil { data.fileSize = NSNotFound }
-            if data.md5checksum == nil { data.md5checksum = "" }
-            
-            // Result container keyed by ResultCodingKeys
-            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
-//                dump(resultContainer)
-
-            // Decodes derivatives
-            do {
-                try derivatives = resultContainer.decode(Derivatives.self, forKey: .derivatives)
-            }
-            catch {
-                // Sometimes, width and height are provided as String instead of Int!
-                derivatives = Derivatives()
-                let derivativesContainer = try resultContainer.nestedContainer(keyedBy: DerivativesCodingKeys.self, forKey: .derivatives)
-//                    dump(derivativesContainer)
-                
-                // Square image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .squareImage)
-                    derivatives?.squareImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .squareImage)
-                    derivatives?.squareImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // Thumbnail image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .thumbImage)
-                    derivatives?.thumbImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .thumbImage)
-                    derivatives?.thumbImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // Medium image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .mediumImage)
-                    derivatives?.mediumImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .mediumImage)
-                    derivatives?.mediumImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // Small image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .smallImage)
-                    derivatives?.smallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .smallImage)
-                    derivatives?.smallImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // XSmall image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xSmallImage)
-                    derivatives?.xSmallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xSmallImage)
-                    derivatives?.xSmallImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // XXSmall image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxSmallImage)
-                    derivatives?.xxSmallImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxSmallImage)
-                    derivatives?.xxSmallImage = Derivative(url: square.url,
-                                                           width: Int(square.width ?? "1"),
-                                                           height: Int(square.height ?? "1"))
-                }
-
-                // Large image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .largeImage)
-                    derivatives?.largeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .largeImage)
-                    derivatives?.largeImage = Derivative(url: square.url,
-                                                         width: Int(square.width ?? "1"),
-                                                         height: Int(square.height ?? "1"))
-                }
-
-                // XLarge image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xLargeImage)
-                    derivatives?.xLargeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xLargeImage)
-                    derivatives?.xLargeImage = Derivative(url: square.url,
-                                                          width: Int(square.width ?? "1"),
-                                                          height: Int(square.height ?? "1"))
-                }
-
-                // XXLarge image
-                do {
-                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxLargeImage)
-                    derivatives?.xxLargeImage = square
-                }
-                catch {
-                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxLargeImage)
-                    derivatives?.xxLargeImage = Derivative(url: square.url,
-                                                           width: Int(square.width ?? "1"),
-                                                           height: Int(square.height ?? "1"))
-                }
-            }
+            data.fixingUnknowns()
         }
         else if status == "fail"
         {
@@ -233,13 +73,14 @@ public struct ImagesGetInfoJSON: Decodable {
 // MARK: - Result
 public struct ImagesGetInfo: Decodable
 {
-    public let imageId: Int?                    // 1042
-    public var imageTitle: String?              // "Title"
+    public let id: Int64?                       // 1042
+    public var title: String?                   // "Title"
     public var comment: String?                 // "No description"
-    public var visits: Int?                     // 0
+    public var visits: Int32?                   // 0
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
+    public var isFavorite: Bool?                // false
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048
@@ -249,18 +90,20 @@ public struct ImagesGetInfo: Decodable
     public var privacyLevel: String?            // "0"
     public var tags: [TagProperties]?           // See TagProperties
     public var ratingScore: String?             // "1.0"
-    public var fileSize: Int?                   // 3025
+    public var fileSize: Int64?                 // 3025
     public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
-    public let categoryIds: [Album]?            // See Album below
+    public var categories: [CategoryData]?      // Defined in pwg.category.getList
+    public let derivatives: Derivatives         // See below
 
     public enum CodingKeys: String, CodingKey {
-        case imageId = "id"
-        case imageTitle = "name"
+        case id = "id"
+        case title = "name"
         case comment = "comment"
         case visits = "hit"
         case fileName = "file"
         case datePosted = "date_available"
         case dateCreated = "date_creation"
+        case isFavorite = "is_favorite"
 
         case fullResWidth = "width"
         case fullResHeight = "height"
@@ -272,7 +115,53 @@ public struct ImagesGetInfo: Decodable
         case ratingScore = "rating_score"
         case fileSize = "filesize"
         case md5checksum = "md5sum"
-        case categoryIds = "categories"
+        case categories = "categories"
+        case derivatives = "derivatives"
+    }
+}
+
+extension ImagesGetInfo {
+    public init(id: Int64, title: String, fileName: String,
+                datePosted: Date, dateCreated: Date,
+                author: String, privacyLevel: String,
+                squareImage: Derivative, thumbImage: Derivative) {
+        // Date posted is now (called after uploading in the foreground
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+        let posted = dateFormatter.string(from: datePosted)
+        let created = dateFormatter.string(from: dateCreated)
+        let derivatives = Derivatives(squareImage: squareImage, thumbImage: thumbImage)
+        
+        self.init(id: id, title: title, comment: "", visits: 0,
+                  fileName: fileName, datePosted: posted, dateCreated: created,
+                  isFavorite: false, fullResWidth: 0, fullResHeight: 0, fullResPath: "",
+                  author: author, privacyLevel: privacyLevel,
+                  tags: nil, ratingScore: nil,
+                  fileSize: nil, md5checksum: nil,
+                  categories: nil, derivatives: derivatives)
+        self.fixingUnknowns()
+    }
+    
+    public mutating func fixingUnknowns() {
+        if self.title == nil { self.title = "" }
+        if self.comment == nil { self.comment = "" }
+        if self.visits == nil { self.visits = 0 }
+        if self.fileName == nil { self.fileName = "" }
+        if self.datePosted == nil {
+            // Adopts now
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+            self.datePosted = dateFormatter.string(from: Date())
+        }
+        if self.dateCreated == nil {
+            // Adopts the posted date when the creation date is unknown.
+            self.dateCreated = self.datePosted
+        }
+        if self.privacyLevel == nil { self.privacyLevel = "0" }
+        if self.tags == nil { self.tags = [TagProperties]() }
+        if self.ratingScore == nil { self.ratingScore = "" }
+        if self.fileSize == nil { self.fileSize = Int64.zero }
+        if self.md5checksum == nil { self.md5checksum = "" }
     }
 }
 
@@ -306,14 +195,26 @@ public struct Derivatives: Decodable {
     }
 }
 
-public struct Derivative: Decodable {
-    public let url: String?
-    public let width: Int?
-    public let height: Int?
+extension Derivatives {
+    public init(squareImage: Derivative, thumbImage: Derivative) {
+        self.init(squareImage: squareImage, thumbImage: thumbImage, mediumImage: Derivative(),
+                  smallImage: Derivative(), xSmallImage: Derivative(), xxSmallImage: Derivative(),
+                  largeImage: Derivative(), xLargeImage: Derivative(), xxLargeImage: Derivative())
+    }
 }
 
-public struct DerivativeStr: Decodable {
+public struct Derivative: Decodable {
     public let url: String?
-    public let width: String?
-    public let height: String?
+    public let width: StringOrInt?
+    public let height: StringOrInt?
+}
+
+public extension Derivative {
+    init() {
+        self.init(url: nil, width: nil, height: nil)
+    }
+    
+    init(url: String?) {
+        self.init(url: url, width: nil, height: nil)
+    }
 }

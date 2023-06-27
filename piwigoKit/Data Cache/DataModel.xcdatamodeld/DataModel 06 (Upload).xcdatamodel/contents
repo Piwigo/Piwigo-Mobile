@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18153" systemVersion="20D64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+    <entity name="Location" representedClassName=".Location" syncable="YES">
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="placeName" attributeType="String" defaultValueString=""/>
+        <attribute name="radius" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="streetName" attributeType="String" defaultValueString=""/>
+    </entity>
+    <entity name="Tag" representedClassName=".Tag" syncable="YES">
+        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO"/>
+        <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="tagName" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="tagId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Upload" representedClassName=".Upload" syncable="YES">
+        <attribute name="author" attributeType="String" defaultValueString=""/>
+        <attribute name="category" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="comment" attributeType="String" defaultValueString=""/>
+        <attribute name="compressImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="creationDate" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="defaultPrefix" attributeType="String" defaultValueString=""/>
+        <attribute name="deleteImageAfterUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="fileName" attributeType="String" defaultValueString=""/>
+        <attribute name="imageId" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="imageName" attributeType="String" defaultValueString=""/>
+        <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="localIdentifier" attributeType="String"/>
+        <attribute name="md5Sum" attributeType="String" defaultValueString=""/>
+        <attribute name="mimeType" attributeType="String" defaultValueString=""/>
+        <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES"/>
+        <attribute name="photoResize" attributeType="Integer 16" defaultValueString="100" usesScalarValueType="YES"/>
+        <attribute name="prefixFileNameBeforeUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="requestDate" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="requestError" attributeType="String" defaultValueString=""/>
+        <attribute name="requestSectionKey" attributeType="String" defaultValueString=""/>
+        <attribute name="requestState" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="resizeImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="serverFileTypes" attributeType="String" defaultValueString="jpg,jpeg,png,gif"/>
+        <attribute name="serverPath" attributeType="String" defaultValueString=""/>
+        <attribute name="stripGPSdataOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="tagIds" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="localIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <elements>
+        <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="104"/>
+        <element name="Tag" positionX="-61.69140625" positionY="-237.2265625" width="128" height="89"/>
+        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="434"/>
+    </elements>
+</model>

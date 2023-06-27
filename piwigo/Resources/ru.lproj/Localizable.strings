@@ -25,7 +25,6 @@
 "alertRetryButton" = "Повторить";
 "alertNextButton" = "Следующее фото";
 "alertTryButton" = "Попробовать";
-"alertClearButton" = "Очистить";
 
 // HUD views
 "loadingHUD_label" = "Загрузка…";
@@ -53,6 +52,24 @@
 "CoreDataStore_WarningTitle" = "Внимание";
 "CoreDataStore_WarningMessage" = "Произошла серьезная ошибка приложения при попытке Piwigo прочитать кэш данных. Поэтому был создан новый кэш.";
 "CoreDataFetch_DigestError" = "Не удалось обработать полученные данные.";
+"CoreData_MigrationProgress" = "Миграция в процессе...";
+"Coredata_MigrationPleaseWait" = "В настоящее время мы мигрируем некоторые ваши данные. Пожалуйста, подождите, пока он не будет завершён. Не закрывайте приложение.";
+
+// User objects
+"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserUnknownStatus" = "Не удалось получить параметры плагина Community.\nПопробуйте войти снова.";
+"CoreData_UserCreateFailed" = "Не удалось создать новый объект пользователя.";
+
+// Album objects
+"CoreDataFetch_AlbumError" = "Ошибка получения альбомов!";
+"CoreDataFetch_AlbumMissingData" = "Найдено и отбросит альбом без действительного идентификатора или имени.";
+"CoreDataFetch_AlbumCreateFailed" = "Не удалось создать новый объект Альбома.";
+"CoreData_AlbumNotFound" = "Альбом не в постоянном кэше.";
+
+// Image objects
+"CoreDataFetch_ImageError" = "Ошибка получения фото/видео!";
+"CoreDataFetch_ImageMissingData" = "Найдено и будет отменена фотография/видео без действительного идентификатора или URL.";
+"CoreDataFetch_ImageCreateFailed" = "Не удалось создать новый объект изображения.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "Ошибка выборки тэгов!";
@@ -110,9 +127,6 @@
 "sessionStatusError_title" = "Ошибка аутентификации";
 "sessionStatusError_message" = "Ошибка аутентификации на сервере. Попробуйте войти снова.";
 
-"serverCommunityError_title" = "Ошибка плагина Community";
-"serverCommunityError_message" = "Не удалось получить параметры плагина Community. Попробуйте войти снова.";
-
 // Logout
 "logoutConfirmation_title" = "Выйти";
 "logoutConfirmation_message" = "Вы точно хотите выйти?";
@@ -130,6 +144,10 @@
 "severalSubAlbumsCount" = "%@ подальбомов";
 
 // Albums view
+"categoryUpdating" = "Обновление…";
+"categoryUpdatedOn" = "Обновлено %@";
+"categoryUpdatedAt" = "Обновлено в %@";
+"categoryUpdatedNow" = "Обновлено сейчас";
 "categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
 "categoryImageList_selectButton" = "Выбрать";
 "categoryImageList_deselectButton" = "Отменить выбор";
@@ -145,14 +163,14 @@
 "categoryDiscoverFavorites_title" = "Ваши избранные";
 
 // Albums sort
-"categorySort_nameAscending" = "Название фотографии, A → Z";
-"categorySort_nameDescending" = "Название фотографии, A → Z";
+"categorySort_nameAscending" = "Заголовок фотографии, A → Я";
+"categorySort_nameDescending" = "Заголовок фотографии, Я → А";
 "categorySort_fileNameAscending" = "Имя файла, A → Z";
 "categorySort_fileNameDescending" = "Имя файла, Я → А";
 "categorySort_dateCreatedDescending" = "Дата создания, новая → старая";
 "categorySort_dateCreatedAscending" = "Дата создания, старые → новые";
-"categorySort_datePostedDescending" = "Дата создания, новая → старая";
-"categorySort_datePostedAscending" = "Дата создания, старые → новые";
+"categorySort_datePostedDescending" = "Дата публикации, новая → старая";
+"categorySort_datePostedAscending" = "Дата публикации, старая → новая";
 "categorySort_ratingScoreDescending" = "Рейтинг, высокий → низкий";
 "categorySort_ratingScoreAscending" = "Рейтинг, низкий → высокий";
 "categorySort_visitsDescending" = "Посещения, высокие → низкие";
@@ -235,6 +253,8 @@
 "deleteCategory_empty" = "Удалить пустой альбом";
 "deleteCategory_noImages" = "Оставить фотографии";
 "deleteCategory_orphanedImages" = "Удалить сирот";
+"deleteCategory_singleOrphanedImage" = "Удалить сирот";
+"deleteCategory_severalOrphanedImages" = "Удалить %@ сирот";
 "deleteCategory_allImages" = "Удалить %@ фотографий";
 "deleteCategoryConfirm_title" = "Вы уверены?";
 "deleteCategoryConfirm_message" = "Пожалуйста, введите количество фотографий для удаления этого альбома. Количество фотографий: %@";
@@ -327,12 +347,13 @@
 "editImageDetails_dateYearDec" = "-1 Год";
 "editImageDetailsHUD_updatingSingle" = "Обновление фото…";
 "editImageDetailsHUD_updatingPlural" = "Обновление фото…";
+"help_externalDisplay" = "Нажмите на изображение, которое вы хотите отобразить здесь.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Не удалось обновить";
 "editImageDetailsError_message" = "Не удалось обновить ваши изменения на сервере. Попробовать снова?";
 "imageDetailsFetchError_title" = "Не удалось получить детали фото";
-"imageDetailsFetchError_retryMessage" = "Загрузка фото-данных не удалась. Попробовать еще раз?";
+"imageDetailsFetchError_message" = "Загрузка фотографий не удалась.";
 "imageDetailsFetchError_continueMessage" = "Загрузка фото-данных не удалась. Продолжить?";
 
 // Image privacy levels
@@ -747,12 +768,10 @@
 "settings_clearClipboardNever" = "Никогда";
 
 // Settings — Cache
-"settingsHeader_cache" = "Настройки кэша (Использовано/Всего)";
-"settings_cacheDisk" = "Диск";
-"settings_cacheMemory" = "Память";
-"settings_cacheMegabytes" = "МБ";
+"settingsHeader_cache" = "Кэш";
+"settings_database" = "Данные";
 "settings_cacheClear" = "Очистить кэш-память";
-"settings_cacheClearAll" = "Очистить кэш фотографий";
+"settings_cacheClearAll" = "Очистить все";
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 
 // Settings — Appearance
@@ -807,3 +826,11 @@
 "help08_header" = "Родительские альбомы";
 "help08_text" = "Долгое нажатие на кнопку Назад для отображения списка родительских альбомов.";
 "help08_text2" = "Нажмите на родительский альбом по вашему выбору, чтобы вернуться к нему.";
+
+// What's New in Piwigo
+"whatsNew_title" = "Что нового в Piwigo";
+"whatsNew_title1" = "Новый кэш";
+"whatsNew_desc1" = "Управление кэшем полностью переписано, чтобы улучшить работу пользователя и принести автономный режим просмотра.";
+"whatsNew_title2" = "Повтоо акона";
+"whatsNew_desc2" = "Смотрите ваши фотографии и видео на внешнем экране.";
+"whatsNew_continue" = "Продолжить";

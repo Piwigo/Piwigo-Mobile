@@ -14,23 +14,23 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
     
-    func configure(with title: String, nberPhotos: Int, startDate: Date?, endDate: Date?) -> Void {
+    func configure(with title: String, nberPhotos: Int64, startDate: Date?, endDate: Date?) -> Void {
 
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
 
         // Title
-        titleLabel.font = .piwigoFontNormal()
+        titleLabel.font = .systemFont(ofSize: 17)
         titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .piwigoFontSmall()
+        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        if nberPhotos != NSNotFound {
+        if nberPhotos != Int64.min {
             numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
         } else {
             numberLabel.text = ""
@@ -50,7 +50,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         // Photo from the same month
                         if startDateComponents.day == endDateComponents.day {
                             // Photos from the same day
-                            if UIScreen.main.bounds.size.width > 414.0 {
+                            if UIScreen.main.bounds.size.width > 430 {
+                                // i.e. larger than iPhone 14 Pro Max screen width
                                 let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                                 dateFormatter1.locale = .current
                                 dateFormatter2.locale = .current
@@ -71,8 +72,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                             let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                             dateFormatter1.locale = .current
                             dateFormatter2.locale = .current
-                            if UIScreen.main.bounds.size.width > 414.0 {
-                                // i.e. larger than iPhones 6, 7 screen width
+                            if UIScreen.main.bounds.size.width > 430 {
+                                // i.e. larger than iPhone 14 Pro Max screen width
                                 dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
                                 dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd")
                                 subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
@@ -87,8 +88,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                         dateFormatter1.locale = .current
                         dateFormatter2.locale = .current
-                        if UIScreen.main.bounds.size.width > 414.0 {
-                            // i.e. larger than iPhones 6, 7 screen width
+                        if UIScreen.main.bounds.size.width > 430 {
+                            // i.e. larger than iPhone 14 Pro Max screen width
                             dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d MMMM")
                             dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE d MMMM YYYY")
                             subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
@@ -101,7 +102,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 } else {
                     // Photos from different years
                     let startString: String, endString: String
-                    if contentView.bounds.size.width > 414.0 {
+                    if contentView.bounds.size.width > 430 {
                         startString = DateFormatter.localizedString(from: startDate, dateStyle: .full, timeStyle: .none)
                         endString = DateFormatter.localizedString(from: endDate, dateStyle: .full, timeStyle: .none)
                     } else {
@@ -116,15 +117,15 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 subtitle.append(String(format: "%@", startString))
             }
         }
-        subtitleLabel.font = .piwigoFontSmall()
+        subtitleLabel.font = .systemFont(ofSize: 13)
         subtitleLabel.textColor = .piwigoColorLeftLabel()
         subtitleLabel.text = subtitle
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        titleLabel.text = ""
-        subtitleLabel.text = ""
-        numberLabel.text = ""
+//        titleLabel.text = ""
+//        subtitleLabel.text = ""
+//        numberLabel.text = ""
     }
 }

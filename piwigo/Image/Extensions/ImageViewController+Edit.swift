@@ -13,15 +13,15 @@ extension ImageViewController
 {
     // MARK: - Edit Image
     @objc func editImage() {
+        guard let imageData = imageData else { return }
         // Disable buttons during action
         setEnableStateOfButtons(false)
 
         // Present EditImageDetails view
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
+        editImageVC.user = user
         editImageVC.images = [imageData]
-        editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights ||
-                                           (NetworkVars.hasNormalRights && userHasUploadRights)
         editImageVC.delegate = self
         pushView(editImageVC, forButton: actionBarButton)
     }
@@ -31,17 +31,17 @@ extension ImageViewController
 // MARK: - EditImageParamsDelegate Methods
 extension ImageViewController: EditImageParamsDelegate
 {
-    func didDeselectImage(withId imageId: Int) {
+    func didDeselectImage(withId imageId: Int64) {
         // Should never be called when the properties of a single image are edited
     }
 
-    func didChangeImageParameters(_ params: PiwigoImageData) {
+    func didChangeImageParameters(_ params: Image) {
         // Determine index of updated image
-        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
+//        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
         
         // Update list and currently viewed image
-        imageData = params
-        images[indexOfUpdatedImage] = params
+//        imageData = params
+//        images[indexOfUpdatedImage] = params
 
         // Update title view
         setTitleViewFromImageData()
@@ -49,32 +49,30 @@ extension ImageViewController: EditImageParamsDelegate
         // Update image metadata
         if let pVC = pageViewController,
            let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.updateImageMetadata(with: imageData)
+            imagePVC.updateImageMetadata(with: params)
         }
 
         // Update cached image data
         /// Note: the current category might be a smart album.
-        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
-        for catId in mergedCatIds {
-            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
-        }
+//        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [Int(categoryId)]))
+//        for catId in mergedCatIds {
+//            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
+//        }
         
         // If the current category presents tagged images and the user
         // removed the associated tag, delete the image from the smart album.
-        if categoryId == kPiwigoTagsCategoryId,
-           let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
-           let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
-            // Delete this image from the category and the parent collection
-            CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
-            // … and delete it from this data source
-            didRemoveImage(withId: params.imageId)
-            return
-        }
+//        if categoryId == kPiwigoTagsCategoryId,
+//           let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
+//           let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
+//            // Delete this image from the category and the parent collection
+//            CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
+//            // … and delete it from this data source
+//            didRemoveImage(withId: params.imageId)
+//            return
+//        }
 
         // Update banner of item in collection view (in case of empty title)
-        if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didUpdateImage(withData:))) ?? false {
-            imgDetailDelegate?.didUpdateImage(withData: imageData)
-        }
+//        imgDetailDelegate?.didUpdateImage(withData: imageData)
     }
 
     func didFinishEditingParameters() {

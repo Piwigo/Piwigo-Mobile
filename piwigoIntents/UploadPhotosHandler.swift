@@ -9,6 +9,7 @@
 import CoreData
 import Foundation
 import piwigoKit
+import uploadKit
 
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
@@ -18,8 +19,8 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
-    lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
+    lazy var uploadsProvider: UploadProvider = {
+        let provider : UploadProvider = UploadManager.shared.uploadProvider
         return provider
     }()
 
@@ -35,14 +36,14 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // Check files compatibility with server
         var selectedFiles = [URL]()
-        let fileTypes = UploadVars.serverFileTypes
+        let fileTypes = NetworkVars.serverFileTypes
         for index in 0..<files.count {
             guard let fileUrl = files[index].fileURL else { continue }
-            debugPrint("••> \(String(describing: files[index].typeIdentifier))")
+            print("••> \(String(describing: files[index].typeIdentifier))")
             if fileTypes.contains(fileUrl.pathExtension.lowercased()) {
 
                 // Delete file of same name in Uploads directory if it already exists (incomplete previous attempt?)
-                let fileUploadsUrl = UploadManager.shared.applicationUploadsDirectory
+                let fileUploadsUrl = UploadManager.shared.uploadsDirectory
                     .appendingPathComponent(fileUrl.lastPathComponent)
                 do { try FileManager.default.removeItem(at: fileUploadsUrl) } catch { }
 
@@ -95,7 +96,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             // Set file URL in Uploads directory
             let identifier = String(format: "%@%@%@%ld", UploadManager.shared.kIntentPrefix,
                                     actionDateTime, UploadManager.shared.kImageSuffix, idx)
-            let fileUploadsUrl = UploadManager.shared.applicationUploadsDirectory
+            let fileUploadsUrl = UploadManager.shared.uploadsDirectory
                 .appendingPathComponent(identifier)
 
             // Delete file if it already exists (incomplete previous attempt?)
@@ -168,13 +169,15 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 // when the operation completes
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
-                    debugPrint("  > Task completed with success.")
-                    // Save cached data
-                    DataController.saveContext()
+                    print("••> Task completed with success.")
+                    // Save cached data in the main thread
+                    DispatchQueue.main.async {
+                        DataController.shared.saveMainContext()
+                    }
                 }
 
                 // Start the operations
-                debugPrint("  > Start upload operations in background task...");
+                print("••> Start upload operations in background task...");
                 uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
                 // Inform user that the shortcut was excuted with success

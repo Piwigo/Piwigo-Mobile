@@ -13,7 +13,7 @@ import piwigoKit
 
 class ReleaseNotesViewController: UIViewController {
     
-    @IBOutlet private weak var piwigoTitle: UILabel!
+    @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
@@ -21,7 +21,7 @@ class ReleaseNotesViewController: UIViewController {
     private var doneBarButton: UIBarButtonItem?
 
     
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,20 +32,22 @@ class ReleaseNotesViewController: UIViewController {
         doneBarButton?.accessibilityIdentifier = "Done"
     }
 
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
 
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -71,9 +73,6 @@ class ReleaseNotesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Piwigo app
-        piwigoTitle.text = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
-
         // Piwigo authors
         updateAuthorsLabel()
 
@@ -86,12 +85,7 @@ class ReleaseNotesViewController: UIViewController {
         fixTextPositionAfterLoadingViewOnPad = true
         textView.attributedText = notesAttributedString()
         textView.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        textView.contentInsetAdjustmentBehavior = .never
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -160,6 +154,9 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
+
+        // Release 3.0.x — Bundle string
+        notesAttributedString.append(releaseNotes("v3.0.0_text", comment: "v3.0.0 Release Notes text"))
 
         // Release 2.12.x — Bundle string
         notesAttributedString.append(releaseNotes("v2.12.7_text", comment: "v2.12.7 Release Notes text"))
@@ -270,13 +267,13 @@ class ReleaseNotesViewController: UIViewController {
                                         bundle: Bundle.main, value: "", comment: comment)
         let vAttributedString = NSMutableAttributedString(string: vString)
         var vRange = NSRange(location: 0, length: vString.count)
-        vAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: vRange)
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
-        vAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: vRange)
         if lineFeed {
             let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
             let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-            spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
+            spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 10), range: spacerRange)
             vAttributedString.append(spacerAttributedString)
         }
         return vAttributedString

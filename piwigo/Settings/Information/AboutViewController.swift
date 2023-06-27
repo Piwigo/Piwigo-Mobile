@@ -13,7 +13,7 @@ import piwigoKit
 
 class AboutViewController: UIViewController, UITextViewDelegate {
     
-    @IBOutlet private weak var piwigoTitle: UILabel!
+    @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
@@ -21,7 +21,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     private var doneBarButton: UIBarButtonItem?
 
     
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,20 +32,22 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         doneBarButton?.accessibilityIdentifier = "Done"
     }
 
-    @objc
-    func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+
+        // Change text colour according to palette colour
+        if #available(iOS 13.0, *) {
+            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
 
         // Navigation bar
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
@@ -71,9 +73,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Piwigo app
-        piwigoTitle.text = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
-
         // Piwigo authors
         updateAuthorsLabel()
 
@@ -86,12 +85,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         fixTextPositionAfterLoadingViewOnPad = true
         textView.attributedText = aboutAttributedString()
         textView.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        textView.contentInsetAdjustmentBehavior = .never
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -163,13 +157,13 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let aboutAttributedString = NSMutableAttributedString(string: "")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-        spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: spacerRange)
+        spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: spacerRange)
 
         // Translators — Bundle string
         let translatorsString = NSLocalizedString("translators_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Translators text")
         let translatorsAttributedString = NSMutableAttributedString(string: translatorsString)
         let translatorsRange = NSRange(location: 0, length: translatorsString.count)
-        translatorsAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: translatorsRange)
+        translatorsAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: translatorsRange)
         aboutAttributedString.append(translatorsAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -177,26 +171,16 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let introString = NSLocalizedString("about_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Introduction text")
         let introAttributedString = NSMutableAttributedString(string: introString)
         let introRange = NSRange(location: 0, length: introString.count)
-        introAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: introRange)
+        introAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: introRange)
         aboutAttributedString.append(introAttributedString)
-
-        // AFNetworking Licence — Bundle string
-        let afnString = NSLocalizedString("licenceAFN_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
-        let afnAttributedString = NSMutableAttributedString(string: afnString)
-        var afnTitleRange = NSRange(location: 0, length: afnString.count)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: afnTitleRange)
-        afnTitleRange = NSRange(location: 0, length: (afnString as NSString).range(of: "\n").location)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: afnTitleRange)
-        aboutAttributedString.append(afnAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
 
         // IQKeyboardManager Licence — Bundle string
         let iqkmString = NSLocalizedString("licenceIQkeyboard_text", tableName: "About", bundle: Bundle.main, value: "", comment: "IQKeyboardManager licence text")
         let iqkmAttributedString = NSMutableAttributedString(string: iqkmString)
         var iqkmTitleRange = NSRange(location: 0, length: iqkmString.count)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: iqkmTitleRange)
+        iqkmAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: iqkmTitleRange)
         iqkmTitleRange = NSRange(location: 0, length: (iqkmString as NSString).range(of: "\n").location)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: iqkmTitleRange)
+        iqkmAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: iqkmTitleRange)
         aboutAttributedString.append(iqkmAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -204,9 +188,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mbpHudString = NSLocalizedString("licenceMBProgHUD_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MBProgressHUD licence text")
         let mbpHudAttributedString = NSMutableAttributedString(string: mbpHudString)
         var mbpHudRange = NSRange(location: 0, length: mbpHudString.count)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mbpHudRange)
+        mbpHudAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mbpHudRange)
         mbpHudRange = NSRange(location: 0, length: (mbpHudString as NSString).range(of: "\n").location)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mbpHudRange)
+        mbpHudAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mbpHudRange)
         aboutAttributedString.append(mbpHudAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -214,9 +198,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mgstcString = NSLocalizedString("licenceMGSTC_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MGSwipeTableCell licence text")
         let mgstcAttributedString = NSMutableAttributedString(string: mgstcString)
         var mgstcRange = NSRange(location: 0, length: mgstcString.count)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mgstcRange)
+        mgstcAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mgstcRange)
         mgstcRange = NSRange(location: 0, length: (mgstcString as NSString).range(of: "\n").location)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mgstcRange)
+        mgstcAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mgstcRange)
         aboutAttributedString.append(mgstcAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -224,9 +208,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mitString = NSLocalizedString("licenceMIT_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
         let mitAttributedString = NSMutableAttributedString(string: mitString)
         var mitTitleRange = NSRange(location: 0, length: mitString.count)
-        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mitTitleRange)
         mitTitleRange = NSRange(location: 0, length: (mitString as NSString).range(of: "\n").location)
-        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mitTitleRange)
         aboutAttributedString.append(mitAttributedString)
 
         return aboutAttributedString

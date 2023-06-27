@@ -8,9 +8,10 @@
 
 import Foundation
 
-// MARK: - pwg.images.setInfo
-public let kPiwigoImagesSetInfo = "format=json&method=pwg.images.setInfo"
+public let pwgImagesSetInfo = "format=json&method=pwg.images.setInfo"
+fileprivate let pwgImagesSetInfoBytes: Int64 = 610
 
+// MARK: Piwigo JSON Structure
 public struct ImagesSetInfoJSON: Decodable {
 
     public var status: String?
@@ -58,6 +59,53 @@ public struct ImagesSetInfoJSON: Decodable {
             // Unexpected Piwigo server error
             errorCode = -1
             errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+
+// MARK: - Piwigo Method Caller
+extension PwgSession
+{    
+    public func setInfos(with paramsDict: [String: Any],
+                         completion: @escaping () -> Void,
+                         failure: @escaping (NSError) -> Void) {
+        postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
+                    jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
+                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { jsonData in
+            // Decode the JSON object and check if image data were updated on server.
+            do {
+                // Decode the JSON into codable type ImagesSetInfoJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
+                
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = self.localizedError(for: uploadJSON.errorCode,
+                                                    errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+                
+                // Successful?
+                if uploadJSON.success {
+                    // Image properties successfully updated ▶ update image
+                    completion()
+                }
+                else {
+                    // Could not set image parameters
+                    failure(JsonError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 }

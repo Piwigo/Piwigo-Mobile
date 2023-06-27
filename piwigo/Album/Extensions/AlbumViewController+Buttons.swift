@@ -30,6 +30,7 @@ extension AlbumViewController
             fatalError("No SettingsViewController")
         }
         settingsVC.settingsDelegate = self
+        settingsVC.user = user
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet
@@ -38,9 +39,24 @@ extension AlbumViewController
             x: mainScreenBounds.midX, y: mainScreenBounds.midY,
             width: 0, height: 0)
         navController.preferredContentSize = CGSize(
-            width: kPiwigoPadSettingsWidth,
+            width: pwgPadSettingsWidth,
             height: ceil(mainScreenBounds.size.height * 2 / 3))
         present(navController, animated: true)
+    }
+    
+    
+    // MARK: - "Discover" button
+    func getDiscoverButton() -> UIBarButtonItem {
+        var button: UIBarButtonItem!
+        if #available(iOS 14.0, *) {
+            // Menu
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+        } else {
+            // Fallback on earlier versions
+            button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
+        }
+        button.accessibilityIdentifier = "discover"
+        return button
     }
 
 
@@ -83,7 +99,7 @@ extension AlbumViewController
         }
 
         // Hide Home button behind Add button if needed
-        if homeAlbumButton?.isHidden ?? false {
+        if homeAlbumButton.isHidden {
             // Show CreateAlbum and UploadImages albums
             showOptionalButtonsCompletion({ [self] in
                 // Change appearance and action of Add button
@@ -141,22 +157,22 @@ extension AlbumViewController
             return addButton.frame
         }
         // Resize label to fit number
-        nberOfUploadsLabel?.sizeToFit()
+        nberOfUploadsLabel.sizeToFit()
 
         // Adapt button width if needed
-        let width = (nberOfUploadsLabel?.bounds.size.width ?? 0.0) + 20
-        let height = nberOfUploadsLabel?.bounds.size.height ?? 0.0
+        let width = nberOfUploadsLabel.bounds.size.width + 20
+        let height = nberOfUploadsLabel.bounds.size.height
         let extraWidth = CGFloat(fmax(0, Float((width - 2 * kRadius))))
-        nberOfUploadsLabel?.frame = CGRect(x: kRadius + (extraWidth / 2.0) - width / 2.0,
-                                           y: kRadius - height / 2.0, width: width, height: height)
+        nberOfUploadsLabel.frame = CGRect(x: kRadius + (extraWidth / 2.0) - width / 2.0,
+                                          y: kRadius - height / 2.0, width: width, height: height)
 
-        progressLayer?.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
+        progressLayer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
         let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
         path.addLine(to: CGPoint(x: kRadius, y: 2 * kRadius - 1.5))
         path.addArc(withCenter: CGPoint(x: kRadius, y: kRadius), radius: kRadius - 1.5, startAngle: .pi / 2, endAngle: .pi + .pi / 2, clockwise: true)
         path.addLine(to: CGPoint(x: kRadius + extraWidth, y: 1.5))
         path.lineCapStyle = .round
-        progressLayer?.path = path.cgPath
+        progressLayer.path = path.cgPath
 
         let xPos = addButton.frame.origin.x - extraWidth
         let yPos = addButton.frame.origin.y
@@ -172,7 +188,7 @@ extension AlbumViewController
     func getNberOfUploadsLabel() -> UILabel {
         let label = UILabel(frame: CGRect.zero)
         label.text = ""
-        label.font = UIFont(name: "OpenSans-Semibold", size: 24.0)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         label.adjustsFontSizeToFitWidth = false
         label.textAlignment = .center
         label.backgroundColor = UIColor.clear
@@ -184,78 +200,92 @@ extension AlbumViewController
         layer.fillColor = UIColor.clear.cgColor
         layer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius, height: 2 * kRadius)
         layer.lineWidth = 3
+        layer.lineCap = .round
+        layer.lineJoin = .round
         layer.strokeStart = 0
         layer.strokeEnd = 0
         return layer
     }
     
+    func showUploadQueueButton() {
+        // Show button if needed
+        if uploadQueueButton.isHidden {
+            // Unhide transparent Upload Queue button
+            uploadQueueButton.isHidden = false
+        }
+
+        // Animate appearance / width change of Upload Queue button
+        UIView.animate(withDuration: 0.3, animations: { [self] in
+            // Progressive appearance
+            uploadQueueButton.layer.opacity = 0.8
+            
+            // Depends on number of upload requests and Add button visibility
+            uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: false)
+            uploadQueueButton.setNeedsLayout()
+        })
+    }
+    
+    private func hideUploadQueueButton() {
+        // Hide button if not already hidden
+        if uploadQueueButton.isHidden { return }
+        
+        // Hide Upload Queue button behind Add button
+        UIView.animate(withDuration: 0.3, animations: { [self] in
+            // Progressive disappearance
+            uploadQueueButton.layer.opacity = 0.0
+
+            // Animate displacement towards the Add button if needed
+            uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: true)
+
+        }) { [self] finished in
+            // Hide Home Album button
+            uploadQueueButton.isHidden = true
+        }
+    }
+
     @objc func updateNberOfUploads(_ notification: Notification?) {
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? NSNumber)?.intValue else { return }
+        // Check notification data
+        guard let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
             // Set number of uploads
             let nber = String(format: "%lu", UInt(nberOfUploads))
-            if nber.compare(nberOfUploadsLabel?.text ?? "") == .orderedSame,
-               !(uploadQueueButton?.isHidden ?? false),
-               uploadQueueButton?.frame != addButton.frame {
+            if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
+               !uploadQueueButton.isHidden,
+               uploadQueueButton.frame != addButton.frame {
                 // Number unchanged -> NOP
                 return
             }
-            nberOfUploadsLabel?.text = String(format: "%lu", UInt(nberOfUploads))
+            nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
 
             // Show button if needed
-            if uploadQueueButton?.isHidden ?? false {
-                // Unhide transparent Upload Queue button
-                uploadQueueButton?.isHidden = false
-            }
-
-            // Animate appearance / width change of Upload Queue button
-            UIView.animate(withDuration: 0.3, animations: { [self] in
-                // Progressive appearance
-                uploadQueueButton?.layer.opacity = 0.8
-                
-                // Depends on number of upload requests and Add button visibility
-                uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: false)
-                uploadQueueButton?.setNeedsLayout()
-            })
+            showUploadQueueButton()
         } else {
             // Hide button if not already hidden
-            if !(uploadQueueButton?.isHidden ?? false) {
-                // Hide Upload Queue button behind Add button
-                UIView.animate(withDuration: 0.3, animations: { [self] in
-                    // Progressive disappearance
-                    uploadQueueButton?.layer.opacity = 0.0
-
-                    // Animate displacement towards the Add button if needed
-                    uploadQueueButton?.frame = getUploadQueueButtonFrame(isHidden: true)
-
-                }) { [self] finished in
-                    // Hide Home Album button
-                    uploadQueueButton?.isHidden = true
-                }
-            }
+            hideUploadQueueButton()
         }
     }
-
+    
     @objc func updateUploadQueueButton(withProgress notification: Notification?) {
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
-              let progress = notification?.userInfo?["progressFraction"] as? NSNumber as? CGFloat else { return }
+        guard let progress = notification?.userInfo?["progressFraction"] as? Float else { return }
 
+        // Show button is needed
+        showUploadQueueButton()
+        
         // Animate progress layer of Upload Queue button
         if progress > 0.0 {
             let animation = CABasicAnimation(keyPath: "strokeEnd")
-            animation.fromValue = NSNumber(value: Double(progressLayer?.strokeEnd ?? 0))
-            animation.toValue = NSNumber(value: Float(progress))
-            progressLayer?.strokeEnd = progress
+            animation.fromValue = NSNumber(value: Double(progressLayer.strokeEnd))
+            animation.toValue = NSNumber(value: progress)
+            progressLayer.strokeEnd = CGFloat(progress)
             animation.duration = 0.2
-            progressLayer?.add(animation, forKey: nil)
+            progressLayer.add(animation, forKey: nil)
         } else {
             // No animation
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            progressLayer?.strokeEnd = 0.0
+            progressLayer.strokeEnd = 0.0
             CATransaction.commit()
             // Animations are disabled until here...
         }
@@ -282,10 +312,9 @@ extension AlbumViewController
             return addButton.frame
         }
         // Position of Home Album button depends on user's rights
-        // — admin rights
+        // — webmaster or admin rights
         // — normal rights and upload access to the current category
-        if categoryId > 0,
-           NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false) {
+        if categoryId > 0, user.hasUploadRights(forCatID: categoryId) {
             let xPos = addButton.frame.origin.x
             let yPos = addButton.frame.origin.y
             return CGRect(x: xPos - 3 * kRadius, y: yPos,
@@ -297,25 +326,25 @@ extension AlbumViewController
     
     func showHomeAlbumButtonIfNeeded() {
         // Don't present the Home button in search mode
-        if categoryId == kPiwigoSearchCategoryId { return }
+        if categoryId == pwgSmartAlbum.search.rawValue { return }
         
         // Present Home Album button if needed
-        if (homeAlbumButton?.isHidden ?? false ||
-            homeAlbumButton?.frame.contains(addButton.frame.origin) ?? false),
-           (uploadImagesButton?.isHidden ?? false ||
-            uploadImagesButton?.frame.contains(addButton.frame.origin) ?? false),
-           (createAlbumButton?.isHidden ?? false ||
-            createAlbumButton?.frame.contains(addButton.frame.origin) ?? false) {
+        if (homeAlbumButton.isHidden ||
+            homeAlbumButton.frame.contains(addButton.frame.origin)),
+           (uploadImagesButton.isHidden ||
+            uploadImagesButton.frame.contains(addButton.frame.origin)),
+           (createAlbumButton.isHidden ||
+            createAlbumButton.frame.contains(addButton.frame.origin)) {
             // Unhide transparent Home Album button
-            homeAlbumButton?.isHidden = false
+            homeAlbumButton.isHidden = false
 
             // Animate appearance of Home Album button
             UIView.animate(withDuration: 0.3, animations: { [self] in
                 // Progressive appearance
-                homeAlbumButton?.layer.opacity = 0.8
+                homeAlbumButton.layer.opacity = 0.8
 
                 // Position of Home Album button depends on user's rights
-                homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: false)
+                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: false)
             })
         }
     }
@@ -324,14 +353,14 @@ extension AlbumViewController
         // Hide Home Album button behind Add button
         UIView.animate(withDuration: 0.2, animations: { [self] in
             // Progressive disappearance
-            homeAlbumButton?.layer.opacity = 0.0
+            homeAlbumButton.layer.opacity = 0.0
 
             // Animate displacement towards the Add button if needed
-            homeAlbumButton?.frame = getHomeAlbumButtonFrame(isHidden: true)
+            homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: true)
 
         }) { [self] finished in
             // Hide Home Album button
-            homeAlbumButton?.isHidden = true
+            homeAlbumButton.isHidden = true
 
             // Execute block
             completion()
@@ -400,7 +429,124 @@ extension AlbumViewController
 
     
     // MARK: - Buttons in Preview mode
+    func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
+        // Get album name
+        if #available(iOS 13.0, *) {
+            self.view?.window?.windowScene?.title = albumData.name
+        }
+
+        // Do not present a custom title view for the default album or a smart album
+        if categoryId < 0 || categoryId == AlbumVars.shared.defaultCategory {
+            if categoryId == 0 {
+                title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            } else {
+                title = albumData.name
+            }
+            return
+        }
+
+        // Create label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = .piwigoColorWhiteCream()
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        let wholeRange = NSRange(location: 0, length: albumData.name.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let attTitle = NSMutableAttributedString(string: albumData.name)
+        attTitle.addAttributes(attributes, range: wholeRange)
+        titleLabel.attributedText = attTitle
+        titleLabel.sizeToFit()
+
+        // There is no subtitle in landscape mode on iPhone
+        var lastUpdated = ""
+        if !(UIDevice.current.userInterfaceIdiom == .phone &&
+             UIApplication.shared.statusBarOrientation.isLandscape) {
+            if isUpdating {
+                // Inform user that the app is fetching album data
+                lastUpdated = NSLocalizedString("categoryUpdating", comment: "Updating…")
+            }
+            else if !albumData.isFault, albumData.dateGetImages > Date(timeIntervalSinceReferenceDate: 0) {
+                if albumData.dateGetImages.timeIntervalSince(Date()) > TimeInterval(-60) {
+                    lastUpdated = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                } else {
+                    let calendar = Calendar.current
+                    let updatedDay = calendar.dateComponents([.day], from: albumData.dateGetImages)
+                    let dateDay = calendar.dateComponents([.day], from: Date())
+                    if updatedDay.day == dateDay.day {
+                        // Album data updated today
+                        let time = DateFormatter.localizedString(from: albumData.dateGetImages,
+                                                                 dateStyle: .none, timeStyle: .short)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                    } else {
+                        // Album data updated yesterday or before
+                        let date = DateFormatter.localizedString(from: albumData.dateGetImages,
+                                                                 dateStyle: .short, timeStyle: .none)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                    }
+                }
+            }
+        }
+        
+        // Prepare sub-title
+        if lastUpdated.isEmpty == false {
+            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            subTitleLabel.backgroundColor = UIColor.clear
+            subTitleLabel.textColor = .piwigoColorWhiteCream()
+            subTitleLabel.textAlignment = .center
+            subTitleLabel.numberOfLines = 1
+            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subTitleLabel.font = .systemFont(ofSize: 10)
+            subTitleLabel.adjustsFontSizeToFitWidth = false
+            subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.allowsDefaultTighteningForTruncation = true
+            subTitleLabel.text = lastUpdated
+            subTitleLabel.sizeToFit()
+            
+            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+            navigationItem.titleView = twoLineTitleView
+            
+            twoLineTitleView.addSubview(titleLabel)
+            twoLineTitleView.addSubview(subTitleLabel)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+            
+            let views = ["title": titleLabel,
+                         "subtitle": subTitleLabel]
+            twoLineTitleView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                               options: [], metrics: nil, views: views))
+        } else {
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+            navigationItem.titleView = oneLineTitleView
+
+            oneLineTitleView.addSubview(titleLabel)
+            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+        }
+    }
+    
     func initButtonsInPreviewMode() {
+        // Title is name of category
+        setTitleViewFromAlbumData(whileUpdating: false)
+
         // When using several scenes on iPad, buttons might have to be relocated.
         if #available(iOS 13.0, *) {
             let sizeOfScreen = UIScreen.main.bounds.size
@@ -412,32 +558,32 @@ extension AlbumViewController
                 var newFrame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
                 
                 // Relocate the "Add" button if needed
-                if addButton?.frame.equalTo(newFrame) == false {
-                    addButton?.frame = newFrame
+                if addButton.frame.equalTo(newFrame) == false {
+                    addButton.frame = newFrame
                 }
                 
                 // Relocate the "Upload Queue" button if needed
-                newFrame = getUploadQueueButtonFrame(isHidden: uploadQueueButton?.isHidden ?? true)
-                if uploadQueueButton?.frame.equalTo(newFrame) == false {
-                    uploadQueueButton?.frame = newFrame
+                newFrame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                if uploadQueueButton.frame.equalTo(newFrame) == false {
+                    uploadQueueButton.frame = newFrame
                 }
 
                 // Relocate the "Home Album" button if needed
-                newFrame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton?.isHidden ?? true)
-                if homeAlbumButton?.frame.equalTo(newFrame) == false {
-                    homeAlbumButton?.frame = newFrame
+                newFrame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                if homeAlbumButton.frame.equalTo(newFrame) == false {
+                    homeAlbumButton.frame = newFrame
                 }
                 
                 // Relocate "Create Album" button if needed
                 newFrame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                if createAlbumButton?.frame.equalTo(newFrame) == false {
-                    createAlbumButton?.frame = newFrame
+                if createAlbumButton.frame.equalTo(newFrame) == false {
+                    createAlbumButton.frame = newFrame
                 }
                 
                 // Relocate "Upload Images" button if needed
                 newFrame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-                if uploadImagesButton?.frame.equalTo(newFrame) == false {
-                    uploadImagesButton?.frame = newFrame
+                if uploadImagesButton.frame.equalTo(newFrame) == false {
+                    uploadImagesButton.frame = newFrame
                 }
             }
         }
@@ -448,13 +594,6 @@ extension AlbumViewController
         if let displayedVC = navigationController?.viewControllers.last,
            !(displayedVC is ImageViewController) {
             navigationController?.setToolbarHidden(true, animated: true)
-        }
-
-        // Title is name of category
-        if categoryId == 0 {
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
-        } else {
-            title = CategoriesData.sharedInstance().getCategoryById(categoryId)?.name ?? NSLocalizedString("categorySelection_title", comment: "Album")
         }
 
         // Left side of navigation bar
@@ -472,10 +611,10 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if CategoriesData.sharedInstance().getCategoryById(categoryId)?.numberOfImages ?? 0 > 0 {
-            // Button for activating the selection mode
+        } else if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
+            // Button for activating the selection mode (not for guests)
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton?.isEnabled = (albumData?.images.count ?? 0) > 0
+            selectBarButton.isEnabled = (images.fetchedObjects ?? []).count > 0
         } else {
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)
@@ -488,8 +627,7 @@ extension AlbumViewController
         // User can upload images/videos if he/she has:
         // — admin rights
         // — normal rights and upload access to the current category
-        let hasAdminOrUploadRights = NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId)?.hasUploadRights ?? false)
-        if categoryId >= 0, hasAdminOrUploadRights {
+        if categoryId >= 0, user.hasUploadRights(forCatID: categoryId) {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Unhide transparent Add button
@@ -508,7 +646,7 @@ extension AlbumViewController
                     } else {
                         // Show UploadQueue button if needed
                         let nberOfUploads = UIApplication.shared.applicationIconBadgeNumber
-                        let userInfo = ["nberOfUploadsToComplete": NSNumber(value: nberOfUploads)]
+                        let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
                         NotificationCenter.default.post(name: .pwgLeftUploads,
                                                         object: nil, userInfo: userInfo)
                     }
@@ -524,7 +662,7 @@ extension AlbumViewController
             /// - not in root or default album
             /// - not searching for images
             addButton.isHidden = true
-            if ![0, AlbumVars.shared.defaultCategory, kPiwigoSearchCategoryId].contains(categoryId) {
+            if ![0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
                 showHomeAlbumButtonIfNeeded()
             }
         }
@@ -532,20 +670,20 @@ extension AlbumViewController
 
     func showOptionalButtonsCompletion(_ completion: @escaping () -> Void) {
         // Unhide transparent CreateAlbum and UploadImages buttons
-        createAlbumButton?.tintColor = UIColor.white
-        createAlbumButton?.isHidden = false
-        uploadImagesButton?.tintColor = UIColor.white
-        uploadImagesButton?.isHidden = false
+        createAlbumButton.tintColor = UIColor.white
+        createAlbumButton.isHidden = false
+        uploadImagesButton.tintColor = UIColor.white
+        uploadImagesButton.isHidden = false
 
         // Show CreateAlbum and UploadImages buttons
         UIView.animate(withDuration: 0.3, animations: { [self] in
             // Progressive appearance
-            createAlbumButton?.layer.opacity = 0.9
-            uploadImagesButton?.layer.opacity = 0.9
+            createAlbumButton.layer.opacity = 0.9
+            uploadImagesButton.layer.opacity = 0.9
 
             // Move buttons together
-            createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: false)
-            uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: false)
+            createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: false)
+            uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: false)
 
             // Rotate cross and change colour
             let rotatedImage = UIImage(named: "add")?.rotated(by: .pi / 4)
@@ -562,12 +700,12 @@ extension AlbumViewController
         // Hide CreateAlbum and UploadImages buttons
         UIView.animate(withDuration: 0.3, animations: { [self] in
             // Progressive disappearance
-            createAlbumButton?.layer.opacity = 0.0
-            uploadImagesButton?.layer.opacity = 0.0
+            createAlbumButton.layer.opacity = 0.0
+            uploadImagesButton.layer.opacity = 0.0
 
             // Move buttons towards Add button
-            createAlbumButton?.frame = getCreateAlbumButtonFrame(isHidden: true)
-            uploadImagesButton?.frame = getUploadImagesButtonFrame(isHidden: true)
+            createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: true)
+            uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: true)
 
             // Rotate cross if not in root and change colour
             if categoryId == 0 {
@@ -579,12 +717,12 @@ extension AlbumViewController
             addButton.tintColor = UIColor.white
         }) { [self] finished in
             // Hide transparent CreateAlbum and UploadImages buttons
-            createAlbumButton?.isHidden = true
-            uploadImagesButton?.isHidden = true
+            createAlbumButton.isHidden = true
+            uploadImagesButton.isHidden = true
 
             // Reset background colours
-            createAlbumButton?.backgroundColor = UIColor.piwigoColorOrange()
-            uploadImagesButton?.backgroundColor = UIColor.piwigoColorOrange()
+            createAlbumButton.backgroundColor = UIColor.piwigoColorOrange()
+            uploadImagesButton.backgroundColor = UIColor.piwigoColorOrange()
 
             // Execute block
             completion()

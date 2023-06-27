@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - pwg.categories.setInfo
-public let kPiwigoCategoriesSetInfo = "format=json&method=pwg.categories.setInfo"
+public let pwgCategoriesSetInfo = "format=json&method=pwg.categories.setInfo"
 
 public struct CategoriesSetInfoJSON: Decodable {
 

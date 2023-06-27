@@ -16,7 +16,7 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
         
         // Appearance
         nberOfImagesLabel.textColor = .piwigoColorHeader()
-        nberOfImagesLabel.font = .piwigoFontLight()
+        nberOfImagesLabel.font = .systemFont(ofSize: 17, weight: .light)
         
         // Number of images
         if nberOfImages == 0 {

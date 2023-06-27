@@ -9,10 +9,11 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    var imageData: PiwigoImageData?
+    var imageData: Image!
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -56,7 +57,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private let playRatio: CGFloat = 0.9 // was 58/75 = 0.7733;
 
     private var _isSelection = false
-    @objc var isSelection: Bool {
+    var isSelection: Bool {
         get {
             _isSelection
         }
@@ -69,7 +70,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
 
     private var _isFavorite = false
-    @objc var isFavorite: Bool {
+    var isFavorite: Bool {
         get {
             _isFavorite
         }
@@ -92,232 +93,198 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
     }
         
-    @objc func applyColorPalette() {
+    func applyColorPalette() {
         bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
+        playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: PiwigoImageData?, inCategoryId categoryId: Int) {
+    func config(with imageData: Image, inCategoryId categoryId: Int32) {
         // Do we have any info on that image ?
-        noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        guard let imageData = imageData else { return }
-        if imageData.imageId == 0 { return }
+        if imageData.pwgID == Int64.zero { return }
 
         // Store image data
         self.imageData = imageData
-        noDataLabel.isHidden = true
-        isAccessibilityElement = true
+        if noDataLabel.isHidden == false {
+            noDataLabel.isHidden = true
+            isAccessibilityElement = true
+        }
 
         // Play button
-        playImg?.isHidden = !(imageData.isVideo)
-        playBckg?.isHidden = !(imageData.isVideo)
+        if playImg?.isHidden == imageData.isVideo {
+            playImg?.isHidden = !(imageData.isVideo)
+            playBckg?.isHidden = !(imageData.isVideo)
+        }
 
         // Title
-        if AlbumVars.shared.displayImageTitles ||
-            (categoryId == kPiwigoVisitsCategoryId) ||
-            (categoryId == kPiwigoBestCategoryId) ||
-            (categoryId == kPiwigoRecentCategoryId) {
-            bottomLayer?.isHidden = false
-            nameLabel?.isHidden = false
-            if categoryId == kPiwigoVisitsCategoryId {
-                nameLabel?.text = String(format: "%ld %@", Int(imageData.visits), NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits"))
-            } else if categoryId == kPiwigoBestCategoryId {
-//            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
-                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
-                    nameLabel?.text = imageTitle
-                } else {
-                    nameLabel?.text = imageData.fileName
-                }
-            } else if categoryId == kPiwigoRecentCategoryId,
-                      let dateCreated = imageData.dateCreated {
-                nameLabel?.text = DateFormatter.localizedString(from: dateCreated, dateStyle: .medium, timeStyle: .none)
-            } else {
-                if let imageTitle = imageData.imageTitle, imageTitle.isEmpty == false {
-                    nameLabel?.text = imageTitle
-                } else {
-                    nameLabel?.text = imageData.fileName
-                }
-            }
-        } else {
-            bottomLayer?.isHidden = true
-            nameLabel?.isHidden = true
+        let albumType = pwgSmartAlbum(rawValue: categoryId) ?? .root
+        let displayTitle = AlbumVars.shared.displayImageTitles ||
+                            [.visits, .best, .recent].contains(albumType)
+#if DEBUG
+        // Used for selecting cells in piwigoAppStore
+        // for selecting cells
+        let title = getImageTitle(forAlbumType: albumType)
+        if title.string.contains("Clos de Vougeot") {
+            self.accessibilityIdentifier = "Clos de Vougeot"
+        } else if title.string.contains("Hotel de Coimbra") {
+            self.accessibilityIdentifier = "Hotel de Coimbra"
         }
+#endif
+        if displayTitle {
+            let title = getImageTitle(forAlbumType: albumType)
+            if title.string.contains("Hotel de Coimbra") {
+                self.accessibilityIdentifier = "Hotel de Coimbra"
+            }
+            nameLabel?.attributedText = title
+        }
+        bottomLayer?.isHidden = !displayTitle
+        nameLabel?.isHidden = !displayTitle
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
             cellImage?.contentMode = .scaleAspectFit
         }
         
-        // Download the image of the requested resolution (or get it from the cache)
-        switch kPiwigoImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
-        case kPiwigoImageSizeSquare:
-            if AlbumVars.shared.hasSquareSizeImages, let squarePath = imageData.squarePath, squarePath.isEmpty == false {
-                setImageFromPath(squarePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeXXSmall:
-            if AlbumVars.shared.hasXXSmallSizeImages, let xxSmallPath = imageData.xxSmallPath, xxSmallPath.isEmpty == false {
-                setImageFromPath(xxSmallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeXSmall:
-            if AlbumVars.shared.hasXSmallSizeImages, let xSmallPath = imageData.xSmallPath, xSmallPath.isEmpty == false {
-                setImageFromPath(xSmallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeSmall:
-            if AlbumVars.shared.hasSmallSizeImages, let smallPath = imageData.smallPath, smallPath.isEmpty == false {
-                setImageFromPath(smallPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeMedium:
-            if AlbumVars.shared.hasMediumSizeImages, let mediumPath = imageData.mediumPath, mediumPath.isEmpty == false {
-                setImageFromPath(mediumPath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeLarge:
-            if AlbumVars.shared.hasLargeSizeImages, let largePath = imageData.largePath, largePath.isEmpty == false {
-                setImageFromPath(largePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeXLarge:
-            if AlbumVars.shared.hasXLargeSizeImages, let xLargePath = imageData.xLargePath, xLargePath.isEmpty == false {
-                setImageFromPath(xLargePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeXXLarge:
-            if AlbumVars.shared.hasXXLargeSizeImages, let xxLargePath = imageData.xxLargePath, xxLargePath.isEmpty == false {
-                setImageFromPath(xxLargePath)
-            } else if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        case kPiwigoImageSizeThumb, kPiwigoImageSizeFullRes:
-            fallthrough
-        default:
-            if AlbumVars.shared.hasThumbSizeImages, let thumbPath = imageData.thumbPath, thumbPath.isEmpty == false {
-                setImageFromPath(thumbPath)
-            } else {
-                noDataLabel?.isHidden = false
-                return
-            }
-        }
-
-        applyColorPalette()
-    }
-
-    private func setImageFromPath(_ imagePath: String) {
-        // Do we have a correct URL?
-        let placeHolderImage = UIImage(named: "placeholderImage")
-        if imagePath.isEmpty {
-            // No image thumbnail
-            cellImage?.image = placeHolderImage
+        // Retrieve image URLs (Piwigo server or cache)
+        cellImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let placeHolder = UIImage(named: "placeholderImage")!
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        guard let serverID = imageData.server?.uuid,
+              let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size) else {
+            configImage(placeHolder)
+            noDataLabel?.isHidden = false
+            applyColorPalette()
             return
         }
 
-        // Retrieve the image file
-        let scale = CGFloat(fmax(1.0, Float(traitCollection.displayScale)))
-        guard let anURL = URL(string: imagePath) else { return }
-        var request = URLRequest(url: anURL)
-        request.addValue("image/*", forHTTPHeaderField: "Accept")
-        cellImage?.setImageWith(request, placeholderImage: placeHolderImage,
-            success: { [self] _, _, image in
-                // Downsample image is necessary
-                var displayedImage = image
-                let maxDimensionInPixels = CGFloat(max(self.bounds.size.width, self.bounds.size.height)) * scale
-                if CGFloat(max(image.size.width, image.size.height)) > maxDimensionInPixels {
-                    displayedImage = ImageUtilities.downsample(image: image, to: self.bounds.size, scale: scale)
+        // Retrieve image from cache or download it
+        let cellSize = self.cellImage.bounds.size
+        let scale = self.cellImage.traitCollection.displayScale
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
+                                     fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
+        } failure: { error in
+            // No image available
+            DispatchQueue.main.async {
+                self.noDataLabel?.isHidden = false
+                self.applyColorPalette()
+            }
+        }
+    }
+    
+    private func getImageTitle(forAlbumType type: pwgSmartAlbum) -> NSAttributedString {
+        var title = NSAttributedString()
+        switch type {
+        case .visits:
+            let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
+            let text = String(format: "%ld %@", Int(imageData.visits), hits)
+            title = attributedTitle(NSAttributedString(string: text))
+        case .best:
+            if imageData.title.string.isEmpty == false {
+                title = attributedTitle(imageData.title)
+                // Rate score unknown until pwg.images.getInfo is called
+//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.title.string)
+            } else {
+                // Rate score unknown until pwg.images.getInfo is called
+                title = attributedTitle(NSAttributedString(string: imageData.fileName))
+//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
+            }
+        case .recent:
+            let text = DateFormatter.localizedString(from: imageData.dateCreated,
+                                                     dateStyle: .medium, timeStyle: .none)
+            title = attributedTitle(NSAttributedString(string: text))
+        default:
+            if imageData.title.string.isEmpty == false {
+                title = attributedTitle(imageData.title)
+            } else {
+                title = attributedTitle(NSAttributedString(string: imageData.fileName))
+            }
+        }
+        return title
+    }
+    
+    private func attributedTitle(_ title: NSAttributedString) -> NSAttributedString {
+        let attributedStr = NSMutableAttributedString(attributedString: title)
+        let wholeRange = NSRange(location: 0, length: attributedStr.string.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .medium),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        attributedStr.addAttributes(attributes, range: wholeRange)
+        return attributedStr
+    }
+
+    private func configImage(_ image: UIImage) {
+        // Set image
+        self.cellImage.image = image
+
+        // Favorite image position depends on device
+        self.deltaX = self.margin
+        self.deltaY = self.margin
+        let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
+                                     self.bounds.size.height / image.size.height))
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Case of an iPad: respect aspect ratio
+            // Image width smaller than collection view cell?
+            let imageWidth = image.size.width * imageScale
+            if imageWidth < self.bounds.size.width {
+                // The image does not fill the cell horizontally
+                if self.darkImgWidth?.constant ?? -1 != imageWidth {
+                    self.darkImgWidth?.constant = imageWidth
                 }
-                self.cellImage?.image = displayedImage
-
-                // Favorite image position depends on device
-                self.deltaX = margin
-                self.deltaY = margin
-                let imageScale = CGFloat(min(self.bounds.size.width / displayedImage.size.width,
-                                             self.bounds.size.height / displayedImage.size.height))
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    // Case of an iPad: respect aspect ratio
-                    // Image width smaller than collection view cell?
-                    let imageWidth = displayedImage.size.width * imageScale
-                    if imageWidth < self.bounds.size.width {
-                        // The image does not fill the cell horizontally
-                        self.darkImgWidth?.constant = imageWidth
-                        self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
-                    }
-
-                    // Image height smaller than collection view cell?
-                    let imageHeight = displayedImage.size.height * imageScale
-                    if imageHeight < self.bounds.size.height {
-                        // The image does not fill the cell vertically
-                        self.darkImgHeight?.constant = imageHeight
-                        self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
-                    }
+                self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
+            }
+            // Image height smaller than collection view cell?
+            let imageHeight = image.size.height * imageScale
+            if imageHeight < self.bounds.size.height {
+                // The image does not fill the cell vertically
+                if self.darkImgHeight?.constant ?? -1 != imageHeight {
+                    self.darkImgHeight?.constant = imageHeight
                 }
-
-                // Update horizontal constraints
-                self.selImgRight?.constant = self.deltaX
-                self.favLeft?.constant = self.deltaX
-                self.playLeft?.constant = self.deltaX
-
-                // Update vertical constraints
-                self.selImgTop?.constant = self.deltaY + 2 * margin
-                self.playTop?.constant = self.deltaY
-                if self.bottomLayer?.isHidden ?? false {
-                    // The title is not displayed
-                    self.favBottom?.constant = self.deltaY
-                } else {
-                    // The title is displayed
-                    let deltaY = CGFloat(fmax(bannerHeight + margin, self.deltaY))
-                    self.favBottom?.constant = deltaY
-                }
-            },
-        failure: { request, response, error in
-            debugPrint("••> cell image: \(error.localizedDescription)")
-        })
+                self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
+            }
+        }
+        
+        // Update horizontal constraints
+        if self.selImgRight?.constant ?? -1 != self.deltaX {
+            self.selImgRight?.constant = self.deltaX
+            self.favLeft?.constant = self.deltaX
+            self.playLeft?.constant = self.deltaX
+        }
+        
+        // Update vertical constraints
+        if self.playTop?.constant ?? -1 != self.deltaY {
+            self.selImgTop?.constant = self.deltaY + 2 * margin
+            self.playTop?.constant = self.deltaY
+        }
+        if self.bottomLayer?.isHidden ?? false {
+            // The title is not displayed
+            if self.favBottom?.constant ?? -1 != self.deltaY {
+                self.favBottom?.constant = self.deltaY
+            }
+        } else {
+            // The title is displayed
+            let deltaYmax = CGFloat(fmax(bannerHeight + margin, self.deltaY))
+            if self.favBottom?.constant ?? -1 != deltaYmax {
+                self.favBottom?.constant = deltaYmax
+            }
+        }
+        applyColorPalette()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageData = nil
-        cellImage?.image = nil
-        deltaX = margin
-        deltaY = margin
-        isSelection = false
-        isFavorite = false
-        playImg?.isHidden = true
-        noDataLabel?.isHidden = true
+
+        isAccessibilityElement = false
+        noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
     }
 
     func highlight(onCompletion completion: @escaping () -> Void) {

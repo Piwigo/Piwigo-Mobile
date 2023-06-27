@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>496</string>
+	<string>525</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
@@ -47,14 +47,6 @@
 	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>OpenSansLight.TTF</string>
-		<string>OpenSansRegular.TTF</string>
-		<string>OpenSansSemiBold.TTF</string>
-		<string>OpenSansBold.TTF</string>
-		<string>OpenSansExtraBold.TTF</string>
-	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -72,6 +64,17 @@
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 				</dict>
 			</array>
+			<key>UIWindowSceneSessionRoleExternalDisplayNonInteractive</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>External Display</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).ExternalDisplaySceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>LaunchScreenExternal</string>
+				</dict>
+			</array>
 		</dict>
 	</dict>
 	<key>UIBackgroundModes</key>
@@ -84,6 +87,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -97,5 +102,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

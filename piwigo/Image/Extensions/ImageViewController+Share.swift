@@ -56,6 +56,9 @@ extension ImageViewController
         // To exclude some activity types
         var excludedActivityTypes = [UIActivity.ActivityType]()
 
+        // Check input image data
+        guard let imageData = imageData else { return }
+        
         // Create new activity provider item to pass to the activity view controller
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
@@ -99,14 +102,12 @@ extension ImageViewController
 //            debugPrint("Activity Type selected: \(activityType)")
 
             // If needed, sets items so that they will be deleted after a delay
-            if #available(iOS 10.0, *) {
-                let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
-                if delay > 0, activityType == .copyToPasteboard {
-                    let items = UIPasteboard.general.items
-                    let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
-                    let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
-                    UIPasteboard.general.setItems(items, options: options)
-                }
+            let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.seconds ?? 0.0
+            if delay > 0, activityType == .copyToPasteboard {
+                let items = UIPasteboard.general.items
+                let expirationDate: NSDate = NSDate.init(timeIntervalSinceNow: delay)
+                let options: [UIPasteboard.OptionsKey : Any] = [.expirationDate : expirationDate]
+                UIPasteboard.general.setItems(items, options: options)
             }
             
             // Enable buttons after action
@@ -151,7 +152,7 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
         presentedViewController?.updatePiwigoHUD(withProgress: progress)
     }
 
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int) {
+    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int64) {
         // Close HUD
         if imageActivityItemProvider?.isCancelled ?? false {
             presentedViewController?.hidePiwigoHUD(completion: {

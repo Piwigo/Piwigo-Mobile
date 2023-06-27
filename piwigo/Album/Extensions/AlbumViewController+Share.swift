@@ -54,12 +54,14 @@ extension AlbumViewController
         var excludedActivityTypes = [UIActivity.ActivityType]()
 
         // Create new activity provider items to pass to the activity view controller
-        totalNumberOfImages = selectedImageData.count
+        totalNumberOfImages = selectedImageIds.count
         var itemsToShare: [UIActivityItemProvider] = []
-        for imageData in selectedImageData {
-            if imageData.isVideo {
+        for selectedImageId in selectedImageIds {
+            guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
+                else { continue }
+            if selectedImage.isVideo {
                 // Case of a video
-                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
+                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: selectedImage)
 
                 // Use delegation to monitor the progress of the item method
                 videoItemProvider.delegate = self
@@ -72,7 +74,7 @@ extension AlbumViewController
                 
             } else {
                 // Case of an image
-                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
+                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: selectedImage)
 
                 // Use delegation to monitor the progress of the item method
                 imageItemProvider.delegate = self
@@ -112,7 +114,7 @@ extension AlbumViewController
                 }
             } else {
                 if activityType == nil {
-                    //                NSLog(@"User dismissed the view controller without making a selection.");
+//                    debugPrint("User dismissed the view controller without making a selection.")
                     updateButtonsInSelectionMode()
                 } else {
                     // Check what to do with selection
@@ -166,17 +168,17 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
     }
     
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageId imageId: Int) {
+                                                      withImageId imageId: Int64) {
         // Check activity item provider
         guard let imageActivityItemProvider = imageActivityItemProvider else { return }
         
         // Close HUD
-        let imageIdObject = NSNumber(value: imageId)
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hidePiwigoHUD { }
-        } else if selectedImageIds.contains(imageIdObject) {
+        } else if selectedImageIds.contains(imageId) {
             // Remove image from selection
-            selectedImageIds.removeAll(where: {$0 == imageIdObject})
+            selectedImageIds.remove(imageId)
+            selectedFavoriteIds.remove(imageId)
             updateButtonsInSelectionMode()
 
             // Close HUD if last image

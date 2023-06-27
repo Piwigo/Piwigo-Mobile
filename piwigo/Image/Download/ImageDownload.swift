@@ -1,0 +1,50 @@
+//
+//  ImageDownload.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 22/01/2023.
+//  Copyright © 2023 Piwigo.org. All rights reserved.
+//
+
+import Foundation
+import piwigoKit
+
+class ImageDownload {
+    
+    // MARK: - Variables and Properties
+    var imageURL: URL!
+    var fileSize: Int64
+    var fileURL: URL!
+    var placeHolder: UIImage!
+    var progressHandler: ((Float) -> Void)?
+    var completionHandler: ((URL) -> Void)!
+    var failureHandler: ((Error) -> Void)?
+    var task: URLSessionDownloadTask?
+    var resumeData: Data?
+    var progress = Float.zero
+    
+    
+    // MARK: - Initialization
+    init(imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
+         fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+         placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
+         completion: @escaping (URL) -> Void, failure: ((Error) -> Void)? = nil) {
+        
+        // Set URLs of image in cache
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        self.fileURL = cacheDir.appendingPathComponent(imageSize.path)
+            .appendingPathComponent(String(imageID))
+        
+        // Store file size and handlers
+        self.imageURL = imageURL
+        self.fileSize = fileSize == Int64.zero ? NSURLSessionTransferSizeUnknown : fileSize
+        self.placeHolder = placeHolder
+        self.progressHandler = progress
+        self.completionHandler = completion
+        self.failureHandler = failure
+    }
+    
+    deinit {
+        self.task?.cancel()
+    }
+}

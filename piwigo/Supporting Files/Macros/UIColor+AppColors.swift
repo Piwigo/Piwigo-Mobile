@@ -8,7 +8,6 @@
 
 import UIKit
 
-@objc
 extension UIColor {
 
     // MARK: - Text Color
@@ -60,10 +59,8 @@ extension UIColor {
     class func piwigoColorHeader() -> UIColor {
         if AppVars.shared.isDarkPaletteActive {
             return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
-        } else if #available(iOS 10, *) {
-            return UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
         } else {
-            return UIColor(red: 46 / 255.0, green: 46 / 255.0, blue: 46 / 255.0, alpha: 1.0)
+            return UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
         }
     }
 

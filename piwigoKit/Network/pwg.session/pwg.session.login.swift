@@ -8,9 +8,10 @@
 
 import Foundation
 
-// MARK: - pwg.session.login
-public let kPiwigoSessionLogin = "format=json&method=pwg.session.login"
+public let pwgSessionLogin = "format=json&method=pwg.session.login"
+fileprivate let pwgSessionLoginBytes: Int64 = 620
 
+// MARK: Piwigo JSON Structure
 public struct SessionLoginJSON: Decodable {
 
     public var status: String?
@@ -59,6 +60,54 @@ public struct SessionLoginJSON: Decodable {
             // Unexpected Piwigo server error
             errorCode = -1
             errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+
+// MARK: - Piwigo Method Caller
+extension PwgSession
+{    
+    public func sessionLogin(withUsername username:String, password:String,
+                             completion: @escaping () -> Void,
+                             failure: @escaping (NSError) -> Void) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            NetworkUtilities.logger.notice("Open session for \(username, privacy: .private(mask: .hash))")
+        }
+        // Prepare parameters for retrieving image/video infos
+        let paramsDict: [String : Any] = ["username" : username,
+                                          "password" : password]
+        // Launch request
+        postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
+                    jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
+                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { jsonData in
+            // Decode the JSON object and check if the login was successful
+            do {
+                // Decode the JSON into codable type SessionLoginJSON.
+                let decoder = JSONDecoder()
+                let loginJSON = try decoder.decode(SessionLoginJSON.self, from: jsonData)
+                
+                // Piwigo error?
+                if loginJSON.errorCode != 0 {
+                    let error = self.localizedError(for: loginJSON.errorCode,
+                                                    errorMessage: loginJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+                
+                // Login successful
+                completion()
+            }
+            catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
         }
     }
 }
