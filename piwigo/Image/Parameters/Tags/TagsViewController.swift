@@ -202,8 +202,11 @@ class TagsViewController: UITableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super .viewWillDisappear(animated)
+        super.viewWillDisappear(animated)
 
+        // Dismiss search bar
+        searchController.dismiss(animated: false)
+        
         // Return list of selected tags
         delegate?.didSelectTags(Set(selectedTags.fetchedObjects ?? []))
     }
