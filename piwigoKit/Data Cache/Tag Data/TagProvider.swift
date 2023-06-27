@@ -49,9 +49,17 @@ public class TagProvider: NSObject {
             // Decode the JSON object and import it into Core Data.
             DispatchQueue.global(qos: .background).async {
                 do {
+                    // For testing…
+                    let bundle = Bundle(for: type(of: self))
+                    guard let url = bundle.url(forResource: "pwg.tags.getAdminList2", withExtension: "json"),
+                        let jsonData2 = try? Data(contentsOf: url) else {
+                        return
+                    }
+
                     // Decode the JSON into codable type TagJSON.
                     let decoder = JSONDecoder()
-                    let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
+//                    let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
+                    let tagJSON = try decoder.decode(TagJSON.self, from: jsonData2)
 
                     // Piwigo error?
                     if tagJSON.errorCode != 0 {
