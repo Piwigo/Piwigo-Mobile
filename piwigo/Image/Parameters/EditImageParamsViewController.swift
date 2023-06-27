@@ -221,6 +221,9 @@ class EditImageParamsViewController: UIViewController
             // Images authors are different
             commonAuthor = ""
         }
+        if commonAuthor == "NSNotFound" {
+            commonAuthor = ""
+        }
         
         // Common creation date is date of first image with non-nil value, or nil
         shouldUpdateDateCreated = false
