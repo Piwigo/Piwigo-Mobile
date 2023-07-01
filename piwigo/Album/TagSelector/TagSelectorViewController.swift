@@ -92,11 +92,19 @@ class TagSelectorViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        tagProvider.fetchTags(asAdmin: false) { error in
-            DispatchQueue.main.async { [self] in
-                guard let error = error else { return }
+        NetworkUtilities.checkSession(ofUser: user) {
+            self.tagProvider.fetchTags(asAdmin: false) { error in
+                DispatchQueue.main.async { [self] in
+                    guard let error = error else { return }
 
-                // Show an alert if there was an error.
+                    // Show an alert if there was an error.
+                    self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                            message: error.localizedDescription) { }
+                }
+            }
+        } failure: { error in
+            // Show an alert if there was an error.
+            DispatchQueue.main.async {
                 self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
                                         message: error.localizedDescription) { }
             }
@@ -139,7 +147,7 @@ class TagSelectorViewController: UITableViewController {
         do {
             try tags.performFetch()
         } catch {
-            fatalError("Failed to fetch tags: \(error)")
+            debugPrint("Failed to fetch tags: \(error)")
         }
 
         // Reload data
