@@ -343,10 +343,13 @@ public class AlbumProvider: NSObject {
             /// — from the current server
             /// — whose ID is the ID of the parent album because pwg.categories.getList also returns the parent album
             /// — whose parent ID is the ID of the parent album
+            /// — whose ID is positive i.e. not a smart album
             var andPredicates = [NSPredicate]()
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
             andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
-            if recursively == false {
+            if recursively {
+                andPredicates.append(NSPredicate(format: "pwgID >= 0"))
+            } else {
                 var orSubpredicates = [NSPredicate]()
                 orSubpredicates.append(NSPredicate(format: "pwgID == %i", parentId))
                 orSubpredicates.append(NSPredicate(format: "parentId == %i", parentId))
