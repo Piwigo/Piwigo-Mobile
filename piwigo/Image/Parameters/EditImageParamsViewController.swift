@@ -424,7 +424,8 @@ class EditImageParamsViewController: UIViewController
                     // Loop over the removed tags
                     for tag in removedTags {
                         imageData.removeFromTags(tag)
-                        if tag.numberOfImagesUnderTag > (Int64.min + 1) {   // Avoids possible crash
+                        if tag.numberOfImagesUnderTag != Int64.max,
+                           tag.numberOfImagesUnderTag > (Int64.min + 1) {   // Avoids possible crash
                             tag.numberOfImagesUnderTag -= 1
                         }
                     }
