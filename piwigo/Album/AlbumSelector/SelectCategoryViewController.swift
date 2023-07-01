@@ -42,7 +42,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
-    private var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
+    var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
 
     // MARK: - Core Data Objects
@@ -138,6 +138,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 return false
             }
             inputImages = imageProvider.getImages(inContext: mainContext, withIds: imageIds)
+            nberOfImages = Int64(inputImages.count)
             if inputImages.isEmpty {
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")
                 return false
@@ -152,6 +153,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 album.didAccessValue(forKey: nil)
             }
             inputAlbum = album
+            // Albums to which images already belong to
+            self.inputImages.forEach { image in
+                let catIDs = Set((image.albums ?? Set<Album>()).map({$0.pwgID}))
+                if commonCatIDs.isEmpty {
+                    commonCatIDs = catIDs
+                } else {
+                    commonCatIDs = commonCatIDs.intersection(catIDs)
+                }
+            }
 
         default:
             debugPrint("Called setParameter before setting wanted action")
@@ -355,27 +365,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                  thumbnailSize: thumnailSize) { [self] error in
-            guard let error = error else {
-                // No error ► Retrieve image data if needed
-                /// Some images are not associated with freshly loaded albums
-                nberOfImages = Int64(inputImageIds.count)
-                if nberOfImages > 0,
-                   [.copyImages, .moveImages].contains(wantedAction) {
-                    if nberOfImages > 1 {
-                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
-                                      inMode: .annularDeterminate)
-                    } else {
-                        showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
-                                      inMode: .indeterminate)
-                    }
-                    retrieveImageData()
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            // Fetch albums recursively
+            albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                      thumbnailSize: thumnailSize) { [self] error in
+                guard let error = error else { return }
+                
+                // Show the error
+                DispatchQueue.main.async { [self] in
+                    dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
                 }
-                return
             }
-            
-            // Show the error
+        } failure: { [self] error in
             DispatchQueue.main.async { [self] in
                 dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
             }

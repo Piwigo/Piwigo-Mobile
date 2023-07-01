@@ -28,13 +28,15 @@ extension AlbumViewController
         let copyAction = UIAlertAction(
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
-                copyImagesToAlbum()
+                // Retrieve complete image data before copying images
+                initSelection(beforeAction: .copyImages)
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
-                moveImagesToAlbum()
+                // Retrieve complete image data before moving images
+                initSelection(beforeAction: .moveImages)
             })
 
         // Add actions

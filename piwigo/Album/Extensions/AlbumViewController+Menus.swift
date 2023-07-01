@@ -31,8 +31,8 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
             setEnableStateOfButtons(false)
-            // Present album selector for copying image
-            copyImagesToAlbum()
+            // Retrieve complete image data before copying images
+            initSelection(beforeAction: .copyImages)
         })
         action.accessibilityIdentifier = "copy"
         return action
@@ -45,8 +45,8 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
             setEnableStateOfButtons(false)
-            // Present album selector for moving image
-            moveImagesToAlbum()
+            // Retrieve complete image data before moving images
+            initSelection(beforeAction: .moveImages)
         })
         action.accessibilityIdentifier = "move"
         return action

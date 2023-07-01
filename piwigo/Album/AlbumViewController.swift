@@ -20,6 +20,7 @@ let kDeg2Rad: CGFloat = 3.141592654 / 180.0
 
 enum pwgImageAction {
     case edit, delete, share
+    case copyImages, moveImages
     case addToFavorites, removeFromFavorites
 }
 

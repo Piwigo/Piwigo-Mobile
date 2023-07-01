@@ -10,83 +10,15 @@ import Foundation
 import piwigoKit
 
 extension SelectCategoryViewController {
-    // MARK: - Retrieve Image Data
-    func retrieveImageData() {
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
-            // Job done?
-            if inputImageIds.count == 0 {
-                // We do have complete image data
-                DispatchQueue.main.async { [self] in
-                    self.inputImages.forEach { image in
-                        let catIDs = Set((image.albums ?? Set<Album>()).map({$0.pwgID}))
-                        if commonCatIDs.isEmpty {
-                            commonCatIDs = catIDs
-                        } else {
-                            commonCatIDs = commonCatIDs.intersection(catIDs)
-                        }
-                    }
-                    self.hidePiwigoHUD { }
-                }
-                return
-            }
-            
-            guard let imageId = inputImageIds.first else {
-                self.hidePiwigoHUD {
-                    self.dismissPiwigoError(withTitle: NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")) {
-                        self.dismiss(animated: true) { }
-                    }
-                }
-                return
-            }
-            
-            // Check whether we already have complete image data
-            if let imageData = inputImages.first(where: {$0.pwgID == imageId}),
-               imageData.fileSize != Int64.zero {
-                inputImageIds.removeFirst()
-                retrieveImageData()
-                return
-            }
-            
-            // Image data are not complete when retrieved using pwg.categories.getImages
-            // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-            imageProvider.getInfos(forID: imageId,
-                                   inCategoryId: inputAlbum.pwgID) { [self] in
-                // Image info retrieved
-                self.inputImageIds.removeFirst()
-                
-                // Update HUD
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImageIds.count) / Float(self.nberOfImages))
-                
-                // Next image
-                self.retrieveImageData()
-                
-            } failure: { [self] error in
-                self.retrieveImageDataError(error)
-            }
-        } failure: { [self] error in
-            self.retrieveImageDataError(error)
-        }
-    }
-    
-    private func retrieveImageDataError(_ error: NSError) {
-        DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
-            dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) {
-            }
-        }
-    }
-    
-    
+
     // MARK: - Copy Images Methods
     func copyImages(toAlbum albumData: Album) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": albumData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
-        // Job done?
-        if inputImages.count == 0 {
+        // Check image data
+        guard let imageData = inputImages.first else {
             // Close HUD
             updatePiwigoHUDwithSuccess() {
                 // Save changes
@@ -106,18 +38,11 @@ extension SelectCategoryViewController {
             return
         }
         
-        // Check image data
-        guard let imageData = inputImages.first else {
-            // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD { self.showError() }
-            return
-        }
-        
         // Copy next image to seleted album
         self.copyImage(imageData, toAlbum: albumData) { success in
             if success {
                 // Next image…
-                self.inputImages.removeFirst()
+                self.inputImages.remove(imageData)
                 self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
                 self.copyImages(toAlbum: albumData)
             } else {
@@ -179,7 +104,7 @@ extension SelectCategoryViewController {
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
         // Jobe done?
-        if inputImages.count == 0 {
+        guard let imageData = inputImages.first else {
             // Close HUD
             updatePiwigoHUDwithSuccess() {
                 // Save changes
@@ -199,18 +124,11 @@ extension SelectCategoryViewController {
             return
         }
         
-        // Check image data
-        guard let imageData = inputImages.first else {
-            // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD { self.showError() }
-            return
-        }
-        
         // Move next image to seleted album
         moveImage(imageData, toCategory: albumData) { success in
             if success {
                 // Next image…
-                self.inputImages.removeFirst()
+                self.inputImages.remove(imageData)
                 self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
                 self.moveImages(toAlbum: albumData)
             } else {
