@@ -170,7 +170,7 @@ public class ImageProvider: NSObject {
                         try self.importImages(imageJSON.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)
                     } else {
-                        try self.importImages(imageJSON.data, inAlbum: albumId)
+                        try self.importImages(imageJSON.data, inAlbum: albumId, sort: sort)
                     }
                     
                     // Retrieve total number of images
