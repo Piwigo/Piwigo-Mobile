@@ -1590,7 +1590,10 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         switch type.rawValue {
         case NSFetchedResultsChangeType.delete.rawValue:
             guard var indexPath = indexPath else { return }
-            if anObject is Image { indexPath.section = 1 }
+            if let image = anObject as? Image {
+                indexPath.section = 1
+                selectedImageIds.remove(image.pwgID)
+            }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
                 self?.imagesCollection?.deleteItems(at: [indexPath])
