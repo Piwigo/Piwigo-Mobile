@@ -43,6 +43,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
+    var actionRunning = false
     private var selectedCategoryId = Int32.min
 
     // MARK: - Core Data Objects
@@ -997,6 +998,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     func showError(with error:String = "") {
+        // Stops preventing tableView updates
+        self.actionRunning = false
+
         // Title and message
         let title:String
         var message:String
@@ -1050,7 +1054,10 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
+
+        // Stops preventing tableView updates
+        if actionRunning { return }
+
         // Initialisation
         var hasAlbumsInSection1 = false
         if controller == albums,
@@ -1068,8 +1075,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
                 self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
-            guard wantedAction != .setAlbumThumbnail,
-                  var indexPath = indexPath else { return }
+            guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Update category item at \(indexPath)")

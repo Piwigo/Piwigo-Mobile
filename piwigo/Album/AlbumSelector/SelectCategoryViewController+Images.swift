@@ -17,6 +17,9 @@ extension SelectCategoryViewController {
         let userInfo = ["categoryId": albumData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
+        // Prevents tableView updates during action
+        self.actionRunning = true
+
         // Check image data
         guard let imageData = inputImages.first else {
             // Close HUD
@@ -103,6 +106,9 @@ extension SelectCategoryViewController {
         let userInfo = ["categoryId": albumData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         
+        // Prevents tableView updates during action
+        self.actionRunning = true
+
         // Jobe done?
         guard let imageData = inputImages.first else {
             // Close HUD
@@ -113,6 +119,10 @@ extension SelectCategoryViewController {
                 } catch let error as NSError {
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }
+
+                // Stops preventing tableView updates
+                self.actionRunning = false
+
                 // Hide HUD and dismiss album selector
                 self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                     self.dismiss(animated: true) {

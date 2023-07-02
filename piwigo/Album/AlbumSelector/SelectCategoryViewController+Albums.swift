@@ -66,6 +66,8 @@ extension SelectCategoryViewController {
         
         // Set image as representative
         NetworkUtilities.checkSession(ofUser: user) {  [self] in
+            // Prevents tableView updates during action
+            self.actionRunning = true
             AlbumUtilities.setRepresentative(albumData, with: imageData)
             {
                 DispatchQueue.main.async { [self] in
@@ -75,6 +77,9 @@ extension SelectCategoryViewController {
                     } catch let error as NSError {
                         print("Could not fetch \(error), \(error.userInfo)")
                     }
+
+                    // Stops preventing tableView updates
+                    self.actionRunning = false
 
                     // Close HUD
                     self.updatePiwigoHUDwithSuccess() {
