@@ -103,7 +103,7 @@ class ImageSession: NSObject {
                 completion(download.fileURL)
                 return
             }
-        } else if FileManager.default.fileExists(atPath: download.fileURL.path) {
+        } else if download.fileURL.fileSize != 0 {
             completion(download.fileURL)
             return
         }
@@ -327,9 +327,7 @@ extension ImageSession: URLSessionDownloadDelegate {
             }
             
             // Delete existing file if it exists (incomplete previous attempt?)
-            if fm.fileExists(atPath: fileURL.path) {
-                try? fm.removeItem(at: fileURL)
-            }
+            try? fm.removeItem(at: fileURL)
             
             // Store image
             try fm.copyItem(at: location, to: fileURL)

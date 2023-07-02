@@ -78,12 +78,11 @@ class ExternalDisplayViewController: UIViewController {
         // Get URL of preview image file potentially in cache
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-        let filePath = cacheDir.appendingPathComponent(previewSize.path)
-            .appendingPathComponent(String(imageData.pwgID)).path
+        var fileURL = cacheDir.appendingPathComponent(previewSize.path)
+            .appendingPathComponent(String(imageData.pwgID))
 
         // Present the preview image file if available
-        if FileManager.default.fileExists(atPath: filePath),
-           let previewImage = UIImage(contentsOfFile: filePath) {
+        if let previewImage = UIImage(contentsOfFile: fileURL.path) {
             // Is this file of sufficient resolution?
             if previewSize >= optimumSize {
                 // Display preview image
@@ -96,7 +95,7 @@ class ExternalDisplayViewController: UIViewController {
         } else {
             // Thumbnail image should be available in cache
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let fileURL = cacheDir.appendingPathComponent(thumbSize.path)
+            fileURL = cacheDir.appendingPathComponent(thumbSize.path)
                 .appendingPathComponent(String(imageData.pwgID))
             presentTemporaryImage(UIImage(contentsOfFile: fileURL.path) ?? placeHolder)
         }

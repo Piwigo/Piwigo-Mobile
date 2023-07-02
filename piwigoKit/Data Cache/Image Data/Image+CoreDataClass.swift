@@ -288,16 +288,12 @@ public class Image: NSManagedObject {
         pwgImageSize.allCases.forEach { size in
             // Delete files
             let dirURL = cacheUrl.appendingPathComponent(size.path)
-            let filePath = dirURL.appendingPathComponent(ID).path
-            if fm.fileExists(atPath: filePath) {
-                let optPath = dirURL.appendingPathComponent(IDopt).path
-                do {
-                    try fm.removeItem(atPath: filePath)
-                    try fm.removeItem(atPath: optPath)
-                    print("••> \(size.name) image \(self.pwgID) deleted from cache.")
-                } catch {
-                    print("••> \(size.name) image \(self.pwgID) not deleted: \(error.localizedDescription)")
-                }
+            do {
+                try fm.removeItem(at: dirURL.appendingPathComponent(ID))
+                try fm.removeItem(at: dirURL.appendingPathComponent(IDopt))
+                print("••> \(size.name) image: \(self.pwgID) removed from cache.")
+            } catch {
+                print("••> \(size.name) image: \(error.localizedDescription)")
             }
         }
     }
