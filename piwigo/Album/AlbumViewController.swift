@@ -1596,7 +1596,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
             // Disable menu if this is the last deleted image
-            if (images.fetchedObjects ?? []).count == 0 {
+            if albumData.nbImages == 0 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> Last removed image ► disable menu")
                     self?.isSelect = false
