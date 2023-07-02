@@ -1068,7 +1068,8 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
                 self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
-            guard var indexPath = indexPath else { return }
+            guard wantedAction != .setAlbumThumbnail,
+                  var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Update category item at \(indexPath)")
