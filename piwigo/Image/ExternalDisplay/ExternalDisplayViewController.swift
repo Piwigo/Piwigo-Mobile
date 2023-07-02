@@ -107,7 +107,8 @@ class ExternalDisplayViewController: UIViewController {
         progressView?.progress = 0
         progressView?.isHidden = imageData.isVideo
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
-                                     fromServer: serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                                     fromServer: serverID, fileSize: imageData.fileSize,
+                                     placeHolder: self.placeHolder) { fractionCompleted in
             DispatchQueue.main.async {
                 self.progressView.progress = fractionCompleted
             }

@@ -85,7 +85,8 @@ class ImagePreviewViewController: UIViewController
         imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
         if let imageURL = imageURL {
             ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                         fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                                         fromServer: self.serverID, fileSize: self.imageData.fileSize,
+                                         placeHolder: self.placeHolder) { fractionCompleted in
                 DispatchQueue.main.async {
                     self.progressView.progress = fractionCompleted
                 }

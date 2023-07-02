@@ -68,7 +68,7 @@ public class Image: NSManagedObject {
         
         // Image file size, name and MD5 checksum
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
-        if newSize != Int64.zero {
+        if newSize != Int64.zero, fileSize != newSize {
             dateGetInfos = Date()       // Remember when pwg.images.getInfos is called
             fileSize = newSize
         }
