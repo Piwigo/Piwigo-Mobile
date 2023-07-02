@@ -10,6 +10,7 @@
 import CoreData
 import Foundation
 import MobileCoreServices
+import UniformTypeIdentifiers
 
 /* Image instances represent photos and videos of a Piwigo server.
     - Each instance belongs to a Server.
@@ -81,12 +82,23 @@ public class Image: NSManagedObject {
             if fileName != newFile {
                 fileName = newFile
             }
-            let fileExt = URL(fileURLWithPath: newFile).pathExtension as NSString
-            if fileExt.length > 0,
-               let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
-                let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
-                if isVideo != newIsVideo {
-                    isVideo = newIsVideo
+            let fileExt = URL(fileURLWithPath: newFile).pathExtension.lowercased()
+            if fileExt.isEmpty == false {
+                if #available(iOS 14.0, *) {
+                    if let uti = UTType(filenameExtension: fileExt) {
+                        let newIsVideo = uti.conforms(to: .movie)
+                        if isVideo != newIsVideo {
+                            isVideo = newIsVideo
+                        }
+                    }
+                } else {
+                    // Fallback to previous version
+                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
+                        let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
+                        if isVideo != newIsVideo {
+                            isVideo = newIsVideo
+                        }
+                    }
                 }
             }
         }

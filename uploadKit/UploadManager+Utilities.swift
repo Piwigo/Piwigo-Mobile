@@ -70,18 +70,26 @@ extension UploadManager {
 
         // Get MIME type from file extension
         let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
-        guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() else {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            failure(error)
-            return
+        if #available(iOS 14, *) {
+            guard let uti = UTType(filenameExtension: fileExt),
+                  let mimeType = uti.preferredMIMEType
+            else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                failure(error)
+                return
+            }
+            upload.mimeType = mimeType
+        } else {
+            // Fallback on previous version
+            guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue(),
+                  let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String?
+            else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                failure(error)
+                return
+            }
+            upload.mimeType = mimeType
         }
-        guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            failure(error)
-            return
-        }
-        print("\(dbg()) MIME type: \(String(describing: mimeType))")
-        upload.mimeType = mimeType
 
         // Done -> append file size to counter
         countOfBytesPrepared += UInt64(fileURL.fileSize)

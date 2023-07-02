@@ -89,17 +89,27 @@ extension UploadManager {
             }
 
             // Get MIME type
-            guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
-                return
+            let fileExt = originalFileURL.pathExtension.lowercased()
+            if #available(iOS 14, *) {
+                guard let uti = UTType(filenameExtension: fileExt),
+                      let mimeType = uti.preferredMIMEType
+                else {
+                    let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    self.didPrepareVideo(for: upload, error)
+                    return
+                }
+                upload.mimeType = mimeType
+            } else {
+                // Fallback on previous version
+                guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue(),
+                      let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String?
+                else {
+                    let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    self.didPrepareVideo(for: upload, error)
+                    return
+                }
+                upload.mimeType = mimeType
             }
-            guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
-                return
-            }
-            upload.mimeType = mimeType
 
             // Prepare URL of temporary file
             let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
