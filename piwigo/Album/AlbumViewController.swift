@@ -1315,12 +1315,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             break
         
         default /* Images */:
-            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell else {
-                fatalError("No ImageCollectionViewCell!")
-            }
-
-            // Avoid rare crashes…
-            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
+            // Check data
+            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                  indexPath.item >= 0, indexPath.item < (images.fetchedObjects ?? []).count else {
                 return
             }
 
