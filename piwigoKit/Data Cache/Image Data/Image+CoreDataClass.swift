@@ -20,6 +20,7 @@ import UniformTypeIdentifiers
 public class Image: NSManagedObject {
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
+     NB: A single tag is returned by pwg.categories.getImages!
      */
     func update(with imageData: ImagesGetInfo, sort: pwgImageSort, rank: Int64,
                 user: User, albums: Set<Album>) throws {
@@ -132,19 +133,21 @@ public class Image: NSManagedObject {
             privacyLevel = newPrivacy
         }
         
-        // Add tags
-        if let tags = imageData.tags, let serverTags = user.server?.tags {
-            let tagIds = tags.map { $0.id?.int32Value }
-            let imageTags = serverTags.filter({ tag in
-                tagIds.contains(where: { $0 == tag.tagId }) == true
-            })
-            let oldTags = self.tags?.compactMap{ $0.objectID }
-            let newTags = imageTags.map { $0.objectID }
-            if oldTags != newTags {
-                self.tags = imageTags
+        // Add tags (Attention: pwg.categories.getImages returns only one tag)
+        if imageData.title != nil {
+            if let tags = imageData.tags, let serverTags = user.server?.tags {
+                let tagIds = tags.map { $0.id?.int32Value }
+                let imageTags = serverTags.filter({ tag in
+                    tagIds.contains(where: { $0 == tag.tagId }) == true
+                })
+                let oldTags = self.tags?.compactMap{ $0.objectID }
+                let newTags = imageTags.map { $0.objectID }
+                if oldTags != newTags {
+                    self.tags = imageTags
+                }
+            } else if self.tags?.isEmpty == false {
+                self.tags = Set<Tag>()
             }
-        } else if self.tags?.isEmpty == false {
-            self.tags = Set<Tag>()
         }
 
         // Full resolution image
