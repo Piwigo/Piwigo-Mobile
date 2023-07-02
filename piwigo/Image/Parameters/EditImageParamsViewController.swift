@@ -74,6 +74,13 @@ class EditImageParamsViewController: UIViewController
     }()
 
     
+    // MARK: - Core Data Providers
+    private lazy var albumProvider: AlbumProvider = {
+        let provider : AlbumProvider = AlbumProvider.shared
+        return provider
+    }()
+
+
     // MARK: - View Lifecycle
     @objc func applyColorPalette() {
         // Background color of the view
@@ -282,7 +289,14 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        updateImageProperties(fromIndex: index)
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            updateImageProperties(fromIndex: index)
+        } failure: { [self] error in
+            // Display error
+            self.hidePiwigoHUD {
+                self.showUpdatePropertiesError(error, atIndex: index)
+            }
+        }
     }
 
     func updateImageProperties(fromIndex index: Int) {
@@ -303,19 +317,12 @@ class EditImageParamsViewController: UIViewController
 
         // Update image info on server
         /// The cache will be updated by the parent view controller.
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
-            setProperties(ofImage: images[index]) { [self] in
-                // Next image?
-                self.updatePiwigoHUD(withProgress: Float(index + 1) / Float(images.count))
-                self.updateImageProperties(fromIndex: index + 1)
-            }
-            failure: { [self] error in
-                // Display error
-                self.hidePiwigoHUD {
-                    self.showUpdatePropertiesError(error, atIndex: index)
-                }
-            }
-        } failure: { [self] error in
+        setProperties(ofImage: images[index]) { [self] in
+            // Next image?
+            self.updatePiwigoHUD(withProgress: Float(index + 1) / Float(images.count))
+            self.updateImageProperties(fromIndex: index + 1)
+        }
+        failure: { [self] error in
             // Display error
             self.hidePiwigoHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
@@ -423,17 +430,36 @@ class EditImageParamsViewController: UIViewController
                 if shouldUpdateTags {
                     // Loop over the removed tags
                     for tag in removedTags {
+                        // Dissociate tag from image
                         imageData.removeFromTags(tag)
                         if tag.numberOfImagesUnderTag != Int64.max,
                            tag.numberOfImagesUnderTag > (Int64.min + 1) {   // Avoids possible crash
                             tag.numberOfImagesUnderTag -= 1
                         }
+                        // Remove image from album of tagged images
+                        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                        if let albums = imageData.albums,
+                           let albumData = albums.first(where: {$0.pwgID == catID}) {
+                            imageData.removeFromAlbums(albumData)
+                            
+                            // Update albums
+                            self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
+                        }
                     }
                     // Loop over the added tags
                     for tag in addedTags {
+                        // Associate tag to image
                         imageData.addToTags(tag)
                         if tag.numberOfImagesUnderTag < (Int64.max - 1) {   // Avoids possible crash
                             tag.numberOfImagesUnderTag += 1
+                        }
+                        // Add image to album of tagged images if it exists
+                        let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
+                        if let albumData = self.albumProvider.getAlbum(withId: catID) {
+                            imageData.addToAlbums(albumData)
+                            
+                            // Update albums
+                            self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
                         }
                     }
                 }
