@@ -67,7 +67,6 @@ extension AlbumViewController
                     self.removeImageWithIDs(oldImageIds)
                     // ► Remove current album from list of album being fetched
                     AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-
                     completion()
                     return
                 }
@@ -105,7 +104,7 @@ extension AlbumViewController
             guard let error = error else {
                 // No error ► Smart album?
                 var newLastPage = lastPage
-                if albumData.pwgID < 0 {
+                if albumData.pwgID < 0, onPage == 0 {
                     // Re-calculate number of pages
                     newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
@@ -132,6 +131,9 @@ extension AlbumViewController
                             } else {
                                 self.updateButtonsInPreviewMode()
                             }
+
+                            // End refreshing if needed
+                            self.imagesCollection?.refreshControl?.endRefreshing()
                         }
                     }
                     // Is user editing the search string?
