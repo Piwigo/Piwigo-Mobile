@@ -123,8 +123,13 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
                                      fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.imageThumbnail.image = cachedImage
+            if cachedImage == placeHolder {
+                // Image in cache is not appropriate
+                try? FileManager.default.removeItem(at: imageURL)
+            } else {
+                DispatchQueue.main.async {
+                    self.imageThumbnail.image = cachedImage
+                }
             }
         }
     }

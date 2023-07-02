@@ -113,9 +113,14 @@ class ExternalDisplayViewController: UIViewController {
             }
         } completion: { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize, scale: scale)
-            DispatchQueue.main.async {
-                self.progressView.progress = 1.0
-                self.presentFinalImage(cachedImage)
+            if cachedImage == self.placeHolder {
+                // Image in cache is not appropriate
+                try? FileManager.default.removeItem(at: imageURL)
+            } else {
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.presentFinalImage(cachedImage)
+                }
             }
         } failure: { _ in }
     }
