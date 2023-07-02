@@ -36,13 +36,6 @@ extension ImageViewController: EditImageParamsDelegate
     }
 
     func didChangeImageParameters(_ params: Image) {
-        // Determine index of updated image
-//        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
-        
-        // Update list and currently viewed image
-//        imageData = params
-//        images[indexOfUpdatedImage] = params
-
         // Update title view
         setTitleViewFromImageData()
         
@@ -51,28 +44,6 @@ extension ImageViewController: EditImageParamsDelegate
            let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
             imagePVC.updateImageMetadata(with: params)
         }
-
-        // Update cached image data
-        /// Note: the current category might be a smart album.
-//        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [Int(categoryId)]))
-//        for catId in mergedCatIds {
-//            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
-//        }
-        
-        // If the current category presents tagged images and the user
-        // removed the associated tag, delete the image from the smart album.
-//        if categoryId == kPiwigoTagsCategoryId,
-//           let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
-//           let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
-//            // Delete this image from the category and the parent collection
-//            CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
-//            // … and delete it from this data source
-//            didRemoveImage(withId: params.imageId)
-//            return
-//        }
-
-        // Update banner of item in collection view (in case of empty title)
-//        imgDetailDelegate?.didUpdateImage(withData: imageData)
     }
 
     func didFinishEditingParameters() {

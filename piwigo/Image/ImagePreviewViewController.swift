@@ -14,7 +14,6 @@ import piwigoKit
 
 class ImagePreviewViewController: UIViewController
 {
-
     var imageIndex = 0
     var imageLoaded = false
     var imageData: Image!
