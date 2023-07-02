@@ -675,10 +675,10 @@ extension ImageViewController: UIPageViewControllerDataSource
             imageData.didAccessValue(forKey: nil)
         }
         if imageData.fileSize == Int64.zero {
-            // Retrieve image data
+            // Image data is incomplete — retrieve it
             retrieveImageData(imageData, isIncomplete: true)
-        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-3600) {
-            // Retrieve image data
+        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-86400) {
+            // Image data retrieved more than a day ago — retrieve it
             retrieveImageData(imageData, isIncomplete: false)
         }
 

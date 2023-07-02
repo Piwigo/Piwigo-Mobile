@@ -1831,7 +1831,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Display help views less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
         let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
-        if diff > UploadVars.pwgOneDay { return }
+        if diff > TimeInterval(86400) { return }
             
         // Determine which help pages should be presented
         var displayHelpPagesWithID: [UInt16] = []

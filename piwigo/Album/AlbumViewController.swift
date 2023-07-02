@@ -633,7 +633,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // and less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
         let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
-        if categoryId <= 0 || diff > UploadVars.pwgOneDay { return }
+        if categoryId <= 0 || diff > TimeInterval(86400) { return }
             
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()

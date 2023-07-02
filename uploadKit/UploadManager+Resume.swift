@@ -76,7 +76,7 @@ extension UploadManager
         }
         
         // Propose to delete uploaded image of the photo Library once a day
-        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.pwgOneDay {
+        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
             // Are there images to delete from the Photo Library?
             let toDelete = (completed.fetchedObjects ?? []).filter({$0.deleteImageAfterUpload == true})
             if toDelete.count > 0 {
