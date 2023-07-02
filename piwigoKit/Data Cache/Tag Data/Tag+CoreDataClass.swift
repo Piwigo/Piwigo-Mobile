@@ -23,13 +23,21 @@ public class Tag: NSManagedObject {
     func update(with tagProperties: TagProperties, server: Server) throws {
         
         // Update the tag only if the Id and Name properties have values.
-        guard let newId = tagProperties.id?.int32Value,
-              let newName = tagProperties.name else {
+        // NB: Only the ID and the url are returned by pwg.categories.getImages
+        guard let newId = tagProperties.id?.int32Value else {
                 throw TagError.missingData
         }
-        if tagId != newId { tagId = newId }
-        let newTagName = NetworkUtilities.utf8mb4String(from: newName)
-        if tagName != newTagName { tagName = newTagName }
+        if tagId != newId {
+            tagId = newId
+        }
+        
+        // Update name if prrovided
+        if let newName = tagProperties.name, newName.isEmpty == false {
+            let newTagName = NetworkUtilities.utf8mb4String(from: tagProperties.name)
+            if tagName != newTagName {
+                tagName = newTagName
+            }
+        }
 
         // In the absence of date, keep 1st January 1900 at 00:00:00 (see DataModel)
         let dateFormatter = DateFormatter()
