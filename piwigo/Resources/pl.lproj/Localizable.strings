@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
-"whatsNew_title1" = "Nowa skrytka";
-"whatsNew_desc1" = "Zarządzanie pamięcią podręczną w pełni przeredagowane w celu poprawy komfortu użytkownika i przekierowania przeglądania offline.";
+"whatsNew_title1" = "Nowa pamięć podręczna";
+"whatsNew_desc1" = "Na nowo przepisane zarządzanie pamięcią podręczną, aby poprawić komfort użytkowania i umożliwić przeglądanie offline.";
 "whatsNew_title2" = "Klonowanie ekranu";
 "whatsNew_desc2" = "Obejrzyj zdjęcia i filmy na zewnętrznym wyświetlaczu.";
 "whatsNew_continue" = "Kontynuuj";

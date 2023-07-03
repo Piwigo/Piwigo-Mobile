@@ -81,12 +81,17 @@ class WhatsNewViewController: UIViewController {
         coordinator.animate(alongsideTransition: { (context) in
         }, completion: nil)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
-    @IBAction func didTapContinue(_ sender: Any) {
         // Remember that we already present what's new
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             AppVars.shared.didShowWhatsNewAppVersion = appVersionString
         }
+    }
+
+    @IBAction func didTapContinue(_ sender: Any) {
         dismiss(animated: true)
     }
     

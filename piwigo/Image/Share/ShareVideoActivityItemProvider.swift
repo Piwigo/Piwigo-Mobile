@@ -121,7 +121,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+                                     fromServer: serverID, fileSize: imageData.fileSize,
+                                     placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
         } completion: { fileURL in
@@ -157,16 +158,14 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
-        // Shared files are stored in the /tmp directory and will be deleted:
+        // Shared files are stored in the /tmp directory with an appropriate name and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
         imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
-        // Deletes temporary image file if it exists
-        try? FileManager.default.removeItem(at: imageFileURL)
-
         // Copy original file to /tmp directly with appropriate file name
         do {
+            try? FileManager.default.removeItem(at: imageFileURL)
             try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
         }
         catch {

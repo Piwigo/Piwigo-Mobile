@@ -14,7 +14,6 @@ import piwigoKit
 
 class ImagePreviewViewController: UIViewController
 {
-
     var imageIndex = 0
     var imageLoaded = false
     var imageData: Image!
@@ -85,15 +84,21 @@ class ImagePreviewViewController: UIViewController
         imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
         if let imageURL = imageURL {
             ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                         fromServer: self.serverID, placeHolder: self.placeHolder) { fractionCompleted in
+                                         fromServer: self.serverID, fileSize: self.imageData.fileSize,
+                                         placeHolder: self.placeHolder) { fractionCompleted in
                 DispatchQueue.main.async {
                     self.progressView.progress = fractionCompleted
                 }
             } completion: { cachedImageURL in
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-                DispatchQueue.main.async {
-                    self.progressView.progress = 1.0
-                    self.configImage(cachedImage)
+                if cachedImage == self.placeHolder {
+                    // Image in cache is not appropriate
+                    try? FileManager.default.removeItem(at: imageURL)
+                } else {
+                    DispatchQueue.main.async {
+                        self.progressView.progress = 1.0
+                        self.configImage(cachedImage)
+                    }
                 }
             } failure: { _ in }
         }

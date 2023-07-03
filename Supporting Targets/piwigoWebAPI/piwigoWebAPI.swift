@@ -11,6 +11,7 @@
 import Foundation
 import XCTest
 import piwigoKit
+import uploadKit
 
 class piwigoWebAPI: XCTestCase {
     
@@ -587,6 +588,27 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data[0].id?.intValue, 1)
         XCTAssertEqual(result.data[2].name, "Piwigo")
+    }
+
+    func testPwgTagsGetAdminList2Decoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.tags.getAdminList2", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(TagJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data[0].id?.intValue, 254)
+        XCTAssertEqual(result.data[2].name, "Ahmet Akkaya")
     }
 
     func testPwgTagsAddDecoding() {

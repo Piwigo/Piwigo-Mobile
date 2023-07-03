@@ -182,14 +182,10 @@ class ImageUtilities: NSObject {
         
         // Save downsized image in cache
         DispatchQueue.global(qos: .background).async {
-            // Delete  existing file if it exists (incomplete previous attempt?)
-            let fm = FileManager.default
-            if fm.fileExists(atPath: filePath) {
-                try? fm.removeItem(atPath: filePath)
-            }
-            // Save optimised image
             if let data = downsampledImage.jpegData(compressionQuality: 1.0) as? NSData {
                 do {
+                    let fm = FileManager.default
+                    try? fm.removeItem(atPath: filePath)
                     try data.write(toFile: filePath, options: .atomic)
                 } catch {
                     debugPrint(error.localizedDescription)

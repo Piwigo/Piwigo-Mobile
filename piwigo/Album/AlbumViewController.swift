@@ -20,6 +20,7 @@ let kDeg2Rad: CGFloat = 3.141592654 / 180.0
 
 enum pwgImageAction {
     case edit, delete, share
+    case copyImages, moveImages
     case addToFavorites, removeFromFavorites
 }
 
@@ -562,7 +563,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
+           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-86400) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
@@ -602,7 +603,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Display What's New in Piwigo if needed
-        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+        if AppVars.shared.didShowWhatsNewAppVersion.compare("3.0", options: .numeric) == .orderedAscending,
+           let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
            appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
             // Display What's New in Piwigo
             let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -631,7 +633,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         // and less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
         let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
-        if categoryId <= 0 || diff > UploadVars.pwgOneDay { return }
+        if categoryId <= 0 || diff > TimeInterval(86400) { return }
             
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
@@ -1313,12 +1315,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             break
         
         default /* Images */:
-            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell else {
-                fatalError("No ImageCollectionViewCell!")
-            }
-
-            // Avoid rare crashes…
-            if (indexPath.item < 0) || (indexPath.item >= (images.fetchedObjects ?? []).count) {
+            // Check data
+            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                  indexPath.item >= 0, indexPath.item < (images.fetchedObjects ?? []).count else {
                 return
             }
 
@@ -1591,13 +1590,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
         switch type.rawValue {
         case NSFetchedResultsChangeType.delete.rawValue:
             guard var indexPath = indexPath else { return }
-            if anObject is Image { indexPath.section = 1 }
+            if let image = anObject as? Image {
+                indexPath.section = 1
+                selectedImageIds.remove(image.pwgID)
+            }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
             // Disable menu if this is the last deleted image
-            if (images.fetchedObjects ?? []).count == 0 {
+            if albumData.nbImages == 0 {
                 updateOperations.append( BlockOperation { [weak self] in
                     print("••> Last removed image ► disable menu")
                     self?.isSelect = false

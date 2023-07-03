@@ -165,8 +165,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
                                      fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.configImage(cachedImage)
+            if cachedImage == placeHolder {
+                // Image in cache is not appropriate
+                try? FileManager.default.removeItem(at: imageURL)
+            } else {
+                DispatchQueue.main.async {
+                    self.configImage(cachedImage)
+                }
             }
         } failure: { error in
             // No image available

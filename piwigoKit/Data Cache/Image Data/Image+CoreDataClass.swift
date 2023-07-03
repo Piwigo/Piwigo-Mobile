@@ -10,6 +10,7 @@
 import CoreData
 import Foundation
 import MobileCoreServices
+import UniformTypeIdentifiers
 
 /* Image instances represent photos and videos of a Piwigo server.
     - Each instance belongs to a Server.
@@ -19,6 +20,7 @@ import MobileCoreServices
 public class Image: NSManagedObject {
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
+     NB: A single tag is returned by pwg.categories.getImages!
      */
     func update(with imageData: ImagesGetInfo, sort: pwgImageSort, rank: Int64,
                 user: User, albums: Set<Album>) throws {
@@ -67,7 +69,7 @@ public class Image: NSManagedObject {
         
         // Image file size, name and MD5 checksum
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
-        if newSize != Int64.zero {
+        if newSize != Int64.zero, fileSize != newSize {
             dateGetInfos = Date()       // Remember when pwg.images.getInfos is called
             fileSize = newSize
         }
@@ -81,12 +83,23 @@ public class Image: NSManagedObject {
             if fileName != newFile {
                 fileName = newFile
             }
-            let fileExt = URL(fileURLWithPath: newFile).pathExtension as NSString
-            if fileExt.length > 0,
-               let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
-                let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
-                if isVideo != newIsVideo {
-                    isVideo = newIsVideo
+            let fileExt = URL(fileURLWithPath: newFile).pathExtension.lowercased()
+            if fileExt.isEmpty == false {
+                if #available(iOS 14.0, *) {
+                    if let uti = UTType(filenameExtension: fileExt) {
+                        let newIsVideo = uti.conforms(to: .movie)
+                        if isVideo != newIsVideo {
+                            isVideo = newIsVideo
+                        }
+                    }
+                } else {
+                    // Fallback to previous version
+                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
+                        let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
+                        if isVideo != newIsVideo {
+                            isVideo = newIsVideo
+                        }
+                    }
                 }
             }
         }
@@ -120,19 +133,21 @@ public class Image: NSManagedObject {
             privacyLevel = newPrivacy
         }
         
-        // Add tags
-        if let tags = imageData.tags, let serverTags = user.server?.tags {
-            let tagIds = tags.map { $0.id?.int32Value }
-            let imageTags = serverTags.filter({ tag in
-                tagIds.contains(where: { $0 == tag.tagId }) == true
-            })
-            let oldTags = self.tags?.compactMap{ $0.objectID }
-            let newTags = imageTags.map { $0.objectID }
-            if oldTags != newTags {
-                self.tags = imageTags
+        // Add tags (Attention: pwg.categories.getImages returns only one tag)
+        if imageData.title != nil {
+            if let tags = imageData.tags, let serverTags = user.server?.tags {
+                let tagIds = tags.map { $0.id?.int32Value }
+                let imageTags = serverTags.filter({ tag in
+                    tagIds.contains(where: { $0 == tag.tagId }) == true
+                })
+                let oldTags = self.tags?.compactMap{ $0.objectID }
+                let newTags = imageTags.map { $0.objectID }
+                if oldTags != newTags {
+                    self.tags = imageTags
+                }
+            } else if self.tags?.isEmpty == false {
+                self.tags = Set<Tag>()
             }
-        } else if self.tags?.isEmpty == false {
-            self.tags = Set<Tag>()
         }
 
         // Full resolution image
@@ -276,16 +291,12 @@ public class Image: NSManagedObject {
         pwgImageSize.allCases.forEach { size in
             // Delete files
             let dirURL = cacheUrl.appendingPathComponent(size.path)
-            let filePath = dirURL.appendingPathComponent(ID).path
-            if fm.fileExists(atPath: filePath) {
-                let optPath = dirURL.appendingPathComponent(IDopt).path
-                do {
-                    try fm.removeItem(atPath: filePath)
-                    try fm.removeItem(atPath: optPath)
-                    print("••> \(size.name) image \(self.pwgID) deleted from cache.")
-                } catch {
-                    print("••> \(size.name) image \(self.pwgID) not deleted: \(error.localizedDescription)")
-                }
+            do {
+                try fm.removeItem(at: dirURL.appendingPathComponent(ID))
+                try fm.removeItem(at: dirURL.appendingPathComponent(IDopt))
+                print("••> \(size.name) image: \(self.pwgID) removed from cache.")
+            } catch {
+                print("••> \(size.name) image: \(error.localizedDescription)")
             }
         }
     }

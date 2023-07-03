@@ -9,7 +9,7 @@
 import Foundation
 
 public let pwgImagesExist = "format=json&method=pwg.images.exist"
-fileprivate let pwgImagesExistBytes: Int64 = 1250
+public let pwgImagesExistBytes: Int64 = 1250
 
 // MARK: Piwigo JSON Structures
 public struct ImagesExistJSON: Decodable {
@@ -91,52 +91,6 @@ public struct ImageExist {
             catch {
                 values = []
             }
-        }
-    }
-}
-
-
-// MARK: - Piwigo Method Caller
-extension PwgSession
-{
-    public func getIDofImage(withMD5 md5sum: String,
-                             completion: @escaping (Int64?) -> Void,
-                             failure: @escaping (Error?) -> Void) {
-        // Launch request
-        let paramDict: [String : Any] = ["md5sum_list": md5sum]
-        postRequest(withMethod: pwgImagesExist, paramDict: paramDict,
-                    jsonObjectClientExpectsToReceive: ImagesExistJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { jsonData in
-            do {
-                // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(ImagesExistJSON.self, from: jsonData)
-
-                // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    // Will retry later
-                    let error = self.localizedError(for: uploadJSON.errorCode,
-                                                    errorMessage: uploadJSON.errorMessage)
-                    failure(error)
-                    return
-                }
-
-                if let imageID = uploadJSON.data.first(where: {$0.md5sum == md5sum})?.imageID {
-                    completion(imageID)
-                } else {
-                    completion(nil)
-                }
-            }
-            catch {
-                let error = error as NSError
-                failure(error)
-                return
-            }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

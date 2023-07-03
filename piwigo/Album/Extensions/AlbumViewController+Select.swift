@@ -405,7 +405,7 @@ extension AlbumViewController
 
 
     // MARK: - Initialise Selection Before Action
-    func initSelection(beforeAction action:pwgImageAction) {
+    func initSelection(beforeAction action: pwgImageAction) {
         if selectedImageIds.isEmpty { return }
 
         // Disable buttons
@@ -413,13 +413,17 @@ extension AlbumViewController
 
         // Prepare variable for HUD and attribute action
         switch action {
-        case .edit      /* Edit images parameters */,
-             .delete    /* Distinguish orphanes and ask for confirmation */,
-             .share     /* Check Photo Library access rights */:
-            // Remove images fro which we already have complete data
+        case .edit         /* Edit images parameters */,
+             .delete       /* Distinguish orphanes and ask for confirmation */,
+             .share        /* Check Photo Library access rights */,
+             .copyImages   /* Copy images to album */,
+             .moveImages   /* Move images to album */:
+            
+            // Remove images from which we already have complete data
             selectedImageIdsLoop = selectedImageIds
+            let selectedImages = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
             for selectedImageId in selectedImageIds {
-                guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
+                guard let selectedImage = selectedImages.first(where: {$0.pwgID == selectedImageId})
                     else { continue }
                 if selectedImage.fileSize != Int64.zero {
                     selectedImageIdsLoop.remove(selectedImageId)
@@ -437,7 +441,11 @@ extension AlbumViewController
                               inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
                 
                 // Retrieve image data if needed
-                retrieveImageData(beforeAction: action)
+                NetworkUtilities.checkSession(ofUser: user) {  [self] in
+                    retrieveImageData(beforeAction: action)
+                } failure: { [unowned self] error in
+                    retrieveImageDataError(error)
+                }
             }
             
         case .addToFavorites        /* Add photos to favorites */,
@@ -454,14 +462,18 @@ extension AlbumViewController
         }
     }
     
-    private func doAction(_ action:pwgImageAction) {
+    private func doAction(_ action: pwgImageAction) {
         switch action {
-        case .edit      /* Edit images parameters */:
+        case .edit          /* Edit images parameters */:
             editImages()
-        case .delete    /* Distinguish orphanes and ask for confirmation */:
+        case .delete        /* Distinguish orphanes and ask for confirmation */:
             askDeleteConfirmation()
-        case .share     /* Check Photo Library access rights */:
+        case .share         /* Check Photo Library access rights */:
             checkPhotoLibraryAccessBeforeShare()
+        case .copyImages    /* Copy images to Album */:
+            copyImagesToAlbum()
+        case .moveImages    /* Move images to album */:
+            moveImagesToAlbum()
         case .addToFavorites:
             addImageToFavorites()
         case .removeFromFavorites:
@@ -470,40 +482,24 @@ extension AlbumViewController
     }
 
     private func retrieveImageData(beforeAction action:pwgImageAction) {
-        if selectedImageIdsLoop.isEmpty {
+        // Get image ID if any
+        guard let imageId = selectedImageIdsLoop.first else {
             hidePiwigoHUD() { [self] in
                 doAction(action)
             }
             return
         }
-
-        // Check the provided image ID
-        guard let imageId = selectedImageIdsLoop.first else {
-            // Forget this image
-            selectedImageIdsLoop.removeFirst()
-            
-            // Update HUD if any
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
-            
-            // Next image
-            retrieveImageData(beforeAction: action)
-            return
-        }
                         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        NetworkUtilities.checkSession(ofUser: user) {  [self] in
-            imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
-                // Image info retrieved
-                selectedImageIdsLoop.removeFirst()
+        imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
+            // Image info retrieved
+            selectedImageIdsLoop.remove(imageId)
 
-                // Update HUD
-                updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
+            // Update HUD
+            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
 
-                // Next image
-                retrieveImageData(beforeAction: action)
-            } failure: { [unowned self] error in
-                retrieveImageDataError(error)
-            }
+            // Next image
+            retrieveImageData(beforeAction: action)
         } failure: { [unowned self] error in
             retrieveImageDataError(error)
         }

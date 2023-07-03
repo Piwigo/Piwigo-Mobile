@@ -127,14 +127,6 @@ class TagsViewController: UITableViewController {
         // Add search bar
         initSearchBar()
         
-        // Initialise data source
-        do {
-            try selectedTags.performFetch()
-            try nonSelectedTags.performFetch()
-        } catch {
-            print("Error: \(error)")
-        }
-
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         NetworkUtilities.checkSession(ofUser: user) {
@@ -193,6 +185,14 @@ class TagsViewController: UITableViewController {
         // Set colors, fonts, etc.
         applyColorPalette()
 
+        // Initialise data source
+        do {
+            try selectedTags.performFetch()
+            try nonSelectedTags.performFetch()
+        } catch {
+            debugPrint("Error: \(error)")
+        }
+
         // Refresh table
         tagsTableView.reloadData()
 
@@ -202,8 +202,11 @@ class TagsViewController: UITableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super .viewWillDisappear(animated)
+        super.viewWillDisappear(animated)
 
+        // Dismiss search bar
+        searchController.dismiss(animated: false)
+        
         // Return list of selected tags
         delegate?.didSelectTags(Set(selectedTags.fetchedObjects ?? []))
     }
@@ -284,21 +287,26 @@ class TagsViewController: UITableViewController {
             selectedTagIds.remove(currentTag.tagId)
             
             // Update fetch requests and perform fetches
-            fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
-            try? selectedTags.performFetch()
-            fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
-            try? nonSelectedTags.performFetch()
-            
-            // Determine new indexPath of deselected tag
-            if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
-                let insertPath = IndexPath(row: indexOfTag, section: 1)
-                // Move cell from top to bottom section
-                tableView.moveRow(at: indexPath, to: insertPath)
-                // Update icon of cell
-                if let indexPaths = tableView.indexPathsForVisibleRows,
-                   indexPaths.contains(insertPath) {
-                    tableView.reloadRows(at: [insertPath], with: .automatic)
+            do {
+                fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+                try selectedTags.performFetch()
+                fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+                try nonSelectedTags.performFetch()
+
+                // Determine new indexPath of deselected tag
+                if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+                    let insertPath = IndexPath(row: indexOfTag, section: 1)
+                    // Move cell from top to bottom section
+                    tableView.moveRow(at: indexPath, to: insertPath)
+                    // Update icon of cell
+                    if let indexPaths = tableView.indexPathsForVisibleRows,
+                       indexPaths.contains(insertPath) {
+                        tableView.reloadRows(at: [insertPath], with: .automatic)
+                    }
                 }
+            }
+            catch {
+                debugPrint("••> Could not perform fetch!!!")
             }
         case 1 /* Non-selected tags */:
             // Tapped non selected tag
@@ -309,21 +317,26 @@ class TagsViewController: UITableViewController {
             selectedTagIds.insert(currentTag.tagId)
 
             // Update fetch requests and perform fetches
-            fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
-            try? selectedTags.performFetch()
-            fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
-            try? nonSelectedTags.performFetch()
+            do {
+                fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
+                try selectedTags.performFetch()
+                fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
+                try nonSelectedTags.performFetch()
 
-            // Determine new indexPath of selected tag
-            if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
-                let insertPath = IndexPath(row: indexOfTag, section: 0)
-                // Move cell from bottom to top section
-                tableView.moveRow(at: indexPath, to: insertPath)
-                // Update icon of cell
-                if let indexPaths = tableView.indexPathsForVisibleRows,
-                   indexPaths.contains(insertPath) {
-                    tableView.reloadRows(at: [insertPath], with: .automatic)
+                // Determine new indexPath of selected tag
+                if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
+                    let insertPath = IndexPath(row: indexOfTag, section: 0)
+                    // Move cell from bottom to top section
+                    tableView.moveRow(at: indexPath, to: insertPath)
+                    // Update icon of cell
+                    if let indexPaths = tableView.indexPathsForVisibleRows,
+                       indexPaths.contains(insertPath) {
+                        tableView.reloadRows(at: [insertPath], with: .automatic)
+                    }
                 }
+            }
+            catch {
+                debugPrint("••> Could not perform fetch!!!")
             }
         default:
             fatalError("Unknown tableView section!")

@@ -170,7 +170,7 @@ public class ImageProvider: NSObject {
                         try self.importImages(imageJSON.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)
                     } else {
-                        try self.importImages(imageJSON.data, inAlbum: albumId)
+                        try self.importImages(imageJSON.data, inAlbum: albumId, sort: sort)
                     }
                     
                     // Retrieve total number of images
@@ -344,7 +344,7 @@ public class ImageProvider: NSObject {
         // Import tags which are not yet in cache
         let imageTags = imagesBatch.compactMap({$0.tags}).reduce([],+)
         let isAdmin = [pwgUserStatus.admin.rawValue, pwgUserStatus.webmaster.rawValue].contains(user.status)
-        let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, delete: false)
+        let _ = tagProvider.importOneBatch(imageTags, asAdmin: isAdmin, tagIDs: Set<Int32>())
 
         // Get favorite album if possible (will not prevent import)
         let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue)

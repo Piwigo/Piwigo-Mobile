@@ -6,6 +6,8 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import AVFoundation
+import MobileCoreServices
 import Foundation
 import piwigoKit
 import UniformTypeIdentifiers
@@ -92,11 +94,16 @@ class ImageSession: NSObject {
                                      fromServer: serverID, placeHolder: placeHolder,
                                      progress: progress, completion: completion, failure: failure)
 
-        // Do we already have this image in cache?
-        if let cachedImage: UIImage = UIImage(contentsOfFile: download.fileURL.path),
-           let cgImage = cachedImage.cgImage, cgImage.height * cgImage.bytesPerRow > 0,
-           cachedImage != download.placeHolder {
-            print("••> Image \(download.fileURL.lastPathComponent) retrieved from cache.")
+        // Do we already have this image or video in cache?
+        if imageSize == .fullRes {
+            let cachedFileSize = download.fileURL.fileSize
+            let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
+//            print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\(diff)) retrieved from cache.")
+            if diff < 0.1 {     // i.e. 10%
+                completion(download.fileURL)
+                return
+            }
+        } else if download.fileURL.fileSize != 0 {
             completion(download.fileURL)
             return
         }
@@ -320,9 +327,7 @@ extension ImageSession: URLSessionDownloadDelegate {
             }
             
             // Delete existing file if it exists (incomplete previous attempt?)
-            if fm.fileExists(atPath: fileURL.path) {
-                try? fm.removeItem(at: fileURL)
-            }
+            try? fm.removeItem(at: fileURL)
             
             // Store image
             try fm.copyItem(at: location, to: fileURL)

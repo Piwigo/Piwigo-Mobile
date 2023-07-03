@@ -86,10 +86,14 @@ public class TagProvider: NSObject {
     */
     private let batchSize = 256
     private func importTags(from tagPropertiesArray: [TagProperties], asAdmin: Bool) throws {
+        // We keep IDs of tags to delete
+        // Initialised and then updated at each iteration
+        var tagToDeleteIDs: Set<Int32>? = nil
+
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
         guard tagPropertiesArray.isEmpty == false else {
-            _ = importOneBatch([TagProperties](), asAdmin: asAdmin)
+            _ = importOneBatch([TagProperties](), asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
             return
         }
         
@@ -112,9 +116,9 @@ public class TagProvider: NSObject {
             let tagsBatch = Array(tagPropertiesArray[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !importOneBatch(tagsBatch, asAdmin: asAdmin) {
-                return
-            }
+            let (success, tagIDs) = importOneBatch(tagsBatch, asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
+            if success ==  false { return }
+            tagToDeleteIDs = tagIDs
         }
     }
     
@@ -126,10 +130,13 @@ public class TagProvider: NSObject {
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
+     
+     tagIDs is nil or contains the IDs of tags to delete.
     */
     func importOneBatch(_ tagsBatch: [TagProperties], asAdmin: Bool,
-                        delete: Bool = true) -> Bool {
+                        tagIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
         var success = false
+        var tagToDeleteIDs = Set<Int32>()
 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -137,13 +144,15 @@ public class TagProvider: NSObject {
             
             // Get current server object
             guard let server = serverProvider.getServer(inContext: bckgContext) else {
-                fatalError("Unresolved error!")
+                print(TagError.creationError.localizedDescription)
+                return
             }
             
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
-            
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
+                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", server.path)
 
@@ -156,10 +165,20 @@ public class TagProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                print(TagError.creationError.localizedDescription)
+                return
             }
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
 
+            // Initialise set of tag IDs during the first iteration
+            if tagIDs == nil {
+                // Store IDs of present list of tags
+                tagToDeleteIDs = Set(cachedTags.map({$0.tagId}))
+            } else {
+                // Resume IDs of tags to delete
+                tagToDeleteIDs = tagIDs ?? Set<Int32>()
+            }
+            
             // Loop over new tags
             for tagData in tagsBatch {
             
@@ -169,6 +188,9 @@ public class TagProvider: NSObject {
                     // Update the tag's properties using the raw data
                     do {
                         try cachedTags[index].update(with: tagData, server: server)
+                        
+                        // Do not delete this tag during the last interation of the import
+                        tagToDeleteIDs.remove(ID)
                     }
                     catch TagError.missingData {
                         // Could not perform the update
@@ -201,13 +223,14 @@ public class TagProvider: NSObject {
                 }
             }
             
-            // Remove deleted tags
-            if delete {
-                let newTagIds = tagsBatch.compactMap({$0.id}).compactMap({$0.int32Value})
-                let cachedTagsToDelete = cachedTags.filter({newTagIds.contains($0.tagId) == false})
-                cachedTagsToDelete.forEach { cachedTag in
-                    print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
-                    bckgContext.delete(cachedTag)
+            // Delete remaining tags if this is the last iteration
+            if tagsBatch.count < batchSize,
+               tagToDeleteIDs.isEmpty == false {
+                // Delete tags
+                let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
+                tagToDelete.forEach { tag in
+                    print("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
+                    bckgContext.delete(tag)
                 }
             }
             
@@ -231,7 +254,7 @@ public class TagProvider: NSObject {
 
             success = true
         }
-        return success
+        return (success, tagToDeleteIDs)
     }
     
     
@@ -270,7 +293,7 @@ public class TagProvider: NSObject {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                if self.importOneBatch([newTag], asAdmin: true, delete: false) {
+                if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
                     completionHandler(nil)
                 } else {
                     completionHandler(TagError.creationError)
