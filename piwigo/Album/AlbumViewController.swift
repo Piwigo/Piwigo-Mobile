@@ -562,7 +562,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+        if AlbumVars.shared.isFetchingAlbumData == false,
            noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-86400) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
@@ -816,7 +816,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     func startFetchingAlbumAndImages(withHUD: Bool) {
         // Remember that the app is uploading this album data
-        AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
+        AlbumVars.shared.isFetchingAlbumData = true
         
         // Inform user
         DispatchQueue.main.async { [self] in
@@ -842,7 +842,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
+        if AlbumVars.shared.isFetchingAlbumData { return }
         
         // Pause upload manager
         UploadManager.shared.isPaused = true
@@ -892,11 +892,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            categoryId != pwgSmartAlbum.favorites.rawValue,
            "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
-           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
+           AlbumVars.shared.isFetchingAlbumData == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
             // Remember that the app is fetching favorites
-            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
+            AlbumVars.shared.isFetchingAlbumData = true
             // Fetch favorites in the background
             DispatchQueue.global(qos: .background).async { [self] in
                 self.loadFavoritesInBckg()
@@ -1444,12 +1444,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
     func didMoveCategory(_ albumCell: AlbumCollectionViewCell?) {
-        // Remove cell
-        guard let cellToRemove = albumCell else { return }
-        if let indexPath = imagesCollection?.indexPath(for: cellToRemove) {
-            imagesCollection?.deleteItems(at: [indexPath])
-        }
-        
         // Update number of images in footer
         updateNberOfImagesInFooter()
     }

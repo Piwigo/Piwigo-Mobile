@@ -6,15 +6,17 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 import piwigoKit
 import uploadKit
 
-class UploadImageTableViewCell: MGSwipeTableCell {
+class UploadImageTableViewCell: UITableViewCell {
     
     // MARK: - Variables
     var localIdentifier = ""
+    var objectID: NSManagedObjectID? = nil
     private let imagePlaceholder = UIImage(named: "placeholder")!
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
@@ -36,6 +38,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
         localIdentifier = upload.localIdentifier
+        objectID = upload.objectID
 
         // Upload info label
         uploadInfoLabel.textColor = .piwigoColorLeftLabel()
@@ -51,68 +54,6 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             uploadingProgress?.setProgress(1.0, animated: false)
         case .uploading:
             break
-        }
-
-        // Right => Left swipe commands
-        swipeBackgroundColor = .piwigoColorCellBackground()
-        rightExpansion.buttonIndex = 0
-        rightExpansion.threshold = 3.0
-        rightExpansion.fillOnTrigger = true
-        rightExpansion.expansionColor = .piwigoColorBrown()
-        rightSwipeSettings.transition = .border
-        switch upload.state {
-        case .preparing, .prepared, .uploading, .uploaded, .finishing:
-            rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return true
-                })]
-        case .preparingError, .uploadingError, .finishingError:
-            rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return true
-                }),
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    let savingContext = upload.managedObjectContext
-                    savingContext?.delete(upload)
-                    try? savingContext?.save()
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return true
-                })]
-        case .waiting:
-            rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
-                    let savingContext = upload.managedObjectContext
-                    savingContext?.delete(upload)
-                    try? savingContext?.save()
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return true
-                })]
-        case .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
-            rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
-                    let savingContext = upload.managedObjectContext
-                    savingContext?.delete(upload)
-                    try? savingContext?.save()
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return true
-                })]
         }
 
         // Image info label

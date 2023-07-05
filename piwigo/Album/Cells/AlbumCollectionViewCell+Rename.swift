@@ -10,7 +10,7 @@ import piwigoKit
 
 extension AlbumCollectionViewCell {
     // MARK: - Rename Category
-    func renameCategory() {
+    func renameCategory(completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
@@ -59,10 +59,9 @@ extension AlbumCollectionViewCell {
 
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
+            style: .cancel, handler: { action in
                 // Hide swipe buttons
-                let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
-                cell?.hideSwipe(animated: true)
+                completion(true)
             })
 
         renameAction = UIAlertAction(
@@ -72,7 +71,8 @@ extension AlbumCollectionViewCell {
                 if (self.renameAlert?.textFields?.first?.text?.count ?? 0) > 0 {
                     renameCategory(withName: self.renameAlert?.textFields?.first?.text,
                                    comment: self.renameAlert?.textFields?.last?.text,
-                                   andViewController: topViewController)
+                                   andViewController: topViewController,
+                                   completion: completion)
                 }
             })
 
@@ -122,7 +122,8 @@ extension AlbumCollectionViewCell {
     }
     
     private func renameCategory(withName albumName: String?, comment albumComment: String?,
-                                andViewController topViewController: UIViewController?) {
+                                andViewController topViewController: UIViewController?,
+                                completion: @escaping (Bool) -> Void) {
         guard let albumId = albumData?.pwgID,
               let albumName = albumName,
               let albumComment = albumComment else { return }
@@ -134,6 +135,9 @@ extension AlbumCollectionViewCell {
         NetworkUtilities.checkSession(ofUser: user) {
             AlbumUtilities.setInfos(albumId, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
+                    // Hide swipe buttons
+                    completion(true)
+
                     // Update album in cache and cell
                     if albumData?.name != albumName {
                         albumData?.name = albumName
@@ -148,29 +152,30 @@ extension AlbumCollectionViewCell {
                     }
                     
                     // Hide HUD and swipe button
-                    topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                            // Update cell and hide swipe buttons
-                            let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
-                            cell?.hideSwipe(animated: true)
-                        }
+                    topViewController?.updatePiwigoHUDwithSuccess() {
+                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { }
                     }
                 }
             } failure: { error in
-                self.renameCategoryError(error, viewController: topViewController)
+                self.renameCategoryError(error, viewController: topViewController,
+                                         completion: completion)
             }
         } failure: { error in
-            self.renameCategoryError(error, viewController: topViewController)
+            self.renameCategoryError(error, viewController: topViewController,
+                                     completion: completion)
         }
     }
     
-    private func renameCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
+    private func renameCategoryError(_ error: NSError, viewController topViewController: UIViewController?,
+                                     completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.async {
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
             let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
             topViewController?.hidePiwigoHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) { }
+                                                      errorMessage: error.localizedDescription) {
+                    completion(true)
+                }
             }
         }
     }

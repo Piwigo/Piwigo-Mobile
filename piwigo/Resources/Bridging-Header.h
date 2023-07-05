@@ -4,4 +4,3 @@
 
 #import <Availability.h>
 #import <MBProgressHUD.h>
-#import <MGSwipeTableCell.h>

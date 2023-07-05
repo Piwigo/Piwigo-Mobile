@@ -175,7 +175,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         visibleCells.forEach { (cell) in
             cell.backgroundColor = .piwigoColorCellBackground()
             cell.uploadInfoLabel.textColor = .piwigoColorLeftLabel()
-            cell.swipeBackgroundColor = .piwigoColorCellBackground()
             cell.imageInfoLabel.textColor = .piwigoColorRightLabel()
         }
         for section in 0..<queueTableView.numberOfSections {
@@ -367,6 +366,52 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // Retreive upload object
+        guard let cell = tableView.cellForRow(at: indexPath) as? UploadImageTableViewCell,
+              let objectID = cell.objectID,
+              let upload = try? self.mainContext.existingObject(with: objectID) as? Upload else {
+            fatalError("Managed object should be available")
+        }
+        
+        // Create retry upload action
+        let retry = UIContextualAction(style: .normal, title: nil,
+                                       handler: { action, view, completionHandler in
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                UploadManager.shared.findNextImageToUpload()
+            }
+            completionHandler(true)
+        })
+        retry.backgroundColor = .piwigoColorCellBackground()
+        retry.image = UIImage(named: "swipeRetry.png")
+
+        // Create trash/cancel upload action
+        let cancel = UIContextualAction(style: .normal, title: nil,
+                                        handler: { action, view, completionHandler in
+            let savingContext = upload.managedObjectContext
+            savingContext?.delete(upload)
+            try? savingContext?.save()
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
+                UploadManager.shared.findNextImageToUpload()
+            }
+            completionHandler(true)
+        })
+        cancel.backgroundColor = .piwigoColorCellBackground()
+        cancel.image = UIImage(named: "swipeCancel.png")
+
+        // Associate actions
+        switch upload.state {
+        case .preparing, .prepared, .uploading, .uploaded, .finishing:
+            return UISwipeActionsConfiguration(actions: [retry])
+        case .preparingError, .uploadingError, .finishingError:
+            return UISwipeActionsConfiguration(actions: [retry, cancel])
+        case .waiting, .preparingFail, .formatError, .uploadingFail, .finishingFail, .finished, .moderated:
+            return UISwipeActionsConfiguration(actions: [cancel])
+        }
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {

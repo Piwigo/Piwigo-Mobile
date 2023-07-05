@@ -1,24 +1,20 @@
 PODS:
-  - IQKeyboardManagerSwift (6.5.11)
+  - IQKeyboardManagerSwift (6.5.12)
   - MBProgressHUD (1.2.0)
-  - MGSwipeTableCell (1.6.14)
 
 DEPENDENCIES:
   - IQKeyboardManagerSwift
   - MBProgressHUD
-  - MGSwipeTableCell
 
 SPEC REPOS:
   trunk:
     - IQKeyboardManagerSwift
     - MBProgressHUD
-    - MGSwipeTableCell
 
 SPEC CHECKSUMS:
-  IQKeyboardManagerSwift: c7955c0bdbf7b2eb29bb7daaa44e3d90f55a9a85
+  IQKeyboardManagerSwift: 371b08cb39664fb56030f5345c815a4ffc74bbc0
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
-  MGSwipeTableCell: d99ed6466f393b71cd488c6f798ba112ff5d1d01
 
-PODFILE CHECKSUM: 7326c690f70dd069c0315437b981ea71e143bc6c
+PODFILE CHECKSUM: 4f577ab122f147a3faa6865b771c5a1999409439
 
 COCOAPODS: 1.11.3
