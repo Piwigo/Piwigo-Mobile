@@ -83,5 +83,5 @@ class AlbumVars: NSObject {
     // MARK: - Vars in Memory
     // Album variables kept in memory
     /// - To remember which album data is being fetched
-    var isFetchingAlbumData = false
+    var isFetchingAlbumData = Set<Int32>()
 }

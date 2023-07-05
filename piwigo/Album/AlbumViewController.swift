@@ -562,8 +562,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData == false,
-           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-86400) {
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
@@ -816,7 +816,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     func startFetchingAlbumAndImages(withHUD: Bool) {
         // Remember that the app is uploading this album data
-        AlbumVars.shared.isFetchingAlbumData = true
+        AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
         
         // Inform user
         DispatchQueue.main.async { [self] in
@@ -842,7 +842,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData { return }
+        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
         
         // Pause upload manager
         UploadManager.shared.isPaused = true
@@ -892,11 +892,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            categoryId != pwgSmartAlbum.favorites.rawValue,
            "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
-           AlbumVars.shared.isFetchingAlbumData == false,
+           AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
             // Remember that the app is fetching favorites
-            AlbumVars.shared.isFetchingAlbumData = true
+            AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
             // Fetch favorites in the background
             DispatchQueue.global(qos: .background).async { [self] in
                 self.loadFavoritesInBckg()
