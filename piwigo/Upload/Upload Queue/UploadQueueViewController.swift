@@ -385,7 +385,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             }
             completionHandler(true)
         })
-        retry.backgroundColor = .piwigoColorCellBackground()
+        retry.backgroundColor = .piwigoColorBrown()
         retry.image = UIImage(named: "swipeRetry.png")
 
         // Create trash/cancel upload action
@@ -400,7 +400,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             }
             completionHandler(true)
         })
-        cancel.backgroundColor = .piwigoColorCellBackground()
+        cancel.backgroundColor = .red
         cancel.image = UIImage(named: "swipeCancel.png")
 
         // Associate actions
