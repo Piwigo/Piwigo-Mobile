@@ -37,8 +37,8 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     @IBOutlet private weak var todayDateButton: UIBarButtonItem!
     @IBOutlet private weak var incrementYearButton: UIBarButtonItem!
 
-    private let pwgPickerMinDate = "1922-01-01 00:00:00" // UTC
-    private let pwgPickerMaxDate = "2100-01-01 00:00:00" // UTC
+    private let pwgPickerMinDate = "1922-01-01 00:00:00"
+    private let pwgPickerMaxDate = "2100-01-01 00:00:00"
     private let pwgPickerWidthLimit: CGFloat = 375 // i.e. larger than iPhones 6,7,8 screen width
     private let pwgPicker1Day: Int = 24 * 60 * 60
     private let pwgPicker12Hours: Int = 12
@@ -96,7 +96,6 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 
         // Define date picker limits in number of days
         formatter.dateFormat = "YYYY-MM-DD hh:mm:ss"
-        formatter.timeZone = NSTimeZone(abbreviation: "UTC") as TimeZone?
         pickerRefDate = formatter.date(from: pwgPickerMinDate)!
         let maxDate = formatter.date(from: pwgPickerMaxDate)!
         pickerMaxNberDays = Int(maxDate.timeIntervalSince(pickerRefDate) / Double(pwgPicker1Day))
