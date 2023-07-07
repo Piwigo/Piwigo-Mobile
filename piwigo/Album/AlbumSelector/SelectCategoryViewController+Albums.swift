@@ -23,16 +23,32 @@ extension SelectCategoryViewController {
         NetworkUtilities.checkSession(ofUser: user) {  [self] in
             AlbumUtilities.move(self.inputAlbum.pwgID,
                                 intoAlbumWithId: parentData.pwgID) { [self] in
-                // Update cached albums in the background
-                DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-                    albumProvider.moveAlbum(self.inputAlbum.pwgID, intoAlbumWithId: parentData.pwgID)
-                }
-                
-                // Hide HUD, swipe and view then remove category from the album/images collection view
-                self.updatePiwigoHUDwithSuccess() {
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                        self.dismiss(animated: true) {
-                            self.albumMovedDelegate?.didMoveCategory()
+                // Remember that the app is fetching all album data
+                AlbumVars.shared.isFetchingAlbumData.insert(0)
+
+                // Use the AlbumProvider to fetch album data. On completion,
+                // handle general UI updates and error alerts on the main queue.
+                let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                          thumbnailSize: thumnailSize) { [self] error in
+                    // ► Remove current album from list of album being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(0)
+
+                    // Check error
+                    guard let error = error else {
+                        // No error ► Hide HUD
+                        self.updatePiwigoHUDwithSuccess() {
+                            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                                self.dismiss(animated: true)
+                            }
+                        }
+                        return
+                    }
+                    
+                    // Show the error
+                    DispatchQueue.main.async { [self] in
+                        self.hidePiwigoHUD {
+                            self.showError(with: error.localizedDescription)
                         }
                     }
                 }

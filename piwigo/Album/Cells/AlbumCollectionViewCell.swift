@@ -13,8 +13,8 @@ import UIKit
 import piwigoKit
 
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func pushCategoryView(_ viewController: UIViewController?)
-    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?)
+    func pushCategoryView(_ viewController: UIViewController?,
+                          completion: @escaping (Bool) -> Void)
     func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
                         inMode mode: pwgAlbumDeletionMode)
 }
@@ -130,7 +130,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Push new album view
         if let albumData = albumData {
             let albumView = AlbumViewController(albumId: albumData.pwgID)
-            categoryDelegate?.pushCategoryView(albumView)
+            categoryDelegate?.pushCategoryView(albumView, completion: {_ in })
         }
     }
     
@@ -159,8 +159,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Album move
         let move = UIContextualAction(style: .normal, title: nil,
                                       handler: { action, view, completionHandler in
-            self.moveCategory()
-            completionHandler(true)
+            self.moveCategory(completion: completionHandler)
         })
         move.backgroundColor = .piwigoColorBrown()
         move.image = UIImage(named: "swipeMove.png")
