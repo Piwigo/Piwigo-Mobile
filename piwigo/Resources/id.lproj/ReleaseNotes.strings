@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.0.1_text" = "Version 3.0.1\n\n• Minor bug fixes and improvements of the interface";
+"v3.0.2_text" = "Versi 3.0.2\n\n• Perbaikan bug";
+
+"v3.0.1_text" = "Versi 3.0.1\n2 Juli 2023\n\n• Perbaikan bug minor dan perbaikan antarmuka";
 
 "v3.0.0_text" = "Version 3.0\nJune 27, 2023\n\n• Cache management fully rewritten to improve the user experience and bring offline browsing\n• Fixes some translations";
 

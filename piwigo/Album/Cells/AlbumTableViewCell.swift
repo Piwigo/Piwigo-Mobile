@@ -11,7 +11,7 @@
 import UIKit
 import piwigoKit
 
-class AlbumTableViewCell: MGSwipeTableCell {
+class AlbumTableViewCell: UITableViewCell {
     
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var topCut: UIButton!

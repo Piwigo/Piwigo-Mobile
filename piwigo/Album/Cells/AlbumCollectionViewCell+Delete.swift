@@ -10,7 +10,7 @@ import piwigoKit
 
 extension AlbumCollectionViewCell {
     // MARK: - Delete Category
-    func deleteCategory() {
+    func deleteCategory(completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
@@ -23,10 +23,9 @@ extension AlbumCollectionViewCell {
 
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
+            style: .cancel, handler: { _ in
                 // Hide swipe buttons
-                let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
-                cell?.hideSwipe(animated: true)
+                completion(true)
             })
         alert.addAction(cancelAction)
 
@@ -40,7 +39,8 @@ extension AlbumCollectionViewCell {
                     
                     // Delete empty album
                     deleteCategory(withDeletionMode: .none,
-                                   andViewController: topViewController)
+                                   andViewController: topViewController,
+                                   completion: completion)
                 })
             alert.addAction(emptyCategoryAction)
         } else {
@@ -51,12 +51,14 @@ extension AlbumCollectionViewCell {
                     if NetworkVars.usesCalcOrphans, nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
                         deleteCategory(withDeletionMode: .none,
-                                       andViewController: topViewController)
+                                       andViewController: topViewController,
+                                       completion: completion)
                     } else {
                         // There will be orphans, ask confirmation
                         confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
                                                 deletionMode: .none,
-                                                andViewController: topViewController)
+                                                andViewController: topViewController,
+                                                completion: completion)
                     }
                 })
             alert.addAction(keepImagesAction)
@@ -69,7 +71,8 @@ extension AlbumCollectionViewCell {
                     handler: { [self] action in
                         confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
                                                 deletionMode: .orphaned,
-                                                andViewController: topViewController)
+                                                andViewController: topViewController,
+                                                completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
             }
@@ -80,7 +83,8 @@ extension AlbumCollectionViewCell {
                     handler: { [self] action in
                         confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
                                                 deletionMode: .orphaned,
-                                                andViewController: topViewController)
+                                                andViewController: topViewController,
+                                                completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
             }
@@ -91,7 +95,8 @@ extension AlbumCollectionViewCell {
                 handler: { [self] action in
                     confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
                                             deletionMode: .all,
-                                            andViewController: topViewController)
+                                            andViewController: topViewController,
+                                            completion: completion)
                 })
             allImagesAction.accessibilityIdentifier = "DeleteAll"
             alert.addAction(allImagesAction)
@@ -116,7 +121,8 @@ extension AlbumCollectionViewCell {
 
     private func confirmCategoryDeletion(withNumberOfImages number: Int64,
                                          deletionMode: pwgAlbumDeletionMode,
-                                         andViewController topViewController: UIViewController?) {
+                                         andViewController topViewController: UIViewController?,
+                                         completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
 
         // Are you sure?
@@ -137,7 +143,8 @@ extension AlbumCollectionViewCell {
         let defaultAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel,
-            handler: { action in
+            handler: { _ in
+                completion(true)
             })
 
         deleteAction = UIAlertAction(
@@ -146,7 +153,8 @@ extension AlbumCollectionViewCell {
             handler: { [self] action in
                 if (alert.textFields?.first?.text?.count ?? 0) > 0 {
                     checkDeletion(withNumberOfImages: Int(alert.textFields?.first?.text ?? "") ?? 0,
-                                  deletionMode: deletionMode, andViewController: topViewController)
+                                  deletionMode: deletionMode, andViewController: topViewController,
+                                  completion: completion)
                 }
             })
         deleteAction?.accessibilityIdentifier = "DeleteAll"
@@ -169,7 +177,8 @@ extension AlbumCollectionViewCell {
 
     private func checkDeletion(withNumberOfImages number: Int,
                                deletionMode: pwgAlbumDeletionMode,
-                               andViewController topViewController: UIViewController?) {
+                               andViewController topViewController: UIViewController?,
+                               completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
 
         // Check provided number of images
@@ -183,11 +192,12 @@ extension AlbumCollectionViewCell {
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
         // Delete album (deleted images will remain in cache)
-        deleteCategory(withDeletionMode: deletionMode, andViewController: topViewController)
+        deleteCategory(withDeletionMode: deletionMode, andViewController: topViewController, completion: completion)
     }
 
     private func deleteCategory(withDeletionMode deletionMode: pwgAlbumDeletionMode,
-                                andViewController topViewController: UIViewController?) {
+                                andViewController topViewController: UIViewController?,
+                                completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
 
         // Delete the category
@@ -203,8 +213,7 @@ extension AlbumCollectionViewCell {
                 topViewController?.updatePiwigoHUDwithSuccess() { [self] in
                     topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                         // Hide swipe buttons
-                        let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
-                        cell?.hideSwipe(animated: true)
+                        completion(true)
 
                         // Delete album and images from cache and update UI
                         categoryDelegate?.deleteCategory(albumData.pwgID, inParent: albumData.parentId,
@@ -212,20 +221,25 @@ extension AlbumCollectionViewCell {
                     }
                 }
             } failure: { error in
-                self.deleteCategoryError(error, viewController: topViewController)
+                self.deleteCategoryError(error, viewController: topViewController,
+                completion: completion)
             }
         } failure: { error in
-            self.deleteCategoryError(error, viewController: topViewController)
+            self.deleteCategoryError(error, viewController: topViewController,
+            completion: completion)
         }
     }
     
-    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
+    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?,
+                                     completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.async {
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             topViewController?.hidePiwigoHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) { }
+                                                      errorMessage: error.localizedDescription) {
+                        completion(true)
+                }
             }
         }
     }

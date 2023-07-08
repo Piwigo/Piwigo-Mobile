@@ -13,8 +13,8 @@ import UIKit
 import piwigoKit
 
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func pushCategoryView(_ viewController: UIViewController?)
-    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?)
+    func pushCategoryView(_ viewController: UIViewController?,
+                          completion: @escaping (Bool) -> Void)
     func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
                         inMode mode: pwgAlbumDeletionMode)
 }
@@ -70,10 +70,6 @@ class AlbumCollectionViewCell: UICollectionViewCell
             contentView.addSubview(tableView)
         }
         contentView.addConstraints(NSLayoutConstraint.constraintFillSize(tableView)!)
-
-        // Register auto-upload option enabled/disabled
-        NotificationCenter.default.addObserver(self, selector: #selector(autoUploadUpdated(_:)),
-                                               name: .pwgAutoUploadChanged, object: nil)
     }
 
     @objc
@@ -86,19 +82,8 @@ class AlbumCollectionViewCell: UICollectionViewCell
         albumData = nil
     }
 
-    @objc
-    func autoUploadUpdated(_ notification: Notification?) {
-        // Is this cell concerned?
-        if UploadVars.autoUploadCategoryId != Int(albumData?.pwgID ?? 0)  { return }
-
-        // Disallow user to delete the active auto-upload destination album
-        let cell = tableView?.cellForRow(at: IndexPath(item: 0, section: 0)) as? AlbumTableViewCell
-        cell?.refreshButtons(true)
-    }
-
     deinit {
         renameAction = nil
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -125,7 +110,6 @@ extension AlbumCollectionViewCell: UITableViewDataSource
         
         // Album modifications are possible only if data are known
         if albumData != nil {
-            cell.delegate = self
             cell.isAccessibilityElement = true
         }
         return cell
@@ -146,21 +130,15 @@ extension AlbumCollectionViewCell: UITableViewDelegate
         // Push new album view
         if let albumData = albumData {
             let albumView = AlbumViewController(albumId: albumData.pwgID)
-            categoryDelegate?.pushCategoryView(albumView)
+            categoryDelegate?.pushCategoryView(albumView, completion: {_ in })
         }
     }
-}
-
-
-// MARK: - MGSwipeTableCellDelegate Methods
-extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
-{
-    func swipeTableCell(_ cell: MGSwipeTableCell, canSwipe direction: MGSwipeDirection,
-                        from point: CGPoint) -> Bool {
-        return true
-    }
     
-    func swipeTableCellWillBeginSwiping(_ cell: MGSwipeTableCell) {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        // Only admins can rename, move and delete albums
+        if !(user?.hasAdminRights ?? false) { return nil }
+
         // Determine number of orphans if album deleted
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             self.nbOrphans = Int64.min
@@ -169,47 +147,39 @@ extension AlbumCollectionViewCell: MGSwipeTableCellDelegate
                 self.nbOrphans = nbOrphans
             } failure: { _ in }
         }
-    }
 
-    func swipeTableCell(_ cell: MGSwipeTableCell, swipeButtonsFor direction: MGSwipeDirection, swipeSettings: MGSwipeSettings, expansionSettings: MGSwipeExpansionSettings) -> [UIView]?
-    {
+        // Album deletion
+        let trash = UIContextualAction(style: .normal, title: nil,
+                                       handler: { _, _, completionHandler in
+            self.deleteCategory(completion: completionHandler)
+        })
+        trash.backgroundColor = .red
+        trash.image = UIImage(named: "swipeTrash.png")
+        
+        // Album move
+        let move = UIContextualAction(style: .normal, title: nil,
+                                      handler: { action, view, completionHandler in
+            self.moveCategory(completion: completionHandler)
+        })
+        move.backgroundColor = .piwigoColorBrown()
+        move.image = UIImage(named: "swipeMove.png")
+        
+        // Album renaming
+        let rename = UIContextualAction(style: .normal, title: nil,
+                                        handler: { action, view, completionHandler in
+            self.renameCategory(completion: completionHandler)
+        })
+        rename.backgroundColor = .piwigoColorOrange()
+        rename.image = UIImage(named: "swipeRename.png")
+
+        // Disallow user to delete the active auto-upload destination album
         guard let albumData = albumData else { return nil }
-
-        // Only admins can rename, move and delete albums
-        if !(user?.hasAdminRights ?? false) { return nil }
-
-        // Settings
-        cell.swipeBackgroundColor = UIColor.piwigoColorOrange()
-        swipeSettings.transition = .border
-
-        // Right => Left swipe
-        if direction == .rightToLeft {
-            let trash = MGSwipeButton(title: "", icon: UIImage(named: "swipeTrash.png"),
-                backgroundColor: UIColor.red, callback: { [self] sender in
-                    deleteCategory()
-                    return false
-                })
-            let move = MGSwipeButton(title: "", icon: UIImage(named: "swipeMove.png"),
-                backgroundColor: UIColor.piwigoColorBrown(), callback: { [self] sender in
-                    moveCategory()
-                    return false
-                })
-            let rename = MGSwipeButton(title: "", icon: UIImage(named: "swipeRename.png"),
-                backgroundColor: UIColor.piwigoColorOrange(), callback: { [self] sender in
-                    renameCategory()
-                    return false
-                })
-
-            // Disallow user to delete the active auto-upload destination album
-            if (UploadVars.autoUploadCategoryId == Int(albumData.pwgID)),
-                UploadVars.isAutoUploadActive {
-                return [move, rename]
-            } else {
-                expansionSettings.buttonIndex = 0
-                return [trash, move, rename]
-            }
+        if (UploadVars.autoUploadCategoryId == Int(albumData.pwgID)),
+            UploadVars.isAutoUploadActive {
+            return UISwipeActionsConfiguration(actions: [move, rename])
+        } else {
+            return UISwipeActionsConfiguration(actions: [trash, move, rename])
         }
-        return nil
     }
 }
 

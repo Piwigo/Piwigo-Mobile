@@ -23,10 +23,6 @@ protocol SelectCategoryDelegate: NSObjectProtocol {
     func didSelectCategory(withId category: Int32)
 }
 
-protocol SelectCategoryAlbumMovedDelegate: NSObjectProtocol {
-    func didMoveCategory()
-}
-
 protocol SelectCategoryImageCopiedDelegate: NSObjectProtocol {
     func didCopyImage()
 }
@@ -38,7 +34,6 @@ protocol SelectCategoryImageRemovedDelegate: NSObjectProtocol {
 class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     weak var delegate: SelectCategoryDelegate?
-    weak var albumMovedDelegate: SelectCategoryAlbumMovedDelegate?
     weak var imageCopiedDelegate: SelectCategoryImageCopiedDelegate?
     weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 

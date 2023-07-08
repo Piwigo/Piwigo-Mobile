@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.0.1_text" = "Version 3.0.1\n\n• Corrections de bugs mineurs et amélioration de l'interface";
+"v3.0.2_text" = "Version 3.0.2\n\n• Correction de bugs";
 
-"v3.0.0_text" = "Version 3.0\n\n• Gestion du cache entièrement réécrite pour améliorer l'expérience de l'utilisateur et permettre la navigation hors ligne.\n• Correction de certaines traductions";
+"v3.0.1_text" = "Version 3.0.1\n2 juillet 2023\n\n• Corrections de bugs mineurs et amélioration de l'interface";
+
+"v3.0.0_text" = "Version 3.0\n27 juin 2023\n\n• Gestion du cache entièrement réécrite pour améliorer l'expérience de l'utilisateur et permettre la navigation hors ligne.\n• Correction de certaines traductions";
 
 "v2.12.7_text" = "Version 2.12.7\n19 décembre 2022\n\n• Correction de bugs";
 

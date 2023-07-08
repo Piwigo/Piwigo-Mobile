@@ -7,7 +7,6 @@ target 'piwigo' do
 
   # Pods for piwigo
   pod 'MBProgressHUD'
-  pod 'MGSwipeTableCell'
   pod 'IQKeyboardManagerSwift'
 
   target 'piwigoAppStore' do

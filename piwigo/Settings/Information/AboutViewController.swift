@@ -194,16 +194,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         aboutAttributedString.append(mbpHudAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
-        // MGSwipeTableCell Licence — Bundle string
-        let mgstcString = NSLocalizedString("licenceMGSTC_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MGSwipeTableCell licence text")
-        let mgstcAttributedString = NSMutableAttributedString(string: mgstcString)
-        var mgstcRange = NSRange(location: 0, length: mgstcString.count)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mgstcRange)
-        mgstcRange = NSRange(location: 0, length: (mgstcString as NSString).range(of: "\n").location)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mgstcRange)
-        aboutAttributedString.append(mgstcAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
-
         // MIT Licence — Bundle string
         let mitString = NSLocalizedString("licenceMIT_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
         let mitAttributedString = NSMutableAttributedString(string: mitString)

@@ -563,7 +563,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-86400) {
+           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
@@ -1443,17 +1443,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
-    func didMoveCategory(_ albumCell: AlbumCollectionViewCell?) {
-        // Remove cell
-        guard let cellToRemove = albumCell else { return }
-        if let indexPath = imagesCollection?.indexPath(for: cellToRemove) {
-            imagesCollection?.deleteItems(at: [indexPath])
-        }
-        
-        // Update number of images in footer
-        updateNberOfImagesInFooter()
-    }
-
     func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
                         inMode mode: pwgAlbumDeletionMode) {
         // Delete album, sub-albums and images from presistent cache
@@ -1466,7 +1455,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
 
     @objc
-    func pushCategoryView(_ viewController: UIViewController?) {
+    func pushCategoryView(_ viewController: UIViewController?,
+                          completion: @escaping (Bool) -> Void) {
         guard let viewController = viewController else {
             return
         }
@@ -1482,14 +1472,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 viewController.modalPresentationStyle = .popover
                 viewController.popoverPresentationController?.sourceView = imagesCollection
                 viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-                navigationController?.present(viewController, animated: true)
+                navigationController?.present(viewController, animated: true) {
+                    // Hide swipe commands
+                    completion(true)
+                }
             }
             else {
                 let navController = UINavigationController(rootViewController: viewController)
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.sourceView = view
                 navController.modalTransitionStyle = .coverVertical
-                navigationController?.present(navController, animated: true)
+                navigationController?.present(navController, animated: true) {
+                    // Hide swipe commands
+                    completion(true)
+                }
             }
         }
     }
@@ -1575,16 +1571,14 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
-        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
-        print("••> fetchController will change content: \(controller)")
+        if view.window == nil || [images, albums].contains(controller) == false { return }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         // Check that this update should be managed by this view controller
         guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
-        if view.window == nil || fetchDelegate.categoryId != categoryId { return }
+        if view.window == nil || [images, albums].contains(controller) == false { return }
 
         // Collect operation changes
         switch type.rawValue {
@@ -1646,14 +1640,15 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 })
             }
         case NSFetchedResultsChangeType.move.rawValue:
-            guard var indexPath = indexPath,  var newIndexPath = newIndexPath,
+            guard var indexPath = indexPath,
+                  var newIndexPath = newIndexPath,
                   indexPath != newIndexPath else { return }
             if anObject is Image {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move   item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
+                print("••> Move item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
         default:
@@ -1663,8 +1658,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        guard let fetchDelegate = controller.delegate as? AlbumViewController else { return }
-        if view.window == nil || fetchDelegate.categoryId != categoryId || updateOperations.isEmpty { return }
+        if view.window == nil || [images, albums].contains(controller) == false || updateOperations.isEmpty { return }
 
         // Update objects
         imagesCollection?.performBatchUpdates({ [weak self] in

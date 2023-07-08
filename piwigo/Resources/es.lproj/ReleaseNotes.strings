@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.0.1_text" = "Versión 3.0.1\n\n• Corrección de errores menores y mejoras en la interfaz";
+"v3.0.2_text" = "Versión 3.0.2\n\n• Corrección de errores";
+
+"v3.0.1_text" = "Versión 3.0.1\n2 de julio de 2023\n\n• Corrección de errores menores y mejoras en la interfaz";
 
 "v3.0.0_text" = "Versión 3.0\n27 de junio de 2023\n\n• Gestión de caché completamente reescrita para mejorar la experiencia del usuario y traer la navegación sin conexión\n• Corrección de algunas traducciones";
 
