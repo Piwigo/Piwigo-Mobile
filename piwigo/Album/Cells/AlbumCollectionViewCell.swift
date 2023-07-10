@@ -15,8 +15,8 @@ import piwigoKit
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushCategoryView(_ viewController: UIViewController?,
                           completion: @escaping (Bool) -> Void)
-    func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
-                        inMode mode: pwgAlbumDeletionMode)
+    func didDeleteCategory(withError error: NSError?,
+                           viewController topViewController: UIViewController?)
 }
 
 class AlbumCollectionViewCell: UICollectionViewCell

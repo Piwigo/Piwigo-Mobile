@@ -201,44 +201,36 @@ extension AlbumCollectionViewCell {
         guard let albumData = albumData else { return }
 
         // Delete the category
-        NetworkUtilities.checkSession(ofUser: user) {
-            AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) {
-
+        NetworkUtilities.checkSession(ofUser: user) { [self] in
+            AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
+                // Hide swipe buttons
+                DispatchQueue.main.async {
+                    completion(true)
+                }
+                
                 // Remove this album from the auto-upload destination
                 if UploadVars.autoUploadCategoryId == albumData.pwgID {
                     UploadVars.autoUploadCategoryId = Int32.min
                 }
 
-                // Close HUD, hide swipe button, remove album and images from cache
-                topViewController?.updatePiwigoHUDwithSuccess() { [self] in
-                    topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                        // Hide swipe buttons
-                        completion(true)
-
-                        // Delete album and images from cache and update UI
-                        categoryDelegate?.deleteCategory(albumData.pwgID, inParent: albumData.parentId,
-                                                         inMode: deletionMode)
-                    }
-                }
+                // Delete album and images from cache and update UI
+                self.categoryDelegate?.didDeleteCategory(withError: nil,
+                                                         viewController: topViewController)
             } failure: { error in
-                self.deleteCategoryError(error, viewController: topViewController,
-                completion: completion)
+                self.deleteCategoryError(error, viewController: topViewController)
             }
         } failure: { error in
-            self.deleteCategoryError(error, viewController: topViewController,
-            completion: completion)
+            self.deleteCategoryError(error, viewController: topViewController)
         }
     }
     
-    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?,
-                                     completion: @escaping (Bool) -> Void) {
+    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
         DispatchQueue.main.async {
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             topViewController?.hidePiwigoHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
                                                       errorMessage: error.localizedDescription) {
-                        completion(true)
                 }
             }
         }

@@ -1443,15 +1443,63 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
-    func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
-                        inMode mode: pwgAlbumDeletionMode) {
-        // Delete album, sub-albums and images from presistent cache
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.albumProvider.deleteAlbum(albumId, inParent: parentID, inMode: mode)
+    func didDeleteCategory(withError error: NSError?, viewController topViewController: UIViewController?) {
+        guard let error = error else {
+            // Remember that the app is fetching all album data
+            AlbumVars.shared.isFetchingAlbumData.insert(0)
+
+            // Use the AlbumProvider to fetch album data. On completion,
+            // handle general UI updates and error alerts on the main queue.
+            let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+            albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                      thumbnailSize: thumnailSize) { [self] error in
+                // ► Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(0)
+                
+                // Check error
+                guard let error = error as? NSError else {
+                    // No error ► Hide HUD, update
+                    DispatchQueue.main.async { [self] in
+                        topViewController?.updatePiwigoHUDwithSuccess() {
+                            topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                                // Update number of images in footer
+                                self.updateNberOfImagesInFooter()
+                            }
+                        }
+                    }
+                    return
+                }
+                
+                // Show the error
+                DispatchQueue.main.async { [self] in
+                    topViewController?.hidePiwigoHUD {
+                        // Display error alert after trying to share image
+                        self.deleteCategoryError(error, viewController: topViewController)
+                    }
+                }
+            }
+            return
         }
-        
-        // Update number of images in footer
-        updateNberOfImagesInFooter()
+
+        // Show the error
+        DispatchQueue.main.async { [self] in
+            topViewController?.hidePiwigoHUD {
+                // Display error alert after trying to share image
+                self.deleteCategoryError(error, viewController: topViewController)
+            }
+        }
+    }
+
+    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
+        DispatchQueue.main.async {
+            let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                      errorMessage: error.localizedDescription) {
+                }
+            }
+        }
     }
 
     @objc
