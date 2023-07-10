@@ -398,7 +398,7 @@ public class AlbumProvider: NSObject {
                             user.removeUploadRightsToAlbum(withID: ID)
                         }
                         
-                        // Do not delete this album during the last interation of the import
+                        // Do not delete this album during the last iteration of the import
                         albumToDeleteIDs.remove(ID)
                     }
                     catch AlbumError.missingData {
@@ -437,19 +437,34 @@ public class AlbumProvider: NSObject {
                 }
             }
             
-            // Delete remaining albums if this is the last iteration
-            if albumsBatch.count < batchSize,
-               albumToDeleteIDs.isEmpty == false {
-                // Check whether the auto-upload category will be deleted
-                if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
-                    NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
-                }
+            // Delete albums if this is the last iteration
+            if albumsBatch.count < batchSize {
+                // Albums not returned by the fetch are deleted first
+                if albumToDeleteIDs.isEmpty == false {
+                    // Check whether the auto-upload category will be deleted
+                    if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
+                        NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
+                    }
+                    
+                    // Delete albums not returned by the fetch
+                    let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
+                    albumsToDelete.forEach { album in
+                        print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
+                        bckgContext.delete(album)
+                    }
 
-                // Delete albums
-                let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
-                albumsToDelete.forEach { album in
-                    print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
-                    bckgContext.delete(album)
+                    // Duplicate albums, if any
+                    let otherAlbums = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID) == false})
+                    let duplicates = duplicates(inArray: otherAlbums)
+                    duplicates.forEach { album in
+                        bckgContext.delete(album)
+                    }
+                } else {
+                    // Delete duplicates if any
+                    let duplicates = duplicates(inArray: cachedAlbums)
+                    duplicates.forEach { album in
+                        bckgContext.delete(album)
+                    }
                 }
             }
             
@@ -474,6 +489,19 @@ public class AlbumProvider: NSObject {
         return (success, albumToDeleteIDs)
     }
     
+    private func duplicates(inArray albums: [Album]) -> [Album] {
+        var seenID = Set<Int32>(), duplicates = [Album]()
+        for album in albums {
+            let catID = album.pwgID
+            if seenID.contains(catID) {
+                duplicates.append(album)
+            } else {
+                seenID.insert(catID)
+            }
+        }
+        return duplicates
+    }
+
     
     // MARK: - Update Albums
     /**
