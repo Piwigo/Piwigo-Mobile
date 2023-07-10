@@ -453,7 +453,7 @@ public class AlbumProvider: NSObject {
                         bckgContext.delete(album)
                     }
 
-                    // Duplicate albums, if any
+                    // Delete duplicate albums, if any
                     let otherAlbums = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID) == false})
                     let duplicates = duplicates(inArray: otherAlbums)
                     duplicates.forEach { album in
