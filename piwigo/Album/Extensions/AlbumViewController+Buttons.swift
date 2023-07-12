@@ -547,44 +547,42 @@ extension AlbumViewController
         // Title is name of category
         setTitleViewFromAlbumData(whileUpdating: false)
 
-        // When using several scenes on iPad, buttons might have to be relocated.
+        // Buttons might have to be relocated:
+        /// - when using several scenes on iPad
+        /// - when launching the app in landscape mode on iPhone and returning to the root album in portrait mode
         if #available(iOS 13.0, *) {
-            let sizeOfScreen = UIScreen.main.bounds.size
-            let sizeOfView = view.bounds.size
-            if sizeOfView.equalTo(sizeOfScreen) == false {
-                // Calculate reference position
-                let xPos = view.bounds.size.width - 3 * kRadius
-                let yPos = view.bounds.size.height - 3 * kRadius
-                var newFrame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
-                
-                // Relocate the "Add" button if needed
-                if addButton.frame.equalTo(newFrame) == false {
-                    addButton.frame = newFrame
-                }
-                
-                // Relocate the "Upload Queue" button if needed
-                newFrame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
-                if uploadQueueButton.frame.equalTo(newFrame) == false {
-                    uploadQueueButton.frame = newFrame
-                }
+            // Calculate reference position
+            let xPos = view.bounds.size.width - 3 * kRadius
+            let yPos = view.bounds.size.height - 3 * kRadius
+            var newFrame = CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
+            
+            // Relocate the "Add" button if needed
+            if addButton.frame.equalTo(newFrame) == false {
+                addButton.frame = newFrame
+            }
+            
+            // Relocate the "Upload Queue" button if needed
+            newFrame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+            if uploadQueueButton.frame.equalTo(newFrame) == false {
+                uploadQueueButton.frame = newFrame
+            }
 
-                // Relocate the "Home Album" button if needed
-                newFrame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                if homeAlbumButton.frame.equalTo(newFrame) == false {
-                    homeAlbumButton.frame = newFrame
-                }
-                
-                // Relocate "Create Album" button if needed
-                newFrame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                if createAlbumButton.frame.equalTo(newFrame) == false {
-                    createAlbumButton.frame = newFrame
-                }
-                
-                // Relocate "Upload Images" button if needed
-                newFrame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-                if uploadImagesButton.frame.equalTo(newFrame) == false {
-                    uploadImagesButton.frame = newFrame
-                }
+            // Relocate the "Home Album" button if needed
+            newFrame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+            if homeAlbumButton.frame.equalTo(newFrame) == false {
+                homeAlbumButton.frame = newFrame
+            }
+            
+            // Relocate "Create Album" button if needed
+            newFrame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+            if createAlbumButton.frame.equalTo(newFrame) == false {
+                createAlbumButton.frame = newFrame
+            }
+            
+            // Relocate "Upload Images" button if needed
+            newFrame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+            if uploadImagesButton.frame.equalTo(newFrame) == false {
+                uploadImagesButton.frame = newFrame
             }
         }
     }
