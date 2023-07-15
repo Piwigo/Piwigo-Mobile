@@ -104,6 +104,12 @@ class ImageViewController: UIViewController {
         view.addGestureRecognizer(tapOnce)
         view.addGestureRecognizer(tapTwice)
 
+        // Down swipes return to album view
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDown(_:)))
+        swipeDown.numberOfTouchesRequired = 1
+        swipeDown.direction = .down
+        view.addGestureRecognizer(swipeDown)
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
@@ -564,6 +570,11 @@ class ImageViewController: UIViewController {
            let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
             imagePVC.didTapTwice(gestureRecognizer)
         }
+    }
+
+    @objc func swipeDown(_ gestureRecognizer: UIGestureRecognizer) {
+        // Return to the album view
+        navigationController?.popViewController(animated: true)
     }
 
     // Display/hide status bar
