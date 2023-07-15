@@ -65,11 +65,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
 
-    // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
-//@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
-//@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
-//@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
-    
     init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
         
