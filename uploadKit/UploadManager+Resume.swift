@@ -22,15 +22,6 @@ extension UploadManager
         isUploading = Set<NSManagedObjectID>()
         print("••> Resume upload operations…")
         
-        // Perform fetch
-        do {
-            try uploads.performFetch()
-            try completed.performFetch()
-        }
-        catch {
-            print("••> Could not fetch pending uploads: \(error)")
-        }
-        
         // Get active upload tasks
         bckgSession.getAllTasks { uploadTasks in
             // Loop over the tasks
@@ -44,7 +35,7 @@ extension UploadManager
                         print("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = self.bckgContext.persistentStoreCoordinator?
+                    guard let uploadID = self.uploadProvider.bckgContext.persistentStoreCoordinator?
                         .managedObjectID(forURIRepresentation: objectURI) else {
                         print("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
@@ -173,7 +164,7 @@ extension UploadManager
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if let taskContext = uploads.first?.managedObjectContext,
-                   taskContext == self.bckgContext {
+                   taskContext == self.uploadProvider.bckgContext {
                     DispatchQueue.global(qos: .background).async {
                         self.uploadProvider.delete(uploadRequests: uploads) { _ in }
                     }

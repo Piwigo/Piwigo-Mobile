@@ -36,13 +36,11 @@ public class LocationProvider: NSObject {
     
     // MARK: - Core Data object context
     private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
 
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+        return DataController.shared.newTaskContext()
     }()
 
     

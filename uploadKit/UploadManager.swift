@@ -112,6 +112,15 @@ public class UploadManager: NSObject {
     public override init() {
         super.init()
         
+        // Perform fetch
+        do {
+            try uploads.performFetch()
+            try completed.performFetch()
+        }
+        catch {
+            print("••> Could not fetch pending uploads: \(error)")
+        }
+
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
                                                name: .pwgDisableAutoUpload, object: nil)
@@ -123,40 +132,34 @@ public class UploadManager: NSObject {
     }
     
 
-    // MARK: - Core Data Object Contexts
-    lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
-    }()
-
-    
     // MARK: - Core Data Providers
     lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
-        return provider
+        return UserProvider.shared
     }()
 
     lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
+        return AlbumProvider.shared
     }()
     
     lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider.shared
-        return provider
+        return ImageProvider.shared
     }()
 
     lazy var tagProvider: TagProvider = {
-        let provider : TagProvider = TagProvider.shared
-        return provider
+        return TagProvider.shared
     }()
 
     public lazy var uploadProvider: UploadProvider = {
-        let provider : UploadProvider = UploadProvider.shared
-        return provider
+        return UploadProvider.shared
     }()
 
 
+    // MARK: - Core Data Object Context
+    lazy var bckgContext: NSManagedObjectContext = {
+        return uploadProvider.bckgContext
+    }()
+
+    
     // MARK: - Core Data Source
     lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
@@ -177,9 +180,10 @@ public class UploadManager: NSObject {
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
-                                                 managedObjectContext: self.bckgContext,
+                                                 managedObjectContext: self.uploadProvider.bckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
+        uploads.delegate = self
         return uploads
     }()
 
@@ -202,9 +206,37 @@ public class UploadManager: NSObject {
 
     public lazy var completed: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
-                                                 managedObjectContext: self.bckgContext,
+                                                 managedObjectContext: self.uploadProvider.bckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         return uploads
     }()
+}
+
+
+// MARK: - NSFetchedResultsControllerDelegate
+extension UploadManager: NSFetchedResultsControllerDelegate {
+    
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .insert:
+            // Check whether this upload request can be launched in the foreground
+            if isExecutingBackgroundUploadTask == false {
+                findNextImageToUpload()
+            }
+            // Update number of uploads to complete
+            updateNberOfUploadsToComplete()
+
+        case .delete:
+            // Update number of uploads to complete
+            updateNberOfUploadsToComplete()
+
+        case .move, .update:
+            break
+
+        @unknown default:
+            fatalError("UploadManager: unknown NSFetchedResultsChangeType")
+        }
+    }
 }

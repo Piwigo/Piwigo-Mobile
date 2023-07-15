@@ -553,8 +553,6 @@
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
 		AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataViewController.swift; sourceTree = "<group>"; };
 		AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSessionErrors.swift; sourceTree = "<group>"; };
-		AD1B92792703A78D0089C5F4 /* AlbumViewController+TransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+TransitioningDelegate.swift"; sourceTree = "<group>"; };
-		AD1B927B2703AAD90089C5F4 /* ImageAnimatedTransitioning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAnimatedTransitioning.swift; sourceTree = "<group>"; };
 		AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0B (Image).xcdatamodel"; sourceTree = "<group>"; };
 		AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0A_to_0B.xcmappingmodel; sourceTree = "<group>"; };
 		AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+AppTools.swift"; sourceTree = "<group>"; };
@@ -1391,8 +1389,6 @@
 				ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */,
 				ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */,
 				AD98FB952843A2F100F6C0C5 /* AlbumViewController+Tagged.swift */,
-				AD1B92792703A78D0089C5F4 /* AlbumViewController+TransitioningDelegate.swift */,
-				AD1B927B2703AAD90089C5F4 /* ImageAnimatedTransitioning.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1570,12 +1566,12 @@
 				ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */,
 				AD129E6328C34F4E007A2A52 /* Migration Tools */,
 				AD129E6428C34F8E007A2A52 /* Extensions */,
-				AD41BEC8223E9BB200A5DEE3 /* Location Data */,
 				ADF35E7628B2834F009F3ECE /* Server Data */,
 				AD98E52F28BB8B34008C846A /* User Data */,
 				ADDC36B928CCA46400E5AE4B /* Album Data */,
 				ADDC36BA28CCC0C800E5AE4B /* Image Data */,
 				ADF4001C266D6FBA004352B9 /* Tag Data */,
+				AD41BEC8223E9BB200A5DEE3 /* Location Data */,
 				AD23A1EF2427C94000F662AB /* Upload Data */,
 				AD018D7E28D7284B0003D5DB /* AttributeTransformers */,
 			);

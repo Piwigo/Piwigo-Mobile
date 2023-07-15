@@ -57,14 +57,14 @@ extension UploadManager {
             } failure: { error in
                 upload.setState(.uploadingError, error: error, save: true)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
             }
         } failure: { error in
             upload.setState(.uploadingError, error: error, save: true)
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
             }
         }
@@ -81,7 +81,7 @@ extension UploadManager {
             }
 
             // Get image and album objects in cache
-            let imageSet = self.imageProvider.getImages(inContext: self.bckgContext, withIds: Set([imageID]))
+            let imageSet = self.imageProvider.getImages(inContext: self.uploadProvider.bckgContext, withIds: Set([imageID]))
             guard let imageData = imageSet.first, let albums = imageData.albums,
                   let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
             else {
@@ -89,7 +89,7 @@ extension UploadManager {
                                     userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 upload.setState(.uploadingFail, error: error, save: true)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
                 return
@@ -113,7 +113,7 @@ extension UploadManager {
                 upload.imageId = imageID
                 upload.setState(.moderated, save: true)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
                 return
@@ -153,21 +153,21 @@ extension UploadManager {
                     upload.imageId = imageID
                     upload.setState(.moderated, save: true)
                     self.backgroundQueue.async {
-                        try? self.bckgContext.save()
+                        self.uploadProvider.bckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload)
                     }
                 }
             } failure: { error in
                 upload.setState(.uploadingError, error: error, save: true)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
             }
         } failure: { error in
             upload.setState(.uploadingError, error: error, save: true)
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
             }
         }
@@ -363,19 +363,20 @@ extension UploadManager {
                 print("\(dbg()) \(md5sum) | no object URI!")
                 return
             }
-            guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+            guard let uploadID = uploadProvider.bckgContext
+                .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                 print("\(dbg()) \(md5sum) | no objectID!")
                 return
             }
             do {
-                let upload = try bckgContext.existingObject(with: uploadID) as! Upload
+                let upload = try uploadProvider.bckgContext.existingObject(with: uploadID) as! Upload
 
                 // Update upload request status
                 if let error = error as NSError? {
                     self.backgroundQueue.async {
                         upload.setState(.uploadingError, error: error, save: false)
                         self.backgroundQueue.async {
-                            try? self.bckgContext.save()
+                            self.uploadProvider.bckgContext.saveIfNeeded()
                             self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                         }
                     }
@@ -390,14 +391,14 @@ extension UploadManager {
                         upload.setState(.uploadingError, error: error, save: false)
                     }
                     self.backgroundQueue.async {
-                        try? self.bckgContext.save()
+                        self.uploadProvider.bckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                     }
                 }
                 else {
                     upload.setState(.uploadingError, error: JsonError.networkUnavailable, save: false)
                     self.backgroundQueue.async {
-                        try? self.bckgContext.save()
+                        self.uploadProvider.bckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                     }
                 }
@@ -436,12 +437,13 @@ extension UploadManager {
             print("\(dbg()) \(md5sum) | no object URI!")
             return
         }
-        guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+        guard let uploadID = uploadProvider.bckgContext
+            .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
             print("\(dbg()) \(md5sum) | no objectID!")
             return
         }
         do {
-            let upload = try bckgContext.existingObject(with: uploadID) as! Upload
+            let upload = try uploadProvider.bckgContext.existingObject(with: uploadID) as! Upload
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
@@ -456,7 +458,7 @@ extension UploadManager {
                 #endif
                 upload.setState(.uploadingError, error: JsonError.emptyJSONobject, save: false)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
                 return
@@ -470,7 +472,7 @@ extension UploadManager {
                 #endif
                 upload.setState(.uploadingError, error: JsonError.invalidJSONobject, save: false)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
                 return
@@ -491,7 +493,7 @@ extension UploadManager {
                         upload.setState(.uploadingError, error: error, save: false)
                     }
                     self.backgroundQueue.async {
-                        try? self.bckgContext.save()
+                        self.uploadProvider.bckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload)
                     }
                     return
@@ -527,7 +529,7 @@ extension UploadManager {
                 upload.imageId = uploadJSON.data.image_id!
                 upload.setState(.uploaded, save: false)
                 backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
                 return
@@ -535,7 +537,7 @@ extension UploadManager {
                 // Data cannot be digested, image still ready for upload
                 upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
                 backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
                 return
@@ -734,7 +736,8 @@ extension UploadManager {
                 print("\(dbg()) \(md5sum) | no object URI!")
                 return
             }
-            guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+            guard let uploadID = uploadProvider.bckgContext
+                .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                 print("\(dbg()) \(md5sum) | no objectID!")
                 return
             }
@@ -756,7 +759,7 @@ extension UploadManager {
             if let error = error as NSError? {
                 upload.setState(.uploadingError, error: error, save: false)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
             }
@@ -770,14 +773,14 @@ extension UploadManager {
                     upload.setState(.uploadingError, error: error, save: false)
                 }
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
             }
             else {
                 upload.setState(.uploadingError, error: JsonError.networkUnavailable, save: false)
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
             }
@@ -804,7 +807,8 @@ extension UploadManager {
             print("\(dbg()) \(md5sum) | no object URI!")
             return
         }
-        guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+        guard let uploadID = uploadProvider.bckgContext
+            .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
             print("\(dbg()) \(md5sum) | no objectID!")
             return
         }
@@ -830,7 +834,7 @@ extension UploadManager {
             #endif
             upload.setState(.uploadingError, error: JsonError.emptyJSONobject, save: false)
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
             return
@@ -844,7 +848,7 @@ extension UploadManager {
             #endif
             upload.setState(.uploadingError, error: JsonError.invalidJSONobject, save: false)
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
             return
@@ -866,7 +870,7 @@ extension UploadManager {
                     upload.setState(.uploadingError, error: error, save: false)
                 }
                 self.backgroundQueue.async {
-                    try? self.bckgContext.save()
+                    self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
                 return
@@ -906,7 +910,7 @@ extension UploadManager {
                 upload.comment    = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
                 if let tags = getInfos.tags {
                     let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
-                    let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: bckgContext).map({$0.objectID})
+                    let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: uploadProvider.bckgContext).map({$0.objectID})
                     var newTags = Set<Tag>()
                     newTagIDs.forEach({
                         if let copy = upload.managedObjectContext?.object(with: $0) as? Tag {
@@ -917,7 +921,7 @@ extension UploadManager {
                 }
                 
                 // Add uploaded image to cache and update UI if needed
-                if let user = userProvider.getUserAccount(inContext: bckgContext),
+                if let user = userProvider.getUserAccount(inContext: uploadProvider.bckgContext),
                    user.hasAdminRights {
                     getInfos.fixingUnknowns()
                     imageProvider.didUploadImage(getInfos, asVideo: upload.isVideo,
@@ -940,7 +944,7 @@ extension UploadManager {
             }
 
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
             }
             return
@@ -949,7 +953,7 @@ extension UploadManager {
             print("\(dbg()) \(md5sum) | wrong JSON object!")
             upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
             self.backgroundQueue.async {
-                try? self.bckgContext.save()
+                self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
             return
@@ -985,9 +989,6 @@ extension UploadManager {
     }
     
     func didEndTransfer(for upload: Upload) {
-        // Update counter and app badge
-        self.updateNberOfUploadsToComplete()
-
         // Update list of current uploads
         if let index = isUploading.firstIndex(where: {$0 == upload.objectID}) {
             isUploading.remove(at: index)

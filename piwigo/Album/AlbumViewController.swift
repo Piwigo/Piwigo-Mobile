@@ -65,11 +65,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
 
-    // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
-//@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
-//@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
-//@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
-    
     init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
         
@@ -129,6 +124,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
     
     
+    // MARK: - Core Data Providers
+    private lazy var userProvider: UserProvider = {
+        return UserProvider.shared
+    }()
+
+    lazy var albumProvider: AlbumProvider = {
+        return AlbumProvider.shared
+    }()
+
+    lazy var imageProvider: ImageProvider = {
+        return ImageProvider.shared
+    }()
+
+    
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -138,23 +147,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
-    }()
-
-    
-    // MARK: - Core Data Providers
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
-        return provider
-    }()
-
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
-    lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider.shared
-        return provider
     }()
 
     
@@ -1443,15 +1435,63 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // MARK: - AlbumCollectionViewCellDelegate Methods (+ PushView:)
-    func deleteCategory(_ albumId: Int32, inParent parentID: Int32,
-                        inMode mode: pwgAlbumDeletionMode) {
-        // Delete album, sub-albums and images from presistent cache
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.albumProvider.deleteAlbum(albumId, inParent: parentID, inMode: mode)
+    func didDeleteCategory(withError error: NSError?, viewController topViewController: UIViewController?) {
+        guard let error = error else {
+            // Remember that the app is fetching all album data
+            AlbumVars.shared.isFetchingAlbumData.insert(0)
+
+            // Use the AlbumProvider to fetch album data. On completion,
+            // handle general UI updates and error alerts on the main queue.
+            let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+            albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
+                                      thumbnailSize: thumnailSize) { [self] error in
+                // ► Remove current album from list of album being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(0)
+                
+                // Check error
+                guard let error = error as? NSError else {
+                    // No error ► Hide HUD, update
+                    DispatchQueue.main.async { [self] in
+                        topViewController?.updatePiwigoHUDwithSuccess() {
+                            topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                                // Update number of images in footer
+                                self.updateNberOfImagesInFooter()
+                            }
+                        }
+                    }
+                    return
+                }
+                
+                // Show the error
+                DispatchQueue.main.async { [self] in
+                    topViewController?.hidePiwigoHUD {
+                        // Display error alert after trying to share image
+                        self.deleteCategoryError(error, viewController: topViewController)
+                    }
+                }
+            }
+            return
         }
-        
-        // Update number of images in footer
-        updateNberOfImagesInFooter()
+
+        // Show the error
+        DispatchQueue.main.async { [self] in
+            topViewController?.hidePiwigoHUD {
+                // Display error alert after trying to share image
+                self.deleteCategoryError(error, viewController: topViewController)
+            }
+        }
+    }
+
+    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
+        DispatchQueue.main.async {
+            let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                      errorMessage: error.localizedDescription) {
+                }
+            }
+        }
     }
 
     @objc

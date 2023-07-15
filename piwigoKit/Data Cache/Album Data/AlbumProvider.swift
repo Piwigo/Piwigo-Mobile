@@ -16,13 +16,11 @@ public class AlbumProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+        return DataController.shared.newTaskContext()
     }()
     
     
@@ -108,16 +106,11 @@ public class AlbumProvider: NSObject {
                 }
                 
                 // Save all insertions from the context to the store.
-                do {
-                    try taskContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
+                taskContext.saveIfNeeded()
+                if Thread.isMainThread == false {
+                    DispatchQueue.main.async {
+                        self.mainContext.saveIfNeeded()
                     }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
                 }
             } else {
                 // This album does not exist!
@@ -398,7 +391,7 @@ public class AlbumProvider: NSObject {
                             user.removeUploadRightsToAlbum(withID: ID)
                         }
                         
-                        // Do not delete this album during the last interation of the import
+                        // Do not delete this album during the last iteration of the import
                         albumToDeleteIDs.remove(ID)
                     }
                     catch AlbumError.missingData {
@@ -437,43 +430,64 @@ public class AlbumProvider: NSObject {
                 }
             }
             
-            // Delete remaining albums if this is the last iteration
-            if albumsBatch.count < batchSize,
-               albumToDeleteIDs.isEmpty == false {
-                // Check whether the auto-upload category will be deleted
-                if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
-                    NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
-                }
+            // Delete albums if this is the last iteration
+            if albumsBatch.count < batchSize {
+                // Albums not returned by the fetch are deleted first
+                if albumToDeleteIDs.isEmpty == false {
+                    // Check whether the auto-upload category will be deleted
+                    if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
+                        NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
+                    }
+                    
+                    // Delete albums not returned by the fetch
+                    let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
+                    albumsToDelete.forEach { album in
+                        print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
+                        bckgContext.delete(album)
+                    }
 
-                // Delete albums
-                let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
-                albumsToDelete.forEach { album in
-                    print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
-                    bckgContext.delete(album)
+                    // Delete duplicate albums, if any
+                    let otherAlbums = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID) == false})
+                    let duplicates = duplicates(inArray: otherAlbums)
+                    duplicates.forEach { album in
+                        bckgContext.delete(album)
+                    }
+                } else {
+                    // Delete duplicates if any
+                    let duplicates = duplicates(inArray: cachedAlbums)
+                    duplicates.forEach { album in
+                        bckgContext.delete(album)
+                    }
                 }
             }
             
             // Save all insertions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
             }
+
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
             
             success = true
         }
         return (success, albumToDeleteIDs)
     }
     
+    private func duplicates(inArray albums: [Album]) -> [Album] {
+        var seenID = Set<Int32>(), duplicates = [Album]()
+        for album in albums {
+            let catID = album.pwgID
+            if seenID.contains(catID) {
+                duplicates.append(album)
+            } else {
+                seenID.insert(catID)
+            }
+        }
+        return duplicates
+    }
+
     
     // MARK: - Update Albums
     /**
@@ -534,134 +548,16 @@ public class AlbumProvider: NSObject {
             }
             
             // Save all insertions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
             }
+
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
         }
     }
     
-    
-    /**
-     Delete an album with its sub-albums.
-     - the attributes 'nbSubAlbums' of parent albums are decremented,
-     - the number of moved images is subtracted from the attributes 'totalNbImages' of parent albums,
-     - the attributes 'globalRank' of albums in the parent album are updated accordingly.
-     N.B.: Sub-albums of the album to delete may not be in cache.
-     N.B.: Task performed in the background.
-     */
-    public func deleteAlbum(_ catID: Int32, inParent parentID: Int32,
-                            inMode mode: pwgAlbumDeletionMode) {
-        // Job performed in the background
-        bckgContext.performAndWait {
-            
-            // Get users of this server
-            let users = userProvider.getUserAccounts(inContext: bckgContext)
-            
-            // Loop over all users…
-            for user in users {
-                // Retrieve albums in persistent store
-                let fetchRequest = Album.fetchRequest()
-                fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.pwgID), ascending: true)]
-                
-                // Retrieve albums to delete:
-                /// — from the current server
-                /// — whose ID is the ID of the album to delete
-                /// — whose one of the upper album IDs is the ID of the album to delete
-                var andPredicates = [NSPredicate]()
-                andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-                andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
-                var orSubpredicates = [NSPredicate]()
-                orSubpredicates.append(NSPredicate(format: "pwgID == %i", catID))
-                orSubpredicates.append(NSPredicate(format: "parentId == %i", catID))
-                let regExp =  NSRegularExpression.escapedPattern(for: String(catID))
-                let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
-                orSubpredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
-                andPredicates.append(NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates))
-                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-                
-                // Create a fetched results controller and set its fetch request, context, and delegate.
-                let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                            managedObjectContext: bckgContext,
-                                                            sectionNameKeyPath: nil, cacheName: nil)
-                // Perform the fetch.
-                do {
-                    try controller.performFetch()
-                } catch {
-                    fatalError("Unresolved error \(error)")
-                }
-                let albumsToDelete:[Album] = controller.fetchedObjects ?? []
-                
-                // Delete images if demanded
-                switch mode {
-                case .none:     // Keep all images
-                    break
-                case .orphaned: // Delete orphaned image objects (including image files)
-                    albumsToDelete.forEach { album in
-                        if let images = album.images {
-                            images.forEach { image in
-                                if image.albums?.count == 1 {
-                                    bckgContext.delete(image)
-                                }
-                            }
-                        }
-                    }
-                case .all:      // Delete all image objects (including image files)
-                    albumsToDelete.forEach { album in
-                        if let images = album.images {
-                            images.forEach { image in
-                                bckgContext.delete(image)
-                            }
-                        }
-                    }
-                }
-                
-                // Update parent album and sub-albums
-                if let albumToDelete = albumsToDelete.first(where: {$0.pwgID == catID}) {
-                    if parentID == Int32.zero {
-                        // Update ranks of albums and sub-albums in root
-                        updateRankOfAlbums(by: -1, inAlbum: Int32.zero, ofUser: user,
-                                           afterRank: albumToDelete.globalRank)
-                    } else {
-                        // Update parent albums and sub-albums
-                        updateParents(removing: albumToDelete)
-                    }
-                }
-                
-                // Delete album and sub-albums
-                albumsToDelete.forEach { cachedAlbum in
-                    print("••> delete album with ID:\(cachedAlbum.pwgID) and name:\(cachedAlbum.name)")
-                    bckgContext.delete(cachedAlbum)
-                }
-            }
-            
-            // Save all modifications from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
-            }
-        }
-    }
     
     public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
         // Remove image from album

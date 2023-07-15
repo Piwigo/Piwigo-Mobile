@@ -6,10 +6,12 @@
 //  Copyright © 2020 Piwigo. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
 import BackgroundTasks
+import CoreData
 import LocalAuthentication
+import UIKit
+
 import piwigoKit
 import uploadKit
 
@@ -18,6 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     private var privacyView: UIView?
+
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        return DataController.shared.mainContext
+    }()
+    
 
     // MARK: - Connecting and Disconnecting scenes
     /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
@@ -366,7 +374,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
 
         // Save changes in the app's managed object context when the app transitions to the background.
-        DataController.shared.saveMainContext()
+        mainContext.saveIfNeeded()
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()

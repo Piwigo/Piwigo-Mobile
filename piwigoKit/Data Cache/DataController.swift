@@ -43,6 +43,7 @@ public class DataController: NSObject {
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
+        context.name = "View context"
         return context
     }()
     
@@ -52,18 +53,24 @@ public class DataController: NSObject {
         context.shouldDeleteInaccessibleFaults = true
         return context
     }
+}
 
-    
-    // MARK: - Core Data Saving
-    public func saveMainContext() {
+
+// MARK: - Core Data Saving
+extension NSManagedObjectContext {
+    /// Only performs a save if there are changes to commit.
+    /// - Returns: `true` if a save was needed. Otherwise, `false`.
+    public func saveIfNeeded() {
         // Anything to save?
-        guard mainContext.hasChanges else { return }
-
+        guard hasChanges else { return }
+        
+        // Save changes
         do {
-            try mainContext.save()
-        } catch let error as NSError {
+            try save()
+        }
+        catch let error as NSError {
             // Will try later…
-            debugPrint("Unresolved error \(error), \(error.userInfo)")
+            print("Could not save context: \(error), \(error.userInfo)")
         }
     }
 }

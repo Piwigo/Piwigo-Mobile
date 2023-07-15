@@ -14,6 +14,12 @@ import uploadKit
 @available(iOSApplicationExtension 13.0, *)
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
     
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        return DataController.shared.mainContext
+    }()
+    
+
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
@@ -172,7 +178,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                     print("••> Task completed with success.")
                     // Save cached data in the main thread
                     DispatchQueue.main.async {
-                        DataController.shared.saveMainContext()
+                        self.mainContext.saveIfNeeded()
                     }
                 }
 
