@@ -6,6 +6,7 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import CoreData
 import Intents
 import Photos
 import piwigoKit
@@ -13,6 +14,12 @@ import uploadKit
 
 @available(iOS 14.0, *)
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
+
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        return DataController.shared.mainContext
+    }()
+    
 
     // MARK: - Core Data Providers
     private lazy var uploadProvider: UploadProvider = {
@@ -137,7 +144,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         lastOperation.completionBlock = {
             // Save cached data in the main thread
             DispatchQueue.main.async {
-                DataController.shared.saveMainContext()
+                self.mainContext.saveIfNeeded()
             }
             debugPrint("    > In-app intent completed with success.")
         }

@@ -71,21 +71,6 @@ public class ServerProvider: NSObject {
                     print(error.localizedDescription)
                     taskContext.delete(server)
                 }
-
-                // Save insertion from the context to the store.
-//                if taskContext.hasChanges {
-//                    do {
-//                        try taskContext.save()
-//                        if Thread.isMainThread == false {
-//                            DispatchQueue.main.async {
-//                                DataController.shared.saveMainContext()
-//                            }
-//                        }
-//                    }
-//                    catch {
-//                        print("Error: \(error)\nCould not save Core Data context.")
-//                    }
-//                }
             }
         }
         

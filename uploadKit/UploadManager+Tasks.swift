@@ -64,7 +64,7 @@ extension UploadManager
             finishing.forEach({ upload in
                 upload.setState(.finishingError, error: JsonError.networkUnavailable, save: false)
             })
-            try? bckgContext.save()
+            uploadProvider.bckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -87,7 +87,7 @@ extension UploadManager
             preparing.forEach { upload in
                 upload.setState(.preparingError, error: UploadError.missingAsset, save: false)
             }
-            try? bckgContext.save()
+            uploadProvider.bckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -312,7 +312,8 @@ extension UploadManager
                         print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                    guard let uploadID = uploadProvider.bckgContext
+                        .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                         print("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
@@ -342,7 +343,8 @@ extension UploadManager
                             print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                             continue
                         }
-                        guard let uploadID = bckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                        guard let uploadID = uploadProvider.bckgContext
+                            .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                             print("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                             continue
                         }

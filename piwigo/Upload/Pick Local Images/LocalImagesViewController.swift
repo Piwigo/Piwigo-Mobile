@@ -118,9 +118,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Pause UploadManager while sorting images
-        UploadManager.shared.isPaused = true
-
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)

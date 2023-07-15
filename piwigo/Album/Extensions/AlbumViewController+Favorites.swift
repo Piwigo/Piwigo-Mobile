@@ -28,7 +28,7 @@ extension AlbumViewController
     func addImageToFavorites() {
         guard let imageId = selectedImageIds.first else {
             // Save changes
-            try? bckgContext.save()
+            bckgContext.saveIfNeeded()
             // Close HUD with success
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
@@ -105,7 +105,7 @@ extension AlbumViewController
     func removeImageFromFavorites() {
         guard let imageId = selectedImageIds.first else {
             // Save changes
-            try? bckgContext.save()
+            bckgContext.saveIfNeeded()
             // Close HUD with success
             updatePiwigoHUDwithSuccess() { [self] in
                 hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in

@@ -8,6 +8,7 @@
 
 import AVFoundation
 import BackgroundTasks
+import CoreData
 import CoreHaptics
 import Foundation
 import Intents
@@ -30,6 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var privacyView: UIView?
     var isAuthenticatingWithBiometrics = false
     var didCancelBiometricsAuthentication = false
+
+    // MARK: - Core Data Object Contexts
+    private lazy var mainContext: NSManagedObjectContext = {
+        return DataController.shared.mainContext
+    }()
+    
 
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
@@ -307,7 +314,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
         // Save cached data in the main thread
-        DataController.shared.saveMainContext()
+        mainContext.saveIfNeeded()
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
@@ -319,7 +326,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
         // Save cached data in the main thread
-        DataController.shared.saveMainContext()
+        mainContext.saveIfNeeded()
 
         // Cancel tasks and close sessions
         PwgSession.shared.dataSession.invalidateAndCancel()
@@ -468,7 +475,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             task.setTaskCompleted(success: true)
             // Save cached data in the main thread
             DispatchQueue.main.async {
-                DataController.shared.saveMainContext()
+                self.mainContext.saveIfNeeded()
             }
         }
 

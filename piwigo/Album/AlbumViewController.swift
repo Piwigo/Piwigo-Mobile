@@ -129,6 +129,20 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     }()
     
     
+    // MARK: - Core Data Providers
+    private lazy var userProvider: UserProvider = {
+        return UserProvider.shared
+    }()
+
+    lazy var albumProvider: AlbumProvider = {
+        return AlbumProvider.shared
+    }()
+
+    lazy var imageProvider: ImageProvider = {
+        return ImageProvider.shared
+    }()
+
+    
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
@@ -138,23 +152,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
-    }()
-
-    
-    // MARK: - Core Data Providers
-    private lazy var userProvider: UserProvider = {
-        let provider : UserProvider = UserProvider.shared
-        return provider
-    }()
-
-    lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
-    }()
-
-    lazy var imageProvider: ImageProvider = {
-        let provider : ImageProvider = ImageProvider.shared
-        return provider
     }()
 
     

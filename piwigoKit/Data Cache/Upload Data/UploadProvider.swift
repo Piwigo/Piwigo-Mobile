@@ -17,13 +17,11 @@ public class UploadProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
 
-    private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+    public lazy var bckgContext: NSManagedObjectContext = {
+        return DataController.shared.newTaskContext()
     }()
 
 
@@ -168,21 +166,11 @@ public class UploadProvider: NSObject {
             }
             
             // Save all insertions and deletions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
             }
+            
             success = true
         }
         return success

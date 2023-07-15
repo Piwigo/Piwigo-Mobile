@@ -38,14 +38,6 @@ extension UploadManager {
         
         // Foreground or background task?
         if isExecutingBackgroundUploadTask {
-            // Perform fetch
-            do {
-                try uploads.performFetch()
-                try completed.performFetch()
-            }
-            catch {
-                print("••> Could not fetch pending uploads: \(error)")
-            }
             // In background task, launch a transfer if possible
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 let prepared = (uploads.fetchedObjects ?? []).filter({$0.state == .prepared})
@@ -64,9 +56,6 @@ extension UploadManager {
         } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
         }
-        
-        // Update counter and app badge
-        self.updateNberOfUploadsToComplete()
     }
 
 
@@ -230,7 +219,7 @@ extension UploadManager {
 
         // Consider next image
         backgroundQueue.async {
-            try? self.bckgContext.save()
+            self.uploadProvider.bckgContext.saveIfNeeded()
             self.didFinishTransfer()
         }
     }

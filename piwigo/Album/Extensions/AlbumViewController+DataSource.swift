@@ -332,16 +332,9 @@ extension AlbumViewController
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             
             // Save changes
-            do {
-                try bckgContext.save()
-                DispatchQueue.main.async {
-                    try? self.mainContext.save()
-                }
-            }
-            catch let error as NSError {
-                // Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-                print("Could not fetch \(error), \(error.userInfo)")
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
             }
         }
     }

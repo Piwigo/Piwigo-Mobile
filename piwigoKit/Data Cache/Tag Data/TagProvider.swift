@@ -17,13 +17,11 @@ public class TagProvider: NSObject {
     
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
 
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+        return DataController.shared.newTaskContext()
     }()
 
     
@@ -235,22 +233,13 @@ public class TagProvider: NSObject {
             }
             
             // Save all insertions from the context to the store.
-            if bckgContext.hasChanges {
-                do {
-                    try bckgContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                bckgContext.reset()
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
             }
+
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
 
             success = true
         }

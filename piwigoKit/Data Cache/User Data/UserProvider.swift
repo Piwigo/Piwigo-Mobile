@@ -19,14 +19,12 @@ public class UserProvider: NSObject {
     
     
     // MARK: - Core Data Object Contexts
-    //    private lazy var mainContext: NSManagedObjectContext = {
-    //        let context:NSManagedObjectContext = DataController.shared.mainContext
-    //        return context
-    //    }()
+    private lazy var mainContext: NSManagedObjectContext = {
+        return DataController.shared.mainContext
+    }()
     
     private lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+        return DataController.shared.newTaskContext()
     }()
     
     
@@ -107,18 +105,10 @@ public class UserProvider: NSObject {
             }
             
             // Save all insertions from the context to the store.
-            if taskContext.hasChanges {
-                do {
-                    try taskContext.save()
-                    if Thread.isMainThread == false {
-                        DispatchQueue.main.async {
-                            DataController.shared.saveMainContext()
-                        }
-                    }
-                }
-                catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
+            taskContext.saveIfNeeded()
+            if Thread.isMainThread == false {
+                DispatchQueue.main.async {
+                    self.mainContext.saveIfNeeded()
                 }
             }
         }
