@@ -237,6 +237,8 @@
 		AD9112742811FBF7002FB78F /* UIWindowScene+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9112732811FBF7002FB78F /* UIWindowScene+AppTools.swift */; };
 		AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127B28146B6C002FB78F /* SceneConfigurations.swift */; };
 		AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */; };
+		AD92AD932A63DBFE007A0001 /* ImageAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */; };
+		AD92AD952A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD92AD942A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
@@ -780,6 +782,8 @@
 		AD9112732811FBF7002FB78F /* UIWindowScene+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindowScene+AppTools.swift"; sourceTree = "<group>"; };
 		AD91127B28146B6C002FB78F /* SceneConfigurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneConfigurations.swift; sourceTree = "<group>"; };
 		AD91127D28154CC2002FB78F /* SceneDelegate+StateRestoration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SceneDelegate+StateRestoration.swift"; sourceTree = "<group>"; };
+		AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAnimatedTransitioning.swift; sourceTree = "<group>"; };
+		AD92AD942A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+TransitioningDelegate.swift"; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
 		AD95715F28A8EF3C0073EA75 /* VideoPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewView.swift; sourceTree = "<group>"; };
@@ -1389,6 +1393,7 @@
 				ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */,
 				ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */,
 				AD98FB952843A2F100F6C0C5 /* AlbumViewController+Tagged.swift */,
+				AD92AD942A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2082,6 +2087,7 @@
 				ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */,
 				ADEEC5D228560DF00065BA6D /* AlbumViewController.swift */,
 				ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */,
+				AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */,
 				AD5A31642847F61700948FEE /* Extensions */,
 				D818E9F51A74BF1100733991 /* Cells */,
 				AD7B4C2120E0E0AC003E403A /* Headers & Footers */,
@@ -2768,6 +2774,7 @@
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
 				ADB49D842958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
+				AD92AD932A63DBFE007A0001 /* ImageAnimatedTransitioning.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
@@ -2875,6 +2882,7 @@
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
 				ADBE9510279DB4E100397426 /* AlbumCollectionViewCell.swift in Sources */,
+				AD92AD952A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,

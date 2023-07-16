@@ -95,20 +95,22 @@ class ImageViewController: UIViewController {
         toolbar?.tintColor = .piwigoColorOrange()
 
         // Single taps display/hide the navigation bar, toolbar and description
-        // Double taps zoom in/out the image
         let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
-        let tapTwice = UITapGestureRecognizer(target: self, action: #selector(didTapTwice(_:)))
         tapOnce.numberOfTapsRequired = 1
+
+        // Double taps zoom in/out the image
+        let tapTwice = UITapGestureRecognizer(target: self, action: #selector(didTapTwice(_:)))
         tapTwice.numberOfTapsRequired = 2
         tapOnce.require(toFail: tapTwice)
-        view.addGestureRecognizer(tapOnce)
-        view.addGestureRecognizer(tapTwice)
 
         // Down swipes return to album view
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDown(_:)))
         swipeDown.numberOfTouchesRequired = 1
         swipeDown.direction = .down
-        view.addGestureRecognizer(swipeDown)
+        tapOnce.require(toFail: swipeDown)
+        
+        // Add gestures to view
+        view.gestureRecognizers = [tapOnce, tapTwice, swipeDown]
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -302,6 +304,9 @@ class ImageViewController: UIViewController {
     }
     
     func updateNavBar() {
+        // Back button on the left
+        navigationItem.leftBarButtonItems = []
+        
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
             let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
@@ -556,7 +561,7 @@ class ImageViewController: UIViewController {
             if navigationController?.isNavigationBarHidden ?? false {
                 view.backgroundColor = .black
             } else {
-                view.backgroundColor = .clear
+                view.backgroundColor = .piwigoColorBackground()
             }
         }
     }
@@ -574,7 +579,7 @@ class ImageViewController: UIViewController {
 
     @objc func swipeDown(_ gestureRecognizer: UIGestureRecognizer) {
         // Return to the album view
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
     }
 
     // Display/hide status bar

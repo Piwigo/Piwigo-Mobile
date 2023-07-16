@@ -65,6 +65,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
 
+    // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
+    var animatedCell: ImageCollectionViewCell?
+    var albumViewSnapshot: UIView?
+    var cellImageViewSnapshot: UIView?
+    var navBarSnapshot: UIView?
+    var imageAnimator: ImageAnimatedTransitioning?
+
     init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
         
@@ -1353,12 +1360,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 imageDetailView?.images = images
                 imageDetailView?.user = user
                 imageDetailView?.imgDetailDelegate = self
-                imageDetailView?.hidesBottomBarWhenPushed = true
-                imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
-//                self.imageDetailView.transitioningDelegate = self;
-//                self.selectedCellImageViewSnapshot = [self.selectedCell.cellImage snapshotViewAfterScreenUpdates:NO];
+                animatedCell = selectedCell
+                albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+                cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+                navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
                 if let imageDetailView = imageDetailView {
-                    navigationController?.pushViewController(imageDetailView, animated: true)
+                    // Push ImageDetailView embedded in navigation controller
+                    let navController = UINavigationController(rootViewController: imageDetailView)
+                    navController.hidesBottomBarWhenPushed = true
+                    navController.transitioningDelegate = self;
+                    navController.modalPresentationStyle = .custom
+                    navController.modalPresentationCapturesStatusBarAppearance = true
+                    navigationController?.present(navController, animated: true)
                 }
             } else {
                 // Check image data
@@ -1406,6 +1419,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             let indexPath = IndexPath(item: imageIndex, section: 1)
             imageOfInterest = indexPath
             imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            
+            // Prepare variables for transitioning delegate
+            if let selectedCell = imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                animatedCell = selectedCell
+                albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+                cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+                navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
+            }
         }
     }
 
