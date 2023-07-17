@@ -56,6 +56,7 @@ class ImageViewController: UIViewController {
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
     var favoriteBarButton: UIBarButtonItem?
+    lazy var backButton: UIBarButtonItem = getBackButton()
     lazy var shareBarButton: UIBarButtonItem = getShareButton()
     lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
@@ -305,7 +306,7 @@ class ImageViewController: UIViewController {
     
     func updateNavBar() {
         // Back button on the left
-        navigationItem.leftBarButtonItems = []
+        navigationItem.leftBarButtonItems = [backButton]
         
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
@@ -579,9 +580,13 @@ class ImageViewController: UIViewController {
 
     @objc func swipeDown(_ gestureRecognizer: UIGestureRecognizer) {
         // Return to the album view
+        returnToAlbum()
+    }
+    
+    @objc func returnToAlbum() {
         dismiss(animated: true)
     }
-
+    
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
         return navigationController?.isNavigationBarHidden ?? false

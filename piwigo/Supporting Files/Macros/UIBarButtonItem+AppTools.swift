@@ -59,7 +59,7 @@ extension UIBarButtonItem {
         return button
     }
     
-
+    
     // MARK: - Favorite Bar Button Item
     class func favoriteImageButton(_ isFavorite: Bool, target: Any?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: nil)
@@ -83,6 +83,40 @@ extension UIBarButtonItem {
             } else {
                 self.image = UIImage(named: "imageNotFavorite")
                 self.landscapeImagePhone = UIImage(named: "imageNotFavoriteCompact")
+            }
+        }
+    }
+    
+    
+    // MARK: - Back Bar Button Item
+    class func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
+        button.setBackImage()
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "back"
+        return button
+    }
+    
+    func setBackImage() {
+        let direction = UIApplication.shared.userInterfaceLayoutDirection
+        if #available(iOS 13, *) {
+            let configuration = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium, scale: .medium)
+            if #available(iOS 14.0, *) {
+                self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
+            } else {
+                if direction == .leftToRight {
+                    self.image = UIImage(systemName: "chevron.left")
+                } else {
+                    self.image = UIImage(systemName: "chevron.right")
+                }
+            }
+        } else {
+            if direction == .leftToRight {
+                self.image = UIImage(named: "chevronBackLeft")
+                self.landscapeImagePhone = UIImage(named: "chevronBackLeftCompact")
+            } else {
+                self.image = UIImage(named: "chevronBackRight")
+                self.landscapeImagePhone = UIImage(named: "chevronBackRightCompact")
             }
         }
     }

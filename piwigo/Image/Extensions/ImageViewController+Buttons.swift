@@ -11,6 +11,10 @@ import Foundation
 extension ImageViewController
 {
     // MARK: Get Bar Buttons
+    func getBackButton() -> UIBarButtonItem {
+        return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
+    }
+    
     func getMoveBarButton() -> UIBarButtonItem {
         return UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
     }
