@@ -98,20 +98,19 @@ extension UIBarButtonItem {
     }
     
     func setBackImage() {
-        let direction = UIApplication.shared.userInterfaceLayoutDirection
         if #available(iOS 13, *) {
             let configuration = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium, scale: .medium)
             if #available(iOS 14.0, *) {
                 self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
             } else {
-                if direction == .leftToRight {
+                if AppVars.shared.isAppLanguageL2R {
                     self.image = UIImage(systemName: "chevron.left")
                 } else {
                     self.image = UIImage(systemName: "chevron.right")
                 }
             }
         } else {
-            if direction == .leftToRight {
+            if AppVars.shared.isAppLanguageL2R {
                 self.image = UIImage(named: "chevronBackLeft")
                 self.landscapeImagePhone = UIImage(named: "chevronBackLeftCompact")
             } else {

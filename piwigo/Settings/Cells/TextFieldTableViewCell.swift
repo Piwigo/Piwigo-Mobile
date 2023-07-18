@@ -34,10 +34,10 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()
         ])
-        if AppVars.shared.isAppLanguageRTL {
-            rightTextField.textAlignment = .left
-        } else {
+        if AppVars.shared.isAppLanguageL2R {
             rightTextField.textAlignment = .right
+        } else {
+            rightTextField.textAlignment = .left
         }
     }
 
