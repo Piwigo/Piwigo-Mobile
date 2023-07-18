@@ -602,30 +602,34 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Display What's New in Piwigo if needed
-        if AppVars.shared.didShowWhatsNewAppVersion.compare("3.0", options: .numeric) == .orderedAscending,
-           let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
-            // Display What's New in Piwigo
-            let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
-            guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
-                fatalError("No WhatsNewViewController available!")
-            }
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
-                present(whatsNewVC, animated: true)
+        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.0", options: .numeric) == .orderedAscending,
+               appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
+                // Display What's New in Piwigo
+                let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
+                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
+                    fatalError("No WhatsNewViewController available!")
+                }
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
+                    present(whatsNewVC, animated: true)
+                } else {
+                    whatsNewVC.modalTransitionStyle = .coverVertical
+                    whatsNewVC.modalPresentationStyle = .formSheet
+                    let mainScreenBounds = UIScreen.main.bounds
+                    whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
+                        x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+                        width: 0, height: 0)
+                    whatsNewVC.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(mainScreenBounds.size.height * 2 / 3))
+                    present(whatsNewVC, animated: true)
+                }
+                return
             } else {
-                whatsNewVC.modalTransitionStyle = .coverVertical
-                whatsNewVC.modalPresentationStyle = .formSheet
-                let mainScreenBounds = UIScreen.main.bounds
-                whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                    x: mainScreenBounds.midX, y: mainScreenBounds.midY,
-                    width: 0, height: 0)
-                whatsNewVC.preferredContentSize = CGSize(
-                    width: pwgPadSettingsWidth,
-                    height: ceil(mainScreenBounds.size.height * 2 / 3))
-                present(whatsNewVC, animated: true)
+                // Store current version for future use
+                AppVars.shared.didShowWhatsNewAppVersion = appVersionString
             }
-            return
         }
         
         // Display help views only when showing regular albums
