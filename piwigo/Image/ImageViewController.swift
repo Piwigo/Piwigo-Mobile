@@ -105,7 +105,7 @@ class ImageViewController: UIViewController {
         tapOnce.require(toFail: tapTwice)
 
         // Down swipes return to album view
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDown(_:)))
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(didSwipeDown(_:)))
         swipeDown.numberOfTouchesRequired = 1
         swipeDown.direction = .down
         tapOnce.require(toFail: swipeDown)
@@ -578,7 +578,7 @@ class ImageViewController: UIViewController {
         }
     }
 
-    @objc func swipeDown(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func didSwipeDown(_ gestureRecognizer: UIGestureRecognizer) {
         // Return to the album view
         returnToAlbum()
     }

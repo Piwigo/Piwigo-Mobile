@@ -31,7 +31,7 @@ class ImagePreviewViewController: UIViewController
     private let placeHolder = UIImage(named: "placeholderImage")!
     private var userDidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
-
+    private var startingZoomScale = CGFloat(1)      // To remember the scale before starting zooming
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -168,6 +168,10 @@ class ImagePreviewViewController: UIViewController
         scrollView.isPagingEnabled = false
         scrollView.bounds = view.bounds
         scrollView.contentSize = image.size
+        
+        // Prevents scrolling image at minimum scale
+        // Will be unlocked when starting zooming
+        scrollView.isScrollEnabled = false
         
         // Don't adjust the insets when showing or hiding the navigation bar/toolbar
         scrollView.contentInset = .zero
@@ -340,14 +344,32 @@ extension ImagePreviewViewController: UIScrollViewDelegate
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
-
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        centerImageView()
+    
+    // Zooming of the content in the scroll view is about to commence
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        // Allows scrolling zoomed image
+        scrollView.isScrollEnabled = true
+        // Store zoom scale value before starting zooming
+        startingZoomScale = scrollView.zoomScale
     }
 
+    // The scroll view’s zoom factor changed
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        if scrollView.zoomScale < 0.9 * scrollView.minimumZoomScale,
+            startingZoomScale < 1.1 * scrollView.minimumZoomScale {
+            dismiss(animated: true)
+        } else {
+            centerImageView()
+        }
+    }
+
+    // Zooming of the content in the scroll view completed
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         // Limit the zoom scale
-        if scale < scrollView.minimumZoomScale {
+        if scrollView.zoomScale < 0.9 * scrollView.minimumZoomScale,
+           startingZoomScale < 1.1 * scrollView.minimumZoomScale {
+            dismiss(animated: true)
+        } else if scale <= scrollView.minimumZoomScale {
             scrollView.zoomScale = scrollView.minimumZoomScale
             centerImageView()
         } else if scale > scrollView.maximumZoomScale {
