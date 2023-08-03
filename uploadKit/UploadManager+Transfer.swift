@@ -215,8 +215,7 @@ extension UploadManager {
     func transferInForeground(for upload: Upload) {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = getUploadFileURL(from: upload)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -227,7 +226,8 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            let msg = error.localizedDescription
+                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
             upload.setState(.preparingFail, error: err, save: true)
@@ -262,8 +262,7 @@ extension UploadManager {
     func send(chunk:Int, of chunks:Int, for upload: Upload) {
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = getUploadFileURL(from: upload)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -274,7 +273,8 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            let msg = error.localizedDescription
+                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
             upload.setState(.preparingFail, error: err, save: true)
@@ -561,8 +561,7 @@ extension UploadManager {
 
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = uploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = getUploadFileURL(from: upload)
         
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
@@ -573,7 +572,8 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            let msg = error.localizedDescription
+                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
             upload.setState(.preparingFail, error: err, save: true)
@@ -648,20 +648,17 @@ extension UploadManager {
                 let md5Checksum = chunkOfData.MD5checksum()
                 httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
                 httpBody.append(self.convertFileData(fieldName: "file",
-                                                fileName: upload.fileName,
-                                                mimeType: upload.mimeType,
-                                                fileData: chunkOfData,
-                                                using: boundary))
+                                                     fileName: upload.fileName,
+                                                     mimeType: upload.mimeType,
+                                                     fileData: chunkOfData,
+                                                     using: boundary))
 
                 httpBody.append("--\(boundary)--".data(using: .utf8)!)
 
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
-                let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = self.uploadsDirectory.appendingPathComponent(chunkFileName)
-                
-                // Deletes temporary image file if exists (incomplete previous attempt?)
-                do { try FileManager.default.removeItem(at: fileURL) } catch { }
+                let suffix = "." + numberFormatter.string(from: NSNumber(value: chunk))!
+                let fileURL = getUploadFileURL(from: upload, withSuffix: suffix, deleted: true)
 
                 // Store chunk of image data into Piwigo/Uploads directory
                 do {

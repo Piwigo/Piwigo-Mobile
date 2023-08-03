@@ -19,8 +19,11 @@ extension UploadManager {
     public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
                                   deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
-        if fileName.count ==  0 { fatalError("!!!! No Upload Filename !!!!")}
+        var fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        if fileName.isEmpty {
+            fileName = "file-".appending(String(Int64(upload.creationDate)))
+        }
+        fileName.append(suffix)
         let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Should we delete it?
