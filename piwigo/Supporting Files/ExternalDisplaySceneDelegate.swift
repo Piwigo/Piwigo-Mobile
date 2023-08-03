@@ -57,14 +57,11 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Determine if an image is presented fullscreen on the device
-        for viewController in navController.viewControllers {
-            if let vc = viewController as? ImageViewController {
-                // Store image data in external image view controller
-                imageVC.imageData = vc.imageData
-                // Return to the Album/Images collection view
-                vc.navigationController?.popViewController(animated: true)
-                break
-            }
+        if let vc = navController.visibleViewController as? ImageViewController {
+            // Store image data in external image view controller
+            imageVC.imageData = vc.imageData
+            // Return to the Album/Images collection view
+            vc.navigationController?.dismiss(animated: true)
         }
         
         // Initialise the external display

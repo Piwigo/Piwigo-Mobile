@@ -25,6 +25,7 @@ class ImageViewController: UIViewController {
     var isToolbarRequired = false
     var didPresentPageAfter = true
     var pageViewController: UIPageViewController?
+    let playbackController = PlaybackController.shared
 
     // MARK: - Core Data Objects
     var user: User!
@@ -66,7 +67,11 @@ class ImageViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        // Initialise video players
+        playbackController.prepareForPlayback()
+        playbackController.videoItemDelegate = self
+
         // Current image
         var index = max(0, imageIndex)
         index = min(imageIndex, (images.fetchedObjects?.count ?? 0) - 1)
@@ -533,37 +538,30 @@ class ImageViewController: UIViewController {
     }
 
     @objc func didTapOnce() {
-        // Should we do something else?
-        if imageData.isVideo {
-            // User wants to play/replay the video
-            startVideoPlayerView(with: imageData)
+        // Display/hide the navigation bar
+        let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+        navigationController?.setNavigationBarHidden(!isNavigationBarHidden, animated: true)
+
+        // Display/hide home indicator
+        // Notify UIKit that this view controller updated its preference regarding the visual indicator
+        setNeedsUpdateOfHomeIndicatorAutoHidden()
+
+        // Display/hide the toolbar on iPhone if required
+        if isToolbarRequired {
+            navigationController?.setToolbarHidden(!isNavigationBarHidden, animated: true)
         }
-        else {
-            // Display/hide the navigation bar
-            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-            navigationController?.setNavigationBarHidden(!isNavigationBarHidden, animated: true)
+        
+        // Display/hide the description if any
+        if let pVC = pageViewController,
+           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
+            imagePVC.didTapOnce()
+        }
 
-            // Display/hide home indicator
-            // Notify UIKit that this view controller updated its preference regarding the visual indicator
-            setNeedsUpdateOfHomeIndicatorAutoHidden()
-
-            // Display/hide the toolbar on iPhone if required
-            if isToolbarRequired {
-                navigationController?.setToolbarHidden(!isNavigationBarHidden, animated: true)
-            }
-            
-            // Display/hide the description if any
-            if let pVC = pageViewController,
-               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-                imagePVC.didTapOnce()
-            }
-
-            // Set background color according to navigation bar visibility
-            if navigationController?.isNavigationBarHidden ?? false {
-                view.backgroundColor = .black
-            } else {
-                view.backgroundColor = .piwigoColorBackground()
-            }
+        // Set background color according to navigation bar visibility
+        if navigationController?.isNavigationBarHidden ?? false {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .piwigoColorBackground()
         }
     }
     
@@ -584,7 +582,9 @@ class ImageViewController: UIViewController {
     }
     
     @objc func returnToAlbum() {
-        dismiss(animated: true)
+        // Remove fullscreen video player if any
+        playbackController.removeAllEmbeddedViewControllers()
+        self.dismiss(animated: true)
     }
     
     // Display/hide status bar
@@ -652,27 +652,26 @@ extension ImageViewController: UIPageViewControllerDelegate
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
 
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
+        guard let imagePage = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
             fatalError("!!! Wrong View Controller Type !!!")
         }
         
         // Remember index of presented page
-        print("••> Did finish animating page view controller for image at index \(pvc.imageIndex)")
-        imageIndex = pvc.imageIndex
+        print("••> Did finish animating page view controller for image at index \(imagePage.imageIndex)")
+        imageIndex = imagePage.imageIndex
 
-        // Sets new image data
-        imageData = images.object(at: IndexPath(item: imageIndex, section: 0))
-        if imageData.isFault {
-            // The album is not fired yet.
-            imageData.willAccessValue(forKey: nil)
-            imageData.didAccessValue(forKey: nil)
-        }
-
-        // Initialise page view controller
-        pvc.progressView.isHidden = pvc.imageLoaded || imageData.isVideo
+        // Set title and buttons
+        imageData = imagePage.imageData
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
+
+        // Initialise page view controller
+        imagePage.progressView.isHidden = imagePage.imageLoaded || imageData.isVideo
+        if let video = imagePage.video,
+           let videoContainer = imagePage.videoContainerView {
+            playbackController.embed(contentOfVideo: video, in: imagePage, containerView: videoContainer)
+        }
 
         // Scroll album collection view to keep the selected image centered on the screen
         imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
@@ -707,6 +706,17 @@ extension ImageViewController: UIPageViewControllerDataSource
         imagePage.imageIndex = index
         imagePage.imageData = imageData
         imagePage.imageLoaded = false
+
+        // Initialise video player
+        if imageData.isVideo,
+           let serverID = imageData.server?.uuid,
+           let pwgURL = imageData.fullRes?.url {
+            let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+            let fileURL = cacheDir.appendingPathComponent(pwgImageSize.fullRes.path)
+                .appendingPathComponent(String(imageData.pwgID))
+            imagePage.video = Video(pwgURL: pwgURL as URL, cacheURL: fileURL, title: imageData.titleStr)
+        }
+        
         return imagePage
     }
     
@@ -749,5 +759,27 @@ extension ImageViewController: SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int32) {
         setEnableStateOfButtons(true)
+    }
+}
+
+
+// MARK: -
+extension ImageViewController: PlayerViewControllerCoordinatorDelegate
+{
+    func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,
+                                         restoreUIForPIPStop completion: @escaping (Bool) -> Void) {
+        if coordinator.playerViewControllerIfLoaded?.parent == nil {
+            playbackController.dismissActivePlayerViewController(animated: false) {
+                if let navigationController = self.navigationController {
+                    coordinator.restoreFullScreen(from: navigationController) {
+                        completion(true)
+                    }
+                } else {
+                    completion(false)
+                }
+            }
+        } else {
+            completion(true)
+        }
     }
 }

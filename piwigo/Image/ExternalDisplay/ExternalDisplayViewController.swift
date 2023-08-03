@@ -12,12 +12,23 @@ import piwigoKit
 class ExternalDisplayViewController: UIViewController {
     
     var imageData: Image?
+    var video: Video? {
+        didSet {
+            // Remove currently displayed video if needed
+            if let oldVideo = oldValue, oldVideo != video {
+                playbackController.pause(contentOfVideo: oldVideo)
+                playbackController.remove(contentOfVideo: oldVideo)
+            }
+        }
+    }
+    let playbackController = PlaybackController.shared
 
     private var imageURL: URL?
     private let placeHolder = UIImage(named: "placeholderImage")!
     private var privacyView: UIView?
 
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var videoContainerView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var helpLabel: UILabel!
     
@@ -28,6 +39,11 @@ class ExternalDisplayViewController: UIViewController {
         
         helpLabel.text = NSLocalizedString("help_externalDisplay", comment: "Tap the image you wish to display here.")
         imageView.layoutIfNeeded()   // Ensure imageView in its final size
+        
+        // Initialise video players
+        playbackController.prepareForPlayback()
+
+        // Display image/video
         configImage()
     }
     
@@ -40,6 +56,16 @@ class ExternalDisplayViewController: UIViewController {
             return .default
         }
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Remove displayed video player
+        if let video = video {
+            playbackController.pause(contentOfVideo: video)
+        }
+        playbackController.removeAllEmbeddedViewControllers()
+    }
 
     func configImage() {
         // Check provided image data
@@ -49,11 +75,21 @@ class ExternalDisplayViewController: UIViewController {
             return
         }
         
+        // Hide help message
+        helpLabel.isHidden = true
+ 
         // Pause download if needed
         if let imageURL = imageURL {
             ImageSession.shared.pauseDownload(atURL: imageURL)
         }
 
+        // Presents video if needed
+        if imageData.isVideo, let video = video {
+            progressView.isHidden = true
+            presentVideo(video)
+            return
+        }
+        
         // Determine the optimum image size for that display
         let displaySize = AlbumUtilities.sizeOfPage(forView: view)
         let maxPixels = Int(max(displaySize.width, displaySize.height))
@@ -65,15 +101,6 @@ class ExternalDisplayViewController: UIViewController {
         
         // Store image URL for being able to pause the download
         self.imageURL = imageURL
-        
-        // Presents the video player if needed
-        if imageData.isVideo {
-            // Hide help message
-            helpLabel.isHidden = true
-            // Start playing video
-            startVideoPlayerView(with: imageData)
-            return
-        }
         
         // Get URL of preview image file potentially in cache
         let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
@@ -103,8 +130,6 @@ class ExternalDisplayViewController: UIViewController {
         // Image of right size for that display
         let screenSize = view.bounds.size
         let scale = view.traitCollection.displayScale
-        progressView?.progress = 0
-        progressView?.isHidden = imageData.isVideo
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
                                      fromServer: serverID, fileSize: imageData.fileSize,
                                      placeHolder: self.placeHolder) { fractionCompleted in
@@ -126,23 +151,19 @@ class ExternalDisplayViewController: UIViewController {
     }
     
     private func presentTemporaryImage(_ image: UIImage) {
-        // Hide help message
-        helpLabel.isHidden = true
         // Set image
         imageView.image = image
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageView.layoutIfNeeded()
         UIView.transition(with: imageView, duration: 0.5,
                           options: .transitionCrossDissolve) { }
-        completion: { _ in
+        completion: { [unowned self] _ in
             // Show progress view
             self.progressView.isHidden = false
         }
     }
 
     private func presentFinalImage(_ image: UIImage) {
-        // Hide help message
-        helpLabel.isHidden = true
         // Set image
         imageView.image = image
         imageView.frame = CGRect(origin: .zero, size: image.size)
@@ -152,9 +173,25 @@ class ExternalDisplayViewController: UIViewController {
         // Display final image
         UIView.transition(with: imageView, duration: 0.5,
                           options: .transitionCrossDissolve) { }
-        completion: { _ in
+        completion: { [unowned self] _ in
             // Hide progress view
             self.progressView.isHidden = true
+        }
+    }
+    
+    private func presentVideo(_ video: Video) {
+        // Already being displayed?
+        if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
+            playbackController.play(contentOfVideo: video)
+        } else {
+            playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
+        }
+        // Display video
+        UIView.transition(with: videoContainerView, duration: 0.5,
+                          options: .transitionCrossDissolve) { }
+        completion: { [unowned self] _ in
+            // Remove image
+            self.imageView.image = nil
         }
     }
 }

@@ -1004,17 +1004,6 @@ extension AppDelegate: AppLockDelegate {
         // Release memory
         privacyView?.removeFromSuperview()
 
-        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
-        // Furthermore, it will interrupt any other current audio sessions (no mixing)
-        let audioSession = AVAudioSession.sharedInstance()
-        let availableCategories = audioSession.availableCategories
-        if availableCategories.contains(AVAudioSession.Category.playback) {
-            do {
-                try audioSession.setCategory(.playback)
-            } catch {
-            }
-        }
-
         // Should we log in?
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {

@@ -1396,7 +1396,19 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                         if scene.session.role == wantedRole,
                            let windowScene = scene as? UIWindowScene,
                            let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                            imageVC.dismissVideoPlayerIfNeeded()
+                            // Create video object if needed
+                            if imageData.isVideo,
+                               let serverID = imageData.server?.uuid,
+                               let pwgURL = imageData.fullRes?.url {
+                                // Create video object
+                                let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+                                let fileURL = cacheDir.appendingPathComponent(pwgImageSize.fullRes.path)
+                                    .appendingPathComponent(String(imageData.pwgID))
+                                imageVC.video = Video(pwgURL: pwgURL as URL, cacheURL: fileURL, title: imageData.titleStr)
+                            } else {
+                                // Remove displayed video if needed
+                                imageVC.video = nil
+                            }
                             imageVC.imageData = imageData
                             imageVC.configImage()
                         }

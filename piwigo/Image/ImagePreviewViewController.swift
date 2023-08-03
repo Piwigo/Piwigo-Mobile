@@ -17,16 +17,23 @@ class ImagePreviewViewController: UIViewController
     var imageIndex = 0
     var imageLoaded = false
     var imageData: Image!
+    
+    var imageURL: URL?
+    var video: Video?
+    let playbackController = PlaybackController.shared
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var playImage: UIImageView!
+    @IBOutlet weak var videoContainerView: UIView!
+    @IBOutlet weak var videoContainerLeft: NSLayoutConstraint!
+    @IBOutlet weak var videoContainerRight: NSLayoutConstraint!
+    @IBOutlet weak var videoContainerTop: NSLayoutConstraint!
+    @IBOutlet weak var videoContainerBottom: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var progressView: PieProgressView!
-    
-    var imageURL: URL?
+
     private var serverID = ""
     private let placeHolder = UIImage(named: "placeholderImage")!
     private var userDidTapOnce: Bool = false        // True if the user did tap the view
@@ -79,8 +86,10 @@ class ImagePreviewViewController: UIViewController
         imageView.layoutIfNeeded()   // Ensure imageView in its final size
         let cellSize = self.scrollView.bounds.size
         let scale = self.scrollView.traitCollection.displayScale
-        progressView?.progress = 0
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        if imageData.isVideo, previewSize == .fullRes {
+            previewSize = .xxLarge
+        }
         imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize)
         if let imageURL = imageURL {
             ImageSession.shared.getImage(withID: self.imageData.pwgID, ofSize: previewSize, atURL: imageURL,
@@ -96,7 +105,6 @@ class ImagePreviewViewController: UIViewController
                     try? FileManager.default.removeItem(at: imageURL)
                 } else {
                     DispatchQueue.main.async {
-                        self.progressView.progress = 1.0
                         self.configImage(cachedImage)
                     }
                 }
@@ -121,9 +129,16 @@ class ImagePreviewViewController: UIViewController
         // Hide progress view
         self.imageLoaded = true
         self.progressView.isHidden = true
-        
-        // Display "play" button if video
-        self.playImage.isHidden = !self.imageData.isVideo
+
+        // Initialise video player
+        if let video = video {
+           if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
+               playbackController.play(contentOfVideo: video)
+           } else {
+               playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
+               centerVideoView()
+           }
+        }
     }
 
     override func viewWillLayoutSubviews() {
@@ -140,11 +155,27 @@ class ImagePreviewViewController: UIViewController
         /// - rotating the device
         configScrollView()
         centerImageView()
+        if imageData.isVideo {
+            centerVideoView()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Pause video is needed
+        if let video = video {
+            playbackController.pause(contentOfVideo: video)
+        }
     }
 
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Remove video player coordinator
+        if let video = video {
+            playbackController.remove(contentOfVideo: video)
+        }
     }
     
     
@@ -155,6 +186,7 @@ class ImagePreviewViewController: UIViewController
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
+        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
     }
     
     /*
@@ -184,27 +216,112 @@ class ImagePreviewViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
-//        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
+        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
     private func centerImageView() {
         guard let image = imageView?.image else { return }
 
         // Determine the orientation of the device
+        let orientation = getOrientation()
+
+        // Determine if the toolbar is presented
+        let isToolbarRequired = isToolbarRequired()
+
+        // Determine the available spaces around the image
+        var spaceLeading: CGFloat, spaceTrailing: CGFloat, spaceTop:CGFloat, spaceBottom:CGFloat
+        (spaceLeading, spaceTrailing, spaceTop, spaceBottom) = initSpaces(for: orientation, isToolbarRequired: isToolbarRequired)
+
+        // Horizontal constraints
+        let imageWidth = image.size.width * scrollView.zoomScale
+        let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + imageWidth + spaceTrailing)
+        spaceLeading += horizontalSpaceAvailable/2
+        spaceTrailing += horizontalSpaceAvailable/2
+        
+        // Vertical constraints
+        let imageHeight = image.size.height * scrollView.zoomScale
+        let verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
+        var descHeight: CGFloat = 0.0
+        if let comment = imageData?.comment, comment.string.isEmpty == false {
+            descHeight = descContainer.descHeight.constant + 8
+        }
+        (spaceTop, spaceBottom) = calcVertPosition(from: verticalSpaceAvailable, commentHeight: descHeight,
+                                                   topSpace: spaceTop, bottomSpace: spaceBottom,
+                                                   isToolbarRequired: isToolbarRequired)
+
+        // Center image horizontally in scrollview
+        scrollView.contentInset.left = max(0, spaceLeading)
+        scrollView.contentInset.right = max(0, spaceTrailing)
+        
+        // Center image vertically  in scrollview
+        scrollView.contentInset.top = max(0, spaceTop)
+        scrollView.contentInset.bottom = max(0, spaceBottom)
+    }
+
+    private func centerVideoView() {
+        // Determine the orientation of the device
+        let orientation = getOrientation()
+        
+        // Determine if the toolbar is presented
+        let isToolbarRequired = isToolbarRequired()
+
+        // Determine the available spaces around the image
+        var spaceLeading: CGFloat, spaceTrailing: CGFloat, spaceTop:CGFloat, spaceBottom:CGFloat
+        (spaceLeading, spaceTrailing, spaceTop, spaceBottom) = initSpaces(for: orientation, isToolbarRequired: isToolbarRequired)
+        
+        // Determine scale factor
+        var videoWidth = CGFloat(imageData.fullRes?.width ?? Int(view.bounds.width))
+        var videoHeight = CGFloat(imageData.fullRes?.height ?? Int(view.bounds.width))
+        let scale = min(view.bounds.width / videoWidth, view.bounds.height / videoHeight)
+        videoWidth *= scale
+        videoHeight *= scale
+
+        // Horizontal constraints
+        let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + videoWidth + spaceTrailing)
+        spaceLeading += horizontalSpaceAvailable/2
+        spaceTrailing += horizontalSpaceAvailable/2
+        
+        // Vertical constraints
+        let verticalSpaceAvailable = view.bounds.height - (spaceTop + videoHeight + spaceBottom)
+        var descHeight: CGFloat = 0.0
+        if let comment = imageData?.comment, comment.string.isEmpty == false {
+            descHeight = descContainer.descHeight.constant + 8
+        }
+        (spaceTop, spaceBottom) = calcVertPosition(from: verticalSpaceAvailable, commentHeight: descHeight,
+                                                   topSpace: spaceTop, bottomSpace: spaceBottom,
+                                                   isToolbarRequired: isToolbarRequired)
+        
+        // Center video horizontally in scrollview
+        videoContainerLeft.constant = max(0, spaceLeading)
+        videoContainerRight.constant = max(0, spaceTrailing)
+        
+        // Center video vertically  in scrollview
+        videoContainerTop.constant = max(0, spaceTop)
+        videoContainerBottom.constant = max(0, spaceBottom)
+//        debugPrint("••> video: left: \(max(0, spaceLeading)), right: \(max(0, spaceTrailing)), top \(max(0, spaceTop)), bottom: \(max(0, spaceBottom)) <")
+    }
+    
+    private func getOrientation() -> UIInterfaceOrientation {
         let orientation: UIInterfaceOrientation
         if #available(iOS 14, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         } else {
             orientation = UIApplication.shared.statusBarOrientation
         }
-        
-        // Determine if the toolbar is presented
+        return orientation
+    }
+    
+    private func isToolbarRequired() -> Bool {
         var isToolbarRequired = false
-        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageViewController.self)}), let vc = viewControllers.first as? ImageViewController {
+        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageViewController.self)}),
+           let vc = viewControllers.first as? ImageViewController {
             isToolbarRequired = vc.isToolbarRequired
         }
-
-        // Determine the available spaces around the image
+        return isToolbarRequired
+    }
+    
+    private func initSpaces(for orientation: UIInterfaceOrientation, isToolbarRequired: Bool)
+                        -> (CGFloat, CGFloat, CGFloat, CGFloat) {
         var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
         var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
         if let nav = navigationController {
@@ -221,19 +338,17 @@ class ImagePreviewViewController: UIViewController
             spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
         }
         
-        // Horizontal constraints
-        let imageWidth = image.size.width * scrollView.zoomScale
-        let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + imageWidth + spaceTrailing)
-        spaceLeading += horizontalSpaceAvailable/2
-        spaceTrailing += horizontalSpaceAvailable/2
+        return (spaceLeading, spaceTrailing, spaceTop, spaceBottom)
+    }
+    
+    private func calcVertPosition(from verticalSpace: CGFloat, commentHeight: CGFloat,
+                                  topSpace: CGFloat, bottomSpace: CGFloat, isToolbarRequired: Bool)
+    -> (spaceTop: CGFloat, spaceBottm: CGFloat) {
+        // Initialisation
+        var verticalSpaceAvailable = verticalSpace, descHeight = commentHeight
+        var spaceTop = topSpace, spaceBottom = bottomSpace
         
-        // Vertical constraints
-        let imageHeight = image.size.height * scrollView.zoomScale
-        var verticalSpaceAvailable = view.bounds.height - (spaceTop + imageHeight + spaceBottom)
-        var descHeight: CGFloat = 0.0
-        if let comment = imageData?.comment, comment.string.isEmpty == false {
-            descHeight = descContainer.descHeight.constant + 8
-        }
+        // With or without toolbar?
         if isToolbarRequired {
             if verticalSpaceAvailable >= descHeight {
                 // Centre image between navigation bar and description/toolbar
@@ -267,16 +382,9 @@ class ImagePreviewViewController: UIViewController
                 spaceBottom = verticalSpaceAvailable/2
             }
         }
-        
-        // Center image horizontally in scrollview
-        scrollView.contentInset.left = max(0, spaceLeading)
-        scrollView.contentInset.right = max(0, spaceTrailing)
-        
-        // Center image vertically  in scrollview
-        scrollView.contentInset.top = max(0, spaceTop)
-        scrollView.contentInset.bottom = max(0, spaceBottom)
+        return (spaceTop, spaceBottom)
     }
-        
+
     
     // MARK: - Image Metadata
     func didTapOnce() {

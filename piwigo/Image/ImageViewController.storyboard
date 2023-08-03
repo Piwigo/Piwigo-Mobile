@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -76,14 +76,11 @@
                                     <outlet property="delegate" destination="c1N-Y3-FVS" id="41P-c1-voo"/>
                                 </connections>
                             </scrollView>
-                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="playImage" insetsLayoutMarginsFromSafeArea="NO" image="videoPlay" translatesAutoresizingMaskIntoConstraints="NO" id="NAw-1Y-mdv">
-                                <rect key="frame" x="182" y="430" width="50" height="50"/>
-                                <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="Ye4-oq-F4Z"/>
-                                    <constraint firstAttribute="height" constant="50" id="kMn-5z-hYB"/>
-                                </constraints>
-                            </imageView>
+                            <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hM9-ap-l5a">
+                                <rect key="frame" x="0.0" y="200" width="414" height="496"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="87" y="774" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
@@ -139,13 +136,15 @@
                             <constraint firstItem="cl6-aa-PKH" firstAttribute="bottom" secondItem="Ydg-dw-Gdx" secondAttribute="bottom" id="5W9-hW-wav"/>
                             <constraint firstItem="Ydg-dw-Gdx" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="6ET-fg-111"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="trailing" secondItem="CkJ-ky-Kbn" secondAttribute="trailing" id="7m2-DR-v9c"/>
-                            <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="9R7-ma-jIc"/>
-                            <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerY" secondItem="cl6-aa-PKH" secondAttribute="centerY" id="VZt-KI-TUJ"/>
+                            <constraint firstItem="hM9-ap-l5a" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" constant="200" id="JF8-7C-T6Y"/>
+                            <constraint firstAttribute="trailing" secondItem="hM9-ap-l5a" secondAttribute="trailing" id="VUd-Lt-fzi"/>
                             <constraint firstItem="Ec0-NJ-b64" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="c93-be-uGH"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="n2C-oc-2eJ"/>
                             <constraint firstItem="Ec0-NJ-b64" firstAttribute="top" secondItem="cl6-aa-PKH" secondAttribute="top" constant="16" id="qhv-WB-vXC"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="rXV-ju-e4i"/>
+                            <constraint firstAttribute="bottom" secondItem="hM9-ap-l5a" secondAttribute="bottom" constant="200" id="sWA-td-wnt"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="bottom" secondItem="CkJ-ky-Kbn" secondAttribute="bottom" id="sXf-85-dZO"/>
+                            <constraint firstItem="hM9-ap-l5a" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="yq7-2m-khI"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -154,9 +153,13 @@
                         <outlet property="imageView" destination="7gX-s9-oHd" id="D1r-Fu-F7H"/>
                         <outlet property="imageViewHeightConstraint" destination="yK6-53-GS0" id="An0-dM-Vno"/>
                         <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
-                        <outlet property="playImage" destination="NAw-1Y-mdv" id="NIe-8s-wTm"/>
                         <outlet property="progressView" destination="Ec0-NJ-b64" id="2SI-9C-yer"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>
+                        <outlet property="videoContainerBottom" destination="sWA-td-wnt" id="LzG-ON-OOV"/>
+                        <outlet property="videoContainerLeft" destination="yq7-2m-khI" id="Nnj-vS-hi1"/>
+                        <outlet property="videoContainerRight" destination="VUd-Lt-fzi" id="YHm-l4-959"/>
+                        <outlet property="videoContainerTop" destination="JF8-7C-T6Y" id="jpc-9W-2Nd"/>
+                        <outlet property="videoContainerView" destination="hM9-ap-l5a" id="fx4-dQ-C6A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPj-N2-xH5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -165,7 +168,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="videoPlay" width="50" height="50"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
