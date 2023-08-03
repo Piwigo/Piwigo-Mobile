@@ -310,7 +310,7 @@ class ImageViewController: UIViewController {
         
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
-            let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
             
             // User with admin or upload rights can do everything
             if user.hasUploadRights(forCatID: categoryId) {

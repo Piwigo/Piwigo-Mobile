@@ -50,7 +50,7 @@ extension AlbumViewController
         // Button displayed in all circumstances
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
-            let orientation = view.window?.windowScene?.interfaceOrientation
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
             // User with admin or upload rights can do everything
             if user.hasUploadRights(forCatID: categoryId) {
@@ -62,7 +62,7 @@ extension AlbumViewController
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
 
-                if orientation?.isPortrait ?? false,
+                if orientation.isPortrait,
                    UIDevice.current.userInterfaceIdiom == .phone {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
@@ -99,7 +99,7 @@ extension AlbumViewController
                 }
             } else if NetworkVars.userStatus != .guest,
                       ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending) {
-                if orientation?.isPortrait ?? false,
+                if orientation.isPortrait,
                    UIDevice.current.userInterfaceIdiom == .phone {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
