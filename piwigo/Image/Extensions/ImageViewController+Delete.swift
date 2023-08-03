@@ -276,6 +276,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                     .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
                 self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
             }
+            // Scroll album collection view to keep the selected image centred on the screen
+            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }
     }
     
@@ -299,6 +301,8 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                     .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
                 self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
             }
+            // Scroll album collection view to keep the selected image centred on the screen
+            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }
     }
 }
