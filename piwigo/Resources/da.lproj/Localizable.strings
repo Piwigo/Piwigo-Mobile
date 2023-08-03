@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Hvad er nyt i Piwigo";
-"whatsNew_title1" = "Ny Cache";
-"whatsNew_desc1" = "Cache management fuldt omskrevet for at forbedre brugeroplevelsen og bringe offline browsing.";
-"whatsNew_title2" = "Dubler skaerm";
-"whatsNew_desc2" = "Se dine fotos og videoer på et eksternt display.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Fortsæt";

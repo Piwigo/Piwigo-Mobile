@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
-"whatsNew_title1" = "Новый кэш";
-"whatsNew_desc1" = "Управление кэшем полностью переписано, чтобы улучшить работу пользователя и принести автономный режим просмотра.";
-"whatsNew_title2" = "Повтоо акона";
-"whatsNew_desc2" = "Смотрите ваши фотографии и видео на внешнем экране.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Продолжить";

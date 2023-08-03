@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
-"whatsNew_title1" = "新缓存";
-"whatsNew_desc1" = "缓存管理完全重写，以改善用户体验并带来离线浏览。";
-"whatsNew_title2" = "苹果投屏";
-"whatsNew_desc2" = "在外部显示器上观看您的照片和视频。";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "继续储值";

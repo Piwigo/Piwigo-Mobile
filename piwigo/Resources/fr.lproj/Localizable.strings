@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Nouveautés de Piwigo";
-"whatsNew_title1" = "Nouveau cache";
-"whatsNew_desc1" = "La gestion du cache a été entièrement réécrite pour améliorer l'expérience utilisateur et permettre une navigation hors ligne.";
-"whatsNew_title2" = "Recopie de l'écran";
-"whatsNew_desc2" = "Regardez vos photos et vos vidéos sur un écran externe.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Continuer";

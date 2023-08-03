@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
-"whatsNew_title1" = "Új gyorsítótár";
-"whatsNew_desc1" = "A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.";
-"whatsNew_title2" = "Zrcalienie zaslona";
-"whatsNew_desc2" = "Nézze meg fényképeit és videóit egy külső kijelzőn.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Folytatás";

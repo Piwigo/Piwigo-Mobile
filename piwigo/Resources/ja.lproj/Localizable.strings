@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
-"whatsNew_title1" = "新しいキャッシュ";
-"whatsNew_desc1" = "キャッシュ管理は完全に書き換えられ、ユーザーエクスペリエンスを向上させ、オフラインブラウジングをもたらします。";
-"whatsNew_title2" = "画面ミラーリング";
-"whatsNew_desc2" = "外部のディスプレイで写真やビデオをご覧ください。";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "続ける";

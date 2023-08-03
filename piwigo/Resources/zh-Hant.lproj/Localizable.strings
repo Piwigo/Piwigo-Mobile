@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
-"whatsNew_title1" = "新的快取機制";
-"whatsNew_desc1" = "全面重寫快取管理，以改善用戶體驗並提供離線瀏覽。";
-"whatsNew_title2" = "螢幕鏡像輸出";
-"whatsNew_desc2" = "在外部顯示器中觀看您的照片與影片。";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "繼續";
