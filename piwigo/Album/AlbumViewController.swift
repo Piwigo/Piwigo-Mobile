@@ -602,7 +602,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Display What's New in Piwigo if needed
         /// Next line to be used for debugging:
-        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
+//        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             print(AppVars.shared.didShowWhatsNewAppVersion, " compare 3.1: ",  AppVars.shared.didShowWhatsNewAppVersion.compare("3.1", options: .numeric) == .orderedAscending)
             print(appVersionString, " compare ", AppVars.shared.didShowWhatsNewAppVersion, ": ", appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending)
