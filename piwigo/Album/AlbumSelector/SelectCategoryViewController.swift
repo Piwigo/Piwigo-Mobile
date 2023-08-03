@@ -530,8 +530,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setAlbumThumbnail:
             return 2
         default:    // Present recent albums if any
-            let objects = recentAlbums.fetchedObjects
-            return 1 + (objects?.count ?? 0 > 0 ? 1 : 0)
+            let objects = recentAlbums.fetchedObjects ?? []
+            return 1 + (objects.isEmpty ? 0 : 1)
         }
     }
 
@@ -565,7 +565,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         var depth = 0
         let albumData: Album
-        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
+        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).isEmpty == false
         switch indexPath.section {
         case 0:
             if wantedAction == .setAlbumThumbnail {
@@ -651,44 +651,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
         case .setAlbumThumbnail:
-            // The root album is not available
+            // Don't present sub-albums in first section
             if indexPath.section == 0 {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
             } else {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
-            if albumData.pwgID == 0 {
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
-            }
         case .setAutoUploadAlbum:
-            // The root album is not selectable (should not be presented but in case…)
-            if albumData.pwgID == 0 {
+            // Don't present sub-albums in Recent Albums section
+            if hasRecentAlbums && (indexPath.section == 0) {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
             } else {
-                // Don't present sub-albums in Recent Albums section
-                if hasRecentAlbums && (indexPath.section == 0) {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                } else {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
-                }
+                cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
         case .copyImage, .copyImages, .moveImage, .moveImages:
-            // User cannot copy/move the image to the root album or in albums it already belongs to
-            if albumData.pwgID == 0 {  // Should not be presented but in case…
+            // Don't present sub-albums in Recent Albums section
+            if hasRecentAlbums && (indexPath.section == 0) {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
             } else {
-                // Don't present sub-albums in Recent Albums section
-                if hasRecentAlbums && (indexPath.section == 0) {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                } else {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
-                }
-                // Albums containing the image are not selectable
-                if commonCatIDs.contains(albumData.pwgID) {
-                    cell.albumLabel.textColor = .piwigoColorRightLabel()
-                }
+                cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
+            }
+            // Albums containing the image are not selectable
+            if commonCatIDs.contains(albumData.pwgID) {
+                cell.albumLabel.textColor = .piwigoColorRightLabel()
             }
 
         default:
