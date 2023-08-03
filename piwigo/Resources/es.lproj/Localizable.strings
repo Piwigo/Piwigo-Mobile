@@ -829,8 +829,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Nuevos gestos";
+"whatsNew_desc1" = "Deslice hacia abajo o pellizque la imagen para volver al álbum cuando vea fotos individuales o vídeos.";
+"whatsNew_title2" = "Soporte PiP";
+"whatsNew_desc2" = "Mira un vídeo almacenado en tu Piwigo mientras usas otras aplicaciones.";
 "whatsNew_continue" = "Continuar";
