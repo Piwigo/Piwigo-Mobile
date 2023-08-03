@@ -34,7 +34,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var imagesCollection: UICollectionView?
     var searchController: UISearchController?
-    private var imageOfInterest = IndexPath(item: 0, section: 1)
+    var imageOfInterest = IndexPath(item: 0, section: 1)
     
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
@@ -62,7 +62,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
-    var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
 
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
@@ -1349,7 +1348,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 return
             }
             
-            // Display the image in fullscreen mode
+            // Display the image in fullscreen mode?
             if AppVars.shared.inSingleDisplayMode {
 
                 // Add category to list of recent albums
@@ -1358,25 +1357,26 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
                 // Selection mode not active => display full screen image
                 let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-                imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
-                imageDetailView?.imageIndex = indexPath.item
-                imageDetailView?.categoryId = categoryId
-                imageDetailView?.images = images
-                imageDetailView?.user = user
-                imageDetailView?.imgDetailDelegate = self
+                guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else {
+                    fatalError("!!! NO ImageViewController !!!")
+                }
+                imageDetailView.imageIndex = indexPath.item
+                imageDetailView.categoryId = categoryId
+                imageDetailView.images = images
+                imageDetailView.user = user
+                imageDetailView.imgDetailDelegate = self
                 animatedCell = selectedCell
                 albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
                 cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
                 navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
-                if let imageDetailView = imageDetailView {
-                    // Push ImageDetailView embedded in navigation controller
-                    let navController = UINavigationController(rootViewController: imageDetailView)
-                    navController.hidesBottomBarWhenPushed = true
-                    navController.transitioningDelegate = self;
-                    navController.modalPresentationStyle = .custom
-                    navController.modalPresentationCapturesStatusBarAppearance = true
-                    navigationController?.present(navController, animated: true)
-                }
+
+                // Push ImageDetailView embedded in navigation controller
+                let navController = UINavigationController(rootViewController: imageDetailView)
+                navController.hidesBottomBarWhenPushed = true
+                navController.transitioningDelegate = self
+                navController.modalPresentationStyle = .custom
+                navController.modalPresentationCapturesStatusBarAppearance = true
+                navigationController?.present(navController, animated: true)
             } else {
                 // Check image data
                 guard let imageData = selectedCell.imageData else {
