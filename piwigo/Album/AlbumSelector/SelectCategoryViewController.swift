@@ -1043,34 +1043,34 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-            updateOperations.append( BlockOperation { [weak self] in
+//            updateOperations.append( BlockOperation { [weak self] in
                 print("••> Insert category item at \(newIndexPath)")
-                self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
-            })
+            self.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
+//            })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
+//            updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Update category item at \(indexPath)")
-                self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
-            })
+            self.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
+//            })
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
+//            updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Move category item from \(indexPath) to \(newIndexPath)")
-                self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
-            })
+            self.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
+//            })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
+//            updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Delete category item at \(indexPath)")
-                self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
-            })
+            self.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
+//            })
         @unknown default:
             fatalError("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
