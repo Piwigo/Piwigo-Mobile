@@ -38,7 +38,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
-    var actionRunning = false
     private var selectedCategoryId = Int32.min
 
     // MARK: - Core Data Objects
@@ -993,9 +992,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     func showError(with error:String = "") {
-        // Stops preventing tableView updates
-        self.actionRunning = false
-
         // Title and message
         let title:String
         var message:String
@@ -1050,9 +1046,6 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        // Stops preventing tableView updates
-        if actionRunning { return }
-
         // Initialisation
         var hasAlbumsInSection1 = false
         if controller == albums,
@@ -1100,17 +1093,14 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Do not update items if the album is not presented.
-        if view.window == nil { return }
-        
-        // Any update to perform?
-        if updateOperations.isEmpty { return }
-
-        // Perform all updates
-        categoriesTableView?.performBatchUpdates({ () -> Void  in
-            for operation: BlockOperation in self.updateOperations {
-                operation.start()
-            }
-        })
+        if view.window != nil, updateOperations.isEmpty == false {
+            // Perform all updates
+            categoriesTableView?.performBatchUpdates({ () -> Void  in
+                for operation: BlockOperation in self.updateOperations {
+                    operation.start()
+                }
+            })
+        }
         
         // End updates
         categoriesTableView.endUpdates()
