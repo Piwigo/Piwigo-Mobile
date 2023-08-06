@@ -1346,7 +1346,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance /* Appearance */:
             result = true
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .cache /* Cache Settings */:
             result = false
         case .clear /* Cache Settings */:
@@ -1637,7 +1637,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             }
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
