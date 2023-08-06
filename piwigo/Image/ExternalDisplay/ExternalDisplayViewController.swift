@@ -40,9 +40,6 @@ class ExternalDisplayViewController: UIViewController {
         helpLabel.text = NSLocalizedString("help_externalDisplay", comment: "Tap the image you wish to display here.")
         imageView.layoutIfNeeded()   // Ensure imageView in its final size
         
-        // Initialise video players
-        playbackController.prepareForPlayback()
-
         // Display image/video
         configImage()
     }

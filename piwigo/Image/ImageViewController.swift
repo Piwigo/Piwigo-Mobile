@@ -69,7 +69,6 @@ class ImageViewController: UIViewController {
         super.viewDidLoad()
         
         // Initialise video players
-        playbackController.prepareForPlayback()
         playbackController.videoItemDelegate = self
 
         // Current image

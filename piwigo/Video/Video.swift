@@ -19,7 +19,7 @@ struct Video: Hashable {
     
     init(pwgURL: URL, cacheURL: URL, title: String, resumeTime: TimeInterval = 0) {
         self.pwgURL = pwgURL
-        self.cacheURL = cacheURL
+        self.cacheURL = cacheURL.appendingPathExtension("mov")
         self.title = title
         self.resumeTime = resumeTime
     }

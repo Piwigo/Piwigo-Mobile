@@ -19,9 +19,9 @@ class PlaybackController {
     
     private var playbackItems = [Video: PlayerViewControllerCoordinator]()
     
-    // Piwigo will play audio even if the Silent switch set to silent or when the screen locks.
-    // Furthermore, it will interrupt any other current audio sessions (no mixing)
-    func prepareForPlayback() {
+    init() {
+        // Piwigo will play audio even if the Silent switch set to silent or when the screen locks.
+        // Furthermore, it will interrupt any other current audio sessions (no mixing)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {

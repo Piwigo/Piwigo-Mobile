@@ -94,7 +94,16 @@ class PlayerViewControllerCoordinator: NSObject {
                 
                 // Create a player for the video.
                 if !playerViewController.hasContent(fromVideo: video) {
-                    let playerItem = AVPlayerItem(url: video.pwgURL)
+                    let assetURL: URL
+                    if FileManager.default.fileExists(atPath: video.cacheURL.path) {
+                        assetURL = video.cacheURL
+                    } else {
+                        assetURL = video.pwgURL
+                    }
+                    let asset = AVURLAsset(url: assetURL, options: nil)
+                    let loader = asset.resourceLoader
+                    loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
+                    let playerItem = AVPlayerItem(asset: asset)
                     // Seek to the resume time *before* assigning the player to the view controller.
                     // This is more efficient, and provides a better user experience because the media only loads at the actual start time.
                     playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: 90_000),
@@ -102,6 +111,7 @@ class PlayerViewControllerCoordinator: NSObject {
                     playerViewController.player = AVPlayer(playerItem: playerItem)
                     playerViewController.videoGravity = .resizeAspect
                     playerViewController.view.backgroundColor = .clear
+                    playerViewController.view.tintColor = .white
                 }
                 
                 // Update the player view contoller's ready-for-display status and start observing the property.
@@ -153,6 +163,57 @@ class PlayerViewControllerCoordinator: NSObject {
     init(video: Video) {
         self.video = video
         super.init()
+
+        // Observe system notifications for storing videos in cache
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishPlaying(_:)),
+                                               name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+    
+    @objc func didFinishPlaying(_ notification: Notification?) {
+        if notification?.name == .AVPlayerItemDidPlayToEndTime,
+           let playerItem = notification?.object as? AVPlayerItem,
+           let urlAsset = playerItem.asset as? AVURLAsset, urlAsset.url == video.pwgURL,
+           let videoAsset = playerItem.asset.copy() as? AVAsset, videoAsset.isExportable {
+               // User did watch video until the end
+               DispatchQueue.global(qos: .background).async {
+                   // Get export session
+//                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
+                   guard let exportSession = AVAssetExportSession(asset: videoAsset,
+                                                presetName: AVAssetExportPresetHighestQuality) else { return }
+                   // Set parameters
+                   exportSession.outputFileType = .mov
+                   exportSession.shouldOptimizeForNetworkUse = true
+                   exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
+                   exportSession.metadata = videoAsset.metadata
+                   exportSession.outputURL = self.video.cacheURL
+                   
+                   // Store video file in cache for reuse
+                   exportSession.exportAsynchronously {
+                       switch exportSession.status {
+                       case .completed:
+                           debugPrint("••> Video stored in cache ;-)")
+                           // Replace player item
+                           DispatchQueue.main.async {
+                               if let playerViewController = self.playerViewControllerIfLoaded {
+                                   let asset = AVURLAsset(url: self.video.cacheURL, options: nil)
+                                   let playerItem = AVPlayerItem(asset: asset)
+                                   if let resumeTime = playerViewController.player?.currentTime() {
+                                       playerItem.seek(to: resumeTime) {_ in
+                                           playerViewController.player?.replaceCurrentItem(with: playerItem)
+                                       }
+                                   } else {
+                                       playerViewController.player?.replaceCurrentItem(with: playerItem)
+                                   }
+                               }
+                           }
+                       case .unknown, .waiting, .exporting, .failed, .cancelled:
+                           debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error))")
+                       @unknown default:
+                           debugPrint("••> Video not stored in cache: Unknown error")
+                       }
+                   }
+               }
+        }
     }
     
     deinit {

@@ -132,12 +132,13 @@ class ImagePreviewViewController: UIViewController
 
         // Initialise video player
         if let video = video {
-           if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
-               playbackController.play(contentOfVideo: video)
-           } else {
-               playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
-               centerVideoView()
-           }
+            videoContainerView.isHidden = false
+            if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
+                playbackController.play(contentOfVideo: video)
+            } else {
+                playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
+                centerVideoView()
+            }
         }
     }
 
@@ -186,7 +187,7 @@ class ImagePreviewViewController: UIViewController
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
-        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
+//        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
     }
     
     /*
@@ -216,7 +217,7 @@ class ImagePreviewViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
-        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
+//        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
     private func centerImageView() {
@@ -467,6 +468,9 @@ extension ImagePreviewViewController: UIScrollViewDelegate
             startingZoomScale < 1.1 * scrollView.minimumZoomScale {
             dismiss(animated: true)
         } else {
+            if imageData.isVideo {
+                scrollView.zoomScale = min(scrollView.zoomScale, scrollView.minimumZoomScale)
+            }
             centerImageView()
         }
     }
