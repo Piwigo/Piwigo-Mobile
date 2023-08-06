@@ -134,7 +134,7 @@ class ImagePreviewViewController: UIViewController
         if let video = video {
             videoContainerView.isHidden = false
             if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
-                playbackController.play(contentOfVideo: video)
+                playbackController.play(contentOfVideo: video, usingMuteOption: true)
             } else {
                 playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
                 centerVideoView()
@@ -164,9 +164,9 @@ class ImagePreviewViewController: UIViewController
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        // Pause video is needed
+        // Pause video and remember selected mute option
         if let video = video {
-            playbackController.pause(contentOfVideo: video)
+            playbackController.pause(contentOfVideo: video, savingMuteOption: true)
         }
     }
 

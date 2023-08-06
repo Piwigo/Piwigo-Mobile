@@ -244,11 +244,12 @@ class PlayerViewControllerCoordinator: NSObject {
         status.insert(.embeddedInline)
         playerViewController.showsPlaybackControls = true
         playerViewController.allowsPictureInPicturePlayback = true
+        playerViewController.player?.isMuted = VideoVars.shared.isPlayerMuted
         embed(playerViewController: playerViewController, in: parent, container: container)
     }
 
     // Use the standard UIKit view controller containment API to embed the player view controller inline.
-    // Track the player view controller status for the embedded inline playback.
+    // Track the player view controller status for the embedded inline playback on th external display.
     func embedExternalDisplay(in parent: UIViewController, container: UIView) {
         loadPlayerViewControllerIfNeeded()
         guard let playerViewController = playerViewControllerIfLoaded,

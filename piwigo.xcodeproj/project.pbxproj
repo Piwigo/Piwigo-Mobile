@@ -39,6 +39,7 @@
 		AD13BF5529E9A77B0099DCF5 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
 		AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */; };
 		AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */; };
+		AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
@@ -551,6 +552,7 @@
 		AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+AppTools.swift"; sourceTree = "<group>"; };
 		AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WhatsNewViewController.storyboard; sourceTree = "<group>"; };
 		AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewController.swift; sourceTree = "<group>"; };
+		AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoVars.swift; sourceTree = "<group>"; };
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
 		AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataViewController.swift; sourceTree = "<group>"; };
@@ -1517,6 +1519,7 @@
 		AD7E9AE52A6D7A3D0079BE8F /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */,
 				AD7E9AE82A6D7B330079BE8F /* Video.swift */,
 				ADE986302A7277740087F031 /* VideoHUD.swift */,
 				AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */,
@@ -2923,6 +2926,7 @@
 				AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */,
 				AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */,
 				ADD511A6285F7D0700AD3FEC /* TagsViewController+Search.swift in Sources */,
+				AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */,
 				ADEA26A4285FA0E800B6C9A0 /* ImageViewController+Buttons.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,

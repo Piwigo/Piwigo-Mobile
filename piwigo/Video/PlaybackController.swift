@@ -56,12 +56,16 @@ class PlaybackController {
         coordinator(for: video).presentFullScreen(from: presentingViewController)
     }
     
-    func play(contentOfVideo video: Video) {
+    func play(contentOfVideo video: Video, usingMuteOption: Bool = false) {
+        coordinator(for: video).playerViewControllerIfLoaded?.player?.isMuted = VideoVars.shared.isPlayerMuted
         coordinator(for: video).playerViewControllerIfLoaded?.player?.play()
     }
 
-    func pause(contentOfVideo video: Video) {
+    func pause(contentOfVideo video: Video, savingMuteOption: Bool = false) {
         coordinator(for: video).playerViewControllerIfLoaded?.player?.pause()
+        if savingMuteOption {
+            VideoVars.shared.isPlayerMuted = coordinator(for: video).playerViewControllerIfLoaded?.player?.isMuted ?? false
+        }
     }
 
     func removeAllEmbeddedViewControllers() {
