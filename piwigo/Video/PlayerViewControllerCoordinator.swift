@@ -183,7 +183,7 @@ class PlayerViewControllerCoordinator: NSObject {
                // User did watch video until the end
                DispatchQueue.global(qos: .background).async {
                    // Get export session
-                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
+//                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
                    guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                 presetName: AVAssetExportPresetHighestQuality) else { return }
                    // Set parameters
