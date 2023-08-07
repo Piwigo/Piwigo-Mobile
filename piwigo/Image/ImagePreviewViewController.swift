@@ -324,11 +324,6 @@ class ImagePreviewViewController: UIViewController
                         -> (CGFloat, CGFloat, CGFloat, CGFloat) {
         var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
         var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
-        if let nav = navigationController {
-            // Remove the heights of the navigation bar and toolbar
-            spaceTop += nav.navigationBar.bounds.height
-            spaceBottom += isToolbarRequired ? nav.toolbar.bounds.height : 0
-        }
 
         // Takes into account the safe area insets
         if let root = topMostViewController()?.view?.window?.topMostViewController() {
