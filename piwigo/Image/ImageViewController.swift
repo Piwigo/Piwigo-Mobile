@@ -665,13 +665,6 @@ extension ImageViewController: UIPageViewControllerDelegate
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
 
-        // Initialise page view controller
-        imagePage.progressView.isHidden = imagePage.imageLoaded || imageData.isVideo
-        if let video = imagePage.video,
-           let videoContainer = imagePage.videoContainerView {
-            playbackController.embed(contentOfVideo: video, in: imagePage, containerView: videoContainer)
-        }
-
         // Scroll album collection view to keep the selected image centered on the screen
         imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
     }
@@ -704,7 +697,6 @@ extension ImageViewController: UIPageViewControllerDataSource
         // Create image preview
         imagePage.imageIndex = index
         imagePage.imageData = imageData
-        imagePage.imageLoaded = false
 
         // Initialise video player
         if imageData.isVideo,

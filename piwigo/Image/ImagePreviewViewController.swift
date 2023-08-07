@@ -15,7 +15,6 @@ import piwigoKit
 class ImagePreviewViewController: UIViewController
 {
     var imageIndex = 0
-    var imageLoaded = false
     var imageData: Image!
     
     var imageURL: URL?
@@ -103,10 +102,9 @@ class ImagePreviewViewController: UIViewController
                 if cachedImage == self.placeHolder {
                     // Image in cache is not appropriate
                     try? FileManager.default.removeItem(at: imageURL)
-                } else {
-                    DispatchQueue.main.async {
-                        self.configImage(cachedImage)
-                    }
+                }
+                DispatchQueue.main.async {
+                    self.configImage(cachedImage)
                 }
             } failure: { _ in }
         }
@@ -127,17 +125,23 @@ class ImagePreviewViewController: UIViewController
         self.view.layoutIfNeeded()
         
         // Hide progress view
-        self.imageLoaded = true
         self.progressView.isHidden = true
 
-        // Initialise video player
+        // Initialise video player if needded
         if let video = video {
-            videoContainerView.isHidden = false
+            // Prepare the
             if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
                 playbackController.play(contentOfVideo: video, usingMuteOption: true)
             } else {
+                // The video size is unknown at that point
+                videoContainerLeft.constant = scrollView.contentInset.left
+                videoContainerRight.constant = scrollView.contentInset.right
+                videoContainerTop.constant = scrollView.contentInset.top
+                videoContainerBottom.constant = scrollView.contentInset.bottom
+                
+                // Show video container and embed video player
+                videoContainerView.isHidden = false
                 playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
-                centerVideoView()
             }
         }
     }
@@ -156,9 +160,6 @@ class ImagePreviewViewController: UIViewController
         /// - rotating the device
         configScrollView()
         centerImageView()
-        if imageData.isVideo {
-            centerVideoView()
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -259,7 +260,7 @@ class ImagePreviewViewController: UIViewController
         scrollView.contentInset.bottom = max(0, spaceBottom)
     }
 
-    private func centerVideoView() {
+    func centerVideoView(ofSize size: CGSize) {
         // Determine the orientation of the device
         let orientation = getOrientation()
         
@@ -271,11 +272,9 @@ class ImagePreviewViewController: UIViewController
         (spaceLeading, spaceTrailing, spaceTop, spaceBottom) = initSpaces(for: orientation, isToolbarRequired: isToolbarRequired)
         
         // Determine scale factor
-        var videoWidth = CGFloat(imageData.fullRes?.width ?? Int(view.bounds.width))
-        var videoHeight = CGFloat(imageData.fullRes?.height ?? Int(view.bounds.width))
-        let scale = min(view.bounds.width / videoWidth, view.bounds.height / videoHeight)
-        videoWidth *= scale
-        videoHeight *= scale
+        let scale = min(view.bounds.width / size.width, view.bounds.height / size.height)
+        let videoWidth = size.width * scale
+        let videoHeight = size.height * scale
 
         // Horizontal constraints
         let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + videoWidth + spaceTrailing)

@@ -116,12 +116,18 @@ class PlayerViewControllerCoordinator: NSObject {
                 
                 // Update the player view contoller's ready-for-display status and start observing the property.
                 if playerViewController.isReadyForDisplay {
+                    if let parent = playerViewController.parent as? ImagePreviewViewController {
+                        parent.centerVideoView(ofSize: playerViewController.videoBounds.size)
+                    }
                     status.insert(.readyForDisplay)
                     playerViewController.player?.playImmediately(atRate: 1.0)
                 }
                 
                 readyForDisplayObservation = playerViewController.observe(\.isReadyForDisplay) { [weak self] observed, _ in
                     if observed.isReadyForDisplay {
+                        if let parent = playerViewController.parent as? ImagePreviewViewController {
+                            parent.centerVideoView(ofSize: playerViewController.videoBounds.size)
+                        }
                         self?.status.insert(.readyForDisplay)
                         playerViewController.player?.playImmediately(atRate: 1.0)
                     } else {
@@ -177,7 +183,7 @@ class PlayerViewControllerCoordinator: NSObject {
                // User did watch video until the end
                DispatchQueue.global(qos: .background).async {
                    // Get export session
-//                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
+                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
                    guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                 presetName: AVAssetExportPresetHighestQuality) else { return }
                    // Set parameters
