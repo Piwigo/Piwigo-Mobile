@@ -70,8 +70,9 @@ public class Image: NSManagedObject {
         // Image file size, name and MD5 checksum
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
         if newSize != Int64.zero, fileSize != newSize {
-            dateGetInfos = Date()       // Remember when pwg.images.getInfos is called
             fileSize = newSize
+            // Remember when pwg.images.getInfos is called
+            dateGetInfos = Date().timeIntervalSinceReferenceDate
         }
 
         let newMD5 = imageData.md5checksum ?? ""
@@ -109,12 +110,14 @@ public class Image: NSManagedObject {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let unknownDate = Date(timeIntervalSinceReferenceDate: -3187296000) // i.e. "1900-01-01 00:00:00"
         let newPosted = dateFormatter.date(from: imageData.datePosted ?? "") ?? unknownDate
-        if newPosted > unknownDate, datePosted != newPosted {
-            datePosted = newPosted
+        let newPostedInterval = newPosted.timeIntervalSinceReferenceDate
+        if newPosted > unknownDate, datePosted != newPostedInterval {
+            datePosted = newPostedInterval
         }
         let newCreated = dateFormatter.date(from: imageData.dateCreated ?? "") ?? unknownDate
-        if newCreated > unknownDate, dateCreated != newCreated {
-            dateCreated = newCreated
+        let newCreatedInterval = newCreated.timeIntervalSinceReferenceDate
+        if newCreated > unknownDate, dateCreated != newCreatedInterval {
+            dateCreated = newCreatedInterval
         }
         
         // Author

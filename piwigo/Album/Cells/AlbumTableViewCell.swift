@@ -54,12 +54,12 @@ class AlbumTableViewCell: UITableViewCell {
         }
 
         // Display recent icon when images have been uploaded recently
-        let timeSinceLastUpload: TimeInterval = albumData?.dateLast.timeIntervalSinceNow ?? .greatestFiniteMagnitude
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
-        let isRecent = timeSinceLastUpload > TimeInterval(-24*3600*periodInDays)
+        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         if self.recentBckg.isHidden == isRecent {
             self.recentBckg.isHidden = !isRecent
             self.recentImage.isHidden = !isRecent

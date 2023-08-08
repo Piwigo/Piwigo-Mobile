@@ -52,8 +52,9 @@ public class User: NSManagedObject {
         }
         
         // Last time the user used this account
-        if self.lastUsed != lastUsed {
-            self.lastUsed = lastUsed
+        let lastUsedInterval = lastUsed.timeIntervalSinceReferenceDate
+        if self.lastUsed != lastUsedInterval {
+            self.lastUsed = lastUsedInterval
         }
     }
     

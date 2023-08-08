@@ -98,7 +98,7 @@ public class NetworkUtilities: NSObject {
                 logger.notice("New token: \(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
             }
             if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
-                let dateOfLogin = Date()
+                let dateOfLogin = Date.timeIntervalSinceReferenceDate
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
                 requestServerMethods {

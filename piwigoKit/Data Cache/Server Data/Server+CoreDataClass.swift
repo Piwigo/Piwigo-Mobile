@@ -45,8 +45,9 @@ public class Server: NSManagedObject {
         }
         
         // Last time the user used this server
-        if self.lastUsed != lastUsed {
-            self.lastUsed = lastUsed
+        let lastUsedInterval = lastUsed.timeIntervalSinceReferenceDate
+        if self.lastUsed != lastUsedInterval {
+            self.lastUsed = lastUsedInterval
         }
     }
     

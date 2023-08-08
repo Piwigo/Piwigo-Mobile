@@ -555,13 +555,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Check conditions before loading album and image data
-        let lastLoad = albumData.dateGetImages
+        let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
         let nbImages = (images.fetchedObjects ?? []).count
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
+           noSmartAlbumData || missingImages || lastLoad < TimeInterval(3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
@@ -898,7 +898,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
-           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
+           Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
             // Remember that the app is fetching favorites
             AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
             // Fetch favorites in the background

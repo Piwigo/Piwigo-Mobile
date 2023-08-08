@@ -477,23 +477,26 @@ extension AlbumViewController
                 // Inform user that the app is fetching album data
                 lastUpdated = NSLocalizedString("categoryUpdating", comment: "Updating…")
             }
-            else if !albumData.isFault, albumData.dateGetImages > Date(timeIntervalSinceReferenceDate: 0) {
-                if albumData.dateGetImages.timeIntervalSince(Date()) > TimeInterval(-60) {
+            else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
+                let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
+                if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                     lastUpdated = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
                 } else {
                     let calendar = Calendar.current
-                    let updatedDay = calendar.dateComponents([.day], from: albumData.dateGetImages)
+                    let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
                     let dateDay = calendar.dateComponents([.day], from: Date())
                     if updatedDay.day == dateDay.day {
                         // Album data updated today
-                        let time = DateFormatter.localizedString(from: albumData.dateGetImages,
+                        let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt",
+                                                                       comment: "Updated at…"), time)
                     } else {
                         // Album data updated yesterday or before
-                        let date = DateFormatter.localizedString(from: albumData.dateGetImages,
+                        let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn",
+                                                                       comment: "Updated on…"), date)
                     }
                 }
             }

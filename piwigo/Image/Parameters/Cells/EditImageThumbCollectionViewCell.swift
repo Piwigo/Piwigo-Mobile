@@ -97,15 +97,16 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         self.imageSize?.text = imageData.fullRes?.pixels ?? "— pixels"
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
         imageDate.text = ""
+        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
         if bounds.size.width > CGFloat(430) {
             // i.e. larger than iPhone 14 Pro Max screen width
-            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
+            imageDate.text = DateFormatter.localizedString(from: dateCreated,
                                                            dateStyle: .long, timeStyle: .none)
         } else {
-            imageDate.text = DateFormatter.localizedString(from: imageData.dateCreated,
+            imageDate.text = DateFormatter.localizedString(from: dateCreated,
                                                            dateStyle: .short, timeStyle: .none)
         }
-        imageTime.text = DateFormatter.localizedString(from: imageData.dateCreated,
+        imageTime.text = DateFormatter.localizedString(from: dateCreated,
                                                        dateStyle: .none, timeStyle: .medium)
 
         // Retrieve image thumbnail from Piwigo server

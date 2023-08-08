@@ -235,7 +235,7 @@ class EditImageParamsViewController: UIViewController
         // Common creation date is date of first image with non-nil value, or nil
         shouldUpdateDateCreated = false
         timeOffset = TimeInterval.zero
-        commonDateCreated = images[0].dateCreated
+        commonDateCreated = Date(timeIntervalSinceReferenceDate: images[0].dateCreated)
         oldCreationDate = commonDateCreated
         
         // Common privacy?
@@ -372,8 +372,9 @@ class EditImageParamsViewController: UIViewController
         if shouldUpdateDateCreated {
             let dateFormat = DateFormatter()
             dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            let dateCreated = imageData.dateCreated.addingTimeInterval(timeOffset)
-            paramsDict["date_creation"] = dateFormat.string(from: dateCreated)
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let newDateCreated = dateCreated.addingTimeInterval(timeOffset)
+            paramsDict["date_creation"] = dateFormat.string(from: newDateCreated)
         }
 
         // Update image privacy level?
@@ -417,7 +418,7 @@ class EditImageParamsViewController: UIViewController
 
                 // Update image creation date?
                 if shouldUpdateDateCreated {
-                    imageData.dateCreated.addTimeInterval(timeOffset)
+                    imageData.dateCreated += timeOffset
                 }
 
                 // Update image privacy level?
@@ -892,7 +893,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         images.removeAll(where: {$0.pwgID == imageId})
 
         // Update common creation date if needed
-        oldCreationDate = images[0].dateCreated
+        oldCreationDate = Date(timeIntervalSinceReferenceDate: images[0].dateCreated)
         commonDateCreated = oldCreationDate.addingTimeInterval(timeInterval)
 
         // Refresh table

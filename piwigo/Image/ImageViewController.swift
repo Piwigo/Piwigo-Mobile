@@ -251,19 +251,10 @@ class ImageViewController: UIViewController {
         }
         titleLabel.sizeToFit()
 
-        // Check that dates are accessible
-        /// Will see if it fixes crash '#0    (null) in static Date._unconditionallyBridgeFromObjectiveC(_:) ()'
-        var dateCondition = false
-        let dateCreated: Date? = imageData.dateCreated
-        let datePosted: Date? = imageData.datePosted
-        if dateCreated != nil, datePosted != nil, dateCreated != datePosted {
-            dateCondition = true
-        }
-
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            dateCondition == false {
+            imageData.dateCreated == TimeInterval(-3187296000) {
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
@@ -274,6 +265,7 @@ class ImageViewController: UIViewController {
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
         }
         else {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
             subTitleLabel.textColor = .piwigoColorWhiteCream()
@@ -284,8 +276,13 @@ class ImageViewController: UIViewController {
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            subTitleLabel.text = DateFormatter.localizedString(from: imageData.dateCreated,
-                                                               dateStyle: .medium, timeStyle: .medium)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
+                                                                   dateStyle: .long, timeStyle: .long)
+            } else {
+                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
+                                                                   dateStyle: .medium, timeStyle: .medium)
+            }
             subTitleLabel.sizeToFit()
 
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
@@ -689,7 +686,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         if imageData.fileSize == Int64.zero {
             // Image data is incomplete — retrieve it
             retrieveImageData(imageData, isIncomplete: true)
-        } else if imageData.dateGetInfos.timeIntervalSinceNow < TimeInterval(-86400) {
+        } else if Date.timeIntervalSinceReferenceDate - imageData.dateGetInfos > TimeInterval(86400) {
             // Image data retrieved more than a day ago — retrieve it
             retrieveImageData(imageData, isIncomplete: false)
         }

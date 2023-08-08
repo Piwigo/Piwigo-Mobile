@@ -19,7 +19,7 @@ extension Server {
     @NSManaged public var uuid: String
     @NSManaged public var fileTypes: String
     @NSManaged public var isDemo: Bool
-    @NSManaged public var lastUsed: Date
+    @NSManaged public var lastUsed: TimeInterval
     @NSManaged public var path: String
     @NSManaged public var albums: Set<Album>?
     @NSManaged public var users: Set<User>?

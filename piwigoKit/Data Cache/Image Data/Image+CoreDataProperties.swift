@@ -24,9 +24,9 @@ extension Image {
     @NSManaged public var comment: NSAttributedString
     @NSManaged public var visits: Int32
     @NSManaged public var fileName: String
-    @NSManaged public var datePosted: Date
-    @NSManaged public var dateCreated: Date
-    @NSManaged public var dateGetInfos: Date
+    @NSManaged public var datePosted: TimeInterval
+    @NSManaged public var dateCreated: TimeInterval
+    @NSManaged public var dateGetInfos: TimeInterval
     @NSManaged public var fullRes: Resolution?
     @NSManaged public var isVideo: Bool
 

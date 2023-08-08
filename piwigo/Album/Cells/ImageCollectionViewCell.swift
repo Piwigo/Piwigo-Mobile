@@ -200,7 +200,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
 //              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
             }
         case .recent:
-            let text = DateFormatter.localizedString(from: imageData.dateCreated,
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let text = DateFormatter.localizedString(from: dateCreated,
                                                      dateStyle: .medium, timeStyle: .none)
             title = attributedTitle(NSAttributedString(string: text))
         default:

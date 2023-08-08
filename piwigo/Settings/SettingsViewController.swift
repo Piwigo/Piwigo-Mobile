@@ -328,7 +328,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func loginLogout() {
         // Set date of use of server and user
-        let now = Date()
+        let now = Date.timeIntervalSinceReferenceDate
         user?.lastUsed = now
         user?.server?.lastUsed = now
         if mainContext.hasChanges {
