@@ -42,7 +42,7 @@ extension UIBarButtonItem {
     }
     
     
-    // MARK: — Set Album Thumbnail Bar Button Item
+    // MARK: - Set Album Thumbnail Bar Button Item
     class func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button: UIBarButtonItem!
         if #available(iOS 13.0, *) {
