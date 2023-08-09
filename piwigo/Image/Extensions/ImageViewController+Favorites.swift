@@ -80,7 +80,7 @@ extension ImageViewController
                         // Back to favorites album or set favorite button?
                         if self.categoryId == pwgSmartAlbum.favorites.rawValue {
                             // Return to favorites album
-                            navigationController?.popViewController(animated: true)
+                            navigationController?.dismiss(animated: true)
                         } else {
                             // Update favorite button
                             self.favoriteBarButton?.setFavoriteImage(for: false)
