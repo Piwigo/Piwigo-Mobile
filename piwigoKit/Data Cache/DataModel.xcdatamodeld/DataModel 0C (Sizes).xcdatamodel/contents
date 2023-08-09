@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F63" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName=".Album" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
-        <attribute name="dateGetImages" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
-        <attribute name="dateLast" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
+        <attribute name="dateGetImages" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="dateLast" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="globalRank" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="nbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -27,9 +27,9 @@
     <entity name="Image" representedClassName=".Image" syncable="YES">
         <attribute name="author" attributeType="String" defaultValueString=""/>
         <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
-        <attribute name="dateCreated" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO"/>
-        <attribute name="dateGetInfos" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
-        <attribute name="datePosted" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO"/>
+        <attribute name="dateCreated" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
+        <attribute name="dateGetInfos" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="datePosted" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
         <attribute name="fileName" attributeType="String" defaultValueString=""/>
         <attribute name="fileSize" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="fullRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
@@ -65,7 +65,7 @@
     <entity name="Server" representedClassName=".Server" syncable="YES">
         <attribute name="fileTypes" attributeType="String" defaultValueString="jpg,jpeg,png,gif"/>
         <attribute name="isDemo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
+        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="path" attributeType="String" minValueString="0" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Image" inverseName="server" inverseEntity="Image"/>
@@ -90,7 +90,7 @@
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="sizes" inverseEntity="Image"/>
     </entity>
     <entity name="Tag" representedClassName=".Tag" syncable="YES">
-        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO"/>
+        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
         <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="tagName" attributeType="String" defaultValueString=""/>
@@ -129,7 +129,7 @@
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="uploads" inverseEntity="User"/>
     </entity>
     <entity name="User" representedClassName=".User" syncable="YES">
-        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="NO"/>
+        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="status" attributeType="String" defaultValueString="guest"/>
         <attribute name="uploadRights" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int32&gt;"/>
