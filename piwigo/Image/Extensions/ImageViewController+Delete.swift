@@ -224,7 +224,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
         let nbImages = images?.fetchedObjects?.count ?? 0
         if nbImages == 0 {
             // Return to the Album/Images collection view
-            navigationController?.popViewController(animated: true)
+            navigationController?.dismiss(animated: true)
             return
         }
 
