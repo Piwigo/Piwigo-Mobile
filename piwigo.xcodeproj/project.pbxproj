@@ -200,6 +200,10 @@
 		AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE8284944B200171592 /* pwg.categories.delete.json */; };
 		AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */; };
 		AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */; };
+		AD7DE08C2A8439CE00C1424E /* ImageViewController+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */; };
+		AD7DE08E2A843C1200C1424E /* ImageViewController+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */; };
+		AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */; };
+		AD7DE0932A8589A000C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */; };
 		AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */; };
 		AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE82A6D7B330079BE8F /* Video.swift */; };
 		AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */; };
@@ -383,7 +387,6 @@
 		ADEA269E285F909F00B6C9A0 /* ImageViewController+Edit.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */; };
 		ADEA26A0285F962800B6C9A0 /* ImageViewController+Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */; };
 		ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */; };
-		ADEA26A4285FA0E800B6C9A0 /* ImageViewController+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */; };
 		ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */; };
 		ADEA26A8285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */; };
 		ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEAFB8C25F8182C00EEDB1D /* ColorPaletteViewController.swift */; };
@@ -405,7 +408,6 @@
 		ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */; };
 		ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7B28B296D2009F3ECE /* ServerError.swift */; };
 		ADF35E7E28B29A06009F3ECE /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7D28B29A06009F3ECE /* ServerProvider.swift */; };
-		ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */; };
 		ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */; };
 		ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */; };
 		ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF3EC0B2516515500379E53 /* Device+Model.swift */; };
@@ -720,6 +722,9 @@
 		AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.delete.swift; sourceTree = "<group>"; };
 		AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setInfo.swift; sourceTree = "<group>"; };
 		AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.setInfo.json; sourceTree = "<group>"; };
+		AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Video.swift"; sourceTree = "<group>"; };
+		AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
+		AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerCoordinator.swift; sourceTree = "<group>"; };
 		AD7E9AE82A6D7B330079BE8F /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
@@ -1002,7 +1007,6 @@
 		ADF35E7828B283A8009F3ECE /* Server+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Server+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADF35E7B28B296D2009F3ECE /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
 		ADF35E7D28B29A06009F3ECE /* ServerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
-		ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearClipboardViewController.swift; sourceTree = "<group>"; };
 		ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClearClipboardViewController.storyboard; sourceTree = "<group>"; };
 		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1333,8 +1337,7 @@
 				AD0B6AD4268A21B7007DEE70 /* UploadManager+Finisher.swift */,
 				AD0B6AD6268A21C0007DEE70 /* UploadManager+Auto.swift */,
 				AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */,
-				ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */,
-				AD2FEA5725AFA1470072596A /* VideoMetadata.swift */,
+				AD7DE0912A85898D00C1424E /* Supporting Files */,
 			);
 			path = uploadKit;
 			sourceTree = "<group>";
@@ -1516,6 +1519,16 @@
 			path = "Pick Photos Album";
 			sourceTree = "<group>";
 		};
+		AD7DE0912A85898D00C1424E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */,
+				AD2FEA5725AFA1470072596A /* VideoMetadata.swift */,
+				AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		AD7E9AE52A6D7A3D0079BE8F /* Video */ = {
 			isa = PBXGroup;
 			children = (
@@ -1603,7 +1616,6 @@
 			isa = PBXGroup;
 			children = (
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
-				ADF3AE592803060A009F5931 /* Notification.Name+AppTools.swift */,
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
 				AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */,
@@ -1957,6 +1969,7 @@
 				ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */,
 				ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */,
 				ADEA269B285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift */,
+				AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2038,6 +2051,7 @@
 				ADF3EC0B2516515500379E53 /* Device+Model.swift */,
 				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
 				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
+				AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
@@ -2620,7 +2634,6 @@
 				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
 				AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */,
 				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
-				ADF3AE5A2803060A009F5931 /* Notification.Name+AppTools.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
 				ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */,
@@ -2736,6 +2749,7 @@
 				AD2C624F2A4898A200671582 /* UploadManager+Transfer.swift in Sources */,
 				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
 				AD2C624A2A4898A200671582 /* UploadManager.swift in Sources */,
+				AD7DE0932A8589A000C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD2C62572A4898A200671582 /* UploadManager+Tasks.swift in Sources */,
 				AD2C62532A4898A200671582 /* UploadManager+Image.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
@@ -2830,6 +2844,7 @@
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADA818BA2A0032D9004C9A5A /* AlbumNavigationController.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,
+				AD7DE08E2A843C1200C1424E /* ImageViewController+Video.swift in Sources */,
 				AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
 				AD64ED2C27946C2500687793 /* AlbumTableViewCell.swift in Sources */,
@@ -2860,6 +2875,7 @@
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
 				AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */,
 				ADE986312A7277740087F031 /* VideoHUD.swift in Sources */,
+				AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */,
 				AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */,
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
@@ -2885,6 +2901,7 @@
 				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
 				ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */,
 				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,
+				AD7DE08C2A8439CE00C1424E /* ImageViewController+Buttons.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
@@ -2927,7 +2944,6 @@
 				AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */,
 				ADD511A6285F7D0700AD3FEC /* TagsViewController+Search.swift in Sources */,
 				AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */,
-				ADEA26A4285FA0E800B6C9A0 /* ImageViewController+Buttons.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
 				AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */,

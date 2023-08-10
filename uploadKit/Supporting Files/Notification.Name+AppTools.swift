@@ -1,25 +1,15 @@
 //
 //  Notification.Name+AppTools.swift
-//  piwigoKit
+//  uploadKit
 //
-//  Created by Eddy Lelièvre-Berna on 10/04/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 10/08/2023.
+//  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 
 public extension Notification.Name {
     
-    /// - Change palette colour
-    static let pwgPaletteChanged = Notification.Name("pwgNotificationPaletteChanged")
-
-    // MARK: - Share images & videos
-    /// - Share completed
-    static let pwgDidShare = Notification.Name("pwgNotificationDidShare")
-    /// - Cancel download of object to share
-    static let pwgCancelDownload = Notification.Name("pwgNotificationCancelDownload")
-    
-
     // MARK: - Recent albums
     /// - Add category ID to the top of the list of recent albums
     static let pwgAddRecentAlbum = Notification.Name("pwgNotificationAddRecentAlbum")
