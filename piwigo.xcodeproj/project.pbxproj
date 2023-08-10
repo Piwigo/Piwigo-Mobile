@@ -204,6 +204,7 @@
 		AD7DE08E2A843C1200C1424E /* ImageViewController+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */; };
 		AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */; };
 		AD7DE0932A8589A000C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */; };
+		AD7DE0952A858FC300C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE0942A858FC300C1424E /* Notification.Name+AppTools.swift */; };
 		AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */; };
 		AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AE82A6D7B330079BE8F /* Video.swift */; };
 		AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */; };
@@ -725,6 +726,7 @@
 		AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Video.swift"; sourceTree = "<group>"; };
 		AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
+		AD7DE0942A858FC300C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewControllerCoordinator.swift; sourceTree = "<group>"; };
 		AD7E9AE82A6D7B330079BE8F /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
@@ -1616,10 +1618,11 @@
 			isa = PBXGroup;
 			children = (
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
+				AD7DE0942A858FC300C1424E /* Notification.Name+AppTools.swift */,
+				ADB49D87295904BC00EE377A /* String+AppTools.swift */,
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
 				AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */,
-				ADB49D87295904BC00EE377A /* String+AppTools.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -2686,6 +2689,7 @@
 				AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */,
 				AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */,
 				AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */,
+				AD7DE0952A858FC300C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD673C1C2A4B81C60080BC0B /* PwgSession+Images.swift in Sources */,
 				AD25CA7E286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift in Sources */,
 				AD44870C29056D50001288E4 /* AlbumSmart.swift in Sources */,

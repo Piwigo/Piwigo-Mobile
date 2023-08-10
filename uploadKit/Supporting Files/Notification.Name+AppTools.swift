@@ -28,9 +28,6 @@ public extension Notification.Name {
     /// - Notifies that auto-uploading is enabled/disabled by user or disableAutoUpload()
     static let pwgAutoUploadChanged = Notification.Name("pwgNotificationAutoUploadChanged")
 
-    /// - Notifies that auto-uploading should be disabled
-    static let pwgDisableAutoUpload = Notification.Name("pwgNotificationDisableAutoUpload")
-
     /// - Displays error when appendAutoUploadRequests() fails and resume upload manager operations
     static let pwgAppendAutoUploadRequestsFailed = Notification.Name("pwgNotificationAppendAutoUploadRequestsFail")
 }
