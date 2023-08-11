@@ -20,7 +20,7 @@ class ImagePreviewViewController: UIViewController
     var imageURL: URL?
     var video: Video?
     let playbackController = PlaybackController.shared
-
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageViewWidthConstraint: NSLayoutConstraint!
@@ -32,13 +32,13 @@ class ImagePreviewViewController: UIViewController
     @IBOutlet weak var videoContainerBottom: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var progressView: PieProgressView!
-
+    
     private var serverID = ""
     private let placeHolder = UIImage(named: "placeholderImage")!
     private var userDidTapOnce: Bool = false        // True if the user did tap the view
     private var userDidRotateDevice: Bool = false   // True if the user did rotate the device
     private var startingZoomScale = CGFloat(1)      // To remember the scale before starting zooming
-
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +52,7 @@ class ImagePreviewViewController: UIViewController
             }
             return
         }
-
+        
         // Thumbnail image should be available in cache
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
@@ -64,7 +64,7 @@ class ImagePreviewViewController: UIViewController
         descContainer.configDescription(with: imageData.comment) {
             self.configScrollView(with: thumbImage)
         }
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
@@ -74,7 +74,7 @@ class ImagePreviewViewController: UIViewController
         // Update description view colors if necessary
         descContainer.setDescriptionColor()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -108,10 +108,10 @@ class ImagePreviewViewController: UIViewController
                 }
             } failure: { _ in }
         }
-
+        
         // Show/hide the description
         guard let comment = imageData?.comment,
-                comment.string.isEmpty == false else {
+              comment.string.isEmpty == false else {
             descContainer.isHidden = true
             return
         }
@@ -122,30 +122,26 @@ class ImagePreviewViewController: UIViewController
         // Set image view content
         self.configScrollView(with: image)
         // Layout subviews
+        self.view.setNeedsLayout()  // Required by iOS 12
         self.view.layoutIfNeeded()
         
         // Hide progress view
         self.progressView.isHidden = true
-
+        
         // Initialise video player if needded
         if let video = video {
-            // Prepare the
-            if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {
-                playbackController.play(contentOfVideo: video, usingMuteOption: true)
-            } else {
-                // The video size is unknown at that point
-                videoContainerLeft.constant = scrollView.contentInset.left
-                videoContainerRight.constant = scrollView.contentInset.right
-                videoContainerTop.constant = scrollView.contentInset.top
-                videoContainerBottom.constant = scrollView.contentInset.bottom
-                
-                // Show video container and embed video player
-                videoContainerView.isHidden = false
-                playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
-            }
+            // The video size is unknown at that point
+            videoContainerLeft.constant = scrollView.contentInset.left
+            videoContainerRight.constant = scrollView.contentInset.right
+            videoContainerTop.constant = scrollView.contentInset.top
+            videoContainerBottom.constant = scrollView.contentInset.bottom
+            
+            // Show video container and embed video player in it
+            videoContainerView.isHidden = false
+            playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
         }
     }
-
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if userDidTapOnce {
@@ -164,13 +160,13 @@ class ImagePreviewViewController: UIViewController
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         // Pause video and remember selected mute option
         if let video = video {
             playbackController.pause(contentOfVideo: video, savingMuteOption: true)
         }
     }
-
+    
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
@@ -181,14 +177,13 @@ class ImagePreviewViewController: UIViewController
     }
     
     
-    // MARK: - Scroll View
-
+    // MARK: - Image Management
     private func configScrollView(with image: UIImage) {
         imageView.image = image
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
-//        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
+        //        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
     }
     
     /*
@@ -218,22 +213,22 @@ class ImagePreviewViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
         scrollView.zoomScale = minScale     // Will trigger the scrollViewDidZoom() method
-//        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
+        //        debugPrint("=> scrollView: \(scrollView.bounds.size.width) x \(scrollView.bounds.size.height), imageView: \(imageView.frame.size.width) x \(imageView.frame.size.height), minScale: \(minScale)")
     }
     
     private func centerImageView() {
         guard let image = imageView?.image else { return }
-
+        
         // Determine the orientation of the device
         let orientation = getOrientation()
-
+        
         // Determine if the toolbar is presented
         let isToolbarRequired = isToolbarRequired()
-
+        
         // Determine the available spaces around the image
         var spaceLeading: CGFloat, spaceTrailing: CGFloat, spaceTop:CGFloat, spaceBottom:CGFloat
         (spaceLeading, spaceTrailing, spaceTop, spaceBottom) = initSpaces(for: orientation, isToolbarRequired: isToolbarRequired)
-
+        
         // Horizontal constraints
         let imageWidth = image.size.width * scrollView.zoomScale
         let horizontalSpaceAvailable = view.bounds.width - (spaceLeading + imageWidth + spaceTrailing)
@@ -250,7 +245,7 @@ class ImagePreviewViewController: UIViewController
         (spaceTop, spaceBottom) = calcVertPosition(from: verticalSpaceAvailable, commentHeight: descHeight,
                                                    topSpace: spaceTop, bottomSpace: spaceBottom,
                                                    isToolbarRequired: isToolbarRequired)
-
+        
         // Center image horizontally in scrollview
         scrollView.contentInset.left = max(0, spaceLeading)
         scrollView.contentInset.right = max(0, spaceTrailing)
@@ -259,7 +254,16 @@ class ImagePreviewViewController: UIViewController
         scrollView.contentInset.top = max(0, spaceTop)
         scrollView.contentInset.bottom = max(0, spaceBottom)
     }
+    
+    func updateImageMetadata(with data: Image) {
+        // Update image description
+        descContainer.configDescription(with: data.comment) {
+            self.view.layoutIfNeeded()
+        }
+    }
 
+    
+    // MARK: - Video Management
     func centerVideoView(ofSize size: CGSize) {
         // Determine the orientation of the device
         let orientation = getOrientation()
@@ -301,87 +305,7 @@ class ImagePreviewViewController: UIViewController
 //        debugPrint("••> video: left: \(max(0, spaceLeading)), right: \(max(0, spaceTrailing)), top \(max(0, spaceTop)), bottom: \(max(0, spaceBottom)) <")
     }
     
-    private func getOrientation() -> UIInterfaceOrientation {
-        let orientation: UIInterfaceOrientation
-        if #available(iOS 14, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
-        return orientation
-    }
-    
-    private func isToolbarRequired() -> Bool {
-        var isToolbarRequired = false
-        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageViewController.self)}),
-           let vc = viewControllers.first as? ImageViewController {
-            isToolbarRequired = vc.isToolbarRequired
-        }
-        return isToolbarRequired
-    }
-    
-    private func initSpaces(for orientation: UIInterfaceOrientation, isToolbarRequired: Bool)
-                        -> (CGFloat, CGFloat, CGFloat, CGFloat) {
-        var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
-        var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
-
-        // Takes into account the safe area insets
-        if let root = topMostViewController()?.view?.window?.topMostViewController() {
-            spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
-            spaceBottom += isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
-            spaceLeading += orientation.isLandscape ? 0 : root.view.safeAreaInsets.left
-            spaceTrailing += orientation.isLandscape ? 0 : root.view.safeAreaInsets.right
-        }
-        
-        return (spaceLeading, spaceTrailing, spaceTop, spaceBottom)
-    }
-    
-    private func calcVertPosition(from verticalSpace: CGFloat, commentHeight: CGFloat,
-                                  topSpace: CGFloat, bottomSpace: CGFloat, isToolbarRequired: Bool)
-    -> (spaceTop: CGFloat, spaceBottm: CGFloat) {
-        // Initialisation
-        var verticalSpaceAvailable = verticalSpace, descHeight = commentHeight
-        var spaceTop = topSpace, spaceBottom = bottomSpace
-        
-        // With or without toolbar?
-        if isToolbarRequired {
-            if verticalSpaceAvailable >= descHeight {
-                // Centre image between navigation bar and description/toolbar
-                verticalSpaceAvailable -= descHeight
-                spaceTop += verticalSpaceAvailable/2
-                spaceBottom += descHeight + verticalSpaceAvailable/2
-            } else if verticalSpaceAvailable >= 0 {
-                // Keep image glued to navigation bar
-                spaceBottom += verticalSpaceAvailable
-            } else {
-                // Centre image between navigation bar and toolbar
-                spaceTop += verticalSpaceAvailable/2
-                spaceBottom += verticalSpaceAvailable/2
-            }
-        } else {
-            if verticalSpaceAvailable >= descHeight {
-                // Centre image between navigation bar and bottom
-                verticalSpaceAvailable -= descHeight
-                spaceTop += verticalSpaceAvailable/2
-                spaceBottom += descHeight + verticalSpaceAvailable/2
-            } else if verticalSpaceAvailable >= 0 {
-                // Keep image glued to navigation bar
-                spaceBottom += verticalSpaceAvailable
-            } else if -verticalSpaceAvailable < spaceTop {
-                // Keep image glued to bottom
-                spaceTop += verticalSpaceAvailable
-            } else {
-                // Centre image between top and bottom
-                verticalSpaceAvailable += spaceTop
-                spaceTop = verticalSpaceAvailable/2
-                spaceBottom = verticalSpaceAvailable/2
-            }
-        }
-        return (spaceTop, spaceBottom)
-    }
-
-    
-    // MARK: - Image Metadata
+    // MARK: - Gestures Management
     func didTapOnce() {
         // Remember that user did tap the view
         userDidTapOnce = true
@@ -429,13 +353,93 @@ class ImagePreviewViewController: UIViewController
                 self.view.layoutIfNeeded()
             }
         }
+        
+        // Update video player bounds
+        if let video = video,
+           let playerViewController = playbackController.coordinator(for: video).playerViewControllerIfLoaded {
+            centerVideoView(ofSize: playerViewController.videoBounds.size)
+        }
     }
     
-    func updateImageMetadata(with data: Image) {
-        // Update image description
-        descContainer.configDescription(with: data.comment) {
-            self.view.layoutIfNeeded()
+    
+    // MARK: - Utilities
+    private func getOrientation() -> UIInterfaceOrientation {
+        let orientation: UIInterfaceOrientation
+        if #available(iOS 14, *) {
+            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
         }
+        return orientation
+    }
+    
+    private func isToolbarRequired() -> Bool {
+        var isToolbarRequired = false
+        if let viewControllers = navigationController?.viewControllers.filter({ $0.isKind(of: ImageViewController.self)}),
+           let vc = viewControllers.first as? ImageViewController {
+            isToolbarRequired = vc.isToolbarRequired
+        }
+        return isToolbarRequired
+    }
+    
+    private func initSpaces(for orientation: UIInterfaceOrientation, isToolbarRequired: Bool)
+    -> (CGFloat, CGFloat, CGFloat, CGFloat) {
+        var spaceLeading: CGFloat = 0, spaceTrailing: CGFloat = 0
+        var spaceTop:CGFloat = 0, spaceBottom:CGFloat = 0
+        
+        // Takes into account the safe area insets
+        if let root = topMostViewController()?.view?.window?.topMostViewController() {
+            spaceTop += orientation.isLandscape ? 0 : root.view.safeAreaInsets.top
+            spaceBottom += orientation.isLandscape ? 0 : isToolbarRequired ? root.view.safeAreaInsets.bottom : 0
+            spaceLeading += root.view.safeAreaInsets.left
+            spaceTrailing += root.view.safeAreaInsets.right
+        }
+        
+        return (spaceLeading, spaceTrailing, spaceTop, spaceBottom)
+    }
+    
+    private func calcVertPosition(from verticalSpace: CGFloat, commentHeight: CGFloat,
+                                  topSpace: CGFloat, bottomSpace: CGFloat, isToolbarRequired: Bool)
+    -> (spaceTop: CGFloat, spaceBottm: CGFloat) {
+        // Initialisation
+        var verticalSpaceAvailable = verticalSpace, descHeight = commentHeight
+        var spaceTop = topSpace, spaceBottom = bottomSpace
+        
+        // With or without toolbar?
+        if isToolbarRequired {
+            if verticalSpaceAvailable >= descHeight {
+                // Centre image between navigation bar and description/toolbar
+                verticalSpaceAvailable -= descHeight
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += descHeight + verticalSpaceAvailable/2
+            } else if verticalSpaceAvailable >= 0 {
+                // Keep image glued to navigation bar
+                spaceBottom += verticalSpaceAvailable
+            } else {
+                // Centre image between navigation bar and toolbar
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += verticalSpaceAvailable/2
+            }
+        } else {
+            if verticalSpaceAvailable >= descHeight {
+                // Centre image between navigation bar and bottom
+                verticalSpaceAvailable -= descHeight
+                spaceTop += verticalSpaceAvailable/2
+                spaceBottom += descHeight + verticalSpaceAvailable/2
+            } else if verticalSpaceAvailable >= 0 {
+                // Keep image glued to navigation bar
+                spaceBottom += verticalSpaceAvailable
+            } else if -verticalSpaceAvailable < spaceTop {
+                // Keep image glued to bottom
+                spaceTop += verticalSpaceAvailable
+            } else {
+                // Centre image between top and bottom
+                verticalSpaceAvailable += spaceTop
+                spaceTop = verticalSpaceAvailable/2
+                spaceBottom = verticalSpaceAvailable/2
+            }
+        }
+        return (spaceTop, spaceBottom)
     }
 }
 
