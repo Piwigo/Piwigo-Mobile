@@ -11,13 +11,13 @@ import UIKit
 extension UIBarButtonItem {
     
     // MARK: - System Based Bar Button Items
-    class func space() -> UIBarButtonItem {
+    static func space() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                      target: nil, action: nil)
         return button
     }
     
-    class func shareImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+    static func shareImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .action,
                                      target: target, action: action)
         button.tintColor = .piwigoColorOrange()
@@ -25,7 +25,7 @@ extension UIBarButtonItem {
         return button
     }
     
-    class func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+    static func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
                                      target: target, action: action)
         button.tintColor = .piwigoColorOrange()
@@ -33,7 +33,7 @@ extension UIBarButtonItem {
         return button
     }
     
-    class func deleteImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+    static func deleteImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .trash,
                                      target: target, action: action)
         button.tintColor = .piwigoColorOrange()
@@ -41,9 +41,25 @@ extension UIBarButtonItem {
         return button
     }
     
+    static func playImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .play,
+                                     target: target, action: action)
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "play"
+        return button
+    }
+    
+    static func pauseImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .pause,
+                                     target: target, action: action)
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "pause"
+        return button
+    }
+    
     
     // MARK: - Set Album Thumbnail Bar Button Item
-    class func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+    static func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button: UIBarButtonItem!
         if #available(iOS 13.0, *) {
             button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
@@ -61,7 +77,7 @@ extension UIBarButtonItem {
     
     
     // MARK: - Favorite Bar Button Item
-    class func favoriteImageButton(_ isFavorite: Bool, target: Any?) -> UIBarButtonItem {
+    static func favoriteImageButton(_ isFavorite: Bool, target: Any?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: nil)
         button.setFavoriteImage(for: isFavorite)
         button.tintColor = .piwigoColorOrange()
@@ -69,7 +85,7 @@ extension UIBarButtonItem {
         return button
     }
     
-    func setFavoriteImage(for state:Bool) {
+    func setFavoriteImage(for state: Bool) {
         if state {
             if #available(iOS 13.0, *) {
                 self.image = UIImage(systemName: "heart.fill")
@@ -88,8 +104,22 @@ extension UIBarButtonItem {
     }
     
     
+    // MARK: - Play/Pause Bar Button Item
+    static func playPauseImageButton(_ isPlaying: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button: UIBarButtonItem
+        if isPlaying {
+            button = pauseImageButton(target, action: action)
+        } else {
+            button = playImageButton(target, action: action)
+        }
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "play/pause"
+        return button
+    }
+    
+    
     // MARK: - Back Bar Button Item
-    class func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
+    static func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setBackImage()
         button.tintColor = .piwigoColorOrange()
