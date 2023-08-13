@@ -1294,7 +1294,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             cell.isSelection = selectedImageIds.contains(image.pwgID)
 
             // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+               NetworkVars.userStatus != .guest {
                 cell.isFavorite = (image.albums ?? Set<Album>())
                     .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
             }
