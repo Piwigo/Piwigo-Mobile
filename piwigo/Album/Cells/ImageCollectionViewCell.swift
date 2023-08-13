@@ -124,7 +124,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
                             [.visits, .best, .recent].contains(albumType)
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
-        // for selecting cells
         let title = getImageTitle(forAlbumType: albumType)
         if title.string.contains("Clos de Vougeot") {
             self.accessibilityIdentifier = "Clos de Vougeot"
