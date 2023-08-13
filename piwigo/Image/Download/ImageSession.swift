@@ -95,17 +95,20 @@ class ImageSession: NSObject {
                                      progress: progress, completion: completion, failure: failure)
 
         // Do we already have this image or video in cache?
-        if imageSize == .fullRes {
-            let cachedFileSize = download.fileURL.fileSize
-            let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
-//            print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\(diff)) retrieved from cache.")
-            if diff < 0.1 {     // i.e. 10%
+        if download.fileURL.fileSize != 0 {
+            // We do have an image in cache, but is this the image or expected video?
+            if imageSize == .fullRes, fileSize != 0 {
+                let cachedFileSize = download.fileURL.fileSize
+                let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
+//                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
+                if diff < 0.1 {     // i.e. 10%
+                    completion(download.fileURL)
+                    return
+                }
+            } else {
                 completion(download.fileURL)
                 return
             }
-        } else if download.fileURL.fileSize != 0 {
-            completion(download.fileURL)
-            return
         }
 
         // Download this image in the background thread
