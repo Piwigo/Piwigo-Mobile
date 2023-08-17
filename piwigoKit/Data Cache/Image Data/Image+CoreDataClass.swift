@@ -69,10 +69,13 @@ public class Image: NSManagedObject {
         
         // Image file size, name and MD5 checksum
         let newSize = 1024 * (imageData.fileSize ?? Int64.zero)
-        if newSize != Int64.zero, fileSize != newSize {
-            fileSize = newSize
-            // Remember when pwg.images.getInfos is called
+        if newSize != Int64.zero {
+            // Remember when pwg.images.getInfos was called
             dateGetInfos = Date().timeIntervalSinceReferenceDate
+            // Check if the value has changed
+            if fileSize != newSize {
+                fileSize = newSize
+            }
         }
 
         let newMD5 = imageData.md5checksum ?? ""
