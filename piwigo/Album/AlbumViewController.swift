@@ -561,7 +561,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-           noSmartAlbumData || missingImages || lastLoad < TimeInterval(3600) {
+           noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
