@@ -100,7 +100,7 @@ extension UploadManager {
     }
 
     /// - Delete Upload files w/ or w/o prefix
-    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") -> Void {
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "", completion: (() -> Void)? = nil) {
         let fileManager = FileManager.default
         do {
             // Get list of files
@@ -117,13 +117,22 @@ extension UploadManager {
             
             // Release memory
             filesToDelete.removeAll()
-
+            
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
             print("\(dbg()) could not clear the Uploads folder: \(error)")
         }
+
+        // Job done
+        if let completion = completion {
+            completion()
+        }
+    }
+    
+    public func getUploadsDirectorySize() -> String {
+        return ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
     }
     
     

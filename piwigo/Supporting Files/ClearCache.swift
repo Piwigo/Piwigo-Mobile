@@ -83,11 +83,13 @@ class ClearCache: NSObject {
         }
     }
 
-    static func clearData(completion: @escaping () -> Void) {
+    static func clearData(includingUploads: Bool, completion: @escaping () -> Void) {
         // Cancel tasks
         cancelTasks {
-            // Erase database
-            UploadProvider.shared.clearAll()
+            // Erase data
+            if includingUploads {
+                UploadProvider.shared.clearAll()
+            }
             LocationProvider.shared.clearAll()
             TagProvider.shared.clearAll()
             ImageProvider.shared.clearAll()
@@ -100,6 +102,25 @@ class ClearCache: NSObject {
                 
                 // Job done
                 completion()
+            }
+        }
+    }
+
+    static func clearUploads(completion: @escaping () -> Void) {
+        // Cancel tasks
+        cancelTasks {
+            // Erase database
+            UploadProvider.shared.clearAll()
+            
+            // Clean up Uploads directory (if any left)
+            UploadManager.shared.deleteFilesInUploadsDirectory() {
+                DispatchQueue.main.async {
+                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                    appDelegate?.cleanUpTemporaryDirectory(immediately: true)
+                    
+                    // Job done
+                    completion()
+                }
             }
         }
     }

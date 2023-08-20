@@ -51,7 +51,7 @@ extension URL {
     }
     
     // Returns the folder size
-    var folderSize: UInt64 {
+    public var folderSize: UInt64 {
         do {
             let contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
             var folderSize: UInt64 = UInt64.zero

@@ -52,9 +52,34 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
-    var thumbCacheSize = ""
-    var photoCacheSize = ""
-    var dataCacheSize = ""
+    var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateDataCacheCell()
+            }
+        }
+    }
+    var thumbCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateThumbCacheCell()
+            }
+        }
+    }
+    var photoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updatePhotoCacheCell()
+            }
+        }
+    }
+    var uploadCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateUploadCacheCell()
+            }
+        }
+    }
 
     
     // MARK: - Core Data Objects
@@ -123,19 +148,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Calculate cache sizes in the background
         DispatchQueue.global(qos: .userInitiated).async {
             guard let server = self.user.server else {
-                fatalError("••> User not provided!")
+                assert(self.user.server != nil, "••> User not provided!")
+                return
             }
             var sizes = self.getThumbnailSizes()
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
             sizes = self.getPhotoSizes()
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.dataCacheSize = server.getCoreDataStoreSize()
-            
-            // Update cells if needed
-            DispatchQueue.main.async {
-                self.updateDataCacheCell()
-                self.updateThumbCacheCell()
-                self.updatePhotoCacheCell()
+            self.dataCacheSize = server.getAlbumImageCount()
+            if self.hasUploadRights() {
+                self.uploadCacheSize = server.getUploadCount()
+                    + " | " + UploadManager.shared.getUploadsDirectorySize()
             }
         }
     }
@@ -493,7 +516,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 3
+            nberOfRows = 3 + (hasUploadRights() ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
@@ -1171,6 +1194,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, detail: self.photoCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "photoCache"
+                tableViewCell = cell
+                
+            case 3 /* Upload Requests */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+                cell.configure(with: title, detail: self.uploadCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "uploadCache"
                 tableViewCell = cell
                 
             default:

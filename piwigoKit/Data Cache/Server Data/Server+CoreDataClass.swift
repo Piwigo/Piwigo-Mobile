@@ -53,7 +53,7 @@ public class Server: NSManagedObject {
     
     
     // MARK: - Cache Management
-    public func getCoreDataStoreSize() -> String {
+    public func getAlbumImageCount() -> String {
         // WAL checkpointing is not controllable ► not an appropriate solution
 //        let dataURL = DataDirectories.shared.appGroupDirectory
 //        let folderSize = dataURL.folderSize
@@ -64,10 +64,18 @@ public class Server: NSManagedObject {
         totalCount += AlbumProvider.shared.getObjectCount()
         totalCount += ImageProvider.shared.getObjectCount()
         totalCount += TagProvider.shared.getObjectCount()
-        totalCount += UploadProvider.shared.getObjectCount()
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: totalCount as NSNumber) ?? "NaN"
+    }
+
+    public func getUploadCount() -> String {
+        // Calculate number of objects in background thread
+        let uploadCount = UploadProvider.shared.getObjectCount()
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        
+        return formatter.string(from: uploadCount as NSNumber) ?? "NaN"
     }
 
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
