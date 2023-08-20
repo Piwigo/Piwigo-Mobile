@@ -82,10 +82,21 @@ class ImageSession: NSObject {
     
     
     // MARK: - Asynchronous Methods
-    func getImage(withID imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
-                  fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+    func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, atURL imageURL: URL?,
+                  fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
                   placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-                  completion: @escaping (URL) -> Void, failure: ((Error) -> Void)? = nil) {
+                  completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+        // Check arguments
+        guard let imageID = imageID, imageID != 0,
+              let imageURL = imageURL, imageURL.isFileURL == false,
+              let serverID = serverID, serverID.isEmpty == false
+        else {
+            let error = NSError(domain: "Piwigo", code: ImageSessionError.failedToPrepareDownload.hashValue,
+                                userInfo: [NSLocalizedDescriptionKey : ImageSessionError.failedToPrepareDownload.localizedDescription])
+            failure(error)
+            return
+        }
+        
         // Create the download request
         let request = URLRequest(url: imageURL)
         

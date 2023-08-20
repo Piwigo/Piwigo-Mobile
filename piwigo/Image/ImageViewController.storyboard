@@ -46,10 +46,10 @@
             </objects>
             <point key="canvasLocation" x="883" y="72"/>
         </scene>
-        <!--Image Preview View Controller-->
+        <!--Image Detail View Controller-->
         <scene sceneID="dZW-fS-5pO">
             <objects>
-                <viewController storyboardIdentifier="ImagePreviewViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImagePreviewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImageDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImageDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CkJ-ky-Kbn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -57,11 +57,11 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="cGF-ek-t3W">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="496"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="414" id="h5m-A0-Ysg"/>
-                                            <constraint firstAttribute="height" constant="496" id="yK6-53-GS0"/>
+                                            <constraint firstAttribute="height" constant="896" id="yK6-53-GS0"/>
                                         </constraints>
                                     </imageView>
                                 </subviews>
@@ -76,11 +76,6 @@
                                     <outlet property="delegate" destination="c1N-Y3-FVS" id="41P-c1-voo"/>
                                 </connections>
                             </scrollView>
-                            <view hidden="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hM9-ap-l5a">
-                                <rect key="frame" x="0.0" y="200" width="414" height="496"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="87" y="774" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
@@ -136,15 +131,11 @@
                             <constraint firstItem="cl6-aa-PKH" firstAttribute="bottom" secondItem="Ydg-dw-Gdx" secondAttribute="bottom" id="5W9-hW-wav"/>
                             <constraint firstItem="Ydg-dw-Gdx" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="6ET-fg-111"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="trailing" secondItem="CkJ-ky-Kbn" secondAttribute="trailing" id="7m2-DR-v9c"/>
-                            <constraint firstItem="hM9-ap-l5a" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" constant="200" id="JF8-7C-T6Y"/>
-                            <constraint firstAttribute="trailing" secondItem="hM9-ap-l5a" secondAttribute="trailing" id="VUd-Lt-fzi"/>
                             <constraint firstItem="Ec0-NJ-b64" firstAttribute="centerX" secondItem="cl6-aa-PKH" secondAttribute="centerX" id="c93-be-uGH"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="n2C-oc-2eJ"/>
                             <constraint firstItem="Ec0-NJ-b64" firstAttribute="top" secondItem="cl6-aa-PKH" secondAttribute="top" constant="16" id="qhv-WB-vXC"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="rXV-ju-e4i"/>
-                            <constraint firstAttribute="bottom" secondItem="hM9-ap-l5a" secondAttribute="bottom" constant="200" id="sWA-td-wnt"/>
                             <constraint firstItem="cGF-ek-t3W" firstAttribute="bottom" secondItem="CkJ-ky-Kbn" secondAttribute="bottom" id="sXf-85-dZO"/>
-                            <constraint firstItem="hM9-ap-l5a" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="yq7-2m-khI"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -155,16 +146,109 @@
                         <outlet property="imageViewWidthConstraint" destination="h5m-A0-Ysg" id="XiE-n9-vKW"/>
                         <outlet property="progressView" destination="Ec0-NJ-b64" id="2SI-9C-yer"/>
                         <outlet property="scrollView" destination="cGF-ek-t3W" id="qqb-tF-cFJ"/>
-                        <outlet property="videoContainerBottom" destination="sWA-td-wnt" id="LzG-ON-OOV"/>
-                        <outlet property="videoContainerLeft" destination="yq7-2m-khI" id="Nnj-vS-hi1"/>
-                        <outlet property="videoContainerRight" destination="VUd-Lt-fzi" id="YHm-l4-959"/>
-                        <outlet property="videoContainerTop" destination="JF8-7C-T6Y" id="jpc-9W-2Nd"/>
-                        <outlet property="videoContainerView" destination="hM9-ap-l5a" id="fx4-dQ-C6A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPj-N2-xH5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1569.5652173913045" y="71.651785714285708"/>
+        </scene>
+        <!--Video Detail View Controller-->
+        <scene sceneID="2wm-HV-SVE">
+            <objects>
+                <viewController storyboardIdentifier="VideoDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wRV-4z-VJu" customClass="VideoDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Tce-EN-AEL">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gQA-Pk-mNI">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="2Mi-Aw-Dsi">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp0-5n-5Xl">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="414" id="3Ko-OV-rN3"/>
+                                            <constraint firstAttribute="height" constant="896" id="rQE-Sn-Jir"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="kp0-5n-5Xl" secondAttribute="trailing" id="ESV-Qb-rws"/>
+                                    <constraint firstItem="kp0-5n-5Xl" firstAttribute="leading" secondItem="2Mi-Aw-Dsi" secondAttribute="leading" id="ZfF-8a-RrG"/>
+                                    <constraint firstItem="kp0-5n-5Xl" firstAttribute="top" secondItem="2Mi-Aw-Dsi" secondAttribute="top" id="bFy-oJ-e2c"/>
+                                    <constraint firstAttribute="bottom" secondItem="kp0-5n-5Xl" secondAttribute="bottom" id="wT2-fl-qQE"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="wRV-4z-VJu" id="w9K-b0-c1Z"/>
+                                </connections>
+                            </scrollView>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ei-bj-KBT" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="87" y="774" width="240" height="88"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="3X0-TI-ixb">
+                                    <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="V6I-xb-I6z">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+                                            <color key="textColor" systemColor="labelColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="V6I-xb-I6z" firstAttribute="leading" secondItem="3X0-TI-ixb" secondAttribute="leading" id="AJt-9U-lX7"/>
+                                        <constraint firstItem="V6I-xb-I6z" firstAttribute="trailing" secondItem="3X0-TI-ixb" secondAttribute="trailing" id="Vbq-bd-TQh"/>
+                                        <constraint firstItem="V6I-xb-I6z" firstAttribute="bottom" secondItem="3X0-TI-ixb" secondAttribute="bottom" id="dGY-O9-M0V"/>
+                                        <constraint firstItem="V6I-xb-I6z" firstAttribute="top" secondItem="3X0-TI-ixb" secondAttribute="top" id="tiY-MR-Gfc"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="Bbx-af-CCQ"/>
+                                    <constraint firstAttribute="height" constant="88" id="RB0-6E-xJO"/>
+                                </constraints>
+                                <blurEffect style="regular"/>
+                                <connections>
+                                    <outlet property="descHeight" destination="RB0-6E-xJO" id="B34-Wq-LME"/>
+                                    <outlet property="descOffset" destination="OTJ-rA-8xU" id="pbF-11-8MX"/>
+                                    <outlet property="descTextView" destination="V6I-xb-I6z" id="2Ma-yF-mIk"/>
+                                    <outlet property="descWidth" destination="Bbx-af-CCQ" id="QgC-MC-E7Z"/>
+                                </connections>
+                            </visualEffectView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="qaX-ya-55M"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="trailing" secondItem="Tce-EN-AEL" secondAttribute="trailing" id="LrZ-TT-ph1"/>
+                            <constraint firstItem="qaX-ya-55M" firstAttribute="bottom" secondItem="6ei-bj-KBT" secondAttribute="bottom" id="OTJ-rA-8xU"/>
+                            <constraint firstItem="6ei-bj-KBT" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="Pp0-oD-2h2"/>
+                            <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="bottom" secondItem="Tce-EN-AEL" secondAttribute="bottom" id="amf-ob-v9h"/>
+                            <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="leading" secondItem="Tce-EN-AEL" secondAttribute="leading" id="h2Y-Kg-OSG"/>
+                            <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="top" secondItem="Tce-EN-AEL" secondAttribute="top" id="hxD-XL-L8G"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <connections>
+                        <outlet property="descContainer" destination="6ei-bj-KBT" id="CUm-3R-oUJ"/>
+                        <outlet property="placeHolderView" destination="gQA-Pk-mNI" id="edX-ek-MmJ"/>
+                        <outlet property="scrollView" destination="2Mi-Aw-Dsi" id="NX5-Dj-GPO"/>
+                        <outlet property="videoContainerHeightConstraint" destination="rQE-Sn-Jir" id="W1B-rT-cnG"/>
+                        <outlet property="videoContainerView" destination="kp0-5n-5Xl" id="QtP-On-yCH"/>
+                        <outlet property="videoContainerWidthConstraint" destination="3Ko-OV-rN3" id="Owz-Hh-Y9D"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fg0-Q1-2IZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2224.6376811594205" y="70.982142857142847"/>
         </scene>
     </scenes>
     <resources>

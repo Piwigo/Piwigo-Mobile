@@ -74,31 +74,19 @@ class AlbumTableViewCell: UITableViewCell {
             albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
-        // Do we have a representative?
-        let placeHolder = UIImage(named: "placeholder")!
-        guard let thumbUrl = albumData?.thumbnailUrl as? URL,
-              let thumbID = albumData?.thumbnailId,
-              let serverID = albumData?.user?.server?.uuid else {
-            // No album thumbnail URL
-            backgroundImage.image = placeHolder
-            return
-        }
-
         // Retrieve image from cache or download it
         self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let placeHolder = UIImage(named: "placeholder")!
         let cellSize = self.backgroundImage.bounds.size
         let scale = self.backgroundImage.traitCollection.displayScale
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl,
-                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+        ImageSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
+                                     atURL: albumData?.thumbnailUrl as? URL,
+                                     fromServer: albumData?.user?.server?.uuid,
+                                     placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            if cachedImage == placeHolder {
-                // Image in cache is not appropriate
-                try? FileManager.default.removeItem(at: thumbUrl)
-            } else {
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
             }
         } failure: { _ in
             DispatchQueue.main.async {

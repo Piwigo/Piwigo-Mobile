@@ -31,6 +31,8 @@ class PlayerViewControllerCoordinator: NSObject {
             addVideoHUDToPlayerViewControllerIfNeeded()
         }
     }
+//    private var imagePage: UIViewController?
+//    private var imagePageContainer: UIView?
     
     // OptionSet describing the various states the app tracks in the VideoHUD.
     struct Status: OptionSet, CustomDebugStringConvertible {
@@ -70,14 +72,24 @@ class PlayerViewControllerCoordinator: NSObject {
     }
     
     private weak var fullScreenViewController: UIViewController?
-    private var readyForDisplayObservation: NSKeyValueObservation?
+    private var playerStatusObservation: NSKeyValueObservation?
+    private var playerRateObservation: NSKeyValueObservation?
+    private var playerMuteObservation: NSKeyValueObservation?
+    private var playbackReadyObservation: NSKeyValueObservation?
     private(set) var playerViewControllerIfLoaded: AVPlayerViewController? {
         didSet {
             guard playerViewControllerIfLoaded != oldValue else { return }
             
-            // Invalidate the key value observer, delegate, player, and status for the original player view controller.
-            readyForDisplayObservation?.invalidate()
-            readyForDisplayObservation = nil
+            // Invalidate the key value observers, delegate, player,
+            // and status for the original player view controller.
+            playerStatusObservation?.invalidate()
+            playerStatusObservation = nil
+            playerRateObservation?.invalidate()
+            playerRateObservation = nil
+            playerMuteObservation?.invalidate()
+            playerMuteObservation = nil
+            playbackReadyObservation?.invalidate()
+            playbackReadyObservation = nil
             if oldValue?.delegate === self {
                 oldValue?.delegate = nil
             }
@@ -89,58 +101,169 @@ class PlayerViewControllerCoordinator: NSObject {
             
             // Set up the new playerViewController.
             if let playerViewController = playerViewControllerIfLoaded {
-                // Assign self as the player view controller delegate.
+                // Initialisation
                 playerViewController.delegate = self
+                playerViewController.updatesNowPlayingInfoCenter = true
                 
                 // Create a player for the video.
                 if !playerViewController.hasContent(fromVideo: video) {
-                    let assetURL: URL
+                    // Prefer asset in cache if available
+                    let asset: AVURLAsset
                     if FileManager.default.fileExists(atPath: video.cacheURL.path) {
-                        assetURL = video.cacheURL
+                        asset = AVURLAsset(url: video.cacheURL, options: nil)
                     } else {
-                        assetURL = video.pwgURL
+                        asset = AVURLAsset(url: video.pwgURL, options: nil)
+                        let loader = asset.resourceLoader
+                        loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
                     }
-                    let asset = AVURLAsset(url: assetURL, options: nil)
-                    let loader = asset.resourceLoader
-                    loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
-                    let playerItem = AVPlayerItem(asset: asset)
+                    
+                    // Initialise player item
+                    let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
+                    playerItem.preferredForwardBufferDuration = TimeInterval(5)
                     // Seek to the resume time *before* assigning the player to the view controller.
                     // This is more efficient, and provides a better user experience because the media only loads at the actual start time.
                     playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: 90_000),
                                     completionHandler: nil)
-                    playerViewController.player = AVPlayer(playerItem: playerItem)
-                    playerViewController.videoGravity = .resizeAspect
-                    playerViewController.view.backgroundColor = .clear
-                    playerViewController.view.tintColor = .white
+                    
+                    // Add title and artwork
+                    if #available(iOS 12.2, *) {
+                        // Any title?
+                        let titleItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                      filteredByIdentifier: .commonIdentifierTitle)
+                        if titleItems.isEmpty {
+                            playerItem.externalMetadata.append(metadataItemForMediaTitle())
+                        }
+                        let artworkItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                        filteredByIdentifier: .commonIdentifierArtwork)
+                        if artworkItems.isEmpty {
+                            playerItem.externalMetadata.append(metadataItemForMediaArtwork())
+                        }
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                    
+                    // Create player minimizing stalling
+                    let player = AVPlayer(playerItem: playerItem)
+                    player.automaticallyWaitsToMinimizeStalling = true
+                    
+                    // In case the cached video file is not playable, delete it and replace item
+                    playerStatusObservation = playerItem.observe(\.status,
+                                                                  changeHandler: { [weak self] item, _ in
+                        if item.status == .failed,
+                           asset.url == self?.video.cacheURL,
+                           let pwgURL = self?.video.pwgURL {
+                            // Delete cached file
+                            try? FileManager.default.removeItem(at: asset.url)
+                            //
+                            let pwgAsset = AVURLAsset(url: pwgURL, options: nil)
+                            let loader = pwgAsset.resourceLoader
+                            loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
+                            let playerItem = AVPlayerItem(asset: pwgAsset)
+                            playerViewController.player?.replaceCurrentItem(with: playerItem)
+                        }
+                    })
+                    
+                    // Observe playback rate
+                    playerRateObservation = player.observe(\.rate,
+                                                            changeHandler: { [weak self] player, _ in
+                        // Update play/pause button
+                        let userInfo = ["pwgID"   : self?.video.pwgID as Any,
+                                        "playing" : player.rate != 0] as [String : Any]
+                        NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
+                                                        object: nil, userInfo: userInfo)
+                    })
+
+                    // Observe playback mute option
+                    playerMuteObservation = player.observe(\.isMuted,
+                                                            changeHandler: { [weak self] player, _ in
+                        // Store user preference for next use
+                        if playerViewController.parent is VideoDetailViewController {
+                            VideoVars.shared.isMuted = playerViewController.player?.isMuted ?? false
+                        }
+                        // Update mute button
+                        let userInfo = ["pwgID" : self?.video.pwgID as Any,
+                                        "muted" : player.isMuted]  as [String : Any]
+                        NotificationCenter.default.post(name: .pwgVideoMutedOrNot,
+                                                        object: nil, userInfo: userInfo)
+                    })
+
+                    // Complete player controller settings
+                    let start = CMTime(seconds: video.resumeTime, preferredTimescale: 90_000)
+                    player.seek(to: start) { _ in
+                        playerViewController.player = player
+                        playerViewController.videoGravity = .resizeAspect
+                        playerViewController.view.backgroundColor = .clear
+                        playerViewController.view.tintColor = .white
+                    }
                 }
                 
                 // Update the player view contoller's ready-for-display status and start observing the property.
                 if playerViewController.isReadyForDisplay {
-                    if let parent = playerViewController.parent as? ImagePreviewViewController {
-                        parent.centerVideoView(ofSize: playerViewController.videoBounds.size)
-                    }
+                    // Remember status and hides HUD if needed
                     status.insert(.readyForDisplay)
-                    playerViewController.player?.playImmediately(atRate: 1.0)
+                    // Store video parameters
+                    video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
+                    // Center container view now that video size is known
+                    if let parent = playerViewController.parent as? VideoDetailViewController {
+                        parent.setVideoContainerViewSize(playerViewController.videoBounds.size)
+                        playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
+                    } else {
+                        playerViewController.player?.rate = 1
+                    }
+                    // Hide image and show play button when ready
+                    let userInfo = ["pwgID"   : video.pwgID as Any,
+                                    "ready"   : playerViewController.player?.status == .readyToPlay,
+                                    "playing" : playerViewController.player?.rate != 0,
+                                    "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
+                    NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
+                                                    object: nil, userInfo: userInfo)
                 }
                 
-                readyForDisplayObservation = playerViewController.observe(\.isReadyForDisplay) { [weak self] observed, _ in
+                playbackReadyObservation = playerViewController.observe(\.isReadyForDisplay,
+                                                                         changeHandler: { [weak self] observed, _ in
                     if observed.isReadyForDisplay {
-                        if let parent = playerViewController.parent as? ImagePreviewViewController {
-                            parent.centerVideoView(ofSize: playerViewController.videoBounds.size)
-                        }
+                        // Remember status and hides HUD if needed
                         self?.status.insert(.readyForDisplay)
-                        playerViewController.player?.playImmediately(atRate: 1.0)
+                        // Store video parameters
+                        self?.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
+                        // Center container view now that video size is known
+                        if let parent = playerViewController.parent as? VideoDetailViewController {
+                            parent.setVideoContainerViewSize(playerViewController.videoBounds.size)
+                            playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
+                        } else {
+                            playerViewController.player?.rate = 1
+                        }
                     } else {
+                        // Remember status and shows HUD if needed
                         self?.status.remove(.readyForDisplay)
                     }
-                }
 
+                    // Hide image and show play button
+                    let userInfo = ["pwgID"   : self?.video.pwgID as Any,
+                                    "ready"   : playerViewController.player?.status == .readyToPlay,
+                                    "playing" : playerViewController.player?.rate != 0,
+                                    "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
+                    NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
+                                                    object: nil, userInfo: userInfo)
+                })
+                
                 // Update the VideoHUD with the current status.
                 videoHud.status = status
             }
         }
     }
 
+    
+    // MARK: - Initialisation
+    init(video: Video) {
+        self.video = video
+        super.init()
+
+        // Observe system notifications for storing videos in cache
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishPlaying(_:)),
+                                               name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+    
     // Create AVPlayerController only if necessary
     private func loadPlayerViewControllerIfNeeded() {
         if playerViewControllerIfLoaded == nil {
@@ -164,15 +287,22 @@ class PlayerViewControllerCoordinator: NSObject {
         }
     }
     
+    func metadataItemForMediaTitle() -> AVMetadataItem {
+        let metadataItem = AVMutableMetadataItem()
+        metadataItem.value = video.title as NSString
+        metadataItem.identifier = .commonIdentifierTitle
+        return metadataItem
+    }
     
-    // MARK: - Initialisation
-    init(video: Video) {
-        self.video = video
-        super.init()
-
-        // Observe system notifications for storing videos in cache
-        NotificationCenter.default.addObserver(self, selector: #selector(didFinishPlaying(_:)),
-                                               name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    func metadataItemForMediaArtwork() -> AVMetadataItem {
+        let metadataItem = AVMutableMetadataItem()
+        if let data = video.artwork.pngData() {
+            metadataItem.value = NSData(data: data)
+        } else {
+            metadataItem.value = NSData(data: UIImage(named: "AppIconShare")!.pngData()!)
+        }
+        metadataItem.identifier = .commonIdentifierArtwork
+        return metadataItem
     }
     
     @objc func didFinishPlaying(_ notification: Notification?) {
@@ -192,10 +322,26 @@ class PlayerViewControllerCoordinator: NSObject {
                    exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
                    exportSession.metadata = videoAsset.metadata
                    exportSession.outputURL = self.video.cacheURL
+
+                   // Create intermediate directories if needed
+                   let fm = FileManager.default
+                   let dirURL = self.video.cacheURL.deletingLastPathComponent()
+                   if fm.fileExists(atPath: dirURL.path) == false {
+                       print("••> Create directory \(dirURL.path)")
+                       try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
+                                                   attributes: nil)
+                   }
                    
+                   // Delete existing file if it exists (incomplete previous attempt?)
+                   try? fm.removeItem(at: self.video.cacheURL)
+
                    // Store video file in cache for reuse
                    exportSession.exportAsynchronously {
                        switch exportSession.status {
+                       case .waiting:
+                           debugPrint("••> Video waiting to export more data… ;-)")
+                       case .exporting:
+                           debugPrint("••> Video export is in progress… ;-)")
                        case .completed:
                            debugPrint("••> Video stored in cache ;-)")
                            // Replace player item
@@ -212,8 +358,8 @@ class PlayerViewControllerCoordinator: NSObject {
                                    }
                                }
                            }
-                       case .unknown, .waiting, .exporting, .failed, .cancelled:
-                           debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error))")
+                       case .unknown, .failed, .cancelled:
+                           debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error)) — \(exportSession.outputURL?.absoluteString ?? "—?—")")
                        @unknown default:
                            debugPrint("••> Video not stored in cache: Unknown error")
                        }
@@ -243,31 +389,24 @@ class PlayerViewControllerCoordinator: NSObject {
     // Use the standard UIKit view controller containment API to embed the player view controller inline.
     // Track the player view controller status for the embedded inline playback.
     func embedInline(in parent: UIViewController, container: UIView) {
+        // Initialisation
         loadPlayerViewControllerIfNeeded()
         guard let playerViewController = playerViewControllerIfLoaded,
               playerViewController.parent != parent else { return }
         removeFromParentIfNeeded()
-        status.insert(.embeddedInline)
-        playerViewController.showsPlaybackControls = true
-        playerViewController.allowsPictureInPicturePlayback = true
-        playerViewController.player?.isMuted = VideoVars.shared.isPlayerMuted
-        embed(playerViewController: playerViewController, in: parent, container: container)
-    }
-
-    // Use the standard UIKit view controller containment API to embed the player view controller inline.
-    // Track the player view controller status for the embedded inline playback on th external display.
-    func embedExternalDisplay(in parent: UIViewController, container: UIView) {
-        loadPlayerViewControllerIfNeeded()
-        guard let playerViewController = playerViewControllerIfLoaded,
-              playerViewController.parent != parent else { return }
-        removeFromParentIfNeeded()
-        status.insert(.externalDisplayActive)
-        playerViewController.showsPlaybackControls = true
-        playerViewController.allowsPictureInPicturePlayback = false
-        embed(playerViewController: playerViewController, in: parent, container: container)
-    }
-    
-    private func embed(playerViewController: AVPlayerViewController, in parent: UIViewController, container: UIView) {
+        
+        // Settings depend on parent view controller
+        playerViewController.showsPlaybackControls = false
+        if parent is VideoDetailViewController {
+            status.insert(.embeddedInline)
+            playerViewController.allowsPictureInPicturePlayback = true
+            playerViewController.player?.isMuted = VideoVars.shared.isMuted
+        } else if parent is ExternalDisplayViewController {
+            status.insert(.externalDisplayActive)
+            playerViewController.allowsPictureInPicturePlayback = false
+        }
+        
+        // Finalise the job
         parent.addChild(playerViewController)
         container.addSubview(playerViewController.view)
         playerViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -280,7 +419,57 @@ class PlayerViewControllerCoordinator: NSObject {
         playerViewController.didMove(toParent: parent)
         
         // Required since iOS 16
-        playerViewController.beginAppearanceTransition(true, animated: false)
+        playerViewController.beginAppearanceTransition(true, animated: true)
+        
+        // Store parent and container for restoring image page when exiting fullscreen mode
+//        imagePage = parent
+//        imagePageContainer = container
+    }
+    
+    // Play or replay the video if the end is reached
+    func playOrReplay() {
+        guard let player = playerViewControllerIfLoaded?.player,
+              let duration = player.currentItem?.duration.seconds,
+              let currentTime = player.currentItem?.currentTime().seconds else {
+            return
+        }
+        
+        // Did we reach the end of the video?
+        if duration - currentTime < 0.1 {
+            // Reached the end of the video
+            let start = CMTime(seconds: 0, preferredTimescale: 90_000)
+            player.seek(to: start) { success in
+                if success {
+                    player.play()
+                }
+            }
+        } else {
+            player.play()
+        }
+    }
+    
+    func isPlayingVideo() -> Bool {
+        guard let player = playerViewControllerIfLoaded?.player else { return false }
+        return player.rate != 0
+    }
+    
+    // Pause playback and remember current time
+    func pauseAndStoreTime() {
+        guard let player = playerViewControllerIfLoaded?.player,
+              let duration = player.currentItem?.duration.seconds,
+              let currentTime = player.currentItem?.currentTime().seconds else {
+            return
+        }
+
+        player.pause()
+        video.duration = duration
+        video.resumeTime = currentTime
+    }
+    
+    func muteUnmute() {
+        guard let player = playerViewControllerIfLoaded?.player else { return }
+        let isMuted = player.isMuted
+        player.isMuted = !isMuted
     }
 
     // Demonstrates how to restore the video playback interface when Picture in Picture stops.
@@ -308,11 +497,16 @@ class PlayerViewControllerCoordinator: NSObject {
     
     // Removes the playerViewController from its container, and updates the status accordingly.
     func removeFromParentIfNeeded() {
+        // Remember user's choice
+        if playerViewControllerIfLoaded?.parent is VideoDetailViewController {
+            VideoVars.shared.defaultPlayerRate = playerViewControllerIfLoaded?.player?.rate ?? 1
+        }
+
+        pauseAndStoreTime()
+        removeFromParent()
         if status.contains(.embeddedInline) {
-            removeFromParent()
             status.remove(.embeddedInline)
         } else if status.contains(.externalDisplayActive) {
-            removeFromParent()
             status.remove(.externalDisplayActive)
         }
     }
@@ -330,7 +524,7 @@ private extension AVPlayerViewController {
     
     func hasContent(fromVideo video: Video) -> Bool {
         let url = (player?.currentItem?.asset as? AVURLAsset)?.url
-        return url == video.pwgURL
+        return (url == video.pwgURL) || (url == video.cacheURL)
     }
 }
 
@@ -377,12 +571,24 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     func playerViewController(_ playerViewController: AVPlayerViewController,
             willEndFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator)
     {
+        // Store current time for embeded player
+        if let player = playerViewController.player,
+           let duration = player.currentItem?.duration.seconds,
+           let currentTime = player.currentItem?.currentTime().seconds {
+            video.duration = duration
+            video.resumeTime = currentTime
+        }
+
         status.insert([.beingDismissed])
         
         coordinator.animate(alongsideTransition: nil) { context in
             self.status.remove(.beingDismissed)
             if !context.isCancelled {
                 self.status.remove(.fullScreenActive)
+                // Restore video embeddded in image page
+//                guard let imagePage = self.imagePage,
+//                      let imagePageContainer = self.imagePageContainer else { return }
+//                self.embedInline(in: imagePage, container: imagePageContainer)
             }
         }
     }

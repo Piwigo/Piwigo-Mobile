@@ -21,7 +21,7 @@ enum PresentationType {
 // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
 
-    static let duration: TimeInterval = 0.2
+    static let duration: TimeInterval = 0.23
 
     private let type: PresentationType
     private let albumViewController: AlbumViewController
@@ -66,31 +66,56 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
     // Transition logic and animation
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         
-        // Retrieve tapped cell in album view, window and snapshots
+        // Retrieve window and image or video detail view
         guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
               let imageViewController = imageNavViewController.children.last as? ImageViewController,
-              let pageViewController = imageViewController.pageViewController?.viewControllers?.first as? ImagePreviewViewController,
-              let imageViewSnapshot = pageViewController.imageView.snapshotView(afterScreenUpdates: true)
+              let detailVC = imageViewController.pageViewController?.viewControllers?.first
         else {
             transitionContext.completeTransition(false)
             return
         }
         
-        // Set boolean telling whether we are presenting or dismissing
+        // Retrieve snapshot
+        if let imageDVC = detailVC as? ImageDetailViewController,
+           let imageViewSnapshot = imageDVC.imageView.snapshotView(afterScreenUpdates: true) {
+            presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                 detailViewController: imageDVC, imageViewSnapshot: imageViewSnapshot,
+                                 window: window)
+            return
+        }
+        else if let videoDVC = detailVC as? VideoDetailViewController,
+                let imageViewSnapshot = videoDVC.placeHolderView.snapshotView(afterScreenUpdates: true) {
+            presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                 detailViewController: videoDVC, imageViewSnapshot: imageViewSnapshot,
+                                 window: window)
+            return
+        }
+        
+        transitionContext.completeTransition(false)
+    }
+    
+    private func presentOrDismissView(using transitionContext: UIViewControllerContextTransitioning,
+                                      imageViewController: ImageViewController,
+                                      detailViewController: UIViewController,
+                                      imageViewSnapshot: UIView,
+                                      window: UIWindow) {
+        // Check boolean telling whether we are presenting or dismissing
         if type.isPresenting {
             presentImageView(using: transitionContext, imageViewController: imageViewController,
-                             pageViewController: pageViewController, imageViewSnapshot: imageViewSnapshot,
+                             detailViewController: detailViewController,
+                             imageViewSnapshot: imageViewSnapshot,
                              window: window)
         } else {
             dismissImageView(using: transitionContext, imageViewController: imageViewController,
-                             pageViewController: pageViewController, imageViewSnapshot: imageViewSnapshot,
+                             detailViewController: detailViewController,
+                             imageViewSnapshot: imageViewSnapshot,
                              window: window)
         }
     }
     
     private func presentImageView(using transitionContext: UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
-                                  pageViewController: ImagePreviewViewController,
+                                  detailViewController: UIViewController,
                                   imageViewSnapshot: UIView,
                                   window: UIWindow) {
         // Retrieve the animated view supplied by iOS
@@ -143,7 +168,12 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
             .compactMap({$0}).forEach { containerView.addSubview($0) }
 
         // Calc frame of images at the end of the animation
-        let imageViewRect = pageViewController.imageView.convert(pageViewController.imageView.bounds, to: window)
+        var imageViewRect = CGRect.zero
+        if let imageDVC = detailViewController as? ImageDetailViewController {
+            imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
+        } else if let videoDVC = detailViewController as? VideoDetailViewController {
+            imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
+        }
 
         // Perform the animation
         UIView.animateKeyframes(withDuration: Self.duration, delay: 0, options: .calculationModeCubic, animations: {
@@ -178,7 +208,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
 
     private func dismissImageView(using transitionContext: UIViewControllerContextTransitioning,
                                   imageViewController: ImageViewController,
-                                  pageViewController: ImagePreviewViewController,
+                                  detailViewController: UIViewController,
                                   imageViewSnapshot: UIView,
                                   window: UIWindow) {
         // Retrieve the animated view supplied by iOS
@@ -191,7 +221,12 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         containerView.addSubview(toView)
 
         // Calc frame of images at the start of the animation
-        let imageViewRect = pageViewController.imageView.convert(pageViewController.imageView.bounds, to: window)
+        var imageViewRect = CGRect.zero
+        if let imageDVC = detailViewController as? ImageDetailViewController {
+            imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
+        } else if let videoDVC = detailViewController as? VideoDetailViewController {
+            imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
+        }
 
         // Set frame of images for starting the animation
         cellImageViewSnapshot.frame = imageViewRect

@@ -10,6 +10,7 @@ import Foundation
 
 public enum ImageSessionError: Error {
     case networkUnavailable
+    case failedToPrepareDownload
 }
 
 extension ImageSessionError: LocalizedError {
@@ -18,6 +19,8 @@ extension ImageSessionError: LocalizedError {
         case .networkUnavailable:
             return NSLocalizedString("internetErrorGeneral_broken",
                                      comment: "Sorry, the communication was broken.\nTry logging in again.")
+        case .failedToPrepareDownload:
+            return NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
         }
     }
 }

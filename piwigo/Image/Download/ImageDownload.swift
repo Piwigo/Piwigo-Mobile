@@ -18,7 +18,7 @@ class ImageDownload {
     var placeHolder: UIImage!
     var progressHandler: ((Float) -> Void)?
     var completionHandler: ((URL) -> Void)!
-    var failureHandler: ((Error) -> Void)?
+    var failureHandler: ((Error) -> Void)!
     var task: URLSessionDownloadTask?
     var resumeData: Data?
     var progress = Float.zero
@@ -28,7 +28,7 @@ class ImageDownload {
     init(imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
          fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
          placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-         completion: @escaping (URL) -> Void, failure: ((Error) -> Void)? = nil) {
+         completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         
         // Set URLs of image in cache
         let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
@@ -46,5 +46,27 @@ class ImageDownload {
     
     deinit {
         self.task?.cancel()
+    }
+}
+
+// MARK: - Image Cached File URL and Thumbnail
+extension Image
+{
+    func cacheURL(ofSize size: pwgImageSize) -> URL? {
+        // Retrieve server ID
+        let serverID = self.server?.uuid ?? ""
+        if serverID.isEmpty { return nil }
+        
+        // Return the URL of the thumbnail file
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        return cacheDir.appendingPathComponent(size.path)
+            .appendingPathComponent(String(self.pwgID))
+    }
+    
+    func cachedThumbnail(ofSize size: pwgImageSize) -> UIImage? {
+        guard let fileURL = self.cacheURL(ofSize: size),
+              let image = UIImage(contentsOfFile: fileURL.path)
+        else { return nil }
+        return image
     }
 }

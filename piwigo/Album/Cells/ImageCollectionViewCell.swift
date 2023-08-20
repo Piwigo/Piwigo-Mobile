@@ -146,35 +146,24 @@ class ImageCollectionViewCell: UICollectionViewCell {
             cellImage?.contentMode = .scaleAspectFit
         }
         
-        // Retrieve image URLs (Piwigo server or cache)
+        // Retrieve image from cache or download it
         cellImage.layoutIfNeeded()   // Ensure imageView in its final size
         let placeHolder = UIImage(named: "placeholderImage")!
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        guard let serverID = imageData.server?.uuid,
-              let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size) else {
-            configImage(placeHolder)
-            noDataLabel?.isHidden = false
-            applyColorPalette()
-            return
-        }
-
-        // Retrieve image from cache or download it
         let cellSize = self.cellImage.bounds.size
         let scale = self.cellImage.traitCollection.displayScale
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL, fromServer: serverID,
-                                     fileSize: imageData.fileSize, placeHolder: placeHolder) { cachedImageURL in
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
+                                     atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
+                                     fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                     placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            if cachedImage == placeHolder {
-                // Image in cache is not appropriate
-                try? FileManager.default.removeItem(at: imageURL)
-            } else {
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
             }
-        } failure: { error in
+        } failure: { _ in
             // No image available
             DispatchQueue.main.async {
+                self.configImage(placeHolder)
                 self.noDataLabel?.isHidden = false
                 self.applyColorPalette()
             }

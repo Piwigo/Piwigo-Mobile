@@ -30,14 +30,13 @@ class ImageDescriptionView: UIVisualEffectView {
     }
     
     func configDescription(with imageComment:NSAttributedString?,
-                           completion: @escaping () -> Void) {
+                           inViewController viewController: UIViewController) {
         // Should we present a description?
         guard let comment = imageComment,
               comment.string.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
-            completion()
             return
         }
         
@@ -53,7 +52,7 @@ class ImageDescriptionView: UIVisualEffectView {
         let desc = NSMutableAttributedString(attributedString: comment)
         desc.addAttributes(attributes, range: wholeRange)
         descTextView.attributedText = desc
-        let navController = topMostController()?.navigationController
+        let navController = viewController.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 
         // Calculate the available width
@@ -140,6 +139,5 @@ class ImageDescriptionView: UIVisualEffectView {
             // Scroll text to the top
             descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
         }
-        completion()
     }
 }

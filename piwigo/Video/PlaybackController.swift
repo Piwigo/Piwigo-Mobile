@@ -29,6 +29,10 @@ class PlaybackController {
         }
     }
     
+    deinit {
+        playbackItems = [Video: PlayerViewControllerCoordinator]()
+    }
+        
     func coordinator(for video: Video) -> PlayerViewControllerCoordinator {
         if let playbackItem = playbackItems[video] {
             return playbackItem
@@ -41,11 +45,7 @@ class PlaybackController {
     }
     
     func embed(contentOfVideo video: Video, in parentViewController: UIViewController, containerView: UIView) {
-        if parentViewController is ImagePreviewViewController {
-            coordinator(for: video).embedInline(in: parentViewController, container: containerView)
-        } else if parentViewController is ExternalDisplayViewController {
-            coordinator(for: video).embedExternalDisplay(in: parentViewController, container: containerView)
-        }
+        coordinator(for: video).embedInline(in: parentViewController, container: containerView)
     }
 
     func remove(contentOfVideo video: Video) {
@@ -56,16 +56,20 @@ class PlaybackController {
         coordinator(for: video).presentFullScreen(from: presentingViewController)
     }
     
-    func play(contentOfVideo video: Video, usingMuteOption: Bool = false) {
-        coordinator(for: video).playerViewControllerIfLoaded?.player?.isMuted = VideoVars.shared.isPlayerMuted
-        coordinator(for: video).playerViewControllerIfLoaded?.player?.play()
+    func play(contentOfVideo video: Video) {
+        coordinator(for: video).playOrReplay()
     }
 
-    func pause(contentOfVideo video: Video, savingMuteOption: Bool = false) {
-        coordinator(for: video).playerViewControllerIfLoaded?.player?.pause()
-        if savingMuteOption {
-            VideoVars.shared.isPlayerMuted = coordinator(for: video).playerViewControllerIfLoaded?.player?.isMuted ?? false
-        }
+    func isPlayingVideo(_ video: Video) -> Bool {
+        return coordinator(for: video).isPlayingVideo()
+    }
+
+    func pause(contentOfVideo video: Video) {
+        coordinator(for: video).pauseAndStoreTime()
+    }
+    
+    func muteUnmute(contentOfVideo video: Video) {
+        coordinator(for: video).muteUnmute()
     }
 
     func removeAllEmbeddedViewControllers() {

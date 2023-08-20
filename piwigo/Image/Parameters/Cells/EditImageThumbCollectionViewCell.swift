@@ -109,28 +109,22 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageTime.text = DateFormatter.localizedString(from: dateCreated,
                                                        dateStyle: .none, timeStyle: .medium)
 
-        // Retrieve image thumbnail from Piwigo server
-        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        guard let serverID = imageData.server?.uuid,
-              let imageURL = ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize) else {
-            return
-        }
-
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
+        let placeHolder = UIImage(named: "placeholder")!
+        let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         let cellSize = self.imageThumbnail.bounds.size
         let scale = self.imageThumbnail.traitCollection.displayScale
-        let placeHolder = UIImage(named: "placeholder")!
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, atURL: imageURL,
-                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize,
+                                     atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
+                                     fromServer: imageData.server?.uuid, placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            if cachedImage == placeHolder {
-                // Image in cache is not appropriate
-                try? FileManager.default.removeItem(at: imageURL)
-            } else {
-                DispatchQueue.main.async {
-                    self.imageThumbnail.image = cachedImage
-                }
+            DispatchQueue.main.async {
+                self.imageThumbnail.image = cachedImage
+            }
+        } failure: { _ in
+            DispatchQueue.main.async {
+                self.imageThumbnail.image = placeHolder
             }
         }
     }

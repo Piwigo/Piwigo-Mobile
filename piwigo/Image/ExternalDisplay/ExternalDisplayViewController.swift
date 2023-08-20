@@ -24,7 +24,6 @@ class ExternalDisplayViewController: UIViewController {
     let playbackController = PlaybackController.shared
 
     private var imageURL: URL?
-    private let placeHolder = UIImage(named: "placeholderImage")!
     private var privacyView: UIView?
 
     @IBOutlet weak var imageView: UIImageView!
@@ -81,13 +80,14 @@ class ExternalDisplayViewController: UIViewController {
         }
 
         // Presents video if needed
-        if imageData.isVideo, let video = video {
+        if imageData.isVideo, let video = imageData.video {
             progressView.isHidden = true
             presentVideo(video)
             return
         }
         
         // Determine the optimum image size for that display
+        let placeHolder = UIImage(named: "placeholderImage")!
         let displaySize = AlbumUtilities.sizeOfPage(forView: view)
         let maxPixels = Int(max(displaySize.width, displaySize.height))
         guard let serverID = imageData.server?.uuid,
@@ -99,14 +99,9 @@ class ExternalDisplayViewController: UIViewController {
         // Store image URL for being able to pause the download
         self.imageURL = imageURL
         
-        // Get URL of preview image file potentially in cache
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-        var fileURL = cacheDir.appendingPathComponent(previewSize.path)
-            .appendingPathComponent(String(imageData.pwgID))
-
         // Present the preview image file if available
-        if let previewImage = UIImage(contentsOfFile: fileURL.path) {
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
             // Is this file of sufficient resolution?
             if previewSize >= optimumSize {
                 // Display preview image
@@ -119,9 +114,7 @@ class ExternalDisplayViewController: UIViewController {
         } else {
             // Thumbnail image should be available in cache
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            fileURL = cacheDir.appendingPathComponent(thumbSize.path)
-                .appendingPathComponent(String(imageData.pwgID))
-            presentTemporaryImage(UIImage(contentsOfFile: fileURL.path) ?? placeHolder)
+            presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
         }
 
         // Image of right size for that display
@@ -129,22 +122,22 @@ class ExternalDisplayViewController: UIViewController {
         let scale = view.traitCollection.displayScale
         ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
                                      fromServer: serverID, fileSize: imageData.fileSize,
-                                     placeHolder: self.placeHolder) { fractionCompleted in
+                                     placeHolder: placeHolder) { fractionCompleted in
             DispatchQueue.main.async {
                 self.progressView.progress = fractionCompleted
             }
         } completion: { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize, scale: scale)
-            if cachedImage == self.placeHolder {
-                // Image in cache is not appropriate
-                try? FileManager.default.removeItem(at: imageURL)
-            } else {
-                DispatchQueue.main.async {
-                    self.progressView.progress = 1.0
-                    self.presentFinalImage(cachedImage)
-                }
+            DispatchQueue.main.async {
+                self.progressView.progress = 1.0
+                self.presentFinalImage(cachedImage)
             }
-        } failure: { _ in }
+        } failure: { _ in
+            DispatchQueue.main.async {
+                self.progressView.progress = 1.0
+                self.presentFinalImage(placeHolder)
+            }
+        }
     }
     
     private func presentTemporaryImage(_ image: UIImage) {

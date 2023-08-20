@@ -258,24 +258,22 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
     
     private func presentNextImage() {
         // Create view controller for presenting next image
-        guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
+        let imageData = getImageData(atIndex: imageIndex)
+        guard let nextImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
+        else { return }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
-        pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+        pageViewController?.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            self.imageData = imageData
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons
             self.setEnableStateOfButtons(true)
             // Reset favorites button
             // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                let isFavorite = (imageData?.albums ?? Set<Album>())
-                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-            }
+            self.favoriteBarButton = getFavoriteBarButton()
             // Scroll album collection view to keep the selected image centred on the screen
             self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }
@@ -284,23 +282,21 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
     private func presentPreviousImage() {
         // Create view controller for presenting next image
         imageIndex -= 1
-        guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
+        let imageData = getImageData(atIndex: imageIndex)
+        guard let prevImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
+        else { return }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
         pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            self.imageData = imageData
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons
             self.setEnableStateOfButtons(true)
             // Reset favorites button
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                let isFavorite = (imageData?.albums ?? Set<Album>())
-                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-            }
+            self.favoriteBarButton = getFavoriteBarButton()
             // Scroll album collection view to keep the selected image centred on the screen
             self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }

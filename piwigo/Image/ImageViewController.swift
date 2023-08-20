@@ -56,39 +56,42 @@ class ImageViewController: UIViewController {
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    var favoriteBarButton: UIBarButtonItem?
     lazy var backButton: UIBarButtonItem = getBackButton()
     lazy var shareBarButton: UIBarButtonItem = getShareButton()
     lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
-    
+    var favoriteBarButton: UIBarButtonItem?
+    var playBarButton: UIBarButtonItem?
+    var muteBarButton: UIBarButtonItem?
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise video players
+        // Initialise video players and PiP management
         playbackController.videoItemDelegate = self
 
-        // Current image
+        // Check current image index
         var index = max(0, imageIndex)
         index = min(imageIndex, (images.fetchedObjects?.count ?? 0) - 1)
-        imageData = images.object(at: IndexPath(item: index, section: 0))
-        if imageData.isFault {
-            // imageData is not fired yet.
-            imageData.willAccessValue(forKey: nil)
-            imageData.didAccessValue(forKey: nil)
-        }
+        imageData = getImageData(atIndex: index)
 
         // Initialise pageViewController
         pageViewController = children[0] as? UIPageViewController
-        pageViewController!.delegate = self
-        pageViewController!.dataSource = self
+        pageViewController?.delegate = self
+        pageViewController?.dataSource = self
 
         // Load initial image preview view controller
-        if let startingImage = imagePageViewController(atIndex: index) {
-            pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
+        if imageData.isVideo {
+            if let videoDVC = videoDetailViewController(ofImage: imageData, atIndex: index) {
+                pageViewController?.setViewControllers([videoDVC], direction: .forward, animated: false)
+            }
+        } else {
+            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndex: index) {
+                pageViewController!.setViewControllers( [imageDVC], direction: .forward, animated: false)
+            }
         }
         
         // Navigation bar
@@ -120,6 +123,11 @@ class ImageViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
+        // Register video player changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
+                                               name: .pwgVideoPlaybackStatus, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
+                                               name: .pwgVideoMutedOrNot, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -174,7 +182,7 @@ class ImageViewController: UIViewController {
         super.viewWillAppear(animated)
 
         // Always open this view with a navigation bar
-        // and never present video poster in full screen
+        // and never present video in full screen
         navigationController?.setNavigationBarHidden(false, animated: true)
 
         // Set colors, fonts, etc.
@@ -191,11 +199,6 @@ class ImageViewController: UIViewController {
             // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
-            // Update image preview view
-            if let pVC = pageViewController,
-               let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-                imagePVC.didRotateDevice()
-            }
         })
     }
 
@@ -220,6 +223,80 @@ class ImageViewController: UIViewController {
     }
 
 
+    // MARK: - Image Data
+    func getImageData(atIndex index: Int) -> Image {
+        let imageData = images.object(at: IndexPath(item: index, section: 0))
+        if imageData.isFault {
+            // The album is not fired yet.
+            imageData.willAccessValue(forKey: nil)
+            imageData.didAccessValue(forKey: nil)
+        }
+
+        // Retrieve up-to-date complete image data if needed
+        if imageData.fileSize == Int64.zero {
+            // Image data is incomplete — retrieve it
+            retrieveImageData(imageData, isIncomplete: true)
+        } else if Date.timeIntervalSinceReferenceDate - imageData.dateGetInfos > TimeInterval(86400) {
+            // Image data retrieved more than a day ago — retrieve it
+            retrieveImageData(imageData, isIncomplete: false)
+        }
+
+        return imageData
+    }
+    
+    private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
+        // Retrieve image/video infos
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
+            NetworkUtilities.checkSession(ofUser: user) { [self] in
+                let imageID = imageData.pwgID
+                print("••> Retrieving data of image \(imageID)")
+                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
+                    DispatchQueue.main.async {
+                        // Enable buttons
+                        if let vcs = self.pageViewController?.viewControllers as? [ImageDetailViewController],
+                           let pvc = vcs.first(where: {$0.imageData.pwgID == imageID}) {
+                            // Update image data
+                            let index = pvc.imageIndex
+                            pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
+                            if pvc.imageData.isFault {
+                                // The album is not fired yet.
+                                pvc.imageData.willAccessValue(forKey: nil)
+                                pvc.imageData.didAccessValue(forKey: nil)
+                            }
+                            // Update navigation bar
+                            self.updateNavBar()
+                            self.setEnableStateOfButtons(true)
+                        }
+                    }
+                } failure: { error in
+                    // Display error only when image data is incomplete
+                    if isIncomplete {
+                        self.retrieveImageDataError(error)
+                    }
+                }
+            } failure: { [self] error in
+                // Don't display an error if there is no Internet connection
+                if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
+                    return
+                }
+                // Display error only once and when image data is incomplete
+                if isIncomplete  {
+                    self.retrieveImageDataError(error)
+                }
+            }
+        }
+    }
+
+    private func retrieveImageDataError(_ error: NSError) {
+        DispatchQueue.main.async { [self] in
+            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { }
+        }
+    }
+
+    
     // MARK: - Navigation Bar & Toolbar
     func setTitleViewFromImageData() {
         // Create label programmatically
@@ -306,9 +383,9 @@ class ImageViewController: UIViewController {
     }
     
     func updateNavBar() {
-        // Back button on the left
-        navigationItem.leftBarButtonItems = [backButton]
-        
+        // Favorites button depends on Piwigo server version, user role and image data
+        favoriteBarButton = getFavoriteBarButton()
+
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
             let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -323,31 +400,29 @@ class ImageViewController: UIViewController {
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
                 
-                if orientation.isPortrait, view.bounds.size.width < 768 {
-                    // Action button in navigation bar
-                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                    // Buttons in the navigation bar
+                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
 
                     // Remaining buttons in navigation toolbar
-                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(), deleteBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()], at: 2)
-                    }
+                    /// Fixed space added on both sides of play/pause button so that its global width
+                    /// matches the width of the mute/unmute button.
                     isToolbarRequired = true
+                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
+                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
+                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
+                                     favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     deleteBarButton].compactMap { $0 }, animated: false)
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 }
                 else {
-                    // All buttons in the navigation bar
-                    var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(contentsOf: [favoriteBarButton!], at: 2)
-                    }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
+                    // Buttons in the navigation bar
+                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                    navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
 
                     // No toolbar
                     isToolbarRequired = false
@@ -355,29 +430,49 @@ class ImageViewController: UIViewController {
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             }
-            else if NetworkVars.userStatus != .guest,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton = getFavoriteBarButton()
-                if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
-                    // No button on the right
+            else if favoriteBarButton != nil {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                    // Buttons in the navigation bar
+                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
                     navigationItem.rightBarButtonItems = []
-
+                    
                     // Remaining buttons in navigation toolbar
+                    /// Fixed space added on both sides of play/pause button so that its global width
+                    /// matches the width of the mute/unmute button.
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                     setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     favoriteBarButton!].compactMap { $0 }, animated: false)
+                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
+                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
+                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     favoriteBarButton].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 }
                 else {
                     // All buttons in navigation bar
-                    navigationItem.setRightBarButtonItems([favoriteBarButton!, shareBarButton].compactMap { $0 }, animated: true)
-
+                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                    navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
+                    
                     // Hide navigation toolbar
                     isToolbarRequired = false
-                    navigationController?.setToolbarHidden(true, animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else {
+            }
+            else if NetworkVars.userStatus != .guest {
+                // All buttons in navigation bar
+                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
+                
+                // Hide navigation toolbar
+                isToolbarRequired = false
+                navigationController?.setToolbarHidden(true, animated: false)
+            }
+            else {
+                // All buttons in navigation bar
+                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
+
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
@@ -388,74 +483,65 @@ class ImageViewController: UIViewController {
             // Interface depends on device and orientation
             let orientation = UIApplication.shared.statusBarOrientation
             
-            // User with admin rights can do everything
-            if user.hasAdminRights {
+            // User with admin or upload rights can do everything
+            // WRONG =====> 'normal' user with upload access to the current category can edit images
+            // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+            if user.hasUploadRights(forCatID: categoryId) {
                 // Navigation bar
                 // The action menu is simply an Edit button
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
                                                   target: self, action: #selector(editImage))
                 actionBarButton?.accessibilityIdentifier = "edit"
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton].compactMap { $0 }
 
                 // Navigation toolbar
-                var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton,
-                                    UIBarButtonItem.space(), setThumbnailBarButton,
-                                    UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()]
-                        .compactMap { $0 }, at: 4)
-                }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                setToolbarItems([shareBarButton, UIBarButtonItem.space(),
+                                 moveBarButton, UIBarButtonItem.space(),
+                                 favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                 setThumbnailBarButton, UIBarButtonItem.space(),
+                                 deleteBarButton].compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if user.hasUploadRights(forCatID: categoryId) {
-                // WRONG =====> 'normal' user with upload access to the current category can edit images
-                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-                // Navigation bar
-                // The action menu is simply an Edit button
-                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                  target: self, action: #selector(editImage))
-                actionBarButton?.accessibilityIdentifier = "edit"
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
-
-                // Navigation toolbar
-                var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton].compactMap { $0 }
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                    favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton!, UIBarButtonItem.space()]
-                        .compactMap { $0 }, at: 2)
-                }
-                isToolbarRequired = true
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-            }
-            else if NetworkVars.userStatus != .guest,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton = getFavoriteBarButton()
-                if orientation.isPortrait {
-                    // No button on the right
+            else if favoriteBarButton != nil {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                    // Navigation bar
+                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
                     navigationItem.rightBarButtonItems = []
 
                     // Remaining buttons in navigation toolbar
                     isToolbarRequired = true
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                     setToolbarItems([shareBarButton, UIBarButtonItem.space(),
+                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
+                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
                                      favoriteBarButton!].compactMap { $0 }, animated: false)
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 } else {
-                    navigationItem.setRightBarButtonItems([favoriteBarButton!, shareBarButton].compactMap { $0 }, animated: true)
+                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                    navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
 
                     // Hide navigation toolbar
                     isToolbarRequired = false
-                    navigationController?.setToolbarHidden(true, animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else {
+            }
+            else if NetworkVars.userStatus != .guest {
+                // All buttons in navigation bar
+                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
+                
+                // Hide navigation toolbar
+                isToolbarRequired = false
+                navigationController?.setToolbarHidden(true, animated: false)
+            }
+            else {
+                // All buttons in navigation bar
+                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
+
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
@@ -473,58 +559,6 @@ class ImageViewController: UIViewController {
         setThumbnailBarButton.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
-    }
-
-    private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
-        // Retrieve image/video infos
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
-            NetworkUtilities.checkSession(ofUser: user) { [self] in
-                let imageID = imageData.pwgID
-                print("••> Retrieving data of image \(imageID)")
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
-                    DispatchQueue.main.async {
-                        // Enable buttons
-                        if let vcs = self.pageViewController?.viewControllers as? [ImagePreviewViewController],
-                           let pvc = vcs.first(where: {$0.imageData.pwgID == imageID}) {
-                            // Update image data
-                            let index = pvc.imageIndex
-                            pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
-                            if pvc.imageData.isFault {
-                                // The album is not fired yet.
-                                pvc.imageData.willAccessValue(forKey: nil)
-                                pvc.imageData.didAccessValue(forKey: nil)
-                            }
-                            // Update navigation bar
-                            self.updateNavBar()
-                            self.setEnableStateOfButtons(true)
-                        }
-                    }
-                } failure: { error in
-                    // Display error only when image data is incomplete
-                    if isIncomplete {
-                        self.retrieveImageDataError(error)
-                    }
-                }
-            } failure: { [self] error in
-                // Don't display an error if there is no Internet connection
-                if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
-                    return
-                }
-                // Display error only once and when image data is incomplete
-                if isIncomplete  {
-                    self.retrieveImageDataError(error)
-                }
-            }
-        }
-    }
-
-    private func retrieveImageDataError(_ error: NSError) {
-        DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
-            dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { }
-        }
     }
 
     
@@ -548,9 +582,9 @@ class ImageViewController: UIViewController {
         }
         
         // Display/hide the description if any
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.didTapOnce()
+        if let imagePVC = pageViewController?.viewControllers?.first {
+            (imagePVC as? ImageDetailViewController)?.didTapOnce()
+            (imagePVC as? VideoDetailViewController)?.didTapOnce()
         }
 
         // Set background color according to navigation bar visibility
@@ -566,9 +600,9 @@ class ImageViewController: UIViewController {
         if imageData.isVideo { return }
 
         // Zoom in/out the image if necessary
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.didTapTwice(gestureRecognizer)
+        if let imagePVC = pageViewController?.viewControllers?.first {
+            (imagePVC as? ImageDetailViewController)?.didTapTwice(gestureRecognizer)
+            (imagePVC as? VideoDetailViewController)?.didTapTwice(gestureRecognizer)
         }
     }
 
@@ -578,8 +612,6 @@ class ImageViewController: UIViewController {
     }
     
     @objc func returnToAlbum() {
-        // Remove fullscreen video player if any
-        playbackController.removeAllEmbeddedViewControllers()
         self.dismiss(animated: true)
     }
     
@@ -638,13 +670,10 @@ extension ImageViewController: UIPageViewControllerDelegate
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
                             willTransitionTo pendingViewControllers: [UIViewController]) {
-        
-        guard let pvc = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
-        }
-
-        // Pause download if needed
-        if let imageURL = pvc.imageURL {
+        // Case of an image
+        if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
+           let imageURL = imageDVC.imageURL {
+            // Pause download
             ImageSession.shared.pauseDownload(atURL: imageURL)
         }
     }
@@ -654,17 +683,32 @@ extension ImageViewController: UIPageViewControllerDelegate
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
-
-        guard let imagePage = pageViewController.viewControllers?.first as? ImagePreviewViewController else {
-            fatalError("!!! Wrong View Controller Type !!!")
+        // Case of an image
+        if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController {
+            // Store index and image data of presented page
+            imageIndex = imageDVC.imageIndex
+            imageData = imageDVC.imageData
+            
+            // Reset video player buttons
+            playBarButton = nil
+            muteBarButton = nil
+        }
+        else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
+            // Store index and image data of presented page
+            imageIndex = videoDVC.imageIndex
+            imageData = videoDVC.imageData
+            
+            // Set video player buttons
+            if VideoVars.shared.defaultPlayerRate == 1 {
+                playBarButton = UIBarButtonItem.pauseImageButton(self, action: #selector(pauseVideo))
+            } else {
+                playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
+            }
+            muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
         }
         
-        // Remember index of presented page
-        print("••> Did finish animating page view controller for image at index \(imagePage.imageIndex)")
-        imageIndex = imagePage.imageIndex
-
         // Set title and buttons
-        imageData = imagePage.imageData
+        print("••> Did finish animating page view controller for image at index \(imageIndex)")
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
@@ -679,48 +723,37 @@ extension ImageViewController: UIPageViewControllerDelegate
 extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
-    func imagePageViewController(atIndex index:Int) -> ImagePreviewViewController? {
+    func imageDetailViewController(ofImage imageData: Image, atIndex index:Int) -> ImageDetailViewController? {
         print("••> Create page view controller for image at index \(index)")
-        guard let imagePage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        guard let imageDVC = storyboard?.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
+        else { return nil }
 
-        // Retrieve up-to-date complete image data if needed
-        let imageData = images.object(at: IndexPath(item: index, section: 0))
-        if imageData.isFault {
-            // The album is not fired yet.
-            imageData.willAccessValue(forKey: nil)
-            imageData.didAccessValue(forKey: nil)
-        }
-        if imageData.fileSize == Int64.zero {
-            // Image data is incomplete — retrieve it
-            retrieveImageData(imageData, isIncomplete: true)
-        } else if Date.timeIntervalSinceReferenceDate - imageData.dateGetInfos > TimeInterval(86400) {
-            // Image data retrieved more than a day ago — retrieve it
-            retrieveImageData(imageData, isIncomplete: false)
-        }
+        // Create image detail view
+        imageDVC.imageIndex = index
+        imageDVC.imageData = imageData
+        return imageDVC
+    }
+    
+    // CReate view controller for presenting the video at the provided index
+    func videoDetailViewController(ofImage imageData: Image, atIndex index:Int) -> VideoDetailViewController? {
+        print("••> Create page view controller for video at index \(index)")
+        guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
+        else { return nil }
 
-        // Create image preview
-        imagePage.imageIndex = index
-        imagePage.imageData = imageData
-
-        // Initialise video player
-        if imageData.isVideo,
-           let serverID = imageData.server?.uuid,
-           let pwgURL = imageData.fullRes?.url {
-            let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-            let fileURL = cacheDir.appendingPathComponent(pwgImageSize.fullRes.path)
-                .appendingPathComponent(String(imageData.pwgID))
-            imagePage.video = Video(pwgURL: pwgURL as URL, cacheURL: fileURL, title: imageData.titleStr)
-        }
-        
-        return imagePage
+        // Create video detail view
+        videoDVC.imageIndex = index
+        videoDVC.imageData = imageData
+        videoDVC.video = imageData.video
+        return videoDVC
     }
     
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
         // Did we reach the last image?
+        let nextIndex = imageIndex + 1
         let maxIndex = max(0, (images.fetchedObjects ?? []).count - 1)
-        if (imageIndex + 1 > maxIndex) {
+        if nextIndex > maxIndex {
             // Reached the end of the category
             return nil
         }
@@ -729,14 +762,20 @@ extension ImageViewController: UIPageViewControllerDataSource
         didPresentPageAfter = true
 
         // Create view controller for presenting next image
-        return imagePageViewController(atIndex: imageIndex + 1)
+        let imageData = getImageData(atIndex: nextIndex)
+        if imageData.isVideo {
+            return videoDetailViewController(ofImage: imageData, atIndex: nextIndex)
+        } else {
+            return imageDetailViewController(ofImage: imageData, atIndex: nextIndex)
+        }
     }
 
     // Returns the view controller before the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
         // Did we reach the first image?
-        if imageIndex - 1 < 0 {
+        let previousIndex = imageIndex - 1
+        if previousIndex < 0 {
             return nil
         }
         
@@ -744,7 +783,12 @@ extension ImageViewController: UIPageViewControllerDataSource
         didPresentPageAfter = false
 
         // Create view controller
-        return imagePageViewController(atIndex: imageIndex - 1)
+        let imageData = getImageData(atIndex: previousIndex)
+        if imageData.isVideo {
+            return videoDetailViewController(ofImage: imageData, atIndex: previousIndex)
+        } else {
+            return imageDetailViewController(ofImage: imageData, atIndex: previousIndex)
+        }
     }
 }
 
@@ -754,27 +798,5 @@ extension ImageViewController: SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int32) {
         setEnableStateOfButtons(true)
-    }
-}
-
-
-// MARK: -
-extension ImageViewController: PlayerViewControllerCoordinatorDelegate
-{
-    func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,
-                                         restoreUIForPIPStop completion: @escaping (Bool) -> Void) {
-        if coordinator.playerViewControllerIfLoaded?.parent == nil {
-            playbackController.dismissActivePlayerViewController(animated: false) {
-                if let navigationController = self.navigationController {
-                    coordinator.restoreFullScreen(from: navigationController) {
-                        completion(true)
-                    }
-                } else {
-                    completion(false)
-                }
-            }
-        } else {
-            completion(true)
-        }
     }
 }
