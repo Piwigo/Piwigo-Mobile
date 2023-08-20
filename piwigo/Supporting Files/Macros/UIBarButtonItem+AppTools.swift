@@ -104,20 +104,6 @@ extension UIBarButtonItem {
     }
     
     
-    // MARK: - Play/Pause Bar Button Item
-    static func playPauseImageButton(_ isPlaying: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button: UIBarButtonItem
-        if isPlaying {
-            button = pauseImageButton(target, action: action)
-        } else {
-            button = playImageButton(target, action: action)
-        }
-        button.tintColor = .piwigoColorOrange()
-        button.accessibilityIdentifier = "play/pause"
-        return button
-    }
-    
-    
     // MARK: - Back Bar Button Item
     static func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
@@ -129,7 +115,7 @@ extension UIBarButtonItem {
     
     func setBackImage() {
         if #available(iOS 13, *) {
-            let configuration = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium, scale: .medium)
+            let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
             if #available(iOS 14.0, *) {
                 self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
             } else {
@@ -147,6 +133,51 @@ extension UIBarButtonItem {
                 self.image = UIImage(named: "chevronBackRight")
                 self.landscapeImagePhone = UIImage(named: "chevronBackRightCompact")
             }
+        }
+    }
+    
+    
+    // MARK: - Mute Audio Playback
+    static let pwgMuted = 1
+    static let pwgNotMuted = 2
+    static func muteAudioButton(_ isMuted: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
+        button.setMuteAudioImage(for: isMuted)
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "mute"
+        button.tag = isMuted ? pwgMuted : pwgNotMuted
+        return button
+    }
+    
+    func setMuteAudioImage(for isMuted: Bool) {
+        // NB: We do not use the SF symbols because their width difference leads
+        // to a movement of the icon when switching from one to the other.
+        if isMuted {
+//            if #available(iOS 13, *) {
+//                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
+//                self.image = UIImage(systemName: "speaker.slash.fill", withConfiguration: configuration)
+//            } else {
+                if AppVars.shared.isAppLanguageL2R {
+                    self.image = UIImage(named: "mutedRight")
+                    self.landscapeImagePhone = UIImage(named: "mutedRightCompact")
+                } else {
+                    self.image = UIImage(named: "mutedLeft")
+                    self.landscapeImagePhone = UIImage(named: "mutedLeftCompact")
+                }
+//            }
+        } else {
+//            if #available(iOS 13, *) {
+//                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
+//                self.image = UIImage(systemName: "speaker.wave.2.fill", withConfiguration: configuration)
+//            } else {
+                if AppVars.shared.isAppLanguageL2R {
+                    self.image = UIImage(named: "unmutedRight")
+                    self.landscapeImagePhone = UIImage(named: "unmutedRightCompact")
+                } else {
+                    self.image = UIImage(named: "unmutedLeft")
+                    self.landscapeImagePhone = UIImage(named: "unmutedLeftCompact")
+                }
+//            }
         }
     }
 }
