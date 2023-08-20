@@ -14,8 +14,8 @@ public extension Notification.Name {
     static let pwgPaletteChanged = Notification.Name("pwgNotificationPaletteChanged")
     
     // MARK: - Play videos
-    /// - Video starting or stopping playing —> used to update buttons
-    static let pwgVideoPlayingOrNot = Notification.Name("pwgNotificationVideoPlayingOrNot")
+    /// - Video ready to play, rate changed —> used to update buttons
+    static let pwgVideoPlaybackStatus = Notification.Name("pwgNotificationVideoPlaybackStatus")
     /// - Video muted or unmuted —> used to update buttons
     static let pwgVideoMutedOrNot = Notification.Name("pwgNotificationVideoMutedOrNot")
 
