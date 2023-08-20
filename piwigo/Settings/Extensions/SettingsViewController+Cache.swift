@@ -11,7 +11,7 @@ import piwigoKit
 
 extension SettingsViewController
 {
-    // MARK: Image Sizes
+    // MARK: - Image Sizes
     func getThumbnailSizes() -> Set<pwgImageSize> {
         // Album and photo thumbnails
         // Select images whose size is lower than the default preview size
@@ -27,6 +27,7 @@ extension SettingsViewController
         let thumbSize = max(AlbumVars.shared.defaultThumbnailSize, AlbumVars.shared.defaultAlbumThumbnailSize)
         return Set(allSizes.filter({$0.rawValue > thumbSize}))
     }
+    
     
     // MARK: - Update Cache Cells
     func updateDataCacheCell() {
@@ -52,6 +53,7 @@ extension SettingsViewController
             cell.detailLabel.text = self.photoCacheSize
         }
     }
+    
     
     // MARK: - Return Clear Cache Alert
     func getClearCacheAlert() -> UIAlertController {
