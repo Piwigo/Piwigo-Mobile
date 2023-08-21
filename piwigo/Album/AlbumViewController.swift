@@ -42,7 +42,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
-    lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
+    var favoriteBarButton: UIBarButtonItem?
 
     var pauseSearch = false
     var oldImageIds = Set<Int64>()
