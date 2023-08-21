@@ -75,7 +75,7 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
-                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(),
+                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
                                         favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
                                         deleteBarButton].compactMap { $0 }
                     navigationController?.setToolbarHidden(false, animated: true)
@@ -85,7 +85,7 @@ extension AlbumViewController
                     navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    var rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
                     // Hide toolbar
@@ -150,7 +150,7 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
-                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(),
+                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
                                         moveBarButton, UIBarButtonItem.space(),
                                         favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
                                         deleteBarButton].compactMap { $0 }
@@ -161,7 +161,7 @@ extension AlbumViewController
                     navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    var rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
                     // Hide toolbar
