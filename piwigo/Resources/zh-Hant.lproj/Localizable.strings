@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "請選擇影片上傳的最大尺寸。";
 "UploadVideoSize_resolution" = "內建相機最大設定:";
 "UploadPhotoSize_original" = "不縮小";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "已上傳";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "隱私";
@@ -830,8 +830,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "新手勢";
+"whatsNew_desc1" = "在觀看照片或影片時向下滑或縮小以回到相簿。";
+"whatsNew_title2" = "子母畫面支援";
+"whatsNew_desc2" = "在使用其他應用程式時觀看儲存在Piwigo的影片。";
 "whatsNew_continue" = "繼續";
