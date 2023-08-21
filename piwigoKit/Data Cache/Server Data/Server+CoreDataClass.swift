@@ -74,7 +74,6 @@ public class Server: NSManagedObject {
         let uploadCount = UploadProvider.shared.getObjectCount()
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        
         return formatter.string(from: uploadCount as NSNumber) ?? "NaN"
     }
 

@@ -83,23 +83,18 @@ class ClearCache: NSObject {
         }
     }
 
-    static func clearData(includingUploads: Bool, completion: @escaping () -> Void) {
+    static func clearData(completion: @escaping () -> Void) {
         // Cancel tasks
         cancelTasks {
             // Erase data
-            if includingUploads {
-                UploadProvider.shared.clearAll()
-            }
+            UploadProvider.shared.clearAll()
             LocationProvider.shared.clearAll()
             TagProvider.shared.clearAll()
             ImageProvider.shared.clearAll()
             AlbumProvider.shared.clearAll()
             
-            // Clean up /tmp directory
-            DispatchQueue.main.async {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.cleanUpTemporaryDirectory(immediately: true)
-                
+            // Clean directories (if anything left)
+            cleanDirectories {
                 // Job done
                 completion()
             }
@@ -109,18 +104,13 @@ class ClearCache: NSObject {
     static func clearUploads(completion: @escaping () -> Void) {
         // Cancel tasks
         cancelTasks {
-            // Erase database
+            // Erase Upload database
             UploadProvider.shared.clearAll()
             
-            // Clean up Uploads directory (if any left)
-            UploadManager.shared.deleteFilesInUploadsDirectory() {
-                DispatchQueue.main.async {
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.cleanUpTemporaryDirectory(immediately: true)
-                    
-                    // Job done
-                    completion()
-                }
+            // Clean directories (if anything left)
+            cleanDirectories {
+                // Job done
+                completion()
             }
         }
     }
@@ -145,6 +135,20 @@ class ClearCache: NSObject {
                         completion()
                     }
                 }
+            }
+        }
+    }
+    
+    static func cleanDirectories(completion: @escaping () -> Void) {
+        // Clean up Uploads directory (if any left)
+        UploadManager.shared.deleteFilesInUploadsDirectory() {
+            // Clean up /tmp directory
+            DispatchQueue.main.async {
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.cleanUpTemporaryDirectory(immediately: true)
+                
+                // Job done
+                completion()
             }
         }
     }

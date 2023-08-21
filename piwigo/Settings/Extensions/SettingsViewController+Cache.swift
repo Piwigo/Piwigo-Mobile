@@ -70,8 +70,8 @@ extension SettingsViewController
 
         var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
-            // Delete data in foreground queue
-            ClearCache.clearData(includingUploads: false) {
+            // Delete all data and directories in foreground queue
+            ClearCache.clearData() {
                 // Get server instance
                 guard let server = self.user.server else {
                     assert(self.user?.server != nil, "••> User not provided!")
@@ -118,7 +118,7 @@ extension SettingsViewController
         if hasUploadRights() {
             title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
-                // Delete upload data in foreground queue
+                // Delete upload data and Uploads/tempporary folders in foreground queue
                 ClearCache.clearUploads() {
                     // Get server instance
                     guard let server = self.user.server else {
@@ -136,13 +136,15 @@ extension SettingsViewController
         }
         
         let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
-            // Delete whole cache in foreground queue
-            ClearCache.clearData(includingUploads: true) {
+            // Delete whole cache and folders in foreground queue
+            ClearCache.clearData() {
                 // Get server instance
                 guard let server = self.user.server else {
                     assert(self.user?.server != nil, "••> User not provided!")
                     return
                 }
+                try? self.mainContext.save()
+
                 // Clear all image files
                 server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases))
 
