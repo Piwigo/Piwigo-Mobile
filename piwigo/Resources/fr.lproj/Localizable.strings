@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Veuillez sélectionner la taille maximale des vidéos qui seront téléchargées.";
 "UploadVideoSize_resolution" = "Performances maximales des caméras intégrées :";
 "UploadPhotoSize_original" = "Sans réduction";
+"UploadRequests_cache" = "Téléchargements";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Confidentialité";

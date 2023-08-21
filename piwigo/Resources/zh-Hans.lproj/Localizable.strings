@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "请选择要上传的视频的最大大小";
 "UploadVideoSize_resolution" = "内置摄像头最大规格";
 "UploadPhotoSize_original" = "不缩小大小";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "隐私";

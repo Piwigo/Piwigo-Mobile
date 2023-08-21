@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "請選擇影片上傳的最大尺寸。";
 "UploadVideoSize_resolution" = "內建相機最大設定:";
 "UploadPhotoSize_original" = "不縮小";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "隱私";

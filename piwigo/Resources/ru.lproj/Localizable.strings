@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Пожалуйста, выберите максимальный размер видео, которое будет загружено.";
 "UploadVideoSize_resolution" = "Встроенные спецификации камер:";
 "UploadPhotoSize_original" = "Без уменьшения";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Конфиденциальность";

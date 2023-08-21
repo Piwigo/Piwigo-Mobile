@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Mekkora legyen a legnagyobb videó, ami feltöltésre kerül?";
 "UploadVideoSize_resolution" = "Beépített kamera maximum specifikációi:";
 "UploadPhotoSize_original" = "Méretcsökkentés nélkül";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Adatvédelem";

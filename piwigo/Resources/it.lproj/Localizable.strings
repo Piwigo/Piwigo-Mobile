@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Seleziona la dimensione massima dei video che verranno caricati.";
 "UploadVideoSize_resolution" = "Specifiche massime delle telecamere integrate:";
 "UploadPhotoSize_original" = "Nessun Downsizing";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";

@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Välj den maximala storleken på de videor som kommer att laddas upp.";
 "UploadVideoSize_resolution" = "Inbyggda kameror maximala specifikationer:";
 "UploadPhotoSize_original" = "Ingen neddimensionering";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Sekretess";

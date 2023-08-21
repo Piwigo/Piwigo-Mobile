@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "アップロードする動画の最大サイズを選択してください。";
 "UploadVideoSize_resolution" = "内蔵カメラの最大仕様:";
 "UploadPhotoSize_original" = "ダウンサイジングなし";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "プライバシー";

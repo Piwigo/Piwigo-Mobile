@@ -737,6 +737,7 @@
 "UploadVideoSize_header" = "Selecteer de maximale grootte van de video's die zullen worden ge-upload.";
 "UploadVideoSize_resolution" = "Maximaal aantal specificaties ingebouwde camera's:";
 "UploadPhotoSize_original" = "Niet verkleinen";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
