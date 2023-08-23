@@ -596,9 +596,6 @@ class ImageViewController: UIViewController {
     }
     
     @objc func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
-        // Should we do something else?
-        if imageData.isVideo { return }
-
         // Zoom in/out the image if necessary
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.didTapTwice(gestureRecognizer)
