@@ -87,7 +87,7 @@ class ExternalDisplayViewController: UIViewController {
         }
         
         // Determine the optimum image size for that display
-        let placeHolder = UIImage(named: "placeholderImage")!
+        let placeHolder = UIImage(named: "unknownImage")!
         let displaySize = AlbumUtilities.sizeOfPage(forView: view)
         let maxPixels = Int(max(displaySize.width, displaySize.height))
         guard let serverID = imageData.server?.uuid,

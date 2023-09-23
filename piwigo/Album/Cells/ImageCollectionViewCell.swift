@@ -148,7 +148,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Retrieve image from cache or download it
         cellImage.layoutIfNeeded()   // Ensure imageView in its final size
-        let placeHolder = UIImage(named: "placeholderImage")!
+        let placeHolder = UIImage(named: "unknownImage")!
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         let cellSize = self.cellImage.bounds.size
         let scale = self.cellImage.traitCollection.displayScale

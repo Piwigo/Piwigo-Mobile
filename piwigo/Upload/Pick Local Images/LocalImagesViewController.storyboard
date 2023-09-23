@@ -40,7 +40,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholderImage" translatesAutoresizingMaskIntoConstraints="NO" id="Ma4-DR-i0O">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="Ma4-DR-i0O">
                                                     <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                                                 </imageView>
                                                 <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i4Y-ZG-9Gz">
@@ -294,7 +294,7 @@
         <image name="imageMonth" width="25" height="23"/>
         <image name="imageWeek" width="25" height="23"/>
         <image name="piwigo" width="25" height="25"/>
-        <image name="placeholderImage" width="512" height="512"/>
+        <image name="unknownImage" width="512" height="512"/>
         <image name="video" width="25" height="19"/>
         <image name="warning" width="37" height="37"/>
         <systemColor name="systemBackgroundColor">

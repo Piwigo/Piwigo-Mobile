@@ -34,7 +34,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholderImage" translatesAutoresizingMaskIntoConstraints="NO" id="1Ip-Rc-cgb">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="1Ip-Rc-cgb">
                                                     <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                                                 </imageView>
                                                 <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="afV-l1-ozu">
@@ -231,7 +231,7 @@
     <resources>
         <image name="checkMark" width="17.5" height="25"/>
         <image name="piwigo" width="25" height="25"/>
-        <image name="placeholderImage" width="512" height="512"/>
+        <image name="unknownImage" width="512" height="512"/>
         <image name="video" width="25" height="19"/>
         <image name="warning" width="37" height="37"/>
         <systemColor name="systemBackgroundColor">
