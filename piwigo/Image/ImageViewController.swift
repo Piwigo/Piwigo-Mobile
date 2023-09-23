@@ -731,7 +731,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         return imageDVC
     }
     
-    // CReate view controller for presenting the video at the provided index
+    // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndex index:Int) -> VideoDetailViewController? {
         print("••> Create page view controller for video at index \(index)")
         guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
