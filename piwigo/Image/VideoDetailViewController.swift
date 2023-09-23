@@ -68,7 +68,7 @@ class VideoDetailViewController: UIViewController
         descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
 
         // Hide/show the description and controls views with the navigation bar
-        updateToolbarControlsVisibility()
+        updateDescriptionControlsVisibility()
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -238,7 +238,7 @@ class VideoDetailViewController: UIViewController
 
     
     // MARK: - Gestures Management
-    func updateToolbarControlsVisibility() {
+    func updateDescriptionControlsVisibility() {
         // Hide/show the description and controls views with the navigation bar
         let state = navigationController?.isNavigationBarHidden ?? false
         if descContainer.descTextView.text.isEmpty == false {
