@@ -169,7 +169,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             cell.accessibilityIdentifier = "passcode"
             tableViewCell = cell
 
-        case 2:     // TouchID / FaceID On/Off
+        case 2:     // TouchID / FaceID / OpticID On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
@@ -180,6 +180,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
                 title = NSLocalizedString("settings_biometricsTouchID", comment: "Touch ID")
             case .faceID:
                 title = NSLocalizedString("settings_biometricsFaceID", comment: "Face ID")
+            case .opticID:
+                title = NSLocalizedString("settings_biometricsOpticID", comment: "Optic ID")
             default:
                 title = "—?—"
             }
@@ -222,6 +224,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
                     footer = NSLocalizedString("settings_biometricsTouchIDinfo", comment: "Use Touch ID…")
                 case .faceID:
                     footer = NSLocalizedString("settings_biometricsFaceIDinfo", comment:"Use Face ID…")
+                case .opticID:
+                    footer = NSLocalizedString("settings_biometricsOpticIDinfo", comment:"Use Optic ID…")
                 @unknown default:
                     footer = ""
                 }
