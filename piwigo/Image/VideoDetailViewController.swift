@@ -15,6 +15,7 @@ class VideoDetailViewController: UIViewController
     var imageIndex = 0
     var imageData: Image!
     var video: Video?
+    var videoSize: CGSize?
     let playbackController = PlaybackController.shared
     
     @IBOutlet weak var scrollView: UIScrollView!
@@ -23,12 +24,9 @@ class VideoDetailViewController: UIViewController
     @IBOutlet weak var videoContainerWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var videoContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
+    @IBOutlet weak var videoControls: VideoControlsView!
     
-    private var serverID = ""
-    private let placeHolder = UIImage(named: "placeholderImage")!
-    
-    // Variable used to know when the scale should be calculated
-    private var shouldSetZoomScale: Bool = true
+    private let placeHolder = UIImage(named: "unknownImage")!
 
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
@@ -41,7 +39,11 @@ class VideoDetailViewController: UIViewController
         
         // Thumbnail image should be available in cache
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        setPlaceHolderView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        placeHolderView.image = imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder
+        setPlaceHolderViewFrame()
+
+        // Initialise videoContainerView size with placeHolder size
+        setVideo(size: nil)
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -50,7 +52,8 @@ class VideoDetailViewController: UIViewController
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.setDescriptionColor()
+        descContainer.applyColorPalette()
+        videoControls.applyColorPalette()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,17 +65,32 @@ class VideoDetailViewController: UIViewController
         }
         
         // Configure the description view before layouting subviews
-        descContainer.configDescription(with: imageData.comment, inViewController: self)
-        
-        // Hide/show the description view with the navigation bar
-        if descContainer.descTextView.text.isEmpty == false {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
-        }
+        descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
+
+        // Hide/show the description and controls views with the navigation bar
+        updateToolbarControlsVisibility()
         
         // Set colors, fonts, etc.
         applyColorPalette()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { [self] context in
+            // Should we update the description?
+            if descContainer.descTextView.text.isEmpty == false {
+                descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
+                descContainer.applyColorPalette()
+            }
+            
+            // Set place holder view frame for this orientation
+            setPlaceHolderViewFrame()
+            
+            // Set video container and scrollView for this orientation
+            setVideo(size: videoSize)
+        })
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -89,39 +107,6 @@ class VideoDetailViewController: UIViewController
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { [self] context in
-            // Should we update the description?
-            if descContainer.descTextView.text.isEmpty == false {
-                descContainer.configDescription(with: imageData.comment, inViewController: self)
-                descContainer.setDescriptionColor()
-            }
-
-            // Update scale, insets and offsets
-    //        let xOffset = (scrollView.contentInset.left + scrollView.contentOffset.x) / scrollView.bounds.width
-    //        let yOffset = (scrollView.contentInset.top + scrollView.contentOffset.y) / scrollView.bounds.width
-
-    //        debugPrint("••> Did start device rotation: ")
-    //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-    //        debugPrint("    Offset: \(scrollView.contentOffset) i.e. (\(xOffset), \(yOffset))")
-    //        debugPrint("    Inset : \(scrollView.contentInset)")
-            
-            shouldSetZoomScale = true
-            configScrollView()
-
-    //        let xNewOffset = xOffset * scrollView.bounds.width
-    //        let yNewOffset = yOffset * scrollView.bounds.height
-    //        scrollView.contentOffset.x += xNewOffset
-    //        scrollView.contentOffset.y += yNewOffset
-
-    //        debugPrint("••> Did finish device rotation: ")
-    //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-    //        debugPrint("    Offset: \(scrollView.contentOffset) i.e. (\(xNewOffset), \(yNewOffset))")
-    //        debugPrint("    Inset : \(scrollView.contentInset)")
-        })
-    }
-
     deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
@@ -129,45 +114,47 @@ class VideoDetailViewController: UIViewController
     
     
     // MARK: - Video Management
-    private func setPlaceHolderView(with image: UIImage) {
-        // Set image
-        placeHolderView.image = image
+    private func setPlaceHolderViewFrame() {
+        // Check input
+        guard let imageSize = placeHolderView.image?.size
+        else { return }
 
         // Calc scale for displaying it fullscreen
-        let widthScale = view.bounds.size.width / image.size.width
-        let heightScale = view.bounds.size.height / image.size.height
+        let widthScale = view.bounds.size.width / imageSize.width
+        let heightScale = view.bounds.size.height / imageSize.height
         let scale = min(widthScale, heightScale)
 
         // Center image on screen
-        let imageWidth = image.size.width * scale
+        let imageWidth = imageSize.width * scale
         let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
-        let imageHeight = image.size.height * scale
+        let imageHeight = imageSize.height * scale
         let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
         placeHolderView.frame = CGRect(x: horizontalSpace, y: verticalSpace,
                                        width: imageWidth, height: imageHeight)
-        
-        // Initialise videoContainerView dimensions
-        videoContainerView.frame = placeHolderView.frame
-        videoContainerWidthConstraint.constant = imageWidth
-        videoContainerHeightConstraint.constant = imageHeight
     }
-
-    func setVideoContainerViewSize(_ size: CGSize) {
+    
+    func setVideo(size: CGSize?, duration: TimeInterval = TimeInterval(0)) {
+        // Remember video duration and size for future use
+        video?.duration = duration
+        videoSize = size
+        
         // Set video container view size
-        videoContainerView.frame.size = size
-        videoContainerWidthConstraint.constant = size.width
-        videoContainerHeightConstraint.constant = size.height
+        videoContainerView.frame.size = size ?? placeHolderView.frame.size
+        videoContainerWidthConstraint.constant = size?.width ?? placeHolderView.frame.width
+        videoContainerHeightConstraint.constant = size?.height ?? placeHolderView.frame.height
 
         // Set scroll view content size
-        scrollView.contentSize = size
+        scrollView.contentSize = size ?? placeHolderView.frame.size
 
         // Prevents scrolling image at minimum scale
         // Will be unlocked when starting zooming
         scrollView.isScrollEnabled = false
 
         // Set scroll view scale and range
-        shouldSetZoomScale = true
-        configScrollView()
+        if size != nil {
+            // Set zoom scale and scroll view
+            configScrollView()
+        }
     }
 
     /*
@@ -181,41 +168,34 @@ class VideoDetailViewController: UIViewController
         scrollView.isPagingEnabled = false
         scrollView.contentInsetAdjustmentBehavior = .never
 
-        // Define the zoom scale range
+        // Calc new zoom scale range
         scrollView.bounds = view.bounds
         let widthScale = view.bounds.size.width / videoContainerView.bounds.size.width
         let heightScale = view.bounds.size.height / videoContainerView.bounds.size.height
         let minScale = min(widthScale, heightScale)
-        let oldZoomScale = scrollView.zoomScale
-        let oldZoomMinimumScale = scrollView.minimumZoomScale == 0 ? oldZoomScale : scrollView.minimumZoomScale
+        let maxScale = max(widthScale, heightScale)
+        
+        // Calc zoom scale change
+        var zoomFactor = 1.0
+        if scrollView.minimumZoomScale != 0 {
+            zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
+        }
 
-        // Did we load a new image?
-        if shouldSetZoomScale {
-            // Image just loaded, set zoom scale range
-            scrollView.minimumZoomScale = minScale
-            scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
-            debugPrint("••> Did reset scrollView scale: ")
-            debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-            debugPrint("    Offset: \(scrollView.contentOffset)")
-            debugPrint("    Inset : \(scrollView.contentInset)")
-            // Next line calls scrollViewDidZoom() if zoomScale scale has changed
-            scrollView.zoomScale *= minScale / oldZoomMinimumScale
-            shouldSetZoomScale = false
-        } else {
-            debugPrint("••> Will change scrollView scale: ")
-            debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-            debugPrint("    Offset: \(scrollView.contentOffset)")
-            debugPrint("    Inset : \(scrollView.contentInset)")
-            // Next line calls scrollViewDidZoom() if zoomScale scale has changed
-            scrollView.zoomScale = oldZoomScale / oldZoomMinimumScale * minScale
-        }
-        if scrollView.zoomScale == oldZoomScale {
-            updateScrollViewInset()
-        }
+        // Set zoom scale range
+        scrollView.minimumZoomScale = minScale
+        scrollView.maximumZoomScale = 2 * maxScale
+        debugPrint("••> Did reset scrollView scale: ")
+        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+        debugPrint("    Offset: \(scrollView.contentOffset)")
+        debugPrint("    Inset : \(scrollView.contentInset)")
+
+        // Next line calls scrollViewDidZoom() if zoomScale has changed
+        scrollView.zoomScale = minScale * zoomFactor
+        updateScrollViewInset()
     }
     
     /// Called when the PlayerViewController is ready
-    func updateScrollViewInset() {
+    private func updateScrollViewInset() {
         // Reset insets
         scrollView.contentInset = UIEdgeInsets.zero
         
@@ -235,6 +215,8 @@ class VideoDetailViewController: UIViewController
             scrollView.contentInset.bottom = verticalSpace
         }
 
+        // Unhide video
+        videoContainerView.isHidden = false
         debugPrint("••> Did updateScrollViewInset: ")
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
@@ -243,16 +225,26 @@ class VideoDetailViewController: UIViewController
 
     func updateImageMetadata(with data: Image) {
         // Update image description
-        descContainer.configDescription(with: data.comment, inViewController: self)
+        descContainer.config(with: data.comment, inViewController: self, forVideo: true)
     }
-    
+
+    @IBAction func didChangeTime(_ sender: Any) {
+        if let video = video,
+           let slider = sender as? UISlider {
+            let time = video.duration * Double(slider.value)
+            playbackController.seek(contentOfVideo: video, toTime: time)
+        }
+    }
+
     
     // MARK: - Gestures Management
-    func didTapOnce() {
-        // Hide/show the description view with the navigation bar
+    func updateToolbarControlsVisibility() {
+        // Hide/show the description and controls views with the navigation bar
+        let state = navigationController?.isNavigationBarHidden ?? false
         if descContainer.descTextView.text.isEmpty == false {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+            descContainer.isHidden = state
         }
+        videoControls.isHidden = state
     }
     
     func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {

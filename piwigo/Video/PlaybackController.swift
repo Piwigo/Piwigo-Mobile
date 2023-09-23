@@ -17,7 +17,7 @@ class PlaybackController {
     
     weak var videoItemDelegate: PlayerViewControllerCoordinatorDelegate?
     
-    private var playbackItems = [Video: PlayerViewControllerCoordinator]()
+    private var playbackItems = [Int64: PlayerViewControllerCoordinator]()
     
     init() {
         // Piwigo will play audio even if the Silent switch set to silent or when the screen locks.
@@ -30,16 +30,16 @@ class PlaybackController {
     }
     
     deinit {
-        playbackItems = [Video: PlayerViewControllerCoordinator]()
+        playbackItems = [Int64: PlayerViewControllerCoordinator]()
     }
         
     func coordinator(for video: Video) -> PlayerViewControllerCoordinator {
-        if let playbackItem = playbackItems[video] {
+        if let playbackItem = playbackItems[video.pwgID] {
             return playbackItem
         } else {
             let playbackItem = PlayerViewControllerCoordinator(video: video)
             playbackItem.delegate = videoItemDelegate
-            playbackItems[video] = playbackItem
+            playbackItems[video.pwgID] = playbackItem
             return playbackItem
         }
     }
@@ -49,7 +49,7 @@ class PlaybackController {
     }
 
     func remove(contentOfVideo video: Video) {
-        playbackItems[video]?.removeFromParentIfNeeded()
+        playbackItems[video.pwgID]?.removeFromParentIfNeeded()
     }
     
     func present(contentOfVideo video: Video, from presentingViewController: UIViewController) {
@@ -60,6 +60,10 @@ class PlaybackController {
         coordinator(for: video).playOrReplay()
     }
 
+    func seek(contentOfVideo video: Video, toTime time: Double) {
+        coordinator(for: video).seekToTime(time)
+    }
+    
     func isPlayingVideo(_ video: Video) -> Bool {
         return coordinator(for: video).isPlayingVideo()
     }

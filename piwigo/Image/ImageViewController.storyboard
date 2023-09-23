@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,10 +14,10 @@
             <objects>
                 <viewController storyboardIdentifier="ImageViewController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ImageViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B62-5V-S6J">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <connections>
                                     <segue destination="QTe-RH-Ag2" kind="embed" id="JLK-6S-sot"/>
                                 </connections>
@@ -51,11 +51,11 @@
             <objects>
                 <viewController storyboardIdentifier="ImageDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImageDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CkJ-ky-Kbn">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="cGF-ek-t3W">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -77,7 +77,7 @@
                                 </connections>
                             </scrollView>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="87" y="774" width="240" height="88"/>
+                                <rect key="frame" x="76.666666666666686" y="730" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -112,7 +112,7 @@
                                 </connections>
                             </visualEffectView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec0-NJ-b64" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="195.5" y="64" width="23" height="23"/>
+                                <rect key="frame" x="185" y="75" width="23" height="23"/>
                                 <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -157,17 +157,17 @@
             <objects>
                 <viewController storyboardIdentifier="VideoDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wRV-4z-VJu" customClass="VideoDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Tce-EN-AEL">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gQA-Pk-mNI">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="2Mi-Aw-Dsi">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp0-5n-5Xl">
+                                    <view hidden="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp0-5n-5Xl">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -189,7 +189,7 @@
                                 </connections>
                             </scrollView>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ei-bj-KBT" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="87" y="774" width="240" height="88"/>
+                                <rect key="frame" x="76.666666666666686" y="666" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="3X0-TI-ixb">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -223,18 +223,148 @@
                                     <outlet property="descWidth" destination="Bbx-af-CCQ" id="QgC-MC-E7Z"/>
                                 </connections>
                             </visualEffectView>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="VideoControlsView" translatesAutoresizingMaskIntoConstraints="NO" id="jGl-s0-Ya6" customClass="VideoControlsView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="766" width="353" height="40"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gyV-iA-Gwr">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="40"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EjU-Sh-dsV">
+                                            <rect key="frame" x="8" y="12" width="36.666666666666664" height="16"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                            <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <size key="shadowOffset" width="0.0" height="0.0"/>
+                                        </label>
+                                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="6U9-tI-UB9">
+                                            <rect key="frame" x="58.666666666666686" y="5" width="236" height="31"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="minimumTrackTintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="thumbTintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="didChangeTime:" destination="wRV-4z-VJu" eventType="valueChanged" id="KuT-Ke-05E"/>
+                                            </connections>
+                                        </slider>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="01:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b2f-I8-VTT">
+                                            <rect key="frame" x="308.66666666666669" y="12" width="36.333333333333314" height="16"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                            <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <size key="shadowOffset" width="0.0" height="0.0"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="centerY" secondItem="gyV-iA-Gwr" secondAttribute="centerY" id="7QA-Gk-4ex"/>
+                                        <constraint firstItem="EjU-Sh-dsV" firstAttribute="leading" secondItem="gyV-iA-Gwr" secondAttribute="leading" constant="8" id="Hzk-VF-x2P"/>
+                                        <constraint firstItem="b2f-I8-VTT" firstAttribute="leading" secondItem="6U9-tI-UB9" secondAttribute="trailing" constant="16" id="d9X-mj-K33"/>
+                                        <constraint firstItem="EjU-Sh-dsV" firstAttribute="centerY" secondItem="6U9-tI-UB9" secondAttribute="centerY" id="ekn-Wq-cBC"/>
+                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="leading" secondItem="EjU-Sh-dsV" secondAttribute="trailing" constant="16" id="fC8-UV-Dt2"/>
+                                        <constraint firstItem="b2f-I8-VTT" firstAttribute="centerY" secondItem="6U9-tI-UB9" secondAttribute="centerY" id="jVx-xc-Ql8"/>
+                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="centerX" secondItem="gyV-iA-Gwr" secondAttribute="centerX" id="p20-9J-TYi"/>
+                                        <constraint firstAttribute="trailing" secondItem="b2f-I8-VTT" secondAttribute="trailing" constant="8" id="r8m-bh-8Dh"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="Hzk-VF-x2P"/>
+                                        </mask>
+                                    </variation>
+                                    <variation key="heightClass=compact-widthClass=compact">
+                                        <mask key="constraints">
+                                            <include reference="Hzk-VF-x2P"/>
+                                        </mask>
+                                    </variation>
+                                    <variation key="heightClass=regular-widthClass=compact">
+                                        <mask key="constraints">
+                                            <include reference="Hzk-VF-x2P"/>
+                                        </mask>
+                                    </variation>
+                                </view>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="3aE-xc-lY9"/>
+                                    <constraint firstAttribute="width" constant="420" id="Smh-9A-xIf"/>
+                                </constraints>
+                                <blurEffect style="regular"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Smh-9A-xIf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Smh-9A-xIf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Smh-9A-xIf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <exclude reference="Smh-9A-xIf"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="Smh-9A-xIf"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="endLabel" destination="b2f-I8-VTT" id="Dbj-RV-eLH"/>
+                                    <outlet property="startLabel" destination="EjU-Sh-dsV" id="soE-Yd-tDF"/>
+                                    <outlet property="timeSlider" destination="6U9-tI-UB9" id="Qf9-kx-n36"/>
+                                </connections>
+                            </visualEffectView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qaX-ya-55M"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="jGl-s0-Ya6" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="IL4-f7-WBL"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="trailing" secondItem="Tce-EN-AEL" secondAttribute="trailing" id="LrZ-TT-ph1"/>
-                            <constraint firstItem="qaX-ya-55M" firstAttribute="bottom" secondItem="6ei-bj-KBT" secondAttribute="bottom" id="OTJ-rA-8xU"/>
+                            <constraint firstItem="jGl-s0-Ya6" firstAttribute="top" secondItem="6ei-bj-KBT" secondAttribute="bottom" constant="12" id="OTJ-rA-8xU"/>
                             <constraint firstItem="6ei-bj-KBT" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="Pp0-oD-2h2"/>
+                            <constraint firstItem="jGl-s0-Ya6" firstAttribute="leading" secondItem="qaX-ya-55M" secondAttribute="leading" constant="20" id="XYM-L7-8N0"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="bottom" secondItem="Tce-EN-AEL" secondAttribute="bottom" id="amf-ob-v9h"/>
+                            <constraint firstItem="qaX-ya-55M" firstAttribute="bottom" secondItem="jGl-s0-Ya6" secondAttribute="bottom" constant="12" id="cFk-mI-BSt"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="leading" secondItem="Tce-EN-AEL" secondAttribute="leading" id="h2Y-Kg-OSG"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="top" secondItem="Tce-EN-AEL" secondAttribute="top" id="hxD-XL-L8G"/>
+                            <constraint firstItem="qaX-ya-55M" firstAttribute="trailing" secondItem="jGl-s0-Ya6" secondAttribute="trailing" constant="20" id="lPq-To-Dcc"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="lPq-To-Dcc"/>
+                                <exclude reference="XYM-L7-8N0"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=regular">
+                            <mask key="constraints">
+                                <exclude reference="lPq-To-Dcc"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact-widthClass=compact">
+                            <mask key="constraints">
+                                <exclude reference="lPq-To-Dcc"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="lPq-To-Dcc"/>
+                                <include reference="XYM-L7-8N0"/>
+                            </mask>
+                        </variation>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
@@ -244,16 +374,17 @@
                         <outlet property="videoContainerHeightConstraint" destination="rQE-Sn-Jir" id="W1B-rT-cnG"/>
                         <outlet property="videoContainerView" destination="kp0-5n-5Xl" id="QtP-On-yCH"/>
                         <outlet property="videoContainerWidthConstraint" destination="3Ko-OV-rN3" id="Owz-Hh-Y9D"/>
+                        <outlet property="videoControls" destination="jGl-s0-Ya6" id="nFk-3c-zru"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fg0-Q1-2IZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2224.6376811594205" y="70.982142857142847"/>
+            <point key="canvasLocation" x="2223.9436619718313" y="69.465648854961827"/>
         </scene>
     </scenes>
     <resources>
         <systemColor name="labelColor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

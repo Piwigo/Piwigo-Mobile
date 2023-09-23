@@ -583,8 +583,8 @@ class ImageViewController: UIViewController {
         
         // Display/hide the description if any
         if let imagePVC = pageViewController?.viewControllers?.first {
-            (imagePVC as? ImageDetailViewController)?.didTapOnce()
-            (imagePVC as? VideoDetailViewController)?.didTapOnce()
+            (imagePVC as? ImageDetailViewController)?.updateDescriptionVisibility()
+            (imagePVC as? VideoDetailViewController)?.videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
         }
 
         // Set background color according to navigation bar visibility

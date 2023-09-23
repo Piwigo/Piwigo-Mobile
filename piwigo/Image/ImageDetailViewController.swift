@@ -24,8 +24,8 @@ class ImageDetailViewController: UIViewController
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var progressView: PieProgressView!
         
-    // Variable used to know when the scale should be calculated
-    private var shouldSetZoomScale: Bool = true
+    // Variable used to remember the position of the image on the screen
+    private var imagePosition = CGPoint(x: 0.5, y: 0.5)
     
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
@@ -37,7 +37,7 @@ class ImageDetailViewController: UIViewController
         super.viewDidLoad()
                 
         // Display thumbnail image which should be in cache
-        let placeHolder = UIImage(named: "placeholderImage")!
+        let placeHolder = UIImage(named: "unknownImage")!
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
 
@@ -75,19 +75,17 @@ class ImageDetailViewController: UIViewController
     
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.setDescriptionColor()
+        descContainer.applyColorPalette()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // Configure the description view before layouting subviews
-        descContainer.configDescription(with: imageData.comment, inViewController: self)
+        descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
         
         // Hide/show the description view with the navigation bar
-        if descContainer.descTextView.text.isEmpty == false {
-            descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
-        }
+        updateDescriptionVisibility()
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -95,34 +93,18 @@ class ImageDetailViewController: UIViewController
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+
+        // Animate change of view size and reposition image
         coordinator.animate(alongsideTransition: { [self] context in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
-                descContainer.configDescription(with: imageData.comment, inViewController: self)
-                descContainer.setDescriptionColor()
+                descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
+                descContainer.applyColorPalette()
             }
 
             // Update scale, insets and offsets
-    //        let xOffset = (scrollView.contentInset.left + scrollView.contentOffset.x) / scrollView.bounds.width
-    //        let yOffset = (scrollView.contentInset.top + scrollView.contentOffset.y) / scrollView.bounds.width
-
-    //        debugPrint("••> Did start device rotation: ")
-    //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-    //        debugPrint("    Offset: \(scrollView.contentOffset) i.e. (\(xOffset), \(yOffset))")
-    //        debugPrint("    Inset : \(scrollView.contentInset)")
-            
-            shouldSetZoomScale = true
             configScrollView()
-
-    //        let xNewOffset = xOffset * scrollView.bounds.width
-    //        let yNewOffset = yOffset * scrollView.bounds.height
-    //        scrollView.contentOffset.x += xNewOffset
-    //        scrollView.contentOffset.y += yNewOffset
-
-    //        debugPrint("••> Did finish device rotation: ")
-    //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-    //        debugPrint("    Offset: \(scrollView.contentOffset) i.e. (\(xNewOffset), \(yNewOffset))")
-    //        debugPrint("    Inset : \(scrollView.contentInset)")
+//            applyImagePositionInScrollView()
         })
     }
 
@@ -134,13 +116,18 @@ class ImageDetailViewController: UIViewController
     
     // MARK: - Image Management
     private func setImageView(with image: UIImage) {
+        // Any change?
+        if imageView.image?.size == image.size {
+            return
+        }
+
         // Set image view
         imageView.image = image
         imageView.frame.size = image.size
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
-        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
-
+//        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
+        
         // Set scroll view content size
         scrollView.contentSize = image.size
 
@@ -149,7 +136,6 @@ class ImageDetailViewController: UIViewController
         scrollView.isScrollEnabled = false
 
         // Set scroll view scale and range
-        shouldSetZoomScale = true
         configScrollView()
     }
     
@@ -160,56 +146,55 @@ class ImageDetailViewController: UIViewController
      and a zoom scale greater than 1 shows the content zoomed in.
      */
     private func configScrollView() {
-        guard let image = imageView?.image else { return }
+        guard let imageSize = imageView?.image?.size else { return }
 
         // Initialisation
         scrollView.isPagingEnabled = false
         scrollView.contentInsetAdjustmentBehavior = .never
 
-        // Calc the zoom scale range
+        // Calc new zoom scale range
         scrollView.bounds = view.bounds
-        let widthScale = view.bounds.size.width / image.size.width
-        let heightScale = view.bounds.size.height / image.size.height
+        let widthScale = view.bounds.size.width / imageSize.width
+        let heightScale = view.bounds.size.height / imageSize.height
         let minScale = min(widthScale, heightScale)
-        let oldZoomScale = scrollView.zoomScale
-        let oldZoomMinimumScale = scrollView.minimumZoomScale == 0 ? oldZoomScale : scrollView.minimumZoomScale
+        let maxScale = max(widthScale, heightScale)
+        
+        // Calc zoom scale change
+        var zoomFactor = 1.0
+        if scrollView.minimumZoomScale != 0 {
+            zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
+        }
 
-        // Did we load a new image?
-        if shouldSetZoomScale {
-            // Image just loaded, set zoom scale range
-            scrollView.minimumZoomScale = minScale
-            scrollView.maximumZoomScale = max(pwgImageSize.maxZoomScale, 4 * minScale)
-            debugPrint("••> Did reset scrollView scale: ")
-            debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-            debugPrint("    Offset: \(scrollView.contentOffset)")
-            debugPrint("    Inset : \(scrollView.contentInset)")
-            // Next line calls scrollViewDidZoom() if zoomScale scale has changed
-            scrollView.zoomScale *= minScale / oldZoomMinimumScale      // Will call scrollViewDidZoom()
-            shouldSetZoomScale = false
-        } else {
-            debugPrint("••> Will change scrollView scale: ")
-            debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-            debugPrint("    Offset: \(scrollView.contentOffset)")
-            debugPrint("    Inset : \(scrollView.contentInset)")
-            // Next line calls scrollViewDidZoom() if zoomScale scale has changed
-            scrollView.zoomScale = oldZoomScale / oldZoomMinimumScale * minScale
-        }
-        if scrollView.zoomScale == oldZoomScale {
-            updateScrollViewInset()
-        }
+        // Set zoom scale range
+        scrollView.minimumZoomScale = minScale
+        scrollView.maximumZoomScale = 2 * maxScale
+        debugPrint("••> Did reset scrollView scale: ")
+        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+        debugPrint("    Offset: \(scrollView.contentOffset)")
+        debugPrint("    Inset : \(scrollView.contentInset)")
+
+        // Next line calls scrollViewDidZoom() if zoomScale has changed
+        scrollView.zoomScale = minScale * zoomFactor
+        updateScrollViewInset()
     }
     
     private func updateScrollViewInset() {
-        guard let image = imageView?.image else { return }
-        
-        // Center image horizontally in scrollview
-        let imageWidth = image.size.width * scrollView.zoomScale
+        guard let imageSize = imageView?.image?.size,
+              imageSize.width != 0, imageSize.height != 0,
+              scrollView.zoomScale != 0
+        else {
+            imagePosition = CGPoint.zero
+            return
+        }
+
+        // Center image horizontally
+        let imageWidth = imageSize.width * scrollView.zoomScale
         let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
-
-        // Center image vertically  in scrollview
-        let imageHeight = image.size.height * scrollView.zoomScale
+        
+        // Center image vertically
+        let imageHeight = imageSize.height * scrollView.zoomScale
         let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
@@ -218,16 +203,19 @@ class ImageDetailViewController: UIViewController
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
         debugPrint("    Inset : \(scrollView.contentInset)")
+
+        // Remember position of image
+//        calcImagePositionInScrollView()
     }
     
     func updateImageMetadata(with data: Image) {
         // Update image description
-        descContainer.configDescription(with: data.comment, inViewController: self)
+        descContainer.config(with: data.comment, inViewController: self, forVideo: false)
     }
     
     
     // MARK: - Gestures Management
-    func didTapOnce() {
+    func updateDescriptionVisibility() {
         // Hide/show the description view with the navigation bar
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
@@ -272,11 +260,11 @@ extension ImageDetailViewController: UIScrollViewDelegate
         // Store zoom scale value before starting zooming
         startingZoomScale = scrollView.zoomScale
     }
-
+    
     // The scroll view’s zoom factor changed
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         if scrollView.zoomScale < 0.9 * scrollView.minimumZoomScale,
-            startingZoomScale < 1.1 * scrollView.minimumZoomScale {
+           startingZoomScale < 1.1 * scrollView.minimumZoomScale {
             dismiss(animated: true)
         } else {
             // Hide navigation bar, toolbar and description if needed
@@ -289,7 +277,7 @@ extension ImageDetailViewController: UIScrollViewDelegate
             updateScrollViewInset()
         }
     }
-
+    
     // Zooming of the content in the scroll view completed
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         // Limit the zoom scale
@@ -304,4 +292,59 @@ extension ImageDetailViewController: UIScrollViewDelegate
             updateScrollViewInset()
         }
     }
+    
+//    private func calcImagePositionInScrollView() {
+//        guard let imageSize = imageView?.image?.size,
+//              imageSize.width != 0, imageSize.height != 0,
+//              scrollView.zoomScale != 0
+//        else {
+//            imagePosition = CGPoint(x: 0.5, y: 0.5)
+//            return
+//        }
+//
+//        let displayedImageWidth = imageSize.width * scrollView.zoomScale
+//        let displayedImageHeight = imageSize.height * scrollView.zoomScale
+//        imagePosition = CGPoint(x: (scrollView.contentOffset.x + view.bounds.width / 2) / displayedImageWidth,
+//                                y: (scrollView.contentOffset.y + view.bounds.height / 2) / displayedImageHeight)
+//        debugPrint("    Position: \(imagePosition)")
+//    }
+    
+//    private func applyImagePositionInScrollView() {
+//        guard let imageSize = imageView?.image?.size,
+//              imageSize.width != 0, imageSize.height != 0,
+//              scrollView.zoomScale != 0
+//        else {
+//            imagePosition = CGPoint.zero
+//            return
+//        }
+//
+//        // Offset image position if needed
+//        let displayedImageWidth = imageSize.width * scrollView.zoomScale
+//        var horizontalOffset = imagePosition.x * displayedImageWidth - view.bounds.width / 2
+//        let minX = (view.bounds.width + scrollView.contentInset.left / 2) / displayedImageWidth
+//        if minX > 0, minX < 1 {
+//            if imagePosition.x < minX {
+//                horizontalOffset = minX * displayedImageWidth  - view.bounds.width / 2
+//            } else if imagePosition.x > 1 - minX {
+//                horizontalOffset = (1 - minX) * displayedImageWidth  - view.bounds.width / 2
+//            }
+//        }
+//        horizontalOffset += scrollView.contentInset.left
+//        debugPrint("••> horizontal: ", displayedImageWidth, imagePosition.x, minX, horizontalOffset)
+//
+//        let displayedImageHeight = imageSize.height * scrollView.zoomScale
+//        var verticalOffset = imagePosition.y * displayedImageHeight - view.bounds.height / 2
+//        let minY = (view.bounds.height + scrollView.contentInset.top / 2) / displayedImageHeight
+//        if minY > 0, minY < 1 {
+//            if imagePosition.y < minY {
+//                verticalOffset = minY * displayedImageHeight  - view.bounds.height / 2
+//            } else if imagePosition.y > 1 - minY {
+//                verticalOffset = (1 - minY) * displayedImageHeight  - view.bounds.height / 2
+//            }
+//        }
+//        verticalOffset += scrollView.contentInset.top
+//        debugPrint("••> vertical: ", displayedImageHeight, imagePosition.y, minY, verticalOffset)
+//
+//        scrollView.contentOffset = CGPoint(x: horizontalOffset, y: verticalOffset)
+//    }
 }

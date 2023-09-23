@@ -21,6 +21,7 @@ class PlayerViewControllerCoordinator: NSObject {
     weak var delegate: PlayerViewControllerCoordinatorDelegate?
     
     var video: Video
+    private lazy var scale = CMTimeScale(USEC_PER_SEC)
     private lazy var videoHud = VideoHUD()
     private(set) var status: Status = [] {
         didSet {
@@ -76,6 +77,7 @@ class PlayerViewControllerCoordinator: NSObject {
     private var playerRateObservation: NSKeyValueObservation?
     private var playerMuteObservation: NSKeyValueObservation?
     private var playbackReadyObservation: NSKeyValueObservation?
+    private var timeObserverToken: Any?
     private(set) var playerViewControllerIfLoaded: AVPlayerViewController? {
         didSet {
             guard playerViewControllerIfLoaded != oldValue else { return }
@@ -122,9 +124,9 @@ class PlayerViewControllerCoordinator: NSObject {
                     playerItem.preferredForwardBufferDuration = TimeInterval(5)
                     // Seek to the resume time *before* assigning the player to the view controller.
                     // This is more efficient, and provides a better user experience because the media only loads at the actual start time.
-                    playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: 90_000),
+                    playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: scale),
                                     completionHandler: nil)
-                    
+                                        
                     // Add title and artwork
                     if #available(iOS 12.2, *) {
                         // Any title?
@@ -188,12 +190,24 @@ class PlayerViewControllerCoordinator: NSObject {
                     })
 
                     // Complete player controller settings
-                    let start = CMTime(seconds: video.resumeTime, preferredTimescale: 90_000)
+                    let start = CMTime(seconds: video.resumeTime, preferredTimescale: scale)
                     player.seek(to: start) { _ in
                         playerViewController.player = player
                         playerViewController.videoGravity = .resizeAspect
                         playerViewController.view.backgroundColor = .clear
                         playerViewController.view.tintColor = .white
+                    }
+                    
+                    // Invoke callback every half second
+                    let interval = CMTime(seconds: 0.1,
+                                          preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                    // Add time observer. Invoke closure on the main queue.
+                    timeObserverToken =
+                    player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
+                        // Update player transport UI
+                        if let parent = playerViewController.parent as? VideoDetailViewController {
+                            parent.videoControls.setCurrentTime(time.seconds)
+                        }
                     }
                 }
                 
@@ -203,9 +217,11 @@ class PlayerViewControllerCoordinator: NSObject {
                     status.insert(.readyForDisplay)
                     // Store video parameters
                     video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
-                    // Center container view now that video size is known
+                    // Center container view now that the video size is known and configure slider
                     if let parent = playerViewController.parent as? VideoDetailViewController {
-                        parent.setVideoContainerViewSize(playerViewController.videoBounds.size)
+                        let currentTime = playerViewController.player?.currentTime().seconds ?? 0
+                        parent.setVideo(size: playerViewController.videoBounds.size, duration: video.duration)
+                        parent.videoControls.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                     } else {
                         playerViewController.player?.rate = 1
@@ -226,9 +242,11 @@ class PlayerViewControllerCoordinator: NSObject {
                         self?.status.insert(.readyForDisplay)
                         // Store video parameters
                         self?.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
-                        // Center container view now that video size is known
+                        // Center container view now that the video size is known and configure slider
                         if let parent = playerViewController.parent as? VideoDetailViewController {
-                            parent.setVideoContainerViewSize(playerViewController.videoBounds.size)
+                            let currentTime = playerViewController.player?.currentTime().seconds ?? 0
+                            parent.setVideo(size: playerViewController.videoBounds.size, duration: self?.video.duration ?? 0)
+                            parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                         } else {
                             playerViewController.player?.rate = 1
@@ -437,7 +455,7 @@ class PlayerViewControllerCoordinator: NSObject {
         // Did we reach the end of the video?
         if duration - currentTime < 0.1 {
             // Reached the end of the video
-            let start = CMTime(seconds: 0, preferredTimescale: 90_000)
+            let start = CMTime(seconds: 0, preferredTimescale: scale)
             player.seek(to: start) { success in
                 if success {
                     player.play()
@@ -451,6 +469,21 @@ class PlayerViewControllerCoordinator: NSObject {
     func isPlayingVideo() -> Bool {
         guard let player = playerViewControllerIfLoaded?.player else { return false }
         return player.rate != 0
+    }
+    
+    func seekToTime(_ time: Double) {
+        // Complete player controller settings
+        guard let player = playerViewControllerIfLoaded?.player else {
+            return
+        }
+        
+        let value = CMTime(seconds: time, preferredTimescale: scale)
+        let before = CMTime(seconds: max(0, time - 0.1), preferredTimescale: scale)
+        let after = CMTime(seconds: min(video.duration, time + 0.1), preferredTimescale: scale)
+        player.seek(to: value, toleranceBefore: before, toleranceAfter: after) { [weak self] successs in
+            if successs == false { return }
+            self?.playerViewControllerIfLoaded?.player = player
+        }
     }
     
     // Pause playback and remember current time
