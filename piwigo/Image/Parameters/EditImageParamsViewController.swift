@@ -168,18 +168,18 @@ class EditImageParamsViewController: UIViewController
             
             // Adjust content inset
             // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
-            let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
-            let tableHeight = editImageParamsTableView.bounds.size.height
+            let navBarHeight: CGFloat = navigationController?.navigationBar.bounds.size.height ?? 0
+            let tableHeight = CGFloat(editImageParamsTableView.bounds.size.height)
             
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - size.height)), right: 0.0)
+                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: max(0.0, tableHeight + navBarHeight - CGFloat(size.height)), right: 0.0)
             } else {
                 let statBarHeight = UIApplication.shared.statusBarFrame.size.height
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + statBarHeight + navBarHeight - size.height)), right: 0.0)
+                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: max(0.0, tableHeight + statBarHeight + navBarHeight - CGFloat(size.height)), right: 0.0)
             }
             
             // Reload table view
@@ -394,7 +394,8 @@ class EditImageParamsViewController: UIViewController
             for tag in addedTags {
                 tags.insert(tag)
             }
-            paramsDict["tag_ids"] = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+            let tagIDs: String = tags.map({"\($0.tagId),"}).reduce("", +)
+            paramsDict["tag_ids"] = String(tagIDs.dropLast(1))
         }
 
         // Update image description?

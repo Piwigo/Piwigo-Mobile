@@ -25,7 +25,7 @@ class ImageSession: NSObject {
         var acceptedTypes = ""
         if #available(iOS 14.0, *) {
             let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
-            acceptedTypes = String(imageTypes.map { $0 + " ,"}.reduce("", +))
+            acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
         } else {
             // Fallback on earlier versions
             acceptedTypes = "image/heic, image/heif, image/vnd.microsoft.icon, image/png, image/gif, image/jpeg, image/jpg, image/webp, image/tiff, image/bmp, image/svg+xml, "

@@ -623,7 +623,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                         width: 0, height: 0)
                     whatsNewVC.preferredContentSize = CGSize(
                         width: pwgPadSettingsWidth,
-                        height: ceil(mainScreenBounds.size.height * 2 / 3))
+                        height: CGFloat(ceil(mainScreenBounds.size.height * 2 / 3)))
                     present(whatsNewVC, animated: true)
                 }
                 return

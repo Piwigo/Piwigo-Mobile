@@ -136,29 +136,29 @@ class AlbumTableViewCell: UITableViewCell {
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
         var text = ""
-        if albumData?.nbSubAlbums ?? 0 == 0 {
+        if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
             // There are no sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
             text = (albumData?.nbImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(singleImage, nberImages ?? "")
                 : String.localizedStringWithFormat(severalImages, nberImages ?? "")
         }
-        else if albumData?.totalNbImages ?? 0 == 0 {
+        else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text = (albumData?.nbSubAlbums ?? 0 > 1)
+            text = (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
                 : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
-            text = (albumData?.totalNbImages ?? 0 > 1)
+            text = (albumData?.totalNbImages ?? Int64.zero > 1)
                 ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
                 : String.localizedStringWithFormat(singleImage, nberImages ?? "")
             text += ", "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text += (albumData?.nbSubAlbums ?? 0 > 1)
+            text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
                 : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
         }
