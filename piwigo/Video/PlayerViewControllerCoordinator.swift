@@ -198,7 +198,7 @@ class PlayerViewControllerCoordinator: NSObject {
                         playerViewController.view.tintColor = .white
                     }
                     
-                    // Invoke callback every half second
+                    // Invoke callback every 0.1 s
                     let interval = CMTime(seconds: 0.1,
                                           preferredTimescale: CMTimeScale(NSEC_PER_SEC))
                     // Add time observer. Invoke closure on the main queue.
