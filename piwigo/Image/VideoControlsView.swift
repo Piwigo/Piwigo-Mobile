@@ -56,16 +56,8 @@ class VideoControlsView : UIVisualEffectView {
         videoDuration = duration
         
         // Set starting and ending times
-        if duration < 600 {           // i.e. one minute
-            startLabel.text = minFormatter.string(from: Date(timeIntervalSince1970: 0))
-            endLabel.text = minFormatter.string(from: Date(timeIntervalSince1970: duration))
-        } else if duration < 3600 {   // i.e. one hour
-            startLabel.text = minsFormatter.string(from: Date(timeIntervalSince1970: 0))
-            endLabel.text = minsFormatter.string(from: Date(timeIntervalSince1970: duration))
-        } else {
-            startLabel.text = hoursFormatter.string(from: Date(timeIntervalSince1970: 0))
-            endLabel.text = hoursFormatter.string(from: Date(timeIntervalSince1970: duration))
-        }
+        startLabel.text = getTimeLabel(currentTime, forDuration: duration)
+        endLabel.text = getTimeLabel(duration, forDuration: duration)
         
         // Set slider value
         setCurrentTime(currentTime)
@@ -79,9 +71,23 @@ class VideoControlsView : UIVisualEffectView {
     func setCurrentTime(_ value: Double) {
         // Set slider value
         if let duration = videoDuration, duration != 0 {
+            // Start label shows current time
+            startLabel.text = getTimeLabel(value, forDuration: duration)
+            // Set slider value
             timeSlider.value = Float(value / duration)
         } else {
             timeSlider.value = 0.5
+        }
+    }
+    
+    private func getTimeLabel(_ value: TimeInterval, forDuration duration: TimeInterval) -> String {
+        // Format depends on video duration
+        if duration < 600 {           // i.e. one minute
+            return minFormatter.string(from: Date(timeIntervalSince1970: value))
+        } else if duration < 3600 {   // i.e. one hour
+            return minsFormatter.string(from: Date(timeIntervalSince1970: value))
+        } else {
+            return hoursFormatter.string(from: Date(timeIntervalSince1970: value))
         }
     }
 }
