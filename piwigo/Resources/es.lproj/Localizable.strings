@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Usa Touch ID como alternativa a tu código de bloqueo de aplicaciones.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Usa Face ID como alternativa a tu código de acceso de bloqueo de aplicaciones.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Usa Optic ID como alternativa a tu código de acceso de bloqueo de aplicaciones.";
 
 "settings_clearClipboard" = "Limpiar portapapeles";
 "settings_clearClipboardInfo" = "Por favor, seleccione el retraso tras el cual se borrará el portapapeles.";

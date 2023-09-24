@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Utilise Touch ID comme alternative à votre code de verrouillage de l'application.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Utiliser Face ID comme alternative à votre code de verrouillage de l'application.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Utilise Optic ID comme alternative à votre code de verrouillage de l'application.";
 
 "settings_clearClipboard" = "Vider le presse-papiers";
 "settings_clearClipboardInfo" = "Veuillez sélectionner le délai après lequel le presse-papiers sera effacé.";

@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Gebruik Tik ID als alternatief voor uw App Lock toegangscode.";
 "settings_biometricsFaceID" = "Gezicht ID";
 "settings_biometricsFaceIDinfo" = "Gebruik Gezicht ID als een alternatief voor uw App Lock toegangscode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Gebruik Optische ID als alternatief voor uw App Lock toegangscode.";
 
 "settings_clearClipboard" = "Klembord leegmakten";
 "settings_clearClipboardInfo" = "Selecteer de vertraging waarna het prikbord zal worden gewist.";
@@ -830,8 +832,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Nieuwe Gebaren";
+"whatsNew_desc1" = "Veeg naar beneden of zet de afbeelding om terug te gaan naar het album bij het bekijken van individuele foto's of video's.";
+"whatsNew_title2" = "PiP Ondersteuning";
+"whatsNew_desc2" = "Bekijk een video die is opgeslagen op je Piwigo terwijl je andere apps gebruikt.";
 "whatsNew_continue" = "Doorgaan";

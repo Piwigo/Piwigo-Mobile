@@ -56,7 +56,7 @@
 "Coredata_MigrationPleaseWait" = "В настоящее время мы мигрируем некоторые ваши данные. Пожалуйста, подождите, пока он не будет завершён. Не закрывайте приложение.";
 
 // User objects
-"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserMissingData" = "Сбросит имя пользователя без корректного имени пользователя.";
 "CoreDataFetch_UserUnknownStatus" = "Не удалось получить параметры плагина Community.\nПопробуйте войти снова.";
 "CoreData_UserCreateFailed" = "Не удалось создать новый объект пользователя.";
 
@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "Пожалуйста, выберите максимальный размер видео, которое будет загружено.";
 "UploadVideoSize_resolution" = "Встроенные спецификации камер:";
 "UploadPhotoSize_original" = "Без уменьшения";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "Выгрузки";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Конфиденциальность";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Используйте Touch ID в качестве альтернативы вашему секретному паролю блокировки.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Используйте Touch ID в качестве альтернативы вашему секретному паролю блокировки.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Используйте Optic ID в качестве альтернативы вашему секретному паролю блокировки.";
 
 "settings_clearClipboard" = "Очистить буфер обмена";
 "settings_clearClipboardInfo" = "Пожалуйста, выберите задержку, после которой буфер обмена будет очищен.";
@@ -830,8 +832,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Новые жесты";
+"whatsNew_desc1" = "Проведите пальцем вниз или прикрепите изображение, чтобы вернуться к альбому при просмотре отдельных фотографий или видео.";
+"whatsNew_title2" = "Поддержка PiP";
+"whatsNew_desc2" = "Смотрите видео, хранящееся в вашем Piwigo, пока вы используете другие приложения.";
 "whatsNew_continue" = "Продолжить";

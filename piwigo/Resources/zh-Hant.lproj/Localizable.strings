@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "使用Touch ID取代您的程式鎖密碼。";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "使用Face ID取代您的程式鎖密碼。";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "使用Optic ID取代您的程式鎖密碼。";
 
 "settings_clearClipboard" = "清空剪貼簿";
 "settings_clearClipboardInfo" = "請選擇多久後自動將剪貼簿清空。";

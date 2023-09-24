@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Verwenden Sie Touch ID als Alternative zu Ihrem App-Zugangscode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Verwenden Sie Face ID als Alternative zu Ihrem App-Zugangscode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Verwenden Sie Optic ID als Alternative zu Ihrem App-Zugangscode.";
 
 "settings_clearClipboard" = "Zwischenablage leeren";
 "settings_clearClipboardInfo" = "Bitte wählen Sie die Verzögerung aus, nach der die Zwischenablage gelöscht wird.";

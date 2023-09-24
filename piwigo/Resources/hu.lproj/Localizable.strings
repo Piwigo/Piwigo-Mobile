@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "Mekkora legyen a legnagyobb videó, ami feltöltésre kerül?";
 "UploadVideoSize_resolution" = "Beépített kamera maximum specifikációi:";
 "UploadPhotoSize_original" = "Méretcsökkentés nélkül";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "Feltöltések";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Adatvédelem";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Használja a Touch ID-t az App Lock jelszavának alternatívájaként.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Használja a Face ID-t az App Lock jelszó alternatívájaként.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Használja a Optic ID-t az App Lock jelszó alternatívájaként.";
 
 "settings_clearClipboard" = "Vágólap törlése";
 "settings_clearClipboardInfo" = "Kérjük, válassza ki a késleltetést, amely után a vágólap törlődik.";
@@ -830,8 +832,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Új gesztusok";
+"whatsNew_desc1" = "Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.";
+"whatsNew_title2" = "PiP támogatás";
+"whatsNew_desc2" = "Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.";
 "whatsNew_continue" = "Folytatás";

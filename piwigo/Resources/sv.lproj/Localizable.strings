@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "Välj den maximala storleken på de videor som kommer att laddas upp.";
 "UploadVideoSize_resolution" = "Inbyggda kameror maximala specifikationer:";
 "UploadPhotoSize_original" = "Ingen neddimensionering";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "Uppladdningar";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Sekretess";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Använd Touch ID som ett alternativ till din applås-lösenkod.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Använd Face ID som ett alternativ till din applås-lösenkod.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Använd Optic ID som ett alternativ till din applås-lösenkod.";
 
 "settings_clearClipboard" = "Rensa urklipp";
 "settings_clearClipboardInfo" = "Välj fördröjning efter vilken urklipp kommer att rensas.";
@@ -830,8 +832,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Vad är nytt i Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title1" = "Nya gester";
+"whatsNew_desc1" = "Svep nedåt eller nypa bilden för att återgå till albumet när du tittar på enskilda foton eller videor.";
 "whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_desc2" = "Titta på en video som lagras på din Piwigo medan du använder andra appar.";
 "whatsNew_continue" = "Fortsätt";

@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "Wybierz maksymalny rozmiar filmów, które zostaną przesłane.";
 "UploadVideoSize_resolution" = "Maksymalne specyfikacje wbudowanych kamer:";
 "UploadPhotoSize_original" = "Nie zmniejszaj";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "Prześlij";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Prywatność";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Użyj Touch ID jako alternatywy dla swojego kodu App Lock.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Użyj Face ID jako alternatywy dla swojego kodu App Lock.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Użyj Optic ID jako alternatywy dla swojego kodu App Lock.";
 
 "settings_clearClipboard" = "Wyczyść schowek";
 "settings_clearClipboardInfo" = "Wybierz opóźnienie, po którym schowek zostanie wyczyszczony.";

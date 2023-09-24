@@ -737,7 +737,7 @@
 "UploadVideoSize_header" = "Seleziona la dimensione massima dei video che verranno caricati.";
 "UploadVideoSize_resolution" = "Specifiche massime delle telecamere integrate:";
 "UploadPhotoSize_original" = "Nessun Downsizing";
-"UploadRequests_cache" = "Uploads";
+"UploadRequests_cache" = "Caricamenti";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Usa Touch ID come alternativa al tuo codice di accesso App Lock.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Usa Face ID come alternativa al tuo codice di accesso App Lock.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Usa Optic ID come alternativa al tuo codice di accesso App Lock.";
 
 "settings_clearClipboard" = "Cancella Appunti";
 "settings_clearClipboardInfo" = "Seleziona il ritardo dopo il quale gli appunti saranno cancellati.";
@@ -830,8 +832,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Novità di Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Nuovi Gesti";
+"whatsNew_desc1" = "Scorri verso il basso o pizzichi l'immagine per tornare all'album quando si visualizzano singole foto o video.";
+"whatsNew_title2" = "Supporto PiP";
+"whatsNew_desc2" = "Guarda un video memorizzato sul tuo Piwigo mentre usi altre applicazioni.";
 "whatsNew_continue" = "Continua";

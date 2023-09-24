@@ -49,7 +49,7 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
+"CoreDataStore_WarningTitle" = "Peringatan";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationProgress" = "Migration in progress...";
@@ -753,6 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Use Optic ID as an alternative to your App Lock passcode.";
 
 "settings_clearClipboard" = "Clear Clipboard";
 "settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
