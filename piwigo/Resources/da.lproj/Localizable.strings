@@ -753,8 +753,8 @@
 "settings_biometricsTouchIDinfo" = "Brug Touch ID som et alternativ til din App Lock adgangskode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Brug ansigts-id som et alternativ til din App Lock adgangskode.";
-"settings_biometricsOpticID" = "Optic ID";
-"settings_biometricsOpticIDinfo" = "Brug Optic ID som et alternativ til din App Lock adgangskode.";
+"settings_biometricsOpticID" = "Optisk ID";
+"settings_biometricsOpticIDinfo" = "Brug Optisk ID som et alternativ til din App adgangskode.";
 
 "settings_clearClipboard" = "Ryd Udklipsholder";
 "settings_clearClipboardInfo" = "Vælg den forsinkelse, efter hvilken udklipsholderen vil blive ryddet.";
