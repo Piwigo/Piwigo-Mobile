@@ -15,7 +15,6 @@ public enum pwgPrivacy : Int16, CaseIterable {
     case adminsFamilyFriends = 2
     case adminsFamily = 4
     case admins = 8
-    case count = 5
     case unknown = -1
 }
 
