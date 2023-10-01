@@ -130,7 +130,7 @@
 		AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */; };
 		AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */; };
 		AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C612A2932110001B8B0 /* DataMigrationViewController.swift */; };
-		AD3B2C672A2938910001B8B0 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		AD3B2C672A2938910001B8B0 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		AD3B2C692A293A860001B8B0 /* DataMigrationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C682A293A860001B8B0 /* DataMigrationViewController.storyboard */; };
 		AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3CD639259DE34C000C26ED /* Help06ViewController.swift */; };
 		AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3DB4102773957A00017542 /* ImageViewController.storyboard */; };
@@ -1546,6 +1546,7 @@
 				AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */,
 				AD7E9AE82A6D7B330079BE8F /* Video.swift */,
 				ADE986302A7277740087F031 /* VideoHUD.swift */,
+				AD12D6F52AA657080038BBFF /* VideoControlsView.swift */,
 				AD7E9AEA2A6D7BDC0079BE8F /* PlaybackController.swift */,
 				AD7E9AE62A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift */,
 			);
@@ -1870,7 +1871,6 @@
 				AD3DB4142773958A00017542 /* ImageDescriptionView.swift */,
 				AD3DB4122773958200017542 /* ImageDetailViewController.swift */,
 				AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */,
-				AD12D6F52AA657080038BBFF /* VideoControlsView.swift */,
 				D818EA031A74D32100733991 /* Extensions */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
@@ -2195,7 +2195,7 @@
 			buildConfigurationList = AD084E4F2659A27100159FE1 /* Build configuration list for PBXNativeTarget "piwigoKit" */;
 			buildPhases = (
 				AD084E412659A27100159FE1 /* Headers */,
-				ADAF9DA42AC609D600F9218D /* ShellScript */,
+				ADAF9DA42AC609D600F9218D /* Auto-increment build version of release */,
 				AD084E422659A27100159FE1 /* Sources */,
 				AD084E432659A27100159FE1 /* Frameworks */,
 				AD084E442659A27100159FE1 /* Resources */,
@@ -2232,7 +2232,7 @@
 			buildConfigurationList = AD2C62422A4896A600671582 /* Build configuration list for PBXNativeTarget "uploadKit" */;
 			buildPhases = (
 				AD2C62352A4896A600671582 /* Headers */,
-				ADAF9DA52AC60AE900F9218D /* ShellScript */,
+				ADAF9DA52AC60AE900F9218D /* Auto-increment build version of release */,
 				AD2C62362A4896A600671582 /* Sources */,
 				AD2C62372A4896A600671582 /* Frameworks */,
 				AD2C62382A4896A600671582 /* Resources */,
@@ -2296,6 +2296,7 @@
 				D82B8CB81A67820A000E47CA /* Frameworks */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
+				27437D861D4F7297BEBC953F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2389,8 +2390,8 @@
 			projectRoot = "";
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
-				AD084E452659A27100159FE1 /* piwigoKit */,
 				AD2C62392A4896A600671582 /* uploadKit */,
+				AD084E452659A27100159FE1 /* piwigoKit */,
 				AD30FD3321316DA7009AA30E /* piwigoAppStore */,
 				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
 				AD778355267E34F800317F36 /* piwigoIntents */,
@@ -2483,9 +2484,8 @@
 				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
 				AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */,
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
-				AD3B2C672A2938910001B8B0 /* (null) in Resources */,
+				AD3B2C672A2938910001B8B0 /* BuildFile in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
-				AD8A1E80288478FA00752948 /* help08-top.png in Resources */,
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
@@ -2503,18 +2503,21 @@
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
-				AD8A1E81288478FA00752948 /* help08-bot.png in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
 				ADBE9515279DC61700397426 /* AlbumTableViewCell.xib in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
 				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
+				ADD77EF52A1D0D9400F8C779 /* ExternalDisplayViewController.storyboard in Resources */,
+				AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */,
+				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
+				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
+				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
 				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
 				AD96F4302748601D004C8DFF /* piwigo.png in Resources */,
-				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
 				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
 				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				AD11AC4C273B17A100433038 /* help01.png in Resources */,
@@ -2526,10 +2529,8 @@
 				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
 				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
 				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
-				ADD77EF52A1D0D9400F8C779 /* ExternalDisplayViewController.storyboard in Resources */,
-				AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */,
-				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
-				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
+				AD8A1E80288478FA00752948 /* help08-top.png in Resources */,
+				AD8A1E81288478FA00752948 /* help08-bot.png in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
@@ -2541,6 +2542,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		27437D861D4F7297BEBC953F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2606,7 +2624,7 @@
 			shellPath = /bin/sh;
 			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
 		};
-		ADAF9DA42AC609D600F9218D /* ShellScript */ = {
+		ADAF9DA42AC609D600F9218D /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 8;
@@ -2616,6 +2634,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Auto-increment build version of release";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2624,7 +2643,7 @@
 			shellPath = /bin/sh;
 			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
 		};
-		ADAF9DA52AC60AE900F9218D /* ShellScript */ = {
+		ADAF9DA52AC60AE900F9218D /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 8;
@@ -2634,6 +2653,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Auto-increment build version of release";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2649,105 +2669,105 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */,
-				AD06E3842A4227AA007CACD7 /* pwg.images.exist.swift in Sources */,
-				AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */,
-				AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */,
-				AD98E53528BBB50C008C846A /* UserError.swift in Sources */,
-				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
-				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
-				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
-				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
-				AD018D8028D728A40003D5DB /* ImageError.swift in Sources */,
-				AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */,
 				ADDC36D428D10DD700E5AE4B /* DescriptionValueTransformer.swift in Sources */,
+				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
+				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
+				AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */,
+				AD7DE0952A858FC300C1424E /* Notification.Name+AppTools.swift in Sources */,
+				ADB49D88295904BC00EE377A /* String+AppTools.swift in Sources */,
+				AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */,
+				AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */,
+				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
+				AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */,
+				AD25CA7A286B932000D574C7 /* NSManagedObjectModel+AppTools.swift in Sources */,
+				AD25CA7E286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift in Sources */,
+				AD1807042A84318A00B3BEF8 /* DataModel.xcdatamodeld in Sources */,
+				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
+				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
+				AD25CA7C286B938100D574C7 /* DataMigrator.swift in Sources */,
+				ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */,
+				AD25CA76286B891300D574C7 /* DataMigrationVersion.swift in Sources */,
+				AD25CA78286B90E200D574C7 /* DataMigrationStep.swift in Sources */,
+				AD594C1E2A2CA725009874D5 /* MappingModel_09_to_0C.xcmappingmodel in Sources */,
+				AD594C222A2CA8AC009874D5 /* UploadToUploadMigrationPolicy_09_to_0C.swift in Sources */,
+				AD594C202A2CA7B1009874D5 /* TagToTagMigrationPolicy_09_to_0C.swift in Sources */,
+				AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */,
+				ADBF95A62A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel in Sources */,
+				ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */,
 				ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */,
 				ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */,
-				AD673C1E2A4B83170080BC0B /* PwgSession+Reflection.swift in Sources */,
-				ADDC36D228CFC71800E5AE4B /* ImageProvider.swift in Sources */,
-				AD25CA7C286B938100D574C7 /* DataMigrator.swift in Sources */,
-				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
-				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
-				AD673C202A4B83750080BC0B /* PwgSession+Community.swift in Sources */,
-				AD6759AC28D77033009C69EC /* pwg.categories.getImages.swift in Sources */,
-				AD1807042A84318A00B3BEF8 /* DataModel.xcdatamodeld in Sources */,
-				ADDC36C628CCE8CE00E5AE4B /* Image+CoreDataProperties.swift in Sources */,
-				AD94F643266D6E1D00EFC6A9 /* LocationProvider.swift in Sources */,
-				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
-				AD865777284D153F00C06EF4 /* pwg.categories.getList.swift in Sources */,
-				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
-				ADBF95A62A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel in Sources */,
-				AD594C222A2CA8AC009874D5 /* UploadToUploadMigrationPolicy_09_to_0C.swift in Sources */,
-				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
-				AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */,
-				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
-				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
-				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
-				AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */,
-				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
-				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
-				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				ADF35E7E28B29A06009F3ECE /* ServerProvider.swift in Sources */,
 				ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */,
-				ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */,
-				AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
-				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
+				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
+				AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */,
+				AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */,
+				AD98E53528BBB50C008C846A /* UserError.swift in Sources */,
+				ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */,
 				ADDC36CA28CCE91700E5AE4B /* Album+CoreDataProperties.swift in Sources */,
-				ADF4001F266D705F004352B9 /* TagProvider.swift in Sources */,
-				ADB49D88295904BC00EE377A /* String+AppTools.swift in Sources */,
+				AD44870C29056D50001288E4 /* AlbumSmart.swift in Sources */,
+				AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */,
+				AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */,
+				ADDC36CC28CCEA9C00E5AE4B /* AlbumProvider.swift in Sources */,
+				ADDC36CE28CDE54200E5AE4B /* AlbumError.swift in Sources */,
+				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
+				ADDC36C628CCE8CE00E5AE4B /* Image+CoreDataProperties.swift in Sources */,
+				AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */,
+				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
+				AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */,
+				ADDC36D228CFC71800E5AE4B /* ImageProvider.swift in Sources */,
+				AD018D8028D728A40003D5DB /* ImageError.swift in Sources */,
 				ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */,
 				ADF6264926B9ED4A0085A299 /* Tag+CoreDataProperties.swift in Sources */,
-				ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */,
-				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
-				ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */,
-				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
-				ADB2C3D3291D9967009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
-				AD23882928FAB8A10037696E /* pwg.tags.getImages.swift in Sources */,
-				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
-				ADDC36CC28CCEA9C00E5AE4B /* AlbumProvider.swift in Sources */,
-				AD23882328F8914A0037696E /* pwg.users.favorites.getList.swift in Sources */,
-				AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */,
-				AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */,
-				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
-				AD673C1A2A4B80B40080BC0B /* PwgSession+Session.swift in Sources */,
-				AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */,
-				AD25CA76286B891300D574C7 /* DataMigrationVersion.swift in Sources */,
-				ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */,
-				AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */,
+				ADF4001F266D705F004352B9 /* TagProvider.swift in Sources */,
+				ADF40020266D7062004352B9 /* TagError.swift in Sources */,
+				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
+				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
+				AD94F643266D6E1D00EFC6A9 /* LocationProvider.swift in Sources */,
+				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
 				AD2C62312A488F4D00671582 /* UploadVars.swift in Sources */,
-				AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */,
 				ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */,
-				ADDC36CE28CDE54200E5AE4B /* AlbumError.swift in Sources */,
 				ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */,
+				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
+				ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */,
+				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
+				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
+				ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */,
+				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
+				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
+				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */,
+				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
-				AD23882728FAB4050037696E /* pwg.images.search.swift in Sources */,
-				AD594C1E2A2CA725009874D5 /* MappingModel_09_to_0C.xcmappingmodel in Sources */,
+				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
+				AD673C202A4B83750080BC0B /* PwgSession+Community.swift in Sources */,
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
+				AD673C1E2A4B83170080BC0B /* PwgSession+Reflection.swift in Sources */,
 				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
-				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
-				AD594C202A2CA7B1009874D5 /* TagToTagMigrationPolicy_09_to_0C.swift in Sources */,
+				AD865777284D153F00C06EF4 /* pwg.categories.getList.swift in Sources */,
+				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,
+				AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */,
+				AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */,
+				ADB2C3D3291D9967009542FB /* pwg.categories.calculateOrphans.swift in Sources */,
+				AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */,
+				AD6759AC28D77033009C69EC /* pwg.categories.getImages.swift in Sources */,
+				AD06E3842A4227AA007CACD7 /* pwg.images.exist.swift in Sources */,
+				AD23882728FAB4050037696E /* pwg.images.search.swift in Sources */,
 				ADF72E992670D72D0027E2CC /* pwg.images.getInfo.swift in Sources */,
-				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,
-				AD25CA78286B90E200D574C7 /* DataMigrationStep.swift in Sources */,
-				ADF35E7E28B29A06009F3ECE /* ServerProvider.swift in Sources */,
 				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
 				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
-				AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */,
-				AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */,
-				AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */,
-				AD7DE0952A858FC300C1424E /* Notification.Name+AppTools.swift in Sources */,
+				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				AD673C1C2A4B81C60080BC0B /* PwgSession+Images.swift in Sources */,
-				AD25CA7E286B948200D574C7 /* NSPersistentStoreCoordinator+AppTools.swift in Sources */,
-				AD44870C29056D50001288E4 /* AlbumSmart.swift in Sources */,
-				AD25CA7A286B932000D574C7 /* NSManagedObjectModel+AppTools.swift in Sources */,
 				AD211A8927BAFE2E005D5E4F /* pwg.session.login.swift in Sources */,
-				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
+				AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */,
+				AD211A8E27C14BE1005D5E4F /* pwg.session.logout.swift in Sources */,
+				AD673C1A2A4B80B40080BC0B /* PwgSession+Session.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
-				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
-				AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */,
+				AD23882928FAB8A10037696E /* pwg.tags.getImages.swift in Sources */,
+				AD23882328F8914A0037696E /* pwg.users.favorites.getList.swift in Sources */,
 				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
