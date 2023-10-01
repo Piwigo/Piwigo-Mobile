@@ -623,7 +623,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                         width: 0, height: 0)
                     whatsNewVC.preferredContentSize = CGSize(
                         width: pwgPadSettingsWidth,
-                        height: CGFloat(ceil(mainScreenBounds.size.height * 2 / 3)))
+                        height: ceil(CGFloat(mainScreenBounds.size.height) * 2 / 3))
                     present(whatsNewVC, animated: true)
                 }
                 return
@@ -733,10 +733,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Cancel remaining tasks
+        let catIDstr = String(self.categoryId)
         PwgSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -746,7 +747,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         ImageSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -1601,9 +1602,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let navBarHeight = (navigationController?.navigationBar.frame.origin.y ?? 0.0) + (navigationController?.navigationBar.frame.size.height ?? 0.0)
+        let navBarHeight = Float(navigationController?.navigationBar.frame.origin.y ?? 0.0) + Float(navigationController?.navigationBar.frame.size.height ?? 0.0)
         //    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
-        if (roundf(Float(scrollView.contentOffset.y + navBarHeight)) > 1) ||
+        if roundf(Float(scrollView.contentOffset.y) + navBarHeight) > 1 ||
             (categoryId != AlbumVars.shared.defaultCategory) {
             // Show navigation bar border
             if #available(iOS 13.0, *) {

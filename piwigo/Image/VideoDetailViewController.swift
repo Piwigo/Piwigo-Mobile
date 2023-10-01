@@ -125,10 +125,10 @@ class VideoDetailViewController: UIViewController
         let scale = min(widthScale, heightScale)
 
         // Center image on screen
-        let imageWidth = imageSize.width * scale
-        let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
-        let imageHeight = imageSize.height * scale
-        let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
+        let imageWidth = CGFloat(imageSize.width * scale)
+        let horizontalSpace = max(0, (CGFloat(view.bounds.width) - imageWidth) / 2)
+        let imageHeight = CGFloat(imageSize.height * scale)
+        let verticalSpace: CGFloat = max(0, (CGFloat(view.bounds.height) - imageHeight) / 2)
         placeHolderView.frame = CGRect(x: horizontalSpace, y: verticalSpace,
                                        width: imageWidth, height: imageHeight)
     }

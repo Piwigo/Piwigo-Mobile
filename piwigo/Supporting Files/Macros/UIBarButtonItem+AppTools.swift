@@ -119,11 +119,13 @@ extension UIBarButtonItem {
                 let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
                 self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
             } else {
-                let name = "chevron." + (AppVars.shared.isAppLanguageL2R ? "left" : "right")
+                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+                let name = "chevron." + (isAppLanguageL2R ? "left" : "right")
                 self.image = UIImage(systemName: name)
             }
         } else {
-            if AppVars.shared.isAppLanguageL2R {
+            let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+            if isAppLanguageL2R {
                 self.image = UIImage(named: "chevronBackLeft")
                 self.landscapeImagePhone = UIImage(named: "chevronBackLeftCompact")
             } else {
@@ -154,7 +156,8 @@ extension UIBarButtonItem {
 //                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
 //                self.image = UIImage(systemName: "speaker.slash.fill", withConfiguration: configuration)
 //            } else {
-                if AppVars.shared.isAppLanguageL2R {
+                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+                if isAppLanguageL2R {
                     self.image = UIImage(named: "mutedRight")
                     self.landscapeImagePhone = UIImage(named: "mutedRightCompact")
                 } else {
@@ -167,7 +170,8 @@ extension UIBarButtonItem {
 //                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
 //                self.image = UIImage(systemName: "speaker.wave.2.fill", withConfiguration: configuration)
 //            } else {
-                if AppVars.shared.isAppLanguageL2R {
+                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+                if isAppLanguageL2R {
                     self.image = UIImage(named: "unmutedRight")
                     self.landscapeImagePhone = UIImage(named: "unmutedRightCompact")
                 } else {
