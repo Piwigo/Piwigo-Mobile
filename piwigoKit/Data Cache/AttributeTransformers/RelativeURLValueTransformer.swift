@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(RelativeURLValueTransformer)
 public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {
