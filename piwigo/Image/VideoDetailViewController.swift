@@ -323,8 +323,7 @@ extension VideoDetailViewController: VideoControlsDelegate
 {
     func didChangeTime(value: Double) {
         if let video = video {
-            let time = video.duration * value
-            playbackController.seek(contentOfVideo: video, toTime: time)
+            playbackController.seek(contentOfVideo: video, toTimeFraction: value)
         }
     }
 }

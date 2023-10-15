@@ -60,8 +60,8 @@ class PlaybackController {
         coordinator(for: video).playOrReplay()
     }
 
-    func seek(contentOfVideo video: Video, toTime time: Double) {
-        coordinator(for: video).seekToTime(time)
+    func seek(contentOfVideo video: Video, toTimeFraction fraction: Double) {
+        coordinator(for: video).seekToTime(video.duration * fraction)
     }
     
     func isPlayingVideo(_ video: Video) -> Bool {

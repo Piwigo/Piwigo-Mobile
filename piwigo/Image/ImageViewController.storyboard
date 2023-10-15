@@ -290,16 +290,6 @@
                                 <exclude reference="XYM-L7-8N0"/>
                             </mask>
                         </variation>
-                        <variation key="widthClass=regular">
-                            <mask key="constraints">
-                                <exclude reference="lPq-To-Dcc"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=compact-widthClass=compact">
-                            <mask key="constraints">
-                                <exclude reference="lPq-To-Dcc"/>
-                            </mask>
-                        </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
                                 <include reference="lPq-To-Dcc"/>

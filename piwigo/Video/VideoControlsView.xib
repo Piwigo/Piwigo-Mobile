@@ -58,6 +58,12 @@
                 <constraint firstItem="ZBR-I9-W2y" firstAttribute="centerY" secondItem="JnB-PV-Udr" secondAttribute="centerY" id="lKZ-qh-UKB"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                    <integer key="value" value="20"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+            </userDefinedRuntimeAttributes>
             <variation key="default">
                 <mask key="constraints">
                     <exclude reference="bwG-FS-Dt8"/>

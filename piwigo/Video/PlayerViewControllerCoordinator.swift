@@ -207,6 +207,8 @@ class PlayerViewControllerCoordinator: NSObject {
                         // Update player transport UI
                         if let parent = playerViewController.parent as? VideoDetailViewController {
                             parent.videoControls.setCurrentTime(time.seconds)
+                        } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
+                            parent.setCurrentTime(time.seconds)
                         }
                     }
                 }
@@ -218,13 +220,14 @@ class PlayerViewControllerCoordinator: NSObject {
                     // Store video parameters
                     video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
                     // Center container view now that the video size is known and configure slider
+                    let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                     if let parent = playerViewController.parent as? VideoDetailViewController {
-                        let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                         parent.video?.duration = video.duration
                         parent.setVideoSize(playerViewController.videoBounds.size)
                         parent.videoControls.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
-                    } else {
+                    } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
+                        parent.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = 1
                     }
                     // Hide image and show play button when ready
@@ -244,13 +247,14 @@ class PlayerViewControllerCoordinator: NSObject {
                         // Store video parameters
                         self?.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
                         // Center container view now that the video size is known and configure slider
+                        let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                         if let parent = playerViewController.parent as? VideoDetailViewController {
-                            let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                             parent.video?.duration = self?.video.duration ?? TimeInterval(0)
                             parent.setVideoSize(playerViewController.videoBounds.size)
                             parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
-                        } else {
+                        } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
+                            parent.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = 1
                         }
                     } else {

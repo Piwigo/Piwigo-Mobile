@@ -94,7 +94,7 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Apply transition
         UIView.transition(with: window, duration: 0.5,
                           options: .transitionCrossDissolve) { }
-    completion: { _ in }
+        completion: { _ in }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -104,6 +104,12 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
         
+        // Pause video playback, remove video controls
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        if let rootVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+            rootVC.viewWillDisappear(true)
+        }
+
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
     }
@@ -115,6 +121,34 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
+    }
+    
+    
+    // MARK: - Transitioning to the Foreground
+//    func sceneWillEnterForeground(_ scene: UIScene) {
+//        print("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
+//        // Called as the scene is about to begin running in the foreground and become visible to the user.
+//        // Use this method to undo the changes made on entering the background.
+//    }
+
+//    func sceneDidBecomeActive(_ scene: UIScene) {
+//        print("••> \(scene.session.persistentIdentifier): Scene did become active.")
+//        // Called when the scene has become active and is now responding to user events.
+//        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+//    }
+    
+    
+    // MARK: - Transitioning to the Background
+    func sceneWillResignActive(_ scene: UIScene) {
+        print("••> \(scene.session.persistentIdentifier): Scene will resign active.")
+        // Called when the scene is about to resign the active state and stop responding to user events.
+        // This may occur due to temporary interruptions (ex. an incoming phone call).
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        print("••> \(scene.session.persistentIdentifier): Scene did enter background.")
+        // Called when the scene is running in the background and is no longer onscreen.
+        // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
     }
     
     

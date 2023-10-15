@@ -9,8 +9,16 @@
 import UIKit
 import piwigoKit
 
+protocol AlbumVideoControlsDelegate: NSObjectProtocol {
+    func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
+    func setCurrentTime(_ value: Double)
+    func hideVideoControls()
+}
+
 class ExternalDisplayViewController: UIViewController {
     
+    weak var albumVideoControlsDelegate: AlbumVideoControlsDelegate?
+
     var imageData: Image?
     var video: Video? {
         didSet {
@@ -57,6 +65,7 @@ class ExternalDisplayViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         // Remove displayed video player
+        albumVideoControlsDelegate?.hideVideoControls()
         if let video = video {
             playbackController.pause(contentOfVideo: video)
         }
@@ -162,7 +171,9 @@ class ExternalDisplayViewController: UIViewController {
         view.layoutIfNeeded()
         // Display final image
         UIView.transition(with: imageView, duration: 0.5,
-                          options: .transitionCrossDissolve) { }
+                          options: .transitionCrossDissolve) {
+            self.albumVideoControlsDelegate?.hideVideoControls()
+        }
         completion: { [unowned self] _ in
             // Hide progress view
             self.progressView.isHidden = true
@@ -182,6 +193,25 @@ class ExternalDisplayViewController: UIViewController {
         completion: { [unowned self] _ in
             // Remove image
             self.imageView.image = nil
+        }
+    }
+    
+    func config(currentTime: TimeInterval, duration: TimeInterval) {
+        albumVideoControlsDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
+    }
+    
+    func setCurrentTime(_ value: Double) {
+        albumVideoControlsDelegate?.setCurrentTime(value)
+    }
+}
+
+
+// MARK: - VideoControlsDelegate Methods
+extension ExternalDisplayViewController: VideoControlsDelegate
+{
+    func didChangeTime(value: Double) {
+        if let video = video {
+            playbackController.seek(contentOfVideo: video, toTimeFraction: value)
         }
     }
 }
