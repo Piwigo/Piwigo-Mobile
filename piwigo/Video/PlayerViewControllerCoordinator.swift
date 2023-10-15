@@ -220,7 +220,8 @@ class PlayerViewControllerCoordinator: NSObject {
                     // Center container view now that the video size is known and configure slider
                     if let parent = playerViewController.parent as? VideoDetailViewController {
                         let currentTime = playerViewController.player?.currentTime().seconds ?? 0
-                        parent.setVideo(size: playerViewController.videoBounds.size, duration: video.duration)
+                        parent.video?.duration = video.duration
+                        parent.setVideoSize(playerViewController.videoBounds.size)
                         parent.videoControls.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                     } else {
@@ -245,7 +246,8 @@ class PlayerViewControllerCoordinator: NSObject {
                         // Center container view now that the video size is known and configure slider
                         if let parent = playerViewController.parent as? VideoDetailViewController {
                             let currentTime = playerViewController.player?.currentTime().seconds ?? 0
-                            parent.setVideo(size: playerViewController.videoBounds.size, duration: self?.video.duration ?? 0)
+                            parent.video?.duration = self?.video.duration ?? TimeInterval(0)
+                            parent.setVideoSize(playerViewController.videoBounds.size)
                             parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                         } else {

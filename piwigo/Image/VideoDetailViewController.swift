@@ -43,7 +43,11 @@ class VideoDetailViewController: UIViewController
         setPlaceHolderViewFrame()
 
         // Initialise videoContainerView size with placeHolder size
-        setVideo(size: nil)
+        setVideoSize(nil)
+        
+        // Initialise video controls
+        videoControls.isHidden = true
+        videoControls.videoControlsDelegate = self
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -87,7 +91,7 @@ class VideoDetailViewController: UIViewController
             setPlaceHolderViewFrame()
             
             // Set video container and scrollView for this orientation
-            setVideo(size: videoSize)
+            setVideoSize(videoSize)
         })
     }
 
@@ -133,9 +137,8 @@ class VideoDetailViewController: UIViewController
                                        width: imageWidth, height: imageHeight)
     }
     
-    func setVideo(size: CGSize?, duration: TimeInterval = TimeInterval(0)) {
+    func setVideoSize(_ size: CGSize?) {
         // Remember video duration and size for future use
-        video?.duration = duration
         videoSize = size
         
         // Set video container view size
