@@ -228,61 +228,7 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gyV-iA-Gwr">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="40"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EjU-Sh-dsV">
-                                            <rect key="frame" x="8" y="12" width="36.666666666666664" height="16"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <nil key="highlightedColor"/>
-                                            <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <size key="shadowOffset" width="0.0" height="0.0"/>
-                                        </label>
-                                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="6U9-tI-UB9">
-                                            <rect key="frame" x="58.666666666666686" y="5" width="236" height="31"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <color key="minimumTrackTintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="thumbTintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                                            <connections>
-                                                <action selector="didChangeTime:" destination="wRV-4z-VJu" eventType="valueChanged" id="KuT-Ke-05E"/>
-                                            </connections>
-                                        </slider>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="01:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b2f-I8-VTT">
-                                            <rect key="frame" x="308.66666666666669" y="12" width="36.333333333333314" height="16"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <nil key="highlightedColor"/>
-                                            <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <size key="shadowOffset" width="0.0" height="0.0"/>
-                                        </label>
-                                    </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <constraints>
-                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="centerY" secondItem="gyV-iA-Gwr" secondAttribute="centerY" id="7QA-Gk-4ex"/>
-                                        <constraint firstItem="EjU-Sh-dsV" firstAttribute="leading" secondItem="gyV-iA-Gwr" secondAttribute="leading" constant="8" id="Hzk-VF-x2P"/>
-                                        <constraint firstItem="b2f-I8-VTT" firstAttribute="leading" secondItem="6U9-tI-UB9" secondAttribute="trailing" constant="16" id="d9X-mj-K33"/>
-                                        <constraint firstItem="EjU-Sh-dsV" firstAttribute="centerY" secondItem="6U9-tI-UB9" secondAttribute="centerY" id="ekn-Wq-cBC"/>
-                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="leading" secondItem="EjU-Sh-dsV" secondAttribute="trailing" constant="16" id="fC8-UV-Dt2"/>
-                                        <constraint firstItem="b2f-I8-VTT" firstAttribute="centerY" secondItem="6U9-tI-UB9" secondAttribute="centerY" id="jVx-xc-Ql8"/>
-                                        <constraint firstItem="6U9-tI-UB9" firstAttribute="centerX" secondItem="gyV-iA-Gwr" secondAttribute="centerX" id="p20-9J-TYi"/>
-                                        <constraint firstAttribute="trailing" secondItem="b2f-I8-VTT" secondAttribute="trailing" constant="8" id="r8m-bh-8Dh"/>
-                                    </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="Hzk-VF-x2P"/>
-                                        </mask>
-                                    </variation>
-                                    <variation key="heightClass=compact-widthClass=compact">
-                                        <mask key="constraints">
-                                            <include reference="Hzk-VF-x2P"/>
-                                        </mask>
-                                    </variation>
-                                    <variation key="heightClass=regular-widthClass=compact">
-                                        <mask key="constraints">
-                                            <include reference="Hzk-VF-x2P"/>
-                                        </mask>
-                                    </variation>
                                 </view>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -321,11 +267,6 @@
                                         <include reference="Smh-9A-xIf"/>
                                     </mask>
                                 </variation>
-                                <connections>
-                                    <outlet property="endLabel" destination="b2f-I8-VTT" id="Dbj-RV-eLH"/>
-                                    <outlet property="startLabel" destination="EjU-Sh-dsV" id="soE-Yd-tDF"/>
-                                    <outlet property="timeSlider" destination="6U9-tI-UB9" id="Qf9-kx-n36"/>
-                                </connections>
                             </visualEffectView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qaX-ya-55M"/>

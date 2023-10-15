@@ -8,12 +8,44 @@
 
 import UIKit
 
-class VideoControlsView : UIVisualEffectView {
+protocol VideoControlsDelegate: NSObjectProtocol {
+    func didChangeTime(value: Double)
+}
+
+class VideoControlsView: UIVisualEffectView {
+    
+    weak var videoControlsDelegate: VideoControlsDelegate?
     
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var timeSlider: UISlider!
     @IBOutlet weak var endLabel: UILabel!
     
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        configView()
+    }
+    
+    override init(effect: UIVisualEffect?) {
+        super.init(effect: effect)
+        configView()
+    }
+    
+    // Initialisation
+    private func configView() {
+        let view = viewFromNibForClass()
+        view.frame = bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.addSubview(view)
+    }
+    
+    // Loads XIB file into a view and returns this view
+    private func viewFromNibForClass() -> UIView {
+        let bundle = Bundle(for: type(of: self))
+        let nib = UINib(nibName: String(describing: type(of: self)), bundle: bundle)
+        let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
+        return view
+    }
+
     private var videoDuration: Double?
     private lazy var hoursFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -30,11 +62,6 @@ class VideoControlsView : UIVisualEffectView {
         formatter.dateFormat = "m:ss"
         return formatter
     }()
-    
-    override func awakeFromNib() {
-        // Initialization code
-        super.awakeFromNib()
-    }
     
     func applyColorPalette() {
         if #available(iOS 13.0, *) {
@@ -80,6 +107,12 @@ class VideoControlsView : UIVisualEffectView {
         }
     }
     
+    @IBAction func didChangeTime(_ sender: Any) {
+        if let slider = sender as? UISlider {
+            videoControlsDelegate?.didChangeTime(value: Double(slider.value))
+        }
+    }
+
     private func getTimeLabel(_ value: TimeInterval, forDuration duration: TimeInterval) -> String {
         // Format depends on video duration
         if duration < 600 {           // i.e. one minute

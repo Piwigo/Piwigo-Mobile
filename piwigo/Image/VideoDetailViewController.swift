@@ -218,8 +218,9 @@ class VideoDetailViewController: UIViewController
             scrollView.contentInset.bottom = verticalSpace
         }
 
-        // Unhide video
+        // Show video with controls
         videoContainerView.isHidden = false
+        videoControls.isHidden = false
         debugPrint("••> Did updateScrollViewInset: ")
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
@@ -231,14 +232,6 @@ class VideoDetailViewController: UIViewController
         descContainer.config(with: data.comment, inViewController: self, forVideo: true)
     }
 
-    @IBAction func didChangeTime(_ sender: Any) {
-        if let video = video,
-           let slider = sender as? UISlider {
-            let time = video.duration * Double(slider.value)
-            playbackController.seek(contentOfVideo: video, toTime: time)
-        }
-    }
-
     
     // MARK: - Gestures Management
     func updateDescriptionControlsVisibility() {
@@ -247,7 +240,9 @@ class VideoDetailViewController: UIViewController
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = state
         }
-        videoControls.isHidden = state
+        if videoContainerView.isHidden == false {
+            videoControls.isHidden = state
+        }
     }
     
     func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
@@ -318,6 +313,18 @@ extension VideoDetailViewController: UIScrollViewDelegate
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
             updateScrollViewInset()
+        }
+    }
+}
+
+
+// MARK: - VideoControlsDelegate Methods
+extension VideoDetailViewController: VideoControlsDelegate
+{
+    func didChangeTime(value: Double) {
+        if let video = video {
+            let time = video.duration * value
+            playbackController.seek(contentOfVideo: video, toTime: time)
         }
     }
 }
