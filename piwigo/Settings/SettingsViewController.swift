@@ -73,6 +73,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         }
     }
+    var videoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateVideoCacheCell()
+            }
+        }
+    }
     var uploadCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
@@ -155,6 +162,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
             sizes = self.getPhotoSizes()
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+            self.videoCacheSize = server.getCacheSizeOfVideos()
             self.dataCacheSize = server.getAlbumImageCount()
             if self.hasUploadRights() {
                 self.uploadCacheSize = server.getUploadCount()
@@ -516,7 +524,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 3 + (hasUploadRights() ? 1 : 0)
+            nberOfRows = 4 + (hasUploadRights() ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
@@ -1185,7 +1193,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "thumbnailCache"
                 tableViewCell = cell
                 
-            case 2 /* Photos and Videos */:
+            case 2 /* Photos */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -1196,7 +1204,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "photoCache"
                 tableViewCell = cell
                 
-            case 3 /* Upload Requests */:
+            case 3 /* Videos */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("severalVideos", comment: "Videos")
+                cell.configure(with: title, detail: self.videoCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "videoCache"
+                tableViewCell = cell
+                
+            case 4 /* Upload Requests */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()

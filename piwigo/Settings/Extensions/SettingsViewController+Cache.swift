@@ -55,9 +55,17 @@ extension SettingsViewController
         }
     }
     
-    func updateUploadCacheCell() {
+    func updateVideoCacheCell() {
         let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
         let indexPath = IndexPath(row: 3, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = self.videoCacheSize
+        }
+    }
+    
+    func updateUploadCacheCell() {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 4, section: section)
         if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = self.uploadCacheSize
         }
@@ -93,7 +101,7 @@ extension SettingsViewController
                 return
             }
             let sizes = self.getThumbnailSizes()
-            server.clearCachedImages(ofSizes: sizes)
+            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
 
             // Refresh Settings cell
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
@@ -108,12 +116,26 @@ extension SettingsViewController
                 return
             }
             let sizes = self.getPhotoSizes()
-            server.clearCachedImages(ofSizes: sizes)
+            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
 
             // Refresh photo cache cell
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
         })
         alert.addAction(clearPhotoCacheAction)
+        
+        title = String(format: "%@ (%@)", NSLocalizedString("severalVideos", comment: "Videos"), videoCacheSize)
+        let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Delete high-resolution images in foreground queue
+            guard let server = self.user.server else {
+                assert(self.user?.server != nil, "••> User not provided!")
+                return
+            }
+            server.clearCachedVideos()
+
+            // Refresh video cache cell
+            self.videoCacheSize = server.getCacheSizeOfVideos()
+        })
+        alert.addAction(clearVideoCacheAction)
         
         if hasUploadRights() {
             title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
@@ -146,7 +168,7 @@ extension SettingsViewController
                 try? self.mainContext.save()
 
                 // Clear all image files
-                server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases))
+                server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
 
                 // Refresh variables and cells
                 self.dataCacheSize = server.getAlbumImageCount()
@@ -154,6 +176,7 @@ extension SettingsViewController
                 self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
                 sizes = self.getPhotoSizes()
                 self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+                self.videoCacheSize = server.getCacheSizeOfVideos()
                 self.uploadCacheSize = server.getUploadCount()
             }
         })

@@ -82,16 +82,45 @@ public class Server: NSManagedObject {
         let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach({ size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
-            folderSize += cacheUrl.folderSize
+            if size == .fullRes {
+                folderSize += cacheUrl.photoFolderSize
+            } else {
+                folderSize += cacheUrl.folderSize
+            }
         })
         return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
     }
 
-    public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>) {
+    public func getCacheSizeOfVideos() -> String {
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
+        let folderSize = cacheUrl.videoFolderSize
+        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
+    }
+
+    public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>, exceptVideos: Bool) {
         let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach { size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
-            try? FileManager.default.removeItem(at: cacheUrl)
+            if size == .fullRes, exceptVideos {
+                let contents = try? FileManager.default.contentsOfDirectory(at: cacheUrl, includingPropertiesForKeys: nil)
+                let onlyPhotos = (contents ?? []).filter({$0.pathExtension != "mov"})
+                onlyPhotos.forEach { photoURL in
+                    try? FileManager.default.removeItem(at: photoURL)
+                }
+            } else {
+                try? FileManager.default.removeItem(at: cacheUrl)
+            }
+        }
+    }
+    
+    public func clearCachedVideos() {
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
+        let contents = try? FileManager.default.contentsOfDirectory(at: cacheUrl, includingPropertiesForKeys: nil)
+        let onlyVideos = (contents ?? []).filter({$0.pathExtension == "mov"})
+        onlyVideos.forEach { videoURL in
+            try? FileManager.default.removeItem(at: videoURL)
         }
     }
 }
