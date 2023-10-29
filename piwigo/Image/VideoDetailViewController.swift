@@ -220,7 +220,7 @@ class VideoDetailViewController: UIViewController
 
         // Show video with controls
         videoContainerView.isHidden = false
-        videoControls.isHidden = false
+        videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
         debugPrint("••> Did updateScrollViewInset: ")
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
