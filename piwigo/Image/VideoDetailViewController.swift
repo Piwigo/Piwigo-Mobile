@@ -43,7 +43,7 @@ class VideoDetailViewController: UIViewController
         setPlaceHolderViewFrame()
 
         // Initialise videoContainerView size with placeHolder size
-        setVideoSize(nil)
+        configVideoViews()
         
         // Initialise video controls
         videoControls.isHidden = true
@@ -80,6 +80,8 @@ class VideoDetailViewController: UIViewController
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+
+        // Animate change of view size and reposition video
         coordinator.animate(alongsideTransition: { [self] context in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
@@ -90,8 +92,10 @@ class VideoDetailViewController: UIViewController
             // Set place holder view frame for this orientation
             setPlaceHolderViewFrame()
             
-            // Set video container and scrollView for this orientation
-            setVideoSize(videoSize)
+            // Update scale, insets and offsets
+            if videoSize != nil {
+                configScrollView()
+            }
         })
     }
 
@@ -137,24 +141,21 @@ class VideoDetailViewController: UIViewController
                                        width: imageWidth, height: imageHeight)
     }
     
-    func setVideoSize(_ size: CGSize?) {
-        // Remember video duration and size for future use
-        videoSize = size
-        
+    func configVideoViews() {
         // Set video container view size
-        videoContainerView.frame.size = size ?? placeHolderView.frame.size
-        videoContainerWidthConstraint.constant = size?.width ?? placeHolderView.frame.width
-        videoContainerHeightConstraint.constant = size?.height ?? placeHolderView.frame.height
+        videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
+        videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
+        videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
 
         // Set scroll view content size
-        scrollView.contentSize = size ?? placeHolderView.frame.size
+        scrollView.contentSize = videoSize ?? placeHolderView.frame.size
 
         // Prevents scrolling image at minimum scale
         // Will be unlocked when starting zooming
         scrollView.isScrollEnabled = false
 
         // Set scroll view scale and range
-        if size != nil {
+        if videoSize != nil {
             // Set zoom scale and scroll view
             configScrollView()
         }

@@ -223,7 +223,8 @@ class PlayerViewControllerCoordinator: NSObject {
                     let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                     if let parent = playerViewController.parent as? VideoDetailViewController {
                         parent.video?.duration = video.duration
-                        parent.setVideoSize(playerViewController.videoBounds.size)
+                        parent.videoSize = playerViewController.videoBounds.size
+                        parent.configVideoViews()
                         parent.videoControls.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                     } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
@@ -250,7 +251,8 @@ class PlayerViewControllerCoordinator: NSObject {
                         let currentTime = playerViewController.player?.currentTime().seconds ?? 0
                         if let parent = playerViewController.parent as? VideoDetailViewController {
                             parent.video?.duration = self?.video.duration ?? TimeInterval(0)
-                            parent.setVideoSize(playerViewController.videoBounds.size)
+                            parent.videoSize = playerViewController.videoBounds.size
+                            parent.configVideoViews()
                             parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
                         } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
