@@ -249,16 +249,21 @@ extension AlbumViewController
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
-            // Set number of uploads
-            let nber = String(format: "%lu", UInt(nberOfUploads))
-            if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
-               !uploadQueueButton.isHidden,
-               uploadQueueButton.frame != addButton.frame {
-                // Number unchanged -> NOP
-                return
+            if (!NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading) ||
+                ProcessInfo.processInfo.isLowPowerModeEnabled {
+                nberOfUploadsLabel.text = "⚠️"
+            } else {
+                // Set number of uploads
+                let nber = String(format: "%lu", UInt(nberOfUploads))
+                if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
+                   !uploadQueueButton.isHidden,
+                   uploadQueueButton.frame != addButton.frame {
+                    // Number unchanged -> NOP
+                    return
+                }
+                nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
             }
-            nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
-
+            
             // Show button if needed
             showUploadQueueButton()
         } else {
