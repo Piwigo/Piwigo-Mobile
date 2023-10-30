@@ -169,8 +169,8 @@ class VideoDetailViewController: UIViewController
      */
     private func configScrollView() {
         // Initialisation
-        scrollView.isPagingEnabled = false
-        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
+        scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
 
         // Calc new zoom scale range
         scrollView.bounds = view.bounds
@@ -189,13 +189,17 @@ class VideoDetailViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = 2 * maxScale
         debugPrint("••> Did reset scrollView scale: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
         debugPrint("    Inset : \(scrollView.contentInset)")
 
         // Next line calls scrollViewDidZoom() if zoomScale has changed
-        scrollView.zoomScale = minScale * zoomFactor
-        updateScrollViewInset()
+        let newZoomScale = minScale * zoomFactor
+        if scrollView.zoomScale != newZoomScale {
+            scrollView.zoomScale = newZoomScale
+        } else {
+            updateScrollViewInset()
+        }
     }
     
     /// Called when the PlayerViewController is ready
@@ -206,17 +210,19 @@ class VideoDetailViewController: UIViewController
         // Center video horizontally in scrollview
         let videoWidth = videoContainerView.bounds.size.width * scrollView.zoomScale
         let horizontalSpace = max(0, (view.bounds.width - videoWidth) / 2)
-        if scrollView.contentInset.left != horizontalSpace {
-            scrollView.contentInset.left = horizontalSpace
-            scrollView.contentInset.right = horizontalSpace
+        scrollView.contentInset.left = horizontalSpace
+        scrollView.contentInset.right = horizontalSpace
+        if horizontalSpace > 0 {
+            scrollView.contentOffset.x = -horizontalSpace
         }
-        
+
         // Center image vertically  in scrollview
         let videoHeight = videoContainerView.bounds.size.height * scrollView.zoomScale
         let verticalSpace = max(0, (view.bounds.height - videoHeight) / 2 )
-        if scrollView.contentInset.top != verticalSpace {
-            scrollView.contentInset.top = verticalSpace
-            scrollView.contentInset.bottom = verticalSpace
+        scrollView.contentInset.top = verticalSpace
+        scrollView.contentInset.bottom = verticalSpace
+        if verticalSpace > 0 {
+            scrollView.contentOffset.y = -verticalSpace
         }
 
         // Show video with controls
@@ -298,6 +304,7 @@ extension VideoDetailViewController: UIScrollViewDelegate
                     imageVC.didTapOnce()
                 }
             }
+            // Keep video centred
             updateScrollViewInset()
         }
     }
@@ -313,6 +320,8 @@ extension VideoDetailViewController: UIScrollViewDelegate
             updateScrollViewInset()
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
+            updateScrollViewInset()
+        } else {
             updateScrollViewInset()
         }
     }

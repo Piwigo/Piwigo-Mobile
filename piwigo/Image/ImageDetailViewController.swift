@@ -149,8 +149,8 @@ class ImageDetailViewController: UIViewController
         guard let imageSize = imageView?.image?.size else { return }
 
         // Initialisation
-        scrollView.isPagingEnabled = false
-        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
+        scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
 
         // Calc new zoom scale range
         scrollView.bounds = view.bounds
@@ -169,13 +169,17 @@ class ImageDetailViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = 2 * maxScale
         debugPrint("••> Did reset scrollView scale: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
         debugPrint("    Inset : \(scrollView.contentInset)")
 
         // Next line calls scrollViewDidZoom() if zoomScale has changed
-        scrollView.zoomScale = minScale * zoomFactor
-        updateScrollViewInset()
+        let newZoomScale = minScale * zoomFactor
+        if scrollView.zoomScale != newZoomScale {
+            scrollView.zoomScale = newZoomScale
+        } else {
+            updateScrollViewInset()
+        }
     }
     
     private func updateScrollViewInset() {
@@ -192,13 +196,19 @@ class ImageDetailViewController: UIViewController
         let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
+        if horizontalSpace > 0 {
+            scrollView.contentOffset.x = -horizontalSpace
+        }
         
         // Center image vertically
         let imageHeight = imageSize.height * scrollView.zoomScale
         let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
-
+        if verticalSpace > 0 {
+            scrollView.contentOffset.y = -verticalSpace
+        }
+        
         debugPrint("••> Did updateScrollViewInset: ")
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
@@ -274,6 +284,7 @@ extension ImageDetailViewController: UIScrollViewDelegate
                     imageVC.didTapOnce()
                 }
             }
+            // Keep image centred
             updateScrollViewInset()
         }
     }
@@ -289,6 +300,8 @@ extension ImageDetailViewController: UIScrollViewDelegate
             updateScrollViewInset()
         } else if scale > scrollView.maximumZoomScale {
             scrollView.zoomScale = scrollView.maximumZoomScale
+            updateScrollViewInset()
+        } else {
             updateScrollViewInset()
         }
     }
