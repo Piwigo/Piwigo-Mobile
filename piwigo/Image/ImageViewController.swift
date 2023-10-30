@@ -252,20 +252,38 @@ class ImageViewController: UIViewController {
                 print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
                     DispatchQueue.main.async {
-                        // Enable buttons
-                        if let vcs = self.pageViewController?.viewControllers as? [ImageDetailViewController],
-                           let pvc = vcs.first(where: {$0.imageData.pwgID == imageID}) {
-                            // Update image data
-                            let index = pvc.imageIndex
-                            pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
-                            if pvc.imageData.isFault {
-                                // The album is not fired yet.
-                                pvc.imageData.willAccessValue(forKey: nil)
-                                pvc.imageData.didAccessValue(forKey: nil)
+                        // Look for the corresponding view controller
+                        guard let vcs = self.pageViewController?.viewControllers else { return }
+                        for vc in vcs {
+                            if let pvc = vc as? ImageDetailViewController,
+                               pvc.imageData.pwgID == imageID {
+                                // Update image data
+                                let index = pvc.imageIndex
+                                pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
+                                if pvc.imageData.isFault {
+                                    // The album is not fired yet.
+                                    pvc.imageData.willAccessValue(forKey: nil)
+                                    pvc.imageData.didAccessValue(forKey: nil)
+                                }
+                                // Update navigation bar and enable buttons
+                                self.updateNavBar()
+                                self.setEnableStateOfButtons(true)
+                                break
+                            } else if let pvc = vc as? VideoDetailViewController,
+                                      pvc.imageData.pwgID == imageID {
+                                // Update image data
+                                let index = pvc.imageIndex
+                                pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
+                                if pvc.imageData.isFault {
+                                    // The album is not fired yet.
+                                    pvc.imageData.willAccessValue(forKey: nil)
+                                    pvc.imageData.didAccessValue(forKey: nil)
+                                }
+                                // Update navigation bar and enable buttons
+                                self.updateNavBar()
+                                self.setEnableStateOfButtons(true)
+                                break
                             }
-                            // Update navigation bar
-                            self.updateNavBar()
-                            self.setEnableStateOfButtons(true)
                         }
                     }
                 } failure: { error in
