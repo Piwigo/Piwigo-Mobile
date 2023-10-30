@@ -35,37 +35,46 @@ class ImageDetailViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-                
-        // Display thumbnail image which should be in cache
-        let placeHolder = UIImage(named: "unknownImage")!
-        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-
-        // Get high-resolution image from cache or download it
+        
+        // Get high-resolution image size
         let viewSize = view.bounds.size
         let scale = view.traitCollection.displayScale
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         if imageData.isVideo, previewSize == .fullRes {
             previewSize = .xxLarge
         }
-        imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
-        if let imageURL = self.imageURL {
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                         fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                         placeHolder: placeHolder) { fractionCompleted in
-                DispatchQueue.main.async {
-                    // Show download progress
-                    self.progressView.progress = fractionCompleted
-                }
-            } completion: { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
-                DispatchQueue.main.async {
-                    // Hide progress view
-                    self.progressView.isHidden = true
-                    // Replace thumbnail with high-resolution image
-                    self.setImageView(with: cachedImage)
-                }
-            } failure: { _ in }
+        
+        // Check if we already have the high-resolution image in cache
+        let wantedImage = imageData.cachedThumbnail(ofSize: previewSize)
+        if wantedImage == nil {
+            // Display thumbnail image which should be in cache
+            let placeHolder = UIImage(named: "unknownImage")!
+            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            
+            // Download high-resolution image
+            imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
+            if let imageURL = self.imageURL {
+                ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                             fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                             placeHolder: placeHolder) { fractionCompleted in
+                    DispatchQueue.main.async {
+                        // Show download progress
+                        self.progressView.progress = fractionCompleted
+                    }
+                } completion: { cachedImageURL in
+                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
+                    DispatchQueue.main.async {
+                        // Hide progress view
+                        self.progressView.isHidden = true
+                        // Replace thumbnail with high-resolution image
+                        self.setImageView(with: cachedImage)
+                    }
+                } failure: { _ in }
+            }
+        } else {
+            // Show high-resolution image in cache
+            setImageView(with: wantedImage!)
         }
         
         // Register palette changes
