@@ -155,7 +155,9 @@ class ExternalDisplayViewController: UIViewController {
         imageView.frame = CGRect(origin: .zero, size: image.size)
         imageView.layoutIfNeeded()
         UIView.transition(with: imageView, duration: 0.5,
-                          options: .transitionCrossDissolve) { }
+                          options: .transitionCrossDissolve) {
+            self.albumVideoControlsDelegate?.hideVideoControls()
+        }
         completion: { [unowned self] _ in
             // Show progress view
             self.progressView.isHidden = false
