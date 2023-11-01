@@ -154,8 +154,8 @@ extension ImagesGetInfo {
             self.datePosted = dateFormatter.string(from: Date())
         }
         if self.dateCreated == nil {
-            // Adopts the posted date when the creation date is unknown.
-            self.dateCreated = self.datePosted
+            // Adopts the oldest date when the creation date is unknown.
+            self.dateCreated = "1900-01-01 00:00:00"
         }
         if self.privacyLevel == nil { self.privacyLevel = "0" }
         if self.tags == nil { self.tags = [TagProperties]() }
