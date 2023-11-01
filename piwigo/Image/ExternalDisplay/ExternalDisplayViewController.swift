@@ -144,7 +144,7 @@ class ExternalDisplayViewController: UIViewController {
         } failure: { _ in
             DispatchQueue.main.async {
                 self.progressView.progress = 1.0
-                self.presentFinalImage(placeHolder)
+                self.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
             }
         }
     }
