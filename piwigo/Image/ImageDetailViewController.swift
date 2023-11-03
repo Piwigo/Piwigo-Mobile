@@ -74,7 +74,8 @@ class ImageDetailViewController: UIViewController
             }
         } else {
             // Show high-resolution image in cache
-            setImageView(with: wantedImage!)
+            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: viewSize, scale: scale)
+            setImageView(with: cachedImage)
         }
         
         // Register palette changes
