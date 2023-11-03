@@ -1881,7 +1881,6 @@
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
 				AD8ACDBC29824CD10055943C /* Download */,
-				ADD77EF32A1D0B5D00F8C779 /* ExternalDisplay */,
 			);
 			path = Image;
 			sourceTree = "<group>";
@@ -2039,6 +2038,7 @@
 				D8BDCB5F1A6F6B4200D106A8 /* Album */,
 				ADE535901F65C01000372CBD /* Image */,
 				AD7E9AE52A6D7A3D0079BE8F /* Video */,
+				ADD77EF32A1D0B5D00F8C779 /* ExternalDisplay */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
 				ADC339FB26A7EC8500173F8A /* In-App Intents */,
