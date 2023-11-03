@@ -45,8 +45,7 @@ class VideoDetailViewController: UIViewController
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
         
-        // Initialise video controls
-        videoControls.isHidden = true
+        // Initialise video controls delegate
         videoControls.videoControlsDelegate = self
 
         // Register palette changes

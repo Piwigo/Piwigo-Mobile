@@ -171,6 +171,7 @@
 		AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD61D3132571598000B8DEA0 /* HelpViewController.swift */; };
 		AD62CC8426828CD400CA66C5 /* Data+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23525CF07D8000EE016 /* Data+AppTools.swift */; };
 		AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23325CF024A000EE016 /* URL+AppTools.swift */; };
+		AD63BB142AF2BED50057598A /* AlbumViewController+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD63BB132AF2BED50057598A /* AlbumViewController+Video.swift */; };
 		AD64ED2C27946C2500687793 /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */; };
 		AD659806297D98BB002A61D8 /* ImageDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD659805297D98BB002A61D8 /* ImageDownload.swift */; };
 		AD673C1A2A4B80B40080BC0B /* PwgSession+Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD673C192A4B80B40080BC0B /* PwgSession+Session.swift */; };
@@ -703,6 +704,7 @@
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpViewController.storyboard; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		AD63BB132AF2BED50057598A /* AlbumViewController+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Video.swift"; sourceTree = "<group>"; };
 		AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		AD659805297D98BB002A61D8 /* ImageDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownload.swift; sourceTree = "<group>"; };
 		AD673C192A4B80B40080BC0B /* PwgSession+Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Session.swift"; sourceTree = "<group>"; };
@@ -1413,6 +1415,7 @@
 				ADC69F1A285A4C30009BF9AF /* AlbumViewController+Favorites.swift */,
 				ADBABA352847F4FF00EF39B0 /* AlbumViewController+Search.swift */,
 				AD98FB952843A2F100F6C0C5 /* AlbumViewController+Tagged.swift */,
+				AD63BB132AF2BED50057598A /* AlbumViewController+Video.swift */,
 				AD92AD942A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift */,
 			);
 			path = Extensions;
@@ -2941,6 +2944,7 @@
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
 				AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */,
 				ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */,
+				AD63BB142AF2BED50057598A /* AlbumViewController+Video.swift in Sources */,
 				AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */,
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,

@@ -26,7 +26,8 @@ extension AlbumViewController: AlbumVideoControlsDelegate
             var constraints = [NSLayoutConstraint]()
             constraints.append(NSLayoutConstraint.constraintCenterVerticalView(videoControlsView)!)
             constraints.append(NSLayoutConstraint.constraintView(videoControlsView, toHeight: 40)!)
-            constraints.append(NSLayoutConstraint.constraintView(fromBottom: videoControlsView, amount: 40)!)
+            constraints.append(NSLayoutConstraint.constraintView(fromBottom: videoControlsView,
+                                                                 amount: kRadius)!)
             
             let isCompactRegular = view.traitCollection.horizontalSizeClass == .compact &&
                                     view.traitCollection.verticalSizeClass == .regular
@@ -38,8 +39,12 @@ extension AlbumViewController: AlbumVideoControlsDelegate
             view.addConstraints(constraints)
         }
 
-        // Configure controls
-        videoControlsView?.config(currentTime: currentTime, duration: duration)
+        // Hide buttons and configure controls
+        hideHomeAlbumButtonCompletion {
+            self.hideAddButtonCompletion {
+                self.videoControlsView?.config(currentTime: currentTime, duration: duration)
+            }
+        }
     }
     
     func configVideoControlsConstraints() {
@@ -86,7 +91,15 @@ extension AlbumViewController: AlbumVideoControlsDelegate
     }
 
     func hideVideoControls() {
+        // Remove video controls
         videoControlsView?.removeFromSuperview()
         videoControlsView = nil
+        
+        // Unhide buttons if needed
+        if addButton.isHidden {
+            showAddButtonCompletion {
+                self.showHomeAlbumButtonIfNeeded()
+            }
+        }
     }
 }

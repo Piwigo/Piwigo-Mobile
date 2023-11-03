@@ -136,6 +136,31 @@ extension AlbumViewController
             }
         })
     }
+    
+    func showAddButtonCompletion(_ completion: @escaping () -> Void) {
+        // Show Add button
+        addButton.layer.opacity = 0.0
+        addButton.isHidden = false
+
+        // Show Add button
+        UIView.animate(withDuration: 0.2, animations: { [self] in
+            // Progressive disappearance
+            addButton.layer.opacity = 1.0
+        }) { finished in
+            completion()
+        }
+    }
+    
+    func hideAddButtonCompletion(_ completion: @escaping () -> Void) {
+        // Hide Add button
+        UIView.animate(withDuration: 0.2, animations: { [self] in
+            // Progressive disappearance
+            addButton.layer.opacity = 0.0
+        }) { [self] finished in
+            addButton.isHidden = true
+            completion()
+        }
+    }
 
 
     // MARK: - "Upload Queue" button above collection view

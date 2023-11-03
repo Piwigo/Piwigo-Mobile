@@ -14,9 +14,7 @@ class VideoHUD: UIView {
         didSet {
             guard status != oldValue else { return }
 //            label.setTitle(status.debugDescription, for: .normal)
-            if status.contains(.embeddedInline) {
-                button.isHidden = status.contains(.readyForDisplay)
-            } else if status.contains(.externalDisplayActive) {
+            if status.contains(.externalDisplayActive) {
                 label.isHidden = status.contains(.readyForDisplay)
             }
         }
@@ -39,36 +37,36 @@ class VideoHUD: UIView {
         return label
     }()
 
-    private lazy var button: UIButton = {
-        var button: UIButton
-        if #available(iOS 15, *) {
-            var filled = UIButton.Configuration.filled()
-            filled.title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-            filled.titleAlignment = .center
-            filled.buttonSize = .medium
-            filled.baseBackgroundColor = UIColor(white: 0.0, alpha: 0.35)
-            button = UIButton(configuration: filled)
-            button.tintColor = .white
-        } else {
-            // Fallback to previous version
-            button = UIButton(type: .custom)
-            button.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
-            button.layer.cornerRadius = 5
-            button.layer.masksToBounds = false
-            button.layer.opacity = 0.0
-            button.layer.shadowOpacity = 0.8
-            button.setTitle(" " + NSLocalizedString("loadingHUD_label", comment: "Loading…") + " ", for: .normal)
-            button.setTitleColor(.white, for: .normal)
-            button.backgroundColor = UIColor(white: 0.0, alpha: 0.35)
-            button.setNeedsLayout()
-        }
-        button.sizeToFit()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(button)
-        NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor)
-            ])
-        return button
-    }()
+//    private lazy var button: UIButton = {
+//        var button: UIButton
+//        if #available(iOS 15, *) {
+//            var filled = UIButton.Configuration.filled()
+//            filled.title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+//            filled.titleAlignment = .center
+//            filled.buttonSize = .medium
+//            filled.baseBackgroundColor = UIColor(white: 0.0, alpha: 0.35)
+//            button = UIButton(configuration: filled)
+//            button.tintColor = .white
+//        } else {
+//            // Fallback to previous version
+//            button = UIButton(type: .custom)
+//            button.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
+//            button.layer.cornerRadius = 5
+//            button.layer.masksToBounds = false
+//            button.layer.opacity = 0.0
+//            button.layer.shadowOpacity = 0.8
+//            button.setTitle(" " + NSLocalizedString("loadingHUD_label", comment: "Loading…") + " ", for: .normal)
+//            button.setTitleColor(.white, for: .normal)
+//            button.backgroundColor = UIColor(white: 0.0, alpha: 0.35)
+//            button.setNeedsLayout()
+//        }
+//        button.sizeToFit()
+//        button.translatesAutoresizingMaskIntoConstraints = false
+//        addSubview(button)
+//        NSLayoutConstraint.activate([
+//            button.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            button.centerYAnchor.constraint(equalTo: centerYAnchor)
+//            ])
+//        return button
+//    }()
 }

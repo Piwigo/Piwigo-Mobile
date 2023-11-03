@@ -489,7 +489,9 @@ class PlayerViewControllerCoordinator: NSObject {
         let before = CMTime(seconds: max(0, time - 0.1), preferredTimescale: scale)
         let after = CMTime(seconds: min(video.duration, time + 0.1), preferredTimescale: scale)
         player.seek(to: value, toleranceBefore: before, toleranceAfter: after) { [weak self] successs in
-            if successs == false { return }
+            if successs == false {
+                return
+            }
             self?.playerViewControllerIfLoaded?.player = player
         }
     }

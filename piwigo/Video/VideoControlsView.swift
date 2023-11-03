@@ -19,6 +19,7 @@ class VideoControlsView: UIVisualEffectView {
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var timeSlider: UISlider!
     @IBOutlet weak var endLabel: UILabel!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -88,6 +89,12 @@ class VideoControlsView: UIVisualEffectView {
         
         // Set slider value
         setCurrentTime(currentTime)
+        
+        // Hide loading indicator, show labels and time slider
+        loadingIndicator.isHidden = true
+        startLabel.isHidden = false
+        endLabel.isHidden = false
+        timeSlider.isHidden = false
         
         // Show/hide slider and labels
         if let rootVC = window?.topMostViewController() as? ImageViewController {
