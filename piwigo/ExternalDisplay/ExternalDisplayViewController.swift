@@ -109,44 +109,52 @@ class ExternalDisplayViewController: UIViewController {
         // Store image URL for being able to pause the download
         self.imageURL = imageURL
         
-        // Present the preview image file if available
-        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
-            // Is this file of sufficient resolution?
-            if previewSize >= optimumSize {
-                // Display preview image
-                presentFinalImage(previewImage)
-                return
-            } else {
-                // Present preview image and download file of greater resolution
-                presentTemporaryImage(previewImage)
-            }
-        } else {
-            // Thumbnail image should be available in cache
-            presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-        }
-
-        // Image of right size for that display
+        // Check if we already have the high-resolution image in cache
         let screenSize = view.bounds.size
         let scale = view.traitCollection.displayScale
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
-                                     fromServer: serverID, fileSize: imageData.fileSize,
-                                     placeHolder: placeHolder) { fractionCompleted in
-            DispatchQueue.main.async {
-                self.progressView.progress = fractionCompleted
+        let wantedImage = imageData.cachedThumbnail(ofSize: optimumSize)
+        if wantedImage == nil {
+            // Present the preview image file if available
+            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+            if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
+                // Is this file of sufficient resolution?
+                if previewSize >= optimumSize {
+                    // Display preview image
+                    presentFinalImage(previewImage)
+                    return
+                } else {
+                    // Present preview image and download file of greater resolution
+                    presentTemporaryImage(previewImage)
+                }
+            } else {
+                // Thumbnail image should be available in cache
+                presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
             }
-        } completion: { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize, scale: scale)
-            DispatchQueue.main.async {
-                self.progressView.progress = 1.0
-                self.presentFinalImage(cachedImage)
+
+            // Image of right size for that display
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
+                                         fromServer: serverID, fileSize: imageData.fileSize,
+                                         placeHolder: placeHolder) { fractionCompleted in
+                DispatchQueue.main.async {
+                    self.progressView.progress = fractionCompleted
+                }
+            } completion: { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.presentFinalImage(cachedImage)
+                }
+            } failure: { _ in
+                DispatchQueue.main.async {
+                    self.progressView.progress = 1.0
+                    self.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+                }
             }
-        } failure: { _ in
-            DispatchQueue.main.async {
-                self.progressView.progress = 1.0
-                self.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-            }
+        } else {
+            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: screenSize, scale: scale)
+            self.progressView.progress = 1.0
+            self.presentFinalImage(cachedImage)
         }
     }
     
