@@ -60,14 +60,18 @@ public class User: NSManagedObject {
     
     func addUploadRightsToAlbum(withID ID: Int32) {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
-        setOfIDs.insert(ID)
-        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+        if setOfIDs.insert(ID) == (true, ID) {
+            // ID added to set of album IDs
+            self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+        }
     }
     
     func removeUploadRightsToAlbum(withID ID: Int32) {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
-        setOfIDs.remove(ID)
-        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+        if setOfIDs.remove(ID) == ID {
+            // ID removed from the set of album IDs
+            self.uploadRights = String(setOfIDs.compactMap({"\($0),"}).reduce("", +).dropLast(1))
+        }
     }
 }
 
