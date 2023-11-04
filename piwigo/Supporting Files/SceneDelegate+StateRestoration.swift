@@ -66,9 +66,10 @@ extension SceneDelegate {
         }
         
         // Restore image preview if performFetch() has been called and an image is available
-        if subAlbumVC != nil,
+        if subAlbumVC != nil, subAlbumVC?.categoryId != 0,
            let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
-           let images = subAlbumVC.images.fetchedObjects, images.count > 1 {
+           let images = subAlbumVC.images.fetchedObjects, images.count > 0,
+           (subAlbumVC.imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
             // Scroll collection view to cell position
             let indexPath = IndexPath(item: imageIndex, section: 1)
             subAlbumVC.imageOfInterest = indexPath
