@@ -358,6 +358,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Inform Upload Manager to pause activities
+        if window?.rootViewController is DataMigrationViewController {
+            // User closes app during a database migration ► UploadManager unavailable
+            return
+        }
         UploadManager.shared.isPaused = true
     }
 
