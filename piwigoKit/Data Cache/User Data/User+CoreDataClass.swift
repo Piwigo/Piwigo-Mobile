@@ -62,7 +62,11 @@ public class User: NSManagedObject {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
         if setOfIDs.insert(ID) == (true, ID) {
             // ID added to set of album IDs
-            self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+            if setOfIDs.isEmpty {
+                self.uploadRights = ""
+            } else {
+                self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+            }
         }
     }
     
@@ -70,7 +74,11 @@ public class User: NSManagedObject {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
         if setOfIDs.remove(ID) == ID {
             // ID removed from the set of album IDs
-            self.uploadRights = String(setOfIDs.compactMap({"\($0),"}).reduce("", +).dropLast(1))
+            if setOfIDs.isEmpty {
+                self.uploadRights = ""
+            } else {
+                self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+            }
         }
     }
 }
