@@ -29,8 +29,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     private var doneBarButton: UIBarButtonItem?
 
 
-// MARK: - View Lifecycle
-
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -105,8 +104,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - Editing mode
-    
+    // MARK: - Editing mode
     @objc func stopEditingOptions() {
         // Replace "Done" button with "Edit" button
         navigationItem.setRightBarButton(editBarButton, animated: true)
@@ -119,7 +117,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
         var title = "", text = ""
         switch section {
@@ -146,8 +144,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - UITableView - Rows
-    
+    // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -196,7 +193,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -266,8 +263,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - Utilities
-    
+    // MARK: - Utilities
     private func setDataSourceFromSettings() {
         
         // Empty lists

@@ -512,7 +512,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .albums:
             nberOfRows = 4
         case .images:
-            nberOfRows = 6
+            nberOfRows = 5
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -520,7 +520,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
         case .privacy:
-            nberOfRows = 2
+            nberOfRows = 3
         case .appearance:
             nberOfRows = 1
         case .cache:
@@ -803,22 +803,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImagePreviewSize"
-                tableViewCell = cell
-                
-            case 5 /* Share Image Metadata Options */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
-                // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                }
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "defaultShareOptions"
                 tableViewCell = cell
                     
             default:
@@ -1143,6 +1127,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "clearClipboard"
                 tableViewCell = cell
+                
+            case 2 /* Share Image Metadata Options */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
+                }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultShareOptions"
+                tableViewCell = cell
 
             default:
                 break
@@ -1366,8 +1366,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */,
-                 5 /* Share Image Metadata Options */:
+                 4 /* Default Size of Previewed Images */:
                 result = true
             default:
                 result = false
@@ -1614,10 +1613,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
-            case 5 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }
@@ -1673,6 +1668,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController else { return }
                 delayVC.delegate = self
                 navigationController?.pushViewController(delayVC, animated: true)
+            case 2 /* Share image metadata options */:
+                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
 
             default:
                 break

@@ -1734,6 +1734,9 @@
 				AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */,
 				ADF3AE5B2803340D009F5931 /* ClearClipboardViewController.swift */,
 				ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */,
+				AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */,
+				AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */,
+				ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -1745,9 +1748,6 @@
 				ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */,
 				ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */,
 				ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */,
-				AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */,
-				AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */,
-				ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */,
 			);
 			path = Images;
 			sourceTree = "<group>";
