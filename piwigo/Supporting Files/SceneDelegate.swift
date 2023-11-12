@@ -348,7 +348,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         sceneDelegate.addPrivacyProtection()
                     }
                 } else if let sceneDelegate = scene.delegate as? ExternalDisplaySceneDelegate,
-                          let window = sceneDelegate.windows[scene.session.persistentIdentifier] {
+                          let window = sceneDelegate.window {
                     sceneDelegate.addPrivacyProtection(to: window)
                 }
             }

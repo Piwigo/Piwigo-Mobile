@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -164,10 +165,20 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="2Mi-Aw-Dsi">
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vzA-8o-vxi">
+                                <rect key="frame" x="164.66666666666666" y="408" width="64" height="62.666666666666686"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="64" id="LZh-ax-Nsh"/>
+                                    <constraint firstAttribute="height" constant="64" id="mLf-BJ-Ubz"/>
+                                </constraints>
+                                <imageReference key="image" image="airplayvideo" catalog="system" symbolScale="default"/>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                            </imageView>
+                            <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="2Mi-Aw-Dsi">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <subviews>
-                                    <view hidden="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp0-5n-5Xl">
+                                    <view hidden="YES" opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp0-5n-5Xl">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -275,8 +286,10 @@
                         <constraints>
                             <constraint firstItem="jGl-s0-Ya6" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="IL4-f7-WBL"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="trailing" secondItem="Tce-EN-AEL" secondAttribute="trailing" id="LrZ-TT-ph1"/>
+                            <constraint firstItem="vzA-8o-vxi" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="MI5-Wz-Yl0"/>
                             <constraint firstItem="jGl-s0-Ya6" firstAttribute="top" secondItem="6ei-bj-KBT" secondAttribute="bottom" constant="12" id="OTJ-rA-8xU"/>
                             <constraint firstItem="6ei-bj-KBT" firstAttribute="centerX" secondItem="qaX-ya-55M" secondAttribute="centerX" id="Pp0-oD-2h2"/>
+                            <constraint firstItem="vzA-8o-vxi" firstAttribute="centerY" secondItem="qaX-ya-55M" secondAttribute="centerY" id="RrC-fs-kKe"/>
                             <constraint firstItem="jGl-s0-Ya6" firstAttribute="leading" secondItem="qaX-ya-55M" secondAttribute="leading" constant="20" id="XYM-L7-8N0"/>
                             <constraint firstItem="2Mi-Aw-Dsi" firstAttribute="bottom" secondItem="Tce-EN-AEL" secondAttribute="bottom" id="amf-ob-v9h"/>
                             <constraint firstItem="qaX-ya-55M" firstAttribute="bottom" secondItem="jGl-s0-Ya6" secondAttribute="bottom" constant="12" id="cFk-mI-BSt"/>
@@ -302,6 +315,7 @@
                         <outlet property="descContainer" destination="6ei-bj-KBT" id="CUm-3R-oUJ"/>
                         <outlet property="placeHolderView" destination="gQA-Pk-mNI" id="edX-ek-MmJ"/>
                         <outlet property="scrollView" destination="2Mi-Aw-Dsi" id="NX5-Dj-GPO"/>
+                        <outlet property="videoAirplay" destination="vzA-8o-vxi" id="Vkh-ir-2AT"/>
                         <outlet property="videoContainerHeightConstraint" destination="rQE-Sn-Jir" id="W1B-rT-cnG"/>
                         <outlet property="videoContainerView" destination="kp0-5n-5Xl" id="QtP-On-yCH"/>
                         <outlet property="videoContainerWidthConstraint" destination="3Ko-OV-rN3" id="Owz-Hh-Y9D"/>
@@ -314,6 +328,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="airplayvideo" catalog="system" width="128" height="102"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

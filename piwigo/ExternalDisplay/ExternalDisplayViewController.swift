@@ -9,17 +9,22 @@
 import UIKit
 import piwigoKit
 
-protocol AlbumVideoControlsDelegate: NSObjectProtocol {
+protocol VideoDetailDelegate: NSObjectProtocol {
     func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
     func setCurrentTime(_ value: Double)
-    func hideVideoControls()
 }
 
 class ExternalDisplayViewController: UIViewController {
     
-    weak var albumVideoControlsDelegate: AlbumVideoControlsDelegate?
+    weak var videoDetailDelegate: VideoDetailDelegate?
 
-    var imageData: Image?
+    var imageData: Image? {
+        didSet {
+            if oldValue?.pwgID != imageData?.pwgID {
+                video = imageData?.video
+            }
+        }
+    }
     var video: Video? {
         didSet {
             // Remove currently displayed video if needed
@@ -37,17 +42,15 @@ class ExternalDisplayViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var videoContainerView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
-    @IBOutlet weak var helpLabel: UILabel!
     
 
     // MARK: - View Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        helpLabel.text = NSLocalizedString("help_externalDisplay", comment: "Tap the image you wish to display here.")
         imageView.layoutIfNeeded()   // Ensure imageView in its final size
         
-        // Display image/video
+        // Configure image or video
         configImage()
     }
     
@@ -61,36 +64,18 @@ class ExternalDisplayViewController: UIViewController {
         }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-
-        // Remove displayed video player
-        albumVideoControlsDelegate?.hideVideoControls()
-        if let video = video {
-            playbackController.pause(contentOfVideo: video)
-        }
-        playbackController.removeAllEmbeddedViewControllers()
-    }
-
     func configImage() {
         // Check provided image data
-        guard let imageData = imageData else {
-            // Show help message
-            helpLabel.isHidden = false
-            return
-        }
+        guard let imageData = imageData
+        else { return }
         
-        // Hide help message
-        helpLabel.isHidden = true
- 
         // Pause download if needed
         if let imageURL = imageURL {
             ImageSession.shared.pauseDownload(atURL: imageURL)
         }
 
         // Presents video if needed
-        if imageData.isVideo, let video = imageData.video {
-            self.video = video
+        if imageData.isVideo, let video = self.video {
             progressView.isHidden = true
             presentVideo(video)
             return
@@ -105,9 +90,6 @@ class ExternalDisplayViewController: UIViewController {
             // Keep displaying what is presented
             return
         }
-        
-        // Store image URL for being able to pause the download
-        self.imageURL = imageURL
         
         // Check if we already have the high-resolution image in cache
         let screenSize = view.bounds.size
@@ -131,6 +113,9 @@ class ExternalDisplayViewController: UIViewController {
                 // Thumbnail image should be available in cache
                 presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
             }
+
+            // Store image URL for being able to pause the download
+            self.imageURL = imageURL
 
             // Image of right size for that display
             ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
@@ -171,7 +156,6 @@ class ExternalDisplayViewController: UIViewController {
         completion: { [unowned self] _ in
             self.progressView.isHidden = false
             self.videoContainerView.isHidden = true
-            self.albumVideoControlsDelegate?.hideVideoControls()
         })
     }
 
@@ -187,7 +171,6 @@ class ExternalDisplayViewController: UIViewController {
         }, completion: { [unowned self] _ in
             self.progressView.isHidden = true
             self.videoContainerView.isHidden = true
-            self.albumVideoControlsDelegate?.hideVideoControls()
         })
     }
     
@@ -199,22 +182,21 @@ class ExternalDisplayViewController: UIViewController {
             playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
         }
         // Hide image and show video
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: videoContainerView, duration: 0.5,
                           options: .transitionCrossDissolve,
                           animations: {
             self.imageView.image = nil
-        }, completion: { [unowned self] _ in
             self.videoContainerView.isHidden = false
         })
     }
     
     func config(currentTime: TimeInterval, duration: TimeInterval) {
         video?.duration = duration
-        albumVideoControlsDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
+        videoDetailDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
     }
     
     func setCurrentTime(_ value: Double) {
-        albumVideoControlsDelegate?.setCurrentTime(value)
+        videoDetailDelegate?.setCurrentTime(value)
     }
 }
 

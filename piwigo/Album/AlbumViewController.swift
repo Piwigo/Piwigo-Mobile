@@ -35,7 +35,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var imagesCollection: UICollectionView?
     var searchController: UISearchController?
     var imageOfInterest = IndexPath(item: 0, section: 1)
-    var videoControlsView: VideoControlsView!
     
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
@@ -702,11 +701,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
             }
-            
-            // Update video controls view constraints if needed
-            if videoControlsView != nil {
-                configVideoControlsConstraints()
-            }
         })
     }
 
@@ -1358,65 +1352,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 return
             }
             
-            // Display the image in fullscreen mode?
-            if AppVars.shared.inSingleDisplayMode {
+            // Add category to list of recent albums
+            let userInfo = ["categoryId": NSNumber(value: categoryId)]
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
-                // Add category to list of recent albums
-                let userInfo = ["categoryId": NSNumber(value: categoryId)]
-                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-                // Selection mode not active => display full screen image
-                let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-                guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else {
-                    fatalError("!!! NO ImageViewController !!!")
-                }
-                imageDetailView.imageIndex = indexPath.item
-                imageDetailView.categoryId = categoryId
-                imageDetailView.images = images
-                imageDetailView.user = user
-                imageDetailView.imgDetailDelegate = self
-                animatedCell = selectedCell
-                albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
-                cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
-                navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
-
-                // Push ImageDetailView embedded in navigation controller
-                let navController = UINavigationController(rootViewController: imageDetailView)
-                navController.hidesBottomBarWhenPushed = true
-                navController.transitioningDelegate = self
-                navController.modalPresentationStyle = .custom
-                navController.modalPresentationCapturesStatusBarAppearance = true
-                navigationController?.present(navController, animated: true)
-            } else {
-                // Present image on external screen
-                if #available(iOS 13.0, *) {
-                    var wantedRole: UISceneSession.Role!
-                    for scene in UIApplication.shared.connectedScenes {
-                        if #available(iOS 16.0, *) {
-                            wantedRole = .windowExternalDisplayNonInteractive
-                        } else {
-                            // Fallback on earlier versions
-                            wantedRole = .windowExternalDisplay
-                        }
-                        if scene.session.role == wantedRole,
-                           let windowScene = scene as? UIWindowScene,
-                           let imageData = selectedCell.imageData,
-                           let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                            // Configure external view controller
-                            imageVC.imageData = imageData
-                            imageVC.video = imageData.video
-                            imageVC.albumVideoControlsDelegate = self
-                            imageVC.configImage()
-                        }
-                    }
-                }
-                
-                // Shows which image was tapped
-//                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
-//                    oldCell.darkenView.isHidden = true
-//                }
-//                selectedCell.darkenView.isHidden = false
+            // Selection mode not active => display full screen image
+            let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
+            guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else {
+                fatalError("!!! NO ImageViewController !!!")
             }
+            imageDetailView.imageIndex = indexPath.item
+            imageDetailView.categoryId = categoryId
+            imageDetailView.images = images
+            imageDetailView.user = user
+            imageDetailView.imgDetailDelegate = self
+            animatedCell = selectedCell
+            albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+            cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+            navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
+
+            // Push ImageDetailView embedded in navigation controller
+            let navController = UINavigationController(rootViewController: imageDetailView)
+            navController.hidesBottomBarWhenPushed = true
+            navController.transitioningDelegate = self
+            navController.modalPresentationStyle = .custom
+            navController.modalPresentationCapturesStatusBarAppearance = true
+            navigationController?.present(navController, animated: true)
             
             // Remember that user did tap this image
             imageOfInterest = indexPath

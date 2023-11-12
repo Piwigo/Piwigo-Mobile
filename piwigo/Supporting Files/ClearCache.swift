@@ -56,7 +56,7 @@ class ClearCache: NSObject {
                            let imageVC = scene.rootViewController() as? ExternalDisplayViewController {
                             imageVC.imageData = nil
                             imageVC.imageView.image = nil
-                            imageVC.helpLabel.isHidden = false
+                            imageVC.video = nil
                         }
                     }
                     

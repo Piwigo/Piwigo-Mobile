@@ -24,8 +24,8 @@ extension ImageViewController
         // Set button according to status if needed
         var didChangeButton = false
         if let isReady = notification.userInfo?["ready"] as? Bool, isReady {
-            // Hide image and show play/pause button
-            videoPVC.placeHolderView.isHidden = true
+            // Hide place holder image unless the video is presented on an external display
+            videoPVC.placeHolderView.isHidden = AppVars.shared.inSingleDisplayMode
         }
         if let isPlaying = notification.userInfo?["playing"] as? Bool {
             // Set play/pause button according to player status

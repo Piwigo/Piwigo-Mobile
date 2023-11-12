@@ -90,7 +90,7 @@ class ImageViewController: UIViewController {
             }
         } else {
             if let imageDVC = imageDetailViewController(ofImage: imageData, atIndex: index) {
-                pageViewController!.setViewControllers( [imageDVC], direction: .forward, animated: false)
+                pageViewController!.setViewControllers([imageDVC], direction: .forward, animated: false)
             }
         }
         
@@ -213,6 +213,25 @@ class ImageViewController: UIViewController {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.screenBrightnessChanged()
             }
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        // Was this image displayed on the external screen?
+        if #available(iOS 13.0, *) {
+            var wantedRole: UISceneSession.Role!
+            if #available(iOS 16.0, *) {
+                wantedRole = .windowExternalDisplayNonInteractive
+            } else {
+                // Fallback on earlier versions
+                wantedRole = .windowExternalDisplay
+            }
+            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
+                else { return }
+            
+            // Return to basic screen sharing
+            sceneDelegate.window?.windowScene = nil
         }
     }
     
@@ -758,7 +777,6 @@ extension ImageViewController: UIPageViewControllerDataSource
         // Create video detail view
         videoDVC.imageIndex = index
         videoDVC.imageData = imageData
-        videoDVC.video = imageData.video
         return videoDVC
     }
     

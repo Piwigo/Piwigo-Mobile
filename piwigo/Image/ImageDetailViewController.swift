@@ -101,6 +101,48 @@ class ImageDetailViewController: UIViewController
         applyColorPalette()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Should this image be also displayed on the external screen?
+        if #available(iOS 13.0, *) {
+            // Get scene role of external display
+            var wantedRole: UISceneSession.Role!
+            if #available(iOS 16.0, *) {
+                wantedRole = .windowExternalDisplayNonInteractive
+            } else {
+                // Fallback on earlier versions
+                wantedRole = .windowExternalDisplay
+            }
+            
+            // Get scene of external display
+            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
+                  let windowScene = scenes.first as? UIWindowScene
+            else { return }
+                
+            // Add image view to external screen
+            if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+                // Configure external display view controller
+                imageVC.imageData = imageData
+                imageVC.configImage()
+            }
+            else {
+                // Create external display view controller
+                let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
+                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController else {
+                    fatalError("!!! No ExternalDisplayViewController !!!")
+                }
+                imageVC.imageData = imageData
+                
+                // Create window and make it visible
+                let window = UIWindow(windowScene: windowScene)
+                window.rootViewController = imageVC
+                sceneDelegate.initExternalDisplay(with: window)
+            }
+        }
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 

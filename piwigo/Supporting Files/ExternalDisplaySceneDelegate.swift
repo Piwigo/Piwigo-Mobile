@@ -12,7 +12,7 @@ import piwigoKit
 @available(iOS 13.0, *)
 class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
     
-    var windows = [String : UIWindow]()
+    var window: UIWindow?
     var privacyView: UIView?
     
     // MARK: - Connecting and Disconnecting scenes
@@ -34,67 +34,65 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Enable management of external displays
         AppVars.shared.inSingleDisplayMode = false
         
+        // Get scenes of the main display (active and not yet active)
+        let existingScenes = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
+        
+        // Get the root view controller of the first scene
+        guard let mainScene = existingScenes.first as? UIWindowScene,
+              let rootVC = mainScene.rootViewController(),
+              let navController = rootVC as? UINavigationController,
+              let vc = navController.visibleViewController as? ImageViewController else {
+            // Did not find an image view controller ► Basic screen mirroring
+            self.window?.windowScene = nil
+            return
+        }
+        
         // Add image view to external screen
         let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
         guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController else {
             fatalError("!!! No ExternalDisplayViewController !!!")
         }
-        window.rootViewController = imageVC
-        
-        // Get foreground active scenes of the main display
-        let existingScenes = UIApplication.shared.connectedScenes
-            .filter({$0.session.role == .windowApplication})
-        
-        // Get the root view controller of the first scene
-        // and look for an instance of AlbumViewController embeded in a navigation controller
-        guard let mainScene = existingScenes.first as? UIWindowScene,
-              let rootVC = mainScene.rootViewController(),
-              let navController = rootVC as? UINavigationController,
-              let _ = navController.viewControllers.first as? AlbumViewController else {
-                  // Did not find an album ► Display the ExternalLaunchScreen
-                  initExternalDisplay(for: session.persistentIdentifier, with: window)
-            return
+        imageVC.imageData = vc.imageData
+        if let videoVC = vc.pageViewController?.viewControllers?.first as? VideoDetailViewController,
+           let video = videoVC.video {
+            videoVC.playbackController.remove(contentOfVideo: video)
+            videoVC.placeHolderView.layer.opacity = 0.3
+            videoVC.placeHolderView.isHidden = false
+            videoVC.videoAirplay.isHidden = false
+            imageVC.videoDetailDelegate = videoVC
         }
-        
-        // Determine if an image is presented fullscreen on the device
-        if let vc = navController.visibleViewController as? ImageViewController {
-            // Store image data in external image view controller
-            imageVC.imageData = vc.imageData
-            // Return to the Album/Images collection view
-            vc.navigationController?.dismiss(animated: true)
-        }
-        
+
         // Initialise the external display
-        initExternalDisplay(for: session.persistentIdentifier, with: window)
+        window.rootViewController = imageVC
+        initExternalDisplay(with: window)
         
         // Manages screen resolution changes
         NotificationCenter.default.addObserver(forName: UIScreen.modeDidChangeNotification,
                                                object: nil, queue: nil) { (modeNotice) in
-            for (_, window) in self.windows {
-                if let extScreen = modeNotice.object as? UIScreen, extScreen == window.screen,
-                   let rootVC = window.rootViewController {
-                    rootVC.view.setNeedsLayout()
-                    rootVC.view.layoutSubviews()
-                }
+            if let extScreen = modeNotice.object as? UIScreen, extScreen == window.screen,
+               let rootVC = window.rootViewController {
+                rootVC.view.setNeedsLayout()
+                rootVC.view.layoutSubviews()
             }
         }
     }
     
-    private func initExternalDisplay(for sessionID: String, with window: UIWindow) {
+    func initExternalDisplay(with window: UIWindow) {
         // Blur views if the App is locked
         if AppVars.shared.isAppUnlocked == false {
             // Protect presented login view
             addPrivacyProtection(to: window)
         }
         
-        // Hold and present image in window
-        windows[sessionID] = window
-        window.makeKeyAndVisible()
+        // Hold image in window
+        self.window = window
 
         // Apply transition
         UIView.transition(with: window, duration: 0.5,
-                          options: .transitionCrossDissolve) { }
-        completion: { _ in }
+                          options: .transitionCrossDissolve) {
+            window.makeKeyAndVisible()
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -103,21 +101,47 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
-        
-        // Pause video playback, remove video controls
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        if let rootVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-            rootVC.viewWillDisappear(true)
-        }
 
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
+
+        // Pause video playback and remove video controls
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        if let rootVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+            // Remove displayed video player
+            if let video = rootVC.video {
+                rootVC.playbackController.pause(contentOfVideo: video)
+                rootVC.playbackController.remove(contentOfVideo: video)
+                
+                // Get scenes of the main display (active and not yet active)
+                let existingScenes = UIApplication.shared.connectedScenes
+                    .filter({$0.session.role == .windowApplication})
+                
+                // Get the root view controller of the first scene
+                if let mainScene = existingScenes.first as? UIWindowScene,
+                   let rootVC = mainScene.rootViewController(),
+                   let navController = rootVC as? UINavigationController,
+                   let vc = navController.visibleViewController as? ImageViewController,
+                   let videoVC = vc.pageViewController?.viewControllers?.first as? VideoDetailViewController {
+                    // Add
+                    videoVC.videoAirplay.isHidden = true
+                    videoVC.placeHolderView.layer.opacity = 1
+                    videoVC.placeHolderView.isHidden = true
+                    videoVC.videoContainerView.isHidden = false
+                    videoVC.playbackController.embed(contentOfVideo: video, in: videoVC,
+                                                     containerView: videoVC.videoContainerView)
+                    videoVC.configVideoViews()
+                }
+            }
+        }
     }
     
     func tearDownWindow(for sessionID: String) {
-        guard let window = windows[sessionID] else { return }
+        guard let window = window,
+              window.windowScene?.session.persistentIdentifier == sessionID
+        else { return }
         window.isHidden = true
-        windows[sessionID] = nil
+        self.window = nil
         
         // Disable management of external displays
         AppVars.shared.inSingleDisplayMode = true
