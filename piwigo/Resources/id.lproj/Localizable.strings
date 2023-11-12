@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Memperbarui foto…";
 "editImageDetailsHUD_updatingPlural" = "Memperbarui foto…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Gagal untuk Memperbarui";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
 
 "deleteSingleImage_title" = "Hapus Gambar";
+"deleteSingleVideo_title" = "Hapus Video";
 "deleteSingleImageHUD_deleting" = "Menghapus gambar…";
+"deleteSingleVideoHUD_deleting" = "Deleting Video…";
 "deleteSeveralImagesHUD_deleting" = "Menghapus gambar…";
 "removeSingleImage_title" = "Hapus dari Album";
 "removeSingleImageHUD_removing" = "Menghapus Gambar…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSingleVideoHUD_removing" = "Removing Video…";
+"removeSeveralImagesHUD_removing" = "Removing Photos/Videos…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
+"deleteSingleVideo_message" = "Are you sure you want to delete this video? This cannot be undone!";
 "deleteSeveralImages_title" = "Hapus Gambar";
 "deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
 

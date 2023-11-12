@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Anno";
 "editImageDetailsHUD_updatingSingle" = "Aggiornamento foto…";
 "editImageDetailsHUD_updatingPlural" = "Aggiornamento foto…";
-"help_externalDisplay" = "Toccare l'immagine che si desidera visualizzare qui.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Errore durante l'aggiornamento";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Eliminazione di %@%% completata";
 
 "deleteSingleImage_title" = "Cancella immagine";
+"deleteSingleVideo_title" = "Elimina Video";
 "deleteSingleImageHUD_deleting" = "Eliminazione immagine…";
-"deleteSeveralImagesHUD_deleting" = "Eliminazione delle immagini…";
+"deleteSingleVideoHUD_deleting" = "Eliminazione video…";
+"deleteSeveralImagesHUD_deleting" = "Eliminazione Foto/Video…";
 "removeSingleImage_title" = "Rimuovi dall'album";
 "removeSingleImageHUD_removing" = "Eliminazione immagine…";
-"removeSeveralImagesHUD_removing" = "Rimozione foto…";
+"removeSingleVideoHUD_removing" = "Rimozione Video…";
+"removeSeveralImagesHUD_removing" = "Rimozione foto / video…";
 "deleteSingleImage_message" = "Sei sicuro di voler eliminare questa immagine? L'azione non può essere annullata!";
-"deleteSeveralImages_title" = "Elimina %@ immagini";
-"deleteSeveralImages_message" = "Sei sicuro di voler eliminare le immagini selezionate %@? L'azione non può essere annullata!";
+"deleteSingleVideo_message" = "Sei sicuro di voler eliminare questo video? Questo non può essere annullato!";
+"deleteSeveralImages_title" = "Elimina %@ Foto/Video";
+"deleteSeveralImages_message" = "Sei sicuro di voler eliminare le foto / video %@ selezionate? Questo non può essere annullato!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Eliminazione non riuscita";

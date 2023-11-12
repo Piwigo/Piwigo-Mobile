@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
-"help_externalDisplay" = "點按你想要在這裡顯示的圖片。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失敗";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "已經刪除%@%%";
 
 "deleteSingleImage_title" = "刪除照片";
+"deleteSingleVideo_title" = "刪除影像";
 "deleteSingleImageHUD_deleting" = "正在刪除照片...";
+"deleteSingleVideoHUD_deleting" = "删除视频...";
 "deleteSeveralImagesHUD_deleting" = "正在刪除照片...";
 "removeSingleImage_title" = "從相簿中移除";
 "removeSingleImageHUD_removing" = "正在刪除照片...";
+"removeSingleVideoHUD_removing" = "移除视频...";
 "removeSeveralImagesHUD_removing" = "正在刪除照片...";
 "deleteSingleImage_message" = "你確定要刪除這張照片嗎? 此動作無法還原!";
+"deleteSingleVideo_message" = "您确定要删除此视频吗？无法撤销！";
 "deleteSeveralImages_title" = "刪除%@張照片";
 "deleteSeveralImages_message" = "你確定要刪除選取的%@張照片嗎? 此動作無法還原!";
 

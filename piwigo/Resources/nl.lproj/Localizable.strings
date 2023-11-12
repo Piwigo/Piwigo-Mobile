@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Jaar";
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
-"help_externalDisplay" = "Klik op de afbeelding die u hier wilt weergeven.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
 
 "deleteSingleImage_title" = "Foto verwijderen";
+"deleteSingleVideo_title" = "Video verwijderen";
 "deleteSingleImageHUD_deleting" = "Foto verwijderen…";
-"deleteSeveralImagesHUD_deleting" = "Foto's aan het verwijderen…";
+"deleteSingleVideoHUD_deleting" = "Video verwijderen…";
+"deleteSeveralImagesHUD_deleting" = "Foto's/video's aan het verwijderen…";
 "removeSingleImage_title" = "Verwijder uit album";
 "removeSingleImageHUD_removing" = "Foto verwijderen…";
-"removeSeveralImagesHUD_removing" = "Foto's verwijderen…";
+"removeSingleVideoHUD_removing" = "Video verwijderen…";
+"removeSeveralImagesHUD_removing" = "Foto's/video's verwijderen…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
-"deleteSeveralImages_title" = "Verwijder %@ foto's";
-"deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+"deleteSingleVideo_message" = "Weet je zeker dat je deze video wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+"deleteSeveralImages_title" = "Verwijder %@ foto's/video's";
+"deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's/video's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Verwijderen is mislukt";

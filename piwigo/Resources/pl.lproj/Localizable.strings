@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 rok";
 "editImageDetailsHUD_updatingSingle" = "Aktualizowanie zdjęcia…";
 "editImageDetailsHUD_updatingPlural" = "Aktualizowanie zdjęć…";
-"help_externalDisplay" = "Dotknij zdjęcia, które chcesz tutaj wyświetlić.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Aktualizacja nieudana";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
 "deleteSingleImage_title" = "Usuń zdjęcie";
+"deleteSingleVideo_title" = "Usuń wideo";
 "deleteSingleImageHUD_deleting" = "Usuwanie zdjęcia…";
-"deleteSeveralImagesHUD_deleting" = "Usuwanie zdjęć…";
+"deleteSingleVideoHUD_deleting" = "Usuwam film…";
+"deleteSeveralImagesHUD_deleting" = "Usuwanie zdjęć/filmów…";
 "removeSingleImage_title" = "Usuń z albumu";
 "removeSingleImageHUD_removing" = "Usuwanie zdjęcia…";
-"removeSeveralImagesHUD_removing" = "Usuwanie zdjęć…";
+"removeSingleVideoHUD_removing" = "Usuwanie wideo…";
+"removeSeveralImagesHUD_removing" = "Usuwanie zdjęć/filmów…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
-"deleteSeveralImages_title" = "Usuń %@ zdjęć";
-"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia (%@)? Nie można tego cofnąć!";
+"deleteSingleVideo_message" = "Czy na pewno chcesz usunąć ten film? Nie można tego cofnąć!";
+"deleteSeveralImages_title" = "Usuń %@ zdjęć/filmów";
+"deleteSeveralImages_message" = "Czy na pewno chcesz usunąć wybrane zdjęcia/filmy (%@)? Nie można tego cofnąć!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Błąd Usunięcia";

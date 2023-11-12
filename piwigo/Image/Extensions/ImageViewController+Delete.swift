@@ -18,7 +18,7 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         let alert = UIAlertController(title: "",
-            message: NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
+            message: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this image? This cannot be undone!") : NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
             preferredStyle: .actionSheet)
 
         let cancelAction = UIAlertAction(
@@ -35,7 +35,7 @@ extension ImageViewController
             })
 
         let deleteAction = UIAlertAction(
-            title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+            title: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_title", comment: "Delete Video") : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
             style: .destructive, handler: { [self] action in
                 deleteImageFromDatabase()
             })
@@ -65,7 +65,7 @@ extension ImageViewController
     
     func removeImageFromAlbum() {
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
@@ -152,7 +152,7 @@ extension ImageViewController
         }
 
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) { [self] in

@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 An";
 "editImageDetailsHUD_updatingSingle" = "Mise à jour de la photo…";
 "editImageDetailsHUD_updatingPlural" = "Mise à jour des photos…";
-"help_externalDisplay" = "Touchez l'image que vous souhaitez afficher ici.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Échec de la modification";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Suppression %@%%";
 
 "deleteSingleImage_title" = "Effacer la photo";
+"deleteSingleVideo_title" = "Effacer la vidéo";
 "deleteSingleImageHUD_deleting" = "Effacement de la photo…";
-"deleteSeveralImagesHUD_deleting" = "Effacement des photos…";
+"deleteSingleVideoHUD_deleting" = "Effacement de la vidéo…";
+"deleteSeveralImagesHUD_deleting" = "Effacement des photos/vidéos…";
 "removeSingleImage_title" = "Supprimer de cet album";
 "removeSingleImageHUD_removing" = "Suppression de la photo…";
-"removeSeveralImagesHUD_removing" = "Suppression des photos…";
-"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette photo ? Opération irréversible !";
-"deleteSeveralImages_title" = "Effacer %@ photos";
-"deleteSeveralImages_message" = "Êtes-vous sûr de vouloir effacer la sélection de %@ photos ? Opération irréversible !";
+"removeSingleVideoHUD_removing" = "Suppression de la vidéo…";
+"removeSeveralImagesHUD_removing" = "Suppression des photos/vidéos…";
+"deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette photo ? Cette action est irréversible !";
+"deleteSingleVideo_message" = "Êtes-vous sûr de vouloir supprimer cette vidéo ? Cette action est irréversible !";
+"deleteSeveralImages_title" = "Effacer %@ photos/vidéos";
+"deleteSeveralImages_message" = "Êtes-vous sûr de vouloir supprimer les %@ photos/vidéos sélectionnées ? Cette action est irréversible !";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Echec de la suppression";

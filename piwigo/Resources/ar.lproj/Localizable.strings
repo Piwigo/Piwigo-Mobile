@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Updating Photo…";
 "editImageDetailsHUD_updatingPlural" = "Updating Photos…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "فشل في التحديث";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "تم حذف %@%%";
 
 "deleteSingleImage_title" = "حذف الصورة";
+"deleteSingleVideo_title" = "Delete Video";
 "deleteSingleImageHUD_deleting" = "Deleting Photo…";
-"deleteSeveralImagesHUD_deleting" = "Deleting Photos…";
+"deleteSingleVideoHUD_deleting" = "Deleting Video…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Photos/Videos…";
 "removeSingleImage_title" = "إزالة من الألبوم";
 "removeSingleImageHUD_removing" = "Removing Photo…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSingleVideoHUD_removing" = "Removing Video…";
+"removeSeveralImagesHUD_removing" = "Removing Photos/Videos…";
 "deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";
+"deleteSingleVideo_message" = "Are you sure you want to delete this video? This cannot be undone!";
 "deleteSeveralImages_title" = "حذف الصور";
 "deleteSeveralImages_message" = "هل تريد بالتأكيد حذف %@ من الصور المحددة؟ هذا لا يمكن التراجع عنه!";
 

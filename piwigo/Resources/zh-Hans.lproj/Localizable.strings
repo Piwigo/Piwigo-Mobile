@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "上一年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
-"help_externalDisplay" = "点击您想要在这里显示的图像。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失败";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "已经删除 %@%%";
 
 "deleteSingleImage_title" = "删除照片";
+"deleteSingleVideo_title" = "删除视频";
 "deleteSingleImageHUD_deleting" = "正在删除照片中...";
+"deleteSingleVideoHUD_deleting" = "删除视频...";
 "deleteSeveralImagesHUD_deleting" = "正在删除照片中...";
 "removeSingleImage_title" = "从相册中移除";
 "removeSingleImageHUD_removing" = "正在移除照片中...";
+"removeSingleVideoHUD_removing" = "移除视频...";
 "removeSeveralImagesHUD_removing" = "正在删除照片...";
 "deleteSingleImage_message" = "你确定要删除这张照片吗？此操作无法撤销！";
+"deleteSingleVideo_message" = "您确定要删除此视频吗？无法撤销！";
 "deleteSeveralImages_title" = "删除 %@ 张照片";
 "deleteSeveralImages_message" = "你确定要删除你所选择的 %@ 张照片吗？该操作无法撤销！";
 

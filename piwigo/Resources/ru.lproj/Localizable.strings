@@ -67,7 +67,7 @@
 "CoreData_AlbumNotFound" = "Альбом не в постоянном кэше.";
 
 // Image objects
-"CoreDataFetch_ImageError" = "Ошибка получения фото/видео!";
+"CoreDataFetch_ImageError" = "Ошибка получения фотографий/видео!";
 "CoreDataFetch_ImageMissingData" = "Найдено и будет отменена фотография/видео без действительного идентификатора или URL.";
 "CoreDataFetch_ImageCreateFailed" = "Не удалось создать новый объект изображения.";
 
@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Год";
 "editImageDetailsHUD_updatingSingle" = "Обновление фото…";
 "editImageDetailsHUD_updatingPlural" = "Обновление фото…";
-"help_externalDisplay" = "Нажмите на изображение, которое вы хотите отобразить здесь.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Не удалось обновить";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Удалено %@%%";
 
 "deleteSingleImage_title" = "Удалить фото";
+"deleteSingleVideo_title" = "Удалить Видео";
 "deleteSingleImageHUD_deleting" = "Удаление фото…";
-"deleteSeveralImagesHUD_deleting" = "Удаление фотографий…";
+"deleteSingleVideoHUD_deleting" = "Удаление видео…";
+"deleteSeveralImagesHUD_deleting" = "Удаление фотографий/видео…";
 "removeSingleImage_title" = "Удалить из альбома";
 "removeSingleImageHUD_removing" = "Удаление фото…";
-"removeSeveralImagesHUD_removing" = "Удаление изображений…";
+"removeSingleVideoHUD_removing" = "Удаление видео…";
+"removeSeveralImagesHUD_removing" = "Удаление фотографий/видео…";
 "deleteSingleImage_message" = "Вы уверены, что ходите удалить это фотографию? Это действие нельзя будет отменить!";
-"deleteSeveralImages_title" = "Удаление %@ фотографий";
-"deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий? Это действие нельзя будет отменить!";
+"deleteSingleVideo_message" = "Вы уверены, что хотите удалить это видео? Это действие необратимо!";
+"deleteSeveralImages_title" = "Удаление %@ фотографий/видео";
+"deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий/видео? Это действие нельзя будет отменить!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Удаление не удалось";

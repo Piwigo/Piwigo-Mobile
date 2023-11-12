@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Jahr";
 "editImageDetailsHUD_updatingSingle" = "Foto wird aktualisiert…";
 "editImageDetailsHUD_updatingPlural" = "Fotos werden aktualisiert…";
-"help_externalDisplay" = "Tippen Sie auf das Bild, das Sie hier anzeigen möchten.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
 
 "deleteSingleImage_title" = "Foto löschen";
+"deleteSingleVideo_title" = "Lösche Video";
 "deleteSingleImageHUD_deleting" = "Lösche Foto…";
-"deleteSeveralImagesHUD_deleting" = "Lösche Fotos…";
+"deleteSingleVideoHUD_deleting" = "Lösche Video…";
+"deleteSeveralImagesHUD_deleting" = "Lösche Fotos/Videos…";
 "removeSingleImage_title" = "Aus Album entfernen";
 "removeSingleImageHUD_removing" = "Lösche Foto…";
-"removeSeveralImagesHUD_removing" = "Entferne Fotos…";
+"removeSingleVideoHUD_removing" = "Entferne Video…";
+"removeSeveralImagesHUD_removing" = "Entferne Fotos/Videos…";
 "deleteSingleImage_message" = "Möchtest Du dieses Foto wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
-"deleteSeveralImages_title" = "Lösche %@ Fotos";
-"deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
+"deleteSingleVideo_message" = "Sind Sie sicher, dass Sie dieses Video löschen möchten? Dies kann nicht rückgängig gemacht werden!";
+"deleteSeveralImages_title" = "Lösche %@ Fotos/Videos";
+"deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos/Videos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Löschen fehlgeschlagen";

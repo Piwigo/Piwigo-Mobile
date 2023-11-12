@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
 "editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
-"help_externalDisplay" = "Tryck på den bild du vill visa här.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";
+"deleteSingleVideo_title" = "Radera video";
 "deleteSingleImageHUD_deleting" = "Raderar bild…";
-"deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
+"deleteSingleVideoHUD_deleting" = "Radera video...";
+"deleteSeveralImagesHUD_deleting" = "Radera foton/videor…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
-"removeSeveralImagesHUD_removing" = "Tar bort foton…";
+"removeSingleVideoHUD_removing" = "Ta bort video...";
+"removeSeveralImagesHUD_removing" = "Ta bort foton/videor…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
-"deleteSeveralImages_title" = "Radera %@ bilder";
-"deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
+"deleteSingleVideo_message" = "Är du säker på att du vill ta bort denna video? Detta kan inte ångras!";
+"deleteSeveralImages_title" = "Radera %@ bilder/videor";
+"deleteSeveralImages_message" = "Är du säker på att du vill ta bort de markerade %@ bilderna/videoklippen? Detta kan inte ångras!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Raderingen misslyckades";

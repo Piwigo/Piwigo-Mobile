@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
 "editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
-"help_externalDisplay" = "Tryk på det billede, du ønsker at vise her.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
+"deleteSingleVideo_title" = "Slet Video";
 "deleteSingleImageHUD_deleting" = "Sletter billede…";
-"deleteSeveralImagesHUD_deleting" = "Sletter billeder…";
+"deleteSingleVideoHUD_deleting" = "Sletter Video…";
+"deleteSeveralImagesHUD_deleting" = "Sletter billeder/videoer…";
 "removeSingleImage_title" = "Fjern fra Album";
 "removeSingleImageHUD_removing" = "Sletter billede…";
-"removeSeveralImagesHUD_removing" = "Fjerner billeder…";
+"removeSingleVideoHUD_removing" = "Fjerner Video…";
+"removeSeveralImagesHUD_removing" = "Fjerner billeder/videoer…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
-"deleteSeveralImages_title" = "Slet %@ Billeder";
-"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
+"deleteSingleVideo_message" = "Er du sikker på, at du vil slette denne video? Dette kan ikke fortrydes!";
+"deleteSeveralImages_title" = "Slet %@ billeder/videoer";
+"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder/videoer? Dette kan ikke fortrydes!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Sletning Mislykkedes";
