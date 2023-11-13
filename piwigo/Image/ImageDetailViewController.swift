@@ -38,7 +38,7 @@ class ImageDetailViewController: UIViewController
         
         // Get high-resolution image size
         let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale
+        let scale = view.traitCollection.displayScale * 4 // to limit photo size in memory
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         if imageData.isVideo, previewSize == .fullRes {
             previewSize = .xxLarge
@@ -219,7 +219,7 @@ class ImageDetailViewController: UIViewController
 
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
-        scrollView.maximumZoomScale = 2 * maxScale
+        scrollView.maximumZoomScale = max(maxScale, 1)
         debugPrint("••> Did reset scrollView scale: ")
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
