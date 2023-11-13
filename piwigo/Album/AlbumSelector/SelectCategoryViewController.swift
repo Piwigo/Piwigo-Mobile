@@ -169,7 +169,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @IBOutlet var categoriesTableView: UITableView!
     private var cancelBarButton: UIBarButtonItem?
 
-    private var updateOperations: [BlockOperation] = [BlockOperation]()
     private var albumsShowingSubAlbums = Set<Int32>()
 
     
@@ -1024,7 +1023,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updateOperations.removeAll(keepingCapacity: false)
         // Begin the update
         categoriesTableView.beginUpdates()
     }
@@ -1033,8 +1031,7 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
 
         // Initialisation
         var hasAlbumsInSection1 = false
-        if controller == albums,
-           wantedAction == .setAlbumThumbnail || (recentAlbums.fetchedObjects ?? []).isEmpty == false {
+        if controller == albums, categoriesTableView.numberOfSections ==  2 {
             hasAlbumsInSection1 = true
         }
 
@@ -1043,50 +1040,32 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-//            updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert category item at \(newIndexPath)")
-            self.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
-//            })
+            print("••> Insert category item at \(newIndexPath)")
+            categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-//            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update category item at \(indexPath)")
-            self.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
-//            })
+            print("••> Update category item at \(indexPath)")
+            categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-//            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move category item from \(indexPath) to \(newIndexPath)")
-            self.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
-//            })
+            print("••> Move category item from \(indexPath) to \(newIndexPath)")
+            categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-//            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete category item at \(indexPath)")
-            self.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
-//            })
+            print("••> Delete category item at \(indexPath)")
+            categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
         @unknown default:
-            fatalError("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
+            debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the album is not presented.
-        if view.window != nil, updateOperations.isEmpty == false {
-            // Perform all updates
-            categoriesTableView?.performBatchUpdates({ () -> Void  in
-                for operation: BlockOperation in self.updateOperations {
-                    operation.start()
-                }
-            })
-        }
-        
         // End updates
         categoriesTableView.endUpdates()
     }
