@@ -599,6 +599,8 @@ class ImageViewController: UIViewController {
         setThumbnailBarButton.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
+        playBarButton?.isEnabled = state
+        muteBarButton?.isEnabled = state
     }
 
     
