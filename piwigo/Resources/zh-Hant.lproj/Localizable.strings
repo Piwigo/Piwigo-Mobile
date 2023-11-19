@@ -408,16 +408,16 @@
 "deleteImageProgress_title" = "已經刪除%@%%";
 
 "deleteSingleImage_title" = "刪除照片";
-"deleteSingleVideo_title" = "刪除影像";
+"deleteSingleVideo_title" = "刪除影片";
 "deleteSingleImageHUD_deleting" = "正在刪除照片...";
-"deleteSingleVideoHUD_deleting" = "删除视频...";
+"deleteSingleVideoHUD_deleting" = "刪除影片...";
 "deleteSeveralImagesHUD_deleting" = "正在刪除照片...";
 "removeSingleImage_title" = "從相簿中移除";
 "removeSingleImageHUD_removing" = "正在刪除照片...";
-"removeSingleVideoHUD_removing" = "移除视频...";
+"removeSingleVideoHUD_removing" = "移除影片...";
 "removeSeveralImagesHUD_removing" = "正在刪除照片...";
 "deleteSingleImage_message" = "你確定要刪除這張照片嗎? 此動作無法還原!";
-"deleteSingleVideo_message" = "您确定要删除此视频吗？无法撤销！";
+"deleteSingleVideo_message" = "你確定要刪除這個影片嗎？這無法復原！";
 "deleteSeveralImages_title" = "刪除%@張照片";
 "deleteSeveralImages_message" = "你確定要刪除選取的%@張照片嗎? 此動作無法還原!";
 
