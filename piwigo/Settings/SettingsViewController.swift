@@ -730,7 +730,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                let defaultWidth = thumbnailSize.minPixels
+                let defaultWidth = thumbnailSize.minPoints
                 let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range

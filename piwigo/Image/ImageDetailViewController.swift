@@ -38,7 +38,7 @@ class ImageDetailViewController: UIViewController
         
         // Get high-resolution image size
         let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale * 4 // to limit photo size in memory
+        let scale = view.traitCollection.displayScale * pwgImageSize.maxZoomScale // to limit photo size in memory
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         if imageData.isVideo, previewSize == .fullRes {
             previewSize = .xxLarge

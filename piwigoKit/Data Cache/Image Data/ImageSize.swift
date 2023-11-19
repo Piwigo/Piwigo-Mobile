@@ -27,12 +27,12 @@ extension pwgImageSize {
     public static let maxSaliencyScale: CGFloat = 2
     
     // Maximum zoom scale of fullscreen image previews
-    public static let maxZoomScale: CGFloat = 2
+    public static let maxZoomScale: CGFloat = 4
     
-    // Default Piwigo image minimum number of pixels
-    public var minPixels: CGFloat {
+    // Default Piwigo image minimum number of points
+    public var minPoints: CGFloat {
         // Get device scale factor
-        let scale: CGFloat = UIScreen.main.scale
+        let scale: CGFloat = max(1, UIScreen.main.scale)
         
         // Default width
         var width: CGFloat = 120
@@ -61,8 +61,8 @@ extension pwgImageSize {
         return width/scale
     }
     
-    // Default Piwigo image maximum number of pixels
-    public var maxPixels: CGFloat {
+    // Default Piwigo image maximum number of points
+    public var maxPoints: CGFloat {
         // Get device scale factor
         let scale: CGFloat = UIScreen.main.scale
         
@@ -103,9 +103,9 @@ extension pwgImageSize {
             return ""
         }
         
-        let minPix = lroundf(Float(self.minPixels))
-        let maxPix = lroundf(Float(self.maxPixels))
-        return String(format: " (%ldx%ld@%.0fx)", maxPix, minPix, scale)
+        let minPnts = lroundf(Float(self.minPoints))
+        let maxPnts = lroundf(Float(self.maxPoints))
+        return String(format: " (%ldx%ld@%.0fx)", maxPnts, minPnts, scale)
     }
     
     // Localized name
