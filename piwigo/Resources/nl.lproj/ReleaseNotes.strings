@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.0_text" = "Version 3.1\n\n• Swipe down or pinch the image to return to the album when viewing individual photos or videos\n• Watch a video stored on your Piwigo while you use other apps.\n• Bug fixes";
+"v3.1.0_text" = "Versie 3.1\n\n• Veeg naar beneden of zet de afbeelding om terug te keren naar het album bij het bekijken van individuele foto's of video's\n• Bekijk een video die is opgeslagen op uw Piwigo terwijl u andere apps gebruikt.\n• Foutjes verbeterd";
 
-"v3.0.2_text" = "Versie 3.0.2\n\n• Foutjes verbeterd";
+"v3.0.2_text" = "Versie 3.0.2\n15 juli 2023\n\n• Foutjes verbeterd";
 
 "v3.0.1_text" = "Versie 3.0.1\n2 juli 2023\n\n• Kleine foutjes hersteld en verbetering van de interface";
 
