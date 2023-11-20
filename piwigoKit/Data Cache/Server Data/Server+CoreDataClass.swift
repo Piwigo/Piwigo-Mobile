@@ -45,14 +45,15 @@ public class Server: NSManagedObject {
         }
         
         // Last time the user used this server
-        if self.lastUsed != lastUsed {
-            self.lastUsed = lastUsed
+        let lastUsedInterval = lastUsed.timeIntervalSinceReferenceDate
+        if self.lastUsed != lastUsedInterval {
+            self.lastUsed = lastUsedInterval
         }
     }
     
     
     // MARK: - Cache Management
-    public func getCoreDataStoreSize() -> String {
+    public func getAlbumImageCount() -> String {
         // WAL checkpointing is not controllable ► not an appropriate solution
 //        let dataURL = DataDirectories.shared.appGroupDirectory
 //        let folderSize = dataURL.folderSize
@@ -63,10 +64,17 @@ public class Server: NSManagedObject {
         totalCount += AlbumProvider.shared.getObjectCount()
         totalCount += ImageProvider.shared.getObjectCount()
         totalCount += TagProvider.shared.getObjectCount()
-        totalCount += UploadProvider.shared.getObjectCount()
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: totalCount as NSNumber) ?? "NaN"
+    }
+
+    public func getUploadCount() -> String {
+        // Calculate number of objects in background thread
+        let uploadCount = UploadProvider.shared.getObjectCount()
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: uploadCount as NSNumber) ?? "NaN"
     }
 
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
@@ -74,16 +82,45 @@ public class Server: NSManagedObject {
         let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach({ size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
-            folderSize += cacheUrl.folderSize
+            if size == .fullRes {
+                folderSize += cacheUrl.photoFolderSize
+            } else {
+                folderSize += cacheUrl.folderSize
+            }
         })
         return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
     }
 
-    public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>) {
+    public func getCacheSizeOfVideos() -> String {
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
+        let folderSize = cacheUrl.videoFolderSize
+        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
+    }
+
+    public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>, exceptVideos: Bool) {
         let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach { size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
-            try? FileManager.default.removeItem(at: cacheUrl)
+            if size == .fullRes, exceptVideos {
+                let contents = try? FileManager.default.contentsOfDirectory(at: cacheUrl, includingPropertiesForKeys: nil)
+                let onlyPhotos = (contents ?? []).filter({$0.pathExtension != "mov"})
+                onlyPhotos.forEach { photoURL in
+                    try? FileManager.default.removeItem(at: photoURL)
+                }
+            } else {
+                try? FileManager.default.removeItem(at: cacheUrl)
+            }
+        }
+    }
+    
+    public func clearCachedVideos() {
+        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
+        let contents = try? FileManager.default.contentsOfDirectory(at: cacheUrl, includingPropertiesForKeys: nil)
+        let onlyVideos = (contents ?? []).filter({$0.pathExtension == "mov"})
+        onlyVideos.forEach { videoURL in
+            try? FileManager.default.removeItem(at: videoURL)
         }
     }
 }

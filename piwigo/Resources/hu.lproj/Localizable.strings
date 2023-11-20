@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Év";
 "editImageDetailsHUD_updatingSingle" = "Fotó módosítása…";
 "editImageDetailsHUD_updatingPlural" = "Fotók módosítása…";
-"help_externalDisplay" = "Koppintson a megjeleníteni kívánt képre.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Sikertelen frissítés";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "%@%% sikeresen törölve";
 
 "deleteSingleImage_title" = "Fotó törlése";
+"deleteSingleVideo_title" = "Videó törlése";
 "deleteSingleImageHUD_deleting" = "Fotó törlése…";
-"deleteSeveralImagesHUD_deleting" = "Fotók törlése…";
+"deleteSingleVideoHUD_deleting" = "Videó törlése...";
+"deleteSeveralImagesHUD_deleting" = "Fotók/videók törlése…";
 "removeSingleImage_title" = "Eltávolítás az albumból";
 "removeSingleImageHUD_removing" = "Fotó eltávolítása…";
-"removeSeveralImagesHUD_removing" = "Fotók eltávolítása…";
+"removeSingleVideoHUD_removing" = "Videó eltávolítása…";
+"removeSeveralImagesHUD_removing" = "Fotók/videók eltávolítása…";
 "deleteSingleImage_message" = "Biztos törlöd a fotót? Ez végleges törlés!";
-"deleteSeveralImages_title" = "%@ fotó törlése";
-"deleteSeveralImages_message" = "Biztos ki akarod törölni a kiválasztott %@ fotót? Ez végleges törlés!";
+"deleteSingleVideo_message" = "Biztos törlöd a videó? Ez végleges törlés!";
+"deleteSeveralImages_title" = "%@ fotó/videók törlése";
+"deleteSeveralImages_message" = "Biztos ki akarod törölni a kiválasztott %@ fotót/videók? Ez végleges törlés!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "A törlés nem sikerült";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Mekkora legyen a legnagyobb videó, ami feltöltésre kerül?";
 "UploadVideoSize_resolution" = "Beépített kamera maximum specifikációi:";
 "UploadPhotoSize_original" = "Méretcsökkentés nélkül";
+"UploadRequests_cache" = "Feltöltések";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Adatvédelem";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Használja a Touch ID-t az App Lock jelszavának alternatívájaként.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Használja a Face ID-t az App Lock jelszó alternatívájaként.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Használja a Optic ID-t az App Lock jelszó alternatívájaként.";
 
 "settings_clearClipboard" = "Vágólap törlése";
 "settings_clearClipboardInfo" = "Kérjük, válassza ki a késleltetést, amely után a vágólap törlődik.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
-"whatsNew_title1" = "Új gyorsítótár";
-"whatsNew_desc1" = "A gyorsítótár-kezelés teljesen újraírva a felhasználói élmény javítása és az offline böngészés érdekében.";
-"whatsNew_title2" = "Zrcalienie zaslona";
-"whatsNew_desc2" = "Nézze meg fényképeit és videóit egy külső kijelzőn.";
+"whatsNew_title1" = "Új gesztusok";
+"whatsNew_desc1" = "Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.";
+"whatsNew_title2" = "PiP támogatás";
+"whatsNew_desc2" = "Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.";
 "whatsNew_continue" = "Folytatás";

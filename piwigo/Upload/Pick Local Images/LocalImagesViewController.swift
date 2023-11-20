@@ -387,9 +387,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
                     } else {
                         trashBarButton.isEnabled = false
-                        var orientation: UIInterfaceOrientation = .portrait
+                        var orientation: UIInterfaceOrientation
                         if #available(iOS 13.0, *) {
-                            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+                            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
                         } else {
                             orientation = UIApplication.shared.statusBarOrientation
                         }

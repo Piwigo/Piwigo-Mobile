@@ -26,7 +26,7 @@ extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
             if oldThumbnailSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
                oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
                oldThumbnailSize != .fullRes {
-                server.clearCachedImages(ofSizes: [oldThumbnailSize])
+                server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
             }
             
             DispatchQueue.main.async {
@@ -67,7 +67,7 @@ extension SettingsViewController: DefaultImageSizeDelegate {
             if oldPhotoSize.rawValue != AlbumVars.shared.defaultAlbumThumbnailSize,
                oldPhotoSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
                oldPhotoSize != .fullRes {
-                server.clearCachedImages(ofSizes: [oldPhotoSize])
+                server.clearCachedImages(ofSizes: [oldPhotoSize], exceptVideos: true)
             }
             
             DispatchQueue.main.async {

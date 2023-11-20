@@ -112,11 +112,7 @@ extension UploadManager {
             }
 
             // Prepare URL of temporary file
-            let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-            let fileURL = self.uploadsDirectory.appendingPathComponent(fileName)
-
-            // Deletes temporary video file if it already exists
-            try? FileManager.default.removeItem(at: fileURL)
+            let fileURL = self.getUploadFileURL(from: upload, deleted: true)
 
             // Determine MD5 checksum
             let error: NSError?

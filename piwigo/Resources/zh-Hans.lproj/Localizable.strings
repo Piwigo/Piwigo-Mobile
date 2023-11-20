@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "上一年";
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
-"help_externalDisplay" = "点击您想要在这里显示的图像。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新失败";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "已经删除 %@%%";
 
 "deleteSingleImage_title" = "删除照片";
+"deleteSingleVideo_title" = "删除视频";
 "deleteSingleImageHUD_deleting" = "正在删除照片中...";
+"deleteSingleVideoHUD_deleting" = "删除视频...";
 "deleteSeveralImagesHUD_deleting" = "正在删除照片中...";
 "removeSingleImage_title" = "从相册中移除";
 "removeSingleImageHUD_removing" = "正在移除照片中...";
+"removeSingleVideoHUD_removing" = "移除视频...";
 "removeSeveralImagesHUD_removing" = "正在删除照片...";
 "deleteSingleImage_message" = "你确定要删除这张照片吗？此操作无法撤销！";
+"deleteSingleVideo_message" = "您确定要删除此视频吗？无法撤销！";
 "deleteSeveralImages_title" = "删除 %@ 张照片";
 "deleteSeveralImages_message" = "你确定要删除你所选择的 %@ 张照片吗？该操作无法撤销！";
 
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "请选择要上传的视频的最大大小";
 "UploadVideoSize_resolution" = "内置摄像头最大规格";
 "UploadPhotoSize_original" = "不缩小大小";
+"UploadRequests_cache" = "上传";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "隐私";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "使用 Touch ID 替代您的应用锁密码。";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "使用 Face ID 替代您的应用锁密码。";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "使用 Optic ID 替代您的应用锁密码。";
 
 "settings_clearClipboard" = "清除剪贴板";
 "settings_clearClipboardInfo" = "请选择清除剪贴板之后的延迟。";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
-"whatsNew_title1" = "新缓存";
-"whatsNew_desc1" = "缓存管理完全重写，以改善用户体验并带来离线浏览。";
-"whatsNew_title2" = "苹果投屏";
-"whatsNew_desc2" = "在外部显示器上观看您的照片和视频。";
+"whatsNew_title1" = "新手势";
+"whatsNew_desc1" = "当查看单个照片或视频时，向下滑动或固定图像返回相册。";
+"whatsNew_title2" = "PiP 支持";
+"whatsNew_desc2" = "当您使用其他应用时，观看您Piwigo上存储的视频。";
 "whatsNew_continue" = "继续储值";

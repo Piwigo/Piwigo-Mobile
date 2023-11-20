@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="ipad12_9rounded" orientation="landscape" layout="fullscreen" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--External Display View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="ExternalDisplayViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" keyboardType="off" id="Y6W-OH-hqX" customClass="ExternalDisplayViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" userInteractionEnabled="NO" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9QV-h6-VTa">
+                                <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
+                            </imageView>
+                            <view hidden="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yqJ-iG-iM3">
+                                <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <progressView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Xhu-1c-Uac">
+                                <rect key="frame" x="478" y="969" width="410" height="4"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="progressTintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </progressView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="bWs-ph-d49"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="yqJ-iG-iM3" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="1fN-mr-oQm"/>
+                            <constraint firstItem="Xhu-1c-Uac" firstAttribute="bottom" secondItem="5EZ-qb-Rvc" secondAttribute="centerY" multiplier="1.9" id="3ah-SE-Myc"/>
+                            <constraint firstItem="Xhu-1c-Uac" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.3" id="7JB-6P-kT8"/>
+                            <constraint firstAttribute="trailing" secondItem="yqJ-iG-iM3" secondAttribute="trailing" id="8yq-yh-T96"/>
+                            <constraint firstAttribute="trailing" secondItem="9QV-h6-VTa" secondAttribute="trailing" id="A4l-vW-Lw5"/>
+                            <constraint firstItem="9QV-h6-VTa" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="EeY-Xd-M7c"/>
+                            <constraint firstItem="yqJ-iG-iM3" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="G2a-yQ-JmS"/>
+                            <constraint firstAttribute="bottom" secondItem="9QV-h6-VTa" secondAttribute="bottom" id="L1o-vA-cb8"/>
+                            <constraint firstAttribute="bottom" secondItem="yqJ-iG-iM3" secondAttribute="bottom" id="YIN-S3-uFA"/>
+                            <constraint firstItem="Xhu-1c-Uac" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="uhT-4z-tJN"/>
+                            <constraint firstItem="9QV-h6-VTa" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="xkJ-u8-OLu"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="9QV-h6-VTa" id="8gd-oy-oK5"/>
+                        <outlet property="progressView" destination="Xhu-1c-Uac" id="X10-no-hvT"/>
+                        <outlet property="videoContainerView" destination="yqJ-iG-iM3" id="4wo-3N-715"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="108.93118594436309" y="-28.124999999999996"/>
+        </scene>
+    </scenes>
+</document>

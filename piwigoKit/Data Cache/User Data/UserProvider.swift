@@ -77,7 +77,7 @@ public class UserProvider: NSObject {
             // Did we find a User instance?
             if let cachedUser: User = (controller.fetchedObjects ?? []).first {
                 if doUpdate {
-                    let now = Date()
+                    let now = Date.timeIntervalSinceReferenceDate
                     cachedUser.lastUsed = now
                     cachedUser.server?.lastUsed = now
                     cachedUser.status = NetworkVars.userStatus.rawValue

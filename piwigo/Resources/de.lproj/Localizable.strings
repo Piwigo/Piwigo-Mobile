@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Jahr";
 "editImageDetailsHUD_updatingSingle" = "Foto wird aktualisiert…";
 "editImageDetailsHUD_updatingPlural" = "Fotos werden aktualisiert…";
-"help_externalDisplay" = "Tippen Sie auf das Bild, das Sie hier anzeigen möchten.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Fehler bei der Aktualisierung";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Löschen von %@%% erledigt";
 
 "deleteSingleImage_title" = "Foto löschen";
+"deleteSingleVideo_title" = "Lösche Video";
 "deleteSingleImageHUD_deleting" = "Lösche Foto…";
-"deleteSeveralImagesHUD_deleting" = "Lösche Fotos…";
+"deleteSingleVideoHUD_deleting" = "Lösche Video…";
+"deleteSeveralImagesHUD_deleting" = "Lösche Fotos/Videos…";
 "removeSingleImage_title" = "Aus Album entfernen";
 "removeSingleImageHUD_removing" = "Lösche Foto…";
-"removeSeveralImagesHUD_removing" = "Entferne Fotos…";
+"removeSingleVideoHUD_removing" = "Entferne Video…";
+"removeSeveralImagesHUD_removing" = "Entferne Fotos/Videos…";
 "deleteSingleImage_message" = "Möchtest Du dieses Foto wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
-"deleteSeveralImages_title" = "Lösche %@ Fotos";
-"deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
+"deleteSingleVideo_message" = "Sind Sie sicher, dass Sie dieses Video löschen möchten? Dies kann nicht rückgängig gemacht werden!";
+"deleteSeveralImages_title" = "Lösche %@ Fotos/Videos";
+"deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos/Videos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Löschen fehlgeschlagen";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Bitte wählen Sie die maximale Größe für hochgeladene Videos aus.";
 "UploadVideoSize_resolution" = "Integrierte Kameras maximale Spezifikationen:";
 "UploadPhotoSize_original" = "Keine Verkleinerung";
+"UploadRequests_cache" = "Hochgeladen";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privatsphäre";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Verwenden Sie Touch ID als Alternative zu Ihrem App-Zugangscode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Verwenden Sie Face ID als Alternative zu Ihrem App-Zugangscode.";
+"settings_biometricsOpticID" = "Optische ID";
+"settings_biometricsOpticIDinfo" = "Verwenden Sie die Optische ID als Alternative zu Ihrem App-Zugangscode.";
 
 "settings_clearClipboard" = "Zwischenablage leeren";
 "settings_clearClipboardInfo" = "Bitte wählen Sie die Verzögerung aus, nach der die Zwischenablage gelöscht wird.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Was ist neu in Piwigo";
-"whatsNew_title1" = "Neuer Cache";
-"whatsNew_desc1" = "Cache-Management vollständig überarbeitet, um das Benutzererlebnis zu verbessern und das Offline-Surfen zu ermöglichen.";
-"whatsNew_title2" = "Bildschirmsynchronisierung";
-"whatsNew_desc2" = "Betrachten Sie Ihre Fotos und Videos auf einem externen Display.";
+"whatsNew_title1" = "Neue Gesten";
+"whatsNew_desc1" = "Wischen Sie nach unten oder halten Sie das Bild fest, um zum Album zurückzukehren, wenn Sie einzelne Fotos oder Videos ansehen.";
+"whatsNew_title2" = "BiB-Unterstützung";
+"whatsNew_desc2" = "Sehen Sie sich ein Video an, das auf Ihrem Piwigo gespeichert ist, während Sie andere Apps verwenden.";
 "whatsNew_continue" = "Fortsetzen";

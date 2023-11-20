@@ -47,10 +47,13 @@ extension AlbumViewController
         addButton.isHidden = true
         homeAlbumButton.isHidden = true
 
+        // Favorites button depends on Piwigo server version, user role and image data
+        favoriteBarButton = getFavoriteBarButton()
+
         // Button displayed in all circumstances
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
-            let orientation = view.window?.windowScene?.interfaceOrientation
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
             // User with admin or upload rights can do everything
             if user.hasUploadRights(forCatID: categoryId) {
@@ -62,8 +65,7 @@ extension AlbumViewController
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
 
-                if orientation?.isPortrait ?? false,
-                   UIDevice.current.userInterfaceIdiom == .phone {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
@@ -73,13 +75,9 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
-                    var toolBarItems = [shareBarButton,
-                                        UIBarButtonItem.space(),
+                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
+                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
                                         deleteBarButton].compactMap { $0 }
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 2, length: 2)).enumerated() {toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
-                    }
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = toolBarItems
                 } else {
@@ -87,49 +85,46 @@ extension AlbumViewController
                     navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
-                    }
+                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if NetworkVars.userStatus != .guest,
-                      ("2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending) {
-                if orientation?.isPortrait ?? false,
-                   UIDevice.current.userInterfaceIdiom == .phone {
+            } else if favoriteBarButton != nil {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
+                    
                     // No button on the right
                     navigationItem.setRightBarButtonItems([], animated: true)
-
+                    
                     // Remaining buttons in navigation toolbar
                     navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton,
-                                    UIBarButtonItem.space(),
-                                    favoriteBarButton].compactMap { $0 }
+                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
                 } else {
-                    // Left side of navigation bar
+                    // All buttons in navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                    // All other buttons in navigation bar
                     navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-
+                    
                     // Hide navigation toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else {
-                // Left side of navigation bar
+            }
+            else if NetworkVars.userStatus != .guest {
+                // All buttons in navigation bar
                 navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                // Guest can only share images
                 navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
 
-                // Hide toolbar
+                // Hide navigation toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+            else {
+                // Guest cannot share images
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
+
+                // Hide navigation toolbar
                 navigationController?.setToolbarHidden(true, animated: true)
             }
         } else {
@@ -145,8 +140,7 @@ extension AlbumViewController
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
                 actionBarButton?.accessibilityIdentifier = "actions"
 
-                if orientation.isPortrait,
-                   UIDevice.current.userInterfaceIdiom == .phone {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
@@ -156,11 +150,10 @@ extension AlbumViewController
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                     /// They also disappear when coming back to portrait orientation.
-                    var toolBarItems = [shareBarButton, UIBarButtonItem.space(), moveBarButton, UIBarButtonItem.space(), deleteBarButton].compactMap { $0 }
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 4, length: 2)).enumerated() { toolBarItems.insert(([favoriteBarButton, UIBarButtonItem.space()].compactMap { $0 })[objectIndex], at: insertionIndex) }
-                    }
+                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
+                                        moveBarButton, UIBarButtonItem.space(),
+                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                        deleteBarButton].compactMap { $0 }
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = toolBarItems
                 } else {
@@ -168,45 +161,46 @@ extension AlbumViewController
                     navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    var rightBarButtonItems = [actionBarButton, shareBarButton].compactMap { $0 }
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                        for (objectIndex, insertionIndex) in NSIndexSet(indexesIn: NSRange(location: 1, length: 1)).enumerated() { rightBarButtonItems.insert(([favoriteBarButton].compactMap { $0 })[objectIndex], at: insertionIndex) }
-                    }
+                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
                     // Hide toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else if NetworkVars.userStatus != .guest,
-                      "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                if orientation.isPortrait,
-                   UIDevice.current.userInterfaceIdiom == .phone {
+            } else if favoriteBarButton != nil {
+                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
+                    
                     // No button on the right
                     navigationItem.setRightBarButtonItems([], animated: true)
-
+                    
                     // Remaining buttons in navigation toolbar
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
                 } else {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
+                    
                     // All other buttons in navigation bar
                     navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-
+                    
                     // Hide navigation toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
-            } else {
-                // Left side of navigation bar
+            }
+            else if NetworkVars.userStatus != .guest {
+                // Non-guest can only share images
                 navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                // Guest can only share images
                 navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
+
+                // Hide toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+            else {
+                // Guest cannot share images
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
 
                 // Hide toolbar
                 navigationController?.setToolbarHidden(true, animated: true)
@@ -219,43 +213,33 @@ extension AlbumViewController
 
     func updateButtonsInSelectionMode() {
         let hasImagesSelected = !selectedImageIds.isEmpty
+        cancelBarButton.isEnabled = true
 
         // User with admin or upload rights can do everything
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
         if user.hasUploadRights(forCatID: categoryId) {
-            cancelBarButton.isEnabled = true
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton.isEnabled = hasImagesSelected
             deleteBarButton.isEnabled = hasImagesSelected
-            // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton.isEnabled = hasImagesSelected
-                let areFavorites = selectedImageIds == selectedFavoriteIds
-                favoriteBarButton.setFavoriteImage(for: areFavorites)
-                favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
-            }
+            favoriteBarButton?.isEnabled = hasImagesSelected
+            let areFavorites = selectedImageIds == selectedFavoriteIds
+            favoriteBarButton?.setFavoriteImage(for: areFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
 
             if #available(iOS 14, *) {
                 } else {
                 moveBarButton.isEnabled = hasImagesSelected
             }
         } else {
-            // Left side of navigation bar
-            cancelBarButton.isEnabled = true
-
             // Right side of navigation bar
             /// — guests can share photo of high-resolution or not
             /// — non-guest users can set favorites in addition
             shareBarButton.isEnabled = hasImagesSelected
-            if NetworkVars.userStatus != .guest,
-               // pwg.users.favorites… methods available from Piwigo version 2.10
-               "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                favoriteBarButton.isEnabled = hasImagesSelected
-                let areFavorites = selectedImageIds == selectedFavoriteIds
-                favoriteBarButton.setFavoriteImage(for: areFavorites)
-                favoriteBarButton.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
-            }
+            favoriteBarButton?.isEnabled = hasImagesSelected
+            let areFavorites = selectedImageIds == selectedFavoriteIds
+            favoriteBarButton?.setFavoriteImage(for: areFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
         }
     }
 
@@ -267,10 +251,7 @@ extension AlbumViewController
         deleteBarButton.isEnabled = state
         moveBarButton.isEnabled = state
         shareBarButton.isEnabled = state
-        // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-            favoriteBarButton.isEnabled = state
-        }
+        favoriteBarButton?.isEnabled = state
     }
 
 

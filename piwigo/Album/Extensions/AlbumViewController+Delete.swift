@@ -38,72 +38,96 @@ extension AlbumViewController
             toRemove = []
         }
         
-        // Alert message
-        var messageString: String?
+        // Ask if the user really wants to delete these images?
+        var msg = "";
         if totalNberToDelete > 1 {
-            messageString = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ images?"), NSNumber(value: totalNberToDelete))
+            msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_message", comment: "Are you sure you want to delete the selected %@ photos/videos?"), NSNumber(value: totalNberToDelete))
+        } else if let imageData = toDelete.first, imageData.isVideo {
+            msg = NSLocalizedString("deleteSingleVideo_title", comment: "Are you sure you want to delete this video?")
         } else {
-            messageString = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image?")
+            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image?")
         }
+        let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
-        // Do we really want to delete these images?
-        let alert = UIAlertController(title: nil, message: messageString,
-                                      preferredStyle: .actionSheet)
-
+        // Button for cancelling the action
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
                 updateButtonsInSelectionMode()
             })
+        alert.addAction(cancelAction)
 
-        let removeImagesAction = UIAlertAction(
-            title: toDelete.isEmpty ? NSLocalizedString("removeSingleImage_title", comment: "Remove from Album") : NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
-            style: toDelete.isEmpty ? .default : .destructive,
-            handler: { [self] action in
-                // Display HUD during server update
-                totalNumberOfImages = toRemove.count + (toDelete.isEmpty ? 0 : 1)
-                if totalNumberOfImages > 1 {
-                    showPiwigoHUD(
-                        withTitle: toDelete.isEmpty
-                            ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos…")
-                            : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Images…"),
-                        detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                        inMode: .annularDeterminate)
-                } else {
-                    showPiwigoHUD(
-                        withTitle: toDelete.isEmpty
-                            ? NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…")
-                            : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"),
-                        detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                        inMode: .indeterminate)
-                }
-
-                // Start removing images
-                removeImages(toRemove, andThenDelete: toDelete)
-            })
-
+        // Button for deleting all images
+        if totalNberToDelete > 1 {
+            msg = String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: totalNberToDelete))
+        } else if let imageData = toDelete.first, imageData.isVideo {
+            msg = NSLocalizedString("deleteSingleVideo_title", comment: "Delete Video")
+        } else {
+            msg = NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+        }
         let deleteImagesAction = UIAlertAction(
-            title: totalNberToDelete > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Images"), NSNumber(value: totalNberToDelete)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
-            style: .destructive, handler: { [self] action in
+            title: msg, style: .destructive, handler: { [self] action in
                 // Append image to remove
                 toDelete.formUnion(toRemove)
 
                 // Display HUD during server update
-                showPiwigoHUD(
-                    withTitle: toDelete.count > 1
-                        ? NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…")
-                        : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Images…"),
-                    detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                    inMode: .indeterminate)
+                var msgHUD = ""
+                if totalNumberOfImages > 1 {
+                    msgHUD = NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
+                } else if let imageData = toDelete.first, imageData.isVideo {
+                    msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                } else {
+                    msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                }
+                showPiwigoHUD(withTitle: msgHUD, detail: "",
+                              buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                              inMode: .indeterminate)
 
                 // Start deleting images
                 deleteImages(toDelete)
             })
-
-        // Add actions
-        alert.addAction(cancelAction)
         alert.addAction(deleteImagesAction)
+
         if !toRemove.isEmpty {
+            let removeImagesAction = UIAlertAction(
+                title: toDelete.isEmpty ? NSLocalizedString("removeSingleImage_title", comment: "Remove from Album") : NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
+                style: toDelete.isEmpty ? .default : .destructive,
+                handler: { [self] action in
+                    // Display HUD during server update
+                    var msgHUD = ""
+                    totalNumberOfImages = toRemove.count + (toDelete.isEmpty ? 0 : 1)
+                    if totalNumberOfImages > 1 {
+                        msgHUD = toDelete.isEmpty
+                        ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
+                        : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
+                        showPiwigoHUD(withTitle: msgHUD, detail: "", buttonTitle: "",
+                                      buttonTarget: nil, buttonSelector: nil,
+                                      inMode: .annularDeterminate)
+                    } else if toRemove.isEmpty {
+                        // Delete a single image
+                        if let imageData = toDelete.first, imageData.isVideo {
+                            msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                        } else {
+                            msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                        }
+                        showPiwigoHUD(withTitle: msgHUD, detail: "",
+                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                                      inMode: .indeterminate)
+                    } else {
+                        // Remove a single image
+                        if let imageData = toRemove.first, imageData.isVideo {
+                            msgHUD = NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…")
+                        } else {
+                            msgHUD = NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…")
+                        }
+                        showPiwigoHUD(withTitle: msgHUD, detail: "",
+                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                                      inMode: .indeterminate)
+                    }
+
+                    // Start removing images
+                    removeImages(toRemove, andThenDelete: toDelete)
+                })
             alert.addAction(removeImagesAction)
         }
 

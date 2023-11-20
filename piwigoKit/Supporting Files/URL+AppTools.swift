@@ -34,12 +34,12 @@ extension URL {
             return nil
         }
     }
-
+    
     // Returns the file size
     public var fileSize: UInt64 {
         return attributes?[.size] as? UInt64 ?? UInt64.zero
     }
-
+    
     // Returns the unit of the file size
     var fileSizeString: String {
         return ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
@@ -51,18 +51,47 @@ extension URL {
     }
     
     // Returns the folder size
-    var folderSize: UInt64 {
+    public var folderSize: UInt64 {
         do {
             let contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
-            var folderSize: UInt64 = UInt64.zero
-            for content in contents {
-                folderSize += content.fileSize
-            }
-            return folderSize
+            return size(of: contents)
+
+        } catch let error {
+            print(error.localizedDescription)
+            return UInt64.zero
+        }
+    }
+    
+    public var photoFolderSize: UInt64 {
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
+            let onlyPhotos = contents.filter({$0.pathExtension != "mov"})
+            return size(of: onlyPhotos)
+
+        } catch let error {
+            print(error.localizedDescription)
+            return UInt64.zero
+        }
+    }
+    
+    // Returns the total size of videos in the folder
+    public var videoFolderSize: UInt64 {
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
+            let onlyVideos = contents.filter({$0.pathExtension == "mov"})
+            return size(of: onlyVideos)
             
         } catch let error {
             print(error.localizedDescription)
             return UInt64.zero
         }
+    }
+    
+    private func size(of contents: [URL]) -> UInt64 {
+        var folderSize: UInt64 = UInt64.zero
+        for content in contents {
+            folderSize += content.fileSize
+        }
+        return folderSize
     }
 }

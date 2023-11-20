@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.1.0_text" = "Wersja 3.1\n\n• Przesuń palcem w dół lub zsuń obraz, aby powrócić do albumu podczas przeglądania pojedynczych zdjęć lub filmów.\n• Oglądaj wideo przechowywane na twoim Piwigo podczas korzystania z innych aplikacji.\n• Poprawki błędów";
+
 "v3.0.2_text" = "Wersja 3.0.2\n\n• Poprawki błędów";
 
 "v3.0.1_text" = "Wersja 3.0.1\n2 lipca 2023\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";

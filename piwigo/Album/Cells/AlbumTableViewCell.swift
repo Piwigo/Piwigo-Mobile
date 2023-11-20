@@ -54,12 +54,12 @@ class AlbumTableViewCell: UITableViewCell {
         }
 
         // Display recent icon when images have been uploaded recently
-        let timeSinceLastUpload: TimeInterval = albumData?.dateLast.timeIntervalSinceNow ?? .greatestFiniteMagnitude
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
-        let isRecent = timeSinceLastUpload > TimeInterval(-24*3600*periodInDays)
+        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         if self.recentBckg.isHidden == isRecent {
             self.recentBckg.isHidden = !isRecent
             self.recentImage.isHidden = !isRecent
@@ -74,31 +74,19 @@ class AlbumTableViewCell: UITableViewCell {
             albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
-        // Do we have a representative?
-        let placeHolder = UIImage(named: "placeholder")!
-        guard let thumbUrl = albumData?.thumbnailUrl as? URL,
-              let thumbID = albumData?.thumbnailId,
-              let serverID = albumData?.user?.server?.uuid else {
-            // No album thumbnail URL
-            backgroundImage.image = placeHolder
-            return
-        }
-
         // Retrieve image from cache or download it
         self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
+        let placeHolder = UIImage(named: "placeholder")!
         let cellSize = self.backgroundImage.bounds.size
         let scale = self.backgroundImage.traitCollection.displayScale
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageSession.shared.getImage(withID: thumbID, ofSize: thumbSize, atURL: thumbUrl,
-                                     fromServer: serverID, placeHolder: placeHolder) { cachedImageURL in
+        ImageSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
+                                     atURL: albumData?.thumbnailUrl as? URL,
+                                     fromServer: albumData?.user?.server?.uuid,
+                                     placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            if cachedImage == placeHolder {
-                // Image in cache is not appropriate
-                try? FileManager.default.removeItem(at: thumbUrl)
-            } else {
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
             }
         } failure: { _ in
             DispatchQueue.main.async {
@@ -148,29 +136,29 @@ class AlbumTableViewCell: UITableViewCell {
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
         var text = ""
-        if albumData?.nbSubAlbums ?? 0 == 0 {
+        if albumData?.nbSubAlbums ?? Int32.zero == Int32.zero {
             // There are no sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
             text = (albumData?.nbImages ?? 0 > 1)
                 ? String.localizedStringWithFormat(singleImage, nberImages ?? "")
                 : String.localizedStringWithFormat(severalImages, nberImages ?? "")
         }
-        else if albumData?.totalNbImages ?? 0 == 0 {
+        else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text = (albumData?.nbSubAlbums ?? 0 > 1)
+            text = (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
                 : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
         }
         else {
             // There are images and sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.totalNbImages ?? 0))
-            text = (albumData?.totalNbImages ?? 0 > 1)
+            text = (albumData?.totalNbImages ?? Int64.zero > 1)
                 ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
                 : String.localizedStringWithFormat(singleImage, nberImages ?? "")
             text += ", "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
-            text += (albumData?.nbSubAlbums ?? 0 > 1)
+            text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
                 : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
         }

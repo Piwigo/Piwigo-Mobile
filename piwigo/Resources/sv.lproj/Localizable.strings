@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Uppdaterar foto…";
 "editImageDetailsHUD_updatingPlural" = "Uppdaterar foton…";
-"help_externalDisplay" = "Tryck på den bild du vill visa här.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Uppdateringen misslyckades";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Radering av %@%% utförd";
 
 "deleteSingleImage_title" = "Radera bild";
+"deleteSingleVideo_title" = "Radera video";
 "deleteSingleImageHUD_deleting" = "Raderar bild…";
-"deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
+"deleteSingleVideoHUD_deleting" = "Radera video...";
+"deleteSeveralImagesHUD_deleting" = "Radera foton/videor…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
-"removeSeveralImagesHUD_removing" = "Tar bort foton…";
+"removeSingleVideoHUD_removing" = "Ta bort video...";
+"removeSeveralImagesHUD_removing" = "Ta bort foton/videor…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
-"deleteSeveralImages_title" = "Radera %@ bilder";
-"deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
+"deleteSingleVideo_message" = "Är du säker på att du vill ta bort denna video? Detta kan inte ångras!";
+"deleteSeveralImages_title" = "Radera %@ bilder/videor";
+"deleteSeveralImages_message" = "Är du säker på att du vill ta bort de markerade %@ bilderna/videoklippen? Detta kan inte ångras!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Raderingen misslyckades";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Välj den maximala storleken på de videor som kommer att laddas upp.";
 "UploadVideoSize_resolution" = "Inbyggda kameror maximala specifikationer:";
 "UploadPhotoSize_original" = "Ingen neddimensionering";
+"UploadRequests_cache" = "Uppladdningar";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Sekretess";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Använd Touch ID som ett alternativ till din applås-lösenkod.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Använd Face ID som ett alternativ till din applås-lösenkod.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Använd Optic ID som ett alternativ till din applås-lösenkod.";
 
 "settings_clearClipboard" = "Rensa urklipp";
 "settings_clearClipboardInfo" = "Välj fördröjning efter vilken urklipp kommer att rensas.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Vad är nytt i Piwigo";
-"whatsNew_title1" = "Ny cache";
-"whatsNew_desc1" = "Cachehantering helt omskriven för att förbättra användarupplevelsen och ta offline surfning.";
-"whatsNew_title2" = "Skärmdubblering";
-"whatsNew_desc2" = "Titta på dina foton och videor på en extern skärm.";
+"whatsNew_title1" = "Nya gester";
+"whatsNew_desc1" = "Svep nedåt eller nypa bilden för att återgå till albumet när du tittar på enskilda foton eller videor.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Titta på en video som lagras på din Piwigo medan du använder andra appar.";
 "whatsNew_continue" = "Fortsätt";

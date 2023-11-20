@@ -152,7 +152,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     
     // MARK: - UITableView - Footer
     private func getContentOfFooter() -> String {
-        let resolution = UIDevice.current.modelPotoResolution
+        let resolution = UIDevice.current.modelPhotoResolution
         if resolution.isEmpty { return "" }
         return String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), resolution)
     }

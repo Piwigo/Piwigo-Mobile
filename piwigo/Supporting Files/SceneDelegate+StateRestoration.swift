@@ -31,12 +31,14 @@ extension SceneDelegate {
                 // Store sub-album ID
                 catIDs.insert(vc.categoryId)
             }
-            else if let vc = viewController as? ImageViewController {
-                // Store image index
-                imageIndex = vc.imageIndex
-            }
         }
                 
+        // Determine if an image is presented fullscreen on the device
+        if let vc = navController.visibleViewController as? ImageViewController {
+            // Store image index
+            imageIndex = vc.imageIndex
+        }
+
         // Create user info
         let info: [String: Any] = ["catIDs"  : catIDs,
                                    "imageID" : imageIndex]
@@ -64,9 +66,15 @@ extension SceneDelegate {
         }
         
         // Restore image preview if performFetch() has been called and an image is available
-        if subAlbumVC != nil,
+        if subAlbumVC != nil, subAlbumVC?.categoryId != 0,
            let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
-           let images = subAlbumVC.images.fetchedObjects, images.count > 1 {
+           let images = subAlbumVC.images.fetchedObjects, images.count > 0,
+           (subAlbumVC.imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
+            // Scroll collection view to cell position
+            let indexPath = IndexPath(item: imageIndex, section: 1)
+            subAlbumVC.imageOfInterest = indexPath
+            subAlbumVC.imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+
             // Prepare image detail view
             let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
             guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
@@ -75,12 +83,21 @@ extension SceneDelegate {
             imageDetailVC.images = subAlbumVC.images
             imageDetailVC.user = subAlbumVC.user
             imageDetailVC.imgDetailDelegate = subAlbumVC.self
-            imageDetailVC.hidesBottomBarWhenPushed = true
-            imageDetailVC.modalPresentationCapturesStatusBarAppearance = true
             
-            // Present image in full screen
-            subAlbumVC.imageDetailView = imageDetailVC
-            navController.pushViewController(imageDetailVC, animated: false)
+            // Push ImageDetailView embedded in navigation controller
+            let navController = UINavigationController(rootViewController: imageDetailVC)
+            navController.hidesBottomBarWhenPushed = true
+            navController.transitioningDelegate = subAlbumVC
+            navController.modalPresentationStyle = .custom
+            navController.modalPresentationCapturesStatusBarAppearance = true
+            subAlbumVC.navigationController?.present(navController, animated: false) {
+                if let selectedCell = subAlbumVC.imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    subAlbumVC.animatedCell = selectedCell
+                    subAlbumVC.albumViewSnapshot = subAlbumVC.view.snapshotView(afterScreenUpdates: true)
+                    subAlbumVC.cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: true)
+                    subAlbumVC.navBarSnapshot = subAlbumVC.navigationController?.navigationBar.snapshotView(afterScreenUpdates: true)
+                }
+            }
         }
     }
 }

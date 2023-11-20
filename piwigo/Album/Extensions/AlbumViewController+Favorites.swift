@@ -12,7 +12,14 @@ import piwigoKit
 extension AlbumViewController
 {
     // MARK: Favorites Utilities
-    func getFavoriteBarButton() -> UIBarButtonItem {
+    func getFavoriteBarButton() -> UIBarButtonItem? {
+        // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
+        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending ||
+            NetworkVars.userStatus == .guest {
+            return nil
+        }
+        
+        // Are the selected images favorites?
         let areFavorites = selectedImageIds == selectedFavoriteIds
         let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
         button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)

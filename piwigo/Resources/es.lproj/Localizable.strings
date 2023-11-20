@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Año";
 "editImageDetailsHUD_updatingSingle" = "Actualizando la foto…";
 "editImageDetailsHUD_updatingPlural" = "Actualizando las fotos…";
-"help_externalDisplay" = "Pulse la imagen que desea mostrar aquí.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Error al actualizar";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Eliminando %@%%. Hecho.";
 
 "deleteSingleImage_title" = "Eliminar foto";
+"deleteSingleVideo_title" = "Eliminar Video";
 "deleteSingleImageHUD_deleting" = "Eliminando foto…";
-"deleteSeveralImagesHUD_deleting" = "Eliminando fotos…";
+"deleteSingleVideoHUD_deleting" = "Eliminando vídeo…";
+"deleteSeveralImagesHUD_deleting" = "Eliminando fotos/videos…";
 "removeSingleImage_title" = "Eliminar del álbum";
 "removeSingleImageHUD_removing" = "Borrando foto…";
-"removeSeveralImagesHUD_removing" = "Borrando fotos…";
+"removeSingleVideoHUD_removing" = "Borrando video…";
+"removeSeveralImagesHUD_removing" = "Borrando fotos/videos…";
 "deleteSingleImage_message" = "¿Estás seguro de que deseas suprimir esta foto? ¡Esta acción no se puede deshacer!";
-"deleteSeveralImages_title" = "Eliminar %@ fotos";
-"deleteSeveralImages_message" = "¿Estás seguro que deseas eliminar las %@ fotos seleccionadas? ¡Esto no se puede deshacer!";
+"deleteSingleVideo_message" = "¿Está seguro de que desea eliminar este vídeo? ¡Esto no se puede deshacer!";
+"deleteSeveralImages_title" = "Eliminar %@ fotos/videos";
+"deleteSeveralImages_message" = "¿Estás seguro que deseas eliminar las %@ fotos/videos seleccionadas? ¡Esto no se puede deshacer!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Error al eliminar";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Por favor, seleccione el tamaño máximo de los vídeos que se cargarán.";
 "UploadVideoSize_resolution" = "Especificaciones máximas de cámaras incorporadas:";
 "UploadPhotoSize_original" = "Sin reducción";
+"UploadRequests_cache" = "Subidas";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacidad";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Usa Touch ID como alternativa a tu código de bloqueo de aplicaciones.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Usa Face ID como alternativa a tu código de acceso de bloqueo de aplicaciones.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Usa Optic ID como alternativa a tu código de acceso de bloqueo de aplicaciones.";
 
 "settings_clearClipboard" = "Limpiar portapapeles";
 "settings_clearClipboardInfo" = "Por favor, seleccione el retraso tras el cual se borrará el portapapeles.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
-"whatsNew_title1" = "Nueva caché";
-"whatsNew_desc1" = "Administración de caché completamente reescrita para mejorar la experiencia del usuario y llevar la navegación sin conexión.";
-"whatsNew_title2" = "Duplicar pantalla";
-"whatsNew_desc2" = "Mira tus fotos y vídeos en una pantalla externa.";
+"whatsNew_title1" = "Nuevos gestos";
+"whatsNew_desc1" = "Deslice hacia abajo o pellizque la imagen para volver al álbum cuando vea fotos individuales o vídeos.";
+"whatsNew_title2" = "Soporte PiP";
+"whatsNew_desc2" = "Mira un vídeo almacenado en tu Piwigo mientras usas otras aplicaciones.";
 "whatsNew_continue" = "Continuar";

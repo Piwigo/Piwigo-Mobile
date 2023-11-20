@@ -34,7 +34,7 @@ public struct ImagesGetInfoJSON: Decodable {
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-//        dump(rootContainer)
+//        dump(rootContainer.allKeys)
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
@@ -81,6 +81,7 @@ public struct ImagesGetInfo: Decodable
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
     public var isFavorite: Bool?                // false
+    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since 14.0)
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048
@@ -104,6 +105,7 @@ public struct ImagesGetInfo: Decodable
         case datePosted = "date_available"
         case dateCreated = "date_creation"
         case isFavorite = "is_favorite"
+        case downloadUrl = "download_url"
 
         case fullResWidth = "width"
         case fullResHeight = "height"
@@ -134,7 +136,8 @@ extension ImagesGetInfo {
         
         self.init(id: id, title: title, comment: "", visits: 0,
                   fileName: fileName, datePosted: posted, dateCreated: created,
-                  isFavorite: false, fullResWidth: 0, fullResHeight: 0, fullResPath: "",
+                  isFavorite: false, downloadUrl: "",
+                  fullResWidth: 0, fullResHeight: 0, fullResPath: "",
                   author: author, privacyLevel: privacyLevel,
                   tags: nil, ratingScore: nil,
                   fileSize: nil, md5checksum: nil,
@@ -154,9 +157,10 @@ extension ImagesGetInfo {
             self.datePosted = dateFormatter.string(from: Date())
         }
         if self.dateCreated == nil {
-            // Adopts the posted date when the creation date is unknown.
-            self.dateCreated = self.datePosted
+            // Adopts the oldest date when the creation date is unknown.
+            self.dateCreated = "1900-01-01 00:00:00"
         }
+        if self.downloadUrl == nil { self.downloadUrl = "" }
         if self.privacyLevel == nil { self.privacyLevel = "0" }
         if self.tags == nil { self.tags = [TagProperties]() }
         if self.ratingScore == nil { self.ratingScore = "" }

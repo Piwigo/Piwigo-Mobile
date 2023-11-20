@@ -34,11 +34,8 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()
         ])
-        if AppVars.shared.isAppLanguageRTL {
-            rightTextField.textAlignment = .left
-        } else {
-            rightTextField.textAlignment = .right
-        }
+        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
     }
 
     override func prepareForReuse() {

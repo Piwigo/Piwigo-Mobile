@@ -10,7 +10,8 @@
 import UIKit
 
 extension NSLayoutConstraint {
-    // -------------------------- CENTERING --------------------------
+
+    // MARK: - Centring
     /// Centers the view vertically, this is left to right "|--here--|"
     /// \param view The view to be centered
     /// \returns A NSLayoutConstraint is returned
@@ -43,7 +44,8 @@ extension NSLayoutConstraint {
         ].compactMap { $0 }
     }
 
-    // -------------------------- SIZING --------------------------
+
+    // MARK: - Sizing
     /// Match the view's width of it's superview
     /// \param view The view to be matched
     /// \returns An array of NSLayoutConstraints is returned
@@ -165,7 +167,8 @@ extension NSLayoutConstraint {
         return nil
     }
 
-    // -------------------------- FRAME --------------------------
+    
+    // MARK: - Frame
     /// Constrains a view a specific amount from the left of it's superview
     /// \param view The view to be constrained
     /// \param leftAmount The specific amount of pixels for the view to be from the left

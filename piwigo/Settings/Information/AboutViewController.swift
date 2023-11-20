@@ -123,9 +123,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        var orientation = UIInterfaceOrientation.portrait
+        var orientation: UIInterfaceOrientation
         if #available(iOS 13.0, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         } else {
             orientation = UIApplication.shared.statusBarOrientation
         }

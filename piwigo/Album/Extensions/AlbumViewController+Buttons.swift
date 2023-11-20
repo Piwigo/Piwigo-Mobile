@@ -136,6 +136,31 @@ extension AlbumViewController
             }
         })
     }
+    
+    func showAddButtonCompletion(_ completion: @escaping () -> Void) {
+        // Show Add button
+        addButton.layer.opacity = 0.0
+        addButton.isHidden = false
+
+        // Show Add button
+        UIView.animate(withDuration: 0.2, animations: { [self] in
+            // Progressive disappearance
+            addButton.layer.opacity = 1.0
+        }) { finished in
+            completion()
+        }
+    }
+    
+    func hideAddButtonCompletion(_ completion: @escaping () -> Void) {
+        // Hide Add button
+        UIView.animate(withDuration: 0.2, animations: { [self] in
+            // Progressive disappearance
+            addButton.layer.opacity = 0.0
+        }) { [self] finished in
+            addButton.isHidden = true
+            completion()
+        }
+    }
 
 
     // MARK: - "Upload Queue" button above collection view
@@ -249,16 +274,21 @@ extension AlbumViewController
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
-            // Set number of uploads
-            let nber = String(format: "%lu", UInt(nberOfUploads))
-            if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
-               !uploadQueueButton.isHidden,
-               uploadQueueButton.frame != addButton.frame {
-                // Number unchanged -> NOP
-                return
+            if (!NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading) ||
+                ProcessInfo.processInfo.isLowPowerModeEnabled {
+                nberOfUploadsLabel.text = "⚠️"
+            } else {
+                // Set number of uploads
+                let nber = String(format: "%lu", UInt(nberOfUploads))
+                if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
+                   !uploadQueueButton.isHidden,
+                   uploadQueueButton.frame != addButton.frame {
+                    // Number unchanged -> NOP
+                    return
+                }
+                nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
             }
-            nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
-
+            
             // Show button if needed
             showUploadQueueButton()
         } else {
@@ -477,23 +507,26 @@ extension AlbumViewController
                 // Inform user that the app is fetching album data
                 lastUpdated = NSLocalizedString("categoryUpdating", comment: "Updating…")
             }
-            else if !albumData.isFault, albumData.dateGetImages > Date(timeIntervalSinceReferenceDate: 0) {
-                if albumData.dateGetImages.timeIntervalSince(Date()) > TimeInterval(-60) {
+            else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
+                let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
+                if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                     lastUpdated = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
                 } else {
                     let calendar = Calendar.current
-                    let updatedDay = calendar.dateComponents([.day], from: albumData.dateGetImages)
+                    let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
                     let dateDay = calendar.dateComponents([.day], from: Date())
                     if updatedDay.day == dateDay.day {
                         // Album data updated today
-                        let time = DateFormatter.localizedString(from: albumData.dateGetImages,
+                        let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt",
+                                                                       comment: "Updated at…"), time)
                     } else {
                         // Album data updated yesterday or before
-                        let date = DateFormatter.localizedString(from: albumData.dateGetImages,
+                        let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn",
+                                                                       comment: "Updated on…"), date)
                     }
                 }
             }
@@ -609,11 +642,13 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        } else if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
+        }
+        else if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
             // Button for activating the selection mode (not for guests)
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
             selectBarButton.isEnabled = (images.fetchedObjects ?? []).count > 0
-        } else {
+        }
+        else {
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)
 

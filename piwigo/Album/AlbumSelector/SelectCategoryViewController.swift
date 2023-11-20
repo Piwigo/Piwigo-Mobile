@@ -38,7 +38,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     weak var imageRemovedDelegate: SelectCategoryImageRemovedDelegate?
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
-    var actionRunning = false
     private var selectedCategoryId = Int32.min
 
     // MARK: - Core Data Objects
@@ -170,7 +169,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @IBOutlet var categoriesTableView: UITableView!
     private var cancelBarButton: UIBarButtonItem?
 
-    private var updateOperations: [BlockOperation] = [BlockOperation]()
     private var albumsShowingSubAlbums = Set<Int32>()
 
     
@@ -531,8 +529,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setAlbumThumbnail:
             return 2
         default:    // Present recent albums if any
-            let objects = recentAlbums.fetchedObjects
-            return 1 + (objects?.count ?? 0 > 0 ? 1 : 0)
+            let objects = recentAlbums.fetchedObjects ?? []
+            return 1 + (objects.isEmpty ? 0 : 1)
         }
     }
 
@@ -566,7 +564,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         var depth = 0
         let albumData: Album
-        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).count > 0
+        let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).isEmpty == false
         switch indexPath.section {
         case 0:
             if wantedAction == .setAlbumThumbnail {
@@ -652,44 +650,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
         case .setAlbumThumbnail:
-            // The root album is not available
+            // Don't present sub-albums in first section
             if indexPath.section == 0 {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
             } else {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
-            if albumData.pwgID == 0 {
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
-            }
         case .setAutoUploadAlbum:
-            // The root album is not selectable (should not be presented but in case…)
-            if albumData.pwgID == 0 {
+            // Don't present sub-albums in Recent Albums section
+            if hasRecentAlbums && (indexPath.section == 0) {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
             } else {
-                // Don't present sub-albums in Recent Albums section
-                if hasRecentAlbums && (indexPath.section == 0) {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                } else {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
-                }
+                cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
             }
         case .copyImage, .copyImages, .moveImage, .moveImages:
-            // User cannot copy/move the image to the root album or in albums it already belongs to
-            if albumData.pwgID == 0 {  // Should not be presented but in case…
+            // Don't present sub-albums in Recent Albums section
+            if hasRecentAlbums && (indexPath.section == 0) {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
             } else {
-                // Don't present sub-albums in Recent Albums section
-                if hasRecentAlbums && (indexPath.section == 0) {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                } else {
-                    cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
-                }
-                // Albums containing the image are not selectable
-                if commonCatIDs.contains(albumData.pwgID) {
-                    cell.albumLabel.textColor = .piwigoColorRightLabel()
-                }
+                cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
+            }
+            // Albums containing the image are not selectable
+            if commonCatIDs.contains(albumData.pwgID) {
+                cell.albumLabel.textColor = .piwigoColorRightLabel()
             }
 
         default:
@@ -993,9 +976,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     func showError(with error:String = "") {
-        // Stops preventing tableView updates
-        self.actionRunning = false
-
         // Title and message
         let title:String
         var message:String
@@ -1043,20 +1023,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updateOperations.removeAll(keepingCapacity: false)
         // Begin the update
         categoriesTableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        // Stops preventing tableView updates
-        if actionRunning { return }
-
         // Initialisation
         var hasAlbumsInSection1 = false
-        if controller == albums,
-           wantedAction == .setAlbumThumbnail || (recentAlbums.fetchedObjects ?? []).isEmpty == false {
+        if controller == albums, categoriesTableView.numberOfSections ==  2 {
             hasAlbumsInSection1 = true
         }
 
@@ -1065,53 +1040,32 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-            updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert category item at \(newIndexPath)")
-                self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
-            })
+            print("••> Insert category item at \(newIndexPath)")
+            categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update category item at \(indexPath)")
-                self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
-            })
+            print("••> Update category item at \(indexPath)")
+            categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move category item from \(indexPath) to \(newIndexPath)")
-                self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
-            })
+            print("••> Move category item from \(indexPath) to \(newIndexPath)")
+            categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete category item at \(indexPath)")
-                self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
-            })
+            print("••> Delete category item at \(indexPath)")
+            categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
         @unknown default:
-            fatalError("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
+            debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the album is not presented.
-        if view.window == nil { return }
-        
-        // Any update to perform?
-        if updateOperations.isEmpty { return }
-
-        // Perform all updates
-        categoriesTableView?.performBatchUpdates({ () -> Void  in
-            for operation: BlockOperation in self.updateOperations {
-                operation.start()
-            }
-        })
-        
         // End updates
         categoriesTableView.endUpdates()
     }

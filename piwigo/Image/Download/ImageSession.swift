@@ -25,7 +25,7 @@ class ImageSession: NSObject {
         var acceptedTypes = ""
         if #available(iOS 14.0, *) {
             let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
-            acceptedTypes = String(imageTypes.map { $0 + " ,"}.reduce("", +))
+            acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
         } else {
             // Fallback on earlier versions
             acceptedTypes = "image/heic, image/heif, image/vnd.microsoft.icon, image/png, image/gif, image/jpeg, image/jpg, image/webp, image/tiff, image/bmp, image/svg+xml, "
@@ -82,10 +82,21 @@ class ImageSession: NSObject {
     
     
     // MARK: - Asynchronous Methods
-    func getImage(withID imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
-                  fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+    func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, atURL imageURL: URL?,
+                  fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
                   placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-                  completion: @escaping (URL) -> Void, failure: ((Error) -> Void)? = nil) {
+                  completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+        // Check arguments
+        guard let imageID = imageID, imageID != 0,
+              let imageURL = imageURL, imageURL.isFileURL == false,
+              let serverID = serverID, serverID.isEmpty == false
+        else {
+            let error = NSError(domain: "Piwigo", code: ImageSessionError.failedToPrepareDownload.hashValue,
+                                userInfo: [NSLocalizedDescriptionKey : ImageSessionError.failedToPrepareDownload.localizedDescription])
+            failure(error)
+            return
+        }
+        
         // Create the download request
         let request = URLRequest(url: imageURL)
         
@@ -95,17 +106,20 @@ class ImageSession: NSObject {
                                      progress: progress, completion: completion, failure: failure)
 
         // Do we already have this image or video in cache?
-        if imageSize == .fullRes {
-            let cachedFileSize = download.fileURL.fileSize
-            let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
-//            print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\(diff)) retrieved from cache.")
-            if diff < 0.1 {     // i.e. 10%
+        if download.fileURL.fileSize != 0 {
+            // We do have an image in cache, but is this the image or expected video?
+            if imageSize == .fullRes, fileSize != 0 {
+                let cachedFileSize = download.fileURL.fileSize
+                let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
+//                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
+                if diff < 0.1 {     // i.e. 10%
+                    completion(download.fileURL)
+                    return
+                }
+            } else {
                 completion(download.fileURL)
                 return
             }
-        } else if download.fileURL.fileSize != 0 {
-            completion(download.fileURL)
-            return
         }
 
         // Download this image in the background thread

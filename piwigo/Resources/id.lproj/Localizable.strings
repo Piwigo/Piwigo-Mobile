@@ -49,7 +49,7 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
+"CoreDataStore_WarningTitle" = "Peringatan";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationProgress" = "Migration in progress...";
@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Memperbarui foto…";
 "editImageDetailsHUD_updatingPlural" = "Memperbarui foto…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Gagal untuk Memperbarui";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
 
 "deleteSingleImage_title" = "Hapus Gambar";
+"deleteSingleVideo_title" = "Hapus Video";
 "deleteSingleImageHUD_deleting" = "Menghapus gambar…";
+"deleteSingleVideoHUD_deleting" = "Deleting Video…";
 "deleteSeveralImagesHUD_deleting" = "Menghapus gambar…";
 "removeSingleImage_title" = "Hapus dari Album";
 "removeSingleImageHUD_removing" = "Menghapus Gambar…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSingleVideoHUD_removing" = "Removing Video…";
+"removeSeveralImagesHUD_removing" = "Removing Photos/Videos…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
+"deleteSingleVideo_message" = "Are you sure you want to delete this video? This cannot be undone!";
 "deleteSeveralImages_title" = "Hapus Gambar";
 "deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
 
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
 "UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
 "UploadPhotoSize_original" = "No Downsizing";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Use Optic ID as an alternative to your App Lock passcode.";
 
 "settings_clearClipboard" = "Clear Clipboard";
 "settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
-"whatsNew_title1" = "New Cache";
-"whatsNew_desc1" = "Cache management fully rewritten to improve the user experience and bring offline browsing.";
-"whatsNew_title2" = "Screen Mirroring";
-"whatsNew_desc2" = "Watch your photos and videos on an external display.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Continue";

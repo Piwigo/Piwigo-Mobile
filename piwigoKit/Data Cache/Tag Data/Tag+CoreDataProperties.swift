@@ -15,7 +15,7 @@ extension Tag {
         return NSFetchRequest<Tag>(entityName: "Tag")
     }
 
-    @NSManaged public var lastModified: Date
+    @NSManaged public var lastModified: TimeInterval
     @NSManaged public var numberOfImagesUnderTag: Int64
     @NSManaged public var tagId: Int32
     @NSManaged public var tagName: String

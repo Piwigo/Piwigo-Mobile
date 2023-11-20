@@ -441,7 +441,7 @@ class AlbumUtilities: NSObject {
         // Loop over all sizes
         let sizes = pwgImageSize.allCases.dropLast(1)
         for size in sizes {
-            if size.minPixels >= albumThumbnailSize {
+            if size.minPoints >= albumThumbnailSize {
                 return size
             }
         }
@@ -486,7 +486,7 @@ class AlbumUtilities: NSObject {
         // to display the minimum number of thumbnails on the device.
         let sizes = pwgImageSize.allCases.dropLast(1)   // Avoids full resolution
         for size in sizes {
-            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPixels)
+            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPoints)
             if nbImages <= minNberOfImagesPerRow {
                 return size
             }

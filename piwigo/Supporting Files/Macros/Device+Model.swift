@@ -118,6 +118,14 @@ extension UIDevice {
             return "iPhone 14 Pro"
         case "iPhone15,3":
             return "iPhone 14 Pro Max"
+        case "iPhone15,4":
+            return "iPhone 15"
+        case "iPhone15,5":
+            return "iPhone 15 Plus"
+        case "iPhone16,1":
+            return "iPhone 15 Pro"
+        case "iPhone16,2":
+            return "iPhone 15 Pro Max"
 
         // MARK: iPad
         case "iPad1,1":
@@ -287,7 +295,7 @@ extension UIDevice {
 
 
     // MARK: - Photo Resolutions
-    var modelPotoResolution: String {
+    var modelPhotoResolution: String {
         switch identifier {
 
         // MARK: iPhone
@@ -310,6 +318,9 @@ extension UIDevice {
              "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
              "iPhone14,7", "iPhone14,8":
             return "12 Mpx"
+        case "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
+             "iPhone16,1", "iPhone16,2":
+            return "48 Mpx"
 
         // MARK: iPad
         case "iPad1,1":
@@ -334,8 +345,6 @@ extension UIDevice {
              "iPad13,9", "iPad13,10", "iPad13,11", "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
              "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6":
             return "12 Mpx"
-        case "iPhone15,2", "iPhone15,3":
-            return "48 Mpx"
 
         // MARK: iPod
         case "iPod1,1", "iPod2,1", "iPod3,1":
@@ -377,8 +386,9 @@ extension UIDevice {
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
              "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
-             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
-             "iPhone14,7", "iPhone14,8", "iPhone15,2", "iPhone15,3":
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6", "iPhone14,7", "iPhone14,8",
+             "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
+             "iPhone16,1", "iPhone16,2":
             return "4K, 60 fps"
 
         // MARK: iPad

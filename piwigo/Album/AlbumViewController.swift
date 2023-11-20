@@ -34,7 +34,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     var imagesCollection: UICollectionView?
     var searchController: UISearchController?
-    private var imageOfInterest = IndexPath(item: 0, section: 1)
+    var imageOfInterest = IndexPath(item: 0, section: 1)
     
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
@@ -42,7 +42,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
-    lazy var favoriteBarButton: UIBarButtonItem = getFavoriteBarButton()
+    var favoriteBarButton: UIBarButtonItem?
 
     var pauseSearch = false
     var oldImageIds = Set<Int64>()
@@ -62,8 +62,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
 
-    var imageDetailView: ImageViewController?
     private var updateOperations = [BlockOperation]()
+
+    // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
+    var animatedCell: ImageCollectionViewCell?
+    var albumViewSnapshot: UIView?
+    var cellImageViewSnapshot: UIView?
+    var navBarSnapshot: UIView?
+    var imageAnimator: ImageAnimatedTransitioning?
 
     init(albumId: Int32) {
         super.init(nibName: nil, bundle: nil)
@@ -549,13 +555,13 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Check conditions before loading album and image data
-        let lastLoad = albumData.dateGetImages
+        let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
         let nbImages = (images.fetchedObjects ?? []).count
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-           noSmartAlbumData || missingImages || lastLoad.timeIntervalSinceNow < TimeInterval(-3600) {
+           noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
@@ -595,30 +601,36 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         
         // Display What's New in Piwigo if needed
-        if AppVars.shared.didShowWhatsNewAppVersion.compare("3.0", options: .numeric) == .orderedAscending,
-           let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
-            // Display What's New in Piwigo
-            let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
-            guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
-                fatalError("No WhatsNewViewController available!")
-            }
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
-                present(whatsNewVC, animated: true)
+        /// Next line to be used for dispalying What's New in Piwigo:
+//        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
+        if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.1", options: .numeric) == .orderedAscending,
+               appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
+                // Display What's New in Piwigo
+                let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
+                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
+                    fatalError("No WhatsNewViewController available!")
+                }
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
+                    present(whatsNewVC, animated: true)
+                } else {
+                    whatsNewVC.modalTransitionStyle = .coverVertical
+                    whatsNewVC.modalPresentationStyle = .formSheet
+                    let mainScreenBounds = UIScreen.main.bounds
+                    whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
+                        x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+                        width: 0, height: 0)
+                    whatsNewVC.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(CGFloat(mainScreenBounds.size.height) * 2 / 3))
+                    present(whatsNewVC, animated: true)
+                }
+                return
             } else {
-                whatsNewVC.modalTransitionStyle = .coverVertical
-                whatsNewVC.modalPresentationStyle = .formSheet
-                let mainScreenBounds = UIScreen.main.bounds
-                whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                    x: mainScreenBounds.midX, y: mainScreenBounds.midY,
-                    width: 0, height: 0)
-                whatsNewVC.preferredContentSize = CGSize(
-                    width: pwgPadSettingsWidth,
-                    height: ceil(mainScreenBounds.size.height * 2 / 3))
-                present(whatsNewVC, animated: true)
+                // Store current version for future use
+                AppVars.shared.didShowWhatsNewAppVersion = appVersionString
             }
-            return
         }
         
         // Display help views only when showing regular albums
@@ -721,10 +733,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
 
         // Cancel remaining tasks
+        let catIDstr = String(self.categoryId)
         PwgSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -734,7 +747,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         ImageSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == String(self.categoryId) })
+                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -886,7 +899,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
            NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
-           favAlbum.dateGetImages.timeIntervalSinceNow < TimeInterval(-86400) {     // i.e. a day
+           Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
             // Remember that the app is fetching favorites
             AlbumVars.shared.isFetchingAlbumData.insert(pwgSmartAlbum.favorites.rawValue)
             // Fetch favorites in the background
@@ -1282,7 +1295,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             cell.isSelection = selectedImageIds.contains(image.pwgID)
 
             // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+               NetworkVars.userStatus != .guest {
                 cell.isFavorite = (image.albums ?? Set<Album>())
                     .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
             }
@@ -1338,60 +1352,32 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 return
             }
             
-            // Display the image in fullscreen mode
-            if AppVars.shared.inSingleDisplayMode {
+            // Add category to list of recent albums
+            let userInfo = ["categoryId": NSNumber(value: categoryId)]
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
-                // Add category to list of recent albums
-                let userInfo = ["categoryId": NSNumber(value: categoryId)]
-                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-
-                // Selection mode not active => display full screen image
-                let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-                imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController
-                imageDetailView?.imageIndex = indexPath.item
-                imageDetailView?.categoryId = categoryId
-                imageDetailView?.images = images
-                imageDetailView?.user = user
-                imageDetailView?.imgDetailDelegate = self
-                imageDetailView?.hidesBottomBarWhenPushed = true
-                imageDetailView?.modalPresentationCapturesStatusBarAppearance = true
-//                self.imageDetailView.transitioningDelegate = self;
-//                self.selectedCellImageViewSnapshot = [self.selectedCell.cellImage snapshotViewAfterScreenUpdates:NO];
-                if let imageDetailView = imageDetailView {
-                    navigationController?.pushViewController(imageDetailView, animated: true)
-                }
-            } else {
-                // Check image data
-                guard let imageData = selectedCell.imageData else {
-                    return
-                }
-                
-                // Present image on external screen
-                if #available(iOS 13.0, *) {
-                    var wantedRole: UISceneSession.Role!
-                    for scene in UIApplication.shared.connectedScenes {
-                        if #available(iOS 16.0, *) {
-                            wantedRole = .windowExternalDisplayNonInteractive
-                        } else {
-                            // Fallback on earlier versions
-                            wantedRole = .windowExternalDisplay
-                        }
-                        if scene.session.role == wantedRole,
-                           let windowScene = scene as? UIWindowScene,
-                           let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                            imageVC.dismissVideoPlayerIfNeeded()
-                            imageVC.imageData = imageData
-                            imageVC.configImage()
-                        }
-                    }
-                }
-                
-                // Shows which image was tapped
-//                if let oldCell = collectionView.cellForItem(at: imageOfInterest) as? ImageCollectionViewCell {
-//                    oldCell.darkenView.isHidden = true
-//                }
-//                selectedCell.darkenView.isHidden = false
+            // Selection mode not active => display full screen image
+            let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
+            guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else {
+                fatalError("!!! NO ImageViewController !!!")
             }
+            imageDetailView.imageIndex = indexPath.item
+            imageDetailView.categoryId = categoryId
+            imageDetailView.images = images
+            imageDetailView.user = user
+            imageDetailView.imgDetailDelegate = self
+            animatedCell = selectedCell
+            albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+            cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+            navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
+
+            // Push ImageDetailView embedded in navigation controller
+            let navController = UINavigationController(rootViewController: imageDetailView)
+            navController.hidesBottomBarWhenPushed = true
+            navController.transitioningDelegate = self
+            navController.modalPresentationStyle = .custom
+            navController.modalPresentationCapturesStatusBarAppearance = true
+            navigationController?.present(navController, animated: true)
             
             // Remember that user did tap this image
             imageOfInterest = indexPath
@@ -1406,6 +1392,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             let indexPath = IndexPath(item: imageIndex, section: 1)
             imageOfInterest = indexPath
             imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            
+            // Prepare variables for transitioning delegate
+            if let selectedCell = imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                animatedCell = selectedCell
+                albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+                cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+                navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
+            }
         }
     }
 
@@ -1573,9 +1567,9 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let navBarHeight = (navigationController?.navigationBar.frame.origin.y ?? 0.0) + (navigationController?.navigationBar.frame.size.height ?? 0.0)
+        let navBarHeight = Float(navigationController?.navigationBar.frame.origin.y ?? 0.0) + Float(navigationController?.navigationBar.frame.size.height ?? 0.0)
         //    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
-        if (roundf(Float(scrollView.contentOffset.y + navBarHeight)) > 1) ||
+        if roundf(Float(scrollView.contentOffset.y) + navBarHeight) > 1 ||
             (categoryId != AlbumVars.shared.defaultCategory) {
             // Show navigation bar border
             if #available(iOS 13.0, *) {

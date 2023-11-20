@@ -131,12 +131,13 @@ extension EditImageThumbTableViewCell: UIScrollViewDelegate
         let cellWidth: CGFloat = collectionView(editImageThumbCollectionView, layout: editImageThumbCollectionView.collectionViewLayout, sizeForItemAt: IndexPath(row: 0, section: 0)).width + AlbumUtilities.kImageDetailsMarginsSpacing / 2.0
         let offset:CGFloat = scrollView.contentOffset.x + scrollView.contentInset.left
         let proposedPage: CGFloat = offset / fmax(1.0, cellWidth)
+        let floorProposedPage: CGFloat = floor(proposedPage)
         let snapPoint: CGFloat = 0.1
         let snapDelta: CGFloat = offset > startingScrollingOffset.x ? (1 - snapPoint) : snapPoint
 
         var page: CGFloat
-        if floor(proposedPage + snapDelta) == floor(proposedPage) {
-            page = floor(proposedPage)
+        if floor(proposedPage + snapDelta) == floorProposedPage {
+            page = floorProposedPage
         } else {
             page = floor(proposedPage + 1)
         }

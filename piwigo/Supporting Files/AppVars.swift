@@ -84,9 +84,6 @@ class AppVars: NSObject {
     
     // MARK: - Vars in Memory
     // Application variables kept in memory
-    /// - Directionality of the language in the user interface of the app?
-    var isAppLanguageRTL = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
-    
     /// - Is system dark palette active?
     var isSystemDarkModeActive = false
     

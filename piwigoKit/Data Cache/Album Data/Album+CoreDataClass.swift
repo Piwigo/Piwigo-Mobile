@@ -90,8 +90,9 @@ public class Album: NSManagedObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let newDateLast = dateFormatter.date(from: albumData.dateLast ?? "") ?? .distantPast
-        if dateLast != newDateLast {
-            dateLast = newDateLast
+        let newTimeInterval = newDateLast.timeIntervalSinceReferenceDate
+        if dateLast != newTimeInterval {
+            dateLast = newTimeInterval
         }
 
         // This album belongs to the provided user

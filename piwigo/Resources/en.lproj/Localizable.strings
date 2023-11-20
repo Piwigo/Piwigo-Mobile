@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Year";
 "editImageDetailsHUD_updatingSingle" = "Updating Photo…";
 "editImageDetailsHUD_updatingPlural" = "Updating Photos…";
-"help_externalDisplay" = "Tap the image you wish to display here.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Failed to Update";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Deleting %@%% Done";
 
 "deleteSingleImage_title" = "Delete Photo";
+"deleteSingleVideo_title" = "Delete Video";
 "deleteSingleImageHUD_deleting" = "Deleting Photo…";
-"deleteSeveralImagesHUD_deleting" = "Deleting Photos…";
+"deleteSingleVideoHUD_deleting" = "Deleting Video…";
+"deleteSeveralImagesHUD_deleting" = "Deleting Photos/Videos…";
 "removeSingleImage_title" = "Remove from Album";
 "removeSingleImageHUD_removing" = "Removing Photo…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSingleVideoHUD_removing" = "Removing Video…";
+"removeSeveralImagesHUD_removing" = "Removing Photos/Videos…";
 "deleteSingleImage_message" = "Are you sure you want to delete this photo? This cannot be undone!";
-"deleteSeveralImages_title" = "Delete %@ Photos";
-"deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ photos? This cannot be undone!";
+"deleteSingleVideo_message" = "Are you sure you want to delete this video? This cannot be undone!";
+"deleteSeveralImages_title" = "Delete %@ Photos/Videos";
+"deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ photos/videos? This cannot be undone!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Delete Failed";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
 "UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
 "UploadPhotoSize_original" = "No Downsizing";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Use Touch ID as an alternative to your App Lock passcode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Use Face ID as an alternative to your App Lock passcode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Use Optic ID as an alternative to your App Lock passcode.";
 
 "settings_clearClipboard" = "Clear Clipboard";
 "settings_clearClipboardInfo" = "Please select the delay after which the clipboard will be cleared.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
-"whatsNew_title1" = "New Cache";
-"whatsNew_desc1" = "Cache management fully rewritten to improve the user experience and bring offline browsing.";
-"whatsNew_title2" = "Screen Mirroring";
-"whatsNew_desc2" = "Watch your photos and videos on an external display.";
+"whatsNew_title1" = "New Gestures";
+"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
+"whatsNew_title2" = "PiP Support";
+"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
 "whatsNew_continue" = "Continue";

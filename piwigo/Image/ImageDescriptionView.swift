@@ -20,7 +20,7 @@ class ImageDescriptionView: UIVisualEffectView {
         super.awakeFromNib()
     }
 
-    func setDescriptionColor() {
+    func applyColorPalette() {
         if #available(iOS 13.0, *) {
             descTextView.textColor = .piwigoColorText()
         } else {
@@ -29,15 +29,14 @@ class ImageDescriptionView: UIVisualEffectView {
         }
     }
     
-    func configDescription(with imageComment:NSAttributedString?,
-                           completion: @escaping () -> Void) {
+    func config(with imageComment:NSAttributedString?,
+                inViewController viewController: UIViewController, forVideo: Bool) {
         // Should we present a description?
         guard let comment = imageComment,
               comment.string.isEmpty == false else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
-            completion()
             return
         }
         
@@ -53,7 +52,7 @@ class ImageDescriptionView: UIVisualEffectView {
         let desc = NSMutableAttributedString(attributedString: comment)
         desc.addAttributes(attributes, range: wholeRange)
         descTextView.attributedText = desc
-        let navController = topMostController()?.navigationController
+        let navController = viewController.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 
         // Calculate the available width
@@ -83,7 +82,7 @@ class ImageDescriptionView: UIVisualEffectView {
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
-            descOffset.constant = 10 - 2 * nberOfLines
+            descOffset.constant = forVideo ? 12 : 10 - 2 * nberOfLines
             self.layer.cornerRadius = cornerRadius
             self.layer.masksToBounds = true
         }
@@ -103,11 +102,11 @@ class ImageDescriptionView: UIVisualEffectView {
                 }
                 let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
                 descHeight.constant = min(maxHeight, rect.height)
-                descOffset.constant = 2
+                descOffset.constant = forVideo ? 12 : 2
             }
             else {
                 descHeight.constant = rect.height
-                descOffset.constant = 0
+                descOffset.constant = forVideo ? 12 : 0
             }
             
             // Scroll text to the top
@@ -118,7 +117,7 @@ class ImageDescriptionView: UIVisualEffectView {
             self.layer.cornerRadius = 0            // Disable rounded corner in case user added text
             self.layer.masksToBounds = false
             descWidth.constant = safeAreaWidth
-            descOffset.constant = 0
+            descOffset.constant = forVideo ? 12 : 0
             let height = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                           height: CGFloat.greatestFiniteMagnitude)).height
 
@@ -140,6 +139,5 @@ class ImageDescriptionView: UIVisualEffectView {
             // Scroll text to the top
             descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
         }
-        completion()
     }
 }

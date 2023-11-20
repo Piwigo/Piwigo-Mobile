@@ -17,7 +17,7 @@ extension User {
         return NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged public var lastUsed: Date
+    @NSManaged public var lastUsed: TimeInterval
     @NSManaged public var name: String
     @NSManaged public var username: String
     @NSManaged public var status: String

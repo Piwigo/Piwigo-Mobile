@@ -231,23 +231,23 @@ class ImageUtilities: NSObject {
         let screenWidth = fmin(screenSize.width, screenSize.height) * pwgImageSize.maxZoomScale
         
         switch screenWidth {
-        case 0...pwgImageSize.square.minPixels:
+        case 0...pwgImageSize.square.minPoints:
             return .square
-        case pwgImageSize.square.minPixels+1...pwgImageSize.thumb.minPixels:
+        case pwgImageSize.square.minPoints+1...pwgImageSize.thumb.minPoints:
             return .thumb
-        case pwgImageSize.thumb.minPixels+1...pwgImageSize.xxSmall.minPixels:
+        case pwgImageSize.thumb.minPoints+1...pwgImageSize.xxSmall.minPoints:
             return .xxSmall
-        case pwgImageSize.xxSmall.minPixels+1...pwgImageSize.xSmall.minPixels:
+        case pwgImageSize.xxSmall.minPoints+1...pwgImageSize.xSmall.minPoints:
             return .xSmall
-        case pwgImageSize.xSmall.minPixels+1...pwgImageSize.small.minPixels:
+        case pwgImageSize.xSmall.minPoints+1...pwgImageSize.small.minPoints:
             return .small
-        case pwgImageSize.small.minPixels+1...pwgImageSize.medium.minPixels:
+        case pwgImageSize.small.minPoints+1...pwgImageSize.medium.minPoints:
             return .medium
-        case pwgImageSize.medium.minPixels+1...pwgImageSize.large.minPixels:
+        case pwgImageSize.medium.minPoints+1...pwgImageSize.large.minPoints:
             return .large
-        case pwgImageSize.large.minPixels+1...pwgImageSize.xLarge.minPixels:
+        case pwgImageSize.large.minPoints+1...pwgImageSize.xLarge.minPoints:
             return .xLarge
-        case pwgImageSize.xLarge.minPixels+1...pwgImageSize.xxLarge.minPixels:
+        case pwgImageSize.xLarge.minPoints+1...pwgImageSize.xxLarge.minPoints:
             return .xxLarge
         default:
             return .fullRes

@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Jaar";
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
-"help_externalDisplay" = "Klik op de afbeelding die u hier wilt weergeven.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
 
 "deleteSingleImage_title" = "Foto verwijderen";
+"deleteSingleVideo_title" = "Video verwijderen";
 "deleteSingleImageHUD_deleting" = "Foto verwijderen…";
-"deleteSeveralImagesHUD_deleting" = "Foto's aan het verwijderen…";
+"deleteSingleVideoHUD_deleting" = "Video verwijderen…";
+"deleteSeveralImagesHUD_deleting" = "Foto's/video's aan het verwijderen…";
 "removeSingleImage_title" = "Verwijder uit album";
 "removeSingleImageHUD_removing" = "Foto verwijderen…";
-"removeSeveralImagesHUD_removing" = "Foto's verwijderen…";
+"removeSingleVideoHUD_removing" = "Video verwijderen…";
+"removeSeveralImagesHUD_removing" = "Foto's/video's verwijderen…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
-"deleteSeveralImages_title" = "Verwijder %@ foto's";
-"deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+"deleteSingleVideo_message" = "Weet je zeker dat je deze video wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
+"deleteSeveralImages_title" = "Verwijder %@ foto's/video's";
+"deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's/video's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Verwijderen is mislukt";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Selecteer de maximale grootte van de video's die zullen worden ge-upload.";
 "UploadVideoSize_resolution" = "Maximaal aantal specificaties ingebouwde camera's:";
 "UploadPhotoSize_original" = "Niet verkleinen";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Gebruik Tik ID als alternatief voor uw App Lock toegangscode.";
 "settings_biometricsFaceID" = "Gezicht ID";
 "settings_biometricsFaceIDinfo" = "Gebruik Gezicht ID als een alternatief voor uw App Lock toegangscode.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Gebruik Optische ID als alternatief voor uw App Lock toegangscode.";
 
 "settings_clearClipboard" = "Klembord leegmakten";
 "settings_clearClipboardInfo" = "Selecteer de vertraging waarna het prikbord zal worden gewist.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
-"whatsNew_title1" = "Neuer Cache";
-"whatsNew_desc1" = "Cache beheer is volledig herschreven om de gebruikerservaring te verbeteren en offline browsen te brengen.";
-"whatsNew_title2" = "Svnchrone weeraave";
-"whatsNew_desc2" = "Bekijk je foto's en video's op een externe weergave.";
+"whatsNew_title1" = "Nieuwe Gebaren";
+"whatsNew_desc1" = "Veeg naar beneden of zet de afbeelding om terug te gaan naar het album bij het bekijken van individuele foto's of video's.";
+"whatsNew_title2" = "PiP Ondersteuning";
+"whatsNew_desc2" = "Bekijk een video die is opgeslagen op je Piwigo terwijl je andere apps gebruikt.";
 "whatsNew_continue" = "Doorgaan";

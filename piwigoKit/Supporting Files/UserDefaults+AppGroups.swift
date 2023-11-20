@@ -73,4 +73,5 @@ extension UInt: PropertyListValue {}
 extension UInt16: PropertyListValue {}
 extension UInt32: PropertyListValue {}
 
+extension Float: PropertyListValue {}
 extension TimeInterval: PropertyListValue {}

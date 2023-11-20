@@ -56,7 +56,7 @@
 "Coredata_MigrationPleaseWait" = "В настоящее время мы мигрируем некоторые ваши данные. Пожалуйста, подождите, пока он не будет завершён. Не закрывайте приложение.";
 
 // User objects
-"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
+"CoreDataFetch_UserMissingData" = "Сбросит имя пользователя без корректного имени пользователя.";
 "CoreDataFetch_UserUnknownStatus" = "Не удалось получить параметры плагина Community.\nПопробуйте войти снова.";
 "CoreData_UserCreateFailed" = "Не удалось создать новый объект пользователя.";
 
@@ -67,7 +67,7 @@
 "CoreData_AlbumNotFound" = "Альбом не в постоянном кэше.";
 
 // Image objects
-"CoreDataFetch_ImageError" = "Ошибка получения фото/видео!";
+"CoreDataFetch_ImageError" = "Ошибка получения фотографий/видео!";
 "CoreDataFetch_ImageMissingData" = "Найдено и будет отменена фотография/видео без действительного идентификатора или URL.";
 "CoreDataFetch_ImageCreateFailed" = "Не удалось создать новый объект изображения.";
 
@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 Год";
 "editImageDetailsHUD_updatingSingle" = "Обновление фото…";
 "editImageDetailsHUD_updatingPlural" = "Обновление фото…";
-"help_externalDisplay" = "Нажмите на изображение, которое вы хотите отобразить здесь.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Не удалось обновить";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Удалено %@%%";
 
 "deleteSingleImage_title" = "Удалить фото";
+"deleteSingleVideo_title" = "Удалить Видео";
 "deleteSingleImageHUD_deleting" = "Удаление фото…";
-"deleteSeveralImagesHUD_deleting" = "Удаление фотографий…";
+"deleteSingleVideoHUD_deleting" = "Удаление видео…";
+"deleteSeveralImagesHUD_deleting" = "Удаление фотографий/видео…";
 "removeSingleImage_title" = "Удалить из альбома";
 "removeSingleImageHUD_removing" = "Удаление фото…";
-"removeSeveralImagesHUD_removing" = "Удаление изображений…";
+"removeSingleVideoHUD_removing" = "Удаление видео…";
+"removeSeveralImagesHUD_removing" = "Удаление фотографий/видео…";
 "deleteSingleImage_message" = "Вы уверены, что ходите удалить это фотографию? Это действие нельзя будет отменить!";
-"deleteSeveralImages_title" = "Удаление %@ фотографий";
-"deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий? Это действие нельзя будет отменить!";
+"deleteSingleVideo_message" = "Вы уверены, что хотите удалить это видео? Это действие необратимо!";
+"deleteSeveralImages_title" = "Удаление %@ фотографий/видео";
+"deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий/видео? Это действие нельзя будет отменить!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Удаление не удалось";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Пожалуйста, выберите максимальный размер видео, которое будет загружено.";
 "UploadVideoSize_resolution" = "Встроенные спецификации камер:";
 "UploadPhotoSize_original" = "Без уменьшения";
+"UploadRequests_cache" = "Выгрузки";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Конфиденциальность";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Используйте Touch ID в качестве альтернативы вашему секретному паролю блокировки.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Используйте Touch ID в качестве альтернативы вашему секретному паролю блокировки.";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Используйте Optic ID в качестве альтернативы вашему секретному паролю блокировки.";
 
 "settings_clearClipboard" = "Очистить буфер обмена";
 "settings_clearClipboardInfo" = "Пожалуйста, выберите задержку, после которой буфер обмена будет очищен.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
-"whatsNew_title1" = "Новый кэш";
-"whatsNew_desc1" = "Управление кэшем полностью переписано, чтобы улучшить работу пользователя и принести автономный режим просмотра.";
-"whatsNew_title2" = "Повтоо акона";
-"whatsNew_desc2" = "Смотрите ваши фотографии и видео на внешнем экране.";
+"whatsNew_title1" = "Новые жесты";
+"whatsNew_desc1" = "Проведите пальцем вниз или прикрепите изображение, чтобы вернуться к альбому при просмотре отдельных фотографий или видео.";
+"whatsNew_title2" = "Поддержка PiP";
+"whatsNew_desc2" = "Смотрите видео, хранящееся в вашем Piwigo, пока вы используете другие приложения.";
 "whatsNew_continue" = "Продолжить";

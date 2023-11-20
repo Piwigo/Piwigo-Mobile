@@ -118,7 +118,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(pwgPrivacy.count.rawValue)
+        return pwgPrivacy.allCases.count - 1
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -154,10 +154,11 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.deselectRow(at: indexPath, animated: true)
         
         // Did the user change the level?
-        if privacy == getPrivacyLevel(forRow: indexPath.row) { return }
+        let newPrivacy = getPrivacyLevel(forRow: indexPath.row)
+        if newPrivacy == privacy { return }
         
         // Update choice
-        privacy = getPrivacyLevel(forRow: indexPath.row)
+        privacy = newPrivacy
         for visibleCell in tableView.visibleCells {
             visibleCell.accessoryType = .none
             if visibleCell.tag == Int(privacy.rawValue) {
@@ -174,15 +175,15 @@ private func getPrivacyLevel(forRow row: Int) -> pwgPrivacy {
     var privacyLevel: pwgPrivacy
     switch row {
         case 0:
-            privacyLevel = .everybody
+            privacyLevel = .admins
         case 1:
-            privacyLevel = .adminsFamilyFriendsContacts
+            privacyLevel = .adminsFamily
         case 2:
             privacyLevel = .adminsFamilyFriends
         case 3:
-            privacyLevel = .adminsFamily
+            privacyLevel = .adminsFamilyFriendsContacts
         case 4:
-            privacyLevel = .admins
+            privacyLevel = .everybody
         default:
             privacyLevel = .unknown
             break

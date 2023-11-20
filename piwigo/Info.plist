@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>533</string>
+	<string>543</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
@@ -79,6 +79,7 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

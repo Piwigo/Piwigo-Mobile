@@ -12,7 +12,14 @@ import piwigoKit
 extension ImageViewController
 {
     // MARK: - Add/remove image from favorites
-    func getFavoriteBarButton() -> UIBarButtonItem {
+    func getFavoriteBarButton() -> UIBarButtonItem? {
+        // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
+        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending ||
+            NetworkVars.userStatus == .guest {
+            return nil
+        }
+        
+        // Is this image a favorite?
         let isFavorite = (imageData?.albums ?? Set<Album>())
             .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
         let button = UIBarButtonItem.favoriteImageButton(isFavorite, target: self)
@@ -80,7 +87,7 @@ extension ImageViewController
                         // Back to favorites album or set favorite button?
                         if self.categoryId == pwgSmartAlbum.favorites.rawValue {
                             // Return to favorites album
-                            navigationController?.popViewController(animated: true)
+                            navigationController?.dismiss(animated: true)
                         } else {
                             // Update favorite button
                             self.favoriteBarButton?.setFavoriteImage(for: false)

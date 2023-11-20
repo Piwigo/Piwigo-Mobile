@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1年";
 "editImageDetailsHUD_updatingSingle" = "写真を更新しています...";
 "editImageDetailsHUD_updatingPlural" = "写真を更新しています...";
-"help_externalDisplay" = "ここに表示したい画像をタップします。";
 
 // Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";
@@ -409,12 +408,16 @@
 "deleteImageProgress_title" = "%@%% の削除が済みました";
 
 "deleteSingleImage_title" = "写真を削除";
+"deleteSingleVideo_title" = "動画削除";
 "deleteSingleImageHUD_deleting" = "写真を削除しています...";
+"deleteSingleVideoHUD_deleting" = "ビデオの削除...";
 "deleteSeveralImagesHUD_deleting" = "写真を削除しています...";
 "removeSingleImage_title" = "アルバムから削除する";
 "removeSingleImageHUD_removing" = "写真を削除しています...";
+"removeSingleVideoHUD_removing" = " ビデオの削除...";
 "removeSeveralImagesHUD_removing" = "写真を削除しています…";
 "deleteSingleImage_message" = "この写真を本当に削除しますか？この操作は元に戻せません。";
+"deleteSingleVideo_message" = "本当にこのビデオを削除しますか？元に戻すことはできません！";
 "deleteSeveralImages_title" = "%@枚の写真を削除";
 "deleteSeveralImages_message" = "選択した%@枚の写真を本当に削除しますか？この操作は元に戻せません。";
 
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "アップロードする動画の最大サイズを選択してください。";
 "UploadVideoSize_resolution" = "内蔵カメラの最大仕様:";
 "UploadPhotoSize_original" = "ダウンサイジングなし";
+"UploadRequests_cache" = "アップロード";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "プライバシー";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Touch ID をアプリケーションロックのパスコードの代わりに使用します。";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "App Lockパスコードの代わりにFace IDを使用します。";
+"settings_biometricsOpticID" = "Optic ID";
+"settings_biometricsOpticIDinfo" = "Optic ID をアプリケーションロックのパスコードの代わりに使用します。";
 
 "settings_clearClipboard" = "クリップボードをクリア";
 "settings_clearClipboardInfo" = "クリップボードがクリアされるまでの遅延を選択してください。";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
-"whatsNew_title1" = "新しいキャッシュ";
-"whatsNew_desc1" = "キャッシュ管理は完全に書き換えられ、ユーザーエクスペリエンスを向上させ、オフラインブラウジングをもたらします。";
-"whatsNew_title2" = "画面ミラーリング";
-"whatsNew_desc2" = "外部のディスプレイで写真やビデオをご覧ください。";
+"whatsNew_title1" = "新しいジェスチャー";
+"whatsNew_desc1" = "画像を下にスワイプまたはピンチすると、個々の写真や動画を見るときにアルバムに戻ります。";
+"whatsNew_title2" = "PiPサポート";
+"whatsNew_desc2" = "Piwigoに保存されているビデオを他のアプリで視聴しましょう。";
 "whatsNew_continue" = "続ける";

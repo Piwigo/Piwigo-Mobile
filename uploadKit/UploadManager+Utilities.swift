@@ -19,8 +19,11 @@ extension UploadManager {
     public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
                                   deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
-        if fileName.count ==  0 { fatalError("!!!! No Upload Filename !!!!")}
+        var fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        if fileName.isEmpty {
+            fileName = "file-".appending(String(Int64(upload.creationDate)))
+        }
+        fileName.append(suffix)
         let fileURL = uploadsDirectory.appendingPathComponent(fileName)
         
         // Should we delete it?
@@ -97,7 +100,7 @@ extension UploadManager {
     }
 
     /// - Delete Upload files w/ or w/o prefix
-    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") -> Void {
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "", completion: (() -> Void)? = nil) {
         let fileManager = FileManager.default
         do {
             // Get list of files
@@ -114,13 +117,22 @@ extension UploadManager {
             
             // Release memory
             filesToDelete.removeAll()
-
+            
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
             print("\(dbg()) could not clear the Uploads folder: \(error)")
         }
+
+        // Job done
+        if let completion = completion {
+            completion()
+        }
+    }
+    
+    public func getUploadsDirectorySize() -> String {
+        return ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
     }
     
     

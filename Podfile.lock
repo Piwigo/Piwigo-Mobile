@@ -1,5 +1,5 @@
 PODS:
-  - IQKeyboardManagerSwift (6.5.12)
+  - IQKeyboardManagerSwift (6.5.13)
   - MBProgressHUD (1.2.0)
 
 DEPENDENCIES:
@@ -12,7 +12,7 @@ SPEC REPOS:
     - MBProgressHUD
 
 SPEC CHECKSUMS:
-  IQKeyboardManagerSwift: 371b08cb39664fb56030f5345c815a4ffc74bbc0
+  IQKeyboardManagerSwift: 69b5fb9960edff37263d45c44fd97427e1f8c22b
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
 
 PODFILE CHECKSUM: 4f577ab122f147a3faa6865b771c5a1999409439

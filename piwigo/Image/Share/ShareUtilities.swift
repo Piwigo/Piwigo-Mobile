@@ -212,9 +212,9 @@ class ShareUtilities {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
                     if let creationDate = image?.dateCreated {
-                        fileName = dateFormatter.string(from: creationDate)
+                        fileName = dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: creationDate))
                     } else if let postedDate = image?.datePosted {
-                        fileName = dateFormatter.string(from: postedDate)
+                        fileName = dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: postedDate))
                     } else {
                         fileName = dateFormatter.string(from: Date())
                     }

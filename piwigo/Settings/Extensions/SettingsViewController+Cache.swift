@@ -8,10 +8,11 @@
 
 import Foundation
 import piwigoKit
+import uploadKit
 
 extension SettingsViewController
 {
-    // MARK: Image Sizes
+    // MARK: - Image Sizes
     func getThumbnailSizes() -> Set<pwgImageSize> {
         // Album and photo thumbnails
         // Select images whose size is lower than the default preview size
@@ -27,6 +28,7 @@ extension SettingsViewController
         let thumbSize = max(AlbumVars.shared.defaultThumbnailSize, AlbumVars.shared.defaultAlbumThumbnailSize)
         return Set(allSizes.filter({$0.rawValue > thumbSize}))
     }
+    
     
     // MARK: - Update Cache Cells
     func updateDataCacheCell() {
@@ -53,23 +55,40 @@ extension SettingsViewController
         }
     }
     
+    func updateVideoCacheCell() {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 3, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = self.videoCacheSize
+        }
+    }
+    
+    func updateUploadCacheCell() {
+        let section = SettingsSection.cache.rawValue - (hasUploadRights() ? 0 : 1)
+        let indexPath = IndexPath(row: 4, section: section)
+        if let cell = self.settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            cell.detailLabel.text = self.uploadCacheSize
+        }
+    }
+
+
     // MARK: - Return Clear Cache Alert
     func getClearCacheAlert() -> UIAlertController {
         let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
 
         var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
-            // Delete data in foreground queue
-            ClearCache.clearData {
+            // Delete all data and directories in foreground queue
+            ClearCache.clearData() {
                 // Get server instance
                 guard let server = self.user.server else {
-                    fatalError("••> User not provided!")
+                    assert(self.user?.server != nil, "••> User not provided!")
+                    return
                 }
                 try? self.mainContext.save()
 
                 // Refresh Settings cell related with data
-                self.dataCacheSize = server.getCoreDataStoreSize()
-                self.updateDataCacheCell()
+                self.dataCacheSize = server.getAlbumImageCount()
             }
         })
         alert.addAction(clearDataAction)
@@ -77,15 +96,15 @@ extension SettingsViewController
         title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Delete album and photo thumbnails in foreground queue
-            guard let server = self.user.server else {
-                fatalError("••> User not provided!")
+            guard let server = self.user?.server else {
+                assert(self.user?.server != nil, "••> User not provided!")
+                return
             }
             let sizes = self.getThumbnailSizes()
-            server.clearCachedImages(ofSizes: sizes)
+            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
 
             // Refresh Settings cell
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.updateThumbCacheCell()
         })
         alert.addAction(clearThumbCacheAction)
         
@@ -93,40 +112,72 @@ extension SettingsViewController
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
-                fatalError("••> User not provided!")
+                assert(self.user?.server != nil, "••> User not provided!")
+                return
             }
             let sizes = self.getPhotoSizes()
-            server.clearCachedImages(ofSizes: sizes)
+            server.clearCachedImages(ofSizes: sizes, exceptVideos: true)
 
             // Refresh photo cache cell
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.updatePhotoCacheCell()
         })
         alert.addAction(clearPhotoCacheAction)
         
+        title = String(format: "%@ (%@)", NSLocalizedString("severalVideos", comment: "Videos"), videoCacheSize)
+        let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Delete high-resolution images in foreground queue
+            guard let server = self.user.server else {
+                assert(self.user?.server != nil, "••> User not provided!")
+                return
+            }
+            server.clearCachedVideos()
+
+            // Refresh video cache cell
+            self.videoCacheSize = server.getCacheSizeOfVideos()
+        })
+        alert.addAction(clearVideoCacheAction)
+        
+        if hasUploadRights() {
+            title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
+            let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+                // Delete upload data and Uploads/tempporary folders in foreground queue
+                ClearCache.clearUploads() {
+                    // Get server instance
+                    guard let server = self.user.server else {
+                        assert(self.user?.server != nil, "••> User not provided!")
+                        return
+                    }
+                    try? self.mainContext.save()
+                    
+                    // Refresh upload cache cell
+                    self.uploadCacheSize = server.getUploadCount()
+                        + " | " + UploadManager.shared.getUploadsDirectorySize()
+                }
+            })
+            alert.addAction(clearUploadCacheAction)
+        }
+        
         let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
-            // Delete whole cache in foreground queue
+            // Delete whole cache and folders in foreground queue
             ClearCache.clearData() {
                 // Get server instance
                 guard let server = self.user.server else {
-                    fatalError("••> User not provided!")
+                    assert(self.user?.server != nil, "••> User not provided!")
+                    return
                 }
+                try? self.mainContext.save()
+
                 // Clear all image files
-                server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases))
+                server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
 
-                // Refresh photo cache cell
-                self.dataCacheSize = server.getCoreDataStoreSize()
-                self.updateDataCacheCell()
-
-                // Refresh Settings cell related with album and photo thumbnails
+                // Refresh variables and cells
+                self.dataCacheSize = server.getAlbumImageCount()
                 var sizes = self.getThumbnailSizes()
                 self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.updateThumbCacheCell()
-
-                // Refresh Settings cell related with images of preview size or above
                 sizes = self.getPhotoSizes()
                 self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.updatePhotoCacheCell()
+                self.videoCacheSize = server.getCacheSizeOfVideos()
+                self.uploadCacheSize = server.getUploadCount()
             }
         })
         alert.addAction(clearAction)

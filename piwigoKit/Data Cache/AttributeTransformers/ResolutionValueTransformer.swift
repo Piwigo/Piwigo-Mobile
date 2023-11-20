@@ -6,8 +6,10 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
+@objc(ResolutionValueTransformer)
 public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {

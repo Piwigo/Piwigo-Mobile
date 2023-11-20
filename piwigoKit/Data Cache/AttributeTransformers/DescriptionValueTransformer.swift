@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(DescriptionValueTransformer)
 public class DescriptionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {

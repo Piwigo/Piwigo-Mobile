@@ -348,7 +348,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         sceneDelegate.addPrivacyProtection()
                     }
                 } else if let sceneDelegate = scene.delegate as? ExternalDisplaySceneDelegate,
-                          let window = sceneDelegate.windows[scene.session.persistentIdentifier] {
+                          let window = sceneDelegate.window {
                     sceneDelegate.addPrivacyProtection(to: window)
                 }
             }
@@ -358,6 +358,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // Inform Upload Manager to pause activities
+        if window?.rootViewController is DataMigrationViewController {
+            // User closes app during a database migration ► UploadManager unavailable
+            return
+        }
         UploadManager.shared.isPaused = true
     }
 

@@ -567,7 +567,7 @@ public class AlbumProvider: NSObject {
         }
 
         // Keep 'date_last' set as expected by the server
-        album.dateLast = max(Date(), album.dateLast)
+        album.dateLast = max(Date().timeIntervalSinceReferenceDate, album.dateLast)
 
         // Update album and its parent albums in the background
         updateParents(ofAlbum: album, nbImages: +(nbImages))
@@ -581,9 +581,9 @@ public class AlbumProvider: NSObject {
         }
 
         // Keep 'date_last' set as expected by the server
-        var dateLast = Date(timeIntervalSince1970: 0)
+        var dateLast = TimeInterval(-3187296000) // i.e. "1900-01-01 00:00:00" relative to reference date
         for keptImage in album.images ?? Set<Image>() {
-            if dateLast.compare(keptImage.datePosted) == .orderedAscending {
+            if dateLast < keptImage.datePosted {
                 dateLast = keptImage.datePosted
             }
         }

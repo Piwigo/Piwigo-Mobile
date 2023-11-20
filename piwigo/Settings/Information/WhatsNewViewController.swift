@@ -29,24 +29,24 @@ class WhatsNewViewController: UIViewController {
         titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-        if #available(iOS 14.0, *) {
-            firstNewsImage.image = UIImage(systemName: "server.rack")
-        } else {
+//        if #available(iOS 14.0, *) {
+//            firstNewsImage.image = UIImage(systemName: "server.rack")
+//        } else {
             // Fallback on ealier version
             firstNewsImage.image = UIImage(named: "whatsNew1")
-        }
-        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "New Cache")
-        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Cache management fully rewritten to improve the user experience and bring offline browsing.")
+//        }
+        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "New Gestures")
+        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Swipe down or pinch the image to return to the album when viewing individual photos or videos.")
         
         // What's new — 2nd annoucement
         if #available(iOS 13.0, *) {
-            secondNewsImage.image = UIImage(systemName: "rectangle.on.rectangle")
+            secondNewsImage.image = UIImage(systemName: "pip")
         } else {
             // Fallback on ealier version
             secondNewsImage.image = UIImage(named: "whatsNew2")
         }
-        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Screen Mirroring")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Watch your photos and videos on an external display.")
+        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "PiP Support")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Watch a video stored on your Piwigo while you use other apps.")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)

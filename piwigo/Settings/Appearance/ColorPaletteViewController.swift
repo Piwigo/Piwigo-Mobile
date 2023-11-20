@@ -68,7 +68,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         // Back to large titles
         navigationController?.navigationBar.prefersLargeTitles = true

@@ -52,21 +52,34 @@ public class User: NSManagedObject {
         }
         
         // Last time the user used this account
-        if self.lastUsed != lastUsed {
-            self.lastUsed = lastUsed
+        let lastUsedInterval = lastUsed.timeIntervalSinceReferenceDate
+        if self.lastUsed != lastUsedInterval {
+            self.lastUsed = lastUsedInterval
         }
     }
     
     func addUploadRightsToAlbum(withID ID: Int32) {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
-        setOfIDs.insert(ID)
-        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+        if setOfIDs.insert(ID) == (true, ID) {
+            // ID added to set of album IDs
+            if setOfIDs.isEmpty {
+                self.uploadRights = ""
+            } else {
+                self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+            }
+        }
     }
     
     func removeUploadRightsToAlbum(withID ID: Int32) {
         var setOfIDs = Set(self.uploadRights.components(separatedBy: ",").compactMap({Int32($0)}))
-        setOfIDs.remove(ID)
-        self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+        if setOfIDs.remove(ID) == ID {
+            // ID removed from the set of album IDs
+            if setOfIDs.isEmpty {
+                self.uploadRights = ""
+            } else {
+                self.uploadRights = String(setOfIDs.map({"\($0),"}).reduce("", +).dropLast(1))
+            }
+        }
     }
 }
 

@@ -52,9 +52,41 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     private var statistics = ""
-    var thumbCacheSize = ""
-    var photoCacheSize = ""
-    var dataCacheSize = ""
+    var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateDataCacheCell()
+            }
+        }
+    }
+    var thumbCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateThumbCacheCell()
+            }
+        }
+    }
+    var photoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updatePhotoCacheCell()
+            }
+        }
+    }
+    var videoCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateVideoCacheCell()
+            }
+        }
+    }
+    var uploadCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateUploadCacheCell()
+            }
+        }
+    }
 
     
     // MARK: - Core Data Objects
@@ -123,19 +155,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Calculate cache sizes in the background
         DispatchQueue.global(qos: .userInitiated).async {
             guard let server = self.user.server else {
-                fatalError("••> User not provided!")
+                assert(self.user.server != nil, "••> User not provided!")
+                return
             }
             var sizes = self.getThumbnailSizes()
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
             sizes = self.getPhotoSizes()
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.dataCacheSize = server.getCoreDataStoreSize()
-            
-            // Update cells if needed
-            DispatchQueue.main.async {
-                self.updateDataCacheCell()
-                self.updateThumbCacheCell()
-                self.updatePhotoCacheCell()
+            self.videoCacheSize = server.getCacheSizeOfVideos()
+            self.dataCacheSize = server.getAlbumImageCount()
+            if self.hasUploadRights() {
+                self.uploadCacheSize = server.getUploadCount()
+                    + " | " + UploadManager.shared.getUploadsDirectorySize()
             }
         }
     }
@@ -328,7 +359,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func loginLogout() {
         // Set date of use of server and user
-        let now = Date()
+        let now = Date.timeIntervalSinceReferenceDate
         user?.lastUsed = now
         user?.server?.lastUsed = now
         if mainContext.hasChanges {
@@ -481,7 +512,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .albums:
             nberOfRows = 4
         case .images:
-            nberOfRows = 6
+            nberOfRows = 5
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -489,11 +520,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
         case .privacy:
-            nberOfRows = 2
+            nberOfRows = 3
         case .appearance:
             nberOfRows = 1
         case .cache:
-            nberOfRows = 3
+            nberOfRows = 4 + (hasUploadRights() ? 1 : 0)
         case .clear:
             nberOfRows = 1
         case .about:
@@ -699,7 +730,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                let defaultWidth = thumbnailSize.minPixels
+                let defaultWidth = thumbnailSize.minPoints
                 let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
@@ -772,22 +803,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultImagePreviewSize"
-                tableViewCell = cell
-                
-            case 5 /* Share Image Metadata Options */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
-                // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                }
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "defaultShareOptions"
                 tableViewCell = cell
                     
             default:
@@ -1112,6 +1127,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "clearClipboard"
                 tableViewCell = cell
+                
+            case 2 /* Share Image Metadata Options */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                // See https://iosref.com/res
+                if view.bounds.size.width > 430 {
+                    // i.e. larger than iPhone 14 Pro Max screen width
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
+                }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultShareOptions"
+                tableViewCell = cell
 
             default:
                 break
@@ -1162,7 +1193,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "thumbnailCache"
                 tableViewCell = cell
                 
-            case 2 /* Photos and Videos */:
+            case 2 /* Photos */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -1171,6 +1202,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, detail: self.photoCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "photoCache"
+                tableViewCell = cell
+                
+            case 3 /* Videos */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("severalVideos", comment: "Videos")
+                cell.configure(with: title, detail: self.videoCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "videoCache"
+                tableViewCell = cell
+                
+            case 4 /* Upload Requests */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
+                cell.configure(with: title, detail: self.uploadCacheSize)
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+                cell.accessibilityIdentifier = "uploadCache"
                 tableViewCell = cell
                 
             default:
@@ -1313,8 +1366,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default Sort */,
                  1 /* Default Thumbnail File */,
-                 4 /* Default Size of Previewed Images */,
-                 5 /* Share Image Metadata Options */:
+                 4 /* Default Size of Previewed Images */:
                 result = true
             default:
                 result = false
@@ -1346,7 +1398,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case .appearance /* Appearance */:
             result = true
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .cache /* Cache Settings */:
             result = false
         case .clear /* Cache Settings */:
@@ -1561,10 +1613,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
-            case 5 /* Share image metadata options */:
-                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
-                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }
@@ -1620,6 +1668,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController else { return }
                 delayVC.delegate = self
                 navigationController?.pushViewController(delayVC, animated: true)
+            case 2 /* Share image metadata options */:
+                let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
 
             default:
                 break
@@ -1637,7 +1689,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             }
 
-        // MARK: Cache Settings
+        // MARK: Cache
         case .clear /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
@@ -1838,126 +1890,6 @@ extension SettingsViewController: SelectCategoryDelegate {
             return album.name
         } else {
             return NSLocalizedString("categorySelection_title", comment: "Album")
-        }
-    }
-}
-
-
-// MARK: - SelectedPrivacyDelegate Methods
-extension SettingsViewController: SelectPrivacyDelegate {
-    func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
-        // Do nothing if privacy level is unchanged
-        if privacyLevel == pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
-        
-        // Save new choice
-        UploadVars.defaultPrivacyLevel = privacyLevel.rawValue
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
-           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
-        }
-    }
-}
-
-// MARK: - UploadPhotoSizeDelegate Methods
-extension SettingsViewController: UploadPhotoSizeDelegate {
-    func didSelectUploadPhotoSize(_ newSize: Int16) {
-        // Was the size modified?
-        if newSize != UploadVars.photoMaxSize {
-            // Save new choice
-            UploadVars.photoMaxSize = newSize
-            
-            // Refresh corresponding row
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(photoAtIndexPath),
-               let cell = settingsTableView.cellForRow(at: photoAtIndexPath) as? LabelTableViewCell {
-                cell.detailLabel.text = pwgPhotoMaxSizes(rawValue: UploadVars.photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name
-            }
-        }
-        
-        // Hide rows if needed
-        if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
-            UploadVars.resizeImageOnUpload = false
-            // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            // Remove row in existing table
-            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
-
-            // Refresh flag
-            let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
-                                      section: SettingsSection.imageUpload.rawValue)
-            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
-        }
-    }
-}
-
-// MARK: - UploadVideoSizeDelegate Methods
-extension SettingsViewController: UploadVideoSizeDelegate {
-    func didSelectUploadVideoSize(_ newSize: Int16) {
-        // Was the size modified?
-        if newSize != UploadVars.videoMaxSize {
-            // Save new choice after verification
-            UploadVars.videoMaxSize = newSize
-
-            // Refresh corresponding row
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(videoAtIndexPath),
-               let cell = settingsTableView.cellForRow(at: videoAtIndexPath) as? LabelTableViewCell {
-                cell.detailLabel.text = pwgVideoMaxSizes(rawValue: UploadVars.videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name
-            }
-            settingsTableView.reloadRows(at: [videoAtIndexPath], with: .automatic)
-        }
-        
-        // Hide rows if needed
-        if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
-            UploadVars.resizeImageOnUpload = false
-            // Position of the rows which should be removed
-            let photoAtIndexPath = IndexPath(row: 3 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            let videoAtIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0),
-                                             section: SettingsSection.imageUpload.rawValue)
-            // Remove rows in existing table
-            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
-
-            // Refresh flag
-            let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
-                                      section: SettingsSection.imageUpload.rawValue)
-            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
-        }
-    }
-}
-
-// MARK: - LockOptionsDelegate Methods
-extension SettingsViewController: LockOptionsDelegate {
-    func didSetAppLock(toState isLocked: Bool) {
-        // Refresh corresponding row
-        let appLockAtIndexPath = IndexPath(row: 0, section: SettingsSection.privacy.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(appLockAtIndexPath),
-           let cell = settingsTableView.cellForRow(at: appLockAtIndexPath) as? LabelTableViewCell {
-            if isLocked {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
-            } else {
-                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
-            }
-        }
-    }
-}
-
-// MARK: - ClearClipboardDelegate Methods
-extension SettingsViewController: ClearClipboardDelegate {
-    func didSelectClearClipboardDelay(_ delay: pwgClearClipboard) {
-        // Refresh corresponding row
-        let delayAtIndexPath = IndexPath(row: 1, section: SettingsSection.privacy.rawValue)
-        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(delayAtIndexPath),
-           let cell = settingsTableView.cellForRow(at: delayAtIndexPath) as? LabelTableViewCell {
-            cell.detailLabel.text = delay.delayUnit
         }
     }
 }

@@ -18,7 +18,7 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         let alert = UIAlertController(title: "",
-            message: NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
+            message: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_message", comment: "Are you sure you want to delete this image? This cannot be undone!") : NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image? This cannot be undone!"),
             preferredStyle: .actionSheet)
 
         let cancelAction = UIAlertAction(
@@ -35,7 +35,7 @@ extension ImageViewController
             })
 
         let deleteAction = UIAlertAction(
-            title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+            title: imageData.isVideo ? NSLocalizedString("deleteSingleVideo_title", comment: "Delete Video") : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
             style: .destructive, handler: { [self] action in
                 deleteImageFromDatabase()
             })
@@ -65,7 +65,7 @@ extension ImageViewController
     
     func removeImageFromAlbum() {
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
@@ -152,7 +152,7 @@ extension ImageViewController
         }
 
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Image…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) { [self] in
@@ -224,7 +224,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
         let nbImages = images?.fetchedObjects?.count ?? 0
         if nbImages == 0 {
             // Return to the Album/Images collection view
-            navigationController?.popViewController(animated: true)
+            navigationController?.dismiss(animated: true)
             return
         }
 
@@ -258,47 +258,47 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
     
     private func presentNextImage() {
         // Create view controller for presenting next image
-        guard let nextImage = imagePageViewController(atIndex: imageIndex) else { return }
+        let imageData = getImageData(atIndex: imageIndex)
+        guard let nextImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
+        else { return }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
-        pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+        pageViewController?.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            self.imageData = imageData
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons
             self.setEnableStateOfButtons(true)
             // Reset favorites button
             // pwg.users.favorites… methods available from Piwigo version 2.10
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                let isFavorite = (imageData?.albums ?? Set<Album>())
-                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-            }
+            self.favoriteBarButton = getFavoriteBarButton()
+            // Scroll album collection view to keep the selected image centred on the screen
+            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }
     }
     
     private func presentPreviousImage() {
         // Create view controller for presenting next image
         imageIndex -= 1
-        guard let prevImage = imagePageViewController(atIndex: imageIndex) else { return }
+        let imageData = getImageData(atIndex: imageIndex)
+        guard let prevImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
+        else { return }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
         pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
             // Update image data
-            self.imageData = images?.object(at: IndexPath(item: imageIndex, section: 0))
+            self.imageData = imageData
             // Set title view
             self.setTitleViewFromImageData()
             // Re-enable buttons
             self.setEnableStateOfButtons(true)
             // Reset favorites button
-            if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
-                let isFavorite = (imageData?.albums ?? Set<Album>())
-                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
-                self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
-            }
+            self.favoriteBarButton = getFavoriteBarButton()
+            // Scroll album collection view to keep the selected image centred on the screen
+            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
         }
     }
 }

@@ -54,7 +54,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // We use the thumbnail image stored in cache
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        guard let serverID = imageData.server?.uuid else {
+        guard let cacheURL = imageData.cacheURL(ofSize: size) else {
             imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             pwgImageURL = imageFileURL
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
@@ -62,9 +62,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
         
         // Retrieve URL of image in cache
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-        imageFileURL = cacheDir.appendingPathComponent(size.path)
-            .appendingPathComponent(String(imageData.pwgID))
+        imageFileURL = cacheURL
         pwgImageURL = imageFileURL
 
         // Retrieve image in cache
@@ -390,19 +388,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let linkMetaData = LPLinkMetadata()
 
         // We use the thumbnail in cache
-        if let serverID = imageData.server?.uuid {
-            // Retrieve URL of image in cache
-            let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-            let fileURL = cacheDir.appendingPathComponent(size.path)
-                .appendingPathComponent(String(imageData.pwgID))
-
-            // Retrieve image in cache
-            if let cachedImage = UIImage(contentsOfFile: fileURL.path) {
-                linkMetaData.imageProvider = NSItemProvider(object: cachedImage)
-            } else {
-                linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
-            }
+        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        if let cachedImage = imageData.cachedThumbnail(ofSize: size) {
+            linkMetaData.imageProvider = NSItemProvider(object: cachedImage)
         } else {
             linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
         }

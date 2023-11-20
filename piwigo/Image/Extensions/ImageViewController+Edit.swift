@@ -40,9 +40,9 @@ extension ImageViewController: EditImageParamsDelegate
         setTitleViewFromImageData()
         
         // Update image metadata
-        if let pVC = pageViewController,
-           let imagePVC = pVC.viewControllers?.first as? ImagePreviewViewController {
-            imagePVC.updateImageMetadata(with: params)
+        if let imagePVC = pageViewController?.viewControllers?.first {
+            (imagePVC as? ImageDetailViewController)?.updateImageMetadata(with: params)
+            (imagePVC as? VideoDetailViewController)?.updateImageMetadata(with: params)
         }
     }
 

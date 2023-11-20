@@ -123,9 +123,9 @@ class ReleaseNotesViewController: UIViewController {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        var orientation: UIInterfaceOrientation = .portrait
+        var orientation: UIInterfaceOrientation
         if #available(iOS 13.0, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         } else {
             orientation = UIApplication.shared.statusBarOrientation
         }
@@ -154,6 +154,9 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
+
+        // Release 3.1.x — Bundle string
+        notesAttributedString.append(releaseNotes("v3.1.0_text", comment: "v3.1.0 Release Notes text"))
 
         // Release 3.0.x — Bundle string
         notesAttributedString.append(releaseNotes("v3.0.2_text", comment: "v3.0.2 Release Notes text"))

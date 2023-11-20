@@ -26,7 +26,7 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
             if oldThumbnailSize.rawValue != AlbumVars.shared.defaultThumbnailSize,
                oldThumbnailSize.rawValue != ImageVars.shared.defaultImagePreviewSize,
                oldThumbnailSize != .fullRes {
-                server.clearCachedImages(ofSizes: [oldThumbnailSize])
+                server.clearCachedImages(ofSizes: [oldThumbnailSize], exceptVideos: true)
             }
             
             DispatchQueue.main.async {

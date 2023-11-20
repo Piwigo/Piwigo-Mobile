@@ -347,7 +347,6 @@
 "editImageDetails_dateYearDec" = "-1 År";
 "editImageDetailsHUD_updatingSingle" = "Opdaterer foto…";
 "editImageDetailsHUD_updatingPlural" = "Opdaterer fotos…";
-"help_externalDisplay" = "Tryk på det billede, du ønsker at vise her.";
 
 // Image details — Errors
 "editImageDetailsError_title" = "Kunne ikke opdatere";
@@ -409,14 +408,18 @@
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
+"deleteSingleVideo_title" = "Slet Video";
 "deleteSingleImageHUD_deleting" = "Sletter billede…";
-"deleteSeveralImagesHUD_deleting" = "Sletter billeder…";
+"deleteSingleVideoHUD_deleting" = "Sletter Video…";
+"deleteSeveralImagesHUD_deleting" = "Sletter billeder/videoer…";
 "removeSingleImage_title" = "Fjern fra Album";
 "removeSingleImageHUD_removing" = "Sletter billede…";
-"removeSeveralImagesHUD_removing" = "Fjerner billeder…";
+"removeSingleVideoHUD_removing" = "Fjerner Video…";
+"removeSeveralImagesHUD_removing" = "Fjerner billeder/videoer…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
-"deleteSeveralImages_title" = "Slet %@ Billeder";
-"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
+"deleteSingleVideo_message" = "Er du sikker på, at du vil slette denne video? Dette kan ikke fortrydes!";
+"deleteSeveralImages_title" = "Slet %@ billeder/videoer";
+"deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder/videoer? Dette kan ikke fortrydes!";
 
 // Image delete — Errors
 "deleteImageFail_title" = "Sletning Mislykkedes";
@@ -737,6 +740,7 @@
 "UploadVideoSize_header" = "Vælg den maksimale størrelse på de videoer, der bliver uploadet.";
 "UploadVideoSize_resolution" = "Maksimale specifikationer for indbyggede kameraer:";
 "UploadPhotoSize_original" = "Ingen Neddimensionering";
+"UploadRequests_cache" = "Uploads";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Privatliv";
@@ -752,6 +756,8 @@
 "settings_biometricsTouchIDinfo" = "Brug Touch ID som et alternativ til din App Lock adgangskode.";
 "settings_biometricsFaceID" = "Face ID";
 "settings_biometricsFaceIDinfo" = "Brug ansigts-id som et alternativ til din App Lock adgangskode.";
+"settings_biometricsOpticID" = "Optisk ID";
+"settings_biometricsOpticIDinfo" = "Brug Optisk ID som et alternativ til din App adgangskode.";
 
 "settings_clearClipboard" = "Ryd Udklipsholder";
 "settings_clearClipboardInfo" = "Vælg den forsinkelse, efter hvilken udklipsholderen vil blive ryddet.";
@@ -829,8 +835,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Hvad er nyt i Piwigo";
-"whatsNew_title1" = "Ny Cache";
-"whatsNew_desc1" = "Cache management fuldt omskrevet for at forbedre brugeroplevelsen og bringe offline browsing.";
-"whatsNew_title2" = "Dubler skaerm";
-"whatsNew_desc2" = "Se dine fotos og videoer på et eksternt display.";
+"whatsNew_title1" = "Nye Bevægelser";
+"whatsNew_desc1" = "Stryg ned eller klemme billedet for at vende tilbage til albummet, når du ser individuelle billeder eller videoer.";
+"whatsNew_title2" = "PiP Understøttelse";
+"whatsNew_desc2" = "Se en video, der er gemt på din Piwigo, mens du bruger andre apps.";
 "whatsNew_continue" = "Fortsæt";
