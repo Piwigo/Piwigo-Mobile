@@ -514,7 +514,8 @@ class piwigoWebAPI: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data?.userName, "Eddy")
-        XCTAssertEqual(result.data?.language, "fr_FR")
+        XCTAssertEqual(result.data?.language, "en_GB")
+        XCTAssertTrue(result.data?.saveVisits ?? false)
     }
 
     func testPwgSessionLogoutDecoding() {

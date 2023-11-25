@@ -29,6 +29,10 @@
 		AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */; };
 		AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */; };
 		AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */; };
+		AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
+		AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
+		AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -81,7 +85,6 @@
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
 		AD2913E926696A9500403026 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD29BC972A4B73B400777390 /* pwg.tags.getAdminList2.json in Resources */ = {isa = PBXBuildFile; fileRef = AD29BC962A4B73B400777390 /* pwg.tags.getAdminList2.json */; };
-		AD29BC982A4B774900777390 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */; };
 		AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A14243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard */; };
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
@@ -406,7 +409,6 @@
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */; };
 		ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */; };
-		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
 		ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */; };
@@ -502,6 +504,18 @@
 			files = (
 				AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */,
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD0A0D082B125F5B007552A9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */,
+				AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1057,8 +1071,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD29BC982A4B774900777390 /* uploadKit.framework in Frameworks */,
-				ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */,
+				AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */,
+				AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2219,6 +2233,7 @@
 				AD11E45A24A930B000C8876F /* Sources */,
 				AD11E45B24A930B000C8876F /* Frameworks */,
 				AD11E45C24A930B000C8876F /* Resources */,
+				AD0A0D082B125F5B007552A9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3389,7 +3404,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3408,10 +3423,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/piwigoWebAPI/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3427,7 +3442,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;

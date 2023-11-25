@@ -79,6 +79,7 @@ public struct StatusInfo: Decodable
     public let imageSizes: [String]?        // ["square", "thumb",…]
     public let uploadFileTypes: String?     // "jpg,jpeg,png,gif,tif,tiff,mp4,m4v,mpg,ogg,ogv,webm,webmv,strm"
     public let uploadChunkSize: Int?        // 1024
+    public let saveVisits: Bool?            // false
     
     public enum CodingKeys: String, CodingKey {
         case version
@@ -92,5 +93,6 @@ public struct StatusInfo: Decodable
         case imageSizes = "available_sizes"
         case uploadFileTypes = "upload_file_types"
         case uploadChunkSize = "upload_form_chunk_size"
+        case saveVisits = "save_visits"
     }
 }
