@@ -145,4 +145,7 @@ public class NetworkVars: NSObject {
     public static var hasLargeSizeImages = false
     public static var hasXLargeSizeImages = false
     public static var hasXXLargeSizeImages = false
+    
+    /// — True is the app should log visits and downloads (since Piwigo 14)
+    public static var saveVisits = false
 }
