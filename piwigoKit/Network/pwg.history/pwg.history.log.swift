@@ -10,6 +10,7 @@ import Foundation
 
 // MARK: - pwg.history.log
 public let pwgHistoryLog = "format=json&method=pwg.history.log"
+public let pwgHistoryLogBytes: Int64 = 560
 
 public struct HistoryLogJSON: Decodable {
 
