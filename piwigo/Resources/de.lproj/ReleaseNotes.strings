@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.0_text" = "Version 3.1\n\n• Wischen Sie nach unten oder halten Sie das Bild fest, um zum Album zurückzukehren, wenn Sie einzelne Fotos oder Videos ansehen\n• Sehen Sie sich ein auf Ihrem Piwigo gespeichertes Video an, während Sie andere Anwendungen nutzen.\n• Fehlerbehebungen";
+"v3.1.1_text" = "Version 3.1.1\n\n• Serverstatistiken aktualisieren (erfordert Piwigo 14)\n• Fehlerbehebungen";
+
+"v3.1.0_text" = "Version 3.1\n20. November 2023\n\n• Wischen Sie nach unten oder halten Sie das Bild fest, um zum Album zurückzukehren, wenn Sie einzelne Fotos oder Videos ansehen\n• Sehen Sie sich ein auf Ihrem Piwigo gespeichertes Video an, während Sie andere Anwendungen nutzen.\n• Fehlerbehebungen";
 
 "v3.0.2_text" = "Version 3.0.2\n15. Juli 2023\n\n• Fehlerbehebungen";
 
