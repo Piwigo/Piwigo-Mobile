@@ -99,4 +99,12 @@ extension User {
         if self.role != .normal { return false }
         return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
+    
+    public func setLastUsedToNow() {
+        let dateOfLogin = Date.timeIntervalSinceReferenceDate
+        self.lastUsed = dateOfLogin
+        if let server = self.server {
+            server.lastUsed = dateOfLogin
+        }
+    }
 }
