@@ -26,7 +26,7 @@ public class Server: NSManagedObject {
                 lastUsed: Date = Date()) throws {
         // Server path
         guard path.isEmpty == false,
-              let _ = URL(string: NetworkVars.serverPath) else {
+              let _ = URL(string: NetworkVars.serverProtocol + path) else {
             throw ServerError.wrongURL
         }
         if self.path != path {

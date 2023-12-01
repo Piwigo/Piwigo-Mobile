@@ -124,6 +124,9 @@ extension ImageViewController
                     // Cancel download task
                     NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
                 }
+            } else {
+                // Update server statistics
+                logImageVisitIfNeeded(imageData.pwgID, asDownload: true)
             }
         }
 

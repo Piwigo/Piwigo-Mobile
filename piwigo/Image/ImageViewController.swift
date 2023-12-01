@@ -93,7 +93,10 @@ class ImageViewController: UIViewController {
                 pageViewController!.setViewControllers([imageDVC], direction: .forward, animated: false)
             }
         }
-        
+                
+        // Update server statistics
+        logImageVisitIfNeeded(imageData.pwgID)
+
         // Navigation bar
         let navigationBar = navigationController?.navigationBar
         navigationBar?.tintColor = .piwigoColorOrange()
@@ -333,6 +336,20 @@ class ImageViewController: UIViewController {
             let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { }
+        }
+    }
+
+    func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
+        NetworkUtilities.checkSession(ofUser: user) {
+            if NetworkVars.saveVisits {
+                PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
+                    // Statistics updated
+                } failure: { _ in
+                    // Statistics not updated ► No error reported
+                }
+            }
+        } failure: { _ in
+            // Statistics not updated ► No error reported
         }
     }
 
@@ -744,6 +761,8 @@ extension ImageViewController: UIPageViewControllerDelegate
                 playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
             }
             muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
+        } else {
+            return
         }
         
         // Set title and buttons
@@ -754,6 +773,9 @@ extension ImageViewController: UIPageViewControllerDelegate
 
         // Scroll album collection view to keep the selected image centered on the screen
         imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
+        
+        // Update server statistics
+        logImageVisitIfNeeded(imageData.pwgID)
     }
 }
 

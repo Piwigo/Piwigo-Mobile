@@ -421,7 +421,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.data.md5checksum, "7870f465dd76af3f0bd6d4f087afa5cd")
+        XCTAssertEqual(result.data.md5checksum, "3175a7347fd5d6348935ec955f52a9e3")
         XCTAssertEqual(result.data.derivatives.largeImage?.height?.intValue, 756)
     }
 
@@ -465,6 +465,29 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.result, 1)
     }
 
+    
+    // MARK: - pwg.history.…
+    func testPwgSessionHistoryLogDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.history.log", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(HistoryLogJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.errorCode, 0)
+        XCTAssertEqual(result.errorMessage, "")
+    }
+    
     
     // MARK: - pwg.session.…
     func testPwgSessionLoginDecoding() {
@@ -514,7 +537,8 @@ class piwigoWebAPI: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data?.userName, "Eddy")
-        XCTAssertEqual(result.data?.language, "fr_FR")
+        XCTAssertEqual(result.data?.language, "en_GB")
+        XCTAssertTrue(result.data?.saveVisits ?? false)
     }
 
     func testPwgSessionLogoutDecoding() {

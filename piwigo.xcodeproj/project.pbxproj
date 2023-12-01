@@ -29,6 +29,10 @@
 		AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */; };
 		AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */; };
 		AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */; };
+		AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
+		AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
+		AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -81,7 +85,6 @@
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
 		AD2913E926696A9500403026 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD29BC972A4B73B400777390 /* pwg.tags.getAdminList2.json in Resources */ = {isa = PBXBuildFile; fileRef = AD29BC962A4B73B400777390 /* pwg.tags.getAdminList2.json */; };
-		AD29BC982A4B774900777390 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */; };
 		AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A14243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard */; };
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
@@ -143,6 +146,7 @@
 		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
 		AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */; };
 		AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */; };
+		AD4379312B13B0B300BC8D09 /* pwg.history.log.json in Resources */ = {isa = PBXBuildFile; fileRef = ADD485BD2B139D3D00C7E30E /* pwg.history.log.json */; };
 		AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD439E4325E14C3600333A91 /* PasteboardObject.swift */; };
 		AD44870C29056D50001288E4 /* AlbumSmart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD44870B29056D50001288E4 /* AlbumSmart.swift */; };
 		AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */; };
@@ -345,6 +349,9 @@
 		ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
+		ADD485C12B13A16400C7E30E /* PwgSession+History.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485C02B13A16400C7E30E /* PwgSession+History.swift */; };
+		ADD485C22B13A23D00C7E30E /* pwg.history.log.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */; };
+		ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */; };
 		ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD511A3285F79C700AD3FEC /* TagsViewController+Add.swift */; };
 		ADD511A6285F7D0700AD3FEC /* TagsViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD511A5285F7D0700AD3FEC /* TagsViewController+Search.swift */; };
 		ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */; };
@@ -406,7 +413,6 @@
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */; };
 		ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */; };
-		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBD24C200040036E778 /* TagTableViewCell.swift */; };
 		ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF26FBE24C200040036E778 /* TagsViewController.swift */; };
 		ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF35E7728B283A8009F3ECE /* Server+CoreDataClass.swift */; };
@@ -502,6 +508,18 @@
 			files = (
 				AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */,
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD0A0D082B125F5B007552A9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */,
+				AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -935,6 +953,9 @@
 		ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
 		ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
+		ADD485BD2B139D3D00C7E30E /* pwg.history.log.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.history.log.json; sourceTree = "<group>"; };
+		ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.history.log.swift; sourceTree = "<group>"; };
+		ADD485C02B13A16400C7E30E /* PwgSession+History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+History.swift"; sourceTree = "<group>"; };
 		ADD511A3285F79C700AD3FEC /* TagsViewController+Add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagsViewController+Add.swift"; sourceTree = "<group>"; };
 		ADD511A5285F7D0700AD3FEC /* TagsViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagsViewController+Search.swift"; sourceTree = "<group>"; };
 		ADD6AE9F22E25DA800347BC8 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -1057,8 +1078,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD29BC982A4B774900777390 /* uploadKit.framework in Frameworks */,
-				ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */,
+				AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */,
+				AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1194,6 +1215,7 @@
 				ADF2329F26D4072A002ACEC9 /* pwg */,
 				AD5A31682847FD8A00948FEE /* pwg.categories */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
+				ADD485BC2B139D0400C7E30E /* pwg.history */,
 				AD211A8227BAFCDD005D5E4F /* pwg.session */,
 				AD5F64E624C601B500660BE3 /* pwg.tags */,
 				ADDD2100270A0B5200CACFF2 /* pwg.users */,
@@ -1308,6 +1330,7 @@
 				ADF2329C26D40619002ACEC9 /* pwg */,
 				AD5A31652847F85F00948FEE /* pwg.categories */,
 				AD9A1BE424E03AC700D22C86 /* pwg.images */,
+				ADD485BE2B139EB900C7E30E /* pwg.history */,
 				AD211A8427BAFD51005D5E4F /* pwg.session */,
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
 				ADDD2102270A0CAB00CACFF2 /* pwg.users */,
@@ -1736,6 +1759,23 @@
 				ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */,
 			);
 			path = Privacy;
+			sourceTree = "<group>";
+		};
+		ADD485BC2B139D0400C7E30E /* pwg.history */ = {
+			isa = PBXGroup;
+			children = (
+				ADD485BD2B139D3D00C7E30E /* pwg.history.log.json */,
+			);
+			path = pwg.history;
+			sourceTree = "<group>";
+		};
+		ADD485BE2B139EB900C7E30E /* pwg.history */ = {
+			isa = PBXGroup;
+			children = (
+				ADD485BF2B139EC700C7E30E /* pwg.history.log.swift */,
+				ADD485C02B13A16400C7E30E /* PwgSession+History.swift */,
+			);
+			path = pwg.history;
 			sourceTree = "<group>";
 		};
 		ADD714512301E0B000A1B7B2 /* Images */ = {
@@ -2219,6 +2259,7 @@
 				AD11E45A24A930B000C8876F /* Sources */,
 				AD11E45B24A930B000C8876F /* Frameworks */,
 				AD11E45C24A930B000C8876F /* Resources */,
+				AD0A0D082B125F5B007552A9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2428,6 +2469,7 @@
 				AD6759B028D77D81009C69EC /* pwg.categories.getImages.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				AD06E3822A42275D007CACD7 /* pwg.images.exist.json in Resources */,
+				AD4379312B13B0B300BC8D09 /* pwg.history.log.json in Resources */,
 				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
 				ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */,
 				ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */,
@@ -2727,6 +2769,7 @@
 				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
 				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
 				AD94F643266D6E1D00EFC6A9 /* LocationProvider.swift in Sources */,
+				ADD485C22B13A23D00C7E30E /* pwg.history.log.swift in Sources */,
 				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
 				AD2C62312A488F4D00671582 /* UploadVars.swift in Sources */,
 				ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */,
@@ -2744,6 +2787,7 @@
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
 				AD673C202A4B83750080BC0B /* PwgSession+Community.swift in Sources */,
+				ADD485C12B13A16400C7E30E /* PwgSession+History.swift in Sources */,
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
 				AD673C1E2A4B83170080BC0B /* PwgSession+Reflection.swift in Sources */,
 				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
@@ -2780,6 +2824,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */,
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
 				AD865773284CFE6D00C06EF4 /* community.categories.getList.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
@@ -3389,7 +3434,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3408,10 +3453,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/piwigoWebAPI/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3427,7 +3472,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -3882,7 +3927,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.1.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -3951,7 +3996,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1;
+				MARKETING_VERSION = 3.1.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

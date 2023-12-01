@@ -241,10 +241,10 @@ class VideoDetailViewController: UIViewController
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = 2 * maxScale
-        debugPrint("••> Did reset scrollView scale: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
-        debugPrint("    Offset: \(scrollView.contentOffset)")
-        debugPrint("    Inset : \(scrollView.contentInset)")
+//        debugPrint("••> Did reset scrollView scale: ")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
+//        debugPrint("    Offset: \(scrollView.contentOffset)")
+//        debugPrint("    Inset : \(scrollView.contentInset)")
 
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor
@@ -281,10 +281,10 @@ class VideoDetailViewController: UIViewController
         // Show video with controls
         videoContainerView.isHidden = false
         videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
-        debugPrint("••> Did updateScrollViewInset: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-        debugPrint("    Offset: \(scrollView.contentOffset)")
-        debugPrint("    Inset : \(scrollView.contentInset)")
+//        debugPrint("••> Did updateScrollViewInset: ")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+//        debugPrint("    Offset: \(scrollView.contentOffset)")
+//        debugPrint("    Inset : \(scrollView.contentInset)")
     }
 
     func updateImageMetadata(with data: Image) {

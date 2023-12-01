@@ -178,7 +178,7 @@
 "categorySort_manual" = "Ustaw ręcznie";
 "categorySort_random" = "Kolejność losowa";
 
-"categorySort_videosOnly" = "Tylko Filmy";
+"categorySort_videosOnly" = "Tylko filmy";
 "categorySort_imagesOnly" = "Tylko zdjęcia";
 
 // Album selection
@@ -408,13 +408,13 @@
 "deleteImageProgress_title" = "Usuwanie %@%% zakończone";
 
 "deleteSingleImage_title" = "Usuń zdjęcie";
-"deleteSingleVideo_title" = "Usuń wideo";
+"deleteSingleVideo_title" = "Usuń film";
 "deleteSingleImageHUD_deleting" = "Usuwanie zdjęcia…";
 "deleteSingleVideoHUD_deleting" = "Usuwam film…";
 "deleteSeveralImagesHUD_deleting" = "Usuwanie zdjęć/filmów…";
 "removeSingleImage_title" = "Usuń z albumu";
 "removeSingleImageHUD_removing" = "Usuwanie zdjęcia…";
-"removeSingleVideoHUD_removing" = "Usuwanie wideo…";
+"removeSingleVideoHUD_removing" = "Usuwanie filmu…";
 "removeSeveralImagesHUD_removing" = "Usuwanie zdjęć/filmów…";
 "deleteSingleImage_message" = "Czy na pewno chcesz usunąć to zdjęcie? Nie można tego cofnąć!";
 "deleteSingleVideo_message" = "Czy na pewno chcesz usunąć ten film? Nie można tego cofnąć!";
@@ -444,7 +444,7 @@
 "imageSaveError_title" = "Nie udało się zapisać zdjęcia";
 "imageSaveError_message" = "Nie można zapisać zdjęcia. Błąd: %@";
 
-"videoSaveError_title" = "Nie udało się zapisać Filmu";
+"videoSaveError_title" = "Nie udało się zapisać filmu";
 "videoSaveError_message" = "Nie można zapisać filmu. Błąd: %@";
 
 // Image move
@@ -537,12 +537,12 @@
 "audioUploadError_title" = "Błąd Przesyłania Audio";
 "audioUploadError_format" = "Niestety, pliki audio nie są jeszcze obsługiwane przez Piwigo Mobile.";
 
-"videoUploadError_title" = "Błąd Przesyłania Wideo";
+"videoUploadError_title" = "Błąd Przesyłania filmu";
 "videoUploadError_format" = "Przepraszamy, pliki wideo z rozszerzeniem .%@ nie są akceptowane przez serwer Piwigo.";
-"videoUploadError_iCloud" = "Nie można pobrać wideo. Błąd: %@";
+"videoUploadError_iCloud" = "Nie można pobrać filmu. Błąd: %@";
 "videoUploadError_export" = "Niestety, film nie mógł zostać odzyskany do wysłania. Błąd: %@";
-"videoUploadError_unknown" = "Niestety, wysyłanie wideo nie udało się z powodu nieznanego błędu podczas konwersji w MP4. Błąd: %@";
-"videoUploadCancelled_message" = "Wysyłanie wideo zostało anulowane.";
+"videoUploadError_unknown" = "Niestety, wysyłanie filmu nie udało się z powodu nieznanego błędu podczas konwersji do MP4. Błąd: %@";
+"videoUploadCancelled_message" = "Wysyłanie filmu zostało anulowane.";
 
 // Image share
 "shareImageMetadata_Title" = "Udostępnij metadane";
@@ -838,5 +838,5 @@
 "whatsNew_title1" = "Nowe gesty";
 "whatsNew_desc1" = "Przesuń palcem w dół lub uszczypnij obraz, aby powrócić do albumu podczas przeglądania pojedynczych zdjęć lub filmów.";
 "whatsNew_title2" = "Obsługa PiP";
-"whatsNew_desc2" = "Oglądaj wideo przechowywane na twoim Piwigo podczas korzystania z innych aplikacji.";
+"whatsNew_desc2" = "Oglądaj film przechowywany na twoim Piwigo podczas korzystania z innych aplikacji.";
 "whatsNew_continue" = "Kontynuuj";

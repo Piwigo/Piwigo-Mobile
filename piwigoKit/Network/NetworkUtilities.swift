@@ -98,7 +98,6 @@ public class NetworkUtilities: NSObject {
                 logger.notice("New token: \(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
             }
             if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
-                let dateOfLogin = Date.timeIntervalSinceReferenceDate
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
                 requestServerMethods {
@@ -111,8 +110,7 @@ public class NetworkUtilities: NSObject {
                         // Session now opened
                         getPiwigoConfig {
                             // Update date of accesss to the server by guest
-                            user?.lastUsed = dateOfLogin
-                            user?.server?.lastUsed = dateOfLogin
+                            user?.setLastUsedToNow()
                             user?.status = NetworkVars.userStatus.rawValue
                             completion()
                         } failure: { error in
@@ -129,8 +127,7 @@ public class NetworkUtilities: NSObject {
                             // Session now opened
                             getPiwigoConfig {
                                 // Update date of accesss to the server by user
-                                user?.lastUsed = dateOfLogin
-                                user?.server?.lastUsed = dateOfLogin
+                                user?.setLastUsedToNow()
                                 user?.status = NetworkVars.userStatus.rawValue
                                 completion()
                             } failure: { error in

@@ -20,20 +20,20 @@ public extension PwgSession {
                     jsonObjectClientExpectsToReceive: ImagesExistJSON.self,
                     countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { jsonData in
             do {
-                // Decode the JSON into codable type CommunityUploadCompletedJSON.
+                // Decode the JSON into codable type ImagesExistJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(ImagesExistJSON.self, from: jsonData)
+                let imageJSON = try decoder.decode(ImagesExistJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
+                if imageJSON.errorCode != 0 {
                     // Will retry later
-                    let error = self.localizedError(for: uploadJSON.errorCode,
-                                                    errorMessage: uploadJSON.errorMessage)
+                    let error = self.localizedError(for: imageJSON.errorCode,
+                                                    errorMessage: imageJSON.errorMessage)
                     failure(error)
                     return
                 }
 
-                if let imageID = uploadJSON.data.first(where: {$0.md5sum == md5sum})?.imageID {
+                if let imageID = imageJSON.data.first(where: {$0.md5sum == md5sum})?.imageID {
                     completion(imageID)
                 } else {
                     completion(nil)

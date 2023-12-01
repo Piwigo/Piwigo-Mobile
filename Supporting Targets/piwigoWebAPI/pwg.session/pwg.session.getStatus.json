@@ -1,5 +1,15 @@
 {
+    "stat": "ok",
     "result": {
+        "username": "Eddy",
+        "status": "webmaster",
+        "theme": "modus",
+        "language": "en_GB",
+        "pwg_token": "5b9087800b6fbd67b8f5b0facfd55696",
+        "charset": "utf-8",
+        "current_datetime": "2023-11-25 16:24:21",
+        "version": "14.0.0RC1",
+        "save_visits": true,
         "available_sizes": [
             "square",
             "thumb",
@@ -11,16 +21,7 @@
             "xlarge",
             "xxlarge"
         ],
-        "charset": "utf-8",
-        "current_datetime": "2022-02-19 23:04:17",
-        "language": "fr_FR",
-        "pwg_token": "8814066d722b4ce75aaa5110e0019b9f",
-        "status": "webmaster",
-        "theme": "bootstrap_darkroom",
-        "upload_file_types": "jpg,jpeg,png,gif,tif,tiff,mp4,m4v,mpg,ogg,ogv,webm,webmv,strm",
-        "upload_form_chunk_size": 1024,
-        "username": "Eddy",
-        "version": "12.2.0"
-    },
-    "stat": "ok"
+        "upload_file_types": "jpg,jpeg,png,gif,webp,tif,tiff,mp4,m4v,mpg,ogg,ogv,webm,webmv,heic",
+        "upload_form_chunk_size": 1024
+    }
 }
