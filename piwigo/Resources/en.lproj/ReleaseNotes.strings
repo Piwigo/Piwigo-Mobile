@@ -8,7 +8,7 @@
 
 "v3.1.2_text" = "Version 3.1.2\n\n• Requests Piwigo server update if necessary\n• Bug fixes";
 
-"v3.1.1_text" = "Version 3.1.1\n\n• Updates server statistics (requires Piwigo 14)\n• Bug fixes";
+"v3.1.1_text" = "Version 3.1.1\nDecember 1, 2023\n\n• Updates server statistics (requires Piwigo 14)\n• Bug fixes";
 
 "v3.1.0_text" = "Version 3.1\nNovember 20, 2023\n\n• Swipe down or pinch the image to return to the album when viewing individual photos or videos\n• Watch a video stored on your Piwigo while you use other apps.\n• Bug fixes";
 

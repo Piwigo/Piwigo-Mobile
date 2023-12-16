@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.1_text" = "版本 3.1.1\n\n• 更新服务器统计(需要 Piwigo 14)\n• Bug 修复";
+"v3.1.2_text" = "版本 3.1.2\n\n• 如有必要，请求 Piwigo 服务器更新\n• Bug修复";
+
+"v3.1.1_text" = "版本 3.1.1\n2023年12月1日\n\n• 更新服务器统计(需要 Piwigo 14)\n• Bug 修复";
 
 "v3.1.0_text" = "版本 3.1\n2023年11月20日\n\n• 查看单张照片或视频时，向下轻扫或捏住图片即可返回相册\n• 在使用其他应用程序时观看存储在 Piwigo 中的视频。\n• 错误修复";
 

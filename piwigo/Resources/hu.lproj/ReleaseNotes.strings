@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.1_text" = "3.1.1 verzió\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások";
+"v3.1.2_text" = "3.1.2 verzió\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások";
+
+"v3.1.1_text" = "3.1.1 verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások";
 
 "v3.1.0_text" = "3.1 verzió\n2023 November 20\n\n• Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.\n• Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.\n• Hibajavítások";
 

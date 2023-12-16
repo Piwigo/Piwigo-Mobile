@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.1_text" = "Version 3.1.1\n\n• Opdaterer serverstatistikker (kræver Piwigo 14)\n• Fejlrettelser";
+"v3.1.2_text" = "Version 3.1.2\n\n• Anmodninger om opdatering af Piwigo server om nødvendigt\n• Fejlrettelser";
+
+"v3.1.1_text" = "Version 3.1.1\n1 december 2023\n\n• Opdaterer serverstatistikker (kræver Piwigo 14)\n• Fejlrettelser";
 
 "v3.1.0_text" = "Version 3.1\n20 november 2023\n\n• Stryg nedad eller klem billedet for at vende tilbage til albummet, når du ser individuelle billeder eller videoer\n• Se en video, der er gemt på din Piwigo, mens du bruger andre apps.\n• Fejlrettelser";
 
