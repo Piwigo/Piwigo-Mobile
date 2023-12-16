@@ -3907,7 +3907,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 537;
+				CURRENT_PROJECT_VERSION = 547;
 				DEAD_CODE_STRIPPING = YES;
 				"DEBUG_INFORMATION_FORMAT[sdk=*]" = "dwarf-with-dsym";
 				"DEBUG_INFORMATION_FORMAT[sdk=iphonesimulator*]" = dwarf;
@@ -3927,7 +3927,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.1;
+				MARKETING_VERSION = 3.1.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -3979,7 +3979,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 537;
+				CURRENT_PROJECT_VERSION = 547;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
@@ -3996,7 +3996,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.1;
+				MARKETING_VERSION = 3.1.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
