@@ -187,10 +187,11 @@ public extension PwgSession {
                 NetworkVars.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
                 NetworkVars.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
                 NetworkVars.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
-                completion(data.userName ?? "")
                 
                 // Should the app log visits and downloads? (since Piwigo 14)
                 NetworkVars.saveVisits = data.saveVisits ?? false
+
+                completion(data.userName ?? "")
             }
             catch {
                 // Data cannot be digested
