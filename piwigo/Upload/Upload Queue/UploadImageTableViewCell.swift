@@ -288,7 +288,7 @@ class UploadImageTableViewCell: UITableViewCell {
             case .formatError:
                 error = UploadError.wrongDataFormat.localizedDescription
             case .uploadingError, .uploadingFail, .finishingError:
-                error = JsonError.networkUnavailable.localizedDescription
+                error = PwgSessionErrors.networkUnavailable.localizedDescription
             default:
                 error = "— ? —"
             }

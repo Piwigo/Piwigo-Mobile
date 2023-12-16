@@ -112,10 +112,10 @@ public class NetworkVars: NSObject {
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - Minimum required version of the Piwigo server
-    public static let pwgMinVersion = "15.0"
+    public static let pwgMinVersion = "2.10.0"
 
     /// - Minimum version of the Piwigo server considered redent
-    public static let pwgRecentVersion = "16.0"
+    public static let pwgRecentVersion = "13.0"
 
     /// - Quicker than calling UserDefaults variables
     public static var service = serverProtocol + serverPath

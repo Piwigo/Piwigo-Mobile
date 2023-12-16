@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum JsonError: Error {
+public enum PwgSessionErrors: Error {
     case networkUnavailable
     case emptyJSONobject
     case invalidJSONobject
@@ -24,7 +24,7 @@ public enum JsonError: Error {
     case invalidParameter       // 1003
 }
 
-extension JsonError: LocalizedError {
+extension PwgSessionErrors: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .networkUnavailable:
@@ -68,13 +68,13 @@ extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
         switch errorCode {
         case 501:
-            return JsonError.invalidMethod
+            return PwgSessionErrors.invalidMethod
         case 999:
-            return JsonError.invalidCredentials
+            return PwgSessionErrors.invalidCredentials
         case 1002:
-            return JsonError.missingParameter
+            return PwgSessionErrors.missingParameter
         case 1003:
-            return JsonError.invalidParameter
+            return PwgSessionErrors.invalidParameter
         default:
             let error = NSError(domain: "Piwigo", code: errorCode,
                                 userInfo: [NSLocalizedDescriptionKey : errorMessage])

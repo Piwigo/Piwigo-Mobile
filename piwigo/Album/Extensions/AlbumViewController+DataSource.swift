@@ -237,7 +237,7 @@ extension AlbumViewController
                     buttonTarget: self, buttonSelector: #selector(hideLoading),
                     inMode: .text)
             }
-            else if let err = error as? JsonError, err == .missingParameter {
+            else if let err = error as? PwgSessionErrors, err == .missingParameter {
                 // Hide HUD
                 navigationController?.hidePiwigoHUD() {
                     // End refreshing if needed
