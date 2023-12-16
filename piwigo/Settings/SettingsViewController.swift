@@ -1468,13 +1468,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 do {
                     // Decode the JSON into codable type GetInfosJSON.
                     let decoder = JSONDecoder()
-                    let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
+                    let serverJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
                     // Piwigo error?
-                    if uploadJSON.errorCode != 0 {
+                    if serverJSON.errorCode != 0 {
                         #if DEBUG
-                        let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                     errorMessage: uploadJSON.errorMessage)
+                        let error = PwgSession.shared.localizedError(for: serverJSON.errorCode,
+                                                                     errorMessage: serverJSON.errorMessage)
                         debugPrint(error)
                         #endif
                         return
@@ -1483,7 +1483,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Collect statistics
                     let numberFormatter = NumberFormatter()
                     numberFormatter.numberStyle = .decimal
-                    for info in uploadJSON.data {
+                    for info in serverJSON.data {
                         guard let nber = info.value?.intValue else { continue }
                         switch info.name ?? "" {
                         case "nb_elements":
