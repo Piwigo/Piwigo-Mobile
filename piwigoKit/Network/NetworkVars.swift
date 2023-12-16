@@ -111,6 +111,12 @@ public class NetworkVars: NSObject {
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
+    /// - Minimum required version of the Piwigo server
+    public static let pwgMinVersion = "15.0"
+
+    /// - Minimum version of the Piwigo server considered redent
+    public static let pwgRecentVersion = "16.0"
+
     /// - Quicker than calling UserDefaults variables
     public static var service = serverProtocol + serverPath
     
@@ -146,6 +152,6 @@ public class NetworkVars: NSObject {
     public static var hasXLargeSizeImages = false
     public static var hasXXLargeSizeImages = false
     
-    /// — True is the app should log visits and downloads (since Piwigo 14)
+    /// — True if the app should log visits and downloads (since Piwigo 14)
     public static var saveVisits = false
 }

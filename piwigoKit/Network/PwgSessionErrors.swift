@@ -15,6 +15,7 @@ public enum JsonError: Error {
     case wrongJSONobject
     case authenticationFailed
     case unexpectedError
+    case incompatiblePwgVersion
     
     // Piwigo server errors
     case invalidMethod          // 501
@@ -56,6 +57,9 @@ extension JsonError: LocalizedError {
         case .invalidParameter:
             return NSLocalizedString("serverUnknownError_message",
                                      comment: "Unexpected error encountered while calling server method with provided parameters.")
+        case .incompatiblePwgVersion:
+            return NSLocalizedString("serverVersionNotCompatible_message",
+                                     comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
         }
     }
 }

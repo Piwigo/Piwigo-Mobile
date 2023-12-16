@@ -426,15 +426,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         var title = "", text = ""
         switch activeSection(section) {
         case .server:
-            if (NetworkVars.serverProtocol == "https://") {
-                title = String(format: "%@ %@",
-                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                               NetworkVars.pwgVersion)
-            } else {
-                title = String(format: "%@ %@\n",
-                               NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                               NetworkVars.pwgVersion)
+            title = String(format: "%@ %@",
+                           NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
+                           NetworkVars.pwgVersion)
+            if (NetworkVars.serverProtocol == "http://") {
+                title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
+            }
+            if NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+                if !title.contains("\n") { title += "\n" }
+                if !text.isEmpty { text += " — " }
+                text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
