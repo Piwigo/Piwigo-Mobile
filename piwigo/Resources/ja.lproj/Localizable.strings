@@ -121,8 +121,10 @@
 "serverConnectionError_title" = "接続に失敗しました";
 "serverConnectionError_message" = "セキュリティで保護された HTTPS 接続を確立できませんでした。アドレスを確認するか、暗号化されていない HTTP モードでやり直してください。";
 
+"serverVersionOld_title" = "サーバーアップデートが利用可能です";
+"serverVersionOld_message" = "Piwigoサーバーのバージョンは %@です。管理者に更新を依頼してください。";
 "serverVersionNotCompatible_title" = "サーバが非互換です";
-"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは2.8以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。それでも継続しますか？";
+"serverVersionNotCompatible_message" = "Piwigoサーバのバージョンは%@です。Piwigo Mobileは%@以上のみサポートしています。Piwigo Mobileを使うには、サーバを更新してください。";
 
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";

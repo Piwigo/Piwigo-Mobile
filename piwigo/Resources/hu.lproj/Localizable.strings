@@ -121,8 +121,10 @@
 "serverConnectionError_title" = "Csatlakozási hiba";
 "serverConnectionError_message" = "Nem sikerült biztonságos HTTPS kapcsolatot létrehozni. Kérlek ellenőrizd a web címet, vagy próbálkozz HTTP móddal?";
 
+"serverVersionOld_title" = "Szerver frissítés érhető el";
+"serverVersionOld_message" = "A Piwigo szerver verziója %@. Kérje meg a rendszergazdát, hogy frissítse.";
 "serverVersionNotCompatible_title" = "Szerver nem kompatibilis";
-"serverVersionNotCompatible_message" = "A Piwigo szervered verziója %@. A Piwigo Mobile használatához legalább 2.8-as verzióra van szükség. Kérlek frissítsd a szervered, hogy használni tudd a Piwigo Mobile-t. Folytassuk a kapcsolódást ennek ellenére?";
+"serverVersionNotCompatible_message" = "A Piwigo szervered verziója %@. A Piwigo Mobile használatához legalább %@ verzióra van szükség. Kérlek frissítsd a szervered, hogy használni tudd a Piwigo Mobile-t.";
 
 "sessionStatusError_title" = "Hitelesítés sikertelen";
 "sessionStatusError_message" = "Nem sikerült bejelentkezni a szerverre. Kérlek próbáld újra!";

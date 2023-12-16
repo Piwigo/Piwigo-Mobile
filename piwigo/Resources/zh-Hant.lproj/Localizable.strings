@@ -121,8 +121,10 @@
 "serverConnectionError_title" = "連線失敗";
 "serverConnectionError_message" = "無法建立安全的HTTPS連線。請確認網址或嘗試非加密HTTP模式?";
 
+"serverVersionOld_title" = "伺服器可用更新";
+"serverVersionOld_message" = "您的 Piwigo 伺服器版本是 %@。 請管理員更新一下。";
 "serverVersionNotCompatible_title" = "伺服器不支援";
-"serverVersionNotCompatible_message" = "你的Piwigo伺服器版本為%@。Piwigo Mobile需要2.8版本以上。請更新你的伺服器以使用Piwigo Mobile。確定要繼續嗎?";
+"serverVersionNotCompatible_message" = "你的Piwigo伺服器版本為%@。Piwigo Mobile需要%@版本以上。請更新你的伺服器以使用Piwigo Mobile。";
 
 "sessionStatusError_title" = "認證失敗";
 "sessionStatusError_message" = "與伺服器認證失敗。請嘗試重新登入。";

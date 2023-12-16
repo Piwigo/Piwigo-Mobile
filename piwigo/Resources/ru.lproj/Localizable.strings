@@ -121,8 +121,10 @@
 "serverConnectionError_title" = "Ошибка подключения";
 "serverConnectionError_message" = "Не удалось установить защищенное HTTPS-соединение. Проверьте адрес или попробуйте в незашифрованном режиме (HTTP)?";
 
+"serverVersionOld_title" = "Доступно обновление сервера";
+"serverVersionOld_message" = "Версия вашего сервера Piwigo %@. Пожалуйста, попросите администратора обновить его.";
 "serverVersionNotCompatible_title" = "Сервер несовместим";
-"serverVersionNotCompatible_message" = "Версия вашего сервера Piwigo %@. Piwigo Mobile поддерживает только версию не менее 2.8. Пожалуйста, обновите ваш сервер, чтобы использовать Piwigo Mobile. Вы все еще хотите продолжить?";
+"serverVersionNotCompatible_message" = "Версия вашего сервера Piwigo %@. Piwigo Mobile поддерживает только версию не менее %@. Пожалуйста, обновите ваш сервер, чтобы использовать Piwigo Mobile.";
 
 "sessionStatusError_title" = "Ошибка аутентификации";
 "sessionStatusError_message" = "Ошибка аутентификации на сервере. Попробуйте войти снова.";
