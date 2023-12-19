@@ -130,21 +130,12 @@ class TagsViewController: UITableViewController {
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         NetworkUtilities.checkSession(ofUser: user) {
-            self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { error in
+            self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
-
-                // Show an alert if there was an error.
-                DispatchQueue.main.async {
-                    self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                            message: error.localizedDescription) { }
-                }
+                didFetchTagsWithError(error as Error)
             }
-        } failure: { error in
-            // Show an alert if there was an error.
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                        message: error.localizedDescription) { }
-            }
+        } failure: { [self] error in
+            didFetchTagsWithError(error as Error)
         }
         
         // Title
@@ -154,6 +145,19 @@ class TagsViewController: UITableViewController {
         if user.hasAdminRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
+        }
+    }
+    
+    private func didFetchTagsWithError(_ error: Error) {
+        let title = TagError.fetchFailed.localizedDescription
+        if let pwgError = error as? PwgSessionErrors,
+           pwgError == PwgSessionErrors.incompatiblePwgVersion {
+            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+        } else {
+            DispatchQueue.main.async {
+                self.dismissPiwigoError(withTitle: title,
+                                        message: error.localizedDescription) { }
+            }
         }
     }
     

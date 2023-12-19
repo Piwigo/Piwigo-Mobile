@@ -364,10 +364,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
                 guard let error = error else { return }
-                
+
                 // Show the error
-                DispatchQueue.main.async { [self] in
-                    dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                if error is PwgSessionErrors,
+                   error as! PwgSessionErrors == PwgSessionErrors.incompatiblePwgVersion {
+                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+                } else {
+                    DispatchQueue.main.async { [self] in
+                        dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+                    }
                 }
             }
         } failure: { [self] error in
@@ -375,6 +381,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
             }
         }
+    }
+    
+    private func didFetchAlbumsWithError(error: Error) {
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -975,7 +985,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         })
     }
 
-    func showError(with error:String = "") {
+    func showError(_ error: Error?) {
         // Title and message
         let title:String
         var message:String
@@ -1003,17 +1013,26 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Present alert
-        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error) {
-            // Forget the choice
-            self.selectedCategoryId = Int32.min
-            // Save changes if any
-            do {
-                try self.mainContext.save()
-            } catch let error as NSError {
-                print("Could not fetch \(error), \(error.userInfo)")
+        if let pwgError = error as? PwgSessionErrors,
+           pwgError == PwgSessionErrors.incompatiblePwgVersion {
+            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+        } else {
+            let errorMessage = ""
+            if let error = error {
+                let errorMessage = error.localizedDescription
             }
-            // Dismiss the view
-            self.dismiss(animated: true, completion: {})
+            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMessage) {
+                // Forget the choice
+                self.selectedCategoryId = Int32.min
+                // Save changes if any
+                do {
+                    try self.mainContext.save()
+                } catch let error as NSError {
+                    print("Could not fetch \(error), \(error.userInfo)")
+                }
+                // Dismiss the view
+                self.dismiss(animated: true, completion: {})
+            }
         }
     }
 }

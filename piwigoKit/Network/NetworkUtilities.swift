@@ -160,7 +160,12 @@ public class NetworkUtilities: NSObject {
         if NetworkVars.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
                 PwgSession.shared.sessionGetStatus { _ in
-                    completion()
+                    // Check Piwigo server version
+                    if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
+                        failure(PwgSessionErrors.incompatiblePwgVersion as NSError) }
+                    else {
+                        completion()
+                    }
                 } failure: { error in
                     failure(error)
                 }
@@ -169,7 +174,12 @@ public class NetworkUtilities: NSObject {
             }
         } else {
             PwgSession.shared.sessionGetStatus { _ in
-                completion()
+                // Check Piwigo server version
+                if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
+                    failure(PwgSessionErrors.incompatiblePwgVersion as NSError) }
+                else {
+                    completion()
+                }
             } failure: { error in
                 failure(error)
             }

@@ -565,8 +565,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
-                print("••> Error \(error.code): \(error.localizedDescription)")
-                // TO DO…
+                if let pwgError = error as? PwgSessionErrors,
+                   pwgError == PwgSessionErrors.incompatiblePwgVersion {
+                    let title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+                } else {
+                    print("••> Error \(error.code): \(error.localizedDescription)")
+                    // TO DO…
+                }
             }
         }
 
@@ -865,8 +871,14 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // End refreshing anyway
             DispatchQueue.main.async {
                 self.imagesCollection?.refreshControl?.endRefreshing()
+                if let pwgError = error as? PwgSessionErrors,
+                   pwgError == PwgSessionErrors.incompatiblePwgVersion {
+                    let title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+                } else {
+                    print("••> Error \(error.code): \(error.localizedDescription)")
+                }
             }
-            print("••> Error \(error.code): \(error.localizedDescription)")
         }
     }
     

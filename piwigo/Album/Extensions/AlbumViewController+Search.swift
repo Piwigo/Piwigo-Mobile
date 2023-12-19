@@ -156,8 +156,14 @@ extension AlbumViewController: UISearchBarDelegate
                 NetworkUtilities.checkSession(ofUser: self.user) {
                     self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
-                    print("••> Error \(error.code): \(error.localizedDescription)")
-                    // TO DO…
+                    if let pwgError = error as? PwgSessionErrors,
+                       pwgError == PwgSessionErrors.incompatiblePwgVersion {
+                        let title = PwgSessionErrors.incompatiblePwgVersion.localizedDescription
+                        ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+                    } else {
+                        print("••> Error \(error.code): \(error.localizedDescription)")
+                        // TO DO…
+                    }
                 }
             }
         }

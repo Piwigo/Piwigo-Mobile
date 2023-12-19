@@ -227,10 +227,16 @@ extension AlbumCollectionViewCell {
     private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
         DispatchQueue.main.async {
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-            let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
-            topViewController?.hidePiwigoHUD() {
-                topViewController?.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) {
+            if let pwgError = error as? PwgSessionErrors,
+               pwgError == PwgSessionErrors.incompatiblePwgVersion,
+               let topViewController = topViewController {
+                ClearCache.closeSessionWithIncompatibleServer(from: topViewController, title: title)
+            } else {
+                let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
+                topViewController?.hidePiwigoHUD() {
+                    topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                          errorMessage: error.localizedDescription) {
+                    }
                 }
             }
         }

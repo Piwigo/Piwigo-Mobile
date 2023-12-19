@@ -48,26 +48,18 @@ extension SelectCategoryViewController {
                     // Show the error
                     DispatchQueue.main.async { [self] in
                         self.hidePiwigoHUD {
-                            self.showError(with: error.localizedDescription)
+                            self.showError(error)
                         }
                     }
                 }
             } failure: { [unowned self] error in
                 self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
+                    self.showError(error)
                 }
             }
         } failure: { [unowned self] error in
             self.hidePiwigoHUD {
-                guard let error = error as NSError? else {
-                    self.showError()
-                    return
-                }
-                self.showError(with: error.localizedDescription)
+                self.showError(error)
             }
         }
     }
@@ -101,20 +93,12 @@ extension SelectCategoryViewController {
                 }
             } failure: { [unowned self] error in
                 self.hidePiwigoHUD {
-                    guard let error = error as NSError? else {
-                        self.showError()
-                        return
-                    }
-                    self.showError(with: error.localizedDescription)
+                    self.showError(error)
                 }
             }
         } failure: { [unowned self] error in
             self.hidePiwigoHUD {
-                guard let error = error as NSError? else {
-                    self.showError()
-                    return
-                }
-                self.showError(with: error.localizedDescription)
+                self.showError(error)
             }
         }
     }

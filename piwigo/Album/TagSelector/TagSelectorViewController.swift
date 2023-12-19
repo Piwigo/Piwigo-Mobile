@@ -96,23 +96,29 @@ class TagSelectorViewController: UITableViewController {
             self.tagProvider.fetchTags(asAdmin: false) { error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }
-
-                    // Show an alert if there was an error.
-                    self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                            message: error.localizedDescription) { }
+                    didFetchTagsWithError(error)
                 }
             }
-        } failure: { error in
-            // Show an alert if there was an error.
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                        message: error.localizedDescription) { }
-            }
+        } failure: { [self] error in
+            didFetchTagsWithError(error)
         }
         
         // Add button for returning to albums/images
         let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitTagSelect))
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
+    }
+    
+    private func didFetchTagsWithError(_ error: Error) {
+        let title = TagError.fetchFailed.localizedDescription
+        if let pwgError = error as? PwgSessionErrors,
+           pwgError == PwgSessionErrors.incompatiblePwgVersion {
+            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+        } else {
+            DispatchQueue.main.async {
+                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
+                                        message: error.localizedDescription) { }
+            }
+        }
     }
     
     @objc private func applyColorPalette() {

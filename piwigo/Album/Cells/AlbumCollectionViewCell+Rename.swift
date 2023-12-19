@@ -170,11 +170,17 @@ extension AlbumCollectionViewCell {
                                      completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.async {
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
-            let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
-            topViewController?.hidePiwigoHUD() {
-                topViewController?.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) {
-                    completion(true)
+            if let pwgError = error as? PwgSessionErrors,
+               pwgError == PwgSessionErrors.incompatiblePwgVersion,
+               let topViewController = topViewController {
+                ClearCache.closeSessionWithIncompatibleServer(from: topViewController, title: title)
+            } else {
+                let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
+                topViewController?.hidePiwigoHUD() {
+                    topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                          errorMessage: error.localizedDescription) {
+                        completion(true)
+                    }
                 }
             }
         }

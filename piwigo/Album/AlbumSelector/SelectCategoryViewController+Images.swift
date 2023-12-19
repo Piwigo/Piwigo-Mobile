@@ -39,32 +39,25 @@ extension SelectCategoryViewController {
         }
         
         // Copy next image to seleted album
-        self.copyImage(imageData, toAlbum: albumData) { success in
-            if success {
-                // Next image…
-                self.inputImages.remove(imageData)
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
-                self.copyImages(toAlbum: albumData)
-            } else {
-                // Close HUD, inform user and save in Core Data store
-                self.hidePiwigoHUD { self.showError() }
-            }
-        } onFailure: { error in
+        self.copyImage(imageData, toAlbum: albumData) { [self] in
+            // Next image…
+            self.inputImages.remove(imageData)
+            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.copyImages(toAlbum: albumData)
+        }
+        onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
             self.hidePiwigoHUD {
-                self.showError(with: error?.localizedDescription ?? "")
+                self.showError(error)
             }
         }
     }
     
     private func copyImage(_ imageData: Image, toAlbum albumData: Album,
-                           onCompletion completion: @escaping (_ success: Bool) -> Void,
+                           onCompletion completion: @escaping () -> Void,
                            onFailure fail: @escaping (_ error: NSError?) -> Void) {
         // Append selected category ID to image category list
-        guard let albums = imageData.albums else {
-            self.showError()
-            return
-        }
+        let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})
         categoryIds.append(albumData.pwgID)
         
@@ -90,7 +83,7 @@ extension SelectCategoryViewController {
                     albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
                 }
             }
-            completion(true)
+            completion()
         } failure: { error in
             fail(error)
         }
@@ -126,32 +119,25 @@ extension SelectCategoryViewController {
         }
         
         // Move next image to seleted album
-        moveImage(imageData, toCategory: albumData) { success in
-            if success {
-                // Next image…
-                self.inputImages.remove(imageData)
-                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
-                self.moveImages(toAlbum: albumData)
-            } else {
-                // Close HUD, inform user and save in Core Data store
-                self.hidePiwigoHUD { self.showError() }
-            }
-        } onFailure: { error in
+        moveImage(imageData, toCategory: albumData) { [self] in
+            // Next image…
+            self.inputImages.remove(imageData)
+            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.moveImages(toAlbum: albumData)
+        }
+        onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
             self.hidePiwigoHUD {
-                self.showError(with: error?.localizedDescription ?? "")
+                self.showError(error)
             }
         }
     }
     
     private func moveImage(_ imageData: Image, toCategory albumData: Album,
-                           onCompletion completion: @escaping (_ success: Bool) -> Void,
+                           onCompletion completion: @escaping () -> Void,
                            onFailure fail: @escaping (_ error: NSError?) -> Void) {
         // Append selected category ID to image category list
-        guard let albums = imageData.albums else {
-            self.showError()
-            return
-        }
+        let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})
         categoryIds.append(albumData.pwgID)
         
@@ -186,7 +172,7 @@ extension SelectCategoryViewController {
                 // Update albums
                 self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
             }
-            completion(true)
+            completion()
         } failure: { error in
             fail(error)
         }

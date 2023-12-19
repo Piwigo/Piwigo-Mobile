@@ -126,13 +126,18 @@ extension ImageViewController
     private func removeImageFromAlbumError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
-                // Hide HUD
-                hidePiwigoHUD { [unowned self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
+            if let pwgError = error as? PwgSessionErrors,
+               pwgError == PwgSessionErrors.incompatiblePwgVersion {
+                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+            } else {
+                let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+                self.dismissPiwigoError(withTitle: title, message: message,
+                                        errorMessage: error.localizedDescription) { [unowned self] in
+                    // Hide HUD
+                    hidePiwigoHUD { [unowned self] in
+                        // Re-enable buttons
+                        setEnableStateOfButtons(true)
+                    }
                 }
             }
         }
@@ -202,13 +207,18 @@ extension ImageViewController
     private func deleteImageFromDatabaseError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
-                // Hide HUD
-                hidePiwigoHUD { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
+            if let pwgError = error as? PwgSessionErrors,
+               pwgError == PwgSessionErrors.incompatiblePwgVersion {
+                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+            } else {
+                let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+                self.dismissPiwigoError(withTitle: title, message: message,
+                                        errorMessage: error.localizedDescription) { [unowned self] in
+                    // Hide HUD
+                    hidePiwigoHUD { [self] in
+                        // Re-enable buttons
+                        setEnableStateOfButtons(true)
+                    }
                 }
             }
         }
