@@ -32,6 +32,7 @@ class VideoControlsView: UIVisualEffectView {
     }
     
     // Initialisation
+    private var videoDuration: Double?
     private func configView() {
         let view = viewFromNibForClass()
         view.frame = bounds
@@ -46,23 +47,6 @@ class VideoControlsView: UIVisualEffectView {
         let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
         return view
     }
-
-    private var videoDuration: Double?
-    private lazy var hoursFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        return formatter
-    }()
-    private lazy var minsFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "mm:ss"
-        return formatter
-    }()
-    private lazy var minFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "m:ss"
-        return formatter
-    }()
     
     func applyColorPalette() {
         if #available(iOS 13.0, *) {
