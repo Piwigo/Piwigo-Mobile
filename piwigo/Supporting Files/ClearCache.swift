@@ -13,7 +13,7 @@ import uploadKit
 
 class ClearCache: NSObject {
     
-    static func closeSession(completion: @escaping () -> Void) {
+    static func closeSession() {
         // Cancel tasks
         cancelTasks {
             // Back to default values

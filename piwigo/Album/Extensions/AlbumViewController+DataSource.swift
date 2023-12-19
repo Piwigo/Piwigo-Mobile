@@ -251,7 +251,7 @@ extension AlbumViewController
         // Hide HUD
         navigationController?.hidePiwigoHUD() {
             // Return to login view
-            ClearCache.closeSession {}
+            ClearCache.closeSession()
         }
     }
 

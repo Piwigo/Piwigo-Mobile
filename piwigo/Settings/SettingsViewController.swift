@@ -368,7 +368,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Guest user?
         if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
-            ClearCache.closeSession { }
+            ClearCache.closeSession()
             return
         }
         
@@ -382,7 +382,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             PwgSession.shared.sessionLogout {
                 // Close session
                 DispatchQueue.main.async {
-                    ClearCache.closeSession { }
+                    ClearCache.closeSession()
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
@@ -390,7 +390,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // or simply a connection drop.
                 self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
                                         message: error.localizedDescription) {
-                    ClearCache.closeSession { }
+                    ClearCache.closeSession()
                 }
             }
         })
