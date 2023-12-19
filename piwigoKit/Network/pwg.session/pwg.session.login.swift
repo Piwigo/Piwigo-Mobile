@@ -8,10 +8,10 @@
 
 import Foundation
 
+// MARK: - pwg.session.login
 public let pwgSessionLogin = "format=json&method=pwg.session.login"
 public let pwgSessionLoginBytes: Int64 = 620
 
-// MARK: Piwigo JSON Structure
 public struct SessionLoginJSON: Decodable {
 
     public var status: String?
