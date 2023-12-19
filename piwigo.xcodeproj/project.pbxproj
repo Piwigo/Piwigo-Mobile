@@ -232,6 +232,7 @@
 		AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A1E7C28846E1300752948 /* Help08ViewController.swift */; };
 		AD8A1E80288478FA00752948 /* help08-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8A1E7E288478FA00752948 /* help08-top.png */; };
 		AD8A1E81288478FA00752948 /* help08-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8A1E7F288478FA00752948 /* help08-bot.png */; };
+		AD8C57162B320AFF00FD1C90 /* PwgSession+Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8C57152B320AFF00FD1C90 /* PwgSession+Root.swift */; };
 		AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */; };
 		AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214926B094DC0008E907 /* Help07ViewController.swift */; };
 		AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214B26B0A4450008E907 /* ImageUtilities.swift */; };
@@ -786,6 +787,7 @@
 		AD8A1E7C28846E1300752948 /* Help08ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help08ViewController.swift; sourceTree = "<group>"; };
 		AD8A1E7E288478FA00752948 /* help08-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top.png"; sourceTree = "<group>"; };
 		AD8A1E7F288478FA00752948 /* help08-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot.png"; sourceTree = "<group>"; };
+		AD8C57152B320AFF00FD1C90 /* PwgSession+Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Root.swift"; sourceTree = "<group>"; };
 		AD8D212726ACC15F0008E907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/InAppIntents.intentdefinition; sourceTree = "<group>"; };
 		AD8D212A26ACC1660008E907 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D212E26ACC1700008E907 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InAppIntents.strings; sourceTree = "<group>"; };
@@ -1939,6 +1941,7 @@
 			isa = PBXGroup;
 			children = (
 				AD807F0526E52B8D00008162 /* pwg.getInfos.swift */,
+				AD8C57152B320AFF00FD1C90 /* PwgSession+Root.swift */,
 			);
 			path = pwg;
 			sourceTree = "<group>";
@@ -2791,6 +2794,7 @@
 				AD211A7F27BADEA5005D5E4F /* reflection.getMethodList.swift in Sources */,
 				AD673C1E2A4B83170080BC0B /* PwgSession+Reflection.swift in Sources */,
 				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
+				AD8C57162B320AFF00FD1C90 /* PwgSession+Root.swift in Sources */,
 				AD865777284D153F00C06EF4 /* pwg.categories.getList.swift in Sources */,
 				AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */,
 				AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */,

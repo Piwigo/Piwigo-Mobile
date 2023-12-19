@@ -92,6 +92,10 @@ public class NetworkVars: NSObject {
     @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var pwgVersion: String
     
+    /// - Piwigo server statistics (stored so that the app can show them anytime, once loaded)
+    @UserDefault("pwgStatistics", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public static var pwgStatistics: String
+    
     /// - File types accepted by the Piwigo server
     @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
     public static var serverFileTypes: String

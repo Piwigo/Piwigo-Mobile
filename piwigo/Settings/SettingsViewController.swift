@@ -51,7 +51,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
-    private var statistics = ""
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {
             DispatchQueue.main.async {
@@ -111,10 +110,36 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Get Server Infos if possible
-        if user.hasAdminRights {
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.getInfos()
+        // Launch tasks in the background
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            // Calculate cache sizes in the background
+            guard let server = self.user.server else {
+                assert(self.user.server != nil, "••> User not provided!")
+                return
+            }
+            var sizes = self.getThumbnailSizes()
+            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+            sizes = self.getPhotoSizes()
+            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+            self.videoCacheSize = server.getCacheSizeOfVideos()
+            self.dataCacheSize = server.getAlbumImageCount()
+            if self.hasUploadRights() {
+                self.uploadCacheSize = server.getUploadCount()
+                    + " | " + UploadManager.shared.getUploadsDirectorySize()
+            }
+            
+            // Update server statistics if possible
+            if user.hasAdminRights {
+                // Check session before collecting server statistics
+                NetworkUtilities.checkSession(ofUser: self.user) {
+                    // Collect stats from server and store them in cache
+                    PwgSession.shared.getInfos()
+                } failure: { _ in
+                    /// - Network communication errors
+                    /// - Returned JSON data is empty
+                    /// - Cannot decode data returned by Piwigo server
+                    /// -> nothing presented in the footer
+                }
             }
         }
         
@@ -150,24 +175,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if UploadVars.prefixFileNameBeforeUpload,
            UploadVars.defaultPrefix.isEmpty {
             UploadVars.prefixFileNameBeforeUpload = false
-        }
-
-        // Calculate cache sizes in the background
-        DispatchQueue.global(qos: .userInitiated).async {
-            guard let server = self.user.server else {
-                assert(self.user.server != nil, "••> User not provided!")
-                return
-            }
-            var sizes = self.getThumbnailSizes()
-            self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-            sizes = self.getPhotoSizes()
-            self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-            self.videoCacheSize = server.getCacheSizeOfVideos()
-            self.dataCacheSize = server.getAlbumImageCount()
-            if self.hasUploadRights() {
-                self.uploadCacheSize = server.getUploadCount()
-                    + " | " + UploadManager.shared.getUploadsDirectorySize()
-            }
         }
     }
 
@@ -1437,7 +1444,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case .about:
-            footer = statistics
+            footer = NetworkVars.pwgStatistics
         default:
             footer = ""
         }
@@ -1453,114 +1460,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
         return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
-    }
-    
-    private func getInfos() {
-        // Initialisation
-        statistics = ""
-        
-        // Collect stats from server
-        NetworkUtilities.checkSession(ofUser: user) {
-            // Checking session ensures avalaible sizes are known
-            let JSONsession = PwgSession.shared
-            JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
-                                    jsonObjectClientExpectsToReceive: GetInfosJSON.self,
-                                    countOfBytesClientExpectsToReceive: 1000) { jsonData in
-                // Decode the JSON object and retrieve statistics.
-                do {
-                    // Decode the JSON into codable type GetInfosJSON.
-                    let decoder = JSONDecoder()
-                    let serverJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if serverJSON.errorCode != 0 {
-                        #if DEBUG
-                        let error = PwgSession.shared.localizedError(for: serverJSON.errorCode,
-                                                                     errorMessage: serverJSON.errorMessage)
-                        debugPrint(error)
-                        #endif
-                        return
-                    }
-
-                    // Collect statistics
-                    let numberFormatter = NumberFormatter()
-                    numberFormatter.numberStyle = .decimal
-                    for info in serverJSON.data {
-                        guard let nber = info.value?.intValue else { continue }
-                        switch info.name ?? "" {
-                        case "nb_elements":
-                            if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberImages = nber > 1 ?
-                                    String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                                    String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                                if nberImages.isEmpty == false { self.appendStats(nberImages) }
-                            }
-                        case "nb_categories":
-                            if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberCategories = nber > 1 ?
-                                    String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
-                                    String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
-                                if nberCategories.isEmpty == false { self.appendStats(nberCategories) }
-                            }
-                        case "nb_tags":
-                            if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberTags = nber > 1 ?
-                                    String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
-                                    String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
-                                if nberTags.isEmpty == false { self.appendStats(nberTags) }
-                            }
-                        case "nb_users":
-                            if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberUsers = nber > 1 ?
-                                    String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
-                                    String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
-                                if nberUsers.isEmpty == false { self.appendStats(nberUsers) }
-                            }
-                        case "nb_groups":
-                            if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberGroups = nber > 1 ?
-                                    String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
-                                    String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
-                                if nberGroups.isEmpty == false { self.appendStats(nberGroups) }
-                            }
-                        case "nb_comments":
-                            if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
-                                let nberComments = nber > 1 ?
-                                    String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
-                                    String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
-                                if nberComments.isEmpty == false { self.appendStats(nberComments) }
-                            }
-                        default:
-                            break
-                        }
-                    }
-                } catch let error as NSError {
-                    // Data cannot be digested
-                    #if DEBUG
-                    debugPrint(error)
-                    #endif
-                    return
-                }
-            } failure: { _ in
-                /// - Network communication errors
-                /// - Returned JSON data is empty
-                /// - Cannot decode data returned by Piwigo server
-                /// -> nothing presented in the footer
-            }
-        } failure: { _ in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            /// -> nothing presented in the footer
-        }
-    }
-
-    private func appendStats(_ info: String) {
-        if statistics.isEmpty {
-            statistics.append(info)
-        } else {
-            statistics.append(" | " + info)
-        }
     }
 
     
