@@ -348,11 +348,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Unregister Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-        
-        // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     func updateNavBar() {

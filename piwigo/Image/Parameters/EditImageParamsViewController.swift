@@ -201,8 +201,8 @@ class EditImageParamsViewController: UIViewController
     
     deinit {
         debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
     
     

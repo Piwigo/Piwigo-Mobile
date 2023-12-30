@@ -56,8 +56,8 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
 

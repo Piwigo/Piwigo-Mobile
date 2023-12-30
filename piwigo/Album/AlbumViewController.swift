@@ -782,14 +782,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         updateOperations.removeAll(keepingCapacity: false)
 
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
-        // Unregister upload changes and progress if was displaying default album
-        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-            NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
-        }
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     

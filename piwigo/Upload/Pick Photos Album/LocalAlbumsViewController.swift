@@ -274,11 +274,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
-        // Unregister app becoming active for updating the pasteboard
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     

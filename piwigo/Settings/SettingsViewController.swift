@@ -308,11 +308,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-        
-        // Unregister auto-upload option enabler
-        NotificationCenter.default.removeObserver(self, name: .pwgAutoUploadChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
 

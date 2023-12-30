@@ -127,8 +127,8 @@ public class UploadManager: NSObject {
     }
 
     deinit {
-        // Unregister auto-upload disabler
-        NotificationCenter.default.removeObserver(self, name: .pwgDisableAutoUpload, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
     
 

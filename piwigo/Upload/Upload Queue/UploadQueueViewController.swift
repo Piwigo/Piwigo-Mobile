@@ -197,14 +197,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
-        // Unregister Low Power Mode status
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-
-        // Unregister upload progress
-        NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
     
     

@@ -240,11 +240,8 @@ class ImageViewController: UIViewController {
     
     deinit {
         print("••> ImageViewController is being deinitialized.")
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-        // Unregister video player changes
-        NotificationCenter.default.removeObserver(self, name: .pwgVideoPlaybackStatus, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .pwgVideoMutedOrNot, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
 
