@@ -15,7 +15,6 @@ import Intents
 import LocalAuthentication
 import UIKit
 
-import IQKeyboardManagerSwift
 import piwigoKit
 import uploadKit
 

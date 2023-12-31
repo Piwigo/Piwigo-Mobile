@@ -16,6 +16,8 @@ import uploadKit
 
 class LoginViewController: UIViewController {
 
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
     @IBOutlet weak var userTextField: UITextField!
@@ -55,6 +57,7 @@ class LoginViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.contentSize = contentView.bounds.size
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
@@ -89,11 +92,18 @@ class LoginViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
+        
+        // Register keyboard appearance/disappearance
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), 
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+        contentView.backgroundColor = .piwigoColorBackground()
 
         // Change text colour according to palette colour
         if #available(iOS 13.0, *) {

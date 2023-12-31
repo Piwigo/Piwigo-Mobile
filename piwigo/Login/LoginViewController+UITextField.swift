@@ -115,3 +115,42 @@ extension LoginViewController: UITextFieldDelegate
         return true
     }
 }
+
+extension LoginViewController {
+    
+    @objc func onKeyboardAppear(_ notification: NSNotification) {
+        guard let info = notification.userInfo,
+              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        else { return }
+        
+        // Add missing height
+        let kbHeight = kbInfo.cgRectValue.size.height
+        let loginBottom = loginButton.frame.origin.y + loginButton.frame.size.height
+        let maxMissingHeight = max(0, loginBottom + kbHeight - contentView.frame.height)
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: maxMissingHeight, right: 0)
+        scrollView.contentInset = insets
+        scrollView.verticalScrollIndicatorInsets = insets
+
+        // If active text field is hidden by keyboard, scroll it to make it visible
+        var activeFieldBottom = 0.0
+        if serverTextField.isFirstResponder {
+            activeFieldBottom = userTextField.frame.origin.y + userTextField.frame.size.height
+        } else if userTextField.isFirstResponder {
+            activeFieldBottom = passwordTextField.frame.origin.y + passwordTextField.frame.size.height
+        } else if passwordTextField.isFirstResponder {
+            activeFieldBottom = loginButton.frame.origin.y + loginButton.frame.size.height
+        }
+        let missingHeight = activeFieldBottom + kbHeight - contentView.frame.height + 10.0
+        if missingHeight > 0 {
+            let point = CGPointMake(0, missingHeight)
+            print("••> Point height: \(point.y)")
+            scrollView.setContentOffset(point, animated: true)
+        }
+    }
+
+    @objc func onKeyboardDisappear(_ notification: NSNotification) {
+        scrollView.setContentOffset(.zero, animated: true)
+        scrollView.contentInset = .zero
+        scrollView.verticalScrollIndicatorInsets = .zero
+    }
+}
