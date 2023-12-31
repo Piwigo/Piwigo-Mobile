@@ -133,7 +133,7 @@
 		AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C5A2A1D29380001B8B0 /* ExternalDisplayUtilities.swift */; };
 		AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */; };
 		AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3B2C612A2932110001B8B0 /* DataMigrationViewController.swift */; };
-		AD3B2C672A2938910001B8B0 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		AD3B2C672A2938910001B8B0 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		AD3B2C692A293A860001B8B0 /* DataMigrationViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3B2C682A293A860001B8B0 /* DataMigrationViewController.storyboard */; };
 		AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3CD639259DE34C000C26ED /* Help06ViewController.swift */; };
 		AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3DB4102773957A00017542 /* ImageViewController.storyboard */; };
@@ -2378,7 +2378,6 @@
 				D82B8CB81A67820A000E47CA /* Frameworks */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
-				27437D861D4F7297BEBC953F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2567,7 +2566,7 @@
 				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
 				AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */,
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
-				AD3B2C672A2938910001B8B0 /* (null) in Resources */,
+				AD3B2C672A2938910001B8B0 /* BuildFile in Resources */,
 				AD42568C2ACB584F00D7CCC8 /* VideoControlsView.xib in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
@@ -2626,23 +2625,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		27437D861D4F7297BEBC953F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-piwigo/Pods-piwigo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		577A7301DA17AC6D5EBDAA33 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

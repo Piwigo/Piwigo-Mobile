@@ -47,13 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                if granted { print("request succeeded!") }
         }
 
-        // IQKeyboardManager
-//        let keyboardManager = IQKeyboardManager.shared
-//        keyboardManager.enable = true
-//        keyboardManager.overrideKeyboardAppearance = true
-//        keyboardManager.shouldToolbarUsesTextFieldTintColor = true
-//        keyboardManager.shouldShowToolbarPlaceholder = true
-
         // Color palette depends on system settings
         initColorPalette()
 

@@ -14,7 +14,7 @@ extension AlbumCollectionViewCell {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
-        let topViewController = topMostController()
+        let topViewController = window?.topMostViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),
