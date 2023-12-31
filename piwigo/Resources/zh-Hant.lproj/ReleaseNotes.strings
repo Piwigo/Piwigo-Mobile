@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.2_text" = "版本 3.1.2\n\n• 如有必要，請請 Piwigo 伺服器更新\n• Bug修復";
+"v3.1.2_text" = "版本 3.1.2\n\n• 如有必要，提示需要更新 Piwigo 伺服器\n• Bug修復";
 
 "v3.1.1_text" = "版本 3.1.1\n2023年12月1日\n\n• 更新伺服器統計數據 (需要 Piwigo 14)\n• 錯誤修正";
 

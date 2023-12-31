@@ -123,7 +123,7 @@
 
 "serverVersionOld_title" = "Serverupdate verfügbar";
 "serverVersionOld_message" = "Ihre Piwigo Server-Version ist %@. Bitte fragen Sie den Administrator, sie zu aktualisieren.";
-"serverVersionNotCompatible_title" = "Serverinkompatibilität";
+"serverVersionNotCompatible_title" = "Inkompatibler Server";
 "serverVersionNotCompatible_message" = "Ihre Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab %@. Bitte aktualisieren Sie Ihren Server um Piwigo Mobile verwenden zu können.";
 
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";

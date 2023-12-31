@@ -122,7 +122,7 @@
 "serverConnectionError_message" = "Nie można ustanowić zabezpieczonego połączenia HTTPS. Sprawdź adres lub spróbuj w trybie niezaszyfrowanego HTTP?";
 
 "serverVersionOld_title" = "Dostępna aktualizacja serwera";
-"serverVersionOld_message" = "Twoja wersja serwera Piwigo jest %@. Poproś administratora o aktualizację.";
+"serverVersionOld_message" = "Twoja wersja serwera Piwigo to %@. Poproś administratora o aktualizację.";
 "serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
 "serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej %@. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile.";
 
