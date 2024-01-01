@@ -116,32 +116,28 @@ extension LoginViewController: UITextFieldDelegate
     }
 }
 
+
 extension LoginViewController {
     
     @objc func onKeyboardAppear(_ notification: NSNotification) {
         guard let info = notification.userInfo,
-              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
         else { return }
         
-        // Add missing height
-        let kbHeight = kbInfo.cgRectValue.size.height
-        let loginBottom = loginButton.frame.origin.y + loginButton.frame.size.height
-        let maxMissingHeight = max(0, loginBottom + kbHeight - contentView.frame.height)
-        let insets = UIEdgeInsets(top: 0, left: 0, bottom: maxMissingHeight, right: 0)
-        scrollView.contentInset = insets
-        scrollView.verticalScrollIndicatorInsets = insets
-
         // If active text field is hidden by keyboard, scroll it to make it visible
         var activeFieldBottom = 0.0
         if serverTextField.isFirstResponder {
-            activeFieldBottom = userTextField.frame.origin.y + userTextField.frame.size.height
+            activeFieldBottom = userTextField.frame.maxY
         } else if userTextField.isFirstResponder {
-            activeFieldBottom = passwordTextField.frame.origin.y + passwordTextField.frame.size.height
+            activeFieldBottom = passwordTextField.frame.maxY
         } else if passwordTextField.isFirstResponder {
-            activeFieldBottom = loginButton.frame.origin.y + loginButton.frame.size.height
+            activeFieldBottom = loginButton.frame.maxY
         }
-        let missingHeight = activeFieldBottom + kbHeight - contentView.frame.height + 10.0
+        let missingHeight = activeFieldBottom + kbInfo.size.height - contentView.frame.height + 10.0
         if missingHeight > 0 {
+            let insets = UIEdgeInsets(top: 0, left: 0, bottom: missingHeight, right: 0)
+            scrollView.contentInset = insets
+            scrollView.verticalScrollIndicatorInsets = insets
             let point = CGPointMake(0, missingHeight)
             print("••> Point height: \(point.y)")
             scrollView.setContentOffset(point, animated: true)
@@ -149,7 +145,6 @@ extension LoginViewController {
     }
 
     @objc func onKeyboardDisappear(_ notification: NSNotification) {
-        scrollView.setContentOffset(.zero, animated: true)
         scrollView.contentInset = .zero
         scrollView.verticalScrollIndicatorInsets = .zero
     }
