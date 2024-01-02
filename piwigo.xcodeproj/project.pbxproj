@@ -211,6 +211,11 @@
 		AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE8284944B200171592 /* pwg.categories.delete.json */; };
 		AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */; };
 		AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */; };
+		AD7D41582B4435260095A070 /* AutoUploadViewController+UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */; };
+		AD7D415A2B44359D0095A070 /* AutoUploadViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */; };
+		AD7D415C2B4435AC0095A070 /* AutoUploadViewController+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */; };
+		AD7D415E2B44361E0095A070 /* AutoUploadViewController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D415D2B44361E0095A070 /* AutoUploadViewController+UITableView.swift */; };
+		AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D415F2B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift */; };
 		AD7DE08C2A8439CE00C1424E /* ImageViewController+Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEA26A3285FA0E800B6C9A0 /* ImageViewController+Buttons.swift */; };
 		AD7DE08E2A843C1200C1424E /* ImageViewController+Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */; };
 		AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */; };
@@ -766,6 +771,11 @@
 		AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.delete.swift; sourceTree = "<group>"; };
 		AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setInfo.swift; sourceTree = "<group>"; };
 		AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.setInfo.json; sourceTree = "<group>"; };
+		AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+UITextView.swift"; sourceTree = "<group>"; };
+		AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+Albums.swift"; sourceTree = "<group>"; };
+		AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+Tags.swift"; sourceTree = "<group>"; };
+		AD7D415D2B44361E0095A070 /* AutoUploadViewController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+UITableView.swift"; sourceTree = "<group>"; };
+		AD7D415F2B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		AD7DE08D2A843C1200C1424E /* ImageViewController+Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Video.swift"; sourceTree = "<group>"; };
 		AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
 		AD7DE0922A8589A000C1424E /* Notification.Name+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+AppTools.swift"; sourceTree = "<group>"; };
@@ -1585,6 +1595,28 @@
 			path = "Pick Photos Album";
 			sourceTree = "<group>";
 		};
+		AD7D41552B4434E70095A070 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */,
+				AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */,
+				AD7D415D2B44361E0095A070 /* AutoUploadViewController+UITableView.swift */,
+				AD7D415F2B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift */,
+				AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AD7D41562B4434EF0095A070 /* Auto-Upload */ = {
+			isa = PBXGroup;
+			children = (
+				AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */,
+				AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */,
+				AD7D41552B4434E70095A070 /* Extensions */,
+			);
+			path = "Auto-Upload";
+			sourceTree = "<group>";
+		};
 		AD7DE0912A85898D00C1424E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -1829,8 +1861,7 @@
 				ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */,
 				ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */,
 				ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */,
-				AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */,
-				AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */,
+				AD7D41562B4434EF0095A070 /* Auto-Upload */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -2936,6 +2967,7 @@
 			files = (
 				ADC69F21285B6F68009BF9AF /* AlbumViewController+CopyMove.swift in Sources */,
 				AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */,
+				AD7D415E2B44361E0095A070 /* AutoUploadViewController+UITableView.swift in Sources */,
 				ADBC08D02446060700BF82E8 /* AlbumHeaderReusableView.swift in Sources */,
 				AD98FB9B2843BB9100F6C0C5 /* AlbumViewController+Share.swift in Sources */,
 				ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */,
@@ -2947,6 +2979,7 @@
 				AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */,
 				AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
+				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
@@ -2965,6 +2998,7 @@
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				ADDB2A5E2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift in Sources */,
+				AD7D415C2B4435AC0095A070 /* AutoUploadViewController+Tags.swift in Sources */,
 				ADDB2A682B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift in Sources */,
 				AD4373412B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
@@ -2978,6 +3012,8 @@
 				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
 				ADEEAB6B289410AD00825C7D /* AlbumViewController+DataSource.swift in Sources */,
 				AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */,
+				AD7D415A2B44359D0095A070 /* AutoUploadViewController+Albums.swift in Sources */,
+				AD7D41582B4435260095A070 /* AutoUploadViewController+UITextView.swift in Sources */,
 				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
 				AD1AC30A29746F9E00CEA7A9 /* ImageSessionErrors.swift in Sources */,

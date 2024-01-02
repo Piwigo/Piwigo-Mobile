@@ -40,7 +40,7 @@ extension SettingsViewController: UITableViewDataSource
         return SettingsSection.count.rawValue - (hasUploadRights() ? 0 : 1)
     }
     
-    // MARK: - Cells
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = 0
         switch activeSection(section) {
