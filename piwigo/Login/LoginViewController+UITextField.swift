@@ -121,10 +121,11 @@ extension LoginViewController {
     
     @objc func onKeyboardAppear(_ notification: NSNotification) {
         guard let info = notification.userInfo,
-              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let window = view.window
         else { return }
-        
-        // If active text field is hidden by keyboard, scroll it to make it visible
+
+        // Determine which field triggered the keyboard appearance
         var activeFieldBottom = 0.0
         if serverTextField.isFirstResponder {
             activeFieldBottom = userTextField.frame.maxY
@@ -133,19 +134,24 @@ extension LoginViewController {
         } else if passwordTextField.isFirstResponder {
             activeFieldBottom = loginButton.frame.maxY
         }
-        let missingHeight = activeFieldBottom + kbInfo.size.height - contentView.frame.height + 10.0
+
+        // Calc missing height
+        let oldVertOffset = scrollView.contentOffset.y
+        var missingHeight = scrollView.safeAreaInsets.top
+        missingHeight += activeFieldBottom - oldVertOffset
+        missingHeight += kbInfo.height
+        missingHeight += scrollView.safeAreaInsets.bottom
+        missingHeight -= window.screen.bounds.height
         if missingHeight > 0 {
+            // Update vertical inset and offset
             let insets = UIEdgeInsets(top: 0, left: 0, bottom: missingHeight, right: 0)
             scrollView.contentInset = insets
-            scrollView.verticalScrollIndicatorInsets = insets
-            let point = CGPointMake(0, missingHeight)
-            print("••> Point height: \(point.y)")
+            let point = CGPointMake(0, oldVertOffset + missingHeight)
             scrollView.setContentOffset(point, animated: true)
         }
     }
 
     @objc func onKeyboardDisappear(_ notification: NSNotification) {
         scrollView.contentInset = .zero
-        scrollView.verticalScrollIndicatorInsets = .zero
     }
 }
