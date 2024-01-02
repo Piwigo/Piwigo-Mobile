@@ -31,18 +31,7 @@ enum SettingsSection : Int {
 
 enum ImageUploadSetting : Int {
     case author
-    case privacyLevel
-    case stripMetadata
-    case downsizeBefore
-    case photoSize
-    case videoSize
-    case compressBefore
-    case photoQuality
-    case prefixBefore
     case prefix
-    case onlyWifi
-    case autoUpload
-    case deleteAfter
 }
 
 let kHelpUsTitle: String = "Help Us!"
@@ -63,7 +52,7 @@ class SettingsViewController: UIViewController {
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     
-    // For managing keyboard appearances
+    // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
     // For displaying cache sizes

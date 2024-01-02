@@ -12,7 +12,17 @@ import piwigoKit
 extension SettingsViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         // Will tell onKeyboardAppear() which cell is being edited
-        editedRow = IndexPath(row: textField.tag, section: SettingsSection.imageUpload.rawValue)
+        switch ImageUploadSetting(rawValue: textField.tag) {
+        case .author:
+            editedRow = IndexPath(row: 0, section: SettingsSection.imageUpload.rawValue)
+        case .prefix:
+            editedRow = IndexPath(row: 5 + (user.hasAdminRights ? 1 : 0)
+                                         + (UploadVars.resizeImageOnUpload ? 2 : 0)
+                                         + (UploadVars.compressImageOnUpload ? 1 : 0),
+                                  section: SettingsSection.imageUpload.rawValue)
+        default:
+            break
+        }
         return true
     }
     
@@ -60,28 +70,29 @@ extension SettingsViewController {
     @objc func onKeyboardAppear(_ notification: NSNotification) {
         guard let info = notification.userInfo,
               let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let screenCoordinateSpace = settingsTableView.window?.screen.coordinateSpace,
+              let window = settingsTableView.window,
               let editedRow = editedRow,
               let cell = settingsTableView.cellForRow(at: editedRow)
-        else {
-            return }
+        else { return }
 
-        // Convert the keyboard's frame from the screen's coordinate space to the view's coordinate space
-        let toCoordinateSpace: UICoordinateSpace = settingsTableView.coordinateSpace
-        let kbFrame = screenCoordinateSpace.convert(kbInfo, to: toCoordinateSpace)
-        
         // Calc missing height
-        let missingHeight =  cell.frame.maxY - kbFrame.minY + 10.0
+        let oldVertOffset = settingsTableView.contentOffset.y
+        var missingHeight = settingsTableView.safeAreaInsets.top
+        missingHeight += cell.frame.maxY - oldVertOffset
+        missingHeight += kbInfo.height
+        missingHeight += settingsTableView.safeAreaInsets.bottom
+        missingHeight -= window.screen.bounds.height
         if missingHeight > 0 {
-            // Update table insets
+            // Update vertical inset and offset
             let insets = UIEdgeInsets(top: 0, left: 0, bottom: missingHeight, right: 0)
             settingsTableView.contentInset = insets
-            settingsTableView.verticalScrollIndicatorInsets = insets
+            let point = CGPointMake(0, oldVertOffset + missingHeight)
+            settingsTableView.setContentOffset(point, animated: true)
         }
     }
 
     @objc func onKeyboardDisappear(_ notification: NSNotification) {
+        // Reset content inset
         settingsTableView.contentInset = .zero
-        settingsTableView.verticalScrollIndicatorInsets = .zero
     }
 }
