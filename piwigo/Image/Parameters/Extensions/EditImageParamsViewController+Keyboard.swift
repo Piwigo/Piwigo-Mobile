@@ -35,7 +35,10 @@ extension EditImageParamsViewController
         if let cell = editImageParamsTableView.cellForRow(at: editedRow) {
             let toCoordinateSpace: UICoordinateSpace = view
             let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
-            editImageParamsTableView.scrollRectToVisible(convertedCellFrame, animated: true)
+            let heightOfInterest = min(convertedCellFrame.height, view.bounds.height/2.0)
+            let frameOfInterest = CGRect(origin: convertedCellFrame.origin,
+                                         size: CGSize(width: convertedCellFrame.width, height: heightOfInterest))
+            editImageParamsTableView.scrollRectToVisible(frameOfInterest, animated: true)
         } else {
             editImageParamsTableView.scrollToRow(at: editedRow, at: .none, animated: true)
         }

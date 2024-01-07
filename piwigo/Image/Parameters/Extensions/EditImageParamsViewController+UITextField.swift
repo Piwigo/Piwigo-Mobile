@@ -16,7 +16,21 @@ extension EditImageParamsViewController: UITextFieldDelegate
         case .imageName, .author:
             // Will tell onKeyboardDidShow() which cell is being edited
             editedRow = indexPath
+
+            // Hide picker if necessary
+            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
+            if hasDatePicker {
+                // Found a picker, so remove it
+                hasDatePicker = false
+                editImageParamsTableView.beginUpdates()
+                editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
+                editImageParamsTableView.endUpdates()
+            }
+            
         case .date:
+            // Dismiss the keyboard
+            view.endEditing(true)
+
             // The common date can be distant past (i.e. unset)
             // or before "1900-01-02 00:00:00" relative to reference date
             if commonDateCreated.timeIntervalSinceReferenceDate < TimeInterval(-3187209600) {
@@ -93,7 +107,7 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
-            commonTitle = "".htmlToAttributedString
+                commonTitle = "".htmlToAttributedString
             case .author:
                 // Author
                 commonAuthor = ""
@@ -113,7 +127,7 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
-            commonTitle = (textField.text ?? "").htmlToAttributedString
+                commonTitle = (textField.text ?? "").htmlToAttributedString
             case .author:
                 // Author
                 commonAuthor = textField.text ?? ""

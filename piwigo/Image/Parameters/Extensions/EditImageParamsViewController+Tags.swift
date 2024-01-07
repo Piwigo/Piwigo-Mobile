@@ -44,7 +44,6 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
             // Refresh table row
             var row: Int = EditImageParamsOrder.tags.rawValue
             row -= !hasDatePicker ? 1 : 0
-            row -= !user.hasAdminRights ? 1 : 0
             let indexPath = IndexPath(row: row, section: 0)
             editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
         }

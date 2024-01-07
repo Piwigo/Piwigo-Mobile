@@ -14,7 +14,7 @@ extension EditImageParamsViewController: UITableViewDataSource
     func rowAt(indexPath: IndexPath) -> Int {
         var row = indexPath.row
         row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.tags.rawValue)) ? 1 : 0
         return row
     }
     
@@ -109,16 +109,6 @@ extension EditImageParamsViewController: UITableViewDataSource
                 tableViewCell = cell
             }
             
-        case .privacy:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "privacy", for: indexPath) as? EditImagePrivacyTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
-                return EditImagePrivacyTableViewCell()
-            }
-            cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-            cell.setPrivacyLevel(with: pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
-                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
-            tableViewCell = cell
-            
         case .tags:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
@@ -128,6 +118,16 @@ extension EditImageParamsViewController: UITableViewDataSource
                         inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
             tableViewCell = cell
             
+        case .privacy:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "privacy", for: indexPath) as? EditImagePrivacyTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
+                return EditImagePrivacyTableViewCell()
+            }
+            cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
+            cell.setPrivacyLevel(with: pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
+                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            tableViewCell = cell
+
         case .desc:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "description", for: indexPath) as? EditImageTextViewTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")

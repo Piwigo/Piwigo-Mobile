@@ -54,6 +54,16 @@ extension EditImageParamsViewController: UITableViewDelegate
             // Dismiss the keyboard
             view.endEditing(true)
 
+            // Hide picker if necessary
+            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
+            if hasDatePicker {
+                // Found a picker, so remove it
+                hasDatePicker = false
+                editImageParamsTableView.beginUpdates()
+                editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
+                editImageParamsTableView.endUpdates()
+            }
+
             // Create view controller
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
             guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
@@ -67,6 +77,16 @@ extension EditImageParamsViewController: UITableViewDelegate
 
             // Dismiss the keyboard
             view.endEditing(true)
+
+            // Hide picker if necessary
+            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
+            if hasDatePicker {
+                // Found a picker, so remove it
+                hasDatePicker = false
+                editImageParamsTableView.beginUpdates()
+                editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
+                editImageParamsTableView.endUpdates()
+            }
 
             // Create view controller
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)

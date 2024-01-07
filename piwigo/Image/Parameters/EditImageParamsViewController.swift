@@ -57,8 +57,8 @@ class EditImageParamsViewController: UIViewController
         case author
         case date
         case datePicker
-        case privacy
         case tags
+        case privacy
         case desc
         case count
     }
