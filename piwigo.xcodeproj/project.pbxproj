@@ -1605,10 +1605,10 @@
 		AD7D41552B4434E70095A070 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */,
-				AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */,
 				AD7D415D2B44361E0095A070 /* AutoUploadViewController+UITableView.swift */,
 				AD7D415F2B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift */,
+				AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */,
+				AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */,
 				AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */,
 			);
 			path = Extensions;
