@@ -16,11 +16,10 @@
                         <viewControllerLayoutGuide type="top" id="v9H-sj-q9x"/>
                         <viewControllerLayoutGuide type="bottom" id="uVf-G5-mw5"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="wiZ-et-8Je">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wiZ-et-8Je">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
+                            <tableView contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
                                 <rect key="frame" x="0.0" y="48" width="414" height="871"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -227,7 +226,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zMu-VQ-mu0">
-                                                    <rect key="frame" x="20" y="39.5" width="374" height="377.5"/>
+                                                    <rect key="frame" x="20" y="39.5" width="374" height="354.5"/>
                                                     <color key="textColor" systemColor="labelColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
@@ -260,7 +259,9 @@
                         <constraints>
                             <constraint firstItem="T0l-Ou-dhs" firstAttribute="leadingMargin" secondItem="wiZ-et-8Je" secondAttribute="leadingMargin" id="1zo-yp-ZXp"/>
                             <constraint firstItem="T0l-Ou-dhs" firstAttribute="trailingMargin" secondItem="wiZ-et-8Je" secondAttribute="trailingMargin" id="Auf-rc-gxf"/>
+                            <constraint firstAttribute="height" secondItem="T0l-Ou-dhs" secondAttribute="height" multiplier="1.0287" id="TjL-lu-aAu"/>
                             <constraint firstItem="T0l-Ou-dhs" firstAttribute="top" secondItem="v9H-sj-q9x" secondAttribute="bottom" id="c7s-EB-sm9"/>
+                            <constraint firstAttribute="width" secondItem="T0l-Ou-dhs" secondAttribute="width" id="t5X-0o-NnM"/>
                         </constraints>
                     </view>
                     <connections>

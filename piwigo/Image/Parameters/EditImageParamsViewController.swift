@@ -62,6 +62,9 @@ class EditImageParamsViewController: UIViewController
         case desc
         case count
     }
+
+    // Tell which cell triggered the keyboard appearance
+    var editedRow: IndexPath?
     
     
     // MARK: - Core Data Objects
@@ -136,28 +139,22 @@ class EditImageParamsViewController: UIViewController
         
         // Set colors, fonts, etc.
         applyColorPalette()
-        
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Adjust content inset
-        // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
-        let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
-        let tableHeight = editImageParamsTableView.bounds.size.height
-        let viewHeight = view.bounds.size.height
-        
-        // On iPad, the form is presented in a popover view
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - viewHeight)), right: 0.0)
-        } else {
-            let statBarHeight = UIApplication.shared.statusBarFrame.size.height
-            editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight)), right: 0.0)
-        }
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: .pwgPaletteChanged, object: nil)
+
+        // Register keyboard appearance/disappearance
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDidShow(_:)),
+                                               name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillHide(_:)),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -176,10 +173,9 @@ class EditImageParamsViewController: UIViewController
                 let mainScreenBounds = UIScreen.main.bounds
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: max(0.0, tableHeight + navBarHeight - CGFloat(size.height)), right: 0.0)
-            } else {
-                let statBarHeight = UIApplication.shared.statusBarFrame.size.height
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: max(0.0, tableHeight + statBarHeight + navBarHeight - CGFloat(size.height)), right: 0.0)
+                let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
+                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0,
+                                                                     bottom: navBarHeight, right: 0.0)
             }
             
             // Reload table view

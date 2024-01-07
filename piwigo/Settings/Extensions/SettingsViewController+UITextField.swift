@@ -63,36 +63,3 @@ extension SettingsViewController: UITextFieldDelegate {
         editedRow = nil
     }
 }
-
-
-extension SettingsViewController {
-    
-    @objc func onKeyboardAppear(_ notification: NSNotification) {
-        guard let info = notification.userInfo,
-              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let window = settingsTableView.window,
-              let editedRow = editedRow,
-              let cell = settingsTableView.cellForRow(at: editedRow)
-        else { return }
-
-        // Calc missing height
-        let oldVertOffset = settingsTableView.contentOffset.y
-        var missingHeight = settingsTableView.safeAreaInsets.top
-        missingHeight += cell.frame.maxY - oldVertOffset
-        missingHeight += kbInfo.height
-        missingHeight += settingsTableView.safeAreaInsets.bottom
-        missingHeight -= window.screen.bounds.height
-        if missingHeight > 0 {
-            // Update vertical inset and offset
-            let insets = UIEdgeInsets(top: 0, left: 0, bottom: missingHeight, right: 0)
-            settingsTableView.contentInset = insets
-            let point = CGPointMake(0, oldVertOffset + missingHeight)
-            settingsTableView.setContentOffset(point, animated: true)
-        }
-    }
-
-    @objc func onKeyboardDisappear(_ notification: NSNotification) {
-        // Reset content inset
-        settingsTableView.contentInset = .zero
-    }
-}

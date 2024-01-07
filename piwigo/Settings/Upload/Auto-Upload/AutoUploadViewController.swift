@@ -16,6 +16,8 @@ class AutoUploadViewController: UIViewController {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
+    var oldContentOffset = CGPoint.zero
+    
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
@@ -108,6 +110,12 @@ class AutoUploadViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
                                                name: .pwgAutoUploadChanged, object: nil)
         
+        // Register keyboard appearance/disappearance
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
+
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
     }

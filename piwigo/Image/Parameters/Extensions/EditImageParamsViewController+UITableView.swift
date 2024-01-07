@@ -21,9 +21,7 @@ extension EditImageParamsViewController: UITableViewDelegate
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var height: CGFloat = 44.0
-        var row = indexPath.row
-        row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        let row = rowAt(indexPath: indexPath)
         switch EditImageParamsOrder(rawValue: row) {
             case .thumbnails:
                 height = 188.0
@@ -47,9 +45,7 @@ extension EditImageParamsViewController: UITableViewDelegate
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var row = indexPath.row
-        row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        let row = rowAt(indexPath: indexPath)
         switch EditImageParamsOrder(rawValue: row) {
         case .privacy:
             // Deselect row
@@ -88,9 +84,7 @@ extension EditImageParamsViewController: UITableViewDelegate
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var result: Bool
-        var row = indexPath.row
-        row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        let row = rowAt(indexPath: indexPath)
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName, .author, .date, .datePicker, .desc:
                 result = false

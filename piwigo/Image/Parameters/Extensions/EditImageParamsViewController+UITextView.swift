@@ -9,6 +9,11 @@
 // MARK: - UITextViewDelegate Methods
 extension EditImageParamsViewController: UITextViewDelegate
 {
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        editedRow = IndexPath(row: textView.tag, section: 0)
+        return true
+    }
+    
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
         textView.textColor = .piwigoColorOrange()

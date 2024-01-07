@@ -11,6 +11,13 @@ import piwigoKit
 // MARK: - UITableViewDataSource Methods
 extension EditImageParamsViewController: UITableViewDataSource
 {
+    func rowAt(indexPath: IndexPath) -> Int {
+        var row = indexPath.row
+        row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
+        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        return row
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = EditImageParamsOrder.count.rawValue
         nberOfRows -= hasDatePicker ? 0 : 1
@@ -21,9 +28,7 @@ extension EditImageParamsViewController: UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
 
-        var row = indexPath.row
-        row += (!hasDatePicker && (row > EditImageParamsOrder.date.rawValue)) ? 1 : 0
-        row += (!user.hasAdminRights && (row > EditImageParamsOrder.datePicker.rawValue)) ? 1 : 0
+        let row = rowAt(indexPath: indexPath)
         switch EditImageParamsOrder(rawValue: row) {
         case .thumbnails:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EditImageThumbTableViewCell", for: indexPath) as? EditImageThumbTableViewCell else {
@@ -52,7 +57,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             if shouldUpdateTitle {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
-            cell.cellTextField.tag = row
+            cell.cellTextField.tag = indexPath.row
             cell.cellTextField.delegate = self
             tableViewCell = cell
             
@@ -65,7 +70,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             if shouldUpdateAuthor {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
-            cell.cellTextField.tag = row
+            cell.cellTextField.tag = indexPath.row
             cell.cellTextField.delegate = self
             tableViewCell = cell
             
@@ -139,6 +144,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             detail.addAttributes(attributes, range: wholeRange)
             cell.config(withText: detail,
                         inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+            cell.textView.tag = indexPath.row
             cell.textView.delegate = self
             tableViewCell = cell
             

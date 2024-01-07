@@ -202,7 +202,7 @@ class AlbumTableViewCell: UITableViewCell {
 
     private func configImage(_ image: UIImage) {
         // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async {
+//        DispatchQueue.global(qos: .userInitiated).async {
             // Process saliency
             var finalImage:UIImage = image
             if #available(iOS 13.0, *) {
@@ -215,7 +215,7 @@ class AlbumTableViewCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.backgroundImage.image = finalImage
             }
-        }
+//        }
     }
     
     override func prepareForReuse() {

@@ -10,15 +10,21 @@
 extension EditImageParamsViewController: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if textField.tag == EditImageParamsOrder.date.rawValue {
+        let indexPath = IndexPath(row: textField.tag, section: 0)
+        let row = rowAt(indexPath: indexPath)
+        switch EditImageParamsOrder(rawValue: row) {
+        case .imageName, .author:
+            // Will tell onKeyboardDidShow() which cell is being edited
+            editedRow = indexPath
+        case .date:
             // The common date can be distant past (i.e. unset)
-            if commonDateCreated == .distantPast {
+            // or before "1900-01-02 00:00:00" relative to reference date
+            if commonDateCreated.timeIntervalSinceReferenceDate < TimeInterval(-3187209600) {
                 // Define date as today
                 commonDateCreated = Date()
                 shouldUpdateDateCreated = true
 
                 // Update creation date
-                let indexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
                 editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
             }
 
@@ -40,13 +46,16 @@ extension EditImageParamsViewController: UITextFieldDelegate
 
             // Prevent keyboard from opening
             return false
+        default:
+            break
         }
 
         return true
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        switch EditImageParamsOrder(rawValue: textField.tag) {
+        let row = rowAt(indexPath: IndexPath(row: textField.tag, section: 0))
+        switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
                 shouldUpdateTitle = true
@@ -63,8 +72,10 @@ extension EditImageParamsViewController: UITextFieldDelegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
         guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-            else { return false }
-        switch EditImageParamsOrder(rawValue: textField.tag) {
+        else { return false }
+
+        let row = rowAt(indexPath: IndexPath(row: textField.tag, section: 0))
+        switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
                 commonTitle = finalString.htmlToAttributedString
@@ -78,7 +89,8 @@ extension EditImageParamsViewController: UITextFieldDelegate
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        switch EditImageParamsOrder(rawValue: textField.tag) {
+        let row = rowAt(indexPath: IndexPath(row: textField.tag, section: 0))
+        switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
             commonTitle = "".htmlToAttributedString
@@ -97,7 +109,8 @@ extension EditImageParamsViewController: UITextFieldDelegate
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        switch EditImageParamsOrder(rawValue: textField.tag) {
+        let row = rowAt(indexPath: IndexPath(row: textField.tag, section: 0))
+        switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
             commonTitle = (textField.text ?? "").htmlToAttributedString

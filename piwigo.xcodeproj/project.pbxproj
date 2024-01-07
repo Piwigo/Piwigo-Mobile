@@ -285,6 +285,9 @@
 		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
 		AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
 		AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
+		AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */; };
+		AD9F9C312B4B211900943A96 /* SettingsViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */; };
+		AD9F9C332B4B230600943A96 /* LoginViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
 		ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */; };
@@ -871,6 +874,9 @@
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
 		AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */ = {isa = PBXFileReference; lastKnownFileType = text; path = VerificationFailed.ahap; sourceTree = "<group>"; };
 		AD9D684927DFE9E600517261 /* HapticUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticUtilities.swift; sourceTree = "<group>"; };
+		AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		ADA0049C2739C036006FE8ED /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
 		ADA0049D2739C038006FE8ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -1234,14 +1240,15 @@
 		AD0F70202946260E008F1394 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				AD43733E2B432862009BC454 /* SettingsViewController+UITableView.swift */,
+				AD4373402B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift */,
+				AD43733C2B4326ED009BC454 /* SettingsViewController+UITextField.swift */,
+				AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */,
 				AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */,
 				AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */,
 				AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */,
 				AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */,
 				ADA5FA4329A0D9B0004A8A59 /* SettingsViewController+Cache.swift */,
-				AD43733E2B432862009BC454 /* SettingsViewController+UITableView.swift */,
-				AD4373402B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift */,
-				AD43733C2B4326ED009BC454 /* SettingsViewController+UITextField.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1924,13 +1931,14 @@
 			children = (
 				ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableView.swift */,
 				ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */,
-				ADDB2A5D2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift */,
-				ADDB2A5F2B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift */,
 				ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */,
 				ADDB2A672B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift */,
 				ADDB2A652B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift */,
 				ADDB2A632B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift */,
 				ADDB2A612B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift */,
+				ADDB2A5D2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift */,
+				ADDB2A5F2B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift */,
+				AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2208,6 +2216,7 @@
 				AD211A7927BAD596005D5E4F /* LoginUtilities.swift */,
 				AD41530E27C6D35D00DE01CB /* LoginViewController.swift */,
 				ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */,
+				AD9F9C322B4B230600943A96 /* LoginViewController+Keyboard.swift */,
 				AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */,
 				AD41531427C6D37C00DE01CB /* LoginNavigationController.swift */,
 			);
@@ -2977,6 +2986,7 @@
 				ADC69F1F285B6D9C009BF9AF /* AlbumViewController+Select.swift in Sources */,
 				ADCCFC3527D532AA00E42A6E /* AppLockViewController.swift in Sources */,
 				AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */,
+				AD9F9C312B4B211900943A96 /* SettingsViewController+Keyboard.swift in Sources */,
 				AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
@@ -2987,6 +2997,7 @@
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
 				ADB49D842958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
+				AD9F9C332B4B230600943A96 /* LoginViewController+Keyboard.swift in Sources */,
 				AD92AD932A63DBFE007A0001 /* ImageAnimatedTransitioning.swift in Sources */,
 				ADD511A4285F79C700AD3FEC /* TagsViewController+Add.swift in Sources */,
 				ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */,
@@ -3080,6 +3091,7 @@
 				ADC69F1B285A4C30009BF9AF /* AlbumViewController+Favorites.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
+				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
 				AD659806297D98BB002A61D8 /* ImageDownload.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,

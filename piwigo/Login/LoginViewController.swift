@@ -94,9 +94,9 @@ class LoginViewController: UIViewController {
                                                name: .pwgPaletteChanged, object: nil)
         
         // Register keyboard appearance/disappearance
-        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)),
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardDisappear(_:)), 
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillHide(_:)), 
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
