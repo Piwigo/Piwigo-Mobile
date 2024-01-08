@@ -1017,9 +1017,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
            pwgError == PwgSessionErrors.incompatiblePwgVersion {
             ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
         } else {
-            let errorMessage = ""
+            var errorMessage = ""
             if let error = error {
-                let errorMessage = error.localizedDescription
+                errorMessage = error.localizedDescription
             }
             self.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMessage) {
                 // Forget the choice

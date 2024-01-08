@@ -163,11 +163,6 @@ class EditImageParamsViewController: UIViewController
         // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
             
-            // Adjust content inset
-            // See https://stackoverflow.com/questions/1983463/whats-the-uiscrollview-contentinset-property-for
-            let navBarHeight: CGFloat = navigationController?.navigationBar.bounds.size.height ?? 0
-            let tableHeight = CGFloat(editImageParamsTableView.bounds.size.height)
-            
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds

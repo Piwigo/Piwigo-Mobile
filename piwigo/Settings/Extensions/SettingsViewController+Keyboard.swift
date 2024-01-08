@@ -11,9 +11,7 @@ extension SettingsViewController
     @objc func onKeyboardWillShow(_ notification: NSNotification) {
         guard let info = notification.userInfo,
               let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let window = settingsTableView.window,
-              let editedRow = editedRow,
-              let cell = settingsTableView.cellForRow(at: editedRow)
+              let window = settingsTableView.window
         else { return }
 
         // Calc intersection between the keyboard's frame and the view's bounds
