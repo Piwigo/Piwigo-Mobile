@@ -140,8 +140,8 @@ extension SettingsViewController: UITableViewDataSource
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
                     title = NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Album Thumbnail File")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
+                } else if view.bounds.size.width > 375 {
+                    // i.e. larger than iPhone SE, 11 Pro screen width
                     title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
                 } else {
                     title = NSLocalizedString("defaultThumbnailFile", comment: "File")
@@ -163,11 +163,11 @@ extension SettingsViewController: UITableViewDataSource
                 // Slider configuration
                 // See https://iosref.com/res
                 var title: String = ""
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
+                if view.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 8+, 11 screen width
                     title = NSLocalizedString("maxNberOfRecentAlbums>414px", comment: "Number of Recent Albums")
                 } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
+                    // i.e. larger than iPhone 6, 7 screen width
                     title = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
                 } else {
                     title = NSLocalizedString("maxNberOfRecentAlbums", comment: "Recent")
