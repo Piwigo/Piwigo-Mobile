@@ -85,9 +85,7 @@ class AlbumTableViewCell: UITableViewCell {
                                      fromServer: albumData?.user?.server?.uuid,
                                      placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.configImage(cachedImage)
-            }
+            self.configImage(cachedImage)
         } failure: { _ in
             DispatchQueue.main.async {
                 self.backgroundImage.image = placeHolder
@@ -202,7 +200,7 @@ class AlbumTableViewCell: UITableViewCell {
 
     private func configImage(_ image: UIImage) {
         // Process image in the background
-//        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             // Process saliency
             var finalImage:UIImage = image
             if #available(iOS 13.0, *) {
@@ -215,7 +213,7 @@ class AlbumTableViewCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.backgroundImage.image = finalImage
             }
-//        }
+        }
     }
     
     override func prepareForReuse() {

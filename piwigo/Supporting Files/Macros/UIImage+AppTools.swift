@@ -21,9 +21,17 @@ extension UIImage {
         // Retrieve CGImage version
         guard let cgImage = self.cgImage else { return nil }
         
+        // Check that it is possible to perform a saliency request
+        // by checking if it is possible to create a context from the image.
+        guard let _ = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: cgImage.bytesPerRow, space: cgImage.colorSpace ?? CGColorSpace.displayP3 as! CGColorSpace, bitmapInfo: cgImage.bitmapInfo.rawValue)
+        else {
+            return nil
+        }
+
         // Create request handler
 //        let start:Double = CFAbsoluteTimeGetCurrent()
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        let cgOrientation = CGImagePropertyOrientation.init(self.imageOrientation)
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, orientation: cgOrientation, options: [:])
         
         // Create attention based saliency request
         let attentionRequest = VNGenerateAttentionBasedSaliencyImageRequest()
@@ -34,7 +42,12 @@ extension UIImage {
         objectnessRequest.revision = VNGenerateObjectnessBasedSaliencyImageRequestRevision1
 
         // Search for regions of interest
-        try? requestHandler.perform([attentionRequest, objectnessRequest])
+        do {
+            try requestHandler.perform([attentionRequest, objectnessRequest])
+        } catch let error as NSError {
+            debugPrint("Failed to perform image request: \(error)")
+            return nil
+        }
 
         // Attention-based saliency requests return only one bounding box
         var attentionConfidence:Float = 0.0
@@ -73,11 +86,11 @@ extension UIImage {
             salientObject.boundingBox.height > 0.5 {
              let salientRect = VNImageRectForNormalizedRect(salientObject.boundingBox,
                                                             cgImage.width, cgImage.height)
-             // Crop image
-             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
+            // Crop image
+            guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
 //            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
 //            print("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
-             return UIImage(cgImage:croppedImage)
+            return UIImage(cgImage:croppedImage)
         }
         return nil
         #endif
@@ -107,5 +120,38 @@ extension UIImage {
         UIGraphicsEndImageContext()
 
         return newImage
+    }
+}
+
+//extension UIImage.Orientation {
+//    init(_ cgOrientation: CGImagePropertyOrientation) {
+//        switch cgOrientation {
+//            case .up: self = .up
+//            case .upMirrored: self = .upMirrored
+//            case .down: self = .down
+//            case .downMirrored: self = .downMirrored
+//            case .left: self = .left
+//            case .leftMirrored: self = .leftMirrored
+//            case .right: self = .right
+//            case .rightMirrored: self = .rightMirrored
+//        }
+//    }
+//}
+
+extension CGImagePropertyOrientation {
+    init(_ uiOrientation: UIImage.Orientation) {
+        switch uiOrientation {
+            case .up: self = .up
+            case .upMirrored: self = .upMirrored
+            case .down: self = .down
+            case .downMirrored: self = .downMirrored
+            case .left: self = .left
+            case .leftMirrored: self = .leftMirrored
+            case .right: self = .right
+            case .rightMirrored: self = .rightMirrored
+        @unknown default:
+            self = .up
+            assertionFailure("Unknown CGImageOrientation")
+        }
     }
 }
