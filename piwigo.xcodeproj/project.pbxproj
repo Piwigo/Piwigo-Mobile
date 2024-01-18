@@ -30,9 +30,9 @@
 		AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */; };
 		AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E3042A92A13D00D8E134 /* SettingsViewController+Upload.swift */; };
 		AD0A0D062B125F5B007552A9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
-		AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD0A0D072B125F5B007552A9 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD0A0D092B125F5D007552A9 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
-		AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD0A0D0A2B125F5D007552A9 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -2447,7 +2447,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
 					AD084E452659A27100159FE1 = {
@@ -3403,8 +3403,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -3457,8 +3456,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -3587,8 +3585,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 371;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -3643,8 +3640,7 @@
 				CLANG_TIDY_MISC_REDUNDANT_EXPRESSION = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 371;
