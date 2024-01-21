@@ -18,6 +18,7 @@ protocol CategorySortDelegate: NSObjectProtocol {
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     weak var sortDelegate: CategorySortDelegate?
+    private lazy var currentDefaultSort = AlbumVars.shared.defaultSort
 
     @IBOutlet var sortSelectTableView: UITableView!
 
@@ -79,7 +80,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         super.viewDidDisappear(animated)
 
         // Return selected album
-        sortDelegate?.didSelectCategorySortType(AlbumVars.shared.defaultSort)
+        sortDelegate?.didSelectCategorySortType(currentDefaultSort)
     }
 
     deinit {
@@ -130,7 +131,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
             cell.accessibilityIdentifier = "sortAZ"
         }
 
-        if indexPath.row == AlbumVars.shared.defaultSort.rawValue {
+        if indexPath.row == currentDefaultSort.rawValue {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -146,12 +147,12 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Did the user change the sort option
-        let currentSort = Int(AlbumVars.shared.defaultSort.rawValue)
+        let currentSort = Int(currentDefaultSort.rawValue)
         if indexPath.row == currentSort { return }
 
         // Update choice
         tableView.cellForRow(at: IndexPath(row: currentSort, section: 0))?.accessoryType = .none
-        AlbumVars.shared.defaultSort = pwgImageSort(rawValue: Int16(indexPath.row))!
+        currentDefaultSort = pwgImageSort(rawValue: Int16(indexPath.row))!
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }
