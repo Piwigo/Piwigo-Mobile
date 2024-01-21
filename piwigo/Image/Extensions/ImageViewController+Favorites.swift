@@ -14,10 +14,9 @@ extension ImageViewController
     // MARK: - Add/remove image from favorites
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending ||
-            NetworkVars.userStatus == .guest {
-            return nil
-        }
+        let isGuest = NetworkVars.userStatus == .guest
+        let versionTooOld = NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
+        if isGuest || versionTooOld { return nil }
         
         // Is this image a favorite?
         let isFavorite = (imageData?.albums ?? Set<Album>())
