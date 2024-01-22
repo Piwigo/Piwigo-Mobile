@@ -10,6 +10,7 @@ import XCTest
 
 class piwigoAppStore: XCTestCase {
         
+    @MainActor 
     override func setUp() {
         super.setUp()
         
@@ -33,21 +34,22 @@ class piwigoAppStore: XCTestCase {
     }
     
     // MARK: - Prepare Screenshots
+    @MainActor 
     func testScreenshots() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
 
         let app = XCUIApplication()
         let deviceType = UIDevice().modelName
-        sleep(5);
+        sleep(3);
         
         // Select Photos Title A->Z sort order
-        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-        sleep(1);
-        app.tables["settings"].cells["defaultSort"].tap()
-        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-        app.navigationBars.buttons["Done"].tap()
+//        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
+//        sleep(1);
+//        app.tables["settings"].cells["defaultSort"].tap()
+//        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
+//        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
+//        app.navigationBars.buttons["Done"].tap()
 
         // Screenshot #1: swipe left and reveal album actions
         var index = 1
@@ -70,27 +72,47 @@ class piwigoAppStore: XCTestCase {
         snapshot("Image02")
         
         // Screenshot #3: image previewed
+        // https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
         app.collectionViews.cells["Clos de Vougeot"].tap()
         sleep(2)
-        if deviceType.contains("iPhone SE") {
+        switch deviceType {
+        case "iPhone SE":                                           // 4-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.6, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 8" {
+            app.images.element(boundBy: 0).tap()
+        case "iPhone SE (3rd generation)":                          // 4.7-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 8 Plus":                                       // 5.5-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.16, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 14":                                           // 5.8-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 13 Pro":                                       // Wiki
+            app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 15 Pro":                                       // 6.1-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 14 Plus":                                      // 6.5-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPhone 15 Pro Max":                                   // 6.7-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+            break
+        case "iPad (9th generation)":                               // 10.5-inch
+            break
+        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 8 Plus" {
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
-        }
-        else if ["iPhone 11 Pro", "iPhone 13 Pro", "iPhone 14 Pro",
-                 "iPhone 11 Pro Max", "iPhone 14 Pro Max"].contains(deviceType) {
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
-        }
-        else if deviceType.hasPrefix("iPad"), !deviceType.contains("(12.9-inch)") {
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+            break
+        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+            break
+        default:
+            break
         }
         sleep(2)                        // Leave time for animation
         app.buttons["actions"].tap()
@@ -153,8 +175,20 @@ class piwigoAppStore: XCTestCase {
         sleep(1);
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
-        if deviceType.contains("iPad"), !deviceType.contains("(12.9-inch)") {
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+        switch deviceType {
+        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+            break
+        case "iPad (9th generation)":                               // 10.5-inch
+            break
+        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).tap()
+        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+            break
+        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+            break
+        default:
+            break
         }
         sleep(1)                        // Leave time for animation
         app.buttons["actions"].tap()

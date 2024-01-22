@@ -8,6 +8,8 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 19/09/2020
 //
 
+import Foundation
+
 extension UIDevice {
     
     // MARK: - Identifier
