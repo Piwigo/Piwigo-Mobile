@@ -1,2 +1,2 @@
-• Die Cache-Verwaltung wurde vollständig überarbeitet, um die Benutzerfreundlichkeit zu verbessern und das Offline-Browsing zu ermöglichen
-• Korrekturen einiger Übersetzungen
+• Erfordert das Piwigo Server Update falls erforderlich
+• Fehlerbehebungen

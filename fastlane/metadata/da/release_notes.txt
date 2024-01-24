@@ -1,2 +1,2 @@
-• Cachehåndtering er fuldstændig omskrevet for at forbedre brugeroplevelsen og give mulighed for offline browsing
-• Retter nogle oversættelser
+• Anmodninger om opdatering af Piwigo server om nødvendigt
+• Fejlrettelser

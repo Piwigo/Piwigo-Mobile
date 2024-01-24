@@ -1,2 +1,2 @@
-• Cache-hanteringen är helt omskriven för att förbättra användarupplevelsen och göra det möjligt att surfa offline.
-• Korrigerar vissa översättningar
+• Begär Piwigo server uppdatering om det behövs
+• Felrättelser

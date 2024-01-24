@@ -102,7 +102,7 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).tap()
         case "iPad Pro (9.7-inch)":                                 // 9.7-inch
             break
-        case "iPad (9th generation)":                               // 10.5-inch
+        case "iPad Pro (10.5-inch)":                                // 10.5-inch
             break
         case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
@@ -178,7 +178,7 @@ class piwigoAppStore: XCTestCase {
         switch deviceType {
         case "iPad Pro (9.7-inch)":                                 // 9.7-inch
             break
-        case "iPad (9th generation)":                               // 10.5-inch
+        case "iPad Pro (10.5-inch)":                                // 10.5-inch
             break
         case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)

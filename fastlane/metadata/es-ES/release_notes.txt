@@ -1,2 +1,2 @@
-• Gestión de caché completamente reescrita para mejorar la experiencia del usuario y traer la navegación sin conexión
-• Corrección de algunas traducciones
+• Solicita la actualización del servidor Piwigo si es necesario
+• Corrección de errores

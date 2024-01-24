@@ -30,12 +30,15 @@
 #	bundle update fastlane
 #   fastlane snapshot update
 #
-# To launch fastlane:
+# To produce snapshots:
 #	bundle exec fastlane snapshot
 #
+# To get a list of available options
+#   bundle exec fastlane action deliver
+# To download App Store Connect metadata
+#   bundle exec fastlane deliver download_metadata
 # To upload screenshots and metadata
-#   bundle exec fastlane deliver init
-#   bundle exec fastlane deliver
+#   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --overwrite_screenshots
 #
 # A list of devices you want to take the screenshots from
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
@@ -44,12 +47,12 @@ devices([
  "iPhone SE (3rd generation)",				# 4.7-inch
  "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
  "iPhone 14",								# 5.8-inch
-# "iPhone 13 Pro",							# Wiki
- "iPhone 15 Pro",							# 6.1-inch
+ "iPhone 13 Pro",							# Wiki
+ "iPhone 14 Pro",							# 6.1-inch
  "iPhone 14 Plus",							# 6.5-inch
  "iPhone 15 Pro Max",						# 6.7-inch
  "iPad Pro (9.7-inch)",						# 9.7-inch  iOS 16.4
- "iPad (9th generation)",					# 10.5-inch
+ "iPad Pro (10.5-inch)",					# 10.5-inch
  "iPad Pro (11-inch) (4th generation)",		# 11-inch
  "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
  "iPad Pro (12.9-inch) (6th generation)"	# 12.9-inch
