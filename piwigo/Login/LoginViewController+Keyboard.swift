@@ -14,16 +14,6 @@ extension LoginViewController
               let window = view.window
         else { return }
 
-        // Determine which field triggered the keyboard appearance
-        var activeFieldBottom = 0.0
-        if serverTextField.isFirstResponder {
-            activeFieldBottom = userTextField.frame.maxY
-        } else if userTextField.isFirstResponder {
-            activeFieldBottom = passwordTextField.frame.maxY
-        } else if passwordTextField.isFirstResponder {
-            activeFieldBottom = loginButton.frame.maxY
-        }
-
         // Calc intersection between the keyboard's frame and the view's bounds
         let fromCoordinateSpace = window.screen.coordinateSpace
         let toCoordinateSpace: UICoordinateSpace = scrollView
@@ -32,7 +22,7 @@ extension LoginViewController
 
         // Calc missing height
         let oldVertOffset = scrollView.contentOffset.y
-        var missingHeight = activeFieldBottom - oldVertOffset
+        var missingHeight = loginButton.frame.maxY - oldVertOffset
         missingHeight += viewIntersection.height + 3.0
         missingHeight -= scrollView.bounds.height
 
