@@ -154,6 +154,7 @@ extension SettingsViewController
                         + " | " + UploadManager.shared.getUploadsDirectorySize()
                 }
             })
+            clearUploadCacheAction.accessibilityIdentifier = "uploadCache"
             alert.addAction(clearUploadCacheAction)
         }
         

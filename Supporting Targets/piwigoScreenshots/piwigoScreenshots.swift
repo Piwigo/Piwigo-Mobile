@@ -1,6 +1,6 @@
 //
-//  piwigoUITests.swift
-//  piwigoUITests
+//  piwigoScreenshots.swift
+//  piwigoScreenshots
 //
 //  Created by Eddy Lelièvre-Berna on 25/08/2018.
 //  Copyright © 2018 Piwigo.org. All rights reserved.
@@ -8,9 +8,9 @@
 
 import XCTest
 
-class piwigoAppStore: XCTestCase {
-        
-    @MainActor 
+class piwigoScreenshots: XCTestCase {
+    
+    @MainActor
     override func setUp() {
         super.setUp()
         
@@ -18,12 +18,12 @@ class piwigoAppStore: XCTestCase {
         
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
+        
         // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launch()
-
+        
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
         XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
     }
@@ -34,23 +34,23 @@ class piwigoAppStore: XCTestCase {
     }
     
     // MARK: - Prepare Screenshots
-    @MainActor 
+    @MainActor
     func testScreenshots() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-
+        
         let app = XCUIApplication()
         let deviceType = UIDevice().modelName
         sleep(3);
         
         // Select Photos Title A->Z sort order
-//        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-//        sleep(1);
-//        app.tables["settings"].cells["defaultSort"].tap()
-//        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-//        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-//        app.navigationBars.buttons["Done"].tap()
-
+        //        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
+        //        sleep(1);
+        //        app.tables["settings"].cells["defaultSort"].tap()
+        //        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
+        //        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
+        //        app.navigationBars.buttons["Done"].tap()
+        
         // Screenshot #1: swipe left and reveal album actions
         var index = 1
         if deviceType.hasPrefix("iPad") {
@@ -59,7 +59,7 @@ class piwigoAppStore: XCTestCase {
         let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
         let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
         sleep(4);
-        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
+        tableQuery.swipeLeft()
         snapshot("Image01")
         
         // Screenshot #2: collection of images with titles
@@ -78,27 +78,35 @@ class piwigoAppStore: XCTestCase {
         switch deviceType {
         case "iPhone SE":                                           // 4-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone SE (3rd generation)":                          // 4.7-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 8 Plus":                                       // 5.5-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.16, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 14":                                           // 5.8-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 13 Pro":                                       // Wiki
             app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 15 Pro":                                       // 6.1-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 14 Plus":                                      // 6.5-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 15 Pro Max":                                   // 6.7-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPad Pro (9.7-inch)":                                 // 9.7-inch
             break
@@ -106,6 +114,7 @@ class piwigoAppStore: XCTestCase {
             break
         case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
             break
@@ -169,7 +178,7 @@ class piwigoAppStore: XCTestCase {
             }
         }
         snapshot("Image04")
-
+        
         // Screenshot #5: Edit parameters
         app.navigationBars.buttons["Cancel"].tap()
         sleep(1);
@@ -195,7 +204,7 @@ class piwigoAppStore: XCTestCase {
         app.collectionViews.buttons["Edit Parameters"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image05")
-
+        
         // Screenshot #6: create album & add image buttons
         app.buttons["Cancel"].tap()
         sleep(2)                        // Leave time for animation
@@ -206,10 +215,7 @@ class piwigoAppStore: XCTestCase {
         app.buttons["add"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image06")
-
-//        app.navigationBars.buttons.element(boundBy: 0).tap()
-//        sleep(2)                        // Leave time for animation
-
+        
         // Screenshot #7: local images
         app.buttons["addImages"].tap()
         sleep(1)                        // Leave time for animation
@@ -231,7 +237,7 @@ class piwigoAppStore: XCTestCase {
         moreButton.tap()
         sleep(1)                        // Leave time for animation
         snapshot("Image07")
-
+        
         // Screenshot #8: upload images, parameters
         app.collectionViews.buttons["Days"].tap()
         sleep(1)                        // Leave time for animation
@@ -242,12 +248,12 @@ class piwigoAppStore: XCTestCase {
         }
         sleep(1)
         snapshot("Image08")
-
+        
         // Screenshot #9: upload images, settings
         app.navigationBars["UploadSwitchView"]/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".segmentedControls.buttons[\"settings\"]",".buttons[\"settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         sleep(1)
         snapshot("Image09")
-
+        
         // Screenshot #10: settings
         app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
         let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
@@ -264,87 +270,4 @@ class piwigoAppStore: XCTestCase {
         app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
         snapshot("Image10")
     }
-
-    // MARK: - Prepare Video
-//    func testVideoUpload() {
-//        // Use recording to get started writing UI tests.
-//        // Use XCTAssert and related functions to verify your tests produce the correct results.
-//
-//        let app = XCUIApplication()
-//        let deviceType = UIDevice().modelName
-//        sleep(3);
-//
-//        // Create "Delft" album
-//        app.buttons["add"].tap()
-//        sleep(1)                        // Leave time for animation
-//        app.typeText("Delft")
-//        app.alerts["CreateAlbum"].scrollViews.otherElements.buttons["Add"].tap()
-//        sleep(2)                        // Leave time for animation
-//
-//        // Open "Delft" album
-//        app.collectionViews.children(matching: .cell).element(boundBy: 0).tap()
-//        sleep(1);
-//
-//        // Start uploading photos
-//        app.buttons["add"].tap()
-//        app/*@START_MENU_TOKEN@*/.buttons["addImages"]/*[[".buttons[\"imageUpload\"]",".buttons[\"addImages\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-//        sleep(1)                        // Leave time for animation
-//
-//        // Select Recent album
-//        app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
-//        sleep(1)                        // Leave time for animation
-//
-//        // Sort photos by days
-//        let moreButton = app.navigationBars["LocalImagesNav"].buttons["Action"]
-//        moreButton.tap()
-//        sleep(1)                        // Leave time for animation
-//        app.collectionViews.buttons["Days"].tap()
-//        sleep(1)                        // Leave time for animation
-//
-//        // Select photos taken the first day
-//        app.collectionViews["CameraRoll"].children(matching: .other).element(boundBy: 0).buttons["SelectAll"].tap()
-//
-//        // Display upload settings
-//        if deviceType.contains("iPhone") {
-//            app.toolbars.buttons["Upload"].tap()
-//        } else {
-//            app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
-//        }
-//        sleep(1)                        // Leave time for animation
-//
-//        // Select tag
-//        app.tables["Parameters"].cells["setTags"].tap()
-//        app.tables/*@START_MENU_TOKEN@*/.staticTexts["Cities"]/*[[".cells.staticTexts[\"Cities\"]",".staticTexts[\"Cities\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-//        app.navigationBars["UploadSwitchView"].buttons["Back"].tap()
-//        sleep(1)
-//
-//        // Check upload settings
-//        app.navigationBars["UploadSwitchView"]/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".segmentedControls.buttons[\"settings\"]",".buttons[\"settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-//        sleep(1)
-//
-//        // Upload photos
-//        app.navigationBars["UploadSwitchView"].buttons["Upload"].tap()
-//        sleep(3)
-//
-//        // Return to album
-//        app.navigationBars["LocalImagesNav"].buttons["Photo Library"].tap()
-//        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
-//        sleep(2)
-//
-//        // Return to root
-//        app.buttons["rootAlbum"].tap()
-//        sleep(15)                        // Leave time for animation
-//
-//        // Delete temporary album
-//        let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: 0)
-//        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
-//        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
-//        tableQuery.buttons["swipeTrash"].tap()
-//        sleep(1)                        // Leave time for animation
-//        app.sheets["DeleteAlbum"].scrollViews.otherElements.buttons["DeleteAll"].tap()
-//        let elementsQuery = app.alerts["Are you sure?"].scrollViews.otherElements
-//        app.typeText("5")
-//        elementsQuery.buttons["DeleteAll"].tap()
-//        sleep(2)                        // Leave time for animation
-//    }
 }

@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
-               BuildableName = "piwigoAppStore.xctest"
-               BlueprintName = "piwigoAppStore"
+               BuildableName = "piwigoScreenshots.xctest"
+               BlueprintName = "piwigoScreenshots"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
-               BuildableName = "piwigoAppStore.xctest"
-               BlueprintName = "piwigoAppStore"
+               BuildableName = "piwigoScreenshots.xctest"
+               BlueprintName = "piwigoScreenshots"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -84,8 +84,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
-            BuildableName = "piwigoAppStore.xctest"
-            BlueprintName = "piwigoAppStore"
+            BuildableName = "piwigoScreenshots.xctest"
+            BlueprintName = "piwigoScreenshots"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -100,8 +100,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AD30FD3321316DA7009AA30E"
-            BuildableName = "piwigoAppStore.xctest"
-            BlueprintName = "piwigoAppStore"
+            BuildableName = "piwigoScreenshots.xctest"
+            BlueprintName = "piwigoScreenshots"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
