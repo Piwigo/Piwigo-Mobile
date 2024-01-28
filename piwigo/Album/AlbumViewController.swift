@@ -560,7 +560,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
@@ -850,7 +850,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
         
         // Pause upload manager
         UploadManager.shared.isPaused = true
