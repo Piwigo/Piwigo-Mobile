@@ -108,7 +108,8 @@ class ImageSession: NSObject {
         // Do we already have this image or video in cache?
         if download.fileURL.fileSize != 0 {
             // We do have an image in cache, but is this the image or expected video?
-            if imageSize == .fullRes, fileSize != 0 {
+            if imageSize == .fullRes,
+               [NSURLSessionTransferSizeUnknown, 0].contains(fileSize) == false {
                 let cachedFileSize = download.fileURL.fileSize
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
 //                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
