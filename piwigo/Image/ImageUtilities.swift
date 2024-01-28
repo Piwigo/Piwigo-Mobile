@@ -212,9 +212,12 @@ class ImageUtilities: NSObject {
     }
     
     static func couldNotDownsample(imageAt imageURL: URL) -> UIImage {
-        if let data = try? Data(contentsOf:imageURL) {
-            return UIImage(data: data) ?? UIImage(named: "placeholder")!
+        // Can we use the downloaded file?
+        if let image = UIImage(contentsOfFile: imageURL.path) {
+            return image
         } else {
+            // Delete corrupted cached image file
+            try? FileManager.default.removeItem(at: imageURL)
             return UIImage(named: "placeholder")!
         }
     }
