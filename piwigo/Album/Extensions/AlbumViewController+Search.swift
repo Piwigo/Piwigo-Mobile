@@ -157,7 +157,7 @@ extension AlbumViewController: UISearchBarDelegate
                     self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
                     // Session logout required?
-                    if let pwgError = error as? PwgSessionErrors,
+                    if let pwgError = error as? PwgSessionError,
                        [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                         .contains(pwgError) {
                         ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

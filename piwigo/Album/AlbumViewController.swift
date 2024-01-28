@@ -566,7 +566,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
                 // Session logout required?
-                if let pwgError = error as? PwgSessionErrors,
+                if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                     .contains(pwgError) {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -869,7 +869,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             DispatchQueue.main.async {
                 self.imagesCollection?.refreshControl?.endRefreshing()
                 // Session logout required?
-                if let pwgError = error as? PwgSessionErrors,
+                if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                     .contains(pwgError) {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

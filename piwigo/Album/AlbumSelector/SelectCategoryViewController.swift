@@ -366,7 +366,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 guard let error = error else { return }
 
                 // Session logout required?
-                if let pwgError = error as? PwgSessionErrors,
+                if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                     .contains(pwgError) {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -381,7 +381,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         } failure: { [self] error in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -1000,7 +1000,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     func showError(_ error: Error?) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionErrors,
+        if let pwgError = error as? PwgSessionError,
            [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
             .contains(pwgError) {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

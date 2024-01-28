@@ -206,7 +206,7 @@ extension AlbumViewController
     
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, error: NSError) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionErrors,
+        if let pwgError = error as? PwgSessionError,
            [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
             .contains(pwgError) {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -321,7 +321,7 @@ extension AlbumViewController
     private func deleteImagesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

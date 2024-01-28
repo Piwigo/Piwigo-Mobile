@@ -441,7 +441,7 @@ class LoginViewController: UIViewController {
                 // Piwigo update required ► Close login or re-login view and inform user
                 isAlreadyTryingToLogin = false
                 // Display error message
-                logging(inConnectionError: PwgSessionErrors.incompatiblePwgVersion)
+                logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
             }
             else if NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
                 // Piwigo server update recommanded ► Inform user
@@ -521,8 +521,8 @@ class LoginViewController: UIViewController {
         // Error returned
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
-        if let pwgError = error as? PwgSessionErrors,
-           pwgError == PwgSessionErrors.incompatiblePwgVersion {
+        if let pwgError = error as? PwgSessionError,
+           pwgError == PwgSessionError.incompatiblePwgVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
         }

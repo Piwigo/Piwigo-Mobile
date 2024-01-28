@@ -93,7 +93,7 @@ extension AlbumViewController
     private func addImageToFavoritesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -179,7 +179,7 @@ extension AlbumViewController
     private func removeFromFavoritesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

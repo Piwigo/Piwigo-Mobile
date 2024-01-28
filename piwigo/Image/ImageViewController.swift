@@ -330,7 +330,7 @@ class ImageViewController: UIViewController {
     private func retrieveImageDataError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -352,7 +352,7 @@ class ImageViewController: UIViewController {
                     // Statistics updated
                 } failure: { error in
                     // Session logout required?
-                    if let pwgError = error as? PwgSessionErrors,
+                    if let pwgError = error as? PwgSessionError,
                        [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                         .contains(pwgError) {
                         ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
@@ -364,7 +364,7 @@ class ImageViewController: UIViewController {
             }
         } failure: { error in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

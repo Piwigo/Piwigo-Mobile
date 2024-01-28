@@ -171,7 +171,7 @@ extension AlbumCollectionViewCell {
         DispatchQueue.main.async {
             // Session logout required?
             if let topViewController = topViewController,
-               let pwgError = error as? PwgSessionErrors,
+               let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: topViewController, error: pwgError)

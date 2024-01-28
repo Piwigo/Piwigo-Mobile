@@ -396,7 +396,7 @@ extension UploadManager {
                     }
                 }
                 else {
-                    upload.setState(.uploadingError, error: PwgSessionErrors.networkUnavailable, save: false)
+                    upload.setState(.uploadingError, error: PwgSessionError.networkUnavailable, save: false)
                     self.backgroundQueue.async {
                         self.uploadProvider.bckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -456,7 +456,7 @@ extension UploadManager {
                 #if DEBUG
                 print("\(dbg()) Empty JSON object!")
                 #endif
-                upload.setState(.uploadingError, error: PwgSessionErrors.emptyJSONobject, save: false)
+                upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
                 self.backgroundQueue.async {
                     self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -470,7 +470,7 @@ extension UploadManager {
                 let dataStr = String(decoding: data, as: UTF8.self)
                 print("\(dbg()) Invalid JSON object: \(dataStr)")
                 #endif
-                upload.setState(.uploadingError, error: PwgSessionErrors.invalidJSONobject, save: false)
+                upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
                 self.backgroundQueue.async {
                     self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -775,7 +775,7 @@ extension UploadManager {
                 }
             }
             else {
-                upload.setState(.uploadingError, error: PwgSessionErrors.networkUnavailable, save: false)
+                upload.setState(.uploadingError, error: PwgSessionError.networkUnavailable, save: false)
                 self.backgroundQueue.async {
                     self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -829,7 +829,7 @@ extension UploadManager {
             #if DEBUG
             print("\(dbg()) Empty JSON object!")
             #endif
-            upload.setState(.uploadingError, error: PwgSessionErrors.emptyJSONobject, save: false)
+            upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -843,7 +843,7 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             print("\(dbg()) Invalid JSON object: \(dataStr)")
             #endif
-            upload.setState(.uploadingError, error: PwgSessionErrors.invalidJSONobject, save: false)
+            upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadProvider.bckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)

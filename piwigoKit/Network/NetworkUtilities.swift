@@ -162,7 +162,7 @@ public class NetworkUtilities: NSObject {
                 PwgSession.shared.sessionGetStatus { _ in
                     // Check Piwigo server version
                     if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
-                        failure(PwgSessionErrors.incompatiblePwgVersion as NSError) }
+                        failure(PwgSessionError.incompatiblePwgVersion as NSError) }
                     else {
                         completion()
                     }
@@ -176,7 +176,7 @@ public class NetworkUtilities: NSObject {
             PwgSession.shared.sessionGetStatus { _ in
                 // Check Piwigo server version
                 if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    failure(PwgSessionErrors.incompatiblePwgVersion as NSError) }
+                    failure(PwgSessionError.incompatiblePwgVersion as NSError) }
                 else {
                     completion()
                 }

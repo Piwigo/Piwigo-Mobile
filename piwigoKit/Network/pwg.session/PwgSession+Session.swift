@@ -79,7 +79,7 @@ public extension PwgSession {
                 
                 // No status returned?
                 guard let data = statusJSON.data else {
-                    failure(PwgSessionErrors.authenticationFailed as NSError)
+                    failure(PwgSessionError.authenticationFailed as NSError)
                     return
                 }
 

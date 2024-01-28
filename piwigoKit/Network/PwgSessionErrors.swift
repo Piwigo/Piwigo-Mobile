@@ -1,5 +1,5 @@
 //
-//  PwgSessionErrors.swift
+//  PwgSessionError.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 13/06/2021.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum PwgSessionErrors: Error {
+public enum PwgSessionError: Error {
     case networkUnavailable
     case emptyJSONobject
     case invalidJSONobject
@@ -25,7 +25,7 @@ public enum PwgSessionErrors: Error {
     case invalidParameter       // 1003
 }
 
-extension PwgSessionErrors: LocalizedError {
+extension PwgSessionError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .networkUnavailable:
@@ -71,15 +71,15 @@ extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
         switch errorCode {
         case 404:
-            return PwgSessionErrors.invalidURL
+            return PwgSessionError.invalidURL
         case 501:
-            return PwgSessionErrors.invalidMethod
+            return PwgSessionError.invalidMethod
         case 999:
-            return PwgSessionErrors.invalidCredentials
+            return PwgSessionError.invalidCredentials
         case 1002:
-            return PwgSessionErrors.missingParameter
+            return PwgSessionError.missingParameter
         case 1003:
-            return PwgSessionErrors.invalidParameter
+            return PwgSessionError.invalidParameter
         default:
             let error = NSError(domain: "Piwigo", code: errorCode,
                                 userInfo: [NSLocalizedDescriptionKey : errorMessage])

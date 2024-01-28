@@ -50,7 +50,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionErrors.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -96,7 +96,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionErrors.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -142,7 +142,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionErrors.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested

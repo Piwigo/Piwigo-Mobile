@@ -114,7 +114,7 @@ extension AlbumViewController
     private func addCategoryError(_ error: NSError) {
         self.hidePiwigoHUD() { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionErrors,
+            if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
                 .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)

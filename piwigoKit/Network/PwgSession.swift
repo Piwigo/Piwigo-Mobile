@@ -124,7 +124,7 @@ public class PwgSession: NSObject {
                         // Empty JSON data
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
-                            failure(PwgSessionErrors.emptyJSONobject as NSError)
+                            failure(PwgSessionError.emptyJSONobject as NSError)
                             return
                         }
                         
@@ -146,7 +146,7 @@ public class PwgSession: NSObject {
 						#endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
-                            failure(PwgSessionErrors.invalidJSONobject as NSError)
+                            failure(PwgSessionError.invalidJSONobject as NSError)
                             return
                         }
                         
@@ -171,7 +171,7 @@ public class PwgSession: NSObject {
             // No error, check that the JSON object is not empty
             guard var jsonData = data, jsonData.isEmpty == false else {
                 // Empty JSON data
-                failure(PwgSessionErrors.emptyJSONobject as NSError)
+                failure(PwgSessionError.emptyJSONobject as NSError)
                 return
             }
             
@@ -192,7 +192,7 @@ public class PwgSession: NSObject {
             
             // Return Piwigo error if no error and no data returned.
             guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
-                failure(PwgSessionErrors.invalidJSONobject as NSError)
+                failure(PwgSessionError.invalidJSONobject as NSError)
                 return
             }
 
