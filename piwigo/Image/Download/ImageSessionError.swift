@@ -1,5 +1,5 @@
 //
-//  ImageSessionErrors.swift
+//  ImageSessionError.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/01/2023.
