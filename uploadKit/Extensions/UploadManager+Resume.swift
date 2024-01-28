@@ -69,20 +69,24 @@ extension UploadManager
         // Propose to delete uploaded image of the photo Library once a day
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
             // Are there images to delete from the Photo Library?
-            let toDelete = (completed.fetchedObjects ?? []).filter({$0.deleteImageAfterUpload == true})
-            if toDelete.count > 0 {
-                // Store date of last deletion
+            let assetsToDelete = (completed.fetchedObjects ?? [])
+                .filter({$0.deleteImageAfterUpload == true})
+                .filter({isDeleting.contains($0.objectID) == false})
+            if assetsToDelete.count > 0 {
+                // Store date of deletion
                 UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                print("\(dbg()) \(toDelete.count) upload requests should be deleted")
-                deleteAssets(associatedToUploads: toDelete)
+                print("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
+                deleteAssets(associatedToUploads: assetsToDelete)
             }
         }
         
         // Delete upload requests of assets that have become unavailable,
         // except non-completed requests from intent and clipboard
-        var toDelete = (uploads.fetchedObjects ?? []).filter({!$0.localIdentifier.hasPrefix(kIntentPrefix) && !$0.localIdentifier.hasPrefix(kClipboardPrefix)})
+        var toDelete = (uploads.fetchedObjects ?? [])
+            .filter({!$0.localIdentifier.hasPrefix(kIntentPrefix)})
+            .filter({!$0.localIdentifier.hasPrefix(kClipboardPrefix)})
         toDelete.append(contentsOf: completed.fetchedObjects ?? [])
         
         // Fetch assets which are still available
