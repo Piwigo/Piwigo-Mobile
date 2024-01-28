@@ -156,14 +156,17 @@ extension AlbumViewController: UISearchBarDelegate
                 NetworkUtilities.checkSession(ofUser: self.user) {
                     self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
+                    // Session logout required?
                     if let pwgError = error as? PwgSessionErrors,
-                       pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                        let title = PwgSessionErrors.incompatiblePwgVersion.localizedDescription
-                        ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-                    } else {
-                        print("••> Error \(error.code): \(error.localizedDescription)")
-                        // TO DO…
+                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                        .contains(pwgError) {
+                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        return
                     }
+                    
+                    // Report error
+                    let title = "Error \(error.code)"
+                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
                 }
             }
         }

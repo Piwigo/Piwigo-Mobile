@@ -565,14 +565,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
+                // Session logout required?
                 if let pwgError = error as? PwgSessionErrors,
-                   pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                    let title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-                } else {
-                    print("••> Error \(error.code): \(error.localizedDescription)")
-                    // TO DO…
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
                 }
+
+                // Report error
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
         }
 
@@ -865,13 +868,17 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // End refreshing anyway
             DispatchQueue.main.async {
                 self.imagesCollection?.refreshControl?.endRefreshing()
+                // Session logout required?
                 if let pwgError = error as? PwgSessionErrors,
-                   pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                    let title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-                } else {
-                    print("••> Error \(error.code): \(error.localizedDescription)")
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
                 }
+
+                // Report error
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
         }
     }

@@ -365,20 +365,33 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                       thumbnailSize: thumnailSize) { [self] error in
                 guard let error = error else { return }
 
-                // Show the error
+                // Session logout required?
+                if let pwgError = error as? PwgSessionErrors,
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
+                }
+
+                // Report error
                 let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                if error is PwgSessionErrors,
-                   error as! PwgSessionErrors == PwgSessionErrors.incompatiblePwgVersion {
-                    ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-                } else {
-                    DispatchQueue.main.async { [self] in
-                        dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
-                    }
+                DispatchQueue.main.async { [self] in
+                    dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
                 }
             }
         } failure: { [self] error in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionErrors,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
+            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
             DispatchQueue.main.async { [self] in
-                dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
+                dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
             }
         }
     }
@@ -986,6 +999,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     func showError(_ error: Error?) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionErrors,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
         // Title and message
         let title:String
         var message:String
@@ -1012,27 +1033,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             return
         }
         
-        // Present alert
-        if let pwgError = error as? PwgSessionErrors,
-           pwgError == PwgSessionErrors.incompatiblePwgVersion {
-            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-        } else {
-            var errorMessage = ""
-            if let error = error {
-                errorMessage = error.localizedDescription
+        // Report error
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error?.localizedDescription ?? "") {
+            // Forget the choice
+            self.selectedCategoryId = Int32.min
+            // Save changes if any
+            do {
+                try self.mainContext.save()
+            } catch let error as NSError {
+                print("Could not fetch \(error), \(error.userInfo)")
             }
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMessage) {
-                // Forget the choice
-                self.selectedCategoryId = Int32.min
-                // Save changes if any
-                do {
-                    try self.mainContext.save()
-                } catch let error as NSError {
-                    print("Could not fetch \(error), \(error.userInfo)")
-                }
-                // Dismiss the view
-                self.dismiss(animated: true, completion: {})
-            }
+            // Dismiss the view
+            self.dismiss(animated: true, completion: {})
         }
     }
 }

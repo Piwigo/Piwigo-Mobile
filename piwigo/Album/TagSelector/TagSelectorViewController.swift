@@ -109,15 +109,18 @@ class TagSelectorViewController: UITableViewController {
     }
     
     private func didFetchTagsWithError(_ error: Error) {
-        let title = TagError.fetchFailed.localizedDescription
+        // Session logout required?
         if let pwgError = error as? PwgSessionErrors,
-           pwgError == PwgSessionErrors.incompatiblePwgVersion {
-            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-        } else {
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                        message: error.localizedDescription) { }
-            }
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+
+        // Report error
+        let title = TagError.fetchFailed.localizedDescription
+        DispatchQueue.main.async {
+            self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
         }
     }
     

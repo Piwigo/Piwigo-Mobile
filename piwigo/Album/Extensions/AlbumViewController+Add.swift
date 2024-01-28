@@ -113,17 +113,21 @@ extension AlbumViewController
     
     private func addCategoryError(_ error: NSError) {
         self.hidePiwigoHUD() { [self] in
-            let title = NSLocalizedString("createAlbumError_title", comment: "Create Album Error")
+            // Session logout required?
             if let pwgError = error as? PwgSessionErrors,
-               pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-            } else {
-                let message = NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album")
-                dismissPiwigoError(withTitle: title, message: message,
-                                   errorMessage: error.localizedDescription) { [self] in
-                    // Reset buttons
-                    didCancelTapAddButton()
-                }
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+            
+            // Report error
+            let title = NSLocalizedString("createAlbumError_title", comment: "Create Album Error")
+            let message = NSLocalizedString("createAlbumError_message", comment: "Failed to create a new album")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { [self] in
+                // Reset buttons
+                didCancelTapAddButton()
             }
         }
     }

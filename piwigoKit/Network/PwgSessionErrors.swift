@@ -18,6 +18,7 @@ public enum PwgSessionErrors: Error {
     case incompatiblePwgVersion
     
     // Piwigo server errors
+    case invalidURL             // 404
     case invalidMethod          // 501
     case invalidCredentials     // 999
     case missingParameter       // 1002
@@ -46,8 +47,8 @@ extension PwgSessionErrors: LocalizedError {
             return NSLocalizedString("serverUnknownError_message",
                                      comment: "Unexpected error encountered while calling server method with provided parameters.")
         case .invalidMethod:
-            return NSLocalizedString("loginError_message",
-                                     comment: "The username and password don't match on the given server.")
+            return NSLocalizedString("serverInvalidMethodError_message",
+                                     comment: "Failed to call server method.")
         case .invalidCredentials:
             return NSLocalizedString("loginError_message",
                                      comment: "The username and password don't match on the given server")
@@ -60,6 +61,8 @@ extension PwgSessionErrors: LocalizedError {
         case .incompatiblePwgVersion:
             return NSLocalizedString("serverVersionNotCompatible_message",
                                      comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
+        case .invalidURL:
+            return NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address.")
         }
     }
 }
@@ -67,6 +70,8 @@ extension PwgSessionErrors: LocalizedError {
 extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
         switch errorCode {
+        case 404:
+            return PwgSessionErrors.invalidURL
         case 501:
             return PwgSessionErrors.invalidMethod
         case 999:

@@ -329,15 +329,19 @@ class ImageViewController: UIViewController {
 
     private func retrieveImageDataError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            // Session logout required?
             if let pwgError = error as? PwgSessionErrors,
-               pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-            } else {
-                let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
-                dismissPiwigoError(withTitle: title, message: message,
-                                   errorMessage: error.localizedDescription) { }
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
             }
+
+            // Report error
+            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) { }
         }
     }
 
@@ -346,18 +350,28 @@ class ImageViewController: UIViewController {
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
-                } failure: { _ in
+                } failure: { error in
+                    // Session logout required?
+                    if let pwgError = error as? PwgSessionErrors,
+                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                        .contains(pwgError) {
+                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        return
+                    }
+                    
                     // Statistics not updated ► No error reported
                 }
             }
         } failure: { error in
+            // Session logout required?
             if let pwgError = error as? PwgSessionErrors,
-               pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                let title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-            } else {
-                // Statistics not updated ► No error reported
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
             }
+
+            // Statistics not updated ► No error reported
         }
     }
 

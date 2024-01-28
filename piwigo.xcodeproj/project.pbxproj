@@ -50,7 +50,7 @@
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
 		AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
-		AD1AC30A29746F9E00CEA7A9 /* ImageSessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */; };
+		AD1AC30A29746F9E00CEA7A9 /* ImageSessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AC30929746F9E00CEA7A9 /* ImageSessionError.swift */; };
 		AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
@@ -602,7 +602,7 @@
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
 		AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataViewController.swift; sourceTree = "<group>"; };
-		AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSessionErrors.swift; sourceTree = "<group>"; };
+		AD1AC30929746F9E00CEA7A9 /* ImageSessionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSessionError.swift; sourceTree = "<group>"; };
 		AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0B (Image).xcdatamodel"; sourceTree = "<group>"; };
 		AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0A_to_0B.xcmappingmodel; sourceTree = "<group>"; };
 		AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+AppTools.swift"; sourceTree = "<group>"; };
@@ -1694,7 +1694,7 @@
 			children = (
 				AD659805297D98BB002A61D8 /* ImageDownload.swift */,
 				AD4BD3E228DCF56D009278A5 /* ImageSession.swift */,
-				AD1AC30929746F9E00CEA7A9 /* ImageSessionErrors.swift */,
+				AD1AC30929746F9E00CEA7A9 /* ImageSessionError.swift */,
 				ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */,
 			);
 			path = Download;
@@ -3110,7 +3110,7 @@
 				AD7D41582B4435260095A070 /* AutoUploadViewController+UITextView.swift in Sources */,
 				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
-				AD1AC30A29746F9E00CEA7A9 /* ImageSessionErrors.swift in Sources */,
+				AD1AC30A29746F9E00CEA7A9 /* ImageSessionError.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
 				AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */,
 				AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */,

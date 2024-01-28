@@ -323,26 +323,30 @@ class EditImageParamsViewController: UIViewController
 
     private func showUpdatePropertiesError(_ error: NSError, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
-        let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
+        // Session logout required?
         if let pwgError = error as? PwgSessionErrors,
-           pwgError == PwgSessionErrors.incompatiblePwgVersion {
-            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+
+        // Report error
+        let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
+        let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
+        if index + 1 < images.count {
+            cancelDismissPiwigoError(withTitle: title, message: message,
+                                     errorMessage: error.localizedDescription) {
+            } dismiss: { [self] in
+                // Bypass this image
+                if index + 1 < images.count {
+                    // Next image
+                    updateImageProperties(fromIndex: index + 1)
+                }
+            }
         } else {
-            let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
-            if index + 1 < images.count {
-                cancelDismissPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription) {
-                } dismiss: { [self] in
-                    // Bypass this image
-                    if index + 1 < images.count {
-                        // Next image
-                        updateImageProperties(fromIndex: index + 1)
-                    }
-                }
-            } else {
-                dismissPiwigoError(withTitle: title, message: message,
-                                   errorMessage: error.localizedDescription) {
-                }
+            dismissPiwigoError(withTitle: title, message: message,
+                               errorMessage: error.localizedDescription) {
             }
         }
     }

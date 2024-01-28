@@ -205,45 +205,49 @@ extension AlbumViewController
     }
     
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, error: NSError) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionErrors,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
+        // Report error
         var imagesToRemove = toRemove
         let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        if let pwgError = error as? PwgSessionErrors,
-           pwgError == PwgSessionErrors.incompatiblePwgVersion {
-            ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-        } else {
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
-            if imagesToRemove.count > 1 {
-                cancelDismissPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription) { [unowned self] in
-                    hidePiwigoHUD() { [unowned self] in
-                        // Save changes
-                        do {
-                            try self.mainContext.save()
-                        } catch let error as NSError {
-                            print("Could not save moved images \(error), \(error.userInfo)")
-                        }
-                        // Hide HUD and update buttons
-                        updateButtonsInSelectionMode()
+        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+        if imagesToRemove.count > 1 {
+            cancelDismissPiwigoError(withTitle: title, message: message,
+                                     errorMessage: error.localizedDescription) { [unowned self] in
+                hidePiwigoHUD() { [unowned self] in
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save moved images \(error), \(error.userInfo)")
                     }
-                } dismiss: { [unowned self] in
-                    // Bypass image
-                    imagesToRemove.removeFirst()
-                    // Continue removing images
-                    removeImages(imagesToRemove, andThenDelete:toDelete)
+                    // Hide HUD and update buttons
+                    updateButtonsInSelectionMode()
                 }
-            } else {
-                dismissPiwigoError(withTitle: title, message: message,
-                                         errorMessage: error.localizedDescription) { [unowned self] in
-                    hidePiwigoHUD() { [unowned self] in
-                        // Save changes
-                        do {
-                            try self.mainContext.save()
-                        } catch let error as NSError {
-                            print("Could not save moved images \(error), \(error.userInfo)")
-                        }
-                        // Hide HUD and update buttons
-                        updateButtonsInSelectionMode()
+            } dismiss: { [unowned self] in
+                // Bypass image
+                imagesToRemove.removeFirst()
+                // Continue removing images
+                removeImages(imagesToRemove, andThenDelete:toDelete)
+            }
+        } else {
+            dismissPiwigoError(withTitle: title, message: message,
+                                     errorMessage: error.localizedDescription) { [unowned self] in
+                hidePiwigoHUD() { [unowned self] in
+                    // Save changes
+                    do {
+                        try self.mainContext.save()
+                    } catch let error as NSError {
+                        print("Could not save moved images \(error), \(error.userInfo)")
                     }
+                    // Hide HUD and update buttons
+                    updateButtonsInSelectionMode()
                 }
             }
         }
@@ -316,23 +320,27 @@ extension AlbumViewController
     
     private func deleteImagesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            // Session logout required?
             if let pwgError = error as? PwgSessionErrors,
-               pwgError == PwgSessionErrors.incompatiblePwgVersion {
-                ClearCache.closeSessionWithIncompatibleServer(from: self, title: title)
-            } else {
-                let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
-                dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                    // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
-                    }
-                    // Hide HUD and update buttons
-                    hidePiwigoHUD() { [self] in
-                        updateButtonsInSelectionMode()
-                    }
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
+            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+                // Save changes
+                do {
+                    try self.mainContext.save()
+                } catch let error as NSError {
+                    print("Could not save moved images \(error), \(error.userInfo)")
+                }
+                // Hide HUD and update buttons
+                hidePiwigoHUD() { [self] in
+                    updateButtonsInSelectionMode()
                 }
             }
         }

@@ -169,18 +169,22 @@ extension AlbumCollectionViewCell {
     private func renameCategoryError(_ error: NSError, viewController topViewController: UIViewController?,
                                      completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.async {
+            // Session logout required?
+            if let topViewController = topViewController,
+               let pwgError = error as? PwgSessionErrors,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: topViewController, error: pwgError)
+                return
+            }
+
+            // Report error
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
-            if let pwgError = error as? PwgSessionErrors,
-               pwgError == PwgSessionErrors.incompatiblePwgVersion,
-               let topViewController = topViewController {
-                ClearCache.closeSessionWithIncompatibleServer(from: topViewController, title: title)
-            } else {
-                let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
-                topViewController?.hidePiwigoHUD() {
-                    topViewController?.dismissPiwigoError(withTitle: title, message: message,
-                                                          errorMessage: error.localizedDescription) {
-                        completion(true)
-                    }
+            let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
+            topViewController?.hidePiwigoHUD() {
+                topViewController?.dismissPiwigoError(withTitle: title, message: message,
+                                                      errorMessage: error.localizedDescription) {
+                    completion(true)
                 }
             }
         }
