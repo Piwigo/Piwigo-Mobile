@@ -150,30 +150,47 @@ extension UploadManager
     
     // MARK: - Clean Photo Library
     public func deleteAssets(associatedToUploads uploads: [Upload]) -> Void {
-        // Get image assets of images to delete
-        if uploads.isEmpty { return }
+        // Just in case…
+        if uploads.isEmpty {
+            self.isDeleting = Set()
+            return
+        }
+
+        // Remember which uploads are concerned to avoid duplicate deletions
+        isDeleting = Set(uploads.map({$0.objectID}))
+        
+        // Get assets to delete
         let uploadedImages = uploads.map({$0.localIdentifier})
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImages, options: nil)
-        if assetsToDelete.count == 0 { return }
+        if assetsToDelete.count == 0 {
+            // Assets already deleted
+            self.deleteUploadsInRightQueue(uploads)
+            return
+        }
         
         // Delete images from Photo Library
-        print("\(dbg()) \(uploadedImages.count) assets should be deleted.")
         DispatchQueue.main.async {
-            PHPhotoLibrary.shared().performChanges({
+            PHPhotoLibrary.shared().performChanges {
                 // Delete images from the library
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
-            }, completionHandler: { success, error in
-                if let taskContext = uploads.first?.managedObjectContext,
-                   taskContext == self.uploadProvider.bckgContext {
-                    DispatchQueue.global(qos: .background).async {
-                        self.uploadProvider.delete(uploadRequests: uploads) { _ in }
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self.uploadProvider.delete(uploadRequests: uploads) { _ in }
-                    }
-                }
-            })
+            }
+            completionHandler: { _, error in
+                self.deleteUploadsInRightQueue(uploads)
+            }
         }
+    }
+    
+    private func deleteUploadsInRightQueue(_ uploads: [Upload]) {
+        if let taskContext = uploads.first?.managedObjectContext,
+           taskContext == self.uploadProvider.bckgContext {
+            DispatchQueue.global(qos: .background).async {
+                self.uploadProvider.delete(uploadRequests: uploads) { _ in }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.uploadProvider.delete(uploadRequests: uploads) { _ in }
+            }
+        }
+        self.isDeleting = Set()
     }
 }

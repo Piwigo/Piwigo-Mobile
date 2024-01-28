@@ -78,6 +78,7 @@ public class UploadManager: NSObject {
     var isPreparing = false                                 // Prepare one image at once
     var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
     var isFinishing = false                                 // Finish transfer one image at once
+    var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
 
     public var isExecutingBackgroundUploadTask = false      // true is called by the background task
     public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files

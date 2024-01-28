@@ -175,7 +175,9 @@ extension UploadManager
         // Upload requests are completed
         // Considers only uploads to the server to which the user is logged in
         // Are there images to delete from the Photo Library?
-        let toDelete = (completed.fetchedObjects ?? []).filter({$0.deleteImageAfterUpload == true})
+        let toDelete = (completed.fetchedObjects ?? [])
+            .filter({$0.deleteImageAfterUpload == true})
+            .filter({isDeleting.contains($0.objectID) == false})
         deleteAssets(associatedToUploads: toDelete)
     }
     
