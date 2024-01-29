@@ -436,14 +436,22 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         PwgSession.shared.sessionGetStatus() { [self] _ in
-            // Check version of Piwigo server
+            // Is the Piwigo server incompatible?
             if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
                 // Piwigo update required ► Close login or re-login view and inform user
                 isAlreadyTryingToLogin = false
                 // Display error message
                 logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
+                return
             }
-            else if NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+            
+            // Should this server be updated?
+            let now: Double = Date().timeIntervalSinceReferenceDate
+            if now > NetworkVars.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+               NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+                // Store date of last upgrade request
+                NetworkVars.dateOfLastUpdateRequest = now
+
                 // Piwigo server update recommanded ► Inform user
                 DispatchQueue.main.async { [self] in
                     hidePiwigoHUD() { [self] in

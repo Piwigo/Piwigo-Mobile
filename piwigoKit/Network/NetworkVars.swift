@@ -112,6 +112,10 @@ public class NetworkVars: NSObject {
     @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCalcOrphans: Bool
 
+    /// - Request server update once a month max
+    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    public static var dateOfLastUpdateRequest: TimeInterval
+
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
