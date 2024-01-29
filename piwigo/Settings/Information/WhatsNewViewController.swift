@@ -85,7 +85,7 @@ class WhatsNewViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        // Remember that we already present what's new
+        // Remember that we already presented what's new
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             AppVars.shared.didShowWhatsNewAppVersion = appVersionString
         }
