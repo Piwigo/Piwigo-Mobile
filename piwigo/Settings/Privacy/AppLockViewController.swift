@@ -271,8 +271,8 @@ class AppLockViewController: UIViewController {
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func configConstraints() {

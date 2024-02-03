@@ -121,6 +121,8 @@
 "serverConnectionError_title" = "فشل الإتصال";
 "serverConnectionError_message" = "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟";
 
+"serverVersionOld_title" = "Server Update Available";
+"serverVersionOld_message" = "Your Piwigo server version is %@. Please ask the administrator to update it.";
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";
 "serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.8. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
 

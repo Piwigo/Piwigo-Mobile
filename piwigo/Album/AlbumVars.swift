@@ -70,9 +70,13 @@ class AlbumVars: NSObject {
 
     /// - Recent period in number of days
     let recentPeriodKey = 594 // i.e. key used to detect the behaviour of the slider (sum of all periods)
-    let recentPeriodList:[Int] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,40,50,60,80,99]
-    @UserDefault("recentPeriodIndex", defaultValue: 6)      // i.e index of the period of 7 days
+    let recentPeriodList:[Int] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,40,50,60,80,99]
+    @UserDefault("recentPeriodIndex", defaultValue: 7)      // i.e index of the period of 7 days
     var recentPeriodIndex: Int
+    
+    let recentPeriodListChangedInVersion312 = "3.1.2"
+    @UserDefault("recentPeriodIndexCorrectedInVersion321", defaultValue: false)
+    var recentPeriodIndexCorrectedInVersion321: Bool
     
 
     // MARK: - Vars in UserDefaults / App Group

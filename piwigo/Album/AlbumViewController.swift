@@ -159,8 +159,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     // MARK: - Core Data Source
     lazy var user: User = {
         guard let user = userProvider.getUserAccount(inContext: mainContext) else {
-            // Unknown user instance! —> Back to login view
-            ClearCache.closeSession { }
+            // Unknown user instance! ► Back to login view
+            ClearCache.closeSession()
             return User()
         }
         return user
@@ -560,13 +560,22 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
             NetworkUtilities.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
-                print("••> Error \(error.code): \(error.localizedDescription)")
-                // TO DO…
+                // Session logout required?
+                if let pwgError = error as? PwgSessionError,
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
+                }
+
+                // Report error
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
         }
 
@@ -776,14 +785,8 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         }
         updateOperations.removeAll(keepingCapacity: false)
 
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-
-        // Unregister upload changes and progress if was displaying default album
-        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-            NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .pwgUploadProgress, object: nil)
-        }
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -847,7 +850,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) { return }
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
         
         // Pause upload manager
         UploadManager.shared.isPaused = true
@@ -865,8 +868,18 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // End refreshing anyway
             DispatchQueue.main.async {
                 self.imagesCollection?.refreshControl?.endRefreshing()
+                // Session logout required?
+                if let pwgError = error as? PwgSessionError,
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
+                }
+
+                // Report error
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
-            print("••> Error \(error.code): \(error.localizedDescription)")
         }
     }
     

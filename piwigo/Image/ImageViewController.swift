@@ -240,11 +240,8 @@ class ImageViewController: UIViewController {
     
     deinit {
         print("••> ImageViewController is being deinitialized.")
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
-        // Unregister video player changes
-        NotificationCenter.default.removeObserver(self, name: .pwgVideoPlaybackStatus, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .pwgVideoMutedOrNot, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
 
@@ -332,6 +329,15 @@ class ImageViewController: UIViewController {
 
     private func retrieveImageDataError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
             dismissPiwigoError(withTitle: title, message: message,
@@ -344,11 +350,27 @@ class ImageViewController: UIViewController {
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
-                } failure: { _ in
+                } failure: { error in
+                    // Session logout required?
+                    if let pwgError = error as? PwgSessionError,
+                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                        .contains(pwgError) {
+                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        return
+                    }
+                    
                     // Statistics not updated ► No error reported
                 }
             }
-        } failure: { _ in
+        } failure: { error in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
             // Statistics not updated ► No error reported
         }
     }
@@ -388,7 +410,7 @@ class ImageViewController: UIViewController {
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            imageData.dateCreated == TimeInterval(-3187296000) {
+            imageData.dateCreated < TimeInterval(-3187209600) {  // "1900-01-02 00:00:00" relative to ref. date
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))

@@ -1,2 +1,2 @@
-• Cache management fully rewritten to improve the user experience and bring offline browsing
-• Fixes some translations
+• Requests Piwigo server update if necessary
+• Bug fixes

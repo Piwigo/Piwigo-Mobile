@@ -145,8 +145,8 @@ class ReleaseNotesViewController: UIViewController {
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -156,6 +156,7 @@ class ReleaseNotesViewController: UIViewController {
         let notesAttributedString = NSMutableAttributedString(string: "")
 
         // Release 3.1.x — Bundle string
+        notesAttributedString.append(releaseNotes("v3.1.2_text", comment: "v3.1.2 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.1_text", comment: "v3.1.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.1.0_text", comment: "v3.1.0 Release Notes text"))
 

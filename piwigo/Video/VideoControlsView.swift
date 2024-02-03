@@ -32,6 +32,7 @@ class VideoControlsView: UIVisualEffectView {
     }
     
     // Initialisation
+    private var videoDuration: Double?
     private func configView() {
         let view = viewFromNibForClass()
         view.frame = bounds
@@ -46,23 +47,6 @@ class VideoControlsView: UIVisualEffectView {
         let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
         return view
     }
-
-    private var videoDuration: Double?
-    private lazy var hoursFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        return formatter
-    }()
-    private lazy var minsFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "mm:ss"
-        return formatter
-    }()
-    private lazy var minFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "m:ss"
-        return formatter
-    }()
     
     func applyColorPalette() {
         if #available(iOS 13.0, *) {
@@ -122,12 +106,24 @@ class VideoControlsView: UIVisualEffectView {
 
     private func getTimeLabel(_ value: TimeInterval, forDuration duration: TimeInterval) -> String {
         // Format depends on video duration
-        if duration < 600 {           // i.e. one minute
-            return minFormatter.string(from: Date(timeIntervalSince1970: value))
-        } else if duration < 3600 {   // i.e. one hour
-            return minsFormatter.string(from: Date(timeIntervalSince1970: value))
-        } else {
-            return hoursFormatter.string(from: Date(timeIntervalSince1970: value))
+        if duration < 60 {          // i.e. one minute
+            return String(format: "0:%02.0f", value.rounded(.toNearestOrEven))
         }
+        
+        if duration < 3_600 {       // i.e. one hour
+            var timeLeft = value
+            let minutes = (timeLeft / 60).rounded(.towardZero)
+            timeLeft -= minutes * 60
+            let seconds = timeLeft.rounded(.toNearestOrEven)
+            return String(format: "%02.0f:%02.0f", minutes, seconds)
+        }
+        
+        var timeLeft = value
+        let hours = (timeLeft / 3_600).rounded(.towardZero)
+        timeLeft -= hours * 3_600
+        let minutes = (timeLeft / 60).rounded(.towardZero)
+        timeLeft -= minutes * 60
+        let seconds = timeLeft.rounded(.toNearestOrEven)
+        return String(format: "%02.0f:%02.0f:%02.0f", hours, minutes, seconds)
     }
 }

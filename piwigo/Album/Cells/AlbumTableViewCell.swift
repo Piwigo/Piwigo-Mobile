@@ -53,7 +53,15 @@ class AlbumTableViewCell: UITableViewCell {
             handleButton.isHidden = !(albumData?.user?.hasAdminRights ?? false)
         }
 
-        // Display recent icon when images have been uploaded recently
+        // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
+        if AlbumVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
+           let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           version.compare(AlbumVars.shared.recentPeriodListChangedInVersion312) == .orderedSame {
+            AlbumVars.shared.recentPeriodIndex += 1
+            AlbumVars.shared.recentPeriodIndexCorrectedInVersion321 = true
+        }
+
+        // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
         indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
@@ -85,9 +93,7 @@ class AlbumTableViewCell: UITableViewCell {
                                      fromServer: albumData?.user?.server?.uuid,
                                      placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.configImage(cachedImage)
-            }
+            self.configImage(cachedImage)
         } failure: { _ in
             DispatchQueue.main.async {
                 self.backgroundImage.image = placeHolder

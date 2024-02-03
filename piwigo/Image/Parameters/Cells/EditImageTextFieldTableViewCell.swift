@@ -16,7 +16,7 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
     @IBOutlet private weak var cellLabel: UILabel!
 
     func config(withLabel label: NSAttributedString?, placeHolder: String?,
-               andImageDetail imageDetail: NSAttributedString?) {
+                andImageDetail imageDetail: NSAttributedString?) {
         // Cell background
         backgroundColor = .piwigoColorBackground()
 

@@ -15,7 +15,6 @@ import Intents
 import LocalAuthentication
 import UIKit
 
-import IQKeyboardManagerSwift
 import piwigoKit
 import uploadKit
 
@@ -46,13 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
         }
-
-        // IQKeyboardManager
-        let keyboardManager = IQKeyboardManager.shared
-        keyboardManager.enable = true
-        keyboardManager.overrideKeyboardAppearance = true
-        keyboardManager.shouldToolbarUsesTextFieldTintColor = true
-        keyboardManager.shouldShowToolbarPlaceholder = true
 
         // Color palette depends on system settings
         initColorPalette()
@@ -335,22 +327,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
 
-        // Unregister the PiwigoAddRecentAlbumNotification
-        NotificationCenter.default.removeObserver(self, name: .pwgAddRecentAlbum, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
 
-        // Unregister the PiwigoRemoveRecentAlbumNotification
-        NotificationCenter.default.removeObserver(self, name: .pwgRemoveRecentAlbum, object: nil)
-
-        // Unregister the Power State notification
-        let name = Notification.Name.NSProcessInfoPowerStateDidChange
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
-
-        // Unregister left upload requests notifications updating the badge
-        NotificationCenter.default.removeObserver(self, name: .pwgLeftUploads, object: nil)
-        
-        // Unregister auto-upload appender failures
-        NotificationCenter.default.removeObserver(self, name: .pwgAppendAutoUploadRequestsFailed, object: nil)
-        
         if #available(iOS 13.0, *) {
             // NOP
         } else {

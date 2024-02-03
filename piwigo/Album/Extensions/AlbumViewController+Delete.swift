@@ -205,6 +205,15 @@ extension AlbumViewController
     }
     
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, error: NSError) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
+        // Report error
         var imagesToRemove = toRemove
         let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
         let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
@@ -311,6 +320,15 @@ extension AlbumViewController
     
     private func deleteImagesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in

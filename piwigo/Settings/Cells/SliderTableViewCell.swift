@@ -64,7 +64,7 @@ class SliderTableViewCell: UITableViewCell {
     func updateDisplayedValue(_ value: Float) {
         if Int(incrementSliderBy) == AlbumVars.shared.recentPeriodKey {
             // Special case of recent period, value = index of kRecentPeriods
-            // 1, 2, 3, … 19, 20, 25, 30, 40, 50, 60, 80, 99 days (same as Piwigo server)
+            // 0, 1, 2, 3, … 19, 20, 25, 30, 40, 50, 60, 80, 99 days (same as Piwigo server)
             var indexOfPeriod:Int = Int(value.rounded(.toNearestOrAwayFromZero))
             indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
             indexOfPeriod = max(0, indexOfPeriod)

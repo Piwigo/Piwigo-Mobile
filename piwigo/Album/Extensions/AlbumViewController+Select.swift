@@ -488,6 +488,15 @@ extension AlbumViewController
     
     private func retrieveImageDataError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+            
+            // Report error
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
             dismissPiwigoError(withTitle: title, message: message,

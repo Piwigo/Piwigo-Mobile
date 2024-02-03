@@ -364,17 +364,40 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
                 guard let error = error else { return }
-                
-                // Show the error
+
+                // Session logout required?
+                if let pwgError = error as? PwgSessionError,
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                    .contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
+                }
+
+                // Report error
+                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
                 DispatchQueue.main.async { [self] in
-                    dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
+                    dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
                 }
             }
         } failure: { [self] error in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
+            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
             DispatchQueue.main.async { [self] in
-                dismissPiwigoError(withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"), message: error.localizedDescription) { }
+                dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
             }
         }
+    }
+    
+    private func didFetchAlbumsWithError(error: Error) {
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -417,8 +440,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
     
     @objc
@@ -975,7 +998,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         })
     }
 
-    func showError(with error:String = "") {
+    func showError(_ error: Error?) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
         // Title and message
         let title:String
         var message:String
@@ -1002,8 +1033,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             return
         }
         
-        // Present alert
-        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error) {
+        // Report error
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error?.localizedDescription ?? "") {
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any

@@ -79,7 +79,7 @@ public extension PwgSession {
                 }
                 else {
                     // Could not set image parameters
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested

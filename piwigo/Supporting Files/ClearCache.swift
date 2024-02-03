@@ -13,7 +13,24 @@ import uploadKit
 
 class ClearCache: NSObject {
     
-    static func closeSession(completion: @escaping () -> Void) {
+    static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgSessionError) {
+        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var message = ""
+        switch error {
+        case .incompatiblePwgVersion:
+            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
+        default:
+            message = error.localizedDescription
+        }
+        DispatchQueue.main.async {
+            viewController.dismissPiwigoError(withTitle: title, message: message) {
+                closeSession()
+            }
+        }
+    }
+    
+    static func closeSession() {
         // Cancel tasks
         cancelTasks {
             // Back to default values

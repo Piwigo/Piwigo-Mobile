@@ -50,7 +50,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -96,7 +96,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -142,7 +142,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -168,30 +168,20 @@ class ImageUtilities: NSObject {
             return optImage
         }
         
-        // Downsample image
+        // Check that the image can be properly downsampled
+        // by checking if it is possible to create a context from the image.
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions),
-              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale) else {
-            if let data = try? Data( contentsOf:imageURL) {
-                return UIImage(data: data) ?? UIImage(named: "placeholder")!
-            } else {
-                return UIImage(named: "placeholder")!
-            }
+              let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
+              let _ = CGContext(data: nil, width: imageRef.width, height: imageRef.height, bitsPerComponent: imageRef.bitsPerComponent, bytesPerRow: imageRef.bytesPerRow, space: imageRef.colorSpace ?? CGColorSpace.displayP3 as! CGColorSpace, bitmapInfo: imageRef.bitmapInfo.rawValue),
+              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale)
+        else {
+            return couldNotDownsample(imageAt: imageURL)
         }
         
-        // Save downsized image in cache
-        DispatchQueue.global(qos: .background).async {
-            if let data = downsampledImage.jpegData(compressionQuality: 1.0) as? NSData {
-                do {
-                    let fm = FileManager.default
-                    try? fm.removeItem(atPath: filePath)
-                    try data.write(toFile: filePath, options: .atomic)
-                } catch {
-                    debugPrint(error.localizedDescription)
-                }
-            }
-        }
+        // Alpha channel removed ► Downsample image
+        saveDownsampledImage(downsampledImage, atPath: filePath)
         return downsampledImage
     }
     
@@ -219,6 +209,39 @@ class ImageUtilities: NSObject {
             return UIImage(cgImage: downsampledImage)
         }
         return nil
+    }
+    
+    static func couldNotDownsample(imageAt imageURL: URL) -> UIImage {
+        // Can we use the downloaded file?
+        if let image = UIImage(contentsOfFile: imageURL.path) {
+            return image
+        } else {
+            // Delete corrupted cached image file
+            try? FileManager.default.removeItem(at: imageURL)
+            return UIImage(named: "placeholder")!
+        }
+    }
+    
+    static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
+        DispatchQueue.global(qos: .background).async {
+            let fm = FileManager.default
+            try? fm.removeItem(atPath: filePath)
+            if #available(iOS 17, *) {
+                if let data = downSampledImage.heicData() as? NSData {
+                    do {
+                        try data.write(toFile: filePath, options: .atomic)
+                    } catch {
+                        debugPrint(error.localizedDescription)
+                    }
+                }
+            } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
+                do {
+                    try data.write(toFile: filePath, options: .atomic)
+                } catch {
+                    debugPrint(error.localizedDescription)
+                }
+            }
+        }
     }
     
     

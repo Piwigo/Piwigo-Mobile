@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.1_text" = "Version 3.1.1\n\n• Updates server statistics (requires Piwigo 14)\n• Bug fixes";
+"v3.1.2_text" = "الإصدار 3.1.2\n\n• طلبات تحديث خادم Piwigo إذا لزم الأمر\n• إصلاحات الشوائب";
 
-"v3.1.0_text" = "Version 3.1\nNovember 20, 2023\n\n• Swipe down or pinch the image to return to the album when viewing individual photos or videos\n• Watch a video stored on your Piwigo while you use other apps.\n• Bug fixes";
+"v3.1.1_text" = "الإصدار 3.1.1\n1 كانون الأول/ديسمبر 2023\n\n• تحديث إحصائيات الخادم (يتطلب Piwigo 14)\n• إصلاحات الشوائب";
+
+"v3.1.0_text" = "الصيغة 3.0\n20 نوفمبر 2023\n\n• السحب للأسفل أو تثبيت الصورة للعودة إلى الألبوم عند مشاهدة صور فردية أو فيديوهات\n• مشاهدة فيديو مخزن على Piwigo الخاص بك بينما تستخدم تطبيقات أخرى.\n• إصلاحات الشوائب";
 
 "v3.0.2_text" = "Version 3.0.2\nJuly 15, 2023\n\n• Bug fixes";
 

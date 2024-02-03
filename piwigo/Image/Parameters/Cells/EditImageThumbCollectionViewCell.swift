@@ -247,7 +247,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 else {
                     // Could not change the filename
                     debugPrint("••> setImageInfoForImageWithId(): no successful")
-                    let error = JsonError.unexpectedError
+                    let error = PwgSessionError.unexpectedError
                     topViewController?.hidePiwigoHUD {
                         topViewController?.dismissPiwigoError(
                             withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),

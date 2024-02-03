@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.1_text" = "Versie 3.1.1\n\n• Serverstatistieken bijwerken (vereist Piwigo 14)\n• Foutjes verbeterd";
+"v3.1.2_text" = "Versie 3.1.2\n\n• Verzoeken Piwigo server update indien nodig\n• Foutjes verbeterd";
+
+"v3.1.1_text" = "Versie 3.1.1\n1 December 2023\n\n• Serverstatistieken bijwerken (vereist Piwigo 14)\n• Foutjes verbeterd";
 
 "v3.1.0_text" = "Versie 3.1\n20 November 2023\n\n• Veeg naar beneden of zet de afbeelding om terug te keren naar het album bij het bekijken van individuele foto's of video's\n• Bekijk een video die is opgeslagen op uw Piwigo terwijl u andere apps gebruikt.\n• Foutjes verbeterd";
 

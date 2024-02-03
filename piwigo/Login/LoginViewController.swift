@@ -16,6 +16,8 @@ import uploadKit
 
 class LoginViewController: UIViewController {
 
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
     @IBOutlet weak var userTextField: UITextField!
@@ -55,6 +57,7 @@ class LoginViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.contentSize = contentView.bounds.size
 
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
@@ -89,11 +92,18 @@ class LoginViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
+        
+        // Register keyboard appearance/disappearance
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillHide(_:)), 
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
+        contentView.backgroundColor = .piwigoColorBackground()
 
         // Change text colour according to palette colour
         if #available(iOS 13.0, *) {
@@ -158,8 +168,8 @@ class LoginViewController: UIViewController {
     deinit {
         // Release memory
         
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -426,36 +436,34 @@ class LoginViewController: UIViewController {
             inMode: .indeterminate)
 
         PwgSession.shared.sessionGetStatus() { [self] _ in
-            // Update user account in persistent cache
-            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            DispatchQueue.main.async { [self] in
-                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+            // Is the Piwigo server incompatible?
+            if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
+                // Piwigo update required ► Close login or re-login view and inform user
+                isAlreadyTryingToLogin = false
+                // Display error message
+                logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
+                return
             }
+            
+            // Should this server be updated?
+            let now: Double = Date().timeIntervalSinceReferenceDate
+            if now > NetworkVars.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+               NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+                // Store date of last upgrade request
+                NetworkVars.dateOfLastUpdateRequest = now
 
-            LoginUtilities.checkAvailableSizes()
-            if "2.8.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedAscending {
-                // They need to update, ask user what to do
-                // Close loading or re-login view and ask what to do
+                // Piwigo server update recommanded ► Inform user
                 DispatchQueue.main.async { [self] in
                     hidePiwigoHUD() { [self] in
-                        let defaultAction = UIAlertAction(
-                            title: NSLocalizedString("alertNoButton", comment: "No"),
-                            style: .cancel,
-                            handler: { [self] action in
-                                isAlreadyTryingToLogin = false
-                            })
-                        let continueAction = UIAlertAction(
-                            title: NSLocalizedString("alertYesButton", comment: "Yes"),
-                            style: .destructive,
-                            handler: { [self] action in
-                                // Proceed at their own risk
+                        dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.pwgVersion), completion: { [self] in
+                                // Piwigo server version is still appropriate.
                                 launchApp()
-                            })
-                        presentPiwigoAlert(withTitle: NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile\nDo you still want to continue?"), NetworkVars.pwgVersion), actions: [defaultAction, continueAction])
+                        })
                     }
                 }
-            } else {
-                // Their version is Ok. Close HUD.
+            }
+            else {
+                // Piwigo server version is appropriate.
                 launchApp()
             }
         } failure: { [self] error in
@@ -469,6 +477,13 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = false
         // Hide HUD and present root album
         DispatchQueue.main.async { [unowned self] in
+            // Update user account in persistent cache
+            // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+            let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+
+            // Check image size availabilities
+            LoginUtilities.checkAvailableSizes()
+
             // Present Album/Images view and resume uploads
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             hidePiwigoHUD() {
@@ -486,8 +501,7 @@ class LoginViewController: UIViewController {
             withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
             detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"),
             buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-            inMode: .indeterminate)
+            buttonTarget: self, buttonSelector: #selector(cancelLoggingIn), inMode: .indeterminate)
 
         // Propagate user's request
         PwgSession.shared.dataSession.getAllTasks() { tasks in
@@ -502,25 +516,33 @@ class LoginViewController: UIViewController {
             return
         }
 
-        if error == nil {
+        // Unknown error?
+        guard let error = error else {
             showPiwigoHUD(
                 withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
                 detail: " ",
                 buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                buttonTarget: self, buttonSelector: #selector(hideLoading),
-                inMode: .text)
-        } else {
-            var detail = error?.localizedDescription ?? ""
+                buttonTarget: self, buttonSelector: #selector(hideLoading), inMode: .text)
+            return
+        }
+        
+        // Error returned
+        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var detail = error.localizedDescription
+        if let pwgError = error as? PwgSessionError,
+           pwgError == PwgSessionError.incompatiblePwgVersion {
+            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
+        }
+        else {
             if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
             }
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error"),
-                detail: detail,
-                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                buttonTarget: self, buttonSelector: #selector(hideLoading),
-                inMode: .text)
         }
+        showPiwigoHUD(
+            withTitle: title, detail: detail,
+            buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+            buttonTarget: self, buttonSelector: #selector(hideLoading), inMode: .text)
     }
 
     @objc func hideLoading() {

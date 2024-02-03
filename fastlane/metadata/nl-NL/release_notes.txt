@@ -1,2 +1,2 @@
-• Cache beheer volledig herschreven om de gebruikerservaring te verbeteren en offline browsen te brengen
-• Enkele vertalingen opgelost
+• Verzoeken Piwigo server update indien nodig
+• Foutjes verbeterd

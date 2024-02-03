@@ -8,10 +8,10 @@
 
 import Foundation
 
+// MARK: - pwg.session.getStatus
 public let pwgSessionGetStatus = "format=json&method=pwg.session.getStatus"
 public let pwgSessionGetStatusBytes: Int64 = 7430
 
-// MARK: Piwigo JSON Structures
 public struct SessionGetStatusJSON: Decodable {
 
     public var status: String?
@@ -66,6 +66,7 @@ public struct SessionGetStatusJSON: Decodable {
     }
 }
 
+// MARK: - Result
 public struct StatusInfo: Decodable
 {
     public let version: String?             // "12.2.0"

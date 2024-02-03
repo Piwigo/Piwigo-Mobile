@@ -154,7 +154,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not create album
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -203,7 +203,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album data
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -251,7 +251,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not move album
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -293,7 +293,7 @@ class AlbumUtilities: NSObject {
                 // Data retrieved successfully?
                 guard let nberOrphans = orphansJSON.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                     return
                 }
                 
@@ -347,7 +347,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not delete album
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested
@@ -397,7 +397,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album thumbnail
-                    failure(JsonError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
                 // Data cannot be digested

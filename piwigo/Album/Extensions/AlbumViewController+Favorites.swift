@@ -92,6 +92,15 @@ extension AlbumViewController
     
     private func addImageToFavoritesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+            
+            // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
             dismissPiwigoError(withTitle: title, message: message,
@@ -169,6 +178,15 @@ extension AlbumViewController
     
     private func removeFromFavoritesError(_ error: NSError) {
         DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
+            }
+
+            // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
             dismissPiwigoError(withTitle: title, message: message,

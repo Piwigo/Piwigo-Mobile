@@ -1,6 +1,6 @@
-###################
-# piwigoGetPiwigo #
-###################
+#####################
+# piwigoScreenshots #
+#####################
 # Installation:
 #	cd '/Users/lelievre/Privé - GitHub/Piwigo-Mobile'
 #
@@ -28,47 +28,52 @@
 #	
 # To update fastlane:
 #	bundle update fastlane
+#   fastlane snapshot update
 #
-# To launch fastlane:
+# To produce snapshots:
 #	bundle exec fastlane snapshot
 #
+# To get a list of available options
+#   bundle exec fastlane action deliver
+# To download App Store Connect metadata
+#   bundle exec fastlane deliver download_metadata
 # To upload screenshots and metadata
-#   bundle exec fastlane deliver init
-#   bundle exec fastlane deliver
+#   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --overwrite_screenshots
 #
 # A list of devices you want to take the screenshots from
+# https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
-# "iPhone SE (1st generation)",				# 4-inch
-# "iPhone 8 - 16.0",						# 4.7-inch
-# "iPhone 8 Plus - 16.0",					# 5.5-inch
-# "iPhone 11 Pro - 16.0",					# 5.8-inch
+# "iPhone SE (1st generation)",				# 4-inch    iOS 15.5
+# "iPhone SE (3rd generation)",				# 4.7-inch
+# "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
+ "iPhone 14",								# 5.8-inch
 # "iPhone 13 Pro",							# Wiki
-# "iPhone 14 Pro - 16.0",					# 6.1-inch
-# "iPhone 11 Pro Max - 16.0",				# 6.5-inch
-# "iPhone 14 Pro Max - 16.0"				# 6.7-inch
-# "iPad Pro (9.7-inch)",					# 9.7-inch
- "iPad Pro (10.5-inch)",					# 10.5-inch
- "iPad Pro (11-inch)",						# 11-inch
- "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
- "iPad Pro (12.9-inch) (5th generation)"	# 12.9-inch
+# "iPhone 14 Pro",							# 6.1-inch
+# "iPhone 14 Plus",							# 6.5-inch
+# "iPhone 15 Pro Max",						# 6.7-inch
+# "iPad Pro (9.7-inch)",					# 9.7-inch  iOS 16.4
+# "iPad Pro (10.5-inch)",					# 10.5-inch
+# "iPad Pro (11-inch) (4th generation)",	# 11-inch
+# "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
+# "iPad Pro (12.9-inch) (6th generation)"	# 12.9-inch
 ])
 
-#   ["pt", "pt_BR"] # Portuguese with Brazilian locale
+# ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
- "da",
- "de-DE",
  "en-US",
- "es-ES",
- "fr-FR",
- "hu",
- "it",
- "ja",
- "nl-NL",
- "pl",
- "ru",
- "sv",
- "zh-Hans",
- "zh-Hant"
+# "zh-Hans",
+# "zh-Hant",
+# "da",
+# "nl-NL",
+# "fr-FR",
+# "de-DE",
+# "hu",
+# "it",
+# "ja",
+# "pl",
+# "ru",
+# "es-ES",
+# "sv"
 ])
 
 # Parameters
@@ -76,15 +81,19 @@ scheme("piwigoAppStore")
 derived_data_path("DerivedData/piwigo")
 test_without_building(true)
 output_directory("fastlane/screenshots")
-concurrent_simulators(false)
+concurrent_simulators(true)
 skip_open_summary(true)
 number_of_retries(0)
 
-# Fails with iOS 16.x where x in {1,2,3,4}
+# Command below fails with iOS +16.1, 17.x:
 override_status_bar(true)
-# Daylight saving time not taken into account
-# override_status_bar_arguments("--time 2007-01-09T09:41:00+01:00 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100")
-override_status_bar_arguments("--time 2007-01-09T09:41:00+02:00 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100")
+# So use SimulatorStatusMagic to configure iOS 16+ simulators
+# See https://github.com/shinydevelopment/SimulatorStatusMagic
+# iOS 16+: Install the SimulatorStatusMagic app in the simulator
+#          and apply the configuration
+# iOS 17+: Compile library with Xcode
+#          Launch the iOS 17+ simulator to configure
+#          Execute: ../SimulatorStatusMagic/build_and_inject.sh booted
 
 # clear_previous_screenshots(true)
 

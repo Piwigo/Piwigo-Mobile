@@ -1,5 +1,5 @@
 //
-//  PwgSessionErrors.swift
+//  PwgSessionError.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 13/06/2021.
@@ -8,22 +8,24 @@
 
 import Foundation
 
-public enum JsonError: Error {
+public enum PwgSessionError: Error {
     case networkUnavailable
     case emptyJSONobject
     case invalidJSONobject
     case wrongJSONobject
     case authenticationFailed
     case unexpectedError
+    case incompatiblePwgVersion
     
     // Piwigo server errors
+    case invalidURL             // 404
     case invalidMethod          // 501
     case invalidCredentials     // 999
     case missingParameter       // 1002
     case invalidParameter       // 1003
 }
 
-extension JsonError: LocalizedError {
+extension PwgSessionError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .networkUnavailable:
@@ -45,8 +47,8 @@ extension JsonError: LocalizedError {
             return NSLocalizedString("serverUnknownError_message",
                                      comment: "Unexpected error encountered while calling server method with provided parameters.")
         case .invalidMethod:
-            return NSLocalizedString("loginError_message",
-                                     comment: "The username and password don't match on the given server.")
+            return NSLocalizedString("serverInvalidMethodError_message",
+                                     comment: "Failed to call server method.")
         case .invalidCredentials:
             return NSLocalizedString("loginError_message",
                                      comment: "The username and password don't match on the given server")
@@ -56,6 +58,11 @@ extension JsonError: LocalizedError {
         case .invalidParameter:
             return NSLocalizedString("serverUnknownError_message",
                                      comment: "Unexpected error encountered while calling server method with provided parameters.")
+        case .incompatiblePwgVersion:
+            return NSLocalizedString("serverVersionNotCompatible_message",
+                                     comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
+        case .invalidURL:
+            return NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address.")
         }
     }
 }
@@ -63,14 +70,16 @@ extension JsonError: LocalizedError {
 extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
         switch errorCode {
+        case 404:
+            return PwgSessionError.invalidURL
         case 501:
-            return JsonError.invalidMethod
+            return PwgSessionError.invalidMethod
         case 999:
-            return JsonError.invalidCredentials
+            return PwgSessionError.invalidCredentials
         case 1002:
-            return JsonError.missingParameter
+            return PwgSessionError.missingParameter
         case 1003:
-            return JsonError.invalidParameter
+            return PwgSessionError.invalidParameter
         default:
             let error = NSError(domain: "Piwigo", code: errorCode,
                                 userInfo: [NSLocalizedDescriptionKey : errorMessage])

@@ -156,8 +156,17 @@ extension AlbumViewController: UISearchBarDelegate
                 NetworkUtilities.checkSession(ofUser: self.user) {
                     self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
-                    print("••> Error \(error.code): \(error.localizedDescription)")
-                    // TO DO…
+                    // Session logout required?
+                    if let pwgError = error as? PwgSessionError,
+                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                        .contains(pwgError) {
+                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        return
+                    }
+                    
+                    // Report error
+                    let title = "Error \(error.code)"
+                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
                 }
             }
         }

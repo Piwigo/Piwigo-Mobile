@@ -92,6 +92,10 @@ public class NetworkVars: NSObject {
     @UserDefault("pwgVersion", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var pwgVersion: String
     
+    /// - Piwigo server statistics (stored so that the app can show them anytime, once loaded)
+    @UserDefault("pwgStatistics", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public static var pwgStatistics: String
+    
     /// - File types accepted by the Piwigo server
     @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
     public static var serverFileTypes: String
@@ -108,9 +112,19 @@ public class NetworkVars: NSObject {
     @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCalcOrphans: Bool
 
+    /// - Request server update once a month max
+    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    public static var dateOfLastUpdateRequest: TimeInterval
+
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
+    /// - Disconnects and asks to update Piwigo server if version is lower than:
+    public static let pwgMinVersion = "2.10.0"
+
+    /// - At login, invites to update the Piwigo server if version is lower than:
+    public static let pwgRecentVersion = "13.0"
+
     /// - Quicker than calling UserDefaults variables
     public static var service = serverProtocol + serverPath
     
@@ -146,6 +160,6 @@ public class NetworkVars: NSObject {
     public static var hasXLargeSizeImages = false
     public static var hasXXLargeSizeImages = false
     
-    /// — True is the app should log visits and downloads (since Piwigo 14)
+    /// — True if the app should log visits and downloads (since Piwigo 14)
     public static var saveVisits = false
 }

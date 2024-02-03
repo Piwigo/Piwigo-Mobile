@@ -145,8 +145,8 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -173,16 +173,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let introRange = NSRange(location: 0, length: introString.count)
         introAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: introRange)
         aboutAttributedString.append(introAttributedString)
-
-        // IQKeyboardManager Licence — Bundle string
-        let iqkmString = NSLocalizedString("licenceIQkeyboard_text", tableName: "About", bundle: Bundle.main, value: "", comment: "IQKeyboardManager licence text")
-        let iqkmAttributedString = NSMutableAttributedString(string: iqkmString)
-        var iqkmTitleRange = NSRange(location: 0, length: iqkmString.count)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: iqkmTitleRange)
-        iqkmTitleRange = NSRange(location: 0, length: (iqkmString as NSString).range(of: "\n").location)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: iqkmTitleRange)
-        aboutAttributedString.append(iqkmAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
 
         // MBProgressHUD Licence — Bundle string
         let mbpHudString = NSLocalizedString("licenceMBProgHUD_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MBProgressHUD licence text")

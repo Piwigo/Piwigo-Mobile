@@ -121,8 +121,10 @@
 "serverConnectionError_title" = "Verbindung fehlgeschlagen";
 "serverConnectionError_message" = "Eine gesicherte HTTPS-Verbindung konnte nicht hergestellt werden. Bitte überprüfen Sie die Adresse oder versuchen Sie es im unverschlüsselten HTTP-Modus?";
 
-"serverVersionNotCompatible_title" = "Serverinkompatibilität";
-"serverVersionNotCompatible_message" = "Ihre Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab 2.8. Bitte aktualisieren Sie Ihren Server um Piwigo Mobile verwenden zu können. Möchten Sie trotzdem fortfahren?";
+"serverVersionOld_title" = "Serverupdate verfügbar";
+"serverVersionOld_message" = "Ihre Piwigo Server-Version ist %@. Bitte fragen Sie den Administrator, sie zu aktualisieren.";
+"serverVersionNotCompatible_title" = "Inkompatibler Server";
+"serverVersionNotCompatible_message" = "Ihre Piwigo Serverversion ist %@. Piwigo Mobile unterstützt nur Versionen ab %@. Bitte aktualisieren Sie Ihren Server um Piwigo Mobile verwenden zu können.";
 
 "sessionStatusError_title" = "Authentifizierung fehlgeschlagen";
 "sessionStatusError_message" = "Konnte den Server nicht authentifizieren. Versuche erneute Anmeldung.";

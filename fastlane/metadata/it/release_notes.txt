@@ -1,2 +1,2 @@
-• Gestione della cache completamente riscritta per migliorare l'esperienza dell'utente e portare la navigazione offline
-• Correzione di alcune traduzioni
+• Richiede l'aggiornamento del server Piwigo se necessario
+• Correzioni di bug

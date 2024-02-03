@@ -16,10 +16,12 @@ build/
 *.moved-aside
 **/DerivedData/
 **/screenshots/
+**/videos/
 *.hmap
 *.ipa
 *.xcuserstate
-*/olaf.xcuserdatad/UserInterfaceState.xcuserstate
+**/olaf.xcuserdatad/
+**/lelievre.xcuserdatad/
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However

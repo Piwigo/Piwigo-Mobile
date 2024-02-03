@@ -14,7 +14,7 @@ extension AlbumCollectionViewCell {
         guard let albumData = albumData else { return }
 
         // Determine the present view controller
-        let topViewController = topMostController()
+        let topViewController = window?.topMostViewController()
 
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),
@@ -226,6 +226,16 @@ extension AlbumCollectionViewCell {
     
     private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
         DispatchQueue.main.async {
+            // Session logout required?
+            if let topViewController = topViewController,
+               let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                .contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: topViewController, error: pwgError)
+                return
+            }
+
+            // Report error
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             topViewController?.hidePiwigoHUD() {

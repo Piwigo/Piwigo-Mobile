@@ -96,23 +96,32 @@ class TagSelectorViewController: UITableViewController {
             self.tagProvider.fetchTags(asAdmin: false) { error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }
-
-                    // Show an alert if there was an error.
-                    self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                            message: error.localizedDescription) { }
+                    didFetchTagsWithError(error)
                 }
             }
-        } failure: { error in
-            // Show an alert if there was an error.
-            DispatchQueue.main.async {
-                self.dismissPiwigoError(withTitle: TagError.fetchFailed.localizedDescription,
-                                        message: error.localizedDescription) { }
-            }
+        } failure: { [self] error in
+            didFetchTagsWithError(error)
         }
         
         // Add button for returning to albums/images
         let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitTagSelect))
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
+    }
+    
+    private func didFetchTagsWithError(_ error: Error) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+            .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+
+        // Report error
+        let title = TagError.fetchFailed.localizedDescription
+        DispatchQueue.main.async {
+            self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+        }
     }
     
     @objc private func applyColorPalette() {
@@ -159,8 +168,8 @@ class TagSelectorViewController: UITableViewController {
     }
 
     deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: .pwgPaletteChanged, object: nil)
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
     }
 
     @objc private func quitTagSelect() {

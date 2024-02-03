@@ -349,9 +349,11 @@ extension UploadSessions: URLSessionTaskDelegate {
         
         // Update counter
         guard let index = uploadCounters.firstIndex(where: { $0.uid == identifier}) else { return }
-        print("••> task \(task.taskIdentifier) did send \(totalBytesSent) bytes (\(totalBytesExpectedToSend) bytes expected)")
         uploadCounters[index].bytesSent += bytesSent
+        #if DEBUG
+        print("••> task \(task.taskIdentifier) did send \(totalBytesSent) bytes (\(totalBytesExpectedToSend) bytes expected)")
         print("••> counter: \(uploadCounters[index].bytesSent) bytes sent, \(uploadCounters[index].totalBytes) bytes expected —> \(uploadCounters[index].progress * 100)%")
+        #endif
         let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                           "progressFraction" : uploadCounters[index].progress]
         DispatchQueue.main.async {
@@ -370,13 +372,15 @@ extension UploadSessions: URLSessionTaskDelegate {
                 return
         }
 
+        #if DEBUG
         // Task did complete without error?
         if let error = error {
             print("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
         } else {
             print("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         }
-
+        #endif
+        
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
         // For example by requesting image properties or an image deletion.
@@ -430,12 +434,14 @@ extension UploadSessions: URLSessionDataDelegate {
         guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
             let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
             let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) else {
+                #if DEBUG
                 print("••> Could not extract HTTP header fields !!!!!!")
+                #endif
                 return
         }
-        print("••> Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         
         #if DEBUG
+        print("••> Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         let dataStr = String(decoding: data, as: UTF8.self)
         print("••> JSON: \(dataStr)")
         #endif
