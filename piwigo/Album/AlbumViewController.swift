@@ -1636,13 +1636,13 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 selectedImageIds.remove(image.pwgID)
             }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                debugPrint("••> Delete item of album #\(fetchDelegate.categoryId) at \(indexPath)")
                 self?.imagesCollection?.deleteItems(at: [indexPath])
             })
             // Disable menu if this is the last deleted image
             if albumData.nbImages == 0 {
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> Last removed image ► disable menu")
+                    debugPrint("••> Last removed image ► disable menu")
                     self?.isSelect = false
                     self?.updateButtonsInPreviewMode()
                 })
@@ -1652,7 +1652,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             if let image = anObject as? Image {
                 let cellIndexPath = IndexPath(item: indexPath.item, section: 1)
                 updateOperations.append( BlockOperation {  [weak self] in
-                    print("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
+                    debugPrint("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
                     if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell {
                         // Re-configure image cell
                         cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
@@ -1665,7 +1665,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 })
             } else if let album = anObject as? Album {
                 updateOperations.append( BlockOperation {  [weak self] in
-                    print("••> Update album at \(indexPath) of album #\(fetchDelegate.categoryId)")
+                    debugPrint("••> Update album at \(indexPath) of album #\(fetchDelegate.categoryId)")
                     if let cell = self?.imagesCollection?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
                         // Re-configure album cell
                         cell.albumData = album
@@ -1676,13 +1676,13 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             guard var newIndexPath = newIndexPath else { return }
             if anObject is Image { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert item of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
+                debugPrint("••> Insert item of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
                 self?.imagesCollection?.insertItems(at: [newIndexPath])
             })
             // Enable menu if this is the first added image
             if albumData.nbImages == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> First added image ► enable menu")
+                    debugPrint("••> First added image ► enable menu")
                     self?.updateButtonsInPreviewMode()
                 })
             }
@@ -1695,7 +1695,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                 newIndexPath.section = 1
             }
             updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
+                debugPrint("••> Move item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
                 self?.imagesCollection?.moveItem(at: indexPath, to: newIndexPath)
             })
         default:
