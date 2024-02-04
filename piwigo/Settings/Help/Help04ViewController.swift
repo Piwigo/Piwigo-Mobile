@@ -25,7 +25,9 @@ class Help04ViewController: UIViewController {
         // Title
         let titleString = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold), range: NSRange(location: 0, length: titleString.count))
+        let titleFont = view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold)
+        let titleRange = NSRange(location: 0, length: titleString.count)
+        titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
 
         // Text
