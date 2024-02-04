@@ -26,7 +26,7 @@ class ImageDownload {
     
     // MARK: - Initialization
     init(imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
-         fromServer serverID: String, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+         fromServer serverID: String, fileSize: Int64 = .zero,
          placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
          completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         
@@ -37,7 +37,7 @@ class ImageDownload {
         
         // Store file size and handlers
         self.imageURL = imageURL
-        self.fileSize = fileSize == Int64.zero ? NSURLSessionTransferSizeUnknown : fileSize
+        self.fileSize = fileSize
         self.placeHolder = placeHolder
         self.progressHandler = progress
         self.completionHandler = completion
