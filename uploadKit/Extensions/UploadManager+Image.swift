@@ -176,7 +176,7 @@ extension UploadManager {
                 failure(error)
                 return
             }
-            
+
             // Get number of images in source
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
@@ -226,7 +226,7 @@ extension UploadManager {
                     // Set options for retrieving the primary image
                     let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
-                                         kCGImageSourceCreateThumbnailWithTransform   : false,
+                                         kCGImageSourceCreateThumbnailWithTransform   : true,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
                     // Get image
                     guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
@@ -306,11 +306,8 @@ extension UploadManager {
                 return
             }
             
-            // Get index of the primary image (assumes 0 before iOS 12)
-            var imageIndex = 0
-            if #available(iOS 12.0, *) {
-                imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
-            }
+            // Get index of the primary image
+            var imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
             
             // Should we resize the image?
             var image:CGImage
@@ -318,7 +315,7 @@ extension UploadManager {
                 // Set options for retrieving the primary image
                 let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
-                                     kCGImageSourceCreateThumbnailWithTransform   : false,
+                                     kCGImageSourceCreateThumbnailWithTransform   : true,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
                 // Get image
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
@@ -364,7 +361,7 @@ extension UploadManager {
                 return
             }
             
-            // Apply properties of the source to the destination
+            // Apply container properties of the source to the destination
             /// - must be done before adding images
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, imageSourceOptions) as? [CFString : Any] {
                 // Should we remove private metadata?
@@ -380,7 +377,7 @@ extension UploadManager {
                 // Fix properties
                 options.fixProperties(from: containerProperties)
                 
-                // Copy metadata w/o private infos
+                // Copy metadata w/ or w/o private infos
                 CGImageDestinationSetProperties(destinationRef, options as CFDictionary)
             }
 

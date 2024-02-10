@@ -1210,6 +1210,7 @@
 				AD2913E826696A8300403026 /* Network */,
 				AD7F1C162B667BDD008E100E /* Resources */,
 				AD97CFB6265B0B0700719ED5 /* Supporting Files */,
+				ADA0049D2739C038006FE8ED /* Info.plist */,
 			);
 			path = piwigoKit;
 			sourceTree = "<group>";
@@ -1401,6 +1402,7 @@
 				AD7F1C142B667BAF008E100E /* Extensions */,
 				AD7F1C152B667BD2008E100E /* Resources */,
 				AD7DE0912A85898D00C1424E /* Supporting Files */,
+				AD2C625C2A4899F700671582 /* Info.plist */,
 			);
 			path = uploadKit;
 			sourceTree = "<group>";
@@ -1658,7 +1660,6 @@
 			isa = PBXGroup;
 			children = (
 				AD2C623C2A4896A600671582 /* uploadKit.h */,
-				AD2C625C2A4899F700671582 /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1667,7 +1668,6 @@
 			isa = PBXGroup;
 			children = (
 				ADA0049C2739C036006FE8ED /* piwigoKit.h */,
-				ADA0049D2739C038006FE8ED /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3503,7 +3503,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = piwigoKit/Resources/Info.plist;
+				INFOPLIST_FILE = piwigoKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3556,7 +3556,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = piwigoKit/Resources/Info.plist;
+				INFOPLIST_FILE = piwigoKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3686,7 +3686,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = uploadKit/Resources/Info.plist;
+				INFOPLIST_FILE = uploadKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3742,7 +3742,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = uploadKit/Resources/Info.plist;
+				INFOPLIST_FILE = uploadKit/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
