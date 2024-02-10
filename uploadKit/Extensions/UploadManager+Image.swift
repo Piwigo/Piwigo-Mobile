@@ -307,7 +307,7 @@ extension UploadManager {
             }
             
             // Get index of the primary image
-            var imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
+            let imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
             
             // Should we resize the image?
             var image:CGImage
