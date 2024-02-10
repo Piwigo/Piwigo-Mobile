@@ -55,6 +55,42 @@
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
 		AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058822B779AF500CF7E0B /* Photos.framework */; };
 		AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058842B779B0100CF7E0B /* PhotosUI.framework */; };
+		AD20588B2B77DDEA00CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
+		AD20588D2B77DE0B00CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
+		AD20588E2B77DE2700CF7E0B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058862B779BBC00CF7E0B /* MessageUI.framework */; };
+		AD20588F2B77DE4400CF7E0B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058882B779BC500CF7E0B /* UIKit.framework */; };
+		AD2058912B77DED300CF7E0B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058902B77DED300CF7E0B /* CoreMedia.framework */; };
+		AD2058932B77DF5C00CF7E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058922B77DF5C00CF7E0B /* ImageIO.framework */; };
+		AD2058952B77DF6A00CF7E0B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058942B77DF6A00CF7E0B /* MobileCoreServices.framework */; };
+		AD2058972B77DF8400CF7E0B /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058962B77DF8400CF7E0B /* AVKit.framework */; };
+		AD2058992B77DFB700CF7E0B /* LinkPresentation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058982B77DFB700CF7E0B /* LinkPresentation.framework */; };
+		AD20589B2B77DFD600CF7E0B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589A2B77DFD600CF7E0B /* AVFoundation.framework */; };
+		AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589C2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework */; };
+		AD20589E2B77E0D200CF7E0B /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
+		AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589F2B77E15700CF7E0B /* LocalAuthentication.framework */; };
+		AD2058A22B77E1B700CF7E0B /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A12B77E1B600CF7E0B /* CoreHaptics.framework */; };
+		AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A32B77E1EF00CF7E0B /* Vision.framework */; };
+		AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */; };
+		AD2058A72B77E27700CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
+		AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
+		AD2058A92B77E29D00CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
+		AD2058AA2B77E2B100CF7E0B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058822B779AF500CF7E0B /* Photos.framework */; };
+		AD2058AB2B77E2BA00CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
+		AD2058AC2B77E2CA00CF7E0B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058942B77DF6A00CF7E0B /* MobileCoreServices.framework */; };
+		AD2058AD2B77E2E900CF7E0B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058882B779BC500CF7E0B /* UIKit.framework */; };
+		AD2058AE2B77E31200CF7E0B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589A2B77DFD600CF7E0B /* AVFoundation.framework */; };
+		AD2058AF2B77E32500CF7E0B /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */; };
+		AD2058B02B77E34A00CF7E0B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058922B77DF5C00CF7E0B /* ImageIO.framework */; };
+		AD2058B12B77E36F00CF7E0B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588A2B77DDEA00CF7E0B /* CoreData.framework */; };
+		AD2058B22B77E37600CF7E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20588C2B77DE0B00CF7E0B /* Foundation.framework */; };
+		AD2058B32B77E3E700CF7E0B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058882B779BC500CF7E0B /* UIKit.framework */; };
+		AD2058B42B77E40900CF7E0B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058942B77DF6A00CF7E0B /* MobileCoreServices.framework */; };
+		AD2058B52B77E41400CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD20589C2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework */; };
+		AD2058B62B77E43B00CF7E0B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058902B77DED300CF7E0B /* CoreMedia.framework */; };
+		AD2058B82B77E45900CF7E0B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058B72B77E45800CF7E0B /* CoreLocation.framework */; };
+		AD2058B92B77E47E00CF7E0B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058822B779AF500CF7E0B /* Photos.framework */; };
+		AD2058BB2B77E49A00CF7E0B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058BA2B77E49A00CF7E0B /* SystemConfiguration.framework */; };
+		AD2058BD2B77E51B00CF7E0B /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058BC2B77E51B00CF7E0B /* CryptoKit.framework */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
 		AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
 		AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7927BAD596005D5E4F /* LoginUtilities.swift */; };
@@ -613,6 +649,22 @@
 		AD2058842B779B0100CF7E0B /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		AD2058862B779BBC00CF7E0B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		AD2058882B779BC500CF7E0B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		AD20588A2B77DDEA00CF7E0B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AD20588C2B77DE0B00CF7E0B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AD2058902B77DED300CF7E0B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		AD2058922B77DF5C00CF7E0B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		AD2058942B77DF6A00CF7E0B /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		AD2058962B77DF8400CF7E0B /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		AD2058982B77DFB700CF7E0B /* LinkPresentation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LinkPresentation.framework; path = System/Library/Frameworks/LinkPresentation.framework; sourceTree = SDKROOT; };
+		AD20589A2B77DFD600CF7E0B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		AD20589C2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		AD20589F2B77E15700CF7E0B /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		AD2058A12B77E1B600CF7E0B /* CoreHaptics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreHaptics.framework; path = System/Library/Frameworks/CoreHaptics.framework; sourceTree = SDKROOT; };
+		AD2058A32B77E1EF00CF7E0B /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BackgroundTasks.framework; path = System/Library/Frameworks/BackgroundTasks.framework; sourceTree = SDKROOT; };
+		AD2058B72B77E45800CF7E0B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		AD2058BA2B77E49A00CF7E0B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		AD2058BC2B77E51B00CF7E0B /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
 		AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -1118,6 +1170,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD2058B62B77E43B00CF7E0B /* CoreMedia.framework in Frameworks */,
+				AD2058BB2B77E49A00CF7E0B /* SystemConfiguration.framework in Frameworks */,
+				AD2058BD2B77E51B00CF7E0B /* CryptoKit.framework in Frameworks */,
+				AD2058B92B77E47E00CF7E0B /* Photos.framework in Frameworks */,
+				AD2058B12B77E36F00CF7E0B /* CoreData.framework in Frameworks */,
+				AD2058B42B77E40900CF7E0B /* MobileCoreServices.framework in Frameworks */,
+				AD2058B32B77E3E700CF7E0B /* UIKit.framework in Frameworks */,
+				AD2058B82B77E45900CF7E0B /* CoreLocation.framework in Frameworks */,
+				AD2058B22B77E37600CF7E0B /* Foundation.framework in Frameworks */,
+				AD2058B52B77E41400CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1135,6 +1197,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD2C62452A4896EB00671582 /* piwigoKit.framework in Frameworks */,
+				AD2058AD2B77E2E900CF7E0B /* UIKit.framework in Frameworks */,
+				AD2058B02B77E34A00CF7E0B /* ImageIO.framework in Frameworks */,
+				AD2058AB2B77E2BA00CF7E0B /* CoreData.framework in Frameworks */,
+				AD2058AF2B77E32500CF7E0B /* BackgroundTasks.framework in Frameworks */,
+				AD2058A92B77E29D00CF7E0B /* Foundation.framework in Frameworks */,
+				AD2058AC2B77E2CA00CF7E0B /* MobileCoreServices.framework in Frameworks */,
+				AD2058AE2B77E31200CF7E0B /* AVFoundation.framework in Frameworks */,
+				AD2058AA2B77E2B100CF7E0B /* Photos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1150,7 +1220,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD2058A82B77E28000CF7E0B /* Foundation.framework in Frameworks */,
 				ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */,
+				AD2058A72B77E27700CF7E0B /* CoreData.framework in Frameworks */,
 				AD778357267E34F800317F36 /* Intents.framework in Frameworks */,
 				AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */,
 			);
@@ -1169,9 +1241,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */,
+				AD20588F2B77DE4400CF7E0B /* UIKit.framework in Frameworks */,
+				AD20589B2B77DFD600CF7E0B /* AVFoundation.framework in Frameworks */,
+				AD20588B2B77DDEA00CF7E0B /* CoreData.framework in Frameworks */,
+				AD20588E2B77DE2700CF7E0B /* MessageUI.framework in Frameworks */,
+				AD2058912B77DED300CF7E0B /* CoreMedia.framework in Frameworks */,
 				AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */,
+				AD2058A22B77E1B700CF7E0B /* CoreHaptics.framework in Frameworks */,
+				AD2058A42B77E1EF00CF7E0B /* Vision.framework in Frameworks */,
 				AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */,
+				AD20589D2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework in Frameworks */,
+				AD2058932B77DF5C00CF7E0B /* ImageIO.framework in Frameworks */,
+				AD2058A02B77E15700CF7E0B /* LocalAuthentication.framework in Frameworks */,
+				AD2058992B77DFB700CF7E0B /* LinkPresentation.framework in Frameworks */,
+				AD2058A62B77E22000CF7E0B /* BackgroundTasks.framework in Frameworks */,
 				AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */,
+				AD2058952B77DF6A00CF7E0B /* MobileCoreServices.framework in Frameworks */,
+				AD2058972B77DF8400CF7E0B /* AVKit.framework in Frameworks */,
+				AD20589E2B77E0D200CF7E0B /* Intents.framework in Frameworks */,
+				AD20588D2B77DE0B00CF7E0B /* Foundation.framework in Frameworks */,
 				AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1182,6 +1270,22 @@
 		1F042DC0C96A55B227088605 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AD2058BC2B77E51B00CF7E0B /* CryptoKit.framework */,
+				AD2058BA2B77E49A00CF7E0B /* SystemConfiguration.framework */,
+				AD2058B72B77E45800CF7E0B /* CoreLocation.framework */,
+				AD2058A52B77E22000CF7E0B /* BackgroundTasks.framework */,
+				AD2058A32B77E1EF00CF7E0B /* Vision.framework */,
+				AD2058A12B77E1B600CF7E0B /* CoreHaptics.framework */,
+				AD20589F2B77E15700CF7E0B /* LocalAuthentication.framework */,
+				AD20589C2B77E03F00CF7E0B /* UniformTypeIdentifiers.framework */,
+				AD20589A2B77DFD600CF7E0B /* AVFoundation.framework */,
+				AD2058982B77DFB700CF7E0B /* LinkPresentation.framework */,
+				AD2058962B77DF8400CF7E0B /* AVKit.framework */,
+				AD2058942B77DF6A00CF7E0B /* MobileCoreServices.framework */,
+				AD2058922B77DF5C00CF7E0B /* ImageIO.framework */,
+				AD2058902B77DED300CF7E0B /* CoreMedia.framework */,
+				AD20588C2B77DE0B00CF7E0B /* Foundation.framework */,
+				AD20588A2B77DDEA00CF7E0B /* CoreData.framework */,
 				AD2058882B779BC500CF7E0B /* UIKit.framework */,
 				AD2058862B779BBC00CF7E0B /* MessageUI.framework */,
 				AD2058842B779B0100CF7E0B /* PhotosUI.framework */,
