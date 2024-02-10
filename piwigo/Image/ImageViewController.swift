@@ -466,165 +466,181 @@ class ImageViewController: UIViewController {
         favoriteBarButton = getFavoriteBarButton()
 
         if #available(iOS 14, *) {
-            // Interface depends on device and orientation
-            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-            
-            // User with admin or upload rights can do everything
-            if user.hasUploadRights(forCatID: categoryId) {
-                // The action button proposes:
-                /// - to copy or move images to other albums
-                /// - to set the image as album thumbnail
-                /// - to edit image parameters,
-                let menu = UIMenu(title: "", children: [albumMenu(), editMenu()].compactMap({$0}))
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                actionBarButton?.accessibilityIdentifier = "actions"
-                
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Buttons in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
-
-                    // Remaining buttons in navigation toolbar
-                    /// Fixed space added on both sides of play/pause button so that its global width
-                    /// matches the width of the mute/unmute button.
-                    isToolbarRequired = true
-                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
-                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
-                                     favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     deleteBarButton].compactMap { $0 }, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                }
-                else {
-                    // Buttons in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-
-                    // No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Buttons in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = []
-                    
-                    // Remaining buttons in navigation toolbar
-                    /// Fixed space added on both sides of play/pause button so that its global width
-                    /// matches the width of the mute/unmute button.
-                    isToolbarRequired = true
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
-                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     playBarButton == nil ? nil : UIBarButtonItem.fixedSpace(4.3333),
-                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     favoriteBarButton].compactMap { $0 }, animated: false)
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                }
-                else {
-                    // All buttons in navigation bar
-                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
-                    
-                    // Hide navigation toolbar
-                    isToolbarRequired = false
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.userStatus != .guest {
-                // All buttons in navigation bar
-                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
-                
-                // Hide navigation toolbar
-                isToolbarRequired = false
-                navigationController?.setToolbarHidden(true, animated: false)
-            }
-            else {
-                // All buttons in navigation bar
-                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
-
-                // Hide navigation toolbar
-                isToolbarRequired = false
-                navigationController?.setToolbarHidden(true, animated: false)
-            }
-        }
-        else {
+            updateNavBarNew()
+        } else {
             // Fallback on earlier versions
-            // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation
+            updateNavBarOld()
+        }
+    }
+    
+    @available(iOS 14, *)
+    private func updateNavBarNew() {
+        // Interface depends on device and orientation
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        
+        // User with admin or upload rights can do everything
+        if user.hasUploadRights(forCatID: categoryId) {
+            // The action button proposes:
+            /// - to copy or move images to other albums
+            /// - to set the image as album thumbnail
+            /// - to edit image parameters,
+            let menu = UIMenu(title: "", children: [albumMenu(), editMenu()].compactMap({$0}))
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+            actionBarButton?.accessibilityIdentifier = "actions"
             
-            // User with admin or upload rights can do everything
-            // WRONG =====> 'normal' user with upload access to the current category can edit images
-            // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-            if user.hasUploadRights(forCatID: categoryId) {
-                // Navigation bar
-                // The action menu is simply an Edit button
-                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                  target: self, action: #selector(editImage))
-                actionBarButton?.accessibilityIdentifier = "edit"
-                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton].compactMap { $0 }
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                // Buttons in the navigation bar
+                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [actionBarButton].compactMap {$0}
 
-                // Navigation toolbar
+                // Remaining buttons in navigation toolbar
+                /// Fixed space added on both sides of play/pause button so that its global width
+                /// matches the width of the mute/unmute button.
                 isToolbarRequired = true
+                var toolbarItems = [UIBarButtonItem?]()
+                toolbarItems.append(contentsOf: [shareBarButton, .space()])
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
+                toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
+                toolbarItems.append(contentsOf: [favoriteBarButton, favoriteBarButton == nil ? nil : .space()])
+                toolbarItems.append(contentsOf: [muteBarButton, muteBarButton == nil ? nil : .space()])
+                toolbarItems.append(deleteBarButton)
+                setToolbarItems(toolbarItems.compactMap { $0 }, animated: false)
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                 moveBarButton, UIBarButtonItem.space(),
-                                 favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                 setThumbnailBarButton, UIBarButtonItem.space(),
-                                 deleteBarButton].compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = []
+            else {
+                // Buttons in the navigation bar
+                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
 
-                    // Remaining buttons in navigation toolbar
-                    isToolbarRequired = true
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems([shareBarButton, UIBarButtonItem.space(),
-                                     playBarButton, playBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     muteBarButton, muteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                     favoriteBarButton!].compactMap { $0 }, animated: false)
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                } else {
-                    navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
-
-                    // Hide navigation toolbar
-                    isToolbarRequired = false
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.userStatus != .guest {
-                // All buttons in navigation bar
-                navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
-                
-                // Hide navigation toolbar
+                // No toolbar
                 isToolbarRequired = false
-                navigationController?.setToolbarHidden(true, animated: false)
+                setToolbarItems([], animated: false)
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+        }
+        else if favoriteBarButton != nil {
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                // Buttons in the navigation bar
+                navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = []
+                
+                // Remaining buttons in navigation toolbar
+                /// Fixed space added on both sides of play/pause button so that its global width
+                /// matches the width of the mute/unmute button.
+                isToolbarRequired = true
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                var toolbarItems = [UIBarButtonItem?]()
+                toolbarItems.append(contentsOf: [shareBarButton, .space()])
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
+                toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
+                toolbarItems.append(contentsOf: [muteBarButton, muteBarButton == nil ? nil : .space()])
+                toolbarItems.append(favoriteBarButton)
+                setToolbarItems(toolbarItems.compactMap { $0 }, animated: false)
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
             else {
                 // All buttons in navigation bar
+                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
+                
+                // Hide navigation toolbar
+                isToolbarRequired = false
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+        }
+        else if NetworkVars.userStatus != .guest {
+            // All buttons in navigation bar
+            navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
+            
+            // Hide navigation toolbar
+            isToolbarRequired = false
+            navigationController?.setToolbarHidden(true, animated: false)
+        }
+        else {
+            // All buttons in navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
+
+            // Hide navigation toolbar
+            isToolbarRequired = false
+            navigationController?.setToolbarHidden(true, animated: false)
+        }
+    }
+    
+    private func updateNavBarOld() {
+        // Interface depends on device and orientation
+        let orientation = UIApplication.shared.statusBarOrientation
+        
+        // User with admin or upload rights can do everything
+        // WRONG =====> 'normal' user with upload access to the current category can edit images
+        // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+        if user.hasUploadRights(forCatID: categoryId) {
+            // Navigation bar
+            // The action menu is simply an Edit button
+            actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                              target: self, action: #selector(editImage))
+            actionBarButton?.accessibilityIdentifier = "edit"
+            navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton].compactMap { $0 }
+
+            // Navigation toolbar
+            isToolbarRequired = true
+            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+            var toolbarItems = [UIBarButtonItem?]()
+            toolbarItems.append(contentsOf: [shareBarButton, .space()])
+            toolbarItems.append(contentsOf: [moveBarButton, .space()])
+            toolbarItems.append(contentsOf: [favoriteBarButton, favoriteBarButton == nil ? nil : .space()])
+            toolbarItems.append(contentsOf: [setThumbnailBarButton, .space()])
+            toolbarItems.append(deleteBarButton)
+            setToolbarItems(toolbarItems.compactMap { $0 }, animated: false)
+            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+        }
+        else if favoriteBarButton != nil {
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                // Navigation bar
                 navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = []
+
+                // Remaining buttons in navigation toolbar
+                isToolbarRequired = true
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                var toolbarItems = [UIBarButtonItem?]()
+                toolbarItems.append(contentsOf: [shareBarButton, .space()])
+                toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
+                toolbarItems.append(contentsOf: [muteBarButton, muteBarButton == nil ? nil : .space()])
+                toolbarItems.append(favoriteBarButton)
+                setToolbarItems(toolbarItems.compactMap { $0 }, animated: false)
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            } else {
+                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                navigationItem.rightBarButtonItems = [favoriteBarButton, shareBarButton].compactMap { $0 }
 
                 // Hide navigation toolbar
                 isToolbarRequired = false
-                navigationController?.setToolbarHidden(true, animated: false)
+                navigationController?.setToolbarHidden(true, animated: true)
             }
+        }
+        else if NetworkVars.userStatus != .guest {
+            // All buttons in navigation bar
+            navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
+            
+            // Hide navigation toolbar
+            isToolbarRequired = false
+            navigationController?.setToolbarHidden(true, animated: false)
+        }
+        else {
+            // All buttons in navigation bar
+            navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+            navigationItem.rightBarButtonItems = [playBarButton, muteBarButton].compactMap {$0}
+
+            // Hide navigation toolbar
+            isToolbarRequired = false
+            navigationController?.setToolbarHidden(true, animated: false)
         }
     }
     

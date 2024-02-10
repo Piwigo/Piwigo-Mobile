@@ -47,14 +47,15 @@ extension AlbumViewController: UISearchControllerDelegate
         
         // Initialise albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
-        self.resetSearchAlbum(withQuery: "")
+        resetSearchAlbum(withQuery: "")
         
         // Update albums
-        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : categoryId])
+        let substitute: [String : Any] = ["catId" : categoryId]
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(substitute)
         try? albums.performFetch()
         
         // Update images
-        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
+        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(substitute)
         try? images.performFetch()
         
         // Reload collection

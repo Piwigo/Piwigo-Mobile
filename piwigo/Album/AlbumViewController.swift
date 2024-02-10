@@ -1586,9 +1586,11 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let navBarHeight = Float(navigationController?.navigationBar.frame.origin.y ?? 0.0) + Float(navigationController?.navigationBar.frame.size.height ?? 0.0)
+        let navBarYpos = navigationController?.navigationBar.frame.origin.y ?? 0.0
+        let navBarThickness = navigationController?.navigationBar.frame.size.height ?? 0.0
+        let navBarHeight = navBarYpos + navBarThickness
         //    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
-        if roundf(Float(scrollView.contentOffset.y) + navBarHeight) > 1 ||
+        if round(scrollView.contentOffset.y + navBarHeight) > 1 ||
             (categoryId != AlbumVars.shared.defaultCategory) {
             // Show navigation bar border
             if #available(iOS 13.0, *) {

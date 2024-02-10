@@ -262,7 +262,7 @@ class VideoDetailViewController: UIViewController
         
         // Center video horizontally in scrollview
         let videoWidth = videoContainerView.bounds.size.width * scrollView.zoomScale
-        let horizontalSpace = max(0, (view.bounds.width - videoWidth) / 2)
+        let horizontalSpace = max(0, (view.bounds.width - videoWidth) / 2.0)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
@@ -271,7 +271,7 @@ class VideoDetailViewController: UIViewController
 
         // Center image vertically  in scrollview
         let videoHeight = videoContainerView.bounds.size.height * scrollView.zoomScale
-        let verticalSpace = max(0, (view.bounds.height - videoHeight) / 2 )
+        let verticalSpace = max(0, (view.bounds.height - videoHeight) / 2.0)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {
