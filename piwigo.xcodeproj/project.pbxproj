@@ -53,6 +53,8 @@
 		AD1AC30A29746F9E00CEA7A9 /* ImageSessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AC30929746F9E00CEA7A9 /* ImageSessionError.swift */; };
 		AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */; };
 		AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */; };
+		AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058822B779AF500CF7E0B /* Photos.framework */; };
+		AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2058842B779B0100CF7E0B /* PhotosUI.framework */; };
 		AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
 		AD211A7827AB1FA8005D5E4F /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
 		AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7927BAD596005D5E4F /* LoginUtilities.swift */; };
@@ -607,6 +609,10 @@
 		AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0A_to_0B.xcmappingmodel; sourceTree = "<group>"; };
 		AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+AppTools.swift"; sourceTree = "<group>"; };
 		AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
+		AD2058822B779AF500CF7E0B /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		AD2058842B779B0100CF7E0B /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		AD2058862B779BBC00CF7E0B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		AD2058882B779BC500CF7E0B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
 		AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -1163,6 +1169,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */,
+				AD2058852B779B0200CF7E0B /* PhotosUI.framework in Frameworks */,
+				AD2058832B779AF500CF7E0B /* Photos.framework in Frameworks */,
 				AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */,
 				AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */,
 			);
@@ -1174,6 +1182,10 @@
 		1F042DC0C96A55B227088605 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AD2058882B779BC500CF7E0B /* UIKit.framework */,
+				AD2058862B779BBC00CF7E0B /* MessageUI.framework */,
+				AD2058842B779B0100CF7E0B /* PhotosUI.framework */,
+				AD2058822B779AF500CF7E0B /* Photos.framework */,
 				A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */,
 				B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */,
 				297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */,
