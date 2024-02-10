@@ -163,6 +163,12 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             ClearCache.closeSession()
             return User()
         }
+        // User available ► Job done
+        if user.isFault {
+            // The user is not fired yet.
+            user.willAccessValue(forKey: nil)
+            user.didAccessValue(forKey: nil)
+        }
         return user
     }()
     
