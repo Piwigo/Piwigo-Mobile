@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.2_text" = "3.1.2 verzió\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások";
+"v3.1.3_text" = "3.1.3-es verzió\n\n• Hibajavítások";
+
+"v3.1.2_text" = "3.1.2 verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások";
 
 "v3.1.1_text" = "3.1.1 verzió\n2023 December 1\n\n• Szerver statisztikák frissítése (Piwigo 14 szükséges)\n• Hibajavítások";
 

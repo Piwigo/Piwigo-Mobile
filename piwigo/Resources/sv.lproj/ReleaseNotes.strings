@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.2_text" = "Version 3.1.2\n\n• Begär Piwigo server uppdatering om det behövs\n• Felrättelser";
+"v3.1.3_text" = "Version 3.1.3\n\n• Buggfixar";
+
+"v3.1.2_text" = "Version 3.1.2\n1 februari 2024\n\n• Begär Piwigo server uppdatering om det behövs\n• Felrättelser";
 
 "v3.1.1_text" = "Version 3.1.1\n1 december 2023\n\n• Uppdaterar serverstatistik (kräver Piwigo 14)\n• Felrättelser";
 

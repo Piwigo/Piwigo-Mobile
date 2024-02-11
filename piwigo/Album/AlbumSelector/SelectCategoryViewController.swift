@@ -1054,11 +1054,22 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Check that this update should be managed by this view controller
+        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+            return
+        }
         // Begin the update
         categoriesTableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        // Check that this update should be managed by this view controller
+        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+            return
+        }
 
         // Initialisation
         var hasAlbumsInSection1 = false
@@ -1071,12 +1082,12 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-            print("••> Insert category item at \(newIndexPath)")
+            debugPrint("••> Insert category item at \(newIndexPath)")
             categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            print("••> Update category item at \(indexPath)")
+            debugPrint("••> Update category item at \(indexPath)")
             categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
@@ -1084,12 +1095,12 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            print("••> Move category item from \(indexPath) to \(newIndexPath)")
+            debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
             categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            print("••> Delete category item at \(indexPath)")
+            debugPrint("••> Delete category item at \(indexPath)")
             categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
         @unknown default:
             debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
@@ -1097,6 +1108,11 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Check that this update should be managed by this view controller
+        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+            return
+        }
         // End updates
         categoriesTableView.endUpdates()
     }

@@ -44,7 +44,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
-            let wholeRange = NSRange(location: 0, length: commonTitle.string.count)
+            let titleLength: Int = commonTitle.string.count
+            let wholeRange = NSRange(location: 0, length: titleLength)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.right
             let attributes = [

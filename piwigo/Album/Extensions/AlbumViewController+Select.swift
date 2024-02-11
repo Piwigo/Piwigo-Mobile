@@ -328,7 +328,7 @@ extension AlbumViewController
         // Will interpret touches only in horizontal direction
         if let gPR = gestureRecognizer as? UIPanGestureRecognizer {
             let translation = gPR.translation(in: imagesCollection)
-            if abs(Float(translation.x)) > abs(Float(translation.y)) {
+            if abs(translation.x) > abs(translation.y) {
                 return true
             }
         }

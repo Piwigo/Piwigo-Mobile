@@ -83,7 +83,7 @@ class ImageSession: NSObject {
     
     // MARK: - Asynchronous Methods
     func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, atURL imageURL: URL?,
-                  fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+                  fromServer serverID: String?, fileSize: Int64 = .zero,
                   placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
                   completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         // Check arguments
@@ -106,10 +106,9 @@ class ImageSession: NSObject {
                                      progress: progress, completion: completion, failure: failure)
 
         // Do we already have this image or video in cache?
-        if download.fileURL.fileSize != 0 {
+        if download.fileURL.fileSize > 0 {
             // We do have an image in cache, but is this the image or expected video?
-            if imageSize == .fullRes,
-               [NSURLSessionTransferSizeUnknown, 0].contains(fileSize) == false {
+            if imageSize == .fullRes {
                 let cachedFileSize = download.fileURL.fileSize
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
 //                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
@@ -118,6 +117,7 @@ class ImageSession: NSObject {
                     return
                 }
             } else {
+//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
                 completion(download.fileURL)
                 return
             }
@@ -126,17 +126,18 @@ class ImageSession: NSObject {
         // Download this image in the background thread
         downloadQueue.async {
             guard let download = self.activeDownloads[imageURL] else {
-//                print("••> Launch download: \(imageURL.lastPathComponent)")
+//                debugPrint("••> Launch download of image: \(imageURL)")
                 download.task = self.dataSession.downloadTask(with: request)
                 download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-                download.task?.countOfBytesClientExpectsToReceive = download.fileSize
+                let expectedSize: Int64 = fileSize == .zero ? NSURLSessionTransferSizeUnknown : fileSize
+                download.task?.countOfBytesClientExpectsToReceive = expectedSize
                 download.task?.resume()
                 self.activeDownloads[imageURL] = download
                 return
             }
             
             // Resume download
-//            print("••> Resume download: \(imageURL)")
+//            debugPrint("••> Resume download of image: \(imageURL)")
             download.progressHandler = progress
             if let progressHandler = download.progressHandler {
                 progressHandler(download.progress)
@@ -163,7 +164,7 @@ class ImageSession: NSObject {
         
         // Cancel the download request
         download.task?.cancel(byProducingResumeData: { imageData in
-//            print("••> Pause download: \(imageURL.lastPathComponent)")
+//            debugPrint("••> Pause download: \(imageURL)")
             download.resumeData = imageData
         })
     }
@@ -175,7 +176,7 @@ class ImageSession: NSObject {
         }
 
         // Cancel the download request
-//        print("••> Cancel download: \(imageURL.lastPathComponent)")
+//        debugPrint("••> Cancel download: \(imageURL)")
         download.task?.cancel()
         activeDownloads[imageURL] = nil
     }
@@ -186,13 +187,13 @@ class ImageSession: NSObject {
 extension ImageSession: URLSessionDelegate {
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-//        print("    > The data session has been invalidated")
+//        debugPrint("    > The data session has been invalidated")
         activeDownloads = [ : ]
     }
     
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-//        print("    > Session-level authentication request from the remote server.")
+//        debugPrint("    > Session-level authentication request from the remote server.")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
@@ -246,7 +247,7 @@ extension ImageSession: URLSessionDelegate {
 extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Task-level authentication request from the remote server")
+//        debugPrint("    > Task-level authentication request from the remote server")
         
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
@@ -287,7 +288,7 @@ extension ImageSession: URLSessionTaskDelegate {
             }
         } else {
             // Return cached image with completionHandler
-//            print("••> Did complete task #\(task.taskIdentifier)")
+//            debugPrint("••> Did complete task #\(task.taskIdentifier)")
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {
                 completion(fileURL)
@@ -306,8 +307,8 @@ extension ImageSession: URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
-//        print("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
-//        print("    amongst \(activeDownloads.count) active downloads.")
+//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
+//        debugPrint("    amongst \(activeDownloads.count) active downloads.")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
@@ -316,7 +317,7 @@ extension ImageSession: URLSessionDownloadDelegate {
         // Update progress bar if any
         if let progressHandler = download.progressHandler {
             download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-//            print("••> Progress task #\(downloadTask.taskIdentifier) -> \(download.progress)")
+//            debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> \(download.progress)")
             progressHandler(download.progress)
         }
     }
@@ -324,7 +325,7 @@ extension ImageSession: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
-        print("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
+//        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL],
               let fileURL = download.fileURL else {
@@ -336,7 +337,7 @@ extension ImageSession: URLSessionDownloadDelegate {
             let fm = FileManager.default
             let dirURL = fileURL.deletingLastPathComponent()
             if fm.fileExists(atPath: dirURL.path) == false {
-                print("••> Create directory \(dirURL.path)")
+//                debugPrint("••> Create directory \(dirURL.path)")
                 try fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                        attributes: nil)
             }
@@ -346,7 +347,7 @@ extension ImageSession: URLSessionDownloadDelegate {
             
             // Store image
             try fm.copyItem(at: location, to: fileURL)
-            print("••> Image \(fileURL.lastPathComponent) stored in cache")
+//            debugPrint("••> Image \(fileURL.lastPathComponent) stored in cache (downloaded at \(String(describing: download.imageURL)))")
         } catch {
             // Return error with failureHandler
             if let failure = download.failureHandler {

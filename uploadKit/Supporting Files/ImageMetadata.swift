@@ -225,13 +225,9 @@ extension Dictionary where Key == CFString, Value == Any {
     mutating func fixContents(from image:CGImage) {
         var metadata = self
 
-        // Extract image data from UIImage object (orientation managed)
-        guard let imageData = UIImage(cgImage: image).jpegData(compressionQuality: 1.0) else {
-            return
-        }
-
-        // Create image source from image data
-        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
+        // Extract image source from UIImage object (orientation managed)
+        guard let imageData = UIImage(cgImage: image).jpegData(compressionQuality: 1.0),
+              let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
             return
         }
 
@@ -245,17 +241,7 @@ extension Dictionary where Key == CFString, Value == Any {
         if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the image
             metadata.fixProperties(from: imageMetadata)
-        
-            // Update/add DPI height from image properties
-            if let DPIheight = imageMetadata[kCGImagePropertyDPIHeight] {
-                metadata[kCGImagePropertyDPIHeight] = DPIheight
-            }
-
-            // Update/add DPI width from image properties
-            if let DPIwidth = imageMetadata[kCGImagePropertyDPIWidth] {
-                metadata[kCGImagePropertyDPIHeight] = DPIwidth
-            }
-
+            
             // Update/add width from image properties
             if let width = imageMetadata[kCGImagePropertyPixelWidth] {
                 metadata[kCGImagePropertyPixelWidth] = width
@@ -265,90 +251,16 @@ extension Dictionary where Key == CFString, Value == Any {
             if let height = imageMetadata[kCGImagePropertyPixelHeight] {
                 metadata[kCGImagePropertyPixelHeight] = height
             }
-
-            // Update/add depth from image properties
-            if let depth = imageMetadata[kCGImagePropertyDepth] {
-                metadata[kCGImagePropertyDepth] = depth
-            }
-
-            // The orientation was unchanged during the resize or conversion.
-            // So we keep the original orientation.
-//            if let orientation = imageMetadata[kCGImagePropertyOrientation] as? UInt32 {
-//                metadata[kCGImagePropertyOrientation] = CGImagePropertyOrientation(rawValue: orientation)
-//            }
-
-            // Update/add isFloat from image properties
-            if let isFloat = imageMetadata[kCGImagePropertyIsFloat] {
-                metadata[kCGImagePropertyIsFloat] = isFloat
-            }
-
-            // Update/add isIndexed from image properties
-            if let isIndexed = imageMetadata[kCGImagePropertyIsIndexed] {
-                metadata[kCGImagePropertyIsIndexed] = isIndexed
-            }
-
-            // Update/add asAlpha from image properties
-            if let asAlpha = imageMetadata[kCGImagePropertyHasAlpha] {
-                metadata[kCGImagePropertyHasAlpha] = asAlpha
-            }
-
-            // Update/add colour model from image properties
-            if let colorModel = imageMetadata[kCGImagePropertyColorModel] {
-                metadata[kCGImagePropertyColorModel] = colorModel
-            }
-
-            // Update/add ICC profile from image properties
-            if let iccProfile = imageMetadata[kCGImagePropertyProfileName] {
-                metadata[kCGImagePropertyProfileName] = iccProfile
-            }
         }
         
         self = metadata
     }
 
     // Fix image properties from (resized) image metadata
-    mutating func fixProperties(from imageMetadata: [CFString:Any]) {
+    mutating func fixProperties(from imageMetadata: [CFString: Any]) {
         var metadata = self
 
-        // Update TIFF dictionary from image metadata
-        if let imageTIFFDictionary = imageMetadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
-            // Image contains a TIFF dictionary
-            if var metadataTIFFDictionary = metadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
-                // A TIFF dictionary already exists -> update key/value pairs
-                for (k, v) in imageTIFFDictionary { metadataTIFFDictionary[k] = v }
-                metadata[kCGImagePropertyTIFFDictionary] = metadataTIFFDictionary
-            } else {
-                // No TIFF dictionary -> Add it
-                metadata[kCGImagePropertyTIFFDictionary] = imageTIFFDictionary
-            }
-        }
-
-        // Update/add GIF dictionary from image metadata
-        if let imageGIFDictionary = imageMetadata[kCGImagePropertyGIFDictionary] as? [CFString : Any] {
-            // Image contains a GIF dictionary
-            if var metadataGIFDictionary = metadata[kCGImagePropertyGIFDictionary] as? [CFString : Any] {
-                // A GIF dictionary already exists -> update key/value pairs
-                for (k, v) in imageGIFDictionary { metadataGIFDictionary[k] = v }
-                metadata[kCGImagePropertyGIFDictionary] = metadataGIFDictionary
-            } else {
-                // No GIF dictionary -> Add it
-                metadata[kCGImagePropertyGIFDictionary] = imageGIFDictionary
-            }
-        }
-
-        // Update/add JFIF dictionary from image metadata
-        if let imageJFIFDictionary = imageMetadata[kCGImagePropertyJFIFDictionary] as? [CFString : Any] {
-            // Image contains a JFIF dictionary
-            if var metadataJFIFDictionary = metadata[kCGImagePropertyJFIFDictionary] as? [CFString : Any] {
-                // A JIFF dictionary already exists -> update key/value pairs
-                for (k, v) in imageJFIFDictionary { metadataJFIFDictionary[k] = v }
-                metadata[kCGImagePropertyJFIFDictionary] = metadataJFIFDictionary
-            } else {
-                // No JIFF dictionary -> Add it
-                metadata[kCGImagePropertyJFIFDictionary] = imageJFIFDictionary
-            }
-        }
-
+        // Common Image Properties
         // Update/add Exif dictionary from image metadata
         if let imageEXIFDictionary = imageMetadata[kCGImagePropertyExifDictionary] as? [CFString : Any] {
             // Image contains an EXIF dictionary
@@ -362,19 +274,19 @@ extension Dictionary where Key == CFString, Value == Any {
             }
         }
 
-        // Update/add PNG dictionary from image metadata
-        if let imagePNGDictionary = imageMetadata[kCGImagePropertyPNGDictionary] as? [CFString : Any] {
-            // Image contains a PNG dictionary
-            if var metadataPNGDictionary = metadata[kCGImagePropertyPNGDictionary] as? [CFString : Any] {
-                // A PNG dictionary already exists -> update key/value pairs
-                for (k, v) in imagePNGDictionary { metadataPNGDictionary[k] = v }
-                metadata[kCGImagePropertyPNGDictionary] = metadataPNGDictionary
+        // Update/add ExifAux dictionary from image metadata
+        if let imageExifAuxDictionary = imageMetadata[kCGImagePropertyExifAuxDictionary] as? [CFString : Any] {
+            // Image contains an EXIF Aux dictionary
+            if var metadataExifAuxDictionary = metadata[kCGImagePropertyExifAuxDictionary] as? [CFString : Any] {
+                // An EXIF Aux dictionary already exists -> update key/value pairs
+                for (k, v) in imageExifAuxDictionary { metadataExifAuxDictionary[k] = v }
+                metadata[kCGImagePropertyExifAuxDictionary] = metadataExifAuxDictionary
             } else {
-                // No PNG dictionary -> Add it
-                metadata[kCGImagePropertyPNGDictionary] = imagePNGDictionary
+                // No EXIF Aux dictionary -> Add it
+                metadata[kCGImagePropertyExifAuxDictionary] = imageExifAuxDictionary
             }
         }
-
+        
         // Update/add IPTC dictionary from image metadata
         if let imageIPTCDictionary = metadata[kCGImagePropertyIPTCDictionary] as? [CFString : Any] {
             // Image contains an IPTC dictionary
@@ -392,28 +304,31 @@ extension Dictionary where Key == CFString, Value == Any {
         if let imageGPSDictionary = metadata[kCGImagePropertyGPSDictionary] as? [CFString : Any] {
             // Image contains a GPS dictionary
             if var metadataGPSDictionary = metadata[kCGImagePropertyGPSDictionary] as? [CFString : Any] {
-                // A IPTC dictionary already exists -> update key/value pairs
+                // A GPS dictionary already exists -> update key/value pairs
                 for (k, v) in imageGPSDictionary { metadataGPSDictionary[k] = v }
                 metadata[kCGImagePropertyGPSDictionary] = metadataGPSDictionary
             } else {
-                // No IPTC dictionary -> Add it
+                // No GPS dictionary -> Add it
                 metadata[kCGImagePropertyGPSDictionary] = imageGPSDictionary
             }
         }
         
-        // Update RAW dictionary from image metadata
-        if let imageRawDictionary = imageMetadata[kCGImagePropertyRawDictionary] as? [CFString : Any] {
-            // Image contains a RAW dictionary
-            if var metadataRawDictionary = metadata[kCGImagePropertyRawDictionary] as? [CFString : Any] {
-                // A Raw dictionary already exists -> update key/value pairs
-                for (k, v) in imageRawDictionary { metadataRawDictionary[k] = v }
-                metadata[kCGImagePropertyRawDictionary] = metadataRawDictionary
-            } else {
-                // No Raw dictionary -> Add it
-                metadata[kCGImagePropertyRawDictionary] = imageRawDictionary
+        // Update/add WebP dictionary from image metadata
+        if #available(iOS 14, *) {
+            if let imageWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
+                // Image contains a WebP dictionary
+                if var metadataWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
+                    // A WebP dictionary already exists -> update key/value pairs
+                    for (k, v) in imageWebPDictionary { metadataWebPDictionary[k] = v }
+                    metadata[kCGImagePropertyGPSDictionary] = metadataWebPDictionary
+                } else {
+                    // No WebP dictionary -> Add it
+                    metadata[kCGImagePropertyGPSDictionary] = imageWebPDictionary
+                }
             }
         }
-
+        
+        // Format-Specific Properties
         // Update/add CIFF dictionary from image metadata
         if let imageCIFFDictionary = imageMetadata[kCGImagePropertyCIFFDictionary] as? [CFString : Any] {
             // Image contains a CIFF dictionary
@@ -424,19 +339,6 @@ extension Dictionary where Key == CFString, Value == Any {
             } else {
                 // No CIFF dictionary -> Add it
                 metadata[kCGImagePropertyCIFFDictionary] = imageCIFFDictionary
-            }
-        }
-
-        // Update/add 8BIM dictionary from image metadata
-        if let image8BIMDictionary = imageMetadata[kCGImageProperty8BIMDictionary] as? [CFString : Any] {
-            // Image contains a 8BIM dictionary
-            if var metadata8BIMDictionary = metadata[kCGImageProperty8BIMDictionary] as? [CFString : Any] {
-                // A 8BIM dictionary already exists -> update key/value pairs
-                for (k, v) in image8BIMDictionary { metadata8BIMDictionary[k] = v }
-                metadata[kCGImageProperty8BIMDictionary] = metadata8BIMDictionary
-            } else {
-                // No 8BIM dictionary -> Add it
-                metadata[kCGImageProperty8BIMDictionary] = image8BIMDictionary
             }
         }
 
@@ -453,16 +355,111 @@ extension Dictionary where Key == CFString, Value == Any {
             }
         }
 
-        // Update/add ExifAux dictionary from image metadata
-        if let imageExifAuxDictionary = imageMetadata[kCGImagePropertyExifAuxDictionary] as? [CFString : Any] {
-            // Image contains an EXIF Aux dictionary
-            if var metadataExifAuxDictionary = metadata[kCGImagePropertyExifAuxDictionary] as? [CFString : Any] {
-                // An EXIF Aux dictionary already exists -> update key/value pairs
-                for (k, v) in imageExifAuxDictionary { metadataExifAuxDictionary[k] = v }
-                metadata[kCGImagePropertyExifAuxDictionary] = metadataExifAuxDictionary
+        // Update/add GIF dictionary from image metadata
+        if let imageGIFDictionary = imageMetadata[kCGImagePropertyGIFDictionary] as? [CFString : Any] {
+            // Image contains a GIF dictionary
+            if var metadataGIFDictionary = metadata[kCGImagePropertyGIFDictionary] as? [CFString : Any] {
+                // A GIF dictionary already exists -> update key/value pairs
+                for (k, v) in imageGIFDictionary { metadataGIFDictionary[k] = v }
+                metadata[kCGImagePropertyGIFDictionary] = metadataGIFDictionary
             } else {
-                // No EXIF Aux dictionary -> Add it
-                metadata[kCGImagePropertyExifAuxDictionary] = imageExifAuxDictionary
+                // No GIF dictionary -> Add it
+                metadata[kCGImagePropertyGIFDictionary] = imageGIFDictionary
+            }
+        }
+
+        // Update/add HEIC dictionary from image metadata
+        if #available(iOS 13, *) {
+            if let imageHEICDictionary = imageMetadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
+                // Image contains an HEIC dictionary
+                if var metadataHEICDictionary = metadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
+                    // An HEIC dictionary already exists -> update key/value pairs
+                    for (k, v) in imageHEICDictionary { metadataHEICDictionary[k] = v }
+                    metadata[kCGImagePropertyHEICSDictionary] = metadataHEICDictionary
+                } else {
+                    // No HEIC dictionary -> Add it
+                    metadata[kCGImagePropertyHEICSDictionary] = imageHEICDictionary
+                }
+            }
+        }
+
+        // Update/add JFIF dictionary from image metadata
+        if let imageJFIFDictionary = imageMetadata[kCGImagePropertyJFIFDictionary] as? [CFString : Any] {
+            // Image contains a JFIF dictionary
+            if var metadataJFIFDictionary = metadata[kCGImagePropertyJFIFDictionary] as? [CFString : Any] {
+                // A JIFF dictionary already exists -> update key/value pairs
+                for (k, v) in imageJFIFDictionary { metadataJFIFDictionary[k] = v }
+                metadata[kCGImagePropertyJFIFDictionary] = metadataJFIFDictionary
+            } else {
+                // No JIFF dictionary -> Add it
+                metadata[kCGImagePropertyJFIFDictionary] = imageJFIFDictionary
+            }
+        }
+
+        // Update/add PNG dictionary from image metadata
+        if let imagePNGDictionary = imageMetadata[kCGImagePropertyPNGDictionary] as? [CFString : Any] {
+            // Image contains a PNG dictionary
+            if var metadataPNGDictionary = metadata[kCGImagePropertyPNGDictionary] as? [CFString : Any] {
+                // A PNG dictionary already exists -> update key/value pairs
+                for (k, v) in imagePNGDictionary { metadataPNGDictionary[k] = v }
+                metadata[kCGImagePropertyPNGDictionary] = metadataPNGDictionary
+            } else {
+                // No PNG dictionary -> Add it
+                metadata[kCGImagePropertyPNGDictionary] = imagePNGDictionary
+            }
+        }
+
+        // Update/add TGA dictionary from image metadata
+        if #available(iOS 14, *) {
+            if let imageTGADictionary = imageMetadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
+                // Image contains a TGA dictionary
+                if var metadataTGADictionary = metadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
+                    // A TGA dictionary already exists -> update key/value pairs
+                    for (k, v) in imageTGADictionary { metadataTGADictionary[k] = v }
+                    metadata[kCGImagePropertyTIFFDictionary] = metadataTGADictionary
+                } else {
+                    // No TGA dictionary -> Add it
+                    metadata[kCGImagePropertyTGADictionary] = imageTGADictionary
+                }
+            }
+        }
+        
+        // Update TIFF dictionary from image metadata
+        if let imageTIFFDictionary = imageMetadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
+            // Image contains a TIFF dictionary
+            if var metadataTIFFDictionary = metadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
+                // A TIFF dictionary already exists -> update key/value pairs
+                for (k, v) in imageTIFFDictionary { metadataTIFFDictionary[k] = v }
+                metadata[kCGImagePropertyTIFFDictionary] = metadataTIFFDictionary
+            } else {
+                // No TIFF dictionary -> Add it
+                metadata[kCGImagePropertyTIFFDictionary] = imageTIFFDictionary
+            }
+        }
+
+        // Update/add 8BIM dictionary from image metadata
+        if let image8BIMDictionary = imageMetadata[kCGImageProperty8BIMDictionary] as? [CFString : Any] {
+            // Image contains a 8BIM dictionary
+            if var metadata8BIMDictionary = metadata[kCGImageProperty8BIMDictionary] as? [CFString : Any] {
+                // A 8BIM dictionary already exists -> update key/value pairs
+                for (k, v) in image8BIMDictionary { metadata8BIMDictionary[k] = v }
+                metadata[kCGImageProperty8BIMDictionary] = metadata8BIMDictionary
+            } else {
+                // No 8BIM dictionary -> Add it
+                metadata[kCGImageProperty8BIMDictionary] = image8BIMDictionary
+            }
+        }
+
+        // Update RAW dictionary from image metadata
+        if let imageRawDictionary = imageMetadata[kCGImagePropertyRawDictionary] as? [CFString : Any] {
+            // Image contains a RAW dictionary
+            if var metadataRawDictionary = metadata[kCGImagePropertyRawDictionary] as? [CFString : Any] {
+                // A Raw dictionary already exists -> update key/value pairs
+                for (k, v) in imageRawDictionary { metadataRawDictionary[k] = v }
+                metadata[kCGImagePropertyRawDictionary] = metadataRawDictionary
+            } else {
+                // No Raw dictionary -> Add it
+                metadata[kCGImagePropertyRawDictionary] = imageRawDictionary
             }
         }
 
