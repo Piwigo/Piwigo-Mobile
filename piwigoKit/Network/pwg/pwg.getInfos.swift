@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.getInfos
 public let pwgGetInfos = "format=json&method=pwg.getInfos"
 
+// MARK: Piwigo JSON Structures
 public struct GetInfosJSON: Decodable {
     
     public var status: String?

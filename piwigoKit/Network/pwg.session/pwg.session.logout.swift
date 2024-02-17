@@ -8,10 +8,10 @@
 
 import Foundation
 
-// MARK: - pwg.session.logout
 public let pwgSessionLogout = "format=json&method=pwg.session.logout"
 public let pwgSessionLogoutBytes: Int64 = 620
 
+// MARK: Piwigo JSON Structures
 public struct SessionLogoutJSON: Decodable {
 
     public var status: String?

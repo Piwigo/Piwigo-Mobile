@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.delete
 public let pwgCategoriesDelete = "format=json&method=pwg.categories.delete"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesDeleteJSON: Decodable {
 
     public var status: String?

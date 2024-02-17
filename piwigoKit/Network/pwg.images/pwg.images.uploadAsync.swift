@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.images.uploadAsync
 public let pwgImagesUploadAsync = "format=json&method=pwg.images.uploadAsync"
 
+// MARK: Piwigo JSON Structures
 public struct ImagesUploadAsyncJSON: Decodable {
 
     public var status: String?
@@ -75,8 +75,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
     }
 }
 
-
-// MARK: - Result contains a message until all chunks have been uploaded
+/// Returns a message until all chunks have been uploaded
 public struct ImagesUploadAsync: Decodable
 {
     public let message: String?         // "chunks uploaded = 2,5"

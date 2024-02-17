@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.setRepresentative
 public let pwgCategoriesMove = "format=json&method=pwg.categories.move"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesMoveJSON: Decodable {
 
     public var status: String?

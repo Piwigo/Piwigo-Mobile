@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.images.getInfo
 public let pwgImagesGetInfo = "format=json&method=pwg.images.getInfo"
 
+// MARK: Piwigo JSON Structures
 public struct ImagesGetInfoJSON: Decodable {
 
     public var status: String?
@@ -69,8 +69,6 @@ public struct ImagesGetInfoJSON: Decodable {
     }
 }
 
-
-// MARK: - Result
 public struct ImagesGetInfo: Decodable
 {
     public let id: Int64?                       // 1042
@@ -169,8 +167,6 @@ extension ImagesGetInfo {
     }
 }
 
-
-// MARK: - Derivatives
 public struct Derivatives: Decodable {
     public var squareImage: Derivative?
     public var thumbImage: Derivative?

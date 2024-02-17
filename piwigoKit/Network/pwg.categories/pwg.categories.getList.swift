@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.getList
 public let pwgCategoriesGetList = "format=json&method=pwg.categories.getList"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesGetListJSON: Decodable {
 
     public var status: String?
@@ -79,7 +79,6 @@ public struct CategoriesGetListJSON: Decodable {
     }
 }
 
-// MARK: - Category Data
 public struct CategoryData: Decodable
 {
     // The following data is returned by pwg.categories.getList
