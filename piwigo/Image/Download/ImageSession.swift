@@ -10,7 +10,10 @@ import AVFoundation
 import MobileCoreServices
 import Foundation
 import piwigoKit
-import UniformTypeIdentifiers
+
+#if canImport(UniformTypeIdentifiers)
+import UniformTypeIdentifiers        // Requires iOS 14
+#endif
 
 class ImageSession: NSObject {
     
@@ -83,7 +86,7 @@ class ImageSession: NSObject {
     
     // MARK: - Asynchronous Methods
     func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, atURL imageURL: URL?,
-                  fromServer serverID: String?, fileSize: Int64 = .zero,
+                  fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
                   placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
                   completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         // Check arguments
@@ -102,7 +105,7 @@ class ImageSession: NSObject {
         
         // Create Download instance
         let download = ImageDownload(imageID: imageID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, placeHolder: placeHolder,
+                                     fromServer: serverID, fileSize: fileSize, placeHolder: placeHolder,
                                      progress: progress, completion: completion, failure: failure)
 
         // Do we already have this image or video in cache?
@@ -129,8 +132,7 @@ class ImageSession: NSObject {
 //                debugPrint("••> Launch download of image: \(imageURL)")
                 download.task = self.dataSession.downloadTask(with: request)
                 download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-                let expectedSize: Int64 = fileSize == .zero ? NSURLSessionTransferSizeUnknown : fileSize
-                download.task?.countOfBytesClientExpectsToReceive = expectedSize
+                download.task?.countOfBytesClientExpectsToReceive = download.fileSize
                 download.task?.resume()
                 self.activeDownloads[imageURL] = download
                 return
@@ -272,6 +274,7 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
+//        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
@@ -288,7 +291,6 @@ extension ImageSession: URLSessionTaskDelegate {
             }
         } else {
             // Return cached image with completionHandler
-//            debugPrint("••> Did complete task #\(task.taskIdentifier)")
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {
                 completion(fileURL)
@@ -300,15 +302,15 @@ extension ImageSession: URLSessionTaskDelegate {
 }
 
 
-// MARK: Session Download Delegate
+// MARK: - Session Download Delegate
 extension ImageSession: URLSessionDownloadDelegate {
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> \(String(describing: downloadTask.currentRequest?.url))")
-//        debugPrint("    amongst \(activeDownloads.count) active downloads.")
+//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier) i.e. \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
+//        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
@@ -317,7 +319,7 @@ extension ImageSession: URLSessionDownloadDelegate {
         // Update progress bar if any
         if let progressHandler = download.progressHandler {
             download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-//            debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> \(download.progress)")
+//            debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
             progressHandler(download.progress)
         }
     }
@@ -325,7 +327,7 @@ extension ImageSession: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
         // Retrieve the URL of this task
-//        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading.")
+//        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL],
               let fileURL = download.fileURL else {
@@ -344,10 +346,10 @@ extension ImageSession: URLSessionDownloadDelegate {
             
             // Delete existing file if it exists (incomplete previous attempt?)
             try? fm.removeItem(at: fileURL)
-            
+    
             // Store image
             try fm.copyItem(at: location, to: fileURL)
-//            debugPrint("••> Image \(fileURL.lastPathComponent) stored in cache (downloaded at \(String(describing: download.imageURL)))")
+//            debugPrint("••> Image \(fileURL.lastPathComponent) stored in cache (URL: \(imageURL)")
         } catch {
             // Return error with failureHandler
             if let failure = download.failureHandler {

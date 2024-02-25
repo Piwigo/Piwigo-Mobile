@@ -6,9 +6,12 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
-import BackgroundTasks
 import CoreData
 import piwigoKit
+
+#if canImport(BackgroundTasks)
+import BackgroundTasks        // Requires iOS 13
+#endif
 
 extension UploadManager {
     

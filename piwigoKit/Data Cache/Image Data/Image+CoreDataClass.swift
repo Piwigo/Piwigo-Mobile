@@ -10,7 +10,10 @@
 import CoreData
 import Foundation
 import MobileCoreServices
-import UniformTypeIdentifiers
+
+#if canImport(UniformTypeIdentifiers)
+import UniformTypeIdentifiers        // Requires iOS 14
+#endif
 
 /* Image instances represent photos and videos of a Piwigo server.
     - Each instance belongs to a Server.
@@ -284,6 +287,10 @@ public class Image: NSManagedObject {
     public override func prepareForDeletion() {
         super.prepareForDeletion()
         
+        self.deleteCachedFiles()
+    }
+    
+    public func deleteCachedFiles() {
         // Delete cached image files in background queue
         let ID = String(self.pwgID)
         let IDopt = ID + CacheVars.shared.optImage
