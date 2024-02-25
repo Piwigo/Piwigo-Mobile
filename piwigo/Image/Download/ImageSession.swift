@@ -274,7 +274,6 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
