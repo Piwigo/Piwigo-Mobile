@@ -25,7 +25,7 @@ class ImageDetailViewController: UIViewController
     @IBOutlet weak var progressView: PieProgressView!
         
     // Variable used to remember the position of the image on the screen
-    private var imagePosition = CGPoint(x: 0.5, y: 0.5)
+//    private var imagePosition = CGPoint(x: 0.5, y: 0.5)
     
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
@@ -239,7 +239,7 @@ class ImageDetailViewController: UIViewController
               imageSize.width != 0, imageSize.height != 0,
               scrollView.zoomScale != 0
         else {
-            imagePosition = CGPoint.zero
+//            imagePosition = CGPoint.zero
             return
         }
 
