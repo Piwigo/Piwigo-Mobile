@@ -213,7 +213,7 @@ class ImageDetailViewController: UIViewController
         
         // Calc zoom scale change
         var zoomFactor = 1.0
-        if scrollView.minimumZoomScale != 0 {
+        if scrollView.minimumZoomScale > 1e-6 {
             zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
         }
 
