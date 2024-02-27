@@ -161,7 +161,7 @@
 "categoryDiscoverVisits_title" = "Am häufigsten angesehen";
 "categoryDiscoverVisits_legend" = "Aufrufe";
 "categoryDiscoverBest_title" = "Am besten bewertet";
-"categoryDiscoverRecent_title" = "Neueste ";
+"categoryDiscoverRecent_title" = "Neueste Fotos";
 "categoryDiscoverFavorites_title" = "Ihre Favoriten";
 
 // Albums sort
@@ -181,7 +181,7 @@
 "categorySort_random" = "Zufällige Reihenfolge";
 
 "categorySort_videosOnly" = "Nur Videos";
-"categorySort_imagesOnly" = "Nur ";
+"categorySort_imagesOnly" = "Nur Fotos";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -283,7 +283,7 @@
 "categorySelection_setThumbnail" = "Bitte wählen Sie das Album aus, das das Foto \"%@\" als Vorschaubild verwendet.";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Foto";
 "categorySelection_one" = "Wähle ein Album in dem dieses Foto vorkommt";
-"categorySelection_other" = "oder wähle ein anderes Album für dieses Foto";
+"categorySelection_other" = "Oder wähle ein anderes Album für dieses Foto";
 "categoryImageSet_title" = "Album-Miniaturfoto";
 "categoryImageSet_message" = "Sind Sie sicher, dass Sie dieses Foto auf das Album \"%@ \" anwenden möchten?";
 "categoryImageSetHUD_updating" = "Album Miniaturfoto wird aktualisiert…";
@@ -320,7 +320,7 @@
 "sortBy" = "Sortieren nach";
 "imageSortTitle" = "Fotos sortieren";
 "imageSortMessage" = "Bitte wählen Sie, wie Sie Fotos sortieren möchten";
-"imageSortingHUD" = "Fotos sortieren";
+"imageSortingHUD" = "Fotos sortieren…";
 "imageSelectingHUD" = "Fotos werden ausgewählt…";
 "imageDeselectingHUD" = "Abwählen von Fotos…";
 
@@ -425,7 +425,7 @@
 
 // Image delete — Errors
 "deleteImageFail_title" = "Löschen fehlgeschlagen";
-"deleteImageFail_message" = "Fotos konnten nicht gelöscht werden\n%@";
+"deleteImageFail_message" = "Fotos konnte nicht gelöscht werden.";
 
 // Image download
 "downloadSingleImage_title" = "Foto herunterladen";
@@ -598,7 +598,7 @@
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Kein Zugriff";
-"localAlbums_photosNiltitle" = "Problem beim Lesen der ";
+"localAlbums_photosNiltitle" = "Problem beim Lesen der Fotos";
 "localAlbums_photosNnil_msg" = "Es gibt ein Problem beim Lesen der lokalen Foto Bibliothek.";
 
 // Local albums — Tell user to change settings, how

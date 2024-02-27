@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.3_text" = "Versión 3.1.3\n\n• Corrección de errores";
+"v3.1.4_text" = "Versión 3.1.4\n\n• Corrige un fallo que se produce en iOS 12";
+
+"v3.1.3_text" = "Versión 3.1.3\n11 de febrero de 2024\n\n• Corrección de errores";
 
 "v3.1.2_text" = "Versión 3.1.2\n1 de febrero de 2024\n\n• Solicita la actualización del servidor Piwigo si es necesario\n• Corrección de errores";
 

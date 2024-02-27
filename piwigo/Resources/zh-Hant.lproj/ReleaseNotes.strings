@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.3_text" = "版本 3.1.3\n\n• 錯誤修正";
+"v3.1.4_text" = "版本3.1.4\n\n• 修正了 iOS 12 上發生的崩潰";
+
+"v3.1.3_text" = "版本 3.1.3\n2024年2月11日\n\n• 錯誤修正";
 
 "v3.1.2_text" = "版本 3.1.2\n2024年2月1日\n\n• 如有必要，提示需要更新 Piwigo 伺服器\n• Bug修復";
 
