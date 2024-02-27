@@ -7,13 +7,16 @@
 //
 
 import AVFoundation
-import BackgroundTasks
 import CoreData
 import CoreHaptics
 import Foundation
 import Intents
 import LocalAuthentication
 import UIKit
+
+#if canImport(BackgroundTasks)
+import BackgroundTasks        // Requires iOS 13
+#endif
 
 import piwigoKit
 import uploadKit

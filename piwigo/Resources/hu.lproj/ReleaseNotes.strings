@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.3_text" = "3.1.3-es verzió\n\n• Hibajavítások";
+"v3.1.4_text" = "3.1.4 verzió\n\n• Kijavítja az iOS 12 rendszeren előforduló összeomlást";
+
+"v3.1.3_text" = "3.1.3-es verzió\n2024 Február 11\n\n• Hibajavítások";
 
 "v3.1.2_text" = "3.1.2 verzió\n2024 Február 1\n\n• Szükség esetén kéri a Piwigo szerver frissítését\n• Hibajavítások";
 
