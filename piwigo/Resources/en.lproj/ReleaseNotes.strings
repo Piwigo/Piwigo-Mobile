@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.0_text" = "Version 3.2\n\n• Adds ability to rotate uploaded photos";
+
 "v3.1.4_text" = "Version 3.1.4\n\n• Fixes a crash occurring on iOS 12";
 
 "v3.1.3_text" = "Version 3.1.3\nFebruary 11, 2024\n\n• Bug fixes";
