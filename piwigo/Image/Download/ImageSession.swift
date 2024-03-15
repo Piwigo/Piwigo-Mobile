@@ -274,6 +274,7 @@ extension ImageSession: URLSessionTaskDelegate {
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         // Retrieve the original URL of this task
+//        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
               let download = activeDownloads[imageURL] else {
             return
@@ -308,7 +309,7 @@ extension ImageSession: URLSessionDownloadDelegate {
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64,
                     totalBytesExpectedToWrite: Int64) {
         // Retrieve the original URL of this task
-//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier) i.e. \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
+//        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL] else {

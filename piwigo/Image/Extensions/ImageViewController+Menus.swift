@@ -73,14 +73,28 @@ extension ImageViewController
 
 
     // MARK: - Images related Actions & Menus
+    /// - for rotating image (not video)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
+        var children = [UIMenuElement]()
+        if imageData.isVideo == false {
+            children.append(rotateMenu())
+        }
+        children.append(editParamsAction())
         return UIMenu(title: "", image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.edit"),
                       options: .displayInline,
-                      children: [editParamsAction()])
+                      children: children)
     }
 
+    private func rotateMenu() -> UIMenu {
+        return UIMenu(title: NSLocalizedString("rotateImage_rotate",
+                                               comment: "Rotate Photo…"),
+                      image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
+                      children: [rotateRightAction(), rotateLeftAction()])
+    }
+    
     private func editParamsAction() -> UIAction {
         // Edit image parameters
         let action = UIAction(title: NSLocalizedString("imageOptions_properties",
@@ -91,6 +105,32 @@ extension ImageViewController
             self.editImage()
         })
         action.accessibilityIdentifier = "Edit Parameters"
+        return action
+    }
+    
+    private func rotateRightAction() -> UIAction {
+        // Rotate image right
+        let action = UIAction(title: NSLocalizedString("rotateImage_right", 
+                                                       comment: "Clockwise"),
+                              image: UIImage(systemName: "rotate.right"),
+                              handler: { _ in
+            // Edit image informations
+            self.rotateImage(by: -90.0)
+        })
+        action.accessibilityIdentifier = "Rotate Right"
+        return action
+    }
+
+    private func rotateLeftAction() -> UIAction {
+        // Rotate image left
+        let action = UIAction(title: NSLocalizedString("rotateImage_left", 
+                                                       comment: "Counterclockwise"),
+                              image: UIImage(systemName: "rotate.left"),
+                              handler: { _ in
+            // Edit image informations
+            self.rotateImage(by: 90.0)
+        })
+        action.accessibilityIdentifier = "Rotate Left"
         return action
     }
 }

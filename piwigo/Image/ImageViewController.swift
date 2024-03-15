@@ -43,7 +43,7 @@ class ImageViewController: UIViewController {
         return provider
     }()
     
-    private lazy var imageProvider: ImageProvider = {
+    lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider.shared
         return provider
     }()
@@ -64,7 +64,11 @@ class ImageViewController: UIViewController {
     var favoriteBarButton: UIBarButtonItem?
     var playBarButton: UIBarButtonItem?
     var muteBarButton: UIBarButtonItem?
-
+    
+    // MARK: - Rotate View & Buttons
+    var rotateView: UIView?
+    var rotateLeftButton: UIButton?
+    var rotateRightButton: UIButton?
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -277,16 +281,15 @@ class ImageViewController: UIViewController {
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }
                         for vc in vcs {
-                            if let pvc = vc as? ImageDetailViewController,
-                               pvc.imageData.pwgID == imageID {
+                            if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
+                               let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
                                 // Update image data
-                                let index = pvc.imageIndex
-                                pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
-                                if pvc.imageData.isFault {
+                                if updatedImage.isFault {
                                     // The album is not fired yet.
-                                    pvc.imageData.willAccessValue(forKey: nil)
-                                    pvc.imageData.didAccessValue(forKey: nil)
+                                    updatedImage.willAccessValue(forKey: nil)
+                                    updatedImage.didAccessValue(forKey: nil)
                                 }
+                                pvc.imageData = updatedImage
                                 // Update navigation bar and enable buttons
                                 self.updateNavBar()
                                 self.setEnableStateOfButtons(true)
