@@ -1,5 +1,5 @@
 //
-//  LocalImagesViewController+LocalImagesHeaderDelegate.swift
+//  LocalImagesViewController+HeaderDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
