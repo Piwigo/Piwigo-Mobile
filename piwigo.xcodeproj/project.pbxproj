@@ -242,7 +242,12 @@
 		AD6BA0EF2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */; };
 		AD6BA0F12BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */; };
 		AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */; };
-		AD6BA0F52BA5C00500755257 /* LocalImagesViewController+LocalImagesHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F42BA5C00500755257 /* LocalImagesViewController+LocalImagesHeaderDelegate.swift */; };
+		AD6BA0F52BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F42BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift */; };
+		AD6BA0F82BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F72BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift */; };
+		AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F92BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift */; };
+		AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FB2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift */; };
+		AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */; };
+		AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* PhoneTableViewCell.swift */; };
@@ -826,7 +831,12 @@
 		AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+UploadSwitchDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+PHPhotoLibraryChangeObserver.swift"; sourceTree = "<group>"; };
 		AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Data.swift"; sourceTree = "<group>"; };
-		AD6BA0F42BA5C00500755257 /* LocalImagesViewController+LocalImagesHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+LocalImagesHeaderDelegate.swift"; sourceTree = "<group>"; };
+		AD6BA0F42BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+HeaderDelegate.swift"; sourceTree = "<group>"; };
+		AD6BA0F72BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+UICollectionViewDelegate.swift"; sourceTree = "<group>"; };
+		AD6BA0F92BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+UICollectionViewDataSource.swift"; sourceTree = "<group>"; };
+		AD6BA0FB2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+UploadSwitchDelegate.swift"; sourceTree = "<group>"; };
+		AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Data.swift"; sourceTree = "<group>"; };
+		AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+HeaderReusableViewDelegate.swift"; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
@@ -1586,6 +1596,7 @@
 				AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */,
 				AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */,
 				AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */,
+				AD6BA0F62BA5C14800755257 /* Extensions */,
 			);
 			path = "Pick Pasteboard Images";
 			sourceTree = "<group>";
@@ -1658,9 +1669,21 @@
 				AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */,
 				AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift */,
 				AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift */,
-				AD6BA0F42BA5C00500755257 /* LocalImagesViewController+LocalImagesHeaderDelegate.swift */,
+				AD6BA0F42BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift */,
 				AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */,
 				AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AD6BA0F62BA5C14800755257 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */,
+				AD6BA0F72BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift */,
+				AD6BA0F92BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift */,
+				AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */,
+				AD6BA0FB2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3257,8 +3280,9 @@
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
 				ADC69F23285B7C40009BF9AF /* AlbumViewController+Buttons.swift in Sources */,
 				AD07CABC26DBDC4500BEAEFB /* EditImageTextFieldTableViewCell.swift in Sources */,
+				AD6BA0F82BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift in Sources */,
 				AD07CABA26DBD82700BEAEFB /* EditImagePrivacyTableViewCell.swift in Sources */,
-				AD6BA0F52BA5C00500755257 /* LocalImagesViewController+LocalImagesHeaderDelegate.swift in Sources */,
+				AD6BA0F52BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift in Sources */,
 				AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */,
 				AD3DB4132773958200017542 /* ImageDetailViewController.swift in Sources */,
 				ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */,
@@ -3292,6 +3316,7 @@
 				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,
 				AD911272281060D9002FB78F /* UIWindow+AppTools.swift in Sources */,
 				ADD77EF02A19339800F8C779 /* ExternalDisplaySceneDelegate.swift in Sources */,
+				AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADA818BA2A0032D9004C9A5A /* AlbumNavigationController.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,
@@ -3320,6 +3345,7 @@
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
 				AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */,
+				AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */,
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				AD211A7627A85EDB005D5E4F /* ImageCollectionViewCell.swift in Sources */,
@@ -3341,6 +3367,7 @@
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
 				AD659806297D98BB002A61D8 /* ImageDownload.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
+				AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift in Sources */,
 				AD43733F2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift in Sources */,
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
 				AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */,
@@ -3374,6 +3401,7 @@
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
+				AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */,
 				ADBE9510279DB4E100397426 /* AlbumCollectionViewCell.swift in Sources */,
 				AD92AD952A63DC0A007A0001 /* AlbumViewController+TransitioningDelegate.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,

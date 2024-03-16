@@ -13,7 +13,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
+class PasteboardImagesViewController: UIViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate {
     
     // MARK: - Core Data Objects
     var user: User!
@@ -25,7 +25,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }()
 
     // MARK: - Core Data Providers
-    private lazy var uploadProvider: UploadProvider = {
+    lazy var uploadProvider: UploadProvider = {
         let provider = UploadProvider.shared
         return provider
     }()
@@ -61,11 +61,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
     
-    private let imagePlaceholder = UIImage(named: "placeholder")!
+    let imagePlaceholder = UIImage(named: "placeholder")!
         
     // Collection of images in the pasteboard
-    private var pbObjects = [PasteboardObject]()      // Objects in pasteboard
-    private lazy var pasteboardTypes : [String] = {
+    var pbObjects = [PasteboardObject]()      // Objects in pasteboard
+    lazy var pasteboardTypes : [String] = {
         if #available(iOS 14.0, *) {
             return [UTType.image.identifier, UTType.movie.identifier]
         } else {
@@ -75,13 +75,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }()
     
     // Cached data
-    private let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
-    private var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
+    var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     
     // Selection data
-    private var selectedImages = [UploadProperties?]()                  // Array of images to upload
-    private var sectionState: SelectButtonState = .none                 // To remember the state of the section
-    private var imagesBeingTouched = [IndexPath]()                      // Array of indexPaths of touched images
+    var selectedImages = [UploadProperties?]()          // Array of images to upload
+    var sectionState: SelectButtonState = .none         // To remember the state of the section
+    private var imagesBeingTouched = [IndexPath]()      // Array of indexPaths of touched images
     
     // Buttons
     private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
@@ -90,7 +90,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     private var legendLabel = UILabel()                 // Legend presented in the toolbar on iPhone/iOS 14+
     private var legendBarItem: UIBarButtonItem!
 
-    private var reUploadAllowed = false
+    var reUploadAllowed = false
 
 
     // MARK: - View Lifecycle
@@ -308,6 +308,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.removeObserver(self)
     }
 
+
+    // MARK: - Navigation Bar & Buttons
     func updateNavBar() {
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         switch nberOfSelectedImages {
@@ -388,153 +390,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     
-    // MARK: - Check Pasteboard Content
-    /// Called by the notification center when the pasteboard content is updated
-    @objc func checkPasteboard() {
-        // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-           let types = UIPasteboard.general.types(forItemSet: indexSet) {
-
-            // Reinitialise cached indexed uploads, deselect images
-            pbObjects = []
-            indexedUploadsInQueue = .init(repeating: nil, count: indexSet.count)
-            selectedImages = .init(repeating: nil, count: indexSet.count)
-
-            // Get date of retrieve
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-            let pbDateTime = dateFormatter.string(from: Date())
-
-            // Loop over all pasteboard objects
-            /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-            /// - "Clipboard" is a header telling that the image/video comes from the pasteboard
-            /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
-            /// - "typ" is "img" or "mov" depending on the nature of the object
-            /// - "#" is the index of the object in the pasteboard
-            for idx in indexSet {
-                let indexSet = IndexSet(integer: idx)
-                var identifier = ""
-                // Movies first because objects may contain both movies and images
-                if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
-                } else {
-                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
-                }
-                let newObject = PasteboardObject(identifier: identifier, types: types[idx])
-                pbObjects.append(newObject)
-                
-                // Retrieve data, store in Upload folder and update cache
-                startOperations(for: newObject, at: IndexPath(item: idx, section: 0))
-            }
-        }
-    }
-    
-    
-    // MARK: - Prepare Image Files and Cache of Upload Requests
-    private func startOperations(for pbObject: PasteboardObject, at indexPath: IndexPath) {
-        switch (pbObject.state) {
-        case .new:
-            startPreparation(of: pbObject, at: indexPath)
-        default:
-            print("Do nothing")
-        }
-    }
-
-    private func startPreparation(of pbObject: PasteboardObject, at indexPath: IndexPath) {
-        // Has the preparation of this object already started?
-        guard pendingOperations.preparationsInProgress[indexPath] == nil else {
-            return
-        }
-
-        // Create an instance of the preparation method
-        let preparer = ObjectPreparation(pbObject, at: indexPath.row)
-      
-        // Refresh the thumbnail of the cell and update upload cache
-        preparer.completionBlock = {
-            // Job done if operation was cancelled
-            if preparer.isCancelled { return }
-
-            // Operation completed
-            self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
-
-            // Update upload cache
-            if let upload = (self.uploads.fetchedObjects ?? []).first(where: {$0.md5Sum == pbObject.md5Sum}) {
-                self.indexedUploadsInQueue[indexPath.row] = (upload.localIdentifier, upload.md5Sum, upload.state)
-            }
-
-            // Update cell image if operation was successful
-            switch (pbObject.state) {
-            case .stored:
-                // Refresh the thumbnail of the cell
-                DispatchQueue.main.async {
-                    if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-                        cell.cellImage.image = pbObject.image
-                        self.reloadInputViews()
-                    }
-                }
-            case .failed:
-                if self.pendingOperations.preparationsInProgress.isEmpty {
-                    var newSetOfObjects = [PasteboardObject]()
-                    for index in 0..<self.pbObjects.count {
-                        switch self.pbObjects[index].state {
-                        case .stored, .ready:
-                            newSetOfObjects.append(self.pbObjects[index])
-                        case .failed:
-                            self.indexedUploadsInQueue.remove(at: index)
-                        default:
-                            print("Do nothing")
-                        }
-                    }
-                    self.pbObjects = newSetOfObjects
-                }
-            default:
-              NSLog("do nothing")
-            }
-                
-            // If all images are ready:
-            /// - refresh section to display the select button
-            /// - restart UplaodManager activity
-            if self.pendingOperations.preparationsInProgress.isEmpty {
-                DispatchQueue.main.async {
-                    if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-                        header.setButtonTitle(forState: .select)
-                    }
-                }
-                if UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                }
-            }
-        }
-        
-        // Add the operation to help keep track of things
-        pendingOperations.preparationsInProgress[indexPath] = preparer
-        
-        // Add the operation to the download queue
-        pendingOperations.preparationQueue.addOperation(preparer)
-    }
-
-    private func getUploadStateOfImage(at index: Int,
-                                       for cell: LocalImageCollectionViewCell) -> pwgUploadState? {
-        var state: pwgUploadState? = nil
-        if pendingOperations.preparationsInProgress.isEmpty,
-           index < indexedUploadsInQueue.count {
-            // Indexed uploads available
-            state = indexedUploadsInQueue[index]?.2
-        } else {
-            // Use non-indexed data (might be quite slow)
-            state = (uploads.fetchedObjects ?? []).first(where: { $0.md5Sum == cell.md5sum })?.state
-        }
-        return state
-    }
-
-    
     // MARK: - Actions Menu
-    
     @objc func didTapActionButton() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
@@ -583,7 +439,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     
     // MARK: - Re-upload Images
-
     @available(iOS 14, *)
     private func getMenuForReuploadingPhotos() -> UIMenu? {
         
@@ -660,7 +515,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     
     // MARK: - Upload Images
-
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
         if selectedImages.compactMap({ $0 }).count == 0 { return }
@@ -688,7 +542,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
 
     // MARK: - Select Images
-    
     @objc func cancelSelect() {
         // Clear list of selected images
         selectedImages = .init(repeating: nil, count: pbObjects.count)
@@ -828,387 +681,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             // Not all images are either selected or in the upload queue
             sectionState = .select
         }
-    }
-
-    
-    // MARK: - UICollectionView - Headers & Footers
-        
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        // Header with place name
-        if kind == UICollectionView.elementKindSectionHeader {
-            // Pasteboard header
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "PasteboardImagesHeaderReusableView", for: indexPath) as? PasteboardImagesHeaderReusableView else {
-                let view = UICollectionReusableView(frame: CGRect.zero)
-                return view
-            }
-            
-            // Configure the header
-            updateSelectButton()
-            header.configure(with: sectionState)
-            header.headerDelegate = self
-            return header
-        }
-        else if kind == UICollectionView.elementKindSectionFooter {
-            // Footer with number of images
-            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "LocalImagesFooterReusableView", for: indexPath) as? LocalImagesFooterReusableView else {
-                let view = UICollectionReusableView(frame: CGRect.zero)
-                return view
-            }
-            footer.configure(with: localImagesCollection.numberOfItems(inSection: indexPath.section))
-            return footer
-        }
-
-        let view = UICollectionReusableView(frame: CGRect.zero)
-        return view
-    }
-
-    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if (elementKind == UICollectionView.elementKindSectionHeader) || (elementKind == UICollectionView.elementKindSectionFooter) {
-            view.layer.zPosition = 0 // Below scroll indicator
-        }
-    }
-
-    
-    // MARK: - UICollectionView - Sections
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
-                            bottom: 10, right: AlbumUtilities.kImageMarginsSpacing)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .popup))
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .popup))
-    }
-
-    
-    // MARK: - UICollectionView - Rows
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // Number of items depends on image sort type and date order
-        return pbObjects.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Calculate the optimum image size
-        let size = CGFloat(AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup))
-
-        return CGSize(width: size, height: size)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // Create cell
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LocalImageCollectionViewCell", for: indexPath) as? LocalImageCollectionViewCell else {
-            print("Error: collectionView.dequeueReusableCell does not return a LocalImageCollectionViewCell!")
-            return LocalImageCollectionViewCell()
-        }
-        
-        // Configure cell with image in pasteboard or stored in Uploads directory
-        // (the content of the pasteboard may not last forever)
-        let identifier = pbObjects[indexPath.item].identifier
-
-        // Get thumbnail of image if available
-        var image: UIImage! = imagePlaceholder
-        if [.stored, .ready].contains(pbObjects[indexPath.row].state) {
-            image = pbObjects[indexPath.row].image
-            cell.md5sum = pbObjects[indexPath.row].md5Sum
-        }
-        else {
-            var imageType = ""
-            if #available(iOS 14.0, *) {
-                imageType = UTType.image.identifier
-            } else {
-                // Fallback on earlier version
-                imageType = kUTTypeImage as String
-            }
-            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
-                                                    inItemSet: IndexSet(integer: indexPath.row))?.first {
-                image = UIImage(data: data) ?? imagePlaceholder
-                cell.md5sum = ""
-            }
-        }
-
-        // Configure cell
-        let thumbnailSize = AlbumUtilities.imageSize(forView: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup)
-        cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
-        
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
-
-        // Cell state
-        let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-        cell.update(selected: selectedImages[indexPath.item] != nil, state: uploadState)
-
-        return cell
-    }
-
-    @objc func applyUploadProgress(_ notification: Notification) {
-        if let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
-           let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,
-           let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}),
-           let progressFraction = notification.userInfo?["progressFraction"] as? Float {
-            cell.setProgress(progressFraction, withAnimation: true)
-        }
-    }
-
-    
-    // MARK: - UICollectionView Delegate Methods
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
-            return
-        }
-
-        // Get upload state of image
-        let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-
-        // Update cell and selection
-        if let _ = selectedImages[indexPath.item] {
-            // Deselect the cell
-            selectedImages[indexPath.item] = nil
-            cell.update(selected: false, state: uploadState)
-        } else {
-            // Can we upload or re-upload this image?
-            if (uploadState == nil) || reUploadAllowed {
-                // Select the image
-                selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                  category: categoryId)
-                cell.update(selected: true, state: uploadState)
-            }
-        }
-
-        // Update navigation bar
-        updateNavBar()
-
-        // Refresh cell
-        cell.reloadInputViews()
-
-        // Update state of Select button if needed
-        updateSelectButton()
-        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-            header.setButtonTitle(forState: sectionState)
-        }
-    }
-
-
-    // MARK: - PasteboardImagesHeaderReusableView Delegate Methods
-    
-    func didSelectImagesOfSection() {
-        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
-        if sectionState == .select {
-            // Loop over all images in section to select them (70356 images takes 150.6 ms with iPhone 11 Pro)
-            // Here, we exploit the cached local IDs
-            for index in 0..<nberOfImagesInSection {
-                // Images in the upload queue cannot be selected
-                if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties(localIdentifier: pbObjects[index].identifier,
-                                                             category: self.categoryId)
-                }
-            }
-            // Change section button state
-            sectionState = .deselect
-        } else {
-            // Deselect images of section (70356 images takes 52.2 ms with iPhone 11 Pro)
-            selectedImages[0..<nberOfImagesInSection] = .init(repeating: nil, count: nberOfImagesInSection)
-            // Change section button state
-            sectionState = .select
-        }
-
-        // Update navigation bar
-        self.updateNavBar()
-
-        // Select or deselect visible cells (only one section shown)
-        localImagesCollection.indexPathsForVisibleItems.forEach { indexPath in
-            // Get cell at index path
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-                // Select or deselect the cell
-                let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-                cell.update(selected: sectionState == .deselect, state: uploadState)
-            }
-        }
-        
-        // Update button (only one section shown)
-        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        headers.forEach { header in
-            if let header = header as? PasteboardImagesHeaderReusableView {
-                header.setButtonTitle(forState: sectionState)
-            }
-        }
-    }
-
-
-    // MARK: - UploadSwitchDelegate Methods
-    @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
-        // Retrieve common image parameters and upload settings
-        for index in 0..<selectedImages.count {
-            guard var updatedRequest = selectedImages[index] else { continue }
-                
-            // Image parameters
-            if let imageTitle = imageParameters["title"] as? String {
-                updatedRequest.imageTitle = imageTitle
-            }
-            if let author = imageParameters["author"] as? String {
-                updatedRequest.author = author
-            }
-            if let privacy = imageParameters["privacy"] as? pwgPrivacy {
-                updatedRequest.privacyLevel = privacy
-            }
-            if let tagIds = imageParameters["tagIds"] as? String {
-                updatedRequest.tagIds = tagIds
-            }
-            if let comment = imageParameters["comment"] as? String {
-                updatedRequest.comment = comment
-            }
-            
-            // Upload settings
-            if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
-                updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-            }
-            if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
-                updatedRequest.resizeImageOnUpload = resizeImageOnUpload
-                if resizeImageOnUpload {
-                    if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
-                        updatedRequest.photoMaxSize = photoMaxSize
-                    }
-                } else {
-                    updatedRequest.photoMaxSize = 5 // i.e. 4K
-                }
-            }
-            if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
-                updatedRequest.compressImageOnUpload = compressImageOnUpload
-            }
-            if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
-                updatedRequest.photoQuality = photoQuality
-            }
-            if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
-                updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-            }
-            if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
-                updatedRequest.defaultPrefix = defaultPrefix
-            }
-            if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
-                updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
-            }
-
-            selectedImages[index] = updatedRequest
-        }
-        
-        // Add selected images to upload queue
-        UploadManager.shared.backgroundQueue.async {
-            self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
-                guard let error = error else {
-                    // Restart UploadManager activities
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.isPaused = false
-                        UploadManager.shared.findNextImageToUpload()
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) { }
-                }
-            }
-        }
-    }
-    
-    @objc func uploadSettingsDidDisappear() {
-        // Update the navigation bar
-        updateNavBar()
-    }
-}
-
-
-// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
-
-extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
-        switch type {
-        case .insert:
-            print("••> PasteboardImagesViewController: insert pending upload request…")
-            // Add upload request to cache and update cell
-            guard let upload:Upload = anObject as? Upload else { return }
-
-            // Get index of selected image, deselect it and add request to cache
-            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
-                // Deselect image
-                selectedImages[index] = nil
-                // Add upload request to cache
-                indexedUploadsInQueue[index] = (upload.localIdentifier, upload.md5Sum, upload.state)
-            }
-            
-            // Update corresponding cell
-            updateCellAndSectionHeader(for: upload)
-        case .delete:
-            print("••> PasteboardImagesViewController: delete pending upload request…")
-            // Delete upload request from cache and update cell
-            guard let upload:Upload = anObject as? Upload else { return }
-
-            // Remove image from indexed upload queue
-            if let index = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
-                indexedUploadsInQueue[index] = nil
-            }
-            // Remove image from selection if needed
-            if let index = selectedImages.firstIndex(where: {$0?.localIdentifier == upload.localIdentifier}) {
-                // Deselect image
-                selectedImages[index] = nil
-            }
-            // Update corresponding cell
-            updateCellAndSectionHeader(for: upload)
-        case .move:
-            assertionFailure("••> PasteboardImagesViewController: Unexpected move!")
-        case .update:
-            print("••• PasteboardImagesViewController controller:update...")
-            // Update upload request and cell
-            guard let upload:Upload = anObject as? Upload else { return }
-
-            // Update upload in indexed upload queue
-            if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: {$0?.0 == upload.localIdentifier}) {
-                indexedUploadsInQueue[indexOfUploadedImage]?.1 = upload.md5Sum
-                indexedUploadsInQueue[indexOfUploadedImage]?.2 = upload.state
-            }
-            // Update corresponding cell
-            updateCellAndSectionHeader(for: upload)
-        @unknown default:
-            assertionFailure("••> PasteboardImagesViewController: unknown NSFetchedResultsChangeType!")
-        }
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        print("••• PasteboardImagesViewController controller:didChangeContent...")
-        // Update navigation bar
-        updateNavBar()
-    }
-
-    func updateCellAndSectionHeader(for upload: Upload) {
-        DispatchQueue.main.async {
-            if let visibleCells = self.localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
-               let cell = visibleCells.first(where: {$0.localIdentifier == upload.localIdentifier}) {
-                // Update cell
-                cell.update(selected: false, state: upload.state)
-                cell.reloadInputViews()
-
-                // The section will be refreshed only if the button content needs to be changed
-                self.updateSelectButton()
-                if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-                    header.setButtonTitle(forState: self.sectionState)
-                }
-            }
-        }
-    }
+    }    
 }
 
 
