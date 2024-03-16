@@ -92,7 +92,7 @@ extension ImageViewController
                                                comment: "Rotate Photo…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
-                      children: [rotateRightAction(), rotateLeftAction()])
+                      children: [rotateLeftAction(), rotateRightAction()])
     }
     
     private func editParamsAction() -> UIAction {

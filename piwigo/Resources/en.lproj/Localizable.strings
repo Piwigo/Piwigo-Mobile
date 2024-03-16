@@ -407,8 +407,8 @@
 
 // Image rotate
 "rotateImage_rotate" = "Rotate Photo…";
-"rotateImage_right" = "Clockwise";
-"rotateImage_left" = "Counterclockwise";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
 "rotateSingleImageHUD_rotating" = "Rotating Photo…";
 
 // Image rotate — Errors
