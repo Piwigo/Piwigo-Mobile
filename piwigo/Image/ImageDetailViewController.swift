@@ -30,6 +30,7 @@ class ImageDetailViewController: UIViewController
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
     private var startingZoomScale = CGFloat(1)
+    private var didRotateImage = false
     
     
     // MARK: - View Lifecycle
@@ -221,6 +222,7 @@ class ImageDetailViewController: UIViewController
                     }
                     completion: { [self] _ in
                         // Reset image view with rotated image
+                        didRotateImage = true
                         self.setImageView(with: cachedImage)
 
                         // Hide HUD
@@ -290,7 +292,7 @@ class ImageDetailViewController: UIViewController
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
             scrollView.contentOffset.x = -horizontalSpace
-        } else {
+        } else if didRotateImage {
             scrollView.contentOffset.x = 0.0
         }
         
@@ -301,7 +303,7 @@ class ImageDetailViewController: UIViewController
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
-        } else {
+        } else if didRotateImage {
             scrollView.contentOffset.y = 0.0
         }
         
@@ -309,6 +311,9 @@ class ImageDetailViewController: UIViewController
         debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         debugPrint("    Offset: \(scrollView.contentOffset)")
         debugPrint("    Inset : \(scrollView.contentInset)")
+
+        // Reset flag
+        didRotateImage = false
 
         // Remember position of image
 //        calcImagePositionInScrollView()
