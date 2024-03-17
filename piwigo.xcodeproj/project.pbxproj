@@ -248,6 +248,7 @@
 		AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FB2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift */; };
 		AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */; };
 		AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */; };
+		AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* PhoneTableViewCell.swift */; };
@@ -837,6 +838,7 @@
 		AD6BA0FB2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+UploadSwitchDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Data.swift"; sourceTree = "<group>"; };
 		AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+HeaderReusableViewDelegate.swift"; sourceTree = "<group>"; };
+		AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
@@ -2450,6 +2452,7 @@
 				AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */,
 				AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */,
 				ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */,
+				AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */,
 				ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */,
 				AD6BA0E92BA5A7F800755257 /* Extensions */,
 			);
@@ -3362,6 +3365,7 @@
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
 				ADC69F1B285A4C30009BF9AF /* AlbumViewController+Favorites.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
+				AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,

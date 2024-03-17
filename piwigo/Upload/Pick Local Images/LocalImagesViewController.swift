@@ -770,7 +770,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }
     
 
-    // MARK: - Upload Images
+    // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
         if selectedImages.compactMap({ $0 }).isEmpty { return }
@@ -811,7 +811,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     
 
     // MARK: - Select Images
-    
     @objc func cancelSelect() {
         // Clear list of selected sections
         selectedSections = .init(repeating: .select, count: fetchedImages.count)
@@ -893,7 +892,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                         // Select the cell
                         selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
                                                                  category: categoryId)
-                        cell.update(selected: true, state: uploadState)
+                        cell.update(selected: true, state: .waiting)
                     }
                 }
 
