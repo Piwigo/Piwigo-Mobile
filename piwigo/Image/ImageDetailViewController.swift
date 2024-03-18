@@ -262,10 +262,10 @@ class ImageDetailViewController: UIViewController
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(maxScale, 1)
-        debugPrint("••> Did reset scrollView scale: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon x \(zoomFactor)")
-        debugPrint("    Offset: \(scrollView.contentOffset)")
-        debugPrint("    Inset : \(scrollView.contentInset)")
+//        debugPrint("••> Did reset scrollView scale: ")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon x \(zoomFactor)")
+//        debugPrint("    Offset: \(scrollView.contentOffset)")
+//        debugPrint("    Inset : \(scrollView.contentInset)")
 
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor
@@ -307,10 +307,10 @@ class ImageDetailViewController: UIViewController
             scrollView.contentOffset.y = 0.0
         }
         
-        debugPrint("••> Did updateScrollViewInset: ")
-        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-        debugPrint("    Offset: \(scrollView.contentOffset)")
-        debugPrint("    Inset : \(scrollView.contentInset)")
+//        debugPrint("••> Did updateScrollViewInset: ")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+//        debugPrint("    Offset: \(scrollView.contentOffset)")
+//        debugPrint("    Inset : \(scrollView.contentInset)")
 
         // Reset flag
         didRotateImage = false
