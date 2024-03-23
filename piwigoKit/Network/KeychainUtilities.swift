@@ -78,7 +78,7 @@ class KeychainUtilities : NSObject {
         guard service.isEmpty == false, account.isEmpty == false else { return "" }
 
         // Prepare query
-        let query = [kSecClass as String                : kSecClassGenericPassword,
+        var query = [kSecClass as String                : kSecClassGenericPassword,
                      kSecAttrService as String          : service,
                      kSecAttrAccount as String          : account,
                      kSecAttrAccessGroup as String      : getAccessGroup(),
@@ -87,59 +87,68 @@ class KeychainUtilities : NSObject {
                      kSecMatchLimit as String           : kSecMatchLimitOne] as [String: Any]
 
         // Apply the query
-        var data: CFTypeRef?
-        let status = SecItemCopyMatching(query as CFDictionary, &data)
+        var dataRef: CFTypeRef?
+        var status = SecItemCopyMatching(query as CFDictionary, &dataRef)
 
         // Results?
-        guard status == errSecSuccess else {
-            if status == errSecItemNotFound {
-                // Security item not found -> try old method
-                /// Piwigo credentials are identified in the Keychain with:
-                /// - generic: "PiwigoLogin"
-                /// - attribute: <username>
-                let kKeychainAppID = "PiwigoLogin"
-                let query = [kSecClass as String            : kSecClassGenericPassword,
-                             kSecAttrGeneric as String      : kKeychainAppID,
-                             kSecReturnAttributes as String : kCFBooleanTrue!,
-                             kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
-
-                var data: CFTypeRef?
-                let status = SecItemCopyMatching(query as CFDictionary, &data)
-                guard status == errSecSuccess else {
-                    logOSStatus(status)
-                    return ""
-                }
-                
-                // Did found username
-                guard let username = String(data: data as! Data, encoding: .utf8),
-                      username.isEmpty == false else { return "" }
-                if username == NetworkVars.username {
-                    // Retrieve password
-                    let query = [kSecClass as String            : kSecClassGenericPassword,
-                                 kSecAttrGeneric as String      : kKeychainAppID,
-                                 kSecAttrAccount as String      : username,
-                                 kSecAttrAccessGroup as String  : getAccessGroup(),
-                                 kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
-
-                    var data: CFTypeRef?
-                    let status = SecItemCopyMatching(query as CFDictionary, &data)
-                    guard status == errSecSuccess else {
-                        logOSStatus(status)
-                        return ""
-                    }
-                    guard let password = String(data: data as! Data, encoding: .utf8),
-                          password.isEmpty == false else { return "" }
-                    return password
-                }
+        if status == errSecSuccess {
+            guard let data = dataRef as? Data,
+                  let password = String(data: data, encoding: .utf8),
+                  password.isEmpty == false else {
+                logOSStatus(status)
+                return ""
             }
+            return password
+        }
+        
+        // Should we try the old method?
+        if status != errSecItemNotFound {
             logOSStatus(status)
             return ""
         }
-        guard let password = String(data: data as! Data, encoding: .utf8),
-              password.isEmpty == false else {
+        
+        // Security item not found -> try old method
+        /// Piwigo credentials are identified in the Keychain with:
+        /// - generic: "PiwigoLogin"
+        /// - attribute: <username>
+        let kKeychainAppID = "PiwigoLogin"
+        query = [kSecClass as String            : kSecClassGenericPassword,
+                 kSecAttrGeneric as String      : kKeychainAppID,
+                 kSecReturnAttributes as String : kCFBooleanTrue!,
+                 kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
+
+        status = SecItemCopyMatching(query as CFDictionary, &dataRef)
+        guard status == errSecSuccess else {
             logOSStatus(status)
             return ""
         }
+        
+        // Old query successful
+        guard let data = dataRef as? Data,
+              let username = String(data: data, encoding: .utf8),
+              username.isEmpty == false else { return "" }
+
+        // Did found non-empty username
+        if username != NetworkVars.username {
+            // No known password
+            return ""
+        }
+        
+        // Retrieve password
+        query = [kSecClass as String            : kSecClassGenericPassword,
+                 kSecAttrGeneric as String      : kKeychainAppID,
+                 kSecAttrAccount as String      : username,
+                 kSecAttrAccessGroup as String  : getAccessGroup(),
+                 kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
+
+        status = SecItemCopyMatching(query as CFDictionary, &dataRef)
+        guard status == errSecSuccess else {
+            logOSStatus(status)
+            return ""
+        }
+        guard let data = dataRef as? Data,
+              let password = String(data: data, encoding: .utf8),
+              password.isEmpty == false else { return "" }
         return password
     }
     
