@@ -45,10 +45,10 @@ class AlbumVars: NSObject {
     var maxNberRecentCategories: Int
 
     /// - Default image sort option
-    @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.dateCreatedAscending.rawValue)
+    @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.albumDefault.rawValue)
     private var defaultSortRaw: Int16
     var defaultSort: pwgImageSort {
-        get { return pwgImageSort(rawValue: defaultSortRaw) ?? .dateCreatedAscending }
+        get { return pwgImageSort(rawValue: defaultSortRaw) ?? .albumDefault }
         set(value) {
             if pwgImageSort.allCases.contains(value) {
                 defaultSortRaw = value.rawValue

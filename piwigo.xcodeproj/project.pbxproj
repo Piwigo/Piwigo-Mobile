@@ -839,6 +839,7 @@
 		AD6BA0FD2BA5D15900755257 /* PasteboardImagesViewController+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+Data.swift"; sourceTree = "<group>"; };
 		AD6BA0FF2BA5D2FA00755257 /* PasteboardImagesViewController+HeaderReusableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PasteboardImagesViewController+HeaderReusableViewDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA1032BA5ED1A00755257 /* LocalImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagePreviewViewController.swift; sourceTree = "<group>"; };
+		AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0D (Album).xcdatamodel"; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
@@ -4572,6 +4573,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */,
 				AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */,
 				AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */,
 				ADF35E7428B2392B009F3ECE /* DataModel 0A (+Server).xcdatamodel */,
@@ -4585,7 +4587,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */;
+			currentVersion = AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

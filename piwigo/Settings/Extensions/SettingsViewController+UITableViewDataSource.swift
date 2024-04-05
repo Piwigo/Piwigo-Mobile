@@ -51,7 +51,10 @@ extension SettingsViewController: UITableViewDataSource
         case .albums:
             nberOfRows = 4
         case .images:
-            nberOfRows = 5
+            // When server version < 3.2, don't present default image sort option
+            let showImageSort = NetworkVars.pwgVersion
+                .compare("14.0", options: .numeric) == .orderedAscending ? 1 : 0
+            nberOfRows = 4 + showImageSort
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -214,7 +217,11 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Images
         case .images /* Images */:
-            switch indexPath.row {
+            var row = indexPath.row
+            let showImageSort = NetworkVars.pwgVersion
+                .compare("14.0", options: .numeric) == .orderedAscending
+            row += showImageSort ? 0 : 1
+            switch row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")

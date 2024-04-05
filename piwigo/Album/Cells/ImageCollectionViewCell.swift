@@ -101,7 +101,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image, inCategoryId categoryId: Int32) {
+    func config(with imageData: Image) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
@@ -119,12 +119,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Title
-        let albumType = pwgSmartAlbum(rawValue: categoryId) ?? .root
+        let sortOption = AlbumVars.shared.defaultSort
         let displayTitle = AlbumVars.shared.displayImageTitles ||
-                            [.visits, .best, .recent].contains(albumType)
+            [.visitsAscending, .visitsDescending,
+             .ratingScoreAscending, .ratingScoreDescending,
+                .datePostedAscending, .datePostedDescending].contains(sortOption)
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
-        let title = getImageTitle(forAlbumType: albumType)
+        let title = getImageTitle(forSortOption: sortOption)
         if title.string.contains("Clos de Vougeot") {
             self.accessibilityIdentifier = "Clos de Vougeot"
         } else if title.string.contains("Hotel de Coimbra") {
@@ -132,7 +134,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 #endif
         if displayTitle {
-            let title = getImageTitle(forAlbumType: albumType)
+            let title = getImageTitle(forSortOption: sortOption)
             if title.string.contains("Hotel de Coimbra") {
                 self.accessibilityIdentifier = "Hotel de Coimbra"
             }
@@ -170,14 +172,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    private func getImageTitle(forAlbumType type: pwgSmartAlbum) -> NSAttributedString {
+    private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
         var title = NSAttributedString()
-        switch type {
-        case .visits:
+        switch sortOption {
+        case .visitsAscending, .visitsDescending:
             let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
             let text = String(format: "%ld %@", Int(imageData.visits), hits)
             title = attributedTitle(NSAttributedString(string: text))
-        case .best:
+        case .ratingScoreAscending, .ratingScoreDescending:
             if imageData.title.string.isEmpty == false {
                 title = attributedTitle(imageData.title)
                 // Rate score unknown until pwg.images.getInfo is called
@@ -187,7 +189,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 title = attributedTitle(NSAttributedString(string: imageData.fileName))
 //              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
             }
-        case .recent:
+        case .datePostedAscending, .datePostedDescending:
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let text = DateFormatter.localizedString(from: dateCreated,
                                                      dateStyle: .medium, timeStyle: .none)

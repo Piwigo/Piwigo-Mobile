@@ -59,6 +59,12 @@ public class Album: NSManagedObject {
             upperIds = newUpperCats
         }
 
+        // Image sort option
+        let newImageSort = albumData.imageSort ?? ""
+        if imageSort != newImageSort {
+            imageSort = newImageSort
+        }
+
         // Number of images and sub-albums
         let newNbImages = albumData.nbImages ?? Int64.zero
         if nbImages != newNbImages {

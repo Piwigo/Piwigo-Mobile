@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Your favorites";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Photo Title, A → Z";
 "categorySort_nameDescending" = "Photo Title, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "File Name, A → Z";
 "categorySort_fileNameDescending" = "File Name, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Date Created, new → old";
 "categorySort_dateCreatedAscending" = "Date Created, old → new";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Date Posted, new → old";
 "categorySort_datePostedAscending" = "Date Posted, old → new";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Rating Score, high → low";
 "categorySort_ratingScoreAscending" = "Rating Score, low → high";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_manual" = "Manual Order";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Random Order";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Videos Only";
 "categorySort_imagesOnly" = "Photos Only";

@@ -163,7 +163,7 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Import the imageJSON into Core Data.
-                    if [.manual, .random].contains(sort) {
+                    if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
                         try self.importImages(imageJSON.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)

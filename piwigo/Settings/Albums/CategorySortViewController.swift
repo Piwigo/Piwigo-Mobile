@@ -34,6 +34,11 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         // Set colors, fonts, etc.
         applyColorPalette()
+        
+        // This view is called only if the Piwigo version < 14
+        if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
+            AlbumVars.shared.defaultSort = .dateCreatedAscending
+        }
     }
 
     @objc func applyColorPalette() {
@@ -111,7 +116,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return pwgImageSort.allCases.count
+        return pwgImageSort.allCases.count - 3
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -51,7 +51,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
     var isSelect = false
     var touchedImageIds = [Int64]()
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
-    lazy var selectBarButton: UIBarButtonItem = getSelectBarButton()
+    var selectBarButton: UIBarButtonItem?
 
     lazy var addButton: UIButton = getAddButton()
     lazy var createAlbumButton: UIButton = getCreateAlbumButton()
@@ -247,6 +247,57 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
+    func sortDescriptors(for sortKeys: String) -> [NSSortDescriptor] {
+        var descriptors = [NSSortDescriptor]()
+        let items = sortKeys.components(separatedBy: ",")
+        for item in items {
+            var fixedItem = item
+            // Remove extra space at the begining and end
+            while fixedItem.hasPrefix(" ") {
+                fixedItem.removeFirst()
+            }
+            while fixedItem.hasSuffix(" ") {
+                fixedItem.removeLast()
+            }
+            // Convert to sort descriptors
+            let sortDesc = fixedItem.components(separatedBy: " ")
+            if sortDesc[0].contains(pwgImageOrder.random.rawValue) {
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true))
+                continue
+            }
+            if sortDesc.count != 2 { continue }
+            let isAscending = sortDesc[1].lowercased() == pwgImageOrder.ascending.rawValue ? true : false
+            switch sortDesc[0] {
+            case pwgImageAttr.title.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: isAscending, selector: #selector(NSString.localizedCaseInsensitiveCompare)))
+            case pwgImageAttr.dateCreated.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: isAscending))
+            case pwgImageAttr.datePosted.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
+            case pwgImageAttr.fileName.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.fileName), ascending: isAscending, selector: #selector(NSString.localizedCompare)))
+            case pwgImageAttr.rating.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: isAscending))
+            case pwgImageAttr.visits.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.visits), ascending: isAscending))
+            case pwgImageAttr.identifier.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: isAscending))
+            case pwgImageAttr.rank.rawValue, "`\(pwgImageAttr.rank.rawValue)`":
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: isAscending))
+            default:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
+            }
+        }
+        if descriptors.isEmpty {
+            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
+            let sortByFile = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: true)
+            let sortById = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
+            return [sortByPosted, sortByFile, sortById]
+        } else {
+            return descriptors
+        }
+    }
+    
     lazy var fetchImagesRequest: NSFetchRequest = {
         // Sort images according to default settings
         // PS: Comparator blocks are not supported with Core Data
@@ -256,90 +307,34 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
         switch categoryId {
         case pwgSmartAlbum.search.rawValue:
             // 'datePosted' is always accessible (returned by pwg.images.search)
-            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
-            fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedAscending.param)
 
         case pwgSmartAlbum.visits.rawValue:
             // 'visits' is always accessible (returned by pwg.category.getImages)
-            let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: false)
-            fetchRequest.sortDescriptors = [sortByVisits, sortByIdDesc]
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.visitsDescending.param)
         
         case pwgSmartAlbum.best.rawValue:
             // 'ratingScore' is not always accessible (returned by pwg.images.getInfo)
             // so the image list might not be identical to the one returned by the web UI.
-            let sortByRateScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: false)
-            fetchRequest.sortDescriptors = [sortByRateScore, sortByIdDesc]
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.ratingScoreDescending.param)
             
         case pwgSmartAlbum.recent.rawValue:
             // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
-            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
-            fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedDescending.param)
 
         default:    // Sorting option chosen by user
-            switch AlbumVars.shared.defaultSort {
-            // Use the string version of 'title' because
-            case .nameAscending:
-                let sortByName = NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: true,
-                                                  selector: #selector(NSString.localizedCaseInsensitiveCompare))
-                fetchRequest.sortDescriptors = [sortByName, sortByIdAsc]
-            case .nameDescending:
-                let sortByName = NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: false,
-                                                  selector: #selector(NSString.localizedCaseInsensitiveCompare))
-                fetchRequest.sortDescriptors = [sortByName, sortByIdDesc]
-            
-            // 'dateCreated' can be unknown and defaults to 01/01/1900 in such situation
-            case .dateCreatedDescending:
-                let sortByCreated = NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: false)
-                fetchRequest.sortDescriptors = [sortByCreated, sortByIdDesc]
-            case .dateCreatedAscending:
-                let sortByCreated = NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: true)
-                fetchRequest.sortDescriptors = [sortByCreated, sortByIdAsc]
-            
-            // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
-            case .datePostedDescending:
-                let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
-                fetchRequest.sortDescriptors = [sortByPosted, sortByIdDesc]
-            case .datePostedAscending:
-                let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: true)
-                fetchRequest.sortDescriptors = [sortByPosted, sortByIdAsc]
-            
-            // 'fileName' is generally accessible but can be "" (returned by pwg.category.getImages)
-            case .fileNameAscending:
-                let sortByFileName = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: true,
-                                                      selector: #selector(NSString.localizedStandardCompare))
-                fetchRequest.sortDescriptors = [sortByFileName, sortByIdAsc]
-            case .fileNameDescending:
-                let sortByFileName = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: false,
-                                                      selector: #selector(NSString.localizedStandardCompare))
-                fetchRequest.sortDescriptors = [sortByFileName, sortByIdDesc]
-
-            // 'ratingScore' is not always accessible (only returned by pwg.images.getInfo)
-            // so the image list might not be identical to the one returned by the web UI.
-            // It can also be unknown and defaults to -1.0 in such situation
-            case .ratingScoreDescending:
-                let sortByRatingScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: false)
-                fetchRequest.sortDescriptors = [sortByRatingScore, sortByIdDesc]
-            case .ratingScoreAscending:
-                let sortByRatingScore = NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: true)
-                fetchRequest.sortDescriptors = [sortByRatingScore, sortByIdAsc]
-            
-            // 'visits' is always accessible (returned by pwg.category.getImages)
-            case .visitsDescending:
-                let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: false)
-                fetchRequest.sortDescriptors = [sortByVisits, sortByIdDesc]
-            case .visitsAscending:
-                let sortByVisits = NSSortDescriptor(key: #keyPath(Image.visits), ascending: true)
-                fetchRequest.sortDescriptors = [sortByVisits, sortByIdAsc]
-            
-            // 'rankManual' is set by the iOS app when fetching album images (not returned by API)
-            case .manual:
-                let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: true)
-                fetchRequest.sortDescriptors = [sortByRank]
-                
-            // 'rankRandom' is set by the iOS app.
-            case .random:
-                let sortByRank = NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true)
-                fetchRequest.sortDescriptors = [sortByRank]
+            if albumData.imageSort.isEmpty {
+                // Piwigo version < 14
+                if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
+                    AlbumVars.shared.defaultSort = .dateCreatedAscending
+                }
+                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
+            }
+            else if AlbumVars.shared.defaultSort == .albumDefault {
+                fetchRequest.sortDescriptors = sortDescriptors(for: albumData.imageSort)
+            } 
+            else {
+                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
             }
         }
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : categoryId])
@@ -1310,7 +1305,7 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Create cell from Piwigo data
             let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
             let image = images.object(at: imageIndexPath)
-            cell.config(with: image, inCategoryId: categoryId)
+            cell.config(with: image)
             cell.isSelection = selectedImageIds.contains(image.pwgID)
 
             // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -1663,7 +1658,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
                     debugPrint("••> Update image at \(cellIndexPath) of album #\(fetchDelegate.categoryId)")
                     if let cell = self?.imagesCollection?.cellForItem(at: cellIndexPath) as? ImageCollectionViewCell {
                         // Re-configure image cell
-                        cell.config(with: image, inCategoryId: fetchDelegate.categoryId)
+                        cell.config(with: image)
                         // pwg.users.favorites… methods available from Piwigo version 2.10
                         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                             cell.isFavorite = (image.albums ?? Set<Album>())

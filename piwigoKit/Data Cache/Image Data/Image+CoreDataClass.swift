@@ -251,7 +251,7 @@ public class Image: NSManagedObject {
         
         // Rank of image in album
         switch sort {
-        case .manual:
+        case .rankAscending:
             if rank != Int64.min, rankManual != rank {
                 rankManual = rank
             }

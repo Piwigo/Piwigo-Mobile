@@ -92,7 +92,11 @@ extension SettingsViewController: UITableViewDelegate
             
             // MARK: Images
         case .images /* Images */:
-            switch indexPath.row {
+            var row = indexPath.row
+            let showImageSort = NetworkVars.pwgVersion
+                .compare("14.0", options: .numeric) == .orderedAscending
+            row += showImageSort ? 0 : 1
+            switch row {
             case 0 /* Default Sort */,
                 1 /* Default Thumbnail File */,
                 4 /* Default Size of Previewed Images */:
@@ -219,7 +223,11 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Images
         case .images /* Images */:
-            switch indexPath.row {
+            var row = indexPath.row
+            let showImageSort = NetworkVars.pwgVersion
+                .compare("14.0", options: .numeric) == .orderedAscending
+            row += showImageSort ? 0 : 1
+            switch row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }

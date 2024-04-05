@@ -62,7 +62,7 @@ extension AlbumViewController
                 /// - to set the image as album thumbnail
                 /// - to edit image parameters
                 let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
 
                 if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {

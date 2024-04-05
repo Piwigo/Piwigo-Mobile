@@ -644,9 +644,22 @@ extension AlbumViewController
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
         }
         else if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
-            // Button for activating the selection mode (not for guests)
+            if #available(iOS 14, *) {
+                if categoryId < 0 {
+                    // Button for activating the selection mode (not for guests)
+                    selectBarButton = getSelectBarButton()
+                } else {
+                    // Menu for activating the selection mode or change the way images are sorted
+                    let menu = UIMenu(title: "", children: [selectMenu(), imageSortMenu()])
+                    selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                    selectBarButton?.accessibilityIdentifier = "select"
+                }
+            } else {
+                // Button for activating the selection mode (not for guests)
+                selectBarButton = getSelectBarButton()
+            }
             navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-            selectBarButton.isEnabled = (images.fetchedObjects ?? []).count > 0
+            selectBarButton?.isEnabled = (images.fetchedObjects ?? []).count > 0
         }
         else {
             // No button
