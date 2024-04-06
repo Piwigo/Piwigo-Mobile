@@ -182,8 +182,8 @@ public class PwgSession: NSObject {
             #if DEBUG
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
-            let dataStr = String(decoding: jsonData, as: UTF8.self)
-//            let dataStr = String(decoding: jsonData.prefix(128), as: UTF8.self) + "…"
+//            let dataStr = String(decoding: jsonData, as: UTF8.self)
+            let dataStr = String(decoding: jsonData.prefix(128), as: UTF8.self) + "…"
             if #available(iOSApplicationExtension 14.0, *) {
                 NetworkUtilities.logger.notice("PwgSession: \(method, privacy: .public)")
                 NetworkUtilities.logger.notice("Received JSON of \(countsOfByte, privacy: .public) bytes\r\(dataStr, privacy: .public)")
