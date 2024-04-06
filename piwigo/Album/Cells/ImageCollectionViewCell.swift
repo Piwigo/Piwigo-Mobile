@@ -65,6 +65,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             _isSelection = isSelection
 
             selectedImg?.isHidden = !isSelection
+            darkenView.frame = cellImage.frame
             darkenView?.isHidden = !isSelection
         }
     }
