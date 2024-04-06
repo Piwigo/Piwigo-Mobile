@@ -40,7 +40,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     // Selected images are darkened
     @IBOutlet weak var selectedImg: UIImageView!
     @IBOutlet weak var selImgRight: NSLayoutConstraint!
-    @IBOutlet weak var selImgTop: NSLayoutConstraint!
+    @IBOutlet weak var selImgBot: NSLayoutConstraint!
     
     // On iPad, thumbnails are presented with native aspect ratio
     private var deltaX: CGFloat = 1.0       // Must be initialised with margin value
@@ -258,7 +258,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Update vertical constraints
         if self.playTop?.constant ?? -1 != self.deltaY {
-            self.selImgTop?.constant = self.deltaY + 2 * margin
             self.playTop?.constant = self.deltaY
         }
         if self.bottomLayer?.isHidden ?? false {
@@ -266,11 +265,17 @@ class ImageCollectionViewCell: UICollectionViewCell {
             if self.favBottom?.constant ?? -1 != self.deltaY {
                 self.favBottom?.constant = self.deltaY
             }
+            if self.selImgBot?.constant ?? -1 != self.deltaY {
+                self.selImgBot?.constant = self.deltaY
+            }
         } else {
             // The title is displayed
             let deltaYmax = CGFloat(fmax(bannerHeight + margin, self.deltaY))
             if self.favBottom?.constant ?? -1 != deltaYmax {
                 self.favBottom?.constant = deltaYmax
+            }
+            if self.selImgBot?.constant ?? -1 != deltaYmax {
+                self.selImgBot?.constant = deltaYmax
             }
         }
         applyColorPalette()
