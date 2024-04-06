@@ -892,13 +892,6 @@ class AlbumViewController: UIViewController, UICollectionViewDelegate, UICollect
             // Update title
             self.setTitleViewFromAlbumData(whileUpdating: false)
 
-            // Set navigation bar buttons
-            if isSelect {
-                self.updateButtonsInSelectionMode()
-            } else {
-                self.updateButtonsInPreviewMode()
-            }
-
             // Update number of images in footer
             self.updateNberOfImagesInFooter()
 
