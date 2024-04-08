@@ -41,11 +41,13 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 - [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610): adds video support
 
 ## Videos 
-For video upload using your iOS device, you need the plugin on your Piwigo server titled "[piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610)". After you have installed this plugin, you will need to allow for video file types to be uploaded by following [these instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos).
+For uploading videos with your iOS device, make sure the [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610) plugin is installed on your Piwigo server. The wiki contains some [instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos) for installing it.
 
-Your Piwigo server generates a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload will fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
+Your Piwigo server will generate a poster of each uploaded video with [FFmpeg](http://www.ffmpeg.org) (or [avconv](https://libav.org/documentation/avconv.html) from [Libdav](https://libav.org)). If neither of these solutions is installed, the upload may fail. From to our experience, we recommand to install the 'true' [FFmpeg](http://www.ffmpeg.org).
 
-## Translations [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
+## Localization - Help Wanted [![Crowdin](https://d322cqt584bo4o.cloudfront.net/piwigo-mobile/localized.svg)](https://crowdin.com/project/piwigo-mobile)
+If you would like to see Piwigo Mobile translated into your language, [just get in touch](iOS@piwigo.org?subject=Translation) and we'll get you access to the [Crowdin](https://crowdin.com/project/piwigo-mobile) localization platform.
+
 Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piwigo/id472225196?mt=8) in the following languages:
 - [Hungarian](https://crowdin.com/project/piwigo-mobile/hu) since [v2.7.1](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.7.1),
 - [Chinese (simplified)](https://crowdin.com/project/piwigo-mobile/zh-CN#), [Russian](https://crowdin.com/project/piwigo-mobile/ru#) and [Spanish (Spain)](https://crowdin.com/project/piwigo-mobile/es-ES#) since [v2.4.7](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.4.7),
@@ -56,7 +58,8 @@ Piwigo Mobile is available from the [App Store](https://itunes.apple.com/app/piw
 - [Swedish](https://crowdin.com/project/piwigo-mobile/sv-SE#) since [v2.1.4](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1.4),
 - [Danish](https://crowdin.com/project/piwigo-mobile/da#), [English (U.S.)](https://crowdin.com/project/piwigo-mobile), [French](https://crowdin.com/project/piwigo-mobile/fr#) and [Polish](https://crowdin.com/project/piwigo-mobile/pl#) since [v2.1](https://github.com/Piwigo/Piwigo-Mobile/releases/tag/v2.1).
 
-Help us to translate Piwigo Mobile on [Crowdin](https://crowdin.com/project/piwigo-mobile)!
+## Beta Testers Wanted
+If you'd like to beta test new versions of Strongbox before they are released to the general public please just email [iOS@piwigo.org](mailto:iOS@piwigo.org?subject=Beta%20Testing%20Programme).
 
 ## License [![License: MIT](https://img.shields.io/github/license/Piwigo/Piwigo-Mobile.svg)](http://opensource.org/licenses/MIT)
 The MIT License (MIT)
