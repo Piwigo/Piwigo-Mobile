@@ -749,7 +749,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let window = window else { return }
         
         // Display default album
-        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
+        let defaultAlbumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
+        guard let defaultAlbum = defaultAlbumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
+            fatalError("!!! No AlbumImageTableViewController !!!")
+        }
+        defaultAlbum.categoryId = AlbumVars.shared.defaultCategory
         window.rootViewController = AlbumNavigationController(rootViewController: defaultAlbum)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,

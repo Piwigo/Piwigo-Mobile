@@ -186,7 +186,7 @@ class EditImageParamsViewController: UIViewController
             return
         }
         
-        // Return updated parameters
+        // Returning to image
         delegate?.didFinishEditingParameters()
     }
     

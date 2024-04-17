@@ -15,13 +15,18 @@ import piwigoKit
 protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
     func pushCategoryView(_ viewController: UIViewController?,
                           completion: @escaping (Bool) -> Void)
+}
+
+protocol DeleteAlbumCollectionViewCellDelegate: NSObjectProtocol {
     func didDeleteCategory(withError error: NSError?,
                            viewController topViewController: UIViewController?)
 }
 
 class AlbumCollectionViewCell: UICollectionViewCell
 {
-    weak var categoryDelegate: AlbumCollectionViewCellDelegate?
+    weak var pushAlbumDelegate: AlbumCollectionViewCellDelegate?
+    weak var deleteAlbumDelegate: DeleteAlbumCollectionViewCellDelegate?
+    
     var albumData: Album? {
         didSet {
             tableView?.reloadData()
@@ -66,6 +71,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                             forCellReuseIdentifier: "AlbumTableViewCell")
         tableView?.delegate = self
         tableView?.dataSource = self
+        tableView?.isScrollEnabled = false
         if let tableView = tableView {
             contentView.addSubview(tableView)
         }
@@ -129,8 +135,12 @@ extension AlbumCollectionViewCell: UITableViewDelegate
 
         // Push new album view
         if let albumData = albumData {
-            let albumView = AlbumViewController(albumId: albumData.pwgID)
-            categoryDelegate?.pushCategoryView(albumView, completion: {_ in })
+            let albumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
+                fatalError("!!! No AlbumImageTableViewController !!!")
+            }
+            subAlbumVC.categoryId = albumData.pwgID
+            pushAlbumDelegate?.pushCategoryView(subAlbumVC, completion: {_ in })
         }
     }
     

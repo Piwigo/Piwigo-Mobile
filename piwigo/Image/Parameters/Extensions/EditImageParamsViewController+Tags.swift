@@ -14,7 +14,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
     func didSelectTags(_ selectedTags: Set<Tag>) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
-            // Return updated parameters
+            // Returned to image
             delegate?.didFinishEditingParameters()
             return
         }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-@available(iOS 14.0, *)
+@available(iOS 14, *)
 extension ImageViewController
 {
     // MARK: - Albums related Actions & Menus
