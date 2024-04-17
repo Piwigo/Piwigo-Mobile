@@ -892,7 +892,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                         // Select the cell
                         selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
                                                                  category: categoryId)
-                        cell.update(selected: true, state: .waiting)
+                        cell.update(selected: true, state: uploadState)
                     }
                 }
 
