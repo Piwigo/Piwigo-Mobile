@@ -375,6 +375,14 @@ extension AlbumImageTableViewController
     }
 
     @objc func updateNberOfUploads(_ notification: Notification?) {
+        // Update main header if necessary
+        setTableViewMainHeader()
+
+        // Update upload queue button only in default album
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) == false {
+            return
+        }
+        
         // Check notification data
         guard let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
 
@@ -389,13 +397,13 @@ extension AlbumImageTableViewController
                 if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
                    !uploadQueueButton.isHidden,
                    uploadQueueButton.frame != addButton.frame {
-                    // Number unchanged -> NOP
+                    // Nothing ► changed  NOP
                     return
                 }
                 nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
             }
             
-            // Show button if needed
+            // Resize and show button if needed
             showUploadQueueButton()
         } else {
             // Hide button if not already hidden

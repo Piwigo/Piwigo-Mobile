@@ -355,10 +355,16 @@ class AlbumImageTableViewController: UIViewController
         initButtons()
         updateButtons()
         
-        // Register upload changes and progress if displaying default album
+        // Register Low Power Mode status
+        NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
+                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
+        // Register upload queue changes for reporting inability to upload and updating upload queue button
+        NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
+                                               name: .pwgLeftUploads, object: nil)
+
+        // Register upload progress if displaying default album
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-            NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                                   name: .pwgLeftUploads, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: .pwgUploadProgress, object: nil)
         }
@@ -377,6 +383,9 @@ class AlbumImageTableViewController: UIViewController
             return
         }
 
+        // Header informing user on network status
+        setTableViewMainHeader()
+        
         // Hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = true
 
@@ -598,7 +607,7 @@ class AlbumImageTableViewController: UIViewController
     }
     
     
-    // MARK: - Category Data
+    // MARK: - Album Data
     func changeAlbumID() {
         // Add/remove search bar
         if categoryId == 0 {
@@ -732,7 +741,39 @@ class AlbumImageTableViewController: UIViewController
     }
 
 
-    // MARK: - Push Views
+    // MARK: - Utilities
+    @objc func setTableViewMainHeader() {
+        // Update table header only if being displayed
+        if albumImageTableView?.window == nil { return }
+        DispatchQueue.main.async { [self] in
+            // Any upload request in the queue?
+            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+                albumImageTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+                // No Wi-Fi and user wishes to upload only on Wi-Fi
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: albumImageTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                albumImageTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Low Power mode enabled
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: albumImageTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                albumImageTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            } else {
+                // Uploads in progress ► Prevents device to sleep
+                albumImageTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+        }
+    }
+
     func pushView(_ viewController: UIViewController?) {
         guard let viewController = viewController else {
             return
@@ -772,8 +813,6 @@ class AlbumImageTableViewController: UIViewController
         }
     }
     
-    
-    // MARK: - Default Category Management
     @objc func returnToDefaultCategory() {
         // Does the default album view controller already exists?
         var cur = 0, index = 0

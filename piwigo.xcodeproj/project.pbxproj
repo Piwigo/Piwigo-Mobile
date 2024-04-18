@@ -340,7 +340,7 @@
 		AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53128BB8C3A008C846A /* User+CoreDataProperties.swift */; };
 		AD98E53528BBB50C008C846A /* UserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53428BBB50C008C846A /* UserError.swift */; };
 		AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98E53628BBC94E008C846A /* UserProvider.swift */; };
-		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
+		AD9A1BE824E04F0000D22C86 /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */; };
 		AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */ = {isa = PBXBuildFile; fileRef = AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */; };
 		AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9D684927DFE9E600517261 /* HapticUtilities.swift */; };
 		AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */; };
@@ -968,7 +968,7 @@
 		AD98E53128BB8C3A008C846A /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AD98E53428BBB50C008C846A /* UserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserError.swift; sourceTree = "<group>"; };
 		AD98E53628BBC94E008C846A /* UserProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProvider.swift; sourceTree = "<group>"; };
-		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
+		AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */ = {isa = PBXFileReference; lastKnownFileType = text; path = VerificationFailed.ahap; sourceTree = "<group>"; };
 		AD9D684927DFE9E600517261 /* HapticUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticUtilities.swift; sourceTree = "<group>"; };
 		AD9F9C2E2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Keyboard.swift"; sourceTree = "<group>"; };
@@ -2021,7 +2021,6 @@
 			isa = PBXGroup;
 			children = (
 				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
-				AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */,
 				AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
 				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
@@ -2422,6 +2421,7 @@
 			children = (
 				ADF3EC0B2516515500379E53 /* Device+Model.swift */,
 				AD9D684927DFE9E600517261 /* HapticUtilities.swift */,
+				AD9A1BE724E04F0000D22C86 /* TableHeaderView.swift */,
 				ADBE950D279D632800397426 /* TableViewUtilities.swift */,
 				AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
@@ -3427,7 +3427,7 @@
 				AD6BA0F12BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift in Sources */,
 				AD3335432666B6D4000A1487 /* AppVars.swift in Sources */,
 				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
-				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
+				AD9A1BE824E04F0000D22C86 /* TableHeaderView.swift in Sources */,
 				ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */,
 				AD0E0E612BC2FA64008A9053 /* AlbumCollectionViewController.swift in Sources */,
 				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,

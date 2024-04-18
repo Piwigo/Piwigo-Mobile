@@ -1,5 +1,5 @@
 //
-//  UploadQueueHeaderView.swift
+//  TableHeaderView.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 09/08/2020.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UploadQueueHeaderView: UIView {
+class TableHeaderView: UIView {
 
     private let label = UILabel(frame: .zero)
     private let margin: CGFloat = 32.0
