@@ -58,51 +58,18 @@ extension SceneDelegate {
         }
 
         // Restore sub-albums
-        let catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? [AlbumVars.shared.defaultCategory]
-        let subAlbumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
-//        var subAlbumVC: AlbumImageViewController!
-        for catID in catIDs {
-            guard let subAlbumVC = subAlbumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                fatalError("!!! No AlbumImageTableViewController !!!")
-            }
+        var catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? [AlbumVars.shared.defaultCategory]
+        let albumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
+        while catIDs.isEmpty == false {
+            let catID = catIDs.removeFirst()
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else { fatalError("!!! No AlbumImageTableViewController !!!") }
             subAlbumVC.categoryId = catID
+            // It may take time to load album/image view controllers
+            // so we delegate the restoration task to the last sub-album view controller
+            if catIDs.isEmpty, let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min {
+                subAlbumVC.indexOfImageToRestore = imageIndex
+            }
             navController.pushViewController(subAlbumVC, animated: false)
-//            subAlbumVC = subAlbum
         }
-        
-        // Restore image preview if performFetch() has been called and an image is available
-//        if subAlbumVC != nil, subAlbumVC?.categoryId != 0,
-//           let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
-//           let images = subAlbumVC.images.fetchedObjects, images.count > 0,
-//           (subAlbumVC.imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
-//            // Scroll collection view to cell position
-//            let indexPath = IndexPath(item: imageIndex, section: 1)
-//            subAlbumVC.imageOfInterest = indexPath
-//            subAlbumVC.imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-//
-//            // Prepare image detail view
-//            let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-//            guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
-//            imageDetailVC.imageIndex = min(imageIndex, images.count - 1)
-//            imageDetailVC.categoryId = subAlbumVC.categoryId
-//            imageDetailVC.images = subAlbumVC.images
-//            imageDetailVC.user = subAlbumVC.user
-//            imageDetailVC.imgDetailDelegate = subAlbumVC.self
-//            
-//            // Push ImageDetailView embedded in navigation controller
-//            let navController = UINavigationController(rootViewController: imageDetailVC)
-//            navController.hidesBottomBarWhenPushed = true
-//            navController.transitioningDelegate = subAlbumVC
-//            navController.modalPresentationStyle = .custom
-//            navController.modalPresentationCapturesStatusBarAppearance = true
-//            subAlbumVC.navigationController?.present(navController, animated: false) {
-//                if let selectedCell = subAlbumVC.imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-//                    subAlbumVC.animatedCell = selectedCell
-//                    subAlbumVC.albumViewSnapshot = subAlbumVC.view.snapshotView(afterScreenUpdates: true)
-//                    subAlbumVC.cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: true)
-//                    subAlbumVC.navBarSnapshot = subAlbumVC.navigationController?.navigationBar.snapshotView(afterScreenUpdates: true)
-//                }
-//            }
-//        }
     }
 }

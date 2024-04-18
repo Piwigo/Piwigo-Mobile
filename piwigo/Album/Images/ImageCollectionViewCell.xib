@@ -118,7 +118,7 @@
                     <constraint firstAttribute="bottom" secondItem="Xpg-8s-0ki" secondAttribute="bottom" id="Ere-uT-J8V"/>
                     <constraint firstAttribute="bottom" secondItem="rsF-Jx-0S0" secondAttribute="bottom" constant="3" id="Kxo-5A-V8n"/>
                     <constraint firstAttribute="trailing" secondItem="Xpg-8s-0ki" secondAttribute="trailing" id="OF3-6y-C0p"/>
-                    <constraint firstItem="CnI-HM-yNN" firstAttribute="centerY" secondItem="foa-P6-jpv" secondAttribute="centerY" id="PJV-Z6-jkU"/>
+                    <constraint firstItem="CnI-HM-yNN" firstAttribute="centerY" secondItem="Xpg-8s-0ki" secondAttribute="centerY" id="PJV-Z6-jkU"/>
                     <constraint firstItem="sUd-zF-riA" firstAttribute="centerX" secondItem="HmZ-he-nPd" secondAttribute="centerX" id="RnH-MS-IGt"/>
                     <constraint firstAttribute="bottom" secondItem="YCE-dL-uhM" secondAttribute="bottom" constant="3" id="X4E-ia-xEh"/>
                     <constraint firstItem="HmZ-he-nPd" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" constant="3" id="Z4t-Rc-QdW"/>
@@ -129,7 +129,7 @@
                     <constraint firstItem="YCE-dL-uhM" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="3" id="nMe-0L-S4O"/>
                     <constraint firstItem="YCE-dL-uhM" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="5" id="ncG-Fc-ZrF"/>
                     <constraint firstItem="HmZ-he-nPd" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="7" id="qRl-Zm-0Gg"/>
-                    <constraint firstItem="CnI-HM-yNN" firstAttribute="centerX" secondItem="foa-P6-jpv" secondAttribute="centerX" id="rnb-zH-7PX"/>
+                    <constraint firstItem="CnI-HM-yNN" firstAttribute="centerX" secondItem="Xpg-8s-0ki" secondAttribute="centerX" id="rnb-zH-7PX"/>
                     <constraint firstItem="sUd-zF-riA" firstAttribute="centerY" secondItem="HmZ-he-nPd" secondAttribute="centerY" id="tMV-NA-VRG"/>
                     <constraint firstItem="6NV-2z-KvC" firstAttribute="centerY" secondItem="YCE-dL-uhM" secondAttribute="centerY" id="w9m-7R-Tyj"/>
                     <constraint firstItem="Xpg-8s-0ki" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" id="zLN-cA-fAW"/>

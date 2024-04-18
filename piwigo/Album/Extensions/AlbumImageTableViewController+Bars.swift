@@ -88,9 +88,9 @@ extension AlbumImageTableViewController
             if user.hasUploadRights(forCatID: categoryId) {
                 // The action button proposes:
                 /// - to copy or move images to other albums
-                /// - to set the image as album thumbnail
                 /// - to edit image parameters
-                let menu = UIMenu(title: "", children: [albumMenu(), self.imagesMenu()])
+                /// - to rotate images
+                let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
 
@@ -259,7 +259,9 @@ extension AlbumImageTableViewController
             favoriteBarButton?.action = areFavorites ? #selector(imageCollectionVC.removeFromFavorites) : #selector(imageCollectionVC.addToFavorites)
 
             if #available(iOS 14, *) {
-                } else {
+                let updatedMenu = actionBarButton?.menu?.replacingChildren([albumMenu(), imagesMenu()])
+                actionBarButton?.menu = updatedMenu
+            } else {
                 moveBarButton?.isEnabled = hasImagesSelected
             }
         } else {

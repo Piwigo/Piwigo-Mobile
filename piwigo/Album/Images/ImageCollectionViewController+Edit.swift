@@ -9,9 +9,23 @@
 import Foundation
 import piwigoKit
 
-// MARK: Edit Images Parameters
 extension ImageCollectionViewController
 {
+    // MARK: Edit Images Parameters Action
+    @available(iOS 14.0, *)
+    func editParamsAction() -> UIAction {
+        let actionId = UIAction.Identifier("Edit Parameters")
+        let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Information"),
+                              image: UIImage(systemName: "pencil"),
+                              identifier: actionId, handler: { [self] action in
+           // Edit image informations
+            editSelection()
+        })
+        return action
+    }
+
+
+    // MARK: Edit Images Parameters
     @objc func editSelection() {
         initSelection(beforeAction: .edit)
     }
@@ -19,8 +33,8 @@ extension ImageCollectionViewController
     func editImages() {
         if selectedImageIds.isEmpty {
             // No image => End (should never happen)
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
+                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     imageSelectionDelegate?.deselectImages()
                 }
             }
@@ -47,12 +61,13 @@ extension ImageCollectionViewController: EditImageParamsDelegate
         // Deselect image
         selectedImageIds.remove(imageId)
         selectedFavoriteIds.remove(imageId)
+        selectedVideosIds.remove(imageId)
         collectionView?.reloadData()
     }
 
     func didChangeImageParameters(_ params: Image) {
         // Refresh image cell
-//        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 1)
+//        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 0)
 //        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
 //            imagesCollection?.reloadItems(at: [indexPath])
 //        }

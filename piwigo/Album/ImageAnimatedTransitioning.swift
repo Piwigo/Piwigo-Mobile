@@ -21,7 +21,13 @@ enum PresentationType {
 // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
 
-    static let duration: TimeInterval = 0.23*10
+    static let duration: TimeInterval = {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return 0.5
+        } else {
+            return 0.25
+        }
+    }()
 
     private let type: PresentationType
     private let albumImageTableViewController: AlbumImageTableViewController

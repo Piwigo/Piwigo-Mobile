@@ -11,10 +11,40 @@ import piwigoKit
 
 extension ImageCollectionViewController
 {
-    // MARK: - Copy/Move Bar Buttons
+    // MARK: - Copy/Move Bar Button & Actions
     func getMoveBarButton() -> UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .reply, target: self,
                                action: #selector(copyMoveSelection))
+    }
+
+    @available(iOS 14.0, *)
+    func imagesCopyAction() -> UIAction {
+        let actionId = UIAction.Identifier("Copy")
+        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
+                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
+                              identifier: actionId, handler: { [self] action in
+            // Disable buttons during action
+            imageSelectionDelegate?.setButtonsState(false)
+            // Retrieve complete image data before copying images
+            initSelection(beforeAction: .copyImages)
+        })
+        action.accessibilityIdentifier = "copy"
+        return action
+    }
+    
+    @available(iOS 14.0, *)
+    func imagesMoveAction() -> UIAction {
+        let actionId = UIAction.Identifier("Move")
+        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
+                              image: UIImage(systemName: "arrowshape.turn.up.right"),
+                              identifier: actionId, handler: { [self] action in
+            // Disable buttons during action
+            imageSelectionDelegate?.setButtonsState(false)
+            // Retrieve complete image data before moving images
+            initSelection(beforeAction: .moveImages)
+        })
+        action.accessibilityIdentifier = "move"
+        return action
     }
 
     

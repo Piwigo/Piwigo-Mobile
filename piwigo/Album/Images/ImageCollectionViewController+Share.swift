@@ -113,8 +113,8 @@ extension ImageCollectionViewController
                 NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
                 // Close HUD with success
-                updatePiwigoHUDwithSuccess() { [self] in
-                    hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                presentedViewController?.updatePiwigoHUDwithSuccess() { [self] in
+                    presentedViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                         // Deselect images
                         imageSelectionDelegate?.deselectImages()
                         // Close ActivityView
@@ -190,6 +190,7 @@ extension ImageCollectionViewController: ShareImageActivityItemProviderDelegate
             // Remove image from selection
             selectedImageIds.remove(imageId)
             selectedFavoriteIds.remove(imageId)
+            selectedVideosIds.remove(imageId)
             imageSelectionDelegate?.updateSelectMode()
 
             // Close HUD if last image

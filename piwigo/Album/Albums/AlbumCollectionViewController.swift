@@ -193,7 +193,7 @@ class AlbumCollectionViewController: UICollectionViewController
     func updateNberOfImagesInFooter() {
         // Update number of images in footer
         DispatchQueue.main.async { [self] in
-            let indexPath = IndexPath(item: 0, section: 1)
+            let indexPath = IndexPath(item: 0, section: 0)
             if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? AlbumFooterReusableView {
                 footer.noImagesLabel?.text = getImageCount()
             }

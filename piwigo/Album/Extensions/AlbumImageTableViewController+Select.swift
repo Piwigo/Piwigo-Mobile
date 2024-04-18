@@ -41,58 +41,21 @@ extension AlbumImageTableViewController
         let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.album")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [imagesCopyAction(), imagesMoveAction()])
+                          children: [imageCollectionVC.imagesCopyAction(),
+                                     imageCollectionVC.imagesMoveAction()])
         return menu
-    }
-    
-    private func imagesCopyAction() -> UIAction {
-        let actionId = UIAction.Identifier("Copy")
-        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
-                              identifier: actionId, handler: { [self] action in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-            // Retrieve complete image data before copying images
-            imageCollectionVC.initSelection(beforeAction: .copyImages)
-        })
-        action.accessibilityIdentifier = "copy"
-        return action
-    }
-    
-    private func imagesMoveAction() -> UIAction {
-        let actionId = UIAction.Identifier("Move")
-        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-                              image: UIImage(systemName: "arrowshape.turn.up.right"),
-                              identifier: actionId, handler: { [self] action in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-            // Retrieve complete image data before moving images
-            imageCollectionVC.initSelection(beforeAction: .moveImages)
-        })
-        action.accessibilityIdentifier = "move"
-        return action
     }
     
     
     // MARK: - Images Menu
     /// - for editing image parameters
     func imagesMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.edit")
+        let menuId = UIMenu.Identifier("org.piwigo.piwigoImages.edit")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
-                          children: [editParamsAction()])
+                          children: [imageCollectionVC.rotateMenu(),
+                                     imageCollectionVC.editParamsAction()].compactMap({$0}))
         return menu
-    }
-
-    private func editParamsAction() -> UIAction {
-        let actionId = UIAction.Identifier("Edit Parameters")
-        let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Information"),
-                              image: UIImage(systemName: "pencil"),
-                              identifier: actionId, handler: { [self] action in
-           // Edit image informations
-            imageCollectionVC.editSelection()
-        })
-        return action
     }
 }
 
@@ -179,6 +142,7 @@ extension AlbumImageTableViewController
         imageCollectionVC.touchedImageIds = []
         imageCollectionVC.selectedImageIds = Set<Int64>()
         imageCollectionVC.selectedFavoriteIds = Set<Int64>()
+        imageCollectionVC.selectedVideosIds = Set<Int64>()
         UIApplication.shared.isIdleTimerDisabled = false
     }
 }

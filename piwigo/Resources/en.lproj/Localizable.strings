@@ -423,6 +423,7 @@
 "rotateImage_left" = "…by 90° left";
 "rotateImage_right" = "…by 90° right";
 "rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
 
 // Image rotate — Errors
 "rotateImageFail_title" = "Rotation Failed";

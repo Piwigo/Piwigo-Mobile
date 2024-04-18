@@ -62,10 +62,14 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
                     if imageCell.isFavorite {
                         selectedFavoriteIds.insert(imageId)
                     }
+                    if imageCell.imageData.isVideo {
+                        selectedVideosIds.insert(imageId)
+                    }
                 } else {
                     imageCell.isSelection = false
                     selectedImageIds.remove(imageId)
                     selectedFavoriteIds.remove(imageId)
+                    selectedVideosIds.remove(imageId)
                 }
 
                 // Update the navigation bar
@@ -114,7 +118,7 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
             } else {
                 // Display HUD
                 totalNumberOfImages = selectedImageIdsLoop.count
-                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                navigationController?.showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
                               detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
                               inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
                 
@@ -131,11 +135,23 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
             // Display HUD
             totalNumberOfImages = selectedImageIds.count
             let title = totalNumberOfImages > 1 ? NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") : NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
-            showPiwigoHUD(withTitle: title,
+            navigationController?.showPiwigoHUD(withTitle: title,
                           detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
                           inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
             
-            // Retrieve image data if needed
+            // Add or remove image from favorites
+            doAction(action)
+            
+        case .rotateImagesLeft      /* Rotate photos 90° to left */,
+             .rotateImagesRight     /* Rotate photos 90° to right */:
+            // Display HUD
+            totalNumberOfImages = selectedImageIds.count
+            let title = totalNumberOfImages > 1 ? NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") : NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
+            navigationController?.showPiwigoHUD(withTitle: title,
+                          detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
+                          inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+            
+            // Add or remove image from favorites
             doAction(action)
         }
     }
@@ -156,13 +172,17 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
             addImageToFavorites()
         case .removeFromFavorites:
             removeImageFromFavorites()
+        case .rotateImagesLeft:
+            rotateImages(by: 90.0)
+        case .rotateImagesRight:
+            rotateImages(by: -90.0)
         }
     }
 
     private func retrieveImageData(beforeAction action:pwgImageAction) {
         // Get image ID if any
         guard let imageId = selectedImageIdsLoop.first else {
-            hidePiwigoHUD() { [self] in
+            navigationController?.hidePiwigoHUD() { [self] in
                 doAction(action)
             }
             return
@@ -174,7 +194,7 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
             selectedImageIdsLoop.remove(imageId)
 
             // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
+            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
 
             // Next image
             retrieveImageData(beforeAction: action)
@@ -198,7 +218,7 @@ extension ImageCollectionViewController: UIGestureRecognizerDelegate
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
-                hidePiwigoHUD() { [unowned self] in
+                navigationController?.hidePiwigoHUD() { [unowned self] in
                     imageSelectionDelegate?.updateSelectMode()
                 }
             }

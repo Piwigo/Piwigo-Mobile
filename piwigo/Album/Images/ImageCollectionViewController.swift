@@ -14,6 +14,7 @@ enum pwgImageAction {
     case edit, delete, share
     case copyImages, moveImages
     case addToFavorites, removeFromFavorites
+    case rotateImagesLeft, rotateImagesRight
 }
 
 protocol ImageCollectionViewDelegate: NSObjectProtocol {
@@ -34,11 +35,13 @@ class ImageCollectionViewController: UICollectionViewController
     weak var imageSelectionDelegate: ImageSelectionCollectionViewDelegate?
     
     var imageOfInterest = IndexPath(item: 0, section: 0)
+    var indexOfImageToRestore = Int.min
     var isSelect = false
     var touchedImageIds = [Int64]()
     var selectedImageIds = Set<Int64>()
     var selectedImageIdsLoop = Set<Int64>()
     var selectedFavoriteIds = Set<Int64>()
+    var selectedVideosIds = Set<Int64>()
     var totalNumberOfImages = 0
         
     private var updateOperations = [BlockOperation]()
@@ -205,9 +208,24 @@ class ImageCollectionViewController: UICollectionViewController
             print("Error: \(error)")
         }
         
-        collectionView?.reloadData()
+        // Restore image view if necessary
+        if indexOfImageToRestore != Int.min,
+           let allImages = images.fetchedObjects, allImages.count > indexOfImageToRestore
+        {
+            let indexPath = IndexPath(item: indexOfImageToRestore, section: 0)
+            presentImage(ofCell: ImageCollectionViewCell(), at: indexPath, animated: false)
+
+            // Image restored ► Reset index
+            indexOfImageToRestore = Int.min
+
+            // Scroll collection view to cell position
+            imageOfInterest = indexPath
+            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+        } else {
+            collectionView?.reloadData()
+        }
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -365,10 +383,14 @@ extension ImageCollectionViewController
                 if selectedCell.isFavorite {
                     selectedFavoriteIds.insert(imageId)
                 }
+                if selectedCell.imageData.isVideo {
+                    selectedVideosIds.insert(imageId)
+                }
             } else {
                 selectedCell.isSelection = false
                 selectedImageIds.remove(imageId)
                 selectedFavoriteIds.remove(imageId)
+                selectedVideosIds.remove(imageId)
             }
             
             // and update nav buttons
@@ -381,6 +403,11 @@ extension ImageCollectionViewController
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Selection mode not active => display full screen image
+        presentImage(ofCell: selectedCell, at: indexPath, animated: true)
+    }
+    
+    func presentImage(ofCell selectedCell: ImageCollectionViewCell, at indexPath: IndexPath, animated: Bool) {
+        // Create ImageViewController
         let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
         guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { fatalError("!!! NO ImageViewController !!!") }
         imageDetailView.imageIndex = indexPath.item
@@ -402,7 +429,7 @@ extension ImageCollectionViewController
         navController.transitioningDelegate = albumImageVC
         navController.modalPresentationStyle = .custom
         navController.modalPresentationCapturesStatusBarAppearance = true
-        navigationController?.present(navController, animated: true)
+        navigationController?.present(navController, animated: animated)
         
         // Remember that user did tap this image
         imageOfInterest = indexPath
@@ -503,8 +530,8 @@ extension ImageCollectionViewController: NSFetchedResultsControllerDelegate {
 extension ImageCollectionViewController: ImageDetailDelegate {
     func didSelectImage(atIndex imageIndex: Int) {
         // Scroll view to center image
-        if (collectionView?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
-            let indexPath = IndexPath(item: imageIndex, section: 1)
+        if (collectionView?.numberOfItems(inSection: 0) ?? 0) > imageIndex {
+            let indexPath = IndexPath(item: imageIndex, section: 0)
             imageOfInterest = indexPath
             collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
             

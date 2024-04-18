@@ -11,7 +11,7 @@ import piwigoKit
 
 extension ImageCollectionViewController
 {
-    // MARK: Favorites Utilities
+    // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
         if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending ||
@@ -37,8 +37,8 @@ extension ImageCollectionViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
+                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Deselect images
                     imageSelectionDelegate?.deselectImages()
                 }
@@ -51,9 +51,10 @@ extension ImageCollectionViewController
             // Forget this image
             selectedImageIds.removeFirst()
             selectedFavoriteIds.remove(imageId)
+            selectedVideosIds.remove(imageId)
 
             // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Next image
             addImageToFavorites()
@@ -65,7 +66,7 @@ extension ImageCollectionViewController
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image added to favorites ► Add it in the background
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -80,6 +81,7 @@ extension ImageCollectionViewController
                     // Next image
                     selectedImageIds.removeFirst()
                     selectedFavoriteIds.remove(imageId)
+                    selectedVideosIds.remove(imageId)
                     addImageToFavorites()
                 }
             } failure: { [self] error in
@@ -103,9 +105,9 @@ extension ImageCollectionViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            dismissPiwigoError(withTitle: title, message: message,
+            navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [self] in
-                hidePiwigoHUD() { [self] in
+                navigationController?.hidePiwigoHUD() { [self] in
                     imageSelectionDelegate?.updateSelectMode()
                 }
             }
@@ -123,8 +125,8 @@ extension ImageCollectionViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
+                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                     // Deselect images
                     imageSelectionDelegate?.deselectImages()
                 }
@@ -137,9 +139,10 @@ extension ImageCollectionViewController
             // Deselect this image
             selectedImageIds.removeFirst()
             selectedFavoriteIds.remove(imageId)
+            selectedVideosIds.remove(imageId)
 
             // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Next image
             removeImageFromFavorites()
@@ -151,7 +154,7 @@ extension ImageCollectionViewController
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    self.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image removed from favorites ► Remove it in the foreground
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -166,6 +169,7 @@ extension ImageCollectionViewController
                     // Next image
                     selectedImageIds.removeFirst()
                     selectedFavoriteIds.remove(imageId)
+                    selectedVideosIds.remove(imageId)
                     removeImageFromFavorites()
                 }
             } failure: { [unowned self] error in
@@ -189,9 +193,9 @@ extension ImageCollectionViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            dismissPiwigoError(withTitle: title, message: message,
+            navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
-                hidePiwigoHUD() { [unowned self] in
+                navigationController?.hidePiwigoHUD() { [unowned self] in
                     imageSelectionDelegate?.updateSelectMode()
                 }
             }

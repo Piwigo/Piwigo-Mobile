@@ -18,6 +18,7 @@ let kDeg2Rad: CGFloat = 3.141592654 / 180.0
 class AlbumImageTableViewController: UIViewController
 {
     var categoryId = Int32.zero
+    var indexOfImageToRestore = Int.min
     
     @IBOutlet weak var albumImageTableView: UITableView!
 
@@ -40,6 +41,7 @@ class AlbumImageTableViewController: UIViewController
         imageVC.albumProvider = albumProvider
         imageVC.imageProvider = imageProvider
         imageVC.imageSelectionDelegate = self
+        imageVC.indexOfImageToRestore = indexOfImageToRestore
         if #available(iOS 14, *) {
             imageVC.imageCollectionDelegate = self
         }
