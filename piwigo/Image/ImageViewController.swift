@@ -56,7 +56,9 @@ class ImageViewController: UIViewController {
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    lazy var backButton: UIBarButtonItem = getBackButton()
+    lazy var backButton: UIBarButtonItem = {
+        return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
+    }()
     lazy var shareBarButton: UIBarButtonItem = getShareButton()
     lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()

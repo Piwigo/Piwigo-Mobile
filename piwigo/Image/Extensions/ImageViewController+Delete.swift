@@ -12,6 +12,12 @@ import uploadKit
 
 extension ImageViewController
 {
+    // MARK: - Delete/Remove Image Bar Button
+    func getDeleteBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+    }
+
+
     // MARK: - Delete or Remove Image from Album
     @objc func deleteImage() {
         // Disable buttons during action

@@ -44,8 +44,7 @@ class ImageUtilities: NSObject {
                 
                 // Successful?
                 if uploadJSON.result {
-                    // Images rotated successfully
-                    // ► Delete images in cache
+                    // Images rotated successfully ► Delete images in cache
                     image.deleteCachedFiles()
                     completion()
                 }

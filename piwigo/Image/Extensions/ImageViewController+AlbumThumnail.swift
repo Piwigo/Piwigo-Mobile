@@ -8,8 +8,32 @@
 
 import Foundation
 
+// MARK: - Set as Album Thumbnail Action
+@available(iOS 14, *)
 extension ImageViewController
 {
+    func setAsThumbnailAction() -> UIAction {
+        let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
+                                                       comment:"Set as Album Thumbnail"),
+                              image: UIImage(systemName: "rectangle.and.paperclip"),
+                              handler: { [unowned self] _ in
+            // Present album selector for setting album thumbnail
+            self.setAsAlbumImage()
+        })
+        action.accessibilityIdentifier = "SetThumbnail"
+        return action
+    }
+}
+
+
+extension ImageViewController
+{
+    // MARK: - Set as Album Thumbnail Button
+    func getSetThumbnailBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem.setThumbnailButton(self, action: #selector(setAsAlbumImage))
+    }
+
+    
     // MARK: - Set Image as Album Thumbnail
     @objc func setAsAlbumImage() {
         // Check image data

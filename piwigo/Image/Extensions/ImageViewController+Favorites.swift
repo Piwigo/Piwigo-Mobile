@@ -11,7 +11,7 @@ import piwigoKit
 
 extension ImageViewController
 {
-    // MARK: - Add/remove image from favorites
+    // MARK: - Favorite Bar Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
         let isGuest = NetworkVars.userStatus == .guest
@@ -26,6 +26,8 @@ extension ImageViewController
         return button
     }
     
+
+    // MARK: - Add/Remove Image from Favorites
     @objc func addToFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action

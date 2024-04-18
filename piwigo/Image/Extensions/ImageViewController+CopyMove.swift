@@ -9,8 +9,49 @@
 import Foundation
 import piwigoKit
 
+// MARK: Copy/Move Image Actions
+@available(iOS 14, *)
 extension ImageViewController
 {
+    func copyAction() -> UIAction {
+        // Copy image to album
+        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
+                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
+                              handler: { [unowned self] _ in
+            // Disable buttons during action
+            setEnableStateOfButtons(false)
+            // Present album selector for copying image
+            selectCategory(withAction: .copyImage)
+        })
+        action.accessibilityIdentifier = "Copy"
+        return action
+    }
+    
+    func moveAction() -> UIAction {
+        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
+                              image: UIImage(systemName: "arrowshape.turn.up.right"),
+                              handler: { [unowned self] _ in
+            // Disable buttons during action
+            setEnableStateOfButtons(false)
+            
+            // Present album selector for moving image
+            selectCategory(withAction: .moveImage)
+        })
+        action.accessibilityIdentifier = "Move"
+        return action
+    }
+}
+
+
+extension ImageViewController
+{
+    // MARK: Copy/Move Image Button
+    func getMoveBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
+    }
+
+
+    // MARK: Copy/Move Image
     func selectCategory(withAction action: pwgCategorySelectAction) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }

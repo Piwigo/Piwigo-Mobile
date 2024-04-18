@@ -10,6 +10,12 @@ import Foundation
 
 extension ImageViewController
 {
+    // MARK: - Share Image Bar Button
+    func getShareButton() -> UIBarButtonItem {
+        return UIBarButtonItem.shareImageButton(self, action: #selector(ImageViewController.shareImage))
+    }
+
+
     // MARK: - Share Image
     @objc func shareImage() {
         // Disable buttons during action
