@@ -282,7 +282,7 @@ extension ImageCollectionViewController
         // Let's delete all images at once
         NetworkUtilities.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.delete(toDelete) { [unowned self] in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [unowned self] in
                     // Save image IDs for marking Upload requests in the background
                     let imageIDs = Array(toDelete).map({$0.pwgID})
 

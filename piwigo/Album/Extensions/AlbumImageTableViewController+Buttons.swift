@@ -122,7 +122,7 @@ extension AlbumImageTableViewController
             uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: false)
 
             // Rotate cross and change colour
-            let rotatedImage = UIImage(named: "add")?.rotated(by: .pi / 4)
+            let rotatedImage = UIImage(named: "addButton")?.rotated(by: .pi / 4)
             addButton.setImage(rotatedImage, for: .normal)
             addButton.backgroundColor = UIColor.gray
             addButton.tintColor = UIColor.white
@@ -147,7 +147,7 @@ extension AlbumImageTableViewController
             if categoryId == 0 {
                 addButton.setImage(UIImage(named: "createLarge"), for: .normal)
             } else {
-                addButton.setImage(UIImage(named: "add"), for: .normal)
+                addButton.setImage(UIImage(named: "addButton"), for: .normal)
             }
             addButton.backgroundColor = UIColor.gray
             addButton.tintColor = UIColor.white
@@ -180,7 +180,7 @@ extension AlbumImageTableViewController
         if categoryId == 0 {
             button.setImage(UIImage(named: "createLarge"), for: .normal)
         } else {
-            button.setImage(UIImage(named: "add"), for: .normal)
+            button.setImage(UIImage(named: "addButton"), for: .normal)
         }
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.isHidden = true
