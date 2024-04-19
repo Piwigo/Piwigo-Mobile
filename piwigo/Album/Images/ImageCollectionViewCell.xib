@@ -55,12 +55,12 @@
                         </constraints>
                     </imageView>
                     <view hidden="YES" clipsSubviews="YES" alpha="0.45000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CnI-HM-yNN">
-                        <rect key="frame" x="0.0" y="50" width="318" height="218"/>
+                        <rect key="frame" x="0.0" y="0.0" width="318" height="318"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="318" id="O7l-JC-4Be"/>
-                            <constraint firstAttribute="height" constant="218" id="bSH-sQ-6Pk"/>
+                            <constraint firstAttribute="height" constant="318" id="bSH-sQ-6Pk"/>
                         </constraints>
                     </view>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rsF-Jx-0S0">

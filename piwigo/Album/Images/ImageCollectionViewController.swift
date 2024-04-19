@@ -157,7 +157,7 @@ class ImageCollectionViewController: UICollectionViewController
             }
         }
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        fetchRequest.fetchBatchSize = max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
+        fetchRequest.fetchBatchSize = min(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
         return fetchRequest
     }()
     
@@ -222,7 +222,7 @@ class ImageCollectionViewController: UICollectionViewController
             imageOfInterest = indexPath
             collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
         } else {
-            collectionView?.reloadData()
+//            collectionView?.reloadData()
         }
     }
 
@@ -297,29 +297,37 @@ extension ImageCollectionViewController
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        debugPrint("••> Cell \(indexPath)")
+        // Create cell from Piwigo data
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else { fatalError("No ImageCollectionViewCell!") }
 
-        // Create cell from Piwigo data
-        let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
-        let image = images.object(at: imageIndexPath)
-        cell.config(with: image)
-        cell.isSelection = selectedImageIds.contains(image.pwgID)
+        // Add pan gesture recognition if needed
+        if cell.gestureRecognizers == nil {
+            let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+            imageSeriesRocognizer.minimumNumberOfTouches = 1
+            imageSeriesRocognizer.maximumNumberOfTouches = 1
+            imageSeriesRocognizer.cancelsTouchesInView = false
+            imageSeriesRocognizer.delegate = self
+            cell.addGestureRecognizer(imageSeriesRocognizer)
+            cell.isUserInteractionEnabled = true
+        }
 
+        // Retrieve image data
+        let image = images.object(at: indexPath)
+        
+        // Is this cell selected?
+        cell.isSelection = selectedImageIds.contains(image.pwgID)
+        
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            NetworkVars.userStatus != .guest {
             cell.isFavorite = (image.albums ?? Set<Album>())
                 .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
         }
-
-        // Add pan gesture recognition
-        let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
-        imageSeriesRocognizer.minimumNumberOfTouches = 1
-        imageSeriesRocognizer.maximumNumberOfTouches = 1
-        imageSeriesRocognizer.cancelsTouchesInView = false
-        imageSeriesRocognizer.delegate = self
-        cell.addGestureRecognizer(imageSeriesRocognizer)
-        cell.isUserInteractionEnabled = true
+        
+        // The image being retrieved in a background task,
+        // config() must be called after setting all other parameters
+        cell.config(with: image)
         return cell
     }
 }

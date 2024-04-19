@@ -63,7 +63,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         set(isSelection) {
             _isSelection = isSelection
-
             selectedImg?.isHidden = !isSelection
             darkenView.frame = cellImage.frame
             darkenView?.isHidden = !isSelection
@@ -151,20 +150,22 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         let cellSize = self.bounds.size
         let scale = self.traitCollection.displayScale
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
-                                     atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
-                                     fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                     placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.configImage(cachedImage)
-            }
-        } failure: { _ in
-            // No image available
-            DispatchQueue.main.async {
-                self.configImage(placeHolder)
-                self.noDataLabel?.isHidden = false
-                self.applyColorPalette()
+        DispatchQueue.global(qos: .userInitiated).async {
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
+                                         atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
+                                         fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                         placeHolder: placeHolder) { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                DispatchQueue.main.async {
+                    self.configImage(cachedImage)
+                }
+            } failure: { _ in
+                // No image available
+                DispatchQueue.main.async {
+                    self.configImage(placeHolder)
+                    self.noDataLabel?.isHidden = false
+                    self.applyColorPalette()
+                }
             }
         }
     }

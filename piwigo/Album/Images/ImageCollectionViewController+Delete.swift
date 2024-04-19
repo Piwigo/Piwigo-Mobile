@@ -314,7 +314,7 @@ extension ImageCollectionViewController
 
                     // Hide HUD
                     self.navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                        navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                        self.navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
                             imageSelectionDelegate?.deselectImages()
                         }
                     }
