@@ -83,7 +83,7 @@
          <EnvironmentVariable
             key = "CGBITMAP_CONTEXT_LOG_ERRORS"
             value = "1"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <LocationScenarioReference
