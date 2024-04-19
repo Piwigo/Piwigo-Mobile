@@ -165,6 +165,8 @@ public class Image: NSManagedObject {
                                  imageURL: NSURL(string: fullResUrl?.absoluteString ?? ""))
         if fullRes == nil || fullRes?.isEqual(newFull) == false {
             fullRes = newFull
+            // Delete cached image files (image updated, was probably rotated)
+            deleteCachedFiles()
         }
 
         // Derivatives
