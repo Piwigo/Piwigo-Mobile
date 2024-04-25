@@ -1161,7 +1161,6 @@
 		ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectCategoryViewController.storyboard; sourceTree = "<group>"; };
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
-		ADF29D8A2BC960590012FF66 /* AlbumCollectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		ADF29D8D2BC972100012FF66 /* AlbumImageTableViewController+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Settings.swift"; sourceTree = "<group>"; };
 		ADF29D8F2BC974450012FF66 /* AlbumImageTableViewController+Discover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Discover.swift"; sourceTree = "<group>"; };
 		ADF29D912BC985FD0012FF66 /* AlbumImageTableViewController+Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Buttons.swift"; sourceTree = "<group>"; };
@@ -1170,7 +1169,6 @@
 		ADF29D972BC98E760012FF66 /* AlbumImageTableViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Bars.swift"; sourceTree = "<group>"; };
 		ADF29D992BC99EEB0012FF66 /* AlbumImageTableViewController+Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Sort.swift"; sourceTree = "<group>"; };
 		ADF29D9B2BC9A1050012FF66 /* ImageCollectionViewController+Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageCollectionViewController+Sort.swift"; sourceTree = "<group>"; };
-		ADF29D9F2BC9AC200012FF66 /* ImageCollectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		ADF29DA32BC9B2BA0012FF66 /* ImageCollectionViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageCollectionViewController+Select.swift"; sourceTree = "<group>"; };
 		ADF29DA72BC9B6850012FF66 /* AlbumImageTableViewController+Add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumImageTableViewController+Add.swift"; sourceTree = "<group>"; };
 		ADF29DA92BC9B7A40012FF66 /* ImageCollectionViewController+Edit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageCollectionViewController+Edit.swift"; sourceTree = "<group>"; };
@@ -2495,8 +2493,6 @@
 				ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */,
 				AD089CEC2BC1A81200CE4A3E /* AlbumImageTableViewController.swift */,
 				AD0E0E4D2BC2E9ED008A9053 /* AlbumImageTableViewController.storyboard */,
-				ADF29D8A2BC960590012FF66 /* AlbumCollectionTableViewCell.swift */,
-				ADF29D9F2BC9AC200012FF66 /* ImageCollectionTableViewCell.swift */,
 				AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */,
 				ADF29DBD2BCD848B0012FF66 /* AlbumImageTableViewController+TransitioningDelegate.swift */,
 				ADF29D8C2BC971BB0012FF66 /* Extensions */,
