@@ -14,7 +14,6 @@ class AlbumCollectionViewController: UICollectionViewController
 {
     private var updateOperations = [BlockOperation]()
     
-    
     // MARK: - Core Data Source
     var user: User!
     var albumData: Album!
@@ -54,11 +53,15 @@ class AlbumCollectionViewController: UICollectionViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("••> viewDidLoad albums…")
+
+        // Set collection view layout
+        collectionView?.collectionViewLayout = AlbumCollectionViewFlowLayout()
         
         // Register AlbumCollectionViewCell class
         collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeader")
-        collectionView?.register(AlbumFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AlbumFooter")
         collectionView?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
+        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooter")
         
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
@@ -80,7 +83,8 @@ class AlbumCollectionViewController: UICollectionViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        print("••> viewWillAppear albums…")
+
         // Set colors, fonts, etc.
         applyColorPalette()
         
@@ -98,16 +102,19 @@ class AlbumCollectionViewController: UICollectionViewController
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        print("••> viewDidLayoutSubviews albums: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
         
         // Update table row height after collection view layouting
-        if let albumImageVC = parent as? AlbumImageTableViewController {
-            albumImageVC.albumCollectionCell?.invalidateIntrinsicContentSize()
+        if let size = collectionView?.collectionViewLayout.collectionViewContentSize,
+           let albumImageVC = parent as? AlbumImageTableViewController {
+            albumImageVC.albumCollectionCell?.frame.size = size
+            //            albumImageVC.albumCollectionCell?.invalidateIntrinsicContentSize()
         }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
             // Reload collection
@@ -183,21 +190,21 @@ class AlbumCollectionViewController: UICollectionViewController
         }
         return legend
     }
-
-    func resetPredicateAndPerformFetch() {
-        // Update albums
-        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        try? albums.performFetch()
-    }
     
     func updateNberOfImagesInFooter() {
         // Update number of images in footer
         DispatchQueue.main.async { [self] in
             let indexPath = IndexPath(item: 0, section: 0)
-            if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? AlbumFooterReusableView {
-                footer.noImagesLabel?.text = getImageCount()
+            if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
+                footer.nberImagesLabel?.text = getImageCount()
             }
         }
+    }
+    
+    func resetPredicateAndPerformFetch() {
+        // Update albums
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        try? albums.performFetch()
     }
 }
 
@@ -217,10 +224,10 @@ extension AlbumCollectionViewController
             return header
         }
 
-        if kind == UICollectionView.elementKindSectionFooter {
-            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AlbumFooter", for: indexPath) as? AlbumFooterReusableView else { fatalError("!!! NO AlbumFooterReusableView class !!!")}
-            footer.noImagesLabel?.textColor = UIColor.piwigoColorHeader()
-            footer.noImagesLabel?.text = getImageCount()
+        if albumData.pwgID == 0, kind == UICollectionView.elementKindSectionFooter {
+            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooter", for: indexPath) as? ImageFooterReusableView else { fatalError("!!! NO ImageFooterReusableView class !!!")}
+            footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+            footer.nberImagesLabel?.text = getImageCount()
             return footer
         }
 
@@ -292,6 +299,9 @@ extension AlbumCollectionViewController: UICollectionViewDelegateFlowLayout
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
     {
+        // Only for the root album
+        if albumData.pwgID != 0 { return CGSize.zero }
+        
         // Get number of images and status
         let footer = getImageCount()
         if footer.isEmpty { return CGSize.zero }
@@ -310,34 +320,19 @@ extension AlbumCollectionViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         // Avoid unwanted spaces
+        let horSpacing = AlbumUtilities.kAlbumMarginsSpacing        
         if collectionView.numberOfItems(inSection: section) == 0 {
-            return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
-                                bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
-        } else if albumData.pwgID == 0 {
+            return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
+        }
+        else if albumData.pwgID == 0 {
             if #available(iOS 13.0, *) {
-                return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
-                                    bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
             } else {
-                return UIEdgeInsets(top: 10, left: AlbumUtilities.kAlbumMarginsSpacing,
-                                    bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: 10, left: horSpacing, bottom: 0, right: horSpacing)
             }
         } else {
-            return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing, bottom: 0,
-                                right: AlbumUtilities.kAlbumMarginsSpacing)
+            return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
         }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return AlbumUtilities.kAlbumCellSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
-        return CGSize(width: size, height: 156.5)
     }
 }
 
@@ -399,6 +394,9 @@ extension AlbumCollectionViewController: NSFetchedResultsControllerDelegate
         // Update objects
         collectionView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach({ $0.start()})
+        } completion: { [weak self] _ in
+            // Update footer
+            self?.updateNberOfImagesInFooter()
         }
     }
 }

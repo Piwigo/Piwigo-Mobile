@@ -415,10 +415,10 @@ class AlbumUtilities: NSObject {
 
     // MARK: - Album/Images Collections | Common Methods
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
-        var pageSize: CGSize = view?.frame.size ?? view?.window?.screen.bounds.size ?? UIScreen.main.bounds.size
-        pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
-        pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
-        return pageSize
+        if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
+            return viewBounds.size
+        }
+        return UIScreen.main.bounds.size
     }
     
     static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
@@ -435,13 +435,13 @@ class AlbumUtilities: NSObject {
     
 
     // MARK: - Album/Images Collections | Album Thumbnails
-    static var minNberOfAlbumsPerRow: Int = {
-        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
-    }()
+//    static var minNberOfAlbumsPerRow: Int = {
+//        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
+//    }()
 
-    static var maxNberOfAlbumsPerRow: Int = {
-        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
-    }()
+//    static var maxNberOfAlbumsPerRow: Int = {
+//        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
+//    }()
 
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
@@ -460,29 +460,29 @@ class AlbumUtilities: NSObject {
         return .xxLarge
     }
     
-    static func albumSize(forView view: UIView, maxWidth: CGFloat) -> CGFloat {
-        // Size of view or screen
-        let pageSize = sizeOfPage(forView: view)
-
-        // Available width in portrait mode
-        let viewWidth = viewWidth(for: view, pageSize: pageSize)
-        
-        // Number of albums per row in portrait
-        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
-        let denominator = kAlbumCellSpacing + maxWidth
-        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
-
-        // Width of album cells determined for the portrait mode
-        let portraitSpacing = 2.0 * kAlbumMarginsSpacing + (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
-        let albumWidthInPortrait = floor((viewWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
-
-        // Number of albums per row we should display right now
-        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
-        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumWidthInPortrait))
-
-        // Width of albums for that number
-        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
-    }
+//    static func albumSize(forView view: UIView, maxWidth: CGFloat) -> CGFloat {
+//        // Size of view or screen
+//        let pageSize = sizeOfPage(forView: view)
+//
+//        // Available width in portrait mode
+//        let viewWidth = viewWidth(for: view, pageSize: pageSize)
+//        
+//        // Number of albums per row in portrait
+//        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
+//        let denominator = kAlbumCellSpacing + maxWidth
+//        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
+//
+//        // Width of album cells determined for the portrait mode
+//        let portraitSpacing = 2.0 * kAlbumMarginsSpacing + (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
+//        let albumWidthInPortrait = floor((viewWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+//
+//        // Number of albums per row we should display right now
+//        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
+//        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumWidthInPortrait))
+//
+//        // Width of albums for that number
+//        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+//    }
 
 
     // MARK: - Album/Images Collections | Image Thumbnails

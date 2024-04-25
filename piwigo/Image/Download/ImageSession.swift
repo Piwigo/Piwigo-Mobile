@@ -179,8 +179,8 @@ class ImageSession: NSObject {
 
         // Cancel the download request
 //        debugPrint("••> Cancel download: \(imageURL)")
+        activeDownloads.removeValue(forKey: imageURL)
         download.task?.cancel()
-        activeDownloads[imageURL] = nil
     }
 }
 
@@ -281,22 +281,22 @@ extension ImageSession: URLSessionTaskDelegate {
         }
 
         if let error = error {
+            // Remove task from active downloads if needed
+            if download.resumeData == nil {
+                activeDownloads.removeValue(forKey: imageURL)
+            }
             // Return error with failureHandler
             if let failure = download.failureHandler {
                 failure(error)
             }
-            if download.resumeData == nil {
-                // Remove task from active downloads
-                activeDownloads.removeValue(forKey: imageURL)
-            }
         } else {
+            // Remove task from active downloads
+            activeDownloads.removeValue(forKey: imageURL)
             // Return cached image with completionHandler
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {
                 completion(fileURL)
             }
-            // Remove task from active downloads
-            activeDownloads.removeValue(forKey: imageURL)
         }
     }
 }

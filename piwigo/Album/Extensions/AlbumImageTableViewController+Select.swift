@@ -117,6 +117,7 @@ extension AlbumImageTableViewController
         imageCollectionVC.isSelect = false
         
         // Update navigation bar and toolbar
+        initBarsInPreviewMode()
         updateBarsInPreviewMode()
         updateButtons()
         

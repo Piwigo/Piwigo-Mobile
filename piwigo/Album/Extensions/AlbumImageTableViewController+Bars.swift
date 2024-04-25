@@ -15,17 +15,7 @@ extension AlbumImageTableViewController
     func initBarsInPreviewMode() {
         // Set title
         setTitleViewFromAlbumData(whileUpdating: false)
-        // Set navigation bar and toolbar
-        updateBarsInPreviewMode()
-    }
-    
-    func updateBarsInPreviewMode() {
-        // Hide toolbar unless it is displaying the image detail view
-        if let displayedVC = navigationController?.viewControllers.last,
-           !(displayedVC is ImageViewController) {
-            navigationController?.setToolbarHidden(true, animated: true)
-        }
-        
+
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             // Button for accessing settings
@@ -36,7 +26,7 @@ extension AlbumImageTableViewController
             navigationItem.setLeftBarButtonItems([], animated: true)
             navigationItem.hidesBackButton = false
         }
-        
+
         // Right side of navigation bar
         if categoryId == 0 {
             // Root album => Discover menu button
@@ -64,6 +54,34 @@ extension AlbumImageTableViewController
             // No button
             navigationItem.setRightBarButtonItems([], animated: true)
             
+            // Following 2 lines fixes situation where the Edit button remains visible
+            navigationController?.navigationBar.setNeedsLayout()
+            navigationController?.navigationBar.layoutIfNeeded()
+        }
+    }
+    
+    func updateBarsInPreviewMode() {
+        // Hide toolbar unless it is displaying the image detail view
+        if let displayedVC = navigationController?.viewControllers.last,
+           !(displayedVC is ImageViewController) {
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
+        
+        // Right side of navigation bar
+        if categoryId == 0 {
+            return
+        }
+        if albumData.nbImages > 0, NetworkVars.userStatus != .guest {
+            if #available(iOS 14, *) {
+                if categoryId > 0 {
+                    // Menu for activating the selection mode or change the way images are sorted
+                    let menu = UIMenu(title: "", children: [selectMenu(), imageSortMenu()])
+                    selectBarButton?.menu = menu
+                }
+            }
+            selectBarButton?.isEnabled = albumData.nbImages != 0
+        }
+        else {
             // Following 2 lines fixes situation where the Edit button remains visible
             navigationController?.navigationBar.setNeedsLayout()
             navigationController?.navigationBar.layoutIfNeeded()

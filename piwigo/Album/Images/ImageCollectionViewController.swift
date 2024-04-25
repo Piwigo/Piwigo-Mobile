@@ -157,7 +157,7 @@ class ImageCollectionViewController: UICollectionViewController
             }
         }
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        fetchRequest.fetchBatchSize = min(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
+        fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
     
@@ -173,10 +173,15 @@ class ImageCollectionViewController: UICollectionViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("••> viewDidLoad images…")
+
+        // Set collection view layout
+        collectionView?.collectionViewLayout = ImageCollectionViewFlowLayout()
         
         // Register ImageCollectionViewCell and ImagesFooterReusableView classes
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
-        
+        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooter")
+
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
                                                name: .pwgPaletteChanged, object: nil)
@@ -197,7 +202,8 @@ class ImageCollectionViewController: UICollectionViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        print("••> viewWillAppear images…")
+
         // Set colors, fonts, etc.
         applyColorPalette()
         
@@ -222,16 +228,18 @@ class ImageCollectionViewController: UICollectionViewController
             imageOfInterest = indexPath
             collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
         } else {
-//            collectionView?.reloadData()
+            collectionView?.reloadData()
         }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+        print("••> viewDidLayoutSubviews images: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
+
         // Update table row height after collection view layouting
-        if let albumImageVC = parent as? AlbumImageTableViewController {
-            albumImageVC.imageCollectionCell?.invalidateIntrinsicContentSize()
+        if let size = collectionView?.collectionViewLayout.collectionViewContentSize,
+           let albumImageVC = parent as? AlbumImageTableViewController {
+            albumImageVC.imageCollectionCell?.frame.size = size
         }
     }
     
@@ -276,6 +284,46 @@ class ImageCollectionViewController: UICollectionViewController
         }
     }
     
+    private func getImageCount() -> String {
+        // Build footer content
+        var legend = ""
+        if albumData.nbImages == Int64.min {
+            // Is loading…
+            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
+        }
+        else if albumData.nbImages == Int64.zero {
+            // Not loading and no images
+            if albumData.pwgID == Int64.zero {
+                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            } else {
+                legend = NSLocalizedString("noImages", comment:"No Images")
+            }
+        }
+        else {
+            // Display number of images…
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            if let number = numberFormatter.string(from: NSNumber(value: albumData.nbImages)) {
+                let format:String = albumData.nbImages > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
+                legend = String(format: format, number)
+            }
+            else {
+                legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
+            }
+        }
+        return legend
+    }
+    
+    func updateNberOfImagesInFooter() {
+        // Update number of images in footer
+        DispatchQueue.main.async { [self] in
+            let indexPath = IndexPath(item: 0, section: 0)
+            if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
+                footer.nberImagesLabel?.text = getImageCount()
+            }
+        }
+    }
+    
     func resetPredicateAndPerformFetch() {
         // Update images
         fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
@@ -291,13 +339,25 @@ extension ImageCollectionViewController
         return 1
     }
     
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+    {
+        if albumData.pwgID != 0, kind == UICollectionView.elementKindSectionFooter {
+            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooter", for: indexPath) as? ImageFooterReusableView else { fatalError("!!! NO ImageFooterReusableView class !!!")}
+            footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+            footer.nberImagesLabel?.text = getImageCount()
+            return footer
+        }
+
+        let view = UICollectionReusableView(frame: CGRect.zero)
+        return view
+    }
+
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let objects = images.fetchedObjects
         return objects?.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        debugPrint("••> Cell \(indexPath)")
         // Create cell from Piwigo data
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell else { fatalError("No ImageCollectionViewCell!") }
 
@@ -336,6 +396,32 @@ extension ImageCollectionViewController
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout
 {
+    override func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        if elementKind == UICollectionView.elementKindSectionHeader {
+            view.layer.zPosition = 0 // Below scroll indicator
+            view.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
+    {
+        if albumData.pwgID == 0 { return CGSize.zero}
+        
+        // Get number of images and status
+        let footer = getImageCount()
+        if footer.isEmpty { return CGSize.zero }
+
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light)]
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let footerRect = footer.boundingRect(
+            with: CGSize(width: collectionView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude),
+            options: .usesLineFragmentOrigin,
+            attributes: attributes, context: context)
+        return CGSize(width: collectionView.frame.size.width - 30.0,
+                      height: ceil(footerRect.size.height + 8.0))
+    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         if collectionView.numberOfItems(inSection: section) == 0 {
@@ -348,21 +434,6 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout
             return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
                                 bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return CGFloat(AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .full))
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Calculates size of image cells
-        let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait
-        let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
-        return CGSize(width: size, height: size)
     }
 }
 
@@ -522,13 +593,11 @@ extension ImageCollectionViewController: NSFetchedResultsControllerDelegate {
         if collectionView?.window == nil || controller != images || updateOperations.isEmpty { return }
 
         // Update objects
-        collectionView?.performBatchUpdates({ [weak self] in
+        collectionView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach({ $0.start()})
-        }) { [self] _ in
+        } completion: { [weak self] _ in
             // Update footer
-            if let parent = parent as? AlbumImageTableViewController {
-                parent.albumCollectionVC.updateNberOfImagesInFooter()
-            }
+            self?.updateNberOfImagesInFooter()
         }
     }
 }

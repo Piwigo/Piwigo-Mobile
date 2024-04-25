@@ -30,7 +30,7 @@ class AlbumImageTableViewController: UIViewController
         albumVC.albumData = albumData
         return albumVC
     }()
-    weak var albumCollectionCell: AlbumCollectionTableViewCell?
+    weak var albumCollectionCell: UITableViewCell?
 
     // Create image collection view controller from storyboard
     lazy var imageCollectionVC: ImageCollectionViewController = {
@@ -47,7 +47,7 @@ class AlbumImageTableViewController: UIViewController
         }
         return imageVC
     }()
-    weak var imageCollectionCell: ImageCollectionTableViewCell?
+    weak var imageCollectionCell: UITableViewCell?
     
     
     // MARK: - Bar Buttons
@@ -342,7 +342,8 @@ class AlbumImageTableViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        print("••> viewWillAppear albumImage: \(categoryId)")
+
         // Set colors, fonts, etc.
         applyColorPalette()
         
@@ -375,7 +376,7 @@ class AlbumImageTableViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("••> viewDidAppear     => ID:\(categoryId)")
+        print("••> viewDidAppear albumImage => ID:\(categoryId)")
         
         // The user may have cleared the cached data
         // Display an empty root album in that case
@@ -865,23 +866,23 @@ class AlbumImageTableViewController: UIViewController
 extension AlbumImageTableViewController: UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        if categoryId == 0 {
+            return 1    // Only albums in root album
+        } else {
+            return 2    // Albums and images
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
             // Initialise album collection view cell
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCollectionTableViewCell", for: indexPath) as? AlbumCollectionTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a AlbumCollectionTableViewCell!")
-                return AlbumCollectionTableViewCell()
-            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCollectionTableViewCell", for: indexPath)
             
             // Add view controller to container view controller
-            if cell.viewController == nil {
+            if cell.subviews.contains(albumCollectionVC.view) == false {
                 // Add view controller to container view controller
                 add(asChildViewController: albumCollectionVC, toCell: cell)
-                cell.viewController = albumCollectionVC
             }
             
             // For auto-sizing the cell after collection view layouting
@@ -890,15 +891,11 @@ extension AlbumImageTableViewController: UITableViewDataSource
             
         default:
             // Initialise image collection view cell
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ImageCollectionTableViewCell", for: indexPath) as? ImageCollectionTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a ImageCollectionTableViewCell!")
-                return ImageCollectionTableViewCell()
-            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ImageCollectionTableViewCell", for: indexPath)
 
             // Add view controller to container view controller
-            if cell.viewController == nil {
+            if cell.subviews.contains(imageCollectionVC.view) == false {
                 add(asChildViewController: imageCollectionVC, toCell: cell)
-                cell.viewController = imageCollectionVC
             }
 
             // For auto-sizing the cell after collection view layouting
@@ -913,6 +910,15 @@ extension AlbumImageTableViewController: UITableViewDataSource
 
         // Add child view as subview
         cell.addSubview(viewController.view)
+
+        // Define Constraints
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            viewController.view.topAnchor.constraint(equalTo: cell.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: cell.bottomAnchor),
+            viewController.view.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: cell.trailingAnchor)
+        ])
 
         // Notify child view Controller
         viewController.didMove(toParent: self)
