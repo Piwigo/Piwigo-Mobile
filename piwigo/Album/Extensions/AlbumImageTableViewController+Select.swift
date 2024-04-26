@@ -104,7 +104,8 @@ extension AlbumImageTableViewController
         
         // Scroll to position of images if needed
         if numberOfImageCells == 0, albumData.nbImages != 0 {
-            let indexPathOfFirstImage = IndexPath(row: 1, section: 0)
+            let row = hasAlbumDataToShow() ? 1 : 0
+            let indexPathOfFirstImage = IndexPath(row: row, section: 0)
             albumImageTableView.scrollToRow(at: indexPathOfFirstImage, at: .top, animated: true)
         }
         

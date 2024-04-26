@@ -235,7 +235,7 @@ class ImageCollectionViewController: UICollectionViewController
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("••> viewDidLayoutSubviews imageCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
+//        print("••> viewDidLayoutSubviews imageCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
 
         // Update table row height after collection view layouting
         if let albumImageVC = parent as? AlbumImageTableViewController {

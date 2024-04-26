@@ -865,7 +865,7 @@ class AlbumImageTableViewController: UIViewController
 // MARK: - UITableViewDatasource
 extension AlbumImageTableViewController: UITableViewDataSource
 {
-    private func hasAlbumDataToShow() -> Bool {
+    func hasAlbumDataToShow() -> Bool {
         // Album data to show in sub-album?
         if albumData.comment.string.isEmpty,
            albumCollectionVC.nberSubAlbums == 0 {
