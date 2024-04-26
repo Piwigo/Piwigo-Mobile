@@ -13,6 +13,7 @@ import piwigoKit
 class AlbumCollectionViewController: UICollectionViewController
 {
     private var updateOperations = [BlockOperation]()
+    private var didUpdateCellHeight = false             // Workaround for iOS 12 - 15.x
     
     // MARK: - Core Data Source
     var user: User!
@@ -65,7 +66,7 @@ class AlbumCollectionViewController: UICollectionViewController
         
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -97,19 +98,33 @@ class AlbumCollectionViewController: UICollectionViewController
             print("Error: \(error)")
         }
         
-        collectionView?.reloadData()
+        // Album collection
+//        collectionView?.reloadData()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("••> viewDidLayoutSubviews albums: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
+//        print("••> viewDidLayoutSubviews albumCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
         
         // Update table row height after collection view layouting
-        if let size = collectionView?.collectionViewLayout.collectionViewContentSize,
-           let albumImageVC = parent as? AlbumImageTableViewController {
-            albumImageVC.albumCollectionCell?.frame.size = size
-            //            albumImageVC.albumCollectionCell?.invalidateIntrinsicContentSize()
+        if let albumImageVC = parent as? AlbumImageTableViewController {
+            albumImageVC.albumCollectionCell?.invalidateIntrinsicContentSize()
+            if #available(iOS 16, *) {
+                // NOP — AlbumCollectionTableViewCell height updated automatically
+            } else if didUpdateCellHeight == false {
+                // Update AlbumCollectionTableViewCell height manually once
+                DispatchQueue.main.async {
+                    UIView.performWithoutAnimation {
+                        albumImageVC.albumImageTableView?.beginUpdates()
+                        albumImageVC.albumImageTableView?.endUpdates()
+                    }
+                }
+            }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        didUpdateCellHeight = true
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -215,7 +230,7 @@ extension AlbumCollectionViewController
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-        
+    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         if kind == UICollectionView.elementKindSectionHeader {
@@ -315,24 +330,6 @@ extension AlbumCollectionViewController: UICollectionViewDelegateFlowLayout
             attributes: attributes, context: context)
         return CGSize(width: collectionView.frame.size.width - 30.0, 
                       height: ceil(footerRect.size.height + 8.0))
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
-    {
-        // Avoid unwanted spaces
-        let horSpacing = AlbumUtilities.kAlbumMarginsSpacing        
-        if collectionView.numberOfItems(inSection: section) == 0 {
-            return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
-        }
-        else if albumData.pwgID == 0 {
-            if #available(iOS 13.0, *) {
-                return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
-            } else {
-                return UIEdgeInsets(top: 10, left: horSpacing, bottom: 0, right: horSpacing)
-            }
-        } else {
-            return UIEdgeInsets(top: 0, left: horSpacing, bottom: 0, right: horSpacing)
-        }
     }
 }
 

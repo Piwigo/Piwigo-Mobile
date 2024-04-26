@@ -45,7 +45,8 @@ class ImageCollectionViewController: UICollectionViewController
     var totalNumberOfImages = 0
         
     private var updateOperations = [BlockOperation]()
-    
+    private var didUpdateCellHeight = false             // Workaround for iOS 12 - 15.x
+
     
     // MARK: - Core Data Source
     var user: User!
@@ -228,18 +229,28 @@ class ImageCollectionViewController: UICollectionViewController
             imageOfInterest = indexPath
             collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
         } else {
-            collectionView?.reloadData()
+//            collectionView?.reloadData()
         }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("••> viewDidLayoutSubviews images: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
+        print("••> viewDidLayoutSubviews imageCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
 
         // Update table row height after collection view layouting
-        if let size = collectionView?.collectionViewLayout.collectionViewContentSize,
-           let albumImageVC = parent as? AlbumImageTableViewController {
-            albumImageVC.imageCollectionCell?.frame.size = size
+        if let albumImageVC = parent as? AlbumImageTableViewController {
+            albumImageVC.imageCollectionCell?.invalidateIntrinsicContentSize()
+            if #available(iOS 16, *) {
+                // NOP — ImageCollectionTableViewCell height updated automatically
+            } else if didUpdateCellHeight == false {
+                // Update ImageCollectionTableViewCell updated manually once
+                DispatchQueue.main.async {
+                    UIView.performWithoutAnimation {
+                        albumImageVC.albumImageTableView?.beginUpdates()
+                        albumImageVC.albumImageTableView?.endUpdates()
+                    }
+                }
+            }
         }
     }
     
@@ -251,6 +262,10 @@ class ImageCollectionViewController: UICollectionViewController
             // Reload collection
             collectionView?.reloadData()
         })
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        didUpdateCellHeight = true
     }
     
     deinit {

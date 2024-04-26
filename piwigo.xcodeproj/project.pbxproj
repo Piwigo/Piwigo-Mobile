@@ -518,6 +518,8 @@
 		ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98762E2626014500B964C5 /* UploadProperties.swift */; };
 		ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23A1F22427D2D900F662AB /* UploadProvider.swift */; };
 		ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23A1F02427C95700F662AB /* UploadError.swift */; };
+		ADF966592BDB80AB000BE429 /* AlbumCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF966582BDB80AB000BE429 /* AlbumCollectionTableViewCell.swift */; };
+		ADF9665B2BDB80C7000BE429 /* ImageCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF9665A2BDB80C7000BE429 /* ImageCollectionTableViewCell.swift */; };
 		ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */; };
 		ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */; };
 		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
@@ -1195,6 +1197,8 @@
 		ADF3EC0B2516515500379E53 /* Device+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Device+Model.swift"; sourceTree = "<group>"; };
 		ADF6264626B9ED410085A299 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF6264826B9ED4A0085A299 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		ADF966582BDB80AB000BE429 /* AlbumCollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionTableViewCell.swift; sourceTree = "<group>"; };
+		ADF9665A2BDB80C7000BE429 /* ImageCollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		ADFA64BD29B3B5BB003F1B36 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
 		ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ShareMetadataViewController.storyboard; sourceTree = "<group>"; };
@@ -2493,6 +2497,8 @@
 				ADA818B92A0032D9004C9A5A /* AlbumNavigationController.swift */,
 				AD089CEC2BC1A81200CE4A3E /* AlbumImageTableViewController.swift */,
 				AD0E0E4D2BC2E9ED008A9053 /* AlbumImageTableViewController.storyboard */,
+				ADF966582BDB80AB000BE429 /* AlbumCollectionTableViewCell.swift */,
+				ADF9665A2BDB80C7000BE429 /* ImageCollectionTableViewCell.swift */,
 				AD92AD922A63DBFE007A0001 /* ImageAnimatedTransitioning.swift */,
 				ADF29DBD2BCD848B0012FF66 /* AlbumImageTableViewController+TransitioningDelegate.swift */,
 				ADF29D8C2BC971BB0012FF66 /* Extensions */,
@@ -3381,7 +3387,9 @@
 				AD089CFE2BC2A51600CE4A3E /* ImageCollectionViewCell.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
 				AD7E9AEB2A6D7BDC0079BE8F /* PlaybackController.swift in Sources */,
+				ADF9665B2BDB80C7000BE429 /* ImageCollectionTableViewCell.swift in Sources */,
 				AD6BA0FC2BA5D01800755257 /* PasteboardImagesViewController+UploadSwitchDelegate.swift in Sources */,
+				ADF966592BDB80AB000BE429 /* AlbumCollectionTableViewCell.swift in Sources */,
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				AD0E0E632BC30003008A9053 /* ImageCollectionViewController.swift in Sources */,

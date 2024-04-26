@@ -226,5 +226,6 @@ class AlbumTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        backgroundImage.image = nil
     }
 }

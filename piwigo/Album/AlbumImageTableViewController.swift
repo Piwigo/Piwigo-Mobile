@@ -214,7 +214,7 @@ class AlbumImageTableViewController: UIViewController
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -362,16 +362,16 @@ class AlbumImageTableViewController: UIViewController
 
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
-                                               name: .pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgLeftUploads, object: nil)
 
         // Register upload progress if displaying default album
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
-                                                   name: .pwgUploadProgress, object: nil)
+                                                   name: Notification.Name.pwgUploadProgress, object: nil)
         }
 
         // Display albums and images
-//        albumImageTableView.reloadData()
+        albumImageTableView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -865,21 +865,43 @@ class AlbumImageTableViewController: UIViewController
 // MARK: - UITableViewDatasource
 extension AlbumImageTableViewController: UITableViewDataSource
 {
+    private func hasAlbumDataToShow() -> Bool {
+        // Album data to show in sub-album?
+        if albumData.comment.string.isEmpty,
+           (albumCollectionVC.albums.fetchedObjects ?? []).isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    private func activeRow(_ row: Int) -> Int {
+        // Only albums in root album
+        if categoryId == 0 {
+            return row
+        }
+        
+        // Album data to show in sub-album?
+        return hasAlbumDataToShow() ? row : row+1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if categoryId == 0 {
             return 1    // Only albums in root album
         } else {
-            return 2    // Albums and images
+            return hasAlbumDataToShow() ? 2 : 1    // Albums and images
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.row {
+        
+        switch activeRow(indexPath.row) {
         case 0:
             // Initialise album collection view cell
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCollectionTableViewCell", for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCollectionTableViewCell", for: indexPath) as? AlbumCollectionTableViewCell
+            else { preconditionFailure("Failed to load AlbumCollectionTableViewCell") }
             
-            // Add view controller to container view controller
+            // Add album view controller to container view controller
+            cell.albumVC = albumCollectionVC
             if cell.subviews.contains(albumCollectionVC.view) == false {
                 // Add view controller to container view controller
                 add(asChildViewController: albumCollectionVC, toCell: cell)
@@ -891,9 +913,11 @@ extension AlbumImageTableViewController: UITableViewDataSource
             
         default:
             // Initialise image collection view cell
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ImageCollectionTableViewCell", for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ImageCollectionTableViewCell", for: indexPath) as? ImageCollectionTableViewCell
+            else { preconditionFailure("Failed to laod ImageCollectionTableViewCell") }
 
             // Add view controller to container view controller
+            cell.imageVC = imageCollectionVC
             if cell.subviews.contains(imageCollectionVC.view) == false {
                 add(asChildViewController: imageCollectionVC, toCell: cell)
             }
@@ -917,7 +941,7 @@ extension AlbumImageTableViewController: UITableViewDataSource
             viewController.view.topAnchor.constraint(equalTo: cell.topAnchor),
             viewController.view.bottomAnchor.constraint(equalTo: cell.bottomAnchor),
             viewController.view.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
-            viewController.view.trailingAnchor.constraint(equalTo: cell.trailingAnchor)
+            viewController.view.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
         ])
 
         // Notify child view Controller
@@ -939,8 +963,7 @@ extension AlbumImageTableViewController: UITableViewDelegate
 extension AlbumImageTableViewController
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if round(scrollView.contentOffset.y) > 0 ||
-            (categoryId != AlbumVars.shared.defaultCategory) {
+        if round(scrollView.contentOffset.y) > 0 {
             // Show navigation bar border
             if #available(iOS 13.0, *) {
                 let navBar = navigationItem
