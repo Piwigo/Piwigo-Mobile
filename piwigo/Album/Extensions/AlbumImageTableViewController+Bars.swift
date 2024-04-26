@@ -311,21 +311,16 @@ extension AlbumImageTableViewController
     
     // MARK: - Title View
     func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
-        // Get album name
-        if #available(iOS 13.0, *) {
-            self.view?.window?.windowScene?.title = albumData.name
-        }
-
-        // Do not present a custom title view for the default album or a smart album
-        if categoryId < 0 || categoryId == AlbumVars.shared.defaultCategory {
-            if categoryId == 0 {
-                title = NSLocalizedString("tabBar_albums", comment: "Albums")
-            } else {
-                title = albumData.name
+        // Title view
+        if categoryId == 0 {
+            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        } else {
+            title = albumData.name
+            if #available(iOS 13.0, *) {
+                self.view?.window?.windowScene?.title = albumData.name
             }
-            return
         }
-
+        
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear

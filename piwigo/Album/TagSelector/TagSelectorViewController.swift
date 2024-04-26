@@ -237,7 +237,7 @@ class TagSelectorViewController: UITableViewController {
         let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID) else {
+        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
             return
         }
         
