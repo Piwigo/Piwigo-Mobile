@@ -32,6 +32,13 @@ class AlbumCollectionViewController: UICollectionViewController
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
     
+    lazy var nberSubAlbums: Int = {
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.resultType = .countResultType
+        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        return (try? mainContext.count(for: fetchRequest)) ?? 0
+    }()
+    
     private lazy var fetchAlbumsRequest: NSFetchRequest = {
         // Sort albums by globalRank i.e. the order in which they are presented in the web UI
         let fetchRequest = Album.fetchRequest()

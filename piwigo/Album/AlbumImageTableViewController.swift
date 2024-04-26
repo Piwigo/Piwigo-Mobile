@@ -868,7 +868,7 @@ extension AlbumImageTableViewController: UITableViewDataSource
     private func hasAlbumDataToShow() -> Bool {
         // Album data to show in sub-album?
         if albumData.comment.string.isEmpty,
-           (albumCollectionVC.albums.fetchedObjects ?? []).isEmpty {
+           albumCollectionVC.nberSubAlbums == 0 {
             return false
         }
         return true
