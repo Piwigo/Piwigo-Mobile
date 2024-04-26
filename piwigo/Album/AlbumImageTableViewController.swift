@@ -636,8 +636,8 @@ class AlbumImageTableViewController: UIViewController
         albumCollectionVC.resetPredicateAndPerformFetch()
 
         // Update images
-        albumCollectionVC.albumData = albumData
-        albumCollectionVC.resetPredicateAndPerformFetch()
+        imageCollectionVC.albumData = albumData
+        imageCollectionVC.resetPredicateAndPerformFetch()
     }
 
     func startFetchingAlbumAndImages(withHUD: Bool) {

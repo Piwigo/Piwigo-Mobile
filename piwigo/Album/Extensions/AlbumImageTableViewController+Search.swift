@@ -62,7 +62,7 @@ extension AlbumImageTableViewController: UISearchControllerDelegate
     }
         
     func willDismissSearchController(_ searchController: UISearchController) {
-        //        debugPrint("willDismissSearchController…")
+//        debugPrint("willDismissSearchController…")
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
         
@@ -91,18 +91,14 @@ extension AlbumImageTableViewController: UISearchControllerDelegate
     func resetSearchAlbum(withQuery query: String) {
         // Reset search album
         albumData.query = query
-        if query.isEmpty {
-            albumData.nbImages = Int64.zero
-            albumData.totalNbImages = Int64.zero
-            if let images = albumData.images {
-                albumData.removeFromImages(images)
-            }
-            // Store changes
-            try? mainContext.save()
-        } else {
-            albumData.nbImages = Int64.min
-            albumData.totalNbImages = Int64.min
+        albumData.nbImages = query.isEmpty ? Int64.zero : Int64.min
+        albumData.totalNbImages = query.isEmpty ? Int64.zero : Int64.min
+        
+        // Remove images
+        if let images = albumData.images {
+            albumData.removeFromImages(images)
         }
+        try? mainContext.save()
     }
 }
 

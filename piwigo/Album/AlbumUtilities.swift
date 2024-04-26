@@ -149,7 +149,8 @@ class AlbumUtilities: NSObject {
                 if let catId = uploadJSON.data.id, catId != Int32.min {
                     // Album successfully created ▶ Add it to list of recent albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
-                    NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+                    NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
+                                                    object: nil, userInfo: userInfo)
                     completion(catId)
                 }
                 else {
