@@ -57,6 +57,7 @@ extension AlbumImageTableViewController: UISearchControllerDelegate
         albumImageTableView.reloadData()
         
         // Hide buttons and toolbar
+        initBarsInPreviewMode()
         updateBarsInPreviewMode()
         navigationController?.setToolbarHidden(true, animated: true)
     }
@@ -85,6 +86,7 @@ extension AlbumImageTableViewController: UISearchControllerDelegate
         albumImageTableView.reloadData()
         
         // Show buttons
+        initBarsInPreviewMode()
         updateBarsInPreviewMode()
     }
     
