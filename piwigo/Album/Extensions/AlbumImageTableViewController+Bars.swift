@@ -314,6 +314,7 @@ extension AlbumImageTableViewController
         // Title view
         if categoryId == 0 {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            return
         } else {
             title = albumData.name
             if #available(iOS 13.0, *) {
