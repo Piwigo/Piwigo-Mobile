@@ -81,34 +81,47 @@ extension AlbumImageTableViewController
 extension AlbumImageTableViewController
 {
     @objc func didTapSelect() {
+        // Should we really enable this mode?
+        if albumData.nbImages == 0 {
+            return
+        }
+        
         // Hide buttons
         hideButtons()
         
         // Activate Images Selection mode
         imageCollectionVC.isSelect = true
         
-        // Disable interaction with album cells and scroll to first image cell if needed
-        var numberOfImageCells = 0
-        for cell in albumCollectionVC.collectionView?.visibleCells ?? [] {
+        // Disable interaction with album cells and scroll first image cells to top if needed
+        let visibleAlbumCells = albumCollectionVC.collectionView?.visibleCells ?? []
+        for cell in visibleAlbumCells {
             // Disable user interaction with category cell
             if let categoryCell = cell as? AlbumCollectionViewCell {
                 categoryCell.contentView.alpha = 0.5
                 categoryCell.isUserInteractionEnabled = false
             }
-            
-            // Will scroll to position if no visible image cell
-            if cell is ImageCollectionViewCell {
-                numberOfImageCells = numberOfImageCells + 1
+        }
+        
+        // Any album cell visible above the image collection?
+        if let lastAlbumCell = visibleAlbumCells.last, let window = view.window
+        {
+            var fromCoordinateSpace = lastAlbumCell.coordinateSpace
+            let toCoordinateSpace = window.screen.coordinateSpace
+            var albumHeight = fromCoordinateSpace.convert(lastAlbumCell.bounds, to: toCoordinateSpace).maxY
+            albumHeight -= navigationController?.navigationBar.bounds.height ?? 0.0
+            if #available(iOS 13, *) {
+                albumHeight -= window.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0
+            } else {
+                albumHeight -= UIApplication.shared.statusBarFrame.height
+            }
+            if albumHeight > 0.0 {
+                // Scroll to image cells to the top
+                let row = hasAlbumDataToShow() ? 1 : 0
+                let indexPathOfFirstImage = IndexPath(row: row, section: 0)
+                albumImageTableView.scrollToRow(at: indexPathOfFirstImage, at: .top, animated: true)
             }
         }
-        
-        // Scroll to position of images if needed
-        if numberOfImageCells == 0, albumData.nbImages != 0 {
-            let row = hasAlbumDataToShow() ? 1 : 0
-            let indexPathOfFirstImage = IndexPath(row: row, section: 0)
-            albumImageTableView.scrollToRow(at: indexPathOfFirstImage, at: .top, animated: true)
-        }
-        
+
         // Initialisae navigation bar and toolbar
         initBarsInSelectMode()
     }
